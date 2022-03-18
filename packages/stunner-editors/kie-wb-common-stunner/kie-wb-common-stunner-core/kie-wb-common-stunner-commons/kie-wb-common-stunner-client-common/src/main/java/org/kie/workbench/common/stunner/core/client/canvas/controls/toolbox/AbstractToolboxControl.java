@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.toolbox;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import javax.enterprise.event.Observes;
@@ -35,8 +36,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.components.toolbox.Toolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.graph.Element;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractToolboxControl
         implements ToolboxControl<AbstractCanvasHandler, Element> {
@@ -94,21 +93,22 @@ public abstract class AbstractToolboxControl
     }
 
     void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         handleCanvasSelectionEvent(event);
     }
 
     void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         handleCanvasClearSelectionEvent(event);
     }
 
     void onCanvasShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent event) {
-        checkNotNull("event",
-                     event);
+        checkNotNull("event", event);
         handleCanvasShapeRemovedEvent(event);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     protected void handleCanvasSelectionEvent(final CanvasSelectionEvent event) {

@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.core.client.api;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -37,8 +38,6 @@ import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Manages a single session by Window
@@ -88,8 +87,7 @@ public class GlobalSessionManager implements SessionManager {
 
     @Override
     public <S extends ClientSession> void open(final S session) {
-        checkNotNull("session",
-                     session);
+        Objects.requireNonNull(session, "Parameter named 'session' should be not null!");
         if (!session.equals(current)) {
             current = (AbstractSession) session;
             current.open();

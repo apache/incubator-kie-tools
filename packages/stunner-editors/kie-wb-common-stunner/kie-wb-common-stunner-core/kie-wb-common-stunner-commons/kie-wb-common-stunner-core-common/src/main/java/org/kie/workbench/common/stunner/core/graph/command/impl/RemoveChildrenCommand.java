@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -46,10 +46,8 @@ public class RemoveChildrenCommand extends AbstractGraphCommand {
 
     public RemoveChildrenCommand(final @MapsTo("parentUUID") String parentUUID,
                                  final @MapsTo("candidateUUIDs") String[] candidateUUIDs) {
-        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
-                                                             parentUUID);
-        this.candidateUUIDs = PortablePreconditions.checkNotNull("candidateUUIDs",
-                                                                 candidateUUIDs);
+        this.parentUUID = checkNotNull("parentUUID", parentUUID);
+        this.candidateUUIDs = checkNotNull("candidateUUIDs", candidateUUIDs);
     }
 
     public RemoveChildrenCommand(final Node<?, Edge> parent,
@@ -144,6 +142,10 @@ public class RemoveChildrenCommand extends AbstractGraphCommand {
 
     public Collection<Node<?, Edge>> getCandidates() {
         return candidates;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

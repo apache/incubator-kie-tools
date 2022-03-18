@@ -16,17 +16,15 @@
 
 package org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.impl;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
+import java.util.Objects;
 
 public abstract class AbstractPropertyValueExtractor implements org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor {
 
     @Override
     public Object readPropertyValue(Object model,
                                     String propertyName) {
-        PortablePreconditions.checkNotNull("model",
-                                           model);
-        PortablePreconditions.checkNotNull("propertyName",
-                                           propertyName);
+        checkNotNull("model", model);
+        checkNotNull("propertyName", propertyName);
 
         return readValue(model,
                          propertyName);
@@ -34,4 +32,8 @@ public abstract class AbstractPropertyValueExtractor implements org.kie.workbenc
 
     protected abstract Object readValue(Object model,
                                         String propertyName);
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+    }
 }

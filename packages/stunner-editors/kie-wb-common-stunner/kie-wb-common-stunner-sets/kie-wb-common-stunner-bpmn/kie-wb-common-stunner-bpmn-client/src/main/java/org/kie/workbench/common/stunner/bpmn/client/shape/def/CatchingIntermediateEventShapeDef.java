@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventCancelActivityViewHandler;
@@ -67,24 +69,23 @@ public class CatchingIntermediateEventShapeDef
                          BPMNSVGViewFactory::intermediateCompensationCatchingEvent);
 
     public static final Map<Class<? extends BaseCatchingIntermediateEvent>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseCatchingIntermediateEvent>, Glyph>()
-                    .put(IntermediateTimerEvent.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_TIMER)
-                    .put(IntermediateSignalEventCatching.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_SIGNAL)
-                    .put(IntermediateLinkEventCatching.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_LINK)
-                    .put(IntermediateErrorEventCatching.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_ERROR)
-                    .put(IntermediateMessageEventCatching.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_MESSAGE)
-                    .put(IntermediateConditionalEvent.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_CONDITIONAL)
-                    .put(IntermediateEscalationEvent.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_ESCALATION)
-                    .put(IntermediateCompensationEvent.class,
-                         BPMNGlyphFactory.EVENT_INTERMEDIATE_COMPENSATION)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(IntermediateTimerEvent.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_TIMER),
+                      new AbstractMap.SimpleEntry<>(IntermediateSignalEventCatching.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_SIGNAL),
+                      new AbstractMap.SimpleEntry<>(IntermediateLinkEventCatching.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_LINK),
+                      new AbstractMap.SimpleEntry<>(IntermediateErrorEventCatching.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_ERROR),
+                      new AbstractMap.SimpleEntry<>(IntermediateMessageEventCatching.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_MESSAGE),
+                      new AbstractMap.SimpleEntry<>(IntermediateConditionalEvent.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_CONDITIONAL),
+                      new AbstractMap.SimpleEntry<>(IntermediateEscalationEvent.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_ESCALATION),
+                      new AbstractMap.SimpleEntry<>(IntermediateCompensationEvent.class,
+                                                    BPMNGlyphFactory.EVENT_INTERMEDIATE_COMPENSATION))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public FontHandler<BaseCatchingIntermediateEvent, SVGShapeView> newFontHandler() {

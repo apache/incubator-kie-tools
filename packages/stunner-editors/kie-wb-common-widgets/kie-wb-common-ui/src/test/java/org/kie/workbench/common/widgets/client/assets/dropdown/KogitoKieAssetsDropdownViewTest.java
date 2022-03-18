@@ -16,7 +16,10 @@
 
 package org.kie.workbench.common.widgets.client.assets.dropdown;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import elemental2.dom.DOMTokenList;
@@ -26,7 +29,6 @@ import org.jboss.errai.ui.client.local.spi.TranslationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.uberfire.client.views.pfly.selectpicker.JQuerySelectPicker;
@@ -179,6 +181,7 @@ public class KogitoKieAssetsDropdownViewTest {
     }
 
     private Map<String, String> getMetaData() {
-        return new Maps.Builder<String, String>().put("foo", "bar").build();
+        return Stream.of(new AbstractMap.SimpleEntry<>("foo", "bar"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

@@ -20,12 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Utilities for working with external (GWT-compiled) plugins.
@@ -48,8 +47,7 @@ public class PluginUtil {
      * provided list
      */
     public static <T> List<T> ensureIterable(List<T> externalList) {
-        checkNotNull("externalList",
-                     externalList);
+        Objects.requireNonNull(externalList, "Parameter named 'externalList' should be not null!");
 
         // toArray(T[]) is @JsIgnored
         @SuppressWarnings("unchecked")
@@ -70,8 +68,7 @@ public class PluginUtil {
      * set
      */
     public static <T> Set<T> ensureIterable(Set<T> externalSet) {
-        checkNotNull("externalSet",
-                     externalSet);
+        Objects.requireNonNull(externalSet, "Parameter named 'externalSet' should be not null!");
 
         // toArray(T[]) is @JsIgnored
         @SuppressWarnings("unchecked")

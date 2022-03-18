@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.labels.label;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.api.IsElement;
 import org.jboss.errai.common.client.dom.HTMLElement;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.model.FieldDefinition;
 
 /**
@@ -48,10 +49,8 @@ public class FieldLabel implements IsElement,
      */
     public void renderForInputId(String inputId,
                                  FieldDefinition fieldDefinition) {
-        PortablePreconditions.checkNotNull("inputId",
-                                           inputId);
-        PortablePreconditions.checkNotNull("fieldDefinition",
-                                           fieldDefinition);
+        checkNotNull("inputId", inputId);
+        checkNotNull("fieldDefinition", fieldDefinition);
 
         view.renderForInputId(inputId,
                               fieldDefinition.getLabel(),
@@ -66,10 +65,8 @@ public class FieldLabel implements IsElement,
      */
     public void renderForInput(IsWidget isWidget,
                                FieldDefinition fieldDefinition) {
-        PortablePreconditions.checkNotNull("fieldDefinition",
-                                           fieldDefinition);
-        PortablePreconditions.checkNotNull("isWidget",
-                                           isWidget);
+        checkNotNull("fieldDefinition", fieldDefinition);
+        checkNotNull("isWidget", isWidget);
 
         view.renderForInput(isWidget,
                             fieldDefinition.getLabel(),
@@ -80,5 +77,9 @@ public class FieldLabel implements IsElement,
     @Override
     public HTMLElement getElement() {
         return view.getElement();
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 }

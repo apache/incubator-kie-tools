@@ -18,6 +18,7 @@ package org.uberfire.client.workbench.widgets.notification;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
@@ -28,7 +29,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jboss.errai.ioc.client.container.SyncBeanDef;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -163,8 +163,9 @@ public class NotificationManager {
         private NotificationPopupHandle handle;
 
         HideNotificationCommand(final View notificationContainerView) {
-            this.notificationContainerView = PortablePreconditions.checkNotNull("notificationContainerView",
-                                                                                notificationContainerView);
+            this.notificationContainerView =
+                    Objects.requireNonNull(notificationContainerView,
+                                           "Parameter named 'notificationContainerView' should be not null!");
         }
 
         @Override

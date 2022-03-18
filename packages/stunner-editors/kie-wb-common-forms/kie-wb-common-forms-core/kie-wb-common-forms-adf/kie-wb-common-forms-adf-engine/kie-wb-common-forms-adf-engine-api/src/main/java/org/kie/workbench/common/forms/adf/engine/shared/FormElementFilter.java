@@ -16,9 +16,9 @@
 
 package org.kie.workbench.common.forms.adf.engine.shared;
 
+import java.util.Objects;
 import java.util.function.Predicate;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.adf.service.definitions.elements.FormElement;
 
 /**
@@ -37,8 +37,8 @@ public class FormElementFilter<T> {
      * @param predicate Predicate to validate if the {@link FormElement} must be added to the form or not.
      */
     public FormElementFilter(String elementName, Predicate<T> predicate) {
-        PortablePreconditions.checkNotNull("elementName", elementName);
-        PortablePreconditions.checkNotNull("predicate", predicate);
+        checkNotNull("elementName", elementName);
+        checkNotNull("predicate", predicate);
         this.elementName = elementName;
         this.predicate = predicate;
     }
@@ -49,5 +49,9 @@ public class FormElementFilter<T> {
 
     public Predicate<T> getPredicate() {
         return predicate;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 }

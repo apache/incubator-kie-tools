@@ -15,12 +15,12 @@
  */
 package org.kie.workbench.common.dmn.api.definition.model;
 
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
 import org.kie.workbench.common.dmn.api.property.dmn.ExpressionLanguage;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
@@ -53,7 +53,7 @@ public class ImportedValues extends Import implements DMNPropertySet,
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private static final Set<String> stunnerLabels = new Sets.Builder<String>().build();
+    private static final Set<String> stunnerLabels = new HashSet<>();
 
     private final String UUID = org.kie.workbench.common.stunner.core.util.UUID.uuid();
 

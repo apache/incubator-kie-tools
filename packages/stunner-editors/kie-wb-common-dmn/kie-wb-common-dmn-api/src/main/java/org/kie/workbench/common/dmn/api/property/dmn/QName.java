@@ -15,8 +15,9 @@
  */
 package org.kie.workbench.common.dmn.api.property.dmn;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.api.property.DMNProperty;
 import org.kie.workbench.common.dmn.api.property.dmn.types.BuiltInType;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
@@ -59,8 +60,8 @@ public class QName implements DMNProperty {
         } else {
             this.namespaceURI = namespaceURI;
         }
-        this.localPart = PortablePreconditions.checkNotNull("localPart", localPart);
-        this.prefix = PortablePreconditions.checkNotNull("prefix", prefix);
+        this.localPart = checkNotNull("localPart", localPart);
+        this.prefix = checkNotNull("prefix", prefix);
     }
 
     public QName copy() {
@@ -77,6 +78,10 @@ public class QName implements DMNProperty {
 
     public String getPrefix() {
         return prefix;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     /**

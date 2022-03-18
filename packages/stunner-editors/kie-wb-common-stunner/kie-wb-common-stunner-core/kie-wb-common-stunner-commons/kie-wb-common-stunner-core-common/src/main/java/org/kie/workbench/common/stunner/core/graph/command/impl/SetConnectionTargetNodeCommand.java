@@ -16,11 +16,11 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -56,8 +56,7 @@ public class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
     public SetConnectionTargetNodeCommand(final @MapsTo("targetNodeUUID") String targetNodeUUID,
                                           final @MapsTo("edgeUUID") String edgeUUID,
                                           final @MapsTo("magnet") Connection connection) {
-        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
-                                                           edgeUUID);
+        this.edgeUUID = checkNotNull("edgeUUID", edgeUUID);
         this.targetNodeUUID = targetNodeUUID;
         this.connection = connection;
         this.lastTargetNodeUUID = null;
@@ -71,10 +70,13 @@ public class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
         this(null != targetNode ? targetNode.getUUID() : null,
              edge.getUUID(),
              connection);
-        this.edge = PortablePreconditions.checkNotNull("edge",
-                                                       edge);
+        this.edge = checkNotNull("edge", edge);
         this.sourceNode = edge.getSourceNode();
         this.targetNode = targetNode;
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @SuppressWarnings("unchecked")
@@ -171,7 +173,7 @@ public class SetConnectionTargetNodeCommand extends AbstractGraphCommand {
     @SuppressWarnings("unchecked")
     private Node<? extends View<?>, Edge> getSourceNode(final GraphCommandExecutionContext context) {
         if (null == sourceNode) {
-            sourceNode = (Node<? extends View<?>, Edge>) getEdge(context).getSourceNode();
+            sourceNode = getEdge(context).getSourceNode();
         }
         return sourceNode;
     }

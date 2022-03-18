@@ -18,8 +18,8 @@ package org.kie.workbench.common.forms.model.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.model.FormModel;
 import org.kie.workbench.common.forms.model.ModelProperty;
 import org.kie.workbench.common.forms.model.TypeKind;
@@ -66,7 +66,7 @@ public abstract class AbstractFormModel implements FormModel {
     }
 
     public void addProperty(final ModelProperty property) {
-        PortablePreconditions.checkNotNull("property", property);
+        Objects.requireNonNull(property, "Parameter named 'property' should be not null!");
 
         if (getProperty(property.getName()) != null) {
             throw new IllegalArgumentException("The model already has a '" + property.getName() + "' property.");

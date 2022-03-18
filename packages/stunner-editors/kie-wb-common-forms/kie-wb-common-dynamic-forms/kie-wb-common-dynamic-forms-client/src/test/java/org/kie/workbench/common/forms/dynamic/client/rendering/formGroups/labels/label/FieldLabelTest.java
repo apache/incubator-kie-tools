@@ -67,14 +67,14 @@ public class FieldLabelTest {
     @Test
     public void testRenderForInput() {
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
             fieldLabel.renderForInput(null,
                                       fieldDefinition);
         }).withMessage("Parameter named 'isWidget' should be not null!");
 
         assertNeverRenderForInput();
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
             fieldLabel.renderForInput(isWidget,
                                       null);
         }).withMessage("Parameter named 'fieldDefinition' should be not null!");
@@ -113,14 +113,14 @@ public class FieldLabelTest {
     @Test
     public void testRenderForInputId() {
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
             fieldLabel.renderForInputId(null,
                                         fieldDefinition);
         }).withMessage("Parameter named 'inputId' should be not null!");
 
         assertNeverRenderForInputId();
 
-        assertThatExceptionOfType(IllegalArgumentException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> {
             fieldLabel.renderForInputId(INPUT_ID,
                                         null);
         }).withMessage("Parameter named 'fieldDefinition' should be not null!");

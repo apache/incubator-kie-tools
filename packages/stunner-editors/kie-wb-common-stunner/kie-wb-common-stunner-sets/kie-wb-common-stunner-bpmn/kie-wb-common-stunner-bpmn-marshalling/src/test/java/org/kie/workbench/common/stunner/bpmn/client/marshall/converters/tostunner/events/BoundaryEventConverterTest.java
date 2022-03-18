@@ -16,15 +16,17 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.events;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.Activity;
 import org.eclipse.bpmn2.BoundaryEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnEdge;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
@@ -67,10 +69,10 @@ public class BoundaryEventConverterTest {
 
     @Test
     public void convertEdge() {
-        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>()
-                .put(PARENT_ID, node1)
-                .put(CHILD_ID, node2)
-                .build();
+        Map<String, BpmnNode> nodes = Stream.of(
+                        new AbstractMap.SimpleEntry<>(PARENT_ID, node1),
+                        new AbstractMap.SimpleEntry<>(CHILD_ID, node2))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Result<BpmnEdge> result = tested.convertEdge(event, nodes);
         BpmnEdge value = result.value();

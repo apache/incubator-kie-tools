@@ -16,13 +16,16 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid.model;
 
+import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.client.editors.expressions.types.context.ExpressionCellValue;
 import org.kie.workbench.common.dmn.client.widgets.grid.BaseExpressionGrid;
 import org.mockito.Mock;
@@ -53,9 +56,9 @@ public class ExpressionEditorGridRowTest {
         when(view.getHeight()).thenReturn(DEFAULT_HEIGHT - 1);
 
         final GridRow row = spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
-                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
-                .build();
+        final Map<Integer, GridCell<?>> cells = Stream.of(
+                new AbstractMap.SimpleEntry<>(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view)))))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         when(row.getCells()).thenReturn(cells);
         assertThat(row.getHeight()).isBetween(0D, DEFAULT_HEIGHT);
@@ -67,9 +70,9 @@ public class ExpressionEditorGridRowTest {
         when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
 
         final GridRow row = spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
-                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
-                .build();
+        final Map<Integer, GridCell<?>> cells = Stream.of(
+                        new AbstractMap.SimpleEntry<>(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view)))))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         when(row.getCells()).thenReturn(cells);
         assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
@@ -81,10 +84,9 @@ public class ExpressionEditorGridRowTest {
         when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
 
         final GridRow row = spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
-                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
-                .put(1, null)
-                .build();
+        final Map<Integer, GridCell<?>> cells = new HashMap<>();
+        cells.put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))));
+        cells.put(1, null);
 
         when(row.getCells()).thenReturn(cells);
         assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);
@@ -96,10 +98,10 @@ public class ExpressionEditorGridRowTest {
         when(view.getHeight()).thenReturn(DEFAULT_HEIGHT + 1);
 
         final GridRow row = spy(ExpressionEditorGridRow.class);
-        final Map<Integer, GridCell<?>> cells = new Maps.Builder<Integer, GridCell<?>>()
-                .put(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view))))
-                .put(1, new BaseGridCell<>(null))
-                .build();
+        final Map<Integer, GridCell<?>> cells = Stream.of(
+                        new AbstractMap.SimpleEntry<>(0, new BaseGridCell<>(new ExpressionCellValue(Optional.of(view)))),
+                        new AbstractMap.SimpleEntry<>(1, new BaseGridCell<>(null)))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         when(row.getCells()).thenReturn(cells);
         assertThat(row.getHeight()).isGreaterThan(DEFAULT_HEIGHT);

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.kie.soup.project.datamodel.oracle.ModelField;
+import org.drools.workbench.screens.scenariosimulation.model.dmo.ModelField;
 import org.uberfire.backend.vfs.Path;
 
 /**

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.dom.client.Style;
@@ -27,8 +29,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
 import org.uberfire.mvp.Command;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Floating view implementation for generic GWT Widgets.
@@ -104,8 +104,7 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingView<IsWidget> setHideCallback(final Command hideCallback) {
-        checkNotNull("hideCallback",
-                     hideCallback);
+        Objects.requireNonNull(hideCallback, "Parameter named 'hideCallback' should be not null!");
         this.hideCallback = hideCallback;
         return this;
     }

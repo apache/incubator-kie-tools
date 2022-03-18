@@ -17,12 +17,13 @@
 package org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.dom;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.ListBox;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.client.commands.general.DeleteCellValueCommand;
 import org.kie.workbench.common.dmn.client.commands.general.SetCellValueCommand;
 import org.mockito.Mock;
@@ -59,7 +60,7 @@ public class ListBoxDOMElementTest extends BaseDOMElementTest<ListBox, ListBoxDO
 
     @Test
     public void testSetValue() {
-        final List<String> values = new Lists.Builder<String>().add("value1").add("value2").add(VALUE).build();
+        final List<String> values = Stream.of("value1", "value2", VALUE).collect(Collectors.toList());
         final String[] varArgs = new String[values.size() - 1];
         values.subList(1, values.size()).toArray(varArgs);
         when(widget.getItemCount()).thenReturn(values.size());

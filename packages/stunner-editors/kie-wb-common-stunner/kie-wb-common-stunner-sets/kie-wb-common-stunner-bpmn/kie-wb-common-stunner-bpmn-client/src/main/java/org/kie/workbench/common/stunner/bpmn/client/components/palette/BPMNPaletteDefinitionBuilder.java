@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.components.palette;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,14 +30,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.soup.commons.util.Lists;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.definition.Association;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNCategories;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
@@ -78,21 +78,21 @@ public class BPMNPaletteDefinitionBuilder
         implements PaletteDefinitionBuilder<AbstractCanvasHandler, DefaultPaletteDefinition> {
 
     //palette categories order customization.
-    private static final List<String> CATEGORIES_ORDER = new Lists.Builder<String>()
-            .add(BPMNCategories.START_EVENTS)
-            .add(BPMNCategories.INTERMEDIATE_EVENTS)
-            .add(BPMNCategories.END_EVENTS)
-            .add(BPMNCategories.ACTIVITIES)
-            .add(BPMNCategories.SUB_PROCESSES)
-            .add(BPMNCategories.GATEWAYS)
-            .add(BPMNCategories.CONTAINERS)
-            .add(BPMNCategories.CUSTOM_TASKS)
-            .add(BPMNCategories.ARTIFACTS)
-            .build();
+    private static final List<String> CATEGORIES_ORDER = Stream.of(
+            BPMNCategories.START_EVENTS,
+            BPMNCategories.INTERMEDIATE_EVENTS,
+            BPMNCategories.END_EVENTS,
+            BPMNCategories.ACTIVITIES,
+            BPMNCategories.SUB_PROCESSES,
+            BPMNCategories.GATEWAYS,
+            BPMNCategories.CONTAINERS,
+            BPMNCategories.CUSTOM_TASKS,
+            BPMNCategories.ARTIFACTS)
+            .collect(Collectors.toList());
 
-    private static final Map<String, String> CUSTOM_GROUPS = new Maps.Builder<String, String>()
-            .put(Lane.class.getName(), "org.kie.workbench.common.stunner.bpmn.definition.customGroup.Containers")
-            .build();
+    private static final Map<String, String> CUSTOM_GROUPS = Stream.of(
+                    new AbstractMap.SimpleEntry<>(Lane.class.getName(), "org.kie.workbench.common.stunner.bpmn.definition.customGroup.Containers"))
+            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     private final DefinitionManager definitionManager;
     private final ExpandedPaletteDefinitionBuilder paletteDefinitionBuilder;
