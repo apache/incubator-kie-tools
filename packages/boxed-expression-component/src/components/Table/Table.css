@@ -229,6 +229,7 @@
   z-index: 3;
 }
 
+/* TODO: context and relation doesn't have blue border for header cells*/
 .expression-container .table-component table thead tr th.output:focus:before {
   content: "";
   display: block;

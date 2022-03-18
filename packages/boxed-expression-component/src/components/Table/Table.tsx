@@ -415,6 +415,9 @@ export const Table: React.FunctionComponent<TableProps> = ({
           return;
         }
 
+        // TODO: function expression navigation is not working //
+        // TODO: invocation expression navigation is not working //
+
         const isFiredFromThis = e.currentTarget === e.target;
 
         if (key === "Tab") {
