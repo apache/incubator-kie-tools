@@ -16,15 +16,11 @@
 
 import { SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { FsWatchingServiceCatalogStore } from "./fs";
-import {
-  getInterpolateSettingsValue,
-  settingsTokenKeys,
-} from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
+import { getInterpolateSettingsValue } from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
 import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
 import { AuthenticationSession } from "vscode";
-import * as path from "path";
 
 export function getSwfServiceCatalogStore(args: {
   currentFileAbsolutePath: string;
@@ -36,21 +32,12 @@ export function getSwfServiceCatalogStore(args: {
     value: args.configuredSpecsDirPath,
   });
 
-  const specsDirRelativePath = args.configuredSpecsDirPath.includes(settingsTokenKeys["${fileDirname}"])
-    ? path.relative(path.dirname(args.currentFileAbsolutePath), interpolatedSpecsDirAbsolutePath)
-    : interpolatedSpecsDirAbsolutePath;
-
-  console.error(args.currentFileAbsolutePath);
-  console.error(args.configuredSpecsDirPath);
-  console.error(interpolatedSpecsDirAbsolutePath);
-  console.error(specsDirRelativePath);
-
   return new CompositeServiceCatalogStore({
-    fs: new FsWatchingServiceCatalogStore({
-      specsDirRelativePath,
+    fsWatchingServiceCatalogStore: new FsWatchingServiceCatalogStore({
+      baseFileAbsolutePath: args.currentFileAbsolutePath,
       specsDirAbsolutePath: interpolatedSpecsDirAbsolutePath,
     }),
-    rhhccServiceRegistry: new RhhccServiceRegistryServiceCatalogStore(args.rhhccAuthenticationStore),
+    rhhccServiceRegistryServiceCatalogStore: new RhhccServiceRegistryServiceCatalogStore(args.rhhccAuthenticationStore),
     rhhccAuthenticationStore: args.rhhccAuthenticationStore,
   });
 }
@@ -62,25 +49,25 @@ export class CompositeServiceCatalogStore implements SwfServiceCatalogStore {
 
   constructor(
     private readonly args: {
-      fs: FsWatchingServiceCatalogStore;
-      rhhccServiceRegistry: RhhccServiceRegistryServiceCatalogStore;
+      fsWatchingServiceCatalogStore: FsWatchingServiceCatalogStore;
+      rhhccServiceRegistryServiceCatalogStore: RhhccServiceRegistryServiceCatalogStore;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
     }
   ) {}
 
   public async init(callback: (swfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>) {
-    await this.args.fs.init((s) => {
+    await this.args.fsWatchingServiceCatalogStore.init((s) => {
       this.fsSwfServiceCatalogServices = s;
       return callback(this.getCombinedSwfServiceCatalogServices());
     });
 
-    await this.args.rhhccServiceRegistry.init((s) => {
+    await this.args.rhhccServiceRegistryServiceCatalogStore.init((s) => {
       this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
       return callback(this.getCombinedSwfServiceCatalogServices());
     });
 
     this.rhhccStoreSubscription = this.args.rhhccAuthenticationStore.subscribe(() => {
-      return this.args.rhhccServiceRegistry.refresh();
+      return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
     });
   }
 
@@ -90,11 +77,11 @@ export class CompositeServiceCatalogStore implements SwfServiceCatalogStore {
 
   public async refresh() {
     // Don't need to refresh this.fs because it keeps itself updated with FS Watchers
-    return this.args.rhhccServiceRegistry.refresh();
+    return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
   }
 
   public dispose() {
-    this.args.fs.dispose();
+    this.args.fsWatchingServiceCatalogStore.dispose();
     this.args.rhhccAuthenticationStore.unsubscribe(this.rhhccStoreSubscription);
   }
 }

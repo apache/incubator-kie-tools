@@ -20,6 +20,7 @@ import {
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "../../api";
 import * as yaml from "js-yaml";
@@ -34,19 +35,26 @@ type OpenapiPathOperations = Pick<
 >;
 
 export function parseOpenApi(args: {
-  specsDirRelativePath: string;
+  baseFileAbsolutePath: string;
+  specsDirAbsolutePath: string;
   serviceFileName: string;
   serviceFileContent: string;
 }): SwfServiceCatalogService {
-  const serviceFileRelativePath = path.join(args.specsDirRelativePath, args.serviceFileName);
+  const specsDirRelativePath = path.relative(path.dirname(args.baseFileAbsolutePath), args.specsDirAbsolutePath);
+  const serviceFileRelativePath = path.join(specsDirRelativePath, args.serviceFileName);
+  const serviceFileAbsolutePath = path.join(args.specsDirAbsolutePath, args.serviceFileName);
   const serviceOpenApiDocument = serviceFileContentToOpenApiDocument(serviceFileRelativePath, args.serviceFileContent);
 
-  const swfServiceCatalogFunctions = extractFunctions(serviceOpenApiDocument, serviceFileRelativePath);
+  const swfServiceCatalogFunctions = extractFunctions(
+    serviceOpenApiDocument,
+    serviceFileRelativePath,
+    serviceFileAbsolutePath
+  );
 
   return {
-    name: serviceOpenApiDocument.info.title ?? serviceFileRelativePath,
+    name: serviceOpenApiDocument.info.title ?? serviceFileAbsolutePath,
     type: SwfServiceCatalogServiceType.rest,
-    id: serviceFileRelativePath,
+    source: { type: SwfServiceCatalogServiceSourceType.LOCAL_FS, absoluteFilePath: serviceFileAbsolutePath },
     functions: swfServiceCatalogFunctions,
     rawContent: args.serviceFileContent,
   };
@@ -67,11 +75,18 @@ function serviceFileContentToOpenApiDocument(
 
 function extractFunctions(
   serviceOpenApiDocument: OpenAPIV3.Document,
-  serviceFileRelativePath: string
+  serviceFileRelativePath: string,
+  serviceFileAbsolutePath: string
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions = Object.entries(serviceOpenApiDocument.paths).map(
     ([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
-      return extractPathItemFunctions(pathItem, serviceFileRelativePath, endpoint, serviceOpenApiDocument);
+      return extractPathItemFunctions(
+        pathItem,
+        serviceFileRelativePath,
+        serviceFileAbsolutePath,
+        endpoint,
+        serviceOpenApiDocument
+      );
     }
   );
   return [].concat.apply([], swfServiceCatalogFunctions);
@@ -80,6 +95,7 @@ function extractFunctions(
 function extractPathItemFunctions(
   pathItem: OpenapiPathOperations,
   serviceFileRelativePath: string,
+  serviceFileAbsolutePath: string,
   endpoint: string,
   serviceOpenApiDocument: OpenAPIV3.Document
 ): SwfServiceCatalogFunction[] {
@@ -99,7 +115,7 @@ function extractPathItemFunctions(
       );
 
       const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
-        source: { type: SwfServiceCatalogFunctionSourceType.LOCAL_FS, serviceFileRelativePath },
+        source: { type: SwfServiceCatalogFunctionSourceType.LOCAL_FS, serviceFileAbsolutePath },
         name,
         operation,
         type: SwfServiceCatalogFunctionType.rest,

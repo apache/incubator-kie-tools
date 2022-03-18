@@ -52,10 +52,7 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     return this.args.swfServiceCatalogStore.refresh();
   }
 
-  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(
-    service: SwfServiceCatalogService,
-    importedFunction: SwfServiceCatalogFunction
-  ): void {
-    vscode.window.showInformationMessage(JSON.stringify(service) + JSON.stringify(importedFunction));
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction: SwfServiceCatalogFunction): void {
+    vscode.window.showInformationMessage(JSON.stringify(importedFunction));
   }
 }

@@ -25,12 +25,22 @@ export enum SwfServiceCatalogServiceType {
 
 export interface SwfServiceCatalogService {
   name: string;
-  id: string;
   type: SwfServiceCatalogServiceType;
+  source: SwfServiceCatalogServiceSource;
 
   functions: SwfServiceCatalogFunction[];
   rawContent: string;
 }
+
+export type SwfServiceCatalogServiceSource =
+  | {
+      id: string;
+      type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY;
+    }
+  | {
+      type: SwfServiceCatalogServiceSourceType.LOCAL_FS;
+      absoluteFilePath: string;
+    };
 
 export enum SwfServiceCatalogFunctionType {
   rest = "rest",
@@ -50,7 +60,11 @@ export enum SwfServiceCatalogFunctionArgumentType {
 export enum SwfServiceCatalogFunctionSourceType {
   RHHCC_SERVICE_REGISTRY,
   LOCAL_FS,
-  LOCAL_SERVICE_REGISTRY,
+}
+
+export enum SwfServiceCatalogServiceSourceType {
+  RHHCC_SERVICE_REGISTRY,
+  LOCAL_FS,
 }
 
 export type SwfServiceCatalogFunctionSource =
@@ -60,7 +74,7 @@ export type SwfServiceCatalogFunctionSource =
     }
   | {
       type: SwfServiceCatalogFunctionSourceType.LOCAL_FS;
-      serviceFileRelativePath: string;
+      serviceFileAbsolutePath: string;
     };
 
 export interface SwfServiceCatalogFunction {

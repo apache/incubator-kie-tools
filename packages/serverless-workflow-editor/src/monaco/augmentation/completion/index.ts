@@ -21,6 +21,10 @@ import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
 import * as swfModelQueries from "./modelQueries";
+import {
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionSourceType,
+} from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -52,7 +56,7 @@ const completions = new Map<
           };
           return {
             kind: monaco.languages.CompletionItemKind.Module,
-            label: swfServiceCatalogFunc.name,
+            label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
             detail: swfFunction.operation,
             insertText: JSON.stringify(swfFunction, null, 2) + separator,
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
@@ -60,8 +64,7 @@ const completions = new Map<
             command: {
               id: commandIds["ImportFunctionFromCompletionItem"],
               title: "Import function from completion item",
-              //FIXME: tiago Pass the service here
-              arguments: [{ service: undefined, importedFunction: swfServiceCatalogFunc }],
+              arguments: [{ importedFunction: swfServiceCatalogFunc }],
             },
           };
         });
@@ -268,4 +271,15 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
       };
     },
   });
+}
+
+function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalogFunction) {
+  switch (swfServiceCatalogFunction.source.type) {
+    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
+      return "fs: ";
+    case SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY:
+      return `${swfServiceCatalogFunction.source.serviceId} `;
+    default:
+      return "";
+  }
 }

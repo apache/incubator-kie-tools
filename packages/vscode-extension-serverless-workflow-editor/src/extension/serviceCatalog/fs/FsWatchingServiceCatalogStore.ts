@@ -26,7 +26,7 @@ export class FsWatchingServiceCatalogStore {
 
   private readonly onDispose: () => void;
 
-  constructor(private readonly args: { specsDirRelativePath: string; specsDirAbsolutePath: string }) {
+  constructor(private readonly args: { baseFileAbsolutePath: string; specsDirAbsolutePath: string }) {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
       `${args.specsDirAbsolutePath}/*.{json,yaml,yml}`,
       false,
@@ -112,7 +112,8 @@ export class FsWatchingServiceCatalogStore {
     try {
       return [
         parseOpenApi({
-          specsDirRelativePath: this.args.specsDirRelativePath,
+          baseFileAbsolutePath: this.args.baseFileAbsolutePath,
+          specsDirAbsolutePath: this.args.specsDirAbsolutePath,
           serviceFileName: fileName,
           serviceFileContent: Buffer.from(rawData).toString("utf-8"),
         }),

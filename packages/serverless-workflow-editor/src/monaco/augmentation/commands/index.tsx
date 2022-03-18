@@ -31,10 +31,7 @@ export function initAugmentationCommands(
 ): SwfMonacoEditorCommandIds {
   return {
     ImportFunctionFromCompletionItem: editorInstance.addCommand(0, async (ctx, args) => {
-      channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(
-        args.service,
-        args.importedFunction
-      );
+      channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.importedFunction);
     })!,
     LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args) => {
       channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();

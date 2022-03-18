@@ -33,11 +33,11 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
     private readonly user: SwfServiceCatalogUser | undefined = undefined
   ) {}
 
-  public getFunctionByOperation(operationId: string): SwfServiceCatalogFunction | undefined {
-    for (const swfService of this.services) {
-      for (const swfFunction of swfService.functions) {
-        if (swfFunction.operation === operationId) {
-          return swfFunction;
+  public getFunctionByOperation(operation: string): SwfServiceCatalogFunction | undefined {
+    for (const swfServiceCatalogService of this.services) {
+      for (const swfServiceCatalogFunction of swfServiceCatalogService.functions) {
+        if (swfServiceCatalogFunction.operation === operation) {
+          return swfServiceCatalogFunction;
         }
       }
     }
@@ -45,15 +45,8 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
     return undefined;
   }
 
-  public getFunctions(serviceId?: string): SwfServiceCatalogFunction[] {
-    const result: SwfServiceCatalogFunction[] = [];
-
-    this.services.forEach((service) => {
-      if (!serviceId || (serviceId && service.id === serviceId)) {
-        result.push(...service.functions);
-      }
-    });
-    return result;
+  public getFunctions(): SwfServiceCatalogFunction[] {
+    return this.services.flatMap((service) => service.functions);
   }
 
   public getServices() {
