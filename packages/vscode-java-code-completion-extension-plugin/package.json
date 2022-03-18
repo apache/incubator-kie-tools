@@ -25,9 +25,9 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "install:mvnw": "mvn -N io.takari:maven:wrapper -f ./",
-    "build:dev": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests",
-    "build:prod:win32": "yarn install:mvnw && yarn powershell mvn clean install -B -ntp `-DskipTests=$(build-env global.build.test --not)",
-    "build:prod:darwin:linux": "yarn install:mvnw && mvn clean install -B -ntp -DskipTests=$(build-env global.build.test --not)",
+    "build:dev": "yarn install:mvnw && mvn clean install -DskipTests",
+    "build:prod:win32": "yarn install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:darwin:linux": "yarn install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
     "build:prod": "yarn lint && run-script-os"
   }
 }

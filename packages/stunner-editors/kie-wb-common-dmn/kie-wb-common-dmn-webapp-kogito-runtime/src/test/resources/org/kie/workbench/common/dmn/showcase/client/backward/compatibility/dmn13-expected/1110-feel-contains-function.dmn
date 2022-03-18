@@ -1,0 +1,255 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1110-feel-contains-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_jCpBYPUUEeesLuP4RHs4vA" name="1110-feel-contains-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1110-feel-contains-function">
+  <dmn:description>FEEL built-in function 'contains(string, match)' in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_jCpBYvUUEeesLuP4RHs4vA" name="tfeel-contains-function_001_2a4d7448c6_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBZvUUEeesLuP4RHs4vA" name="tfeel-contains-function_002_d2a1831b5c_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBavUUEeesLuP4RHs4vA" name="tfeel-contains-function_003_df56e0a1ad_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBbvUUEeesLuP4RHs4vA" name="tfeel-contains-function_004_805503b274_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBcvUUEeesLuP4RHs4vA" name="tfeel-contains-function_005_5c1269db16_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBdvUUEeesLuP4RHs4vA" name="tfeel-contains-function_006_babdaf4f36_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBevUUEeesLuP4RHs4vA" name="tfeel-contains-function_007_d24a599180_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBfvUUEeesLuP4RHs4vA" name="tfeel-contains-function_008_cf1311586a_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBgvUUEeesLuP4RHs4vA" name="tfeel-contains-function_009_c4b50ad623_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jCpBhvUUEeesLuP4RHs4vA" name="tfeel-contains-function_010_9ae03e0e59_Result" isCollection="false">
+    <dmn:typeRef>boolean</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_jCpBZPUUEeesLuP4RHs4vA" name="feel-contains-function_ErrorCase_001_2a4d7448c6">
+    <dmn:description>Tests FEEL expression: 'contains(null,null)' and expects result: 'null (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains(null,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBZfUUEeesLuP4RHs4vA" name="feel-contains-function_ErrorCase_001_2a4d7448c6" typeRef="tfeel-contains-function_001_2a4d7448c6_Result"/>
+    <dmn:literalExpression id="_jCpBY_UUEeesLuP4RHs4vA">
+      <dmn:text>contains(null,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_jCpBYfUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.3 Table 60">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_jCpBfPUUEeesLuP4RHs4vA" name="feel-contains-function_007_d24a599180">
+    <dmn:description>Tests FEEL expression: 'contains("","ab")' and expects result: 'false (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains("","ab")'?</dmn:question>
+    <dmn:allowedAnswers>false (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBffUUEeesLuP4RHs4vA" name="feel-contains-function_007_d24a599180" typeRef="tfeel-contains-function_007_d24a599180_Result"/>
+    <dmn:literalExpression id="_jCpBe_UUEeesLuP4RHs4vA">
+      <dmn:text>contains("","ab")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBePUUEeesLuP4RHs4vA" name="feel-contains-function_006_babdaf4f36">
+    <dmn:description>Tests FEEL expression: 'contains("abc","")' and expects result: 'true (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains("abc","")'?</dmn:question>
+    <dmn:allowedAnswers>true (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBefUUEeesLuP4RHs4vA" name="feel-contains-function_006_babdaf4f36" typeRef="tfeel-contains-function_006_babdaf4f36_Result"/>
+    <dmn:literalExpression id="_jCpBd_UUEeesLuP4RHs4vA">
+      <dmn:text>contains("abc","")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBgPUUEeesLuP4RHs4vA" name="feel-contains-function_008_cf1311586a">
+    <dmn:description>Tests FEEL expression: 'contains("","")' and expects result: 'true (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains("","")'?</dmn:question>
+    <dmn:allowedAnswers>true (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBgfUUEeesLuP4RHs4vA" name="feel-contains-function_008_cf1311586a" typeRef="tfeel-contains-function_008_cf1311586a_Result"/>
+    <dmn:literalExpression id="_jCpBf_UUEeesLuP4RHs4vA">
+      <dmn:text>contains("","")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBiPUUEeesLuP4RHs4vA" name="feel-contains-function_010_9ae03e0e59">
+    <dmn:description>Tests FEEL expression: 'contains(string:"foobar",match:"b")' and expects result: 'true (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains(string:"foobar",match:"b")'?</dmn:question>
+    <dmn:allowedAnswers>true (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBifUUEeesLuP4RHs4vA" name="feel-contains-function_010_9ae03e0e59" typeRef="tfeel-contains-function_010_9ae03e0e59_Result"/>
+    <dmn:literalExpression id="_jCpBh_UUEeesLuP4RHs4vA">
+      <dmn:text>contains(string:"foobar",match:"b")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBhPUUEeesLuP4RHs4vA" name="feel-contains-function_009_c4b50ad623">
+    <dmn:description>Tests FEEL expression: 'contains(string:"foobar",match:"bar")' and expects result: 'true (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains(string:"foobar",match:"bar")'?</dmn:question>
+    <dmn:allowedAnswers>true (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBhfUUEeesLuP4RHs4vA" name="feel-contains-function_009_c4b50ad623" typeRef="tfeel-contains-function_009_c4b50ad623_Result"/>
+    <dmn:literalExpression id="_jCpBg_UUEeesLuP4RHs4vA">
+      <dmn:text>contains(string:"foobar",match:"bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBbPUUEeesLuP4RHs4vA" name="feel-contains-function_ErrorCase_003_df56e0a1ad">
+    <dmn:description>Tests FEEL expression: 'contains("bar",null)' and expects result: 'null (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains("bar",null)'?</dmn:question>
+    <dmn:allowedAnswers>null (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBbfUUEeesLuP4RHs4vA" name="feel-contains-function_ErrorCase_003_df56e0a1ad" typeRef="tfeel-contains-function_003_df56e0a1ad_Result"/>
+    <dmn:literalExpression id="_jCpBa_UUEeesLuP4RHs4vA">
+      <dmn:text>contains("bar",null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBcPUUEeesLuP4RHs4vA" name="feel-contains-function_004_805503b274">
+    <dmn:description>Tests FEEL expression: 'contains("foobar","bar")' and expects result: 'true (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains("foobar","bar")'?</dmn:question>
+    <dmn:allowedAnswers>true (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBcfUUEeesLuP4RHs4vA" name="feel-contains-function_004_805503b274" typeRef="tfeel-contains-function_004_805503b274_Result"/>
+    <dmn:literalExpression id="_jCpBb_UUEeesLuP4RHs4vA">
+      <dmn:text>contains("foobar","bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBaPUUEeesLuP4RHs4vA" name="feel-contains-function_ErrorCase_002_d2a1831b5c">
+    <dmn:description>Tests FEEL expression: 'contains(null,"bar")' and expects result: 'null (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains(null,"bar")'?</dmn:question>
+    <dmn:allowedAnswers>null (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBafUUEeesLuP4RHs4vA" name="feel-contains-function_ErrorCase_002_d2a1831b5c" typeRef="tfeel-contains-function_002_d2a1831b5c_Result"/>
+    <dmn:literalExpression id="_jCpBZ_UUEeesLuP4RHs4vA">
+      <dmn:text>contains(null,"bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jCpBdPUUEeesLuP4RHs4vA" name="feel-contains-function_005_5c1269db16">
+    <dmn:description>Tests FEEL expression: 'contains("foobar","o")' and expects result: 'true (boolean)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'contains("foobar","o")'?</dmn:question>
+    <dmn:allowedAnswers>true (boolean)</dmn:allowedAnswers>
+    <dmn:variable id="_jCpBdfUUEeesLuP4RHs4vA" name="feel-contains-function_005_5c1269db16" typeRef="tfeel-contains-function_005_5c1269db16_Result"/>
+    <dmn:literalExpression id="_jCpBc_UUEeesLuP4RHs4vA">
+      <dmn:text>contains("foobar","o")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_jCpBYPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_jCpBY_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBe_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBd_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBf_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBh_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBg_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBa_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBb_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBZ_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jCpBc_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBZPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBZPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBYfUUEeesLuP4RHs4vA" dmnElementRef="_jCpBYfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="133" y="199" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBfPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBfPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBePUUEeesLuP4RHs4vA" dmnElementRef="_jCpBePUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBgPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBgPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBiPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBiPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBhPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBhPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBbPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBbPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBcPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBcPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBaPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBaPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="203" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jCpBdPUUEeesLuP4RHs4vA" dmnElementRef="_jCpBdPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

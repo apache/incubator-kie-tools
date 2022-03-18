@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/dmn-tck/tck" name="feel-logic-not" id="_feel-logic-not" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <inputData name="A" id="i_a">
+        <variable typeRef="boolean" name="A"/>
+    </inputData>
+    <decision name="DecisionNot" id="d_not">
+        <variable typeRef="boolean" name="DecisionNot"/>
+        <informationRequirement id="_16043379-7f32-4ded-b659-375b86bf8f47">
+            <requiredInput href="#i_a"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>not(A)</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_feel-logic-not_D1">
+            <dmndi:Size height="650.0" width="650.0"/>
+            <dmndi:DMNShape dmnElementRef="i_a" id="_feel-logic-not_s1">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_not" id="_feel-logic-not_s2">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_16043379-7f32-4ded-b659-375b86bf8f47" id="_feel-logic-not_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

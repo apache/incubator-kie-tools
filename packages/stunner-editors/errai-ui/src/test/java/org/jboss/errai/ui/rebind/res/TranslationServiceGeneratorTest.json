@@ -1,0 +1,18 @@
+{
+  "TranslatableComponent1.Email_": "Email:",
+  "TranslatableComponent1.Label_1_": "Label 1:",
+  "TranslatableComponent1.Label_2_": "Label 2:",
+  "TranslatableComponent1.Password_": "Password:",
+  "TranslatableComponent1.email-placeholder": "Enter your email address...",
+  "TranslatableComponent1.value_one": "value one",
+  "TranslatableComponent1.value_two": "value two",
+  "additional-key-1": "some value 1",
+  "component2.Cancel": "Cancel",
+  "component2.Log_in": "Log in",
+  "component2.Password": "Password",
+  "component2.Remember_me": "Remember me",
+  "component2.Username": "Username",
+  "component2.extra-key": "Some extra value!",
+  "component2.password-placeholder": "Password",
+  "component2.username-placeholder": "Username"
+}

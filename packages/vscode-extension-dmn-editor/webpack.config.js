@@ -16,7 +16,7 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const stunnerEditors = require("@kogito-tooling/stunner-editors");
 const vscodeJavaCodeCompletionExtensionPlugin = require("@kogito-tooling/vscode-java-code-completion-extension-plugin");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
@@ -55,17 +55,17 @@ module.exports = async (env) => [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: externalAssets.dmnEditorPath(),
+            from: stunnerEditors.dmnEditorPath(),
             to: "webview/editors/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.scesimEditorPath(),
+            from: stunnerEditors.scesimEditorPath(),
             to: "webview/editors/scesim",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
           {
-            from: externalAssets.dmnEditorPath(),
+            from: stunnerEditors.dmnEditorPath(),
             to: "target/dmn",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },

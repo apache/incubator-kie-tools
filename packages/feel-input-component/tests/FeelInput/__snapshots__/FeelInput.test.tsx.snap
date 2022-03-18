@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FeelInput when it's enabled should render the FEEL input component 1`] = `
+<div>
+  <div
+    class="feel-input"
+  >
+    <div>
+      <monaco-editor-mock />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`FeelInput when it's not enabled should render an empty component 1`] = `
+<div>
+  <div
+    class="feel-input"
+  >
+    <div />
+  </div>
+</div>
+`;

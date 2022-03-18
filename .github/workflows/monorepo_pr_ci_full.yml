@@ -37,13 +37,6 @@ jobs:
       - name: "Merge PR changes"
         uses: ./.github/actions/merge-pr-changes
 
-      - name: "Cache Maven packages"
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2
-          key: ${{ runner.os }}-ci-full-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-ci-full-m2
-
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:

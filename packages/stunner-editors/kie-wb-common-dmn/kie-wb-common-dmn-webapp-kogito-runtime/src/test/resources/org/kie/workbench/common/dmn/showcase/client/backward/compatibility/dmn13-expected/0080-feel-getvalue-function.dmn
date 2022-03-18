@@ -1,0 +1,213 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.montera.com.au/spec/DMN/0080-feel-getvalue-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i9fboPUUEeesLuP4RHs4vA" name="0080-feel-getvalue-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.montera.com.au/spec/DMN/0080-feel-getvalue-function">
+  <dmn:description>FEEL built-in function 'get value(m, key)' in unspecified category</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:decision id="_decision_001" name="decision_001">
+    <dmn:description>Tests FEEL expression: 'get value()' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value()'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_0FE2C89C-12FC-4922-A999-73E960ABEF9D" name="decision_001" typeRef="string"/>
+    <dmn:literalExpression id="_2D0EEB10-B77F-45E9-A659-50C516824DF3">
+      <dmn:text>get value()</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_002" name="decision_002">
+    <dmn:description>Tests FEEL expression: 'get value({a: "foo"})' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value({a: "foo"})'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_614A846D-778F-437D-887D-2B43BF2795BC" name="decision_002" typeRef="string"/>
+    <dmn:literalExpression id="_6290D91E-0326-4D81-BCE9-900F219643E7">
+      <dmn:text>get value({a: "foo"})</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_003" name="decision_003">
+    <dmn:description>Tests FEEL expression: 'get value({a: "foo"}, "a", "bar")' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value({a: "foo"}, "a", "bar")'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_7875D9F9-DD47-4AEA-B35B-4E1C6DA0952C" name="decision_003" typeRef="string"/>
+    <dmn:literalExpression id="_249A0EBD-5E99-45B7-8E25-0E900BB55E1D">
+      <dmn:text>get value({a: "foo"}, "a", "bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_004" name="decision_004">
+    <dmn:description>Tests FEEL expression: 'get value({a: "foo"}, "a")' and expects result: 'foo'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value({a: "foo"}, "a")'?</dmn:question>
+    <dmn:allowedAnswers>foo</dmn:allowedAnswers>
+    <dmn:variable id="_1B4BC582-7BBC-48E8-99B5-42654423F411" name="decision_004" typeRef="string"/>
+    <dmn:literalExpression id="_198492E7-9FD1-430A-8792-23895E5E3AE9">
+      <dmn:text>get value({a: "foo"}, "a")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_005" name="decision_005">
+    <dmn:description>Tests FEEL expression: 'get value("foo", "foo")' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value("foo", "foo")'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_52BE0456-A7FD-4953-B16E-67A2C740387D" name="decision_005" typeRef="string"/>
+    <dmn:literalExpression id="_CB88C4AB-BE22-47BC-BEC4-C1CA7C9230FD">
+      <dmn:text>get value("foo", "foo")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_006" name="decision_006">
+    <dmn:description>Tests FEEL expression: 'get value({a: "foo"}, 123)' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value({a: "foo"}, 123)'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_58030B3C-7741-416A-871A-10C0B2FB9FD7" name="decision_006" typeRef="string"/>
+    <dmn:literalExpression id="_6E705618-EB3F-46F3-9DDD-00C7C48EE43A">
+      <dmn:text>get value({a: "foo"}, 123)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_009" name="decision_009">
+    <dmn:description>Tests FEEL expression: 'get value(null, "a")' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value(null, "a")'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_E7882424-105D-4C61-89F0-DC29662F1243" name="decision_009" typeRef="string"/>
+    <dmn:literalExpression id="_373A64EA-E444-4928-9DC0-6604124E3B24">
+      <dmn:text>get value(null, "a")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_010" name="decision_010">
+    <dmn:description>Tests FEEL expression: 'get value({a: "foo"}, null)' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value({a: "foo"}, null)'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_F0BE6CBC-777C-4292-A9F9-4D4A0AF36615" name="decision_010" typeRef="string"/>
+    <dmn:literalExpression id="_DA1162AE-BFA4-4D13-B1A1-8518769C5E81">
+      <dmn:text>get value({a: "foo"}, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_011" name="decision_011">
+    <dmn:description>Tests FEEL expression: 'get value(null, null)' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value(null, null)'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_05DABB00-8338-4CA7-A186-AFAAF9C97FD6" name="decision_011" typeRef="string"/>
+    <dmn:literalExpression id="_63C56047-A77C-46E1-952B-31E622CC39C0">
+      <dmn:text>get value(null, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision_012" name="decision_012">
+    <dmn:description>Tests FEEL expression: 'get value({a: null}, "a")' and expects result: 'null'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'get value({a: null}, "a")'?</dmn:question>
+    <dmn:allowedAnswers>null</dmn:allowedAnswers>
+    <dmn:variable id="_808E3FFF-17C5-42EC-BB74-A7DAA011ADD8" name="decision_012" typeRef="string"/>
+    <dmn:literalExpression id="_96FF0E7C-97A7-4666-BC71-E93E9E1092C5">
+      <dmn:text>get value({a: null}, "a")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_D7A22FF4-B9C3-483E-9BEF-4535C508C5EA" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_2D0EEB10-B77F-45E9-A659-50C516824DF3"/>
+          <kie:ComponentWidths dmnElementRef="_6290D91E-0326-4D81-BCE9-900F219643E7"/>
+          <kie:ComponentWidths dmnElementRef="_249A0EBD-5E99-45B7-8E25-0E900BB55E1D"/>
+          <kie:ComponentWidths dmnElementRef="_198492E7-9FD1-430A-8792-23895E5E3AE9"/>
+          <kie:ComponentWidths dmnElementRef="_CB88C4AB-BE22-47BC-BEC4-C1CA7C9230FD"/>
+          <kie:ComponentWidths dmnElementRef="_6E705618-EB3F-46F3-9DDD-00C7C48EE43A"/>
+          <kie:ComponentWidths dmnElementRef="_373A64EA-E444-4928-9DC0-6604124E3B24"/>
+          <kie:ComponentWidths dmnElementRef="_DA1162AE-BFA4-4D13-B1A1-8518769C5E81"/>
+          <kie:ComponentWidths dmnElementRef="_63C56047-A77C-46E1-952B-31E622CC39C0"/>
+          <kie:ComponentWidths dmnElementRef="_96FF0E7C-97A7-4666-BC71-E93E9E1092C5"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_001" dmnElementRef="_decision_001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_002" dmnElementRef="_decision_002" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_003" dmnElementRef="_decision_003" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_004" dmnElementRef="_decision_004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="575" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_005" dmnElementRef="_decision_005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="750" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_006" dmnElementRef="_decision_006" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="925" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_009" dmnElementRef="_decision_009" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1100" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_010" dmnElementRef="_decision_010" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1275" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_011" dmnElementRef="_decision_011" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1450" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision_012" dmnElementRef="_decision_012" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1625" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

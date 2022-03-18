@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.34; 1.0" namespace="http://www.trisotech.com/definitions/_9d6beae5-6a61-44a7-bbcf-09bcce989739" name="flatten" triso:logoChoice="Default" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition isCollection="true" name="tStringList" id="tStringList">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="tNestedList" id="tNestedList">
+        <typeRef>tStringList</typeRef>
+    </itemDefinition>
+    <inputData name="simpleList" id="_1296434e-6902-40fc-9a93-07c35dda7ec8">
+        <variable typeRef="tStringList" name="simpleList"/>
+    </inputData>
+    <inputData name="nestedList" id="_4e72e88f-2239-43b8-9944-4893daf84127">
+        <variable typeRef="tNestedList" name="nestedList"/>
+    </inputData>
+    <decision name="literalSimpleList" id="_1bd696ab-0181-49e0-bb15-d090219c4943">
+        <variable typeRef="tStringList" name="literalSimpleList"/>
+        <literalExpression>
+            <text>["a","b","c"]</text>
+        </literalExpression>
+    </decision>
+    <decision name="literalNestedList" id="_d6152254-7ad2-4aeb-90a0-16b962a11257">
+        <variable typeRef="tNestedList" name="literalNestedList"/>
+        <literalExpression>
+            <text>[["w","x"],["y"],["z"]]</text>
+        </literalExpression>
+    </decision>
+    <decision name="append1" id="_f6e97b3b-d13c-47b5-b679-36cf46d4f904">
+        <variable typeRef="tNestedList" name="append1"/>
+        <informationRequirement id="_194e6a96-36a0-4d2d-8f19-a81d704e2452">
+            <requiredDecision href="#_d6152254-7ad2-4aeb-90a0-16b962a11257"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>append(literalNestedList,["t"])</text>
+        </literalExpression>
+    </decision>
+    <decision name="append2" id="_bf18b7c7-5f20-48a2-bd27-527c82cf0855">
+        <variable typeRef="tNestedList" name="append2"/>
+        <informationRequirement id="bc1876b4-7a03-4e95-9a7f-7212439afc9f">
+            <requiredInput href="#_1296434e-6902-40fc-9a93-07c35dda7ec8"/>
+        </informationRequirement>
+        <informationRequirement id="_8d38dafd-f314-425c-9260-62ec14c8dae3">
+            <requiredInput href="#_4e72e88f-2239-43b8-9944-4893daf84127"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>append(nestedList,simpleList)</text>
+        </literalExpression>
+    </decision>
+    <decision name="append3" id="_877fd216-703c-4b2f-8197-9f3ed144ff4d">
+        <variable typeRef="tNestedList" name="append3"/>
+        <informationRequirement id="d9324a7b-6f66-446c-888e-25fb53162eeb">
+            <requiredDecision href="#_1bd696ab-0181-49e0-bb15-d090219c4943"/>
+        </informationRequirement>
+        <informationRequirement id="_742d0cd9-48f5-4d54-8fe4-7a5ee145917a">
+            <requiredInput href="#_4e72e88f-2239-43b8-9944-4893daf84127"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>append(nestedList,literalSimpleList)</text>
+        </literalExpression>
+    </decision>
+    <decision name="append4" id="_cf4db6c6-da6b-42fe-8f85-110f8d711111">
+        <variable typeRef="tNestedList" name="append4"/>
+        <informationRequirement id="d89a7485-dae3-459f-aa7b-e4f4ecb000a0">
+            <requiredDecision href="#_1bd696ab-0181-49e0-bb15-d090219c4943"/>
+        </informationRequirement>
+        <informationRequirement id="_96ae17ce-83f6-4416-b0b0-f2ce841720b9">
+            <requiredDecision href="#_d6152254-7ad2-4aeb-90a0-16b962a11257"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>append(literalNestedList,literalSimpleList)</text>
+        </literalExpression>
+    </decision>
+    <decision name="flatten1" id="_84459bf0-7e3a-4897-8f0d-5abb51b1d564">
+        <variable typeRef="tStringList" name="flatten1"/>
+        <informationRequirement id="c4bbdfce-5f69-4a19-919c-205672918e4f">
+            <requiredDecision href="#_f6e97b3b-d13c-47b5-b679-36cf46d4f904"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>flatten(append1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="flatten2" id="_18ea4eb1-e7dd-45fa-a7b1-c2288bb48054">
+        <variable typeRef="tStringList" name="flatten2"/>
+        <informationRequirement id="a735adc7-58dc-4183-967e-d889b80f6db0">
+            <requiredDecision href="#_bf18b7c7-5f20-48a2-bd27-527c82cf0855"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>flatten(append2)</text>
+        </literalExpression>
+    </decision>
+    <decision name="flatten3" id="_c225c17f-276b-47c1-be56-f1153752eb70">
+        <variable typeRef="tStringList" name="flatten3"/>
+        <informationRequirement id="_12310904-77f6-44c6-ad75-a4d6985d70b5">
+            <requiredDecision href="#_877fd216-703c-4b2f-8197-9f3ed144ff4d"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>flatten(append3)</text>
+        </literalExpression>
+    </decision>
+    <decision name="flatten4" id="_f513bcdc-7e96-4680-8893-d04ee04c61a8">
+        <variable typeRef="tStringList" name="flatten4"/>
+        <informationRequirement id="_03223412-e32d-48f1-8042-84dadea64ed9">
+            <requiredDecision href="#_cf4db6c6-da6b-42fe-8f85-110f8d711111"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>flatten(append4)</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_D1">
+            <dmndi:Size height="723.0" width="1096.0"/>
+            <dmndi:DMNShape dmnElementRef="_1296434e-6902-40fc-9a93-07c35dda7ec8" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s1">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_4e72e88f-2239-43b8-9944-4893daf84127" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s2">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_1bd696ab-0181-49e0-bb15-d090219c4943" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s3">
+                <dc:Bounds height="61.0" width="154.0" x="577.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_d6152254-7ad2-4aeb-90a0-16b962a11257" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s4">
+                <dc:Bounds height="61.0" width="154.0" x="791.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_f6e97b3b-d13c-47b5-b679-36cf46d4f904" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s5">
+                <dc:Bounds height="61.0" width="154.0" x="792.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_bf18b7c7-5f20-48a2-bd27-527c82cf0855" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s6">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_877fd216-703c-4b2f-8197-9f3ed144ff4d" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s7">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_cf4db6c6-da6b-42fe-8f85-110f8d711111" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s8">
+                <dc:Bounds height="61.0" width="154.0" x="578.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_84459bf0-7e3a-4897-8f0d-5abb51b1d564" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s9">
+                <dc:Bounds height="61.0" width="154.0" x="792.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_18ea4eb1-e7dd-45fa-a7b1-c2288bb48054" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s10">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_c225c17f-276b-47c1-be56-f1153752eb70" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s11">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_f513bcdc-7e96-4680-8893-d04ee04c61a8" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_s12">
+                <dc:Bounds height="61.0" width="154.0" x="578.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_194e6a96-36a0-4d2d-8f19-a81d704e2452" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e1">
+                <di:waypoint x="868.0" y="512.0"/>
+                <di:waypoint x="869.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="bc1876b4-7a03-4e95-9a7f-7212439afc9f" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e2">
+                <di:waypoint x="227.0" y="512.0"/>
+                <di:waypoint x="227.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_8d38dafd-f314-425c-9260-62ec14c8dae3" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e3">
+                <di:waypoint x="440.0" y="512.0"/>
+                <di:waypoint x="227.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="d9324a7b-6f66-446c-888e-25fb53162eeb" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e4">
+                <di:waypoint x="654.0" y="512.0"/>
+                <di:waypoint x="441.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_742d0cd9-48f5-4d54-8fe4-7a5ee145917a" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e5">
+                <di:waypoint x="440.0" y="512.0"/>
+                <di:waypoint x="441.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="d89a7485-dae3-459f-aa7b-e4f4ecb000a0" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e6">
+                <di:waypoint x="654.0" y="512.0"/>
+                <di:waypoint x="655.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_96ae17ce-83f6-4416-b0b0-f2ce841720b9" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e7">
+                <di:waypoint x="868.0" y="512.0"/>
+                <di:waypoint x="655.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c4bbdfce-5f69-4a19-919c-205672918e4f" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e8">
+                <di:waypoint x="869.0" y="331.0"/>
+                <di:waypoint x="869.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="a735adc7-58dc-4183-967e-d889b80f6db0" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e9">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_12310904-77f6-44c6-ad75-a4d6985d70b5" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e10">
+                <di:waypoint x="441.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_03223412-e32d-48f1-8042-84dadea64ed9" id="_9d6beae5-6a61-44a7-bbcf-09bcce989739_e11">
+                <di:waypoint x="655.0" y="331.0"/>
+                <di:waypoint x="655.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-/// <reference types="cypress" />
-/// <reference types="cypress-iframe" />
 declare namespace Cypress {
   interface Chainable {
     /**

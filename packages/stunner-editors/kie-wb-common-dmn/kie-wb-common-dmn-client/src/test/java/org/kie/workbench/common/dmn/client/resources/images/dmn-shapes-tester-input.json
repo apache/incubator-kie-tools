@@ -1,0 +1,47 @@
+{
+  "name": "DMN",
+  "path": ".",
+  "css": "shapes/dmn-shapes.css",
+  "stencils": [
+    {
+      "id": "inputData",
+      "name": "Input Data",
+      "shape": {
+        "path": "shapes/",
+        "file": "input-data.svg"
+      }
+    },
+    {
+      "id": "knowledgeSource",
+      "name": "Knowledge Source",
+      "shape": {
+        "path": "shapes/",
+        "file": "knowledge-source.svg"
+      }
+    },
+    {
+      "id": "businessKnowledgeModel",
+      "name": "Business Knowledge Model",
+      "shape": {
+        "path": "shapes/",
+        "file": "business-knowledge-model.svg"
+      }
+    },
+    {
+      "id": "decision",
+      "name": "Decision",
+      "shape": {
+        "path": "shapes/",
+        "file": "decision.svg"
+      }
+    },
+    {
+      "id": "textAnnotation",
+      "name": "Text Annotation",
+      "shape": {
+        "path": "shapes/",
+        "file": "text-annotation.svg"
+      }
+    }
+  ]
+}

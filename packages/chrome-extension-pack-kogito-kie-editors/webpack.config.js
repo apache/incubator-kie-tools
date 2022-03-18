@@ -20,7 +20,7 @@ const packageJson = require("./package.json");
 const patternflyBase = require("@kie-tooling-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("../../config/webpack.common.config");
-const externalAssets = require("@kogito-tooling/external-assets-base");
+const stunnerEditors = require("@kogito-tooling/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kogito-tooling/build-env");
 
@@ -75,9 +75,9 @@ module.exports = async (env) => {
           { from: `./${manifestFile}`, to: "./manifest.json" },
 
           // These are used for development only.
-          { from: externalAssets.dmnEditorPath(), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: externalAssets.bpmnEditorPath(), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
-          { from: externalAssets.scesimEditorPath(), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: stunnerEditors.dmnEditorPath(), to: "dmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: stunnerEditors.bpmnEditorPath(), to: "bpmn", globOptions: { ignore: ["WEB-INF/**/*"] } },
+          { from: stunnerEditors.scesimEditorPath(), to: "scesim", globOptions: { ignore: ["WEB-INF/**/*"] } },
         ],
       }),
       new ZipPlugin({

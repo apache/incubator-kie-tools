@@ -1,0 +1,147 @@
+.appformer-live-search-button-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appformer-live-search-spinner-panel {
+  display: none;
+  margin-left: 10px;
+  height: 30px;
+}
+
+.appformer-live-search-spinner {
+  display: table-cell;
+}
+
+.appformer-live-search-spinner-text {
+  display: table-cell;
+  padding-left: 10px;
+  vertical-align: middle;
+}
+
+.appformer-live-search-dropdown-menu {
+  max-height: 250px;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.appformer-live-search-spinner-select {
+  width: 220px;
+  vertical-align: middle;
+}
+.appformer-live-search-spinner-select > .dropdown-toggle {
+  position: relative;
+  width: 100%;
+  text-align: right;
+  white-space: nowrap;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+.appformer-live-search-spinner-select > .dropdown-toggle:after {
+  margin-top: -1px;
+}
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder,
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder:hover,
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder:focus,
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder:active {
+  color: #999;
+}
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder.btn-default,
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder.btn-default:hover,
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder.btn-default:focus,
+.appformer-live-search-spinner-select > .dropdown-toggle.bs-placeholder.btn-default:active {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.appformer-live-search-spinner-select:not([class*="col-"]):not([class*="form-control"]):not(.input-group-btn) {
+  width: 220px;
+}
+.appformer-live-search-spinner-select .dropdown-toggle:focus {
+  outline: thin dotted #333333 !important;
+  outline: 5px auto -webkit-focus-ring-color !important;
+  outline-offset: -2px;
+}
+.appformer-live-search-spinner-select.form-control {
+  margin-bottom: 0;
+  padding: 0;
+  border: none;
+  height: auto;
+}
+
+.appformer-live-search-spinner-select .dropdown-toggle .caret {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  margin-top: -2px;
+  vertical-align: middle;
+}
+
+.appformer-live-search-spinner-select .dropdown-menu {
+  min-width: 100%;
+  max-width: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+.appformer-live-search-spinner-select .dropdown-menu > .inner:focus {
+  outline: none !important;
+}
+.appformer-live-search-spinner-select .dropdown-menu.inner {
+  position: static;
+  float: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.appformer-live-search-spinner-select .dropdown-menu li {
+  position: relative;
+}
+.appformer-live-search-spinner-select .dropdown-menu li.active small {
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+.appformer-live-search-spinner-select .dropdown-menu li.disabled a {
+  cursor: not-allowed;
+}
+.appformer-live-search-spinner-select .dropdown-menu li a {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.appformer-live-search-spinner-select .dropdown-menu li a.opt {
+  position: relative;
+  padding-left: 2.25em;
+}
+.appformer-live-search-spinner-select .dropdown-menu li a span.check-mark {
+  display: none;
+}
+.appformer-live-search-spinner-select .dropdown-menu li a span.text {
+  display: inline-block;
+}
+.appformer-live-search-spinner-select .dropdown-menu li small {
+  padding-left: 0.5em;
+}
+
+.bs-searchbox {
+  padding: 4px 8px;
+}
+.bs-searchbox .form-control {
+  margin-bottom: 0;
+  width: 100%;
+  float: none;
+}

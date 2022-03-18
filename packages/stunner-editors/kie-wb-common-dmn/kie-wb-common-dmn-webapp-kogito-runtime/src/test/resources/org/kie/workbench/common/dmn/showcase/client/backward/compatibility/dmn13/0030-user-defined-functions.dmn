@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/0.1.0/0030-user-defined-functions" name="0030-user-defined-functions" id="_pKGjoH6LEeePe9Zmt-encA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>Tests definition of functions in a boxed expression and invocation of those.</description>
+    <decision name="simple function invocation" id="_WdFa8IDoEee-MeWXoLgrYg">
+        <variable typeRef="string" name="simple function invocation" id="_0zDvUYDyEeehqsf_bU54Lw"/>
+        <informationRequirement id="e1fa4ee4-8ab5-4dfd-96a0-74cbd60d34f2">
+            <requiredInput href="#_Aq8u4IDpEee-MeWXoLgrYg"/>
+        </informationRequirement>
+        <informationRequirement id="_80651cb0-93f7-44bd-b3b5-a7a2b52193c7">
+            <requiredInput href="#_vfL7kIDqEeehqsf_bU54Lw"/>
+        </informationRequirement>
+        <context id="_eQfF0IDoEee-MeWXoLgrYg">
+            <contextEntry>
+                <variable name="boxedFnDefinition" id="_eSTqx4DoEee-MeWXoLgrYg"/>
+                <functionDefinition id="_e0S9gIDoEee-MeWXoLgrYg">
+                    <formalParameter typeRef="string" name="a" id="_htc78IDoEee-MeWXoLgrYg"/>
+                    <formalParameter typeRef="string" name="b" id="_a6M_IIDrEeehqsf_bU54Lw"/>
+                    <literalExpression id="_e4IUpYDoEee-MeWXoLgrYg">
+                        <text>a+b</text>
+                    </literalExpression>
+                </functionDefinition>
+            </contextEntry>
+            <contextEntry>
+                <variable name="literalFnDefinition" id="_nsnCAIDoEee-MeWXoLgrYg"/>
+                <literalExpression id="_nsnCAYDoEee-MeWXoLgrYg">
+                    <text>function(a,b) a + b</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression typeRef="string" id="_zTaGAIDoEee-MeWXoLgrYg">
+                    <text>boxedFnDefinition(stringInputA, stringInputB) + literalFnDefinition(stringInputA, stringInputB)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="named function invocation" id="_GNiCIIDzEeehqsf_bU54Lw">
+        <variable typeRef="string" name="named function invocation" id="_eJrSMYDzEeehqsf_bU54Lw"/>
+        <informationRequirement id="_22db6269-f1f9-47c7-ad84-00274956556c">
+            <requiredInput href="#_vfL7kIDqEeehqsf_bU54Lw"/>
+        </informationRequirement>
+        <informationRequirement id="e61c8236-e671-4ced-a93a-994e3b318364">
+            <requiredInput href="#_Aq8u4IDpEee-MeWXoLgrYg"/>
+        </informationRequirement>
+        <context id="_HeJ8gYDzEeehqsf_bU54Lw">
+            <contextEntry>
+                <variable name="boxedFnDefinition" id="_HeJ8g4DzEeehqsf_bU54Lw"/>
+                <functionDefinition id="_HeKjkYDzEeehqsf_bU54Lw">
+                    <formalParameter typeRef="string" name="a" id="_HeKjk4DzEeehqsf_bU54Lw"/>
+                    <formalParameter typeRef="string" name="b" id="_HeKjlYDzEeehqsf_bU54Lw"/>
+                    <literalExpression id="_HeKjl4DzEeehqsf_bU54Lw">
+                        <text>a+b</text>
+                    </literalExpression>
+                </functionDefinition>
+            </contextEntry>
+            <contextEntry>
+                <variable name="literalFnDefinition" id="_HeKjmYDzEeehqsf_bU54Lw"/>
+                <literalExpression id="_HeKjm4DzEeehqsf_bU54Lw">
+                    <text>function(a,b) a + b</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <literalExpression typeRef="string" id="_HeKjnYDzEeehqsf_bU54Lw">
+                    <text>boxedFnDefinition(b:stringInputA, a:stringInputB) + literalFnDefinition(b:stringInputA, a:stringInputB)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <inputData name="stringInputA" id="_Aq8u4IDpEee-MeWXoLgrYg">
+        <variable typeRef="string" name="stringInputA" id="_wKKRkYDyEeehqsf_bU54Lw"/>
+    </inputData>
+    <inputData name="stringInputB" id="_vfL7kIDqEeehqsf_bU54Lw">
+        <variable typeRef="string" name="stringInputB" id="_xZw4QYDyEeehqsf_bU54Lw"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_pKGjoH6LEeePe9Zmt-encA_D1">
+            <dmndi:Size height="650.0" width="668.0"/>
+            <dmndi:DMNShape dmnElementRef="_WdFa8IDoEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_GNiCIIDzEeehqsf_bU54Lw" id="_pKGjoH6LEeePe9Zmt-encA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_Aq8u4IDpEee-MeWXoLgrYg" id="_pKGjoH6LEeePe9Zmt-encA_s3">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_vfL7kIDqEeehqsf_bU54Lw" id="_pKGjoH6LEeePe9Zmt-encA_s4">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="e1fa4ee4-8ab5-4dfd-96a0-74cbd60d34f2" id="_pKGjoH6LEeePe9Zmt-encA_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_80651cb0-93f7-44bd-b3b5-a7a2b52193c7" id="_pKGjoH6LEeePe9Zmt-encA_e2">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_22db6269-f1f9-47c7-ad84-00274956556c" id="_pKGjoH6LEeePe9Zmt-encA_e3">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="e61c8236-e671-4ced-a93a-994e3b318364" id="_pKGjoH6LEeePe9Zmt-encA_e4">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,24 @@
+[
+    [
+      "name" : "Email",
+      "displayName" : "Display Email",
+      "documentation" : "Some documentation",
+    ],
+
+    [
+      name" : "IncidentPriorityService",
+      "parameters" : [
+        "Incident" : new ObjectDataType()
+      ],
+      "results" :  [
+          "IncidentPriority" : new ObjectDataType(),
+      ],
+      "displayName" : "Incident Priority Service",
+      "icon" : "incidentpriorityicon.png"
+    ],
+    [
+      "name" : "Rest",
+      "displayName" : "REST",
+      "icon" : "defaultservicenodeicon.png"
+    ]
+]
