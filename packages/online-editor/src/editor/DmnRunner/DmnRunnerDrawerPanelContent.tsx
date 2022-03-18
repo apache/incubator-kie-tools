@@ -27,7 +27,7 @@ import { useOnlineI18n } from "../../i18n";
 import {
   DecisionResult,
   DecisionResultMessage,
-  DmnFormComponent,
+  DmnForm,
   DmnFormResult,
   DmnResult,
   InputRow,
@@ -435,7 +435,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                   </PageSection>
                   <div className={"kogito--editor__dmn-runner-drawer-content-body"}>
                     <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
-                      <DmnFormComponent
+                      <DmnForm
                         name={selectedRow}
                         formInputs={formInputs}
                         setFormInputs={setFormInputs}

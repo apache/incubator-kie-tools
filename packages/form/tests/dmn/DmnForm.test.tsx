@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { act, render } from "@testing-library/react";
-import { DmnFormComponent, Props } from "../../src/dmn";
+import { DmnForm, Props } from "../../src/dmn";
 import { dmnFormI18n } from "../../src/i18n";
 
 const schema: any = {
@@ -53,7 +53,7 @@ describe("DmnForm tests", () => {
   it("should render the DMN Form", async () => {
     const newProps = { ...props, formData: { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" } };
 
-    const { findByTestId } = render(<DmnFormComponent {...newProps} />);
+    const { findByTestId } = render(<DmnForm {...newProps} />);
 
     expect(await findByTestId("dmn-form")).toMatchSnapshot();
   });
@@ -63,9 +63,7 @@ describe("DmnForm tests", () => {
     const onSubmit = jest.fn();
     const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
 
-    const { findByTestId } = render(
-      <DmnFormComponent {...props} onSubmit={onSubmit} formRef={formRef} formData={formData} />
-    );
+    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formData={formData} />);
 
     expect(await findByTestId("dmn-form")).toMatchSnapshot();
 
@@ -81,9 +79,7 @@ describe("DmnForm tests", () => {
     const onSubmit = jest.fn();
     const formData = { daysAndTimeDuration: "p" };
 
-    const { findByTestId } = render(
-      <DmnFormComponent {...props} onSubmit={onSubmit} formRef={formRef} formData={formData} />
-    );
+    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formData={formData} />);
 
     expect(await findByTestId("dmn-form")).toMatchSnapshot();
 
@@ -100,7 +96,7 @@ describe("DmnForm tests", () => {
     const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
 
     const { findByTestId } = render(
-      <DmnFormComponent {...props} formRef={formRef} onValidate={onValidate} formData={formData} />
+      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formData={formData} />
     );
 
     expect(await findByTestId("dmn-form")).toMatchSnapshot();
@@ -118,7 +114,7 @@ describe("DmnForm tests", () => {
     const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "p" };
 
     const { findByTestId } = render(
-      <DmnFormComponent {...props} formRef={formRef} onValidate={onValidate} formData={formData} />
+      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formData={formData} />
     );
 
     expect(await findByTestId("dmn-form")).toMatchSnapshot();
@@ -147,7 +143,7 @@ describe("DmnForm tests", () => {
     const formData = {};
 
     const { getByText } = render(
-      <DmnFormComponent {...props} placeholder={true} formSchema={schema} formRef={formRef} formData={formData} />
+      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formData={formData} />
     );
 
     expect(getByText(dmnFormI18n.getCurrent().form.preProcessing.selectPlaceholder)).toMatchSnapshot();
@@ -170,7 +166,7 @@ describe("DmnForm tests", () => {
     const formData = {};
 
     const { getByText } = render(
-      <DmnFormComponent {...props} placeholder={true} formSchema={schema} formRef={formRef} formData={formData} />
+      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formData={formData} />
     );
 
     expect(getByText("name")).toMatchSnapshot();
@@ -195,7 +191,7 @@ describe("DmnForm tests", () => {
     const onSubmit = jest.fn();
 
     const { container } = render(
-      <DmnFormComponent
+      <DmnForm
         {...props}
         placeholder={true}
         formSchema={schema}

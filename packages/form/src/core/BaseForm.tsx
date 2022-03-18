@@ -52,7 +52,7 @@ interface PropsWithoutNotificationsPanel extends CommonProps {
 
 export type Props = PropsWithNotificationsPanel | PropsWithoutNotificationsPanel;
 
-export function FormBaseComponent(props: React.PropsWithChildren<Props>) {
+export function BaseForm(props: React.PropsWithChildren<Props>) {
   return (
     <>
       {props.formStatus === FormStatus.VALIDATOR_ERROR && <ValidatorErrorFormStatus i18n={props.i18n} />}

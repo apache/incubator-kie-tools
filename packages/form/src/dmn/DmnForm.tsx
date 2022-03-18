@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,45 +15,65 @@
  */
 
 import * as React from "react";
-import { useEffect, useMemo } from "react";
-import cloneDeep from "lodash/cloneDeep";
-import { FormBaseComponent } from "./FormBaseComponent";
-import { useForm } from "./Form";
+import { useMemo } from "react";
+import { DmnValidator } from "./DmnValidator";
 import { formI18n } from "../i18n";
-import { Validator } from "./Validator";
+import { BaseForm } from "../core/BaseForm";
+import { useForm } from "../core/FormHook";
+import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
+import { BaseProps } from "../core/BaseProps";
 
-export type Object = Record<string, object>;
+export type InputRow = Record<string, string>;
 
-export interface FormComponentProps {
-  name?: string;
-  formInputs: object;
-  setFormInputs: React.Dispatch<object>;
-  formError: boolean;
-  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
-  formSchema?: object;
-  id?: string;
-  formRef?: React.RefObject<HTMLFormElement>;
-  showInlineError?: boolean;
-  autoSave?: boolean;
-  autoSaveDelay?: number;
-  placeholder?: boolean;
-  onSubmit?: (model: object) => void;
-  onValidate?: (model: object, error: object) => void;
-  errorsField?: () => React.ReactNode;
-  submitField?: () => React.ReactNode;
-  locale?: string;
-  propertiesPath?: string;
-  notificationsPanel: boolean;
-  openValidationTab: () => void;
+type DmnDecisionNodes = "InputSet" | string;
+
+export interface DmnSchema {
+  definitions?: Record<
+    DmnDecisionNodes,
+    {
+      type: string;
+      properties: Record<string, DmnDeepProperty>;
+    }
+  >;
 }
 
-export function FormComponent(props: FormComponentProps) {
+export interface DmnFormData {
+  definitions: DmnFormDefinitions;
+}
+
+type DmnFormDefinitions = Record<
+  DmnDecisionNodes,
+  {
+    required?: string[];
+    properties: object;
+    type: string;
+    placeholder?: string;
+    title?: string;
+    format?: string;
+    items: object[] & { properties: object };
+    "x-dmn-type"?: string;
+  }
+>;
+
+interface DmnDeepProperty {
+  $ref?: string;
+  type?: string;
+  placeholder?: string;
+  title?: string;
+  format?: string;
+  "x-dmn-type"?: string;
+  properties?: DmnDeepProperty;
+}
+
+export function DmnForm(props: BaseProps<InputRow, DmnSchema>) {
   const i18n = useMemo(() => {
     formI18n.setLocale(props.locale ?? navigator.language);
     return formI18n.getCurrent();
   }, [props.locale]);
+  const dmnValidator = useMemo(() => new DmnValidator(i18n), [i18n]);
 
   const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
+    validator: dmnValidator,
     name: props.name,
     formError: props.formError,
     setFormError: props.setFormError,
@@ -62,11 +82,11 @@ export function FormComponent(props: FormComponentProps) {
     formSchema: props.formSchema,
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
-    propertiesPath: props.propertiesPath ?? "definitions.properties",
+    propertiesPath: "definitions.InputSet.properties",
   });
 
   return (
-    <FormBaseComponent
+    <BaseForm
       i18n={i18n}
       onValidate={onValidate}
       onSubmit={onSubmit}
@@ -86,6 +106,8 @@ export function FormComponent(props: FormComponentProps) {
       locale={props.locale}
       notificationsPanel={props.notificationsPanel}
       openValidationTab={props.openValidationTab}
-    />
+    >
+      <DmnAutoFieldProvider />
+    </BaseForm>
   );
 }

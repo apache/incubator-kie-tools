@@ -23,7 +23,6 @@ import cloneDeep from "lodash/cloneDeep";
 import { FormStatus } from "./FormStatus";
 import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 import { Validator } from "./Validator";
-import { Object } from "./FormComponent";
 
 interface FormHook {
   name?: string;
@@ -34,12 +33,12 @@ interface FormHook {
   formSchema?: object;
   onSubmit?: (model: object) => void;
   onValidate?: (model: object, error: object) => void;
-  propertiesPath: string;
+  propertiesPath?: string;
   validator?: Validator;
 }
 
-const getObjectByPath = (obj: Record<string, Object>, path: string) =>
-  path.split(".").reduce((acc: Record<string, Object>, key: string) => acc[key], obj);
+const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
+  path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc[key], obj);
 
 export function useForm({
   name,
@@ -50,7 +49,7 @@ export function useForm({
   formSchema,
   onSubmit,
   onValidate,
-  propertiesPath,
+  propertiesPath = "definitions.properties",
   validator,
 }: FormHook) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -67,19 +66,12 @@ export function useForm({
       );
 
       const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
-        if (Object.hasOwnProperty.call(bridge?.schema?.properties[property], "$ref")) {
-          const refPath = bridge?.schema?.properties[property].$ref!.split("/").pop() ?? "";
-          if (bridge?.schema?.definitions?.[refPath].default) {
-            acc[`${property}`] = bridge?.schema?.definitions?.[refPath].default;
-            return acc;
-          }
-        }
-        if (bridge?.schema?.properties?.[property]?.default) {
-          acc[`${property}`] = bridge?.schema?.properties?.[property]?.default;
-          return acc;
+        const field = bridge.getField(property);
+        if (field.default) {
+          acc[`${property}`] = field.default;
         }
         return acc;
-      }, {} as { [x: string]: any });
+      }, {} as Record<string, any>);
 
       // Remove property that has been deleted;
       return Object.entries(propertiesDifference).reduce(

@@ -15,15 +15,15 @@
  */
 
 import Ajv from "ajv";
-import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 
 export class Validator {
   protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
 
-  public createValidator(jsonSchema: any) {
-    const validator = this.ajv.compile(jsonSchema);
+  public createValidator(formSchema: object) {
+    const validator = this.ajv.compile(formSchema);
 
-    return (model: any) => {
+    return (model: object) => {
       // AJV doesn't handle dates objects. This transformation converts Dates to their UTC format.
       validator(JSON.parse(JSON.stringify(model)));
 
@@ -34,7 +34,7 @@ export class Validator {
     };
   }
 
-  public getBridge(formSchema: any) {
-    return new JSONSchemaBridge(formSchema, this.createValidator(formSchema));
+  public getBridge(formSchema: object) {
+    return new FormJsonSchemaBridge(formSchema, this.createValidator(formSchema));
   }
 }

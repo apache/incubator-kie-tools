@@ -31,25 +31,20 @@ export class FormJsonSchemaBridge extends JSONSchemaBridge {
       field.type = "string";
     }
 
+    if (field.type === "object") {
+      field.default = {};
+    }
+    if (field.type === "array") {
+      field.default = [];
+    }
+    if (field.type === "boolean") {
+      field.default = false;
+    }
+
     if (field.enum) {
       field.placeholder = "Select...";
     }
+
     return field;
-  }
-
-  public getInitialValue(name: string, props?: Record<string, any>): any {
-    const field = this.getField(name);
-
-    if (field.type === "object") {
-      return {};
-    }
-    if (field.type === "array") {
-      return [];
-    }
-    if (field.type === "boolean") {
-      return false;
-    }
-
-    return super.getInitialValue(name, props);
   }
 }

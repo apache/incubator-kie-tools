@@ -27,8 +27,12 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
-  constructor(schema: any, validator: any, private i18n: DmnFormI18n) {
-    super(schema, validator);
+  constructor(
+    public readonly formSchema: object,
+    public readonly validator: (model: object) => void,
+    private readonly i18n: DmnFormI18n
+  ) {
+    super(formSchema, validator);
   }
 
   public getType(name: string) {
