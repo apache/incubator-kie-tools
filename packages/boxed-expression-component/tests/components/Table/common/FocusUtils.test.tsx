@@ -182,7 +182,7 @@ describe("FocusUtils tests", () => {
       expect(() => cellFocus(null)).not.toThrowError();
     });
 
-    it("should focus the element", () => {
+    it("should focus the cell", () => {
       const element = mockTable.rows[2].cells[1];
 
       shouldKeepFocus(element, (element) => cellFocus(element as HTMLTableCellElement));
@@ -261,13 +261,13 @@ describe("FocusUtils tests", () => {
       );
     });
 
-    it("test headers cell with rowspan focus", () => {
+    it("should focus the correct headers cell with rowspan focus", () => {
       testFocus(mockTableColRowspan.rows[0].cells[0], mockTableColRowspan.rows[1].cells[1], (element) =>
         focusCellByCoordinates(element, { y: 0, x: 1 })
       );
     });
 
-    it("test headers cell with colspan focus", () => {
+    it("should focus the correct headers cell with colspan focus", () => {
       testFocus(mockTableColRowspan.rows[0].cells[0], mockTableColRowspan.rows[0].cells[2], (element) =>
         focusCellByCoordinates(element, { y: 0, x: 3 })
       );
@@ -307,13 +307,16 @@ describe("FocusUtils tests", () => {
       { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
       { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1, stopAtEndOfRow: false },
       { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 2, cellIndex: 1 }, rowspan: 2, stopAtEndOfRow: false },
-    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to, rowspan, stopAtEndOfRow }) => {
-      testFocus(
-        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
-        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
-        (element) => focusNextCell(element, rowspan, stopAtEndOfRow)
-      );
-    });
+    ])(
+      "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
+      ({ from, to, rowspan, stopAtEndOfRow }) => {
+        testFocus(
+          mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+          mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+          (element) => focusNextCell(element, rowspan, stopAtEndOfRow)
+        );
+      }
+    );
 
     it("should not change the focus", () => {
       shouldNotChangeFocus(mockTable.rows[4].cells[5], focusNextCell);
@@ -358,13 +361,16 @@ describe("FocusUtils tests", () => {
       { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 1, stopAtEndOfRow: false },
       { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 2, stopAtEndOfRow: false },
       { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2, stopAtEndOfRow: true },
-    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to, rowspan, stopAtEndOfRow }) => {
-      testFocus(
-        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
-        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
-        (element) => focusPrevCell(element, rowspan, stopAtEndOfRow)
-      );
-    });
+    ])(
+      "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
+      ({ from, to, rowspan, stopAtEndOfRow }) => {
+        testFocus(
+          mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+          mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+          (element) => focusPrevCell(element, rowspan, stopAtEndOfRow)
+        );
+      }
+    );
 
     it("should keep the focus to the current cell", () => {
       shouldKeepFocus(mockTable.rows[2].cells[0], focusPrevCell);
@@ -389,13 +395,16 @@ describe("FocusUtils tests", () => {
       { from: { rowIndex: 2, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 1 } },
       { from: { rowIndex: 2, cellIndex: 3 }, to: { rowIndex: 1, cellIndex: 3 } },
       { from: { rowIndex: 1, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 } },
-    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to }) => {
-      testFocus(
-        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
-        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
-        (element) => focusUpperCell(element)
-      );
-    });
+    ])(
+      "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
+      ({ from, to }) => {
+        testFocus(
+          mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+          mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+          (element) => focusUpperCell(element)
+        );
+      }
+    );
 
     it("should keep the focus to the current cell", () => {
       shouldKeepFocus(mockTable.rows[0].cells[5], (element) => focusUpperCell(element));
@@ -418,13 +427,16 @@ describe("FocusUtils tests", () => {
       { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 2, cellIndex: 2 } },
       { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 1, cellIndex: 5 } },
       { from: { rowIndex: 1, cellIndex: 3 }, to: { rowIndex: 2, cellIndex: 3 } },
-    ])("test headers with rowspan and colspan navigation at index %#", ({ from, to }) => {
-      testFocus(
-        mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
-        mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
-        (element) => focusLowerCell(element)
-      );
-    });
+    ])(
+      "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
+      ({ from, to }) => {
+        testFocus(
+          mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+          mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+          (element) => focusLowerCell(element)
+        );
+      }
+    );
 
     it("should keep the focus to the current cell", () => {
       shouldKeepFocus(mockTable.rows[4].cells[5], (element) => focusLowerCell(element));

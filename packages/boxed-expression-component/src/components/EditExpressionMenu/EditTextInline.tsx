@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState, FocusEvent } from "react";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 
@@ -26,7 +26,7 @@ export interface EditTextInlineProps {
   onTextChange: (updatedValue: string, event?: ChangeEvent<HTMLInputElement>) => void;
   /** Callback executed when user cancel by pressing escape */
   onCancel?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  /** Callback executed when user toggle the state to edit/read */
+  /** Callback executed when user toggle the state to edit/read mode */
   onToggle?: (isReadMode: boolean) => void;
 }
 
@@ -41,7 +41,7 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
   const [toggle, setToggle] = useState(true);
 
   const onValueBlur = useCallback(
-    (event: React.FocusEvent<HTMLInputElement>) => {
+    (event: FocusEvent<HTMLInputElement>) => {
       const changedText = event.target.value;
       onTextChange(changedText, event);
       setToggle(true);

@@ -184,7 +184,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       .focused()
       .should("contain.text", "cell 10");
 
-    // check the cell 9 is focused
+    // check the cell 9 is not focused
     cy.contains("td", /cell 9/).should("not.be.focused");
   });
 
@@ -195,9 +195,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       // check the cell "input-1" is focused
       .focused()
       .should("contain.text", "input-1")
-      // go right 2x
+      // go right 2 times
       .type("{rightarrow}{rightarrow}")
-      // check the cell "input-1" is focused
+      // check the cell "Expression Name" is focused
       .focused()
       .should("contain.text", "Expression Name")
       // go down
@@ -342,12 +342,8 @@ describe("Decision Table Keyboard Navigation Tests", () => {
   });
 
   describe("Keyboard interaction with annotation cell", () => {
-    const isAnnotationCellViewModeAndFocused = (shouldBeFocused = true) => {
-      cy.get("@annotationCell")
-        .should("contain.text", "annotation-1 edited")
-        .should("be.focused")
-        .get("input")
-        .should("not.exist");
+    const isAnnotationCellViewModeAndFocused = () => {
+      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
     };
 
     beforeEach(() => {
@@ -357,7 +353,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     });
 
     it("Edit and save with enter key", () => {
-      // from the annotation cell press enter to start editing
+      // from the annotation cell, edit the text then press enter to finish editing
       cy.get("@annotationInput").type("annotation-1 edited{enter}");
 
       cy.get("@annotationCell").should("have.text", "annotation-1 edited");
@@ -366,10 +362,8 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     });
 
     it("Cancel editing", () => {
-      // from the annotation cell press esc to cancel editing
+      // from the annotation cell, edit the text then press esc to cancel editing
       cy.get("@annotationInput").type("not to save text{esc}");
-
-      cy.get("@annotationInput").should("not.exist");
 
       cy.get("@annotationCell").should("not.contain.text", "not to save text");
 
@@ -377,8 +371,10 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     });
 
     it("Edit and save clicking outside", () => {
+      // from the annotation cell, edit the text
       cy.get("@annotationInput").type("annotation-1 edited");
 
+      // click outside the annotation cell to finish editing
       cy.get(".expression-title").click();
 
       cy.get("@annotationCell").should("have.text", "annotation-1 edited");

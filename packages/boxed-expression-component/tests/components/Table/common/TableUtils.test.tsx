@@ -307,15 +307,15 @@ describe("TableUtils", () => {
       expect(hasCellTabindex()).toBe(false);
     });
 
-    test("test cell A", () => {
+    test("cell A should not have the tabindex attribute", () => {
       expect(hasCellTabindex(document.querySelector("#cellA")!)).toBe(false);
     });
 
-    test("test cell B", () => {
+    test("cell B should have the tabindex attribute", () => {
       expect(hasCellTabindex(document.querySelector("#cellB")!)).toBe(true);
     });
 
-    test("test cell C", () => {
+    test("cell C should have the tabindex attribute", () => {
       expect(hasCellTabindex(document.querySelector("#cellC")!)).toBe(true);
     });
   });

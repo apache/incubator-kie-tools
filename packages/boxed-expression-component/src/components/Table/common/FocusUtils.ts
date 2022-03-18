@@ -107,10 +107,10 @@ export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
  *
  * @param currentEl the crrent element
  * @param rowSpan the rowSpan of the current cell
- * @param stopAtEndOfRow true to stop stop at end of row
+ * @param stopAtLastDataCell true to stop stop at end of row
  * @returns
  */
-export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtEndOfRow = true): void => {
+export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtLastDataCell = true): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -121,7 +121,7 @@ export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
   const { x, y } = getFullCellCoordinates(currentCell);
 
   if (!nextCell) {
-    if (!stopAtEndOfRow) {
+    if (!stopAtLastDataCell) {
       return focusCellByCoordinates(currentCell, { y: y + 1, x: 1 });
     }
 

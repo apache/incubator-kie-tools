@@ -92,7 +92,7 @@ export const getCellTableId: (cell: Element | undefined | null) => string = (cel
 };
 
 /**
- * Get the table header's hows henght.
+ * Get the table header's rows henght.
  *
  * @param tableInstance the tableInstance
  * @param skipLastHeaderGroup true to skip last header group

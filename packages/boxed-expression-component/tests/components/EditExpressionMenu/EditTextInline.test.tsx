@@ -44,7 +44,7 @@ describe("EditTextInline tests", () => {
     expect(container.querySelector("input")).toHaveValue(value);
   });
 
-  test("should call text editing callback, when clicking outside", () => {
+  test("should call text change callback, when clicking outside", () => {
     const value = "Value";
     const newValue = "New Value";
     const mockedOnTextChange = jest.fn();
@@ -62,7 +62,7 @@ describe("EditTextInline tests", () => {
     expect(mockedOnTextChange).toHaveBeenCalledWith(newValue);
   });
 
-  test("should call text editing callback, when pressing enter", () => {
+  test("should call text change callback, when pressing enter", () => {
     const value = "Value";
     const newValue = "New Value";
     const mockedOnTextChange = jest.fn();
@@ -80,7 +80,7 @@ describe("EditTextInline tests", () => {
     expect(mockedOnTextChange).toHaveBeenCalledWith(newValue);
   });
 
-  test("should call cancel callback should and should not call text editing callback, when pressing escape", () => {
+  test("should call cancel callback and should not call text change callback, when pressing escape", () => {
     const value = "Value";
     const newValue = "New Value";
     const mockedOnTextChange = jest.fn();
