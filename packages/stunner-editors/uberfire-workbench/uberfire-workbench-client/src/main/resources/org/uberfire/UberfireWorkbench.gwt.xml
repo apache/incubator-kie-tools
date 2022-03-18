@@ -30,9 +30,6 @@
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
 
-  <!-- GuvnorNG API common interfaces -->
-  <inherits name="org.uberfire.UberfireClientAPI"/>
-
   <!-- Specify the paths for translatable code -->
   <source path='client'/>
 
