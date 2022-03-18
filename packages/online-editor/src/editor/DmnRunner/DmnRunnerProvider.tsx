@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { DmnSchema, InputRow } from "@kie-tools/form/dist/dmn";
+import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 

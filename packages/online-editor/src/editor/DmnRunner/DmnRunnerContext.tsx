@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { InputRow, DmnSchema } from "@kie-tools/form/dist/dmn";
+import { InputRow, DmnSchema } from "@kie-tools/form-dmn";
 import * as React from "react";
 import { useContext } from "react";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";

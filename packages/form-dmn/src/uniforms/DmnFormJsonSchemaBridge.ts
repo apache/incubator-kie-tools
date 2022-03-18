@@ -52,7 +52,6 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
 
   public getField(name: string): Record<string, any> {
     const field = super.getField(name);
-    delete field.required;
 
     if (field?.format === DAYS_AND_TIME_DURATION_FORMAT) {
       field.placeholder = this.i18n.form.preProcessing.daysAndTimePlaceholder;

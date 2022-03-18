@@ -37,7 +37,7 @@ import { DmnAutoRowApi } from "./DmnAutoRow";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useGrid } from "../core/Grid";
-import { DmnSchema } from "@kie-tools/form/dist/dmn";
+import { DmnSchema } from "@kie-tools/form-dmn";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",

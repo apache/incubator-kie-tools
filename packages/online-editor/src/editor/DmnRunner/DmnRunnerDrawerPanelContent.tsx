@@ -32,7 +32,7 @@ import {
   DmnResult,
   InputRow,
   extractDifferences,
-} from "@kie-tools/form/dist/dmn";
+} from "@kie-tools/form-dmn";
 import { Holder, useCancelableEffect, usePrevious } from "../../reactExt/Hooks";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";

@@ -33,8 +33,9 @@ interface FormHook {
   formSchema?: object;
   onSubmit?: (model: object) => void;
   onValidate?: (model: object, error: object) => void;
-  propertiesPath?: string;
+  propertiesEntryPath?: string;
   validator?: Validator;
+  removeRequired?: boolean;
 }
 
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
@@ -49,8 +50,9 @@ export function useForm({
   formSchema,
   onSubmit,
   onValidate,
-  propertiesPath = "definitions.properties",
+  propertiesEntryPath = "definitions",
   validator,
+  removeRequired = false,
 }: FormHook) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
@@ -61,8 +63,8 @@ export function useForm({
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
       const propertiesDifference = diff(
-        getObjectByPath(previousBridge?.schema ?? {}, propertiesPath) ?? {},
-        getObjectByPath(bridge.schema ?? {}, propertiesPath) ?? {}
+        getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
+        getObjectByPath(bridge.schema ?? {}, propertiesEntryPath) ?? {}
       );
 
       const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
@@ -87,17 +89,19 @@ export function useForm({
         { ...defaultFormValues, ...model }
       );
     },
-    [propertiesPath]
+    [propertiesEntryPath]
   );
 
   // When the schema is updated it's necessary to update the bridge and the model (remove deleted properties and
   // add default values to it)
   useEffect(() => {
-    const form = cloneDeep(formSchema ?? {});
-    if (Object.keys(form).length > 0) {
-      // formPreprocessing(form);
-    }
     try {
+      const form = cloneDeep(formSchema ?? {}) as Record<string, Record<string, object>>;
+      if (removeRequired) {
+        const entry = getObjectByPath(form, propertiesEntryPath);
+        delete entry.required;
+        delete form.required;
+      }
       const bridge = formValidator.getBridge(form);
       setJsonSchemaBridge((previousBridge) => {
         if (formModel) {
@@ -115,7 +119,14 @@ export function useForm({
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [formModel, formSchema, formValidator, removeDeletedPropertiesAndAddDefaultValues]);
+  }, [
+    formModel,
+    formSchema,
+    formValidator,
+    propertiesEntryPath,
+    removeDeletedPropertiesAndAddDefaultValues,
+    removeRequired,
+  ]);
 
   // Manage form status
   useEffect(() => {
@@ -123,14 +134,14 @@ export function useForm({
       setFormStatus(FormStatus.AUTO_GENERATION_ERROR);
     } else if (
       !formSchema ||
-      Object.keys(getObjectByPath((formSchema as any) ?? {}, propertiesPath) ?? {}).length === 0
+      Object.keys(getObjectByPath((formSchema as any) ?? {}, propertiesEntryPath) ?? {}).length === 0
     ) {
       setFormStatus(FormStatus.EMPTY);
     } else if (jsonSchemaBridge) {
       setFormStatus(FormStatus.WITHOUT_ERROR);
       errorBoundaryRef.current?.reset();
     }
-  }, [formError, formSchema, jsonSchemaBridge, formModel, propertiesPath]);
+  }, [formError, formSchema, jsonSchemaBridge, formModel, propertiesEntryPath]);
 
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {

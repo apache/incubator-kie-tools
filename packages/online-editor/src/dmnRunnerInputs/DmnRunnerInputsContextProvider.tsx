@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
-import { InputRow } from "@kie-tools/form/dist/dmn";
+import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsDispatchContext } from "./DmnRunnerInputsContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import { WORKSPACES_BROADCAST_CHANNEL } from "../workspace/services/WorkspaceService";

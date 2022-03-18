@@ -17,7 +17,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import { useCancelableEffect, usePreviousRef } from "../reactExt/Hooks";
 import { decoder, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { InputRow } from "@kie-tools/form/dist/dmn";
+import { InputRow } from "@kie-tools/form-dmn";
 import { useDmnRunnerInputsDispatch } from "./DmnRunnerInputsContext";
 
 interface DmnRunnerInputs {

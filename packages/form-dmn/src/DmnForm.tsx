@@ -80,7 +80,8 @@ export function DmnForm(props: BaseProps<InputRow, DmnSchema>) {
     formSchema: props.formSchema,
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
-    propertiesPath: "definitions.InputSet.properties",
+    propertiesEntryPath: "definitions.InputSet",
+    removeRequired: true,
   });
 
   return (

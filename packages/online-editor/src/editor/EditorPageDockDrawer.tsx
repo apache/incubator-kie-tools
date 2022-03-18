@@ -24,7 +24,7 @@ import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/
 import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
-import { DecisionResult } from "@kie-tools/form/dist/dmn";
+import { DecisionResult } from "@kie-tools/form-dmn";
 import {
   NotificationsPanelDockToggle,
   NotificationsPanelDockToggleRef,
