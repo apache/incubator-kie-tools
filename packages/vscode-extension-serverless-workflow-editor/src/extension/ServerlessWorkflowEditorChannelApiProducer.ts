@@ -49,7 +49,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
     const swfServiceCatalogStore = getSwfServiceCatalogStore({
-      filePath: editor.document.uri.path,
+      currentFileAbsolutePath: editor.document.uri.path,
       configuredSpecsDirPath: this.args.settings.getSpecsDirPath(),
       rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
     });

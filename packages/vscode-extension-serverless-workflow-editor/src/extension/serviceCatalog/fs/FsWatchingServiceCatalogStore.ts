@@ -26,9 +26,9 @@ export class FsWatchingServiceCatalogStore {
 
   private readonly onDispose: () => void;
 
-  constructor(private readonly specsDirParentPath: string, private readonly specsDirPath: string) {
+  constructor(private readonly args: { specsDirRelativePath: string; specsDirAbsolutePath: string }) {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
-      `${specsDirPath}/*.{json,yaml,yml}`,
+      `${args.specsDirAbsolutePath}/*.{json,yaml,yml}`,
       false,
       false,
       false
@@ -68,11 +68,11 @@ export class FsWatchingServiceCatalogStore {
   private readFileSystemServices(): Promise<SwfServiceCatalogService[]> {
     return new Promise<SwfServiceCatalogService[]>((resolve, reject) => {
       try {
-        const specsDirAbsolutePath = vscode.Uri.parse(this.specsDirPath);
+        const specsDirAbsolutePath = vscode.Uri.parse(this.args.specsDirAbsolutePath);
 
         vscode.workspace.fs.stat(specsDirAbsolutePath).then((stats) => {
           if (!stats || stats.type !== FileType.Directory) {
-            reject(`Invalid path: ${this.specsDirPath}`);
+            reject(`Invalid specs dir path: ${this.args.specsDirAbsolutePath}`);
             return;
           }
 
@@ -89,7 +89,7 @@ export class FsWatchingServiceCatalogStore {
                 return;
               }
 
-              const fileUrl = specsDirAbsolutePath.with({ path: this.specsDirPath + "/" + fileName });
+              const fileUrl = specsDirAbsolutePath.with({ path: this.args.specsDirAbsolutePath + "/" + fileName }); // FIXME: windows?
               promises.push(this.readServiceFile(fileUrl, fileName));
             });
 
@@ -112,9 +112,9 @@ export class FsWatchingServiceCatalogStore {
     try {
       return [
         parseOpenApi({
-          fileName,
-          storagePath: this.specsDirParentPath,
-          content: Buffer.from(rawData).toString("utf-8"),
+          specsDirRelativePath: this.args.specsDirRelativePath,
+          serviceFileName: fileName,
+          serviceFileContent: Buffer.from(rawData).toString("utf-8"),
         }),
       ];
     } catch (e) {

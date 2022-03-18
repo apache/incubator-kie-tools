@@ -24,23 +24,32 @@ import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry"
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
 import { AuthenticationSession } from "vscode";
+import * as path from "path";
 
 export function getSwfServiceCatalogStore(args: {
-  filePath: string;
+  currentFileAbsolutePath: string;
   configuredSpecsDirPath: string;
   rhhccAuthenticationStore: RhhccAuthenticationStore;
 }): SwfServiceCatalogStore {
-  const interpolatedSpecsDirPath = getInterpolateSettingsValue({
-    filePath: args.filePath,
+  const interpolatedSpecsDirAbsolutePath = getInterpolateSettingsValue({
+    currentFileAbsolutePath: args.currentFileAbsolutePath,
     value: args.configuredSpecsDirPath,
   });
 
-  const specsDirParentPath = args.configuredSpecsDirPath.includes(settingsTokenKeys["${fileDirname}"])
-    ? interpolatedSpecsDirPath.substring(interpolatedSpecsDirPath.lastIndexOf("/") + 1)
-    : interpolatedSpecsDirPath;
+  const specsDirRelativePath = args.configuredSpecsDirPath.includes(settingsTokenKeys["${fileDirname}"])
+    ? path.relative(path.dirname(args.currentFileAbsolutePath), interpolatedSpecsDirAbsolutePath)
+    : interpolatedSpecsDirAbsolutePath;
+
+  console.error(args.currentFileAbsolutePath);
+  console.error(args.configuredSpecsDirPath);
+  console.error(interpolatedSpecsDirAbsolutePath);
+  console.error(specsDirRelativePath);
 
   return new CompositeServiceCatalogStore({
-    fs: new FsWatchingServiceCatalogStore(specsDirParentPath, interpolatedSpecsDirPath),
+    fs: new FsWatchingServiceCatalogStore({
+      specsDirRelativePath,
+      specsDirAbsolutePath: interpolatedSpecsDirAbsolutePath,
+    }),
     rhhccServiceRegistry: new RhhccServiceRegistryServiceCatalogStore(args.rhhccAuthenticationStore),
     rhhccAuthenticationStore: args.rhhccAuthenticationStore,
   });

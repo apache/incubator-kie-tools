@@ -39,11 +39,11 @@ export function doInterpolation(tokens: Record<string, string>, value: string) {
   );
 }
 
-export function getInterpolateSettingsValue(args: { filePath: string; value: string }) {
-  const parsedPath = __path.parse(args.filePath);
+export function getInterpolateSettingsValue(args: { currentFileAbsolutePath: string; value: string }) {
+  const parsedPath = __path.parse(args.currentFileAbsolutePath);
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
-        const relative = __path.relative(workspace.uri.path, args.filePath);
+        const relative = __path.relative(workspace.uri.path, args.currentFileAbsolutePath);
         return relative && !relative.startsWith("..") && !__path.isAbsolute(relative);
       })
     : undefined;

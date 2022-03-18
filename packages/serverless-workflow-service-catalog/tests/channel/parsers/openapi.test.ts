@@ -29,9 +29,9 @@ function doParse(fileName: string): SwfServiceCatalogService {
   const content = fs.readFileSync(filePath).toString("utf-8");
 
   return parseOpenApi({
-    fileName,
-    content,
-    storagePath: "specs",
+    serviceFileName: fileName,
+    serviceFileContent: content,
+    serviceFileRelativePath: "specs",
   });
 }
 
@@ -88,10 +88,10 @@ describe("openapi parser", () => {
   it("parse wrong format test", async () => {
     expect(() => {
       doParse("wrong.txt");
-    }).toThrowError("Invalid format");
+    }).toThrowError("'specs/wrong.txt' is not an OpenAPI file");
 
     expect(() => {
       doParse("wrong.json");
-    }).toThrowError("Invalid format");
+    }).toThrowError("'specs/wrong.json' is not an OpenAPI file");
   });
 });

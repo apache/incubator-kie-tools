@@ -47,7 +47,24 @@ export enum SwfServiceCatalogFunctionArgumentType {
   array = "array",
 }
 
+export enum SwfServiceCatalogFunctionSourceType {
+  RHHCC_SERVICE_REGISTRY,
+  LOCAL_FS,
+  LOCAL_SERVICE_REGISTRY,
+}
+
+export type SwfServiceCatalogFunctionSource =
+  | {
+      serviceId: string;
+      type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY;
+    }
+  | {
+      type: SwfServiceCatalogFunctionSourceType.LOCAL_FS;
+      serviceFileRelativePath: string;
+    };
+
 export interface SwfServiceCatalogFunction {
+  source: SwfServiceCatalogFunctionSource;
   name: string;
   operation: string;
   arguments: Record<string, SwfServiceCatalogFunctionArgumentType>;
