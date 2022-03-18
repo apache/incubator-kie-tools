@@ -22,7 +22,7 @@ import cloneDeep from "lodash/cloneDeep";
 import { FormBaseComponent } from "../core/FormBaseComponent";
 import { useForm } from "../core/Form";
 import { FormComponentProps } from "../core/FormComponent";
-import { DmnAutoFieldProvider } from "./uniforms/DmnAutoField";
+import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
 
 export type InputRow = Record<string, string>;
 
@@ -86,31 +86,18 @@ export function DmnFormComponent(props: DmnFormComponentProps) {
   }, [props.locale]);
   const dmnValidator = useMemo(() => new DmnValidator(i18n), [i18n]);
 
-  const { onValidate, onSubmit, formModel, setFormModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
+  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
     validator: dmnValidator,
+    name: props.name,
     formError: props.formError,
+    setFormError: props.setFormError,
+    formInputs: props.formInputs,
+    setFormInputs: props.setFormInputs,
     formSchema: props.formSchema,
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
     propertiesPath: "definitions.InputSet.properties",
   });
-
-  // When the formModel changes, stringify all context inputs and set the formData and reset the formError
-  useEffect(() => {
-    props.setFormError((previousFormError: boolean) => {
-      if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
-        const newFormInput = cloneDeep(formModel);
-        props.setFormInputs(newFormInput);
-      }
-      return false;
-    });
-  }, [formModel]);
-
-  // on firstRender stringify all co text inputs and set the formModel
-  useEffect(() => {
-    const newFormModel = cloneDeep(props.formInputs);
-    setFormModel(newFormModel);
-  }, [props.name]);
 
   return (
     <FormBaseComponent

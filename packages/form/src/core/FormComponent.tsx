@@ -52,57 +52,40 @@ export function FormComponent(props: FormComponentProps) {
     formI18n.setLocale(props.locale ?? navigator.language);
     return formI18n.getCurrent();
   }, [props.locale]);
-  const validator = useMemo(() => new Validator(), []);
 
-  const { onValidate, onSubmit, formModel, setFormModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
+  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
+    name: props.name,
     formError: props.formError,
+    setFormError: props.setFormError,
+    formInputs: props.formInputs,
+    setFormInputs: props.setFormInputs,
     formSchema: props.formSchema,
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
     propertiesPath: props.propertiesPath ?? "definitions.properties",
-    validator,
   });
 
-  // When form name changes, update the formModel
-  useEffect(() => {
-    const newFormModel = cloneDeep(props.formInputs);
-    setFormModel(newFormModel);
-  }, [props.name]);
-
-  // When the formModel changes, update the formData and reset the formError
-  useEffect(() => {
-    props.setFormError((previousFormError) => {
-      if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
-        const newFormInputs = cloneDeep(formModel);
-        props.setFormInputs(newFormInputs);
-      }
-      return false;
-    });
-  }, [formModel]);
-
   return (
-    <>
-      <FormBaseComponent
-        i18n={i18n}
-        onValidate={onValidate}
-        onSubmit={onSubmit}
-        formModel={formModel}
-        formStatus={formStatus}
-        jsonSchemaBridge={jsonSchemaBridge}
-        errorBoundaryRef={errorBoundaryRef}
-        setFormError={props.setFormError}
-        id={props.id}
-        formRef={props.formRef}
-        showInlineError={props.showInlineError}
-        autoSave={props.autoSave}
-        autoSaveDelay={props.autoSaveDelay}
-        placeholder={props.placeholder}
-        errorsField={props.errorsField}
-        submitField={props.submitField}
-        locale={props.locale}
-        notificationsPanel={props.notificationsPanel}
-        openValidationTab={props.openValidationTab}
-      />
-    </>
+    <FormBaseComponent
+      i18n={i18n}
+      onValidate={onValidate}
+      onSubmit={onSubmit}
+      formModel={formModel}
+      formStatus={formStatus}
+      jsonSchemaBridge={jsonSchemaBridge}
+      errorBoundaryRef={errorBoundaryRef}
+      setFormError={props.setFormError}
+      id={props.id}
+      formRef={props.formRef}
+      showInlineError={props.showInlineError}
+      autoSave={props.autoSave}
+      autoSaveDelay={props.autoSaveDelay}
+      placeholder={props.placeholder}
+      errorsField={props.errorsField}
+      submitField={props.submitField}
+      locale={props.locale}
+      notificationsPanel={props.notificationsPanel}
+      openValidationTab={props.openValidationTab}
+    />
   );
 }

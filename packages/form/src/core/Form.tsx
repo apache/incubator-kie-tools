@@ -26,22 +26,38 @@ import { Validator } from "./Validator";
 import { Object } from "./FormComponent";
 
 interface FormHook {
+  name?: string;
   formError: boolean;
+  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
+  formInputs: object;
+  setFormInputs: React.Dispatch<React.SetStateAction<object>>;
   formSchema?: object;
   onSubmit?: (model: object) => void;
   onValidate?: (model: object, error: object) => void;
   propertiesPath: string;
-  validator: Validator;
+  validator?: Validator;
 }
 
 const getObjectByPath = (obj: Record<string, Object>, path: string) =>
   path.split(".").reduce((acc: Record<string, Object>, key: string) => acc[key], obj);
 
-export function useForm({ formError, formSchema, onSubmit, onValidate, propertiesPath, validator }: FormHook) {
+export function useForm({
+  name,
+  formError,
+  setFormError,
+  formInputs,
+  setFormInputs,
+  formSchema,
+  onSubmit,
+  onValidate,
+  propertiesPath,
+  validator,
+}: FormHook) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
   const [formModel, setFormModel] = useState<object>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
+  const formValidator = useMemo(() => (validator ? validator : new Validator()), [validator]);
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
@@ -90,7 +106,7 @@ export function useForm({ formError, formSchema, onSubmit, onValidate, propertie
       // formPreprocessing(form);
     }
     try {
-      const bridge = validator.getBridge(form);
+      const bridge = formValidator.getBridge(form);
       setJsonSchemaBridge((previousBridge) => {
         if (formModel) {
           const newFormModel = removeDeletedPropertiesAndAddDefaultValues(formModel, bridge, previousBridge);
@@ -107,7 +123,7 @@ export function useForm({ formError, formSchema, onSubmit, onValidate, propertie
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [formModel, formSchema, validator, removeDeletedPropertiesAndAddDefaultValues]);
+  }, [formModel, formSchema, formValidator, removeDeletedPropertiesAndAddDefaultValues]);
 
   // Manage form status
   useEffect(() => {
@@ -128,6 +144,23 @@ export function useForm({ formError, formSchema, onSubmit, onValidate, propertie
   useEffect(() => {
     errorBoundaryRef.current?.reset();
   }, [formSchema]);
+
+  // When form name changes, update the formModel
+  useEffect(() => {
+    const newFormModel = cloneDeep(formInputs);
+    setFormModel(newFormModel);
+  }, [name]);
+
+  // When the formModel changes, update the formData and reset the formError
+  useEffect(() => {
+    setFormError((previousFormError) => {
+      if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
+        const newFormInputs = cloneDeep(formModel);
+        setFormInputs(newFormInputs);
+      }
+      return false;
+    });
+  }, [formModel]);
 
   const onFormSubmit = useCallback(
     (model) => {
@@ -192,7 +225,6 @@ export function useForm({ formError, formSchema, onSubmit, onValidate, propertie
   return {
     onSubmit: onFormSubmit,
     onValidate: onFormValidate,
-    setFormModel,
     formModel,
     formStatus,
     jsonSchemaBridge,
