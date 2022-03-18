@@ -15,10 +15,10 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
+import { DmnFormI18n } from "../DmnFormI18n";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
-import { FormI18n } from "../FormI18n";
 
-export const en: FormI18n = {
+export const en: DmnFormI18n = {
   ...en_common,
   form: {
     status: {

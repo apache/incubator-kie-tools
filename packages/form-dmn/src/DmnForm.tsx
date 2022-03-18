@@ -17,11 +17,9 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { DmnValidator } from "./DmnValidator";
-import { formI18n } from "../i18n";
-import { BaseForm } from "../core/BaseForm";
-import { useForm } from "../core/FormHook";
+import { dmnFormI18n } from "./i18n";
+import { BaseForm, BaseProps, useForm } from "@kie-tools/form";
 import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
-import { BaseProps } from "../core/BaseProps";
 
 export type InputRow = Record<string, string>;
 
@@ -67,8 +65,8 @@ interface DmnDeepProperty {
 
 export function DmnForm(props: BaseProps<InputRow, DmnSchema>) {
   const i18n = useMemo(() => {
-    formI18n.setLocale(props.locale ?? navigator.language);
-    return formI18n.getCurrent();
+    dmnFormI18n.setLocale(props.locale ?? navigator.language);
+    return dmnFormI18n.getCurrent();
   }, [props.locale]);
   const dmnValidator = useMemo(() => new DmnValidator(i18n), [i18n]);
 

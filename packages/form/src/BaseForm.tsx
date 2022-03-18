@@ -15,11 +15,11 @@
  */
 
 import { AutoGenerationErrorFormStatus, EmptyFormStatus, FormStatus, ValidatorErrorFormStatus } from "./FormStatus";
-import { ErrorBoundary } from "../common/ErrorBoundary";
+import { ErrorBoundary } from "./ErrorBoundary";
 import AutoForm from "uniforms-patternfly/dist/es6/AutoForm";
 import * as React from "react";
 import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
-import { FormI18n } from "../i18n/FormI18n";
+import { FormI18n } from "./i18n";
 
 interface CommonProps {
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;

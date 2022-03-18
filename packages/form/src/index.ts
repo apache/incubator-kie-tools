@@ -14,23 +14,10 @@
  * limitations under the License.
  */
 
-module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["../../node_modules", "node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transformIgnorePatterns: [],
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest",
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-  },
-  globals: {
-    "ts-jest": {
-      tsConfig: "<rootDir>/tsconfig.dev.json",
-    },
-  },
-};
+export * from "./BaseForm";
+export * from "./BaseProps";
+export * from "./ErrorBoundary";
+export * from "./FormHook";
+export * from "./i18n";
+export * from "./uniforms/FormJsonSchemaBridge";
+export * from "./Validator";

@@ -32,11 +32,11 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
-import { dmnFormI18n } from "../i18n";
+import { dmnFormI18n } from "./i18n";
 import { diff } from "deep-object-diff";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import "./styles.scss";
-import { ErrorBoundary } from "../common/ErrorBoundary";
+import { ErrorBoundary } from "@kie-tools/form";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";

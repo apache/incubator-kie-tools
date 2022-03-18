@@ -16,8 +16,9 @@
 
 import * as React from "react";
 import { act, render } from "@testing-library/react";
-import { DmnForm, Props } from "../../src/dmn";
-import { dmnFormI18n } from "../../src/i18n";
+import { DmnForm, DmnSchema, InputRow } from "../src/";
+import { dmnFormI18n } from "../src/i18n";
+import { BaseProps } from "@kie-tools/form";
 
 const schema: any = {
   $ref: "#/definitions/InputSet",
@@ -34,19 +35,20 @@ const schema: any = {
   },
 };
 
-const props: Props = {
-  formData: jest.fn(),
-  setFormData: jest.fn(),
+const props: BaseProps<InputRow, DmnSchema> = {
+  formInputs: {},
+  setFormInputs: jest.fn(),
   formError: false,
   setFormError: jest.fn(),
   showInlineError: true,
   notificationsPanel: false,
-  autosave: false,
+  autoSave: false,
   placeholder: false,
   onSubmit: jest.fn(),
   onValidate: jest.fn(),
   locale: "en",
   formSchema: schema,
+  openValidationTab: jest.fn(),
 };
 
 describe("DmnForm tests", () => {
@@ -55,7 +57,7 @@ describe("DmnForm tests", () => {
 
     const { findByTestId } = render(<DmnForm {...newProps} />);
 
-    expect(await findByTestId("dmn-form")).toMatchSnapshot();
+    expect(await findByTestId("base-form")).toMatchSnapshot();
   });
 
   it("should submit the formData", async () => {
@@ -63,9 +65,9 @@ describe("DmnForm tests", () => {
     const onSubmit = jest.fn();
     const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
 
-    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formData={formData} />);
+    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formInputs={formData} />);
 
-    expect(await findByTestId("dmn-form")).toMatchSnapshot();
+    expect(await findByTestId("base-form")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -79,9 +81,9 @@ describe("DmnForm tests", () => {
     const onSubmit = jest.fn();
     const formData = { daysAndTimeDuration: "p" };
 
-    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formData={formData} />);
+    const { findByTestId } = render(<DmnForm {...props} onSubmit={onSubmit} formRef={formRef} formInputs={formData} />);
 
-    expect(await findByTestId("dmn-form")).toMatchSnapshot();
+    expect(await findByTestId("base-form")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -96,10 +98,10 @@ describe("DmnForm tests", () => {
     const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "P1D" };
 
     const { findByTestId } = render(
-      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formData={formData} />
+      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formInputs={formData} />
     );
 
-    expect(await findByTestId("dmn-form")).toMatchSnapshot();
+    expect(await findByTestId("base-form")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -114,10 +116,10 @@ describe("DmnForm tests", () => {
     const formData = { name: "Kogito", lastName: "Tooling", daysAndTimeDuration: "p" };
 
     const { findByTestId } = render(
-      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formData={formData} />
+      <DmnForm {...props} formRef={formRef} onValidate={onValidate} formInputs={formData} />
     );
 
-    expect(await findByTestId("dmn-form")).toMatchSnapshot();
+    expect(await findByTestId("base-form")).toMatchSnapshot();
 
     await act(async () => {
       formRef.current?.submit();
@@ -143,7 +145,7 @@ describe("DmnForm tests", () => {
     const formData = {};
 
     const { getByText } = render(
-      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formData={formData} />
+      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formInputs={formData} />
     );
 
     expect(getByText(dmnFormI18n.getCurrent().form.preProcessing.selectPlaceholder)).toMatchSnapshot();
@@ -166,7 +168,7 @@ describe("DmnForm tests", () => {
     const formData = {};
 
     const { getByText } = render(
-      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formData={formData} />
+      <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formInputs={formData} />
     );
 
     expect(getByText("name")).toMatchSnapshot();
@@ -197,7 +199,7 @@ describe("DmnForm tests", () => {
         formSchema={schema}
         onSubmit={onSubmit}
         formRef={formRef}
-        formData={formData}
+        formInputs={formData}
       />
     );
 

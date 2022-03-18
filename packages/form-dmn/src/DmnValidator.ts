@@ -15,8 +15,8 @@
  */
 
 import * as metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import { DmnFormI18n } from "../i18n";
-import { Validator } from "../core";
+import { Validator } from "@kie-tools/form";
+import { DmnFormI18n } from "./i18n";
 import { DmnFormJsonSchemaBridge } from "./uniforms";
 
 export const DAYS_AND_TIME =

@@ -14,4 +14,18 @@
  * limitations under the License.
  */
 
-export * from "./Validator";
+module.exports = {
+  reporters: ["default"],
+  moduleDirectories: ["../../node_modules", "node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
+  transformIgnorePatterns: [],
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+  },
+};

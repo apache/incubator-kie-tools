@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { FormJsonSchemaBridge } from "../../core/uniforms/FormJsonSchemaBridge";
-import { DmnFormI18n } from "../../i18n";
+import { FormJsonSchemaBridge } from "@kie-tools/form";
+import { DmnFormI18n } from "../i18n";
 
 const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
 const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";

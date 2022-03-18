@@ -15,8 +15,7 @@
  */
 
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
-import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
-import { FormI18n } from "./FormI18n";
+import { FormI18n } from "@kie-tools/form";
 
 interface DmnFormDictionary extends ReferenceDictionary {
   form: {

@@ -22,7 +22,7 @@ import {
   DmnFormResultProps,
   DmnFormResultWithNotificationsPanelProps,
   EvaluationStatus,
-} from "../../src/dmn";
+} from "../src";
 
 const props: DmnFormResultProps | DmnFormResultWithNotificationsPanelProps = {
   results: [],

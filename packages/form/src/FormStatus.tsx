@@ -21,7 +21,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { FormI18n } from "../i18n/FormI18n";
+import { FormI18n } from "./i18n";
 
 const KOGITO_JIRA_LINK = "https://issues.jboss.org/projects/KOGITO";
 

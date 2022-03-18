@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-module.exports = {
-  reporters: ["default"],
-  moduleDirectories: ["../../node_modules", "node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
-  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
-  transformIgnorePatterns: [],
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest",
-  },
-  moduleNameMapper: {
-    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
-  },
-  globals: {
-    "ts-jest": {
-      tsConfig: "<rootDir>/tsconfig.dev.json",
+const nodeExternals = require("webpack-node-externals");
+const { merge } = require("webpack-merge");
+const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const patternflyBase = require("@kie-tools-core/patternfly-base");
+
+module.exports = (env, argv) => [
+  merge(common(env, argv), {
+    entry: "./src/index.ts",
+    output: {
+      libraryTarget: "commonjs2",
     },
-  },
-};
+    module: { rules: [...patternflyBase.webpackModuleRules] },
+    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+  }),
+];

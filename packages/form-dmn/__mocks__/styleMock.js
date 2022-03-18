@@ -14,21 +14,4 @@
  * limitations under the License.
  */
 
-const nodeExternals = require("webpack-node-externals");
-const { merge } = require("webpack-merge");
-const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const patternflyBase = require("@kie-tools-core/patternfly-base");
-
-module.exports = (env, argv) => [
-  merge(common(env, argv), {
-    entry: {
-      core: "./src/core/index.ts",
-      dmn: "./src/dmn/index.ts",
-    },
-    output: {
-      libraryTarget: "commonjs2",
-    },
-    module: { rules: [...patternflyBase.webpackModuleRules] },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
-  }),
-];
+module.exports = {};
