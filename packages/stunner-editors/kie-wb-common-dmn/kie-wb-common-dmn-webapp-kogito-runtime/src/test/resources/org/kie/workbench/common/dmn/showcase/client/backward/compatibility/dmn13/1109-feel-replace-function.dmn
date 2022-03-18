@@ -1,0 +1,433 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/1109-feel-replace-function" name="1109-feel-replace-function" id="_jCDLgPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'replace(input, pattern, replacement, flags?)' in category string functions</description>
+    <itemDefinition name="tfeel-replace-function_001_7637e5a8ed_Result" id="_jCDLgvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_002_b5c242ccd4_Result" id="_jCDLhvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_003_bf7aa95050_Result" id="_jCDLivUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_004_55a2186006_Result" id="_jCDLjvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_005_271d93aa68_Result" id="_jCDLkvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_006_9cd005d2e2_Result" id="_jCDLlvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_007_91583e38c9_Result" id="_jCDLmvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_008_8c7c3871f8_Result" id="_jCDLnvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_009_b1e4220bc9_Result" id="_jCDLovUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_010_cd4e7a6d9f_Result" id="_jCDLpvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_011_c310665f57_Result" id="_jCDLqvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_012_b0cf9e6723_Result" id="_jCDLrvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_013_f669d03fa9_Result" id="_jCDLsvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_014_cea33baeee_Result" id="_jCDLtvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_015_57ce78ec8a_Result" id="_jCDLuvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_016_1c38095f50_Result" id="_jCDLvvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_017_b9c3c03b87_Result" id="_jCDLwvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_018_aba3349043_Result" id="_jCDLxvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_019_6ef91033ad_Result" id="_jCDLyvUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_020_52d93a8851_Result" id="_jCMVcfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_021_e33828e3da_Result" id="_jCMVdfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_022_bd75fac0bd_Result" id="_jCMVefUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_023_5c337d3725_Result" id="_jCMVffUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_024_4a89220cd6_Result" id="_jCMVgfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_025_b7f9525875_Result" id="_jCMVhfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_026_acb176590a_Result" id="_jCMVifUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_027_d8d25f40e5_Result" id="_jCMVjfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-replace-function_028_96e8c698af_Result" id="_jCMVkfUUEeesLuP4RHs4vA">
+        <typeRef>string</typeRef>
+    </itemDefinition>
+    <decision name="feel-replace-function_001_7637e5a8ed" id="_jCDLhPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abcd","(ab)|(a)", "[1=$1][2=$2]")' and expects result: '"[1=ab][2=]cd" (string)'</description>
+        <question>Result of FEEL expression 'replace("abcd","(ab)|(a)", "[1=$1][2=$2]")'?</question>
+        <allowedAnswers>"[1=ab][2=]cd" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_001_7637e5a8ed_Result" name="feel-replace-function_001_7637e5a8ed" id="_jCDLhfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLg_UUEeesLuP4RHs4vA">
+            <text>replace("abcd","(ab)|(a)", "[1=$1][2=$2]")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_002_b5c242ccd4" id="_jCDLiPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("a","[b-z]","#")' and expects result: '"a" (string)'</description>
+        <question>Result of FEEL expression 'replace("a","[b-z]","#")'?</question>
+        <allowedAnswers>"a" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_002_b5c242ccd4_Result" name="feel-replace-function_002_b5c242ccd4" id="_jCDLifUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLh_UUEeesLuP4RHs4vA">
+            <text>replace("a","[b-z]","#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_003_bf7aa95050" id="_jCDLjPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("a","[a-z]","#")' and expects result: '"#" (string)'</description>
+        <question>Result of FEEL expression 'replace("a","[a-z]","#")'?</question>
+        <allowedAnswers>"#" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_003_bf7aa95050_Result" name="feel-replace-function_003_bf7aa95050" id="_jCDLjfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLi_UUEeesLuP4RHs4vA">
+            <text>replace("a","[a-z]","#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_004_55a2186006" id="_jCDLkPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc","def","#")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc","def","#")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_004_55a2186006_Result" name="feel-replace-function_004_55a2186006" id="_jCDLkfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLj_UUEeesLuP4RHs4vA">
+            <text>replace("abc","def","#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_005_271d93aa68" id="_jCDLlPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc","e","#")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc","e","#")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_005_271d93aa68_Result" name="feel-replace-function_005_271d93aa68" id="_jCDLlfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLk_UUEeesLuP4RHs4vA">
+            <text>replace("abc","e","#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_006_9cd005d2e2" id="_jCDLmPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("foobar","^fo*b*","#")' and expects result: '"#ar" (string)'</description>
+        <question>Result of FEEL expression 'replace("foobar","^fo*b*","#")'?</question>
+        <allowedAnswers>"#ar" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_006_9cd005d2e2_Result" name="feel-replace-function_006_9cd005d2e2" id="_jCDLmfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLl_UUEeesLuP4RHs4vA">
+            <text>replace("foobar","^fo*b*","#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_007_91583e38c9" id="_jCDLnPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc",".^[d-z]","#")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc",".^[d-z]","#")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_007_91583e38c9_Result" name="feel-replace-function_007_91583e38c9" id="_jCDLnfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLm_UUEeesLuP4RHs4vA">
+            <text>replace("abc",".^[d-z]","#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_008_8c7c3871f8" id="_jCDLoPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abracadabra","bra","*")' and expects result: '"a*cada*" (string)'</description>
+        <question>Result of FEEL expression 'replace("abracadabra","bra","*")'?</question>
+        <allowedAnswers>"a*cada*" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_008_8c7c3871f8_Result" name="feel-replace-function_008_8c7c3871f8" id="_jCDLofUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLn_UUEeesLuP4RHs4vA">
+            <text>replace("abracadabra","bra","*")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_009_b1e4220bc9" id="_jCDLpPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abracadabra","a.*a","*")' and expects result: '"*" (string)'</description>
+        <question>Result of FEEL expression 'replace("abracadabra","a.*a","*")'?</question>
+        <allowedAnswers>"*" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_009_b1e4220bc9_Result" name="feel-replace-function_009_b1e4220bc9" id="_jCDLpfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLo_UUEeesLuP4RHs4vA">
+            <text>replace("abracadabra","a.*a","*")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_010_cd4e7a6d9f" id="_jCDLqPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abracadabra","a.*?a","*")' and expects result: '"*c*bra" (string)'</description>
+        <question>Result of FEEL expression 'replace("abracadabra","a.*?a","*")'?</question>
+        <allowedAnswers>"*c*bra" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_010_cd4e7a6d9f_Result" name="feel-replace-function_010_cd4e7a6d9f" id="_jCDLqfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLp_UUEeesLuP4RHs4vA">
+            <text>replace("abracadabra","a.*?a","*")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_011_c310665f57" id="_jCDLrPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abracadabra","a","")' and expects result: '"brcdbr" (string)'</description>
+        <question>Result of FEEL expression 'replace("abracadabra","a","")'?</question>
+        <allowedAnswers>"brcdbr" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_011_c310665f57_Result" name="feel-replace-function_011_c310665f57" id="_jCDLrfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLq_UUEeesLuP4RHs4vA">
+            <text>replace("abracadabra","a","")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_012_b0cf9e6723" id="_jCDLsPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abracadabra","a(.)","a$1$1")' and expects result: '"abbraccaddabbra" (string)'</description>
+        <question>Result of FEEL expression 'replace("abracadabra","a(.)","a$1$1")'?</question>
+        <allowedAnswers>"abbraccaddabbra" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_012_b0cf9e6723_Result" name="feel-replace-function_012_b0cf9e6723" id="_jCDLsfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLr_UUEeesLuP4RHs4vA">
+            <text>replace("abracadabra","a(.)","a$1$1")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_013_f669d03fa9" id="_jCDLtPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("AAAA","A+","b")' and expects result: '"b" (string)'</description>
+        <question>Result of FEEL expression 'replace("AAAA","A+","b")'?</question>
+        <allowedAnswers>"b" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_013_f669d03fa9_Result" name="feel-replace-function_013_f669d03fa9" id="_jCDLtfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLs_UUEeesLuP4RHs4vA">
+            <text>replace("AAAA","A+","b")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_014_cea33baeee" id="_jCDLuPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("AAAA","A+?","b")' and expects result: '"bbbb" (string)'</description>
+        <question>Result of FEEL expression 'replace("AAAA","A+?","b")'?</question>
+        <allowedAnswers>"bbbb" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_014_cea33baeee_Result" name="feel-replace-function_014_cea33baeee" id="_jCDLufUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLt_UUEeesLuP4RHs4vA">
+            <text>replace("AAAA","A+?","b")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_015_57ce78ec8a" id="_jCDLvPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("darted","^(.*?)d(.*)$","$1c$2")' and expects result: '"carted" (string)'</description>
+        <question>Result of FEEL expression 'replace("darted","^(.*?)d(.*)$","$1c$2")'?</question>
+        <allowedAnswers>"carted" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_015_57ce78ec8a_Result" name="feel-replace-function_015_57ce78ec8a" id="_jCDLvfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLu_UUEeesLuP4RHs4vA">
+            <text>replace("darted","^(.*?)d(.*)$","$1c$2")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_016_1c38095f50" id="_jCDLwPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("reluctant","r.*?t","X")' and expects result: '"Xant" (string)'</description>
+        <question>Result of FEEL expression 'replace("reluctant","r.*?t","X")'?</question>
+        <allowedAnswers>"Xant" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_016_1c38095f50_Result" name="feel-replace-function_016_1c38095f50" id="_jCDLwfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLv_UUEeesLuP4RHs4vA">
+            <text>replace("reluctant","r.*?t","X")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_017_b9c3c03b87" id="_jCDLxPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("0123456789","(\d{3})(\d{3})(\d{4})","($1) $2-$3")' and expects result: '"(012) 345-6789" (string)'</description>
+        <question>Result of FEEL expression 'replace("0123456789","(\d{3})(\d{3})(\d{4})","($1) $2-$3")'?</question>
+        <allowedAnswers>"(012) 345-6789" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_017_b9c3c03b87_Result" name="feel-replace-function_017_b9c3c03b87" id="_jCDLxfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLw_UUEeesLuP4RHs4vA">
+            <text>replace("0123456789","(\d{3})(\d{3})(\d{4})","($1) $2-$3")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_018_aba3349043" id="_jCDLyPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("facetiously","[iouy]","[$0]")' and expects result: '"facet[i][o][u]sl[y]" (string)'</description>
+        <question>Result of FEEL expression 'replace("facetiously","[iouy]","[$0]")'?</question>
+        <allowedAnswers>"facet[i][o][u]sl[y]" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_018_aba3349043_Result" name="feel-replace-function_018_aba3349043" id="_jCDLyfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLx_UUEeesLuP4RHs4vA">
+            <text>replace("facetiously","[iouy]","[$0]")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_019_6ef91033ad" id="_jCDLzPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc","[a-z]","#","")' and expects result: '"###" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc","[a-z]","#","")'?</question>
+        <allowedAnswers>"###" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_019_6ef91033ad_Result" name="feel-replace-function_019_6ef91033ad" id="_jCMVcPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCDLy_UUEeesLuP4RHs4vA">
+            <text>replace("abc","[a-z]","#","")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_020_52d93a8851" id="_jCMVc_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("a.b.c.","[a-z]","#","s")' and expects result: '"#.#.#." (string)'</description>
+        <question>Result of FEEL expression 'replace("a.b.c.","[a-z]","#","s")'?</question>
+        <allowedAnswers>"#.#.#." (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_020_52d93a8851_Result" name="feel-replace-function_020_52d93a8851" id="_jCMVdPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVcvUUEeesLuP4RHs4vA">
+            <text>replace("a.b.c.","[a-z]","#","s")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_021_e33828e3da" id="_jCMVd_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc","[A-Z]","#","i")' and expects result: '"###" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc","[A-Z]","#","i")'?</question>
+        <allowedAnswers>"###" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_021_e33828e3da_Result" name="feel-replace-function_021_e33828e3da" id="_jCMVePUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVdvUUEeesLuP4RHs4vA">
+            <text>replace("abc","[A-Z]","#","i")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_022_bd75fac0bd" id="_jCMVe_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc","[a-z]","#","s")' and expects result: '"###" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc","[a-z]","#","s")'?</question>
+        <allowedAnswers>"###" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_022_bd75fac0bd_Result" name="feel-replace-function_022_bd75fac0bd" id="_jCMVfPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVevUUEeesLuP4RHs4vA">
+            <text>replace("abc","[a-z]","#","s")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_023_5c337d3725" id="_jCMVf_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("a b c d ","[a-z]","#","x")' and expects result: '"# # # # " (string)'</description>
+        <question>Result of FEEL expression 'replace("a b c d ","[a-z]","#","x")'?</question>
+        <allowedAnswers>"# # # # " (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_023_5c337d3725_Result" name="feel-replace-function_023_5c337d3725" id="_jCMVgPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVfvUUEeesLuP4RHs4vA">
+            <text>replace("a b c d ","[a-z]","#","x")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_024_4a89220cd6" id="_jCMVg_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace("abc",".^[d-z]*","smix")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'replace("abc",".^[d-z]*","smix")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_024_4a89220cd6_Result" name="feel-replace-function_024_4a89220cd6" id="_jCMVhPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVgvUUEeesLuP4RHs4vA">
+            <text>replace("abc",".^[d-z]*","smix")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_025_b7f9525875" id="_jCMVh_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace(input:"abc",pattern:"[a-z]",replacement:"#")' and expects result: '"###" (string)'</description>
+        <question>Result of FEEL expression 'replace(input:"abc",pattern:"[a-z]",replacement:"#")'?</question>
+        <allowedAnswers>"###" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_025_b7f9525875_Result" name="feel-replace-function_025_b7f9525875" id="_jCMViPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVhvUUEeesLuP4RHs4vA">
+            <text>replace(input:"abc",pattern:"[a-z]",replacement:"#")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_026_acb176590a" id="_jCMVi_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_026_acb176590a_Result" name="feel-replace-function_026_acb176590a" id="_jCMVjPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVivUUEeesLuP4RHs4vA">
+            <text>replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_027_d8d25f40e5" id="_jCMVj_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")' and expects result: '"###" (string)'</description>
+        <question>Result of FEEL expression 'replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")'?</question>
+        <allowedAnswers>"###" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_027_d8d25f40e5_Result" name="feel-replace-function_027_d8d25f40e5" id="_jCMVkPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVjvUUEeesLuP4RHs4vA">
+            <text>replace(input:"abc",pattern:"[A-Z]",replacement:"#",flags:"i")</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-replace-function_028_96e8c698af" id="_jCMVk_UUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")' and expects result: '"abc" (string)'</description>
+        <question>Result of FEEL expression 'replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")'?</question>
+        <allowedAnswers>"abc" (string)</allowedAnswers>
+        <variable typeRef="tfeel-replace-function_028_96e8c698af_Result" name="feel-replace-function_028_96e8c698af" id="_jCMVlPUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_jCMVkvUUEeesLuP4RHs4vA">
+            <text>replace(input:"abc",pattern:".^[d-z]*",replacement:"#",flags:"smix")</text>
+        </literalExpression>
+    </decision>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.3 Table 60" id="_jCDLgfUUEeesLuP4RHs4vA"/>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_jCDLgPUUEeesLuP4RHs4vA_D2">
+            <dmndi:DMNShape dmnElementRef="_jCDLqPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLlPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVi_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s3">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLrPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVe_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLvPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVf_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVk_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s8">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="761.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLkPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s9">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLnPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s10">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLsPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s11">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLwPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s12">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVj_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s13">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLjPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s14">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLoPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s15">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLxPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s16">
+                <dc:Bounds height="61.0" width="154.0" x="276.0" y="761.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVc_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s17">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLtPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s18">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVg_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s19">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLpPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s20">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLzPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s21">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="478.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLiPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s22">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="571.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLmPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s23">
+                <dc:Bounds height="61.0" width="154.0" x="446.0" y="664.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLgfUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s24">
+                <dc:Bounds height="69.0" width="100.0" x="473.0" y="757.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLyPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s25">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVd_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s26">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLhPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s27">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCDLuPUUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s28">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="385.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_jCMVh_UUEeesLuP4RHs4vA" id="_jCDLgPUUEeesLuP4RHs4vA_s29">
+                <dc:Bounds height="61.0" width="154.0" x="616.0" y="478.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

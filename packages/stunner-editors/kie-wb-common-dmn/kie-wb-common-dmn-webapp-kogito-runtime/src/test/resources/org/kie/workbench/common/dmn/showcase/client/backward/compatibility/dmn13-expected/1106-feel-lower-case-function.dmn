@@ -1,0 +1,232 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1106-feel-lower-case-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_jAaMwPUUEeesLuP4RHs4vA" name="1106-feel-lower-case-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1106-feel-lower-case-function">
+  <dmn:description>FEEL built-in function 'lower case(string)' in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_jAaMwvUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_001_f6ff05bcfa_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaMxvUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_002_0ecb21e1d8_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaMyvUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_003_af9f3a8dab_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaMzvUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_004_2dbf99e8c0_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaM0vUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_005_ad33325968_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaM1vUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_006_d8257b3b92_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaM2vUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_007_a2ce59499a_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaM3vUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_008_9913ad454f_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jAaM4vUUEeesLuP4RHs4vA" name="tfeel-lower-case-function_009_78e6b2969b_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_jAaM4PUUEeesLuP4RHs4vA" name="feel-lower-case-function_008_9913ad454f">
+    <dmn:description>Tests FEEL expression: 'lower case(string:"xyZ ")' and expects result: '"xyz " (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case(string:"xyZ ")'?</dmn:question>
+    <dmn:allowedAnswers>"xyz " (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaM4fUUEeesLuP4RHs4vA" name="feel-lower-case-function_008_9913ad454f" typeRef="tfeel-lower-case-function_008_9913ad454f_Result"/>
+    <dmn:literalExpression id="_jAaM3_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case(string:"xyZ ")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaM3PUUEeesLuP4RHs4vA" name="feel-lower-case-function_007_a2ce59499a">
+    <dmn:description>Tests FEEL expression: 'lower case(string:"AbDcF")' and expects result: '"abdcf" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case(string:"AbDcF")'?</dmn:question>
+    <dmn:allowedAnswers>"abdcf" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaM3fUUEeesLuP4RHs4vA" name="feel-lower-case-function_007_a2ce59499a" typeRef="tfeel-lower-case-function_007_a2ce59499a_Result"/>
+    <dmn:literalExpression id="_jAaM2_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case(string:"AbDcF")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaM5PUUEeesLuP4RHs4vA" name="feel-lower-case-function_009_78e6b2969b">
+    <dmn:description>Tests FEEL expression: 'lower case(string:"123ABC")' and expects result: '"123abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case(string:"123ABC")'?</dmn:question>
+    <dmn:allowedAnswers>"123abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaM5fUUEeesLuP4RHs4vA" name="feel-lower-case-function_009_78e6b2969b" typeRef="tfeel-lower-case-function_009_78e6b2969b_Result"/>
+    <dmn:literalExpression id="_jAaM4_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case(string:"123ABC")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaMyPUUEeesLuP4RHs4vA" name="feel-lower-case-function_002_0ecb21e1d8">
+    <dmn:description>Tests FEEL expression: 'lower case("ABC")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case("ABC")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaMyfUUEeesLuP4RHs4vA" name="feel-lower-case-function_002_0ecb21e1d8" typeRef="tfeel-lower-case-function_002_0ecb21e1d8_Result"/>
+    <dmn:literalExpression id="_jAaMx_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case("ABC")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaM1PUUEeesLuP4RHs4vA" name="feel-lower-case-function_005_ad33325968">
+    <dmn:description>Tests FEEL expression: 'lower case("")' and expects result: '"" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case("")'?</dmn:question>
+    <dmn:allowedAnswers>"" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaM1fUUEeesLuP4RHs4vA" name="feel-lower-case-function_005_ad33325968" typeRef="tfeel-lower-case-function_005_ad33325968_Result"/>
+    <dmn:literalExpression id="_jAaM0_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case("")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaMzPUUEeesLuP4RHs4vA" name="feel-lower-case-function_003_af9f3a8dab">
+    <dmn:description>Tests FEEL expression: 'lower case("abc")' and expects result: '"abc" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case("abc")'?</dmn:question>
+    <dmn:allowedAnswers>"abc" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaMzfUUEeesLuP4RHs4vA" name="feel-lower-case-function_003_af9f3a8dab" typeRef="tfeel-lower-case-function_003_af9f3a8dab_Result"/>
+    <dmn:literalExpression id="_jAaMy_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case("abc")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaM2PUUEeesLuP4RHs4vA" name="feel-lower-case-function_006_d8257b3b92">
+    <dmn:description>Tests FEEL expression: 'lower case("?@{")' and expects result: '"?@{" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case("?@{")'?</dmn:question>
+    <dmn:allowedAnswers>"?@{" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaM2fUUEeesLuP4RHs4vA" name="feel-lower-case-function_006_d8257b3b92" typeRef="tfeel-lower-case-function_006_d8257b3b92_Result"/>
+    <dmn:literalExpression id="_jAaM1_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case("?@{")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaMxPUUEeesLuP4RHs4vA" name="feel-lower-case-function_001_f6ff05bcfa">
+    <dmn:description>Tests FEEL expression: 'lower case("A")' and expects result: '"a" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case("A")'?</dmn:question>
+    <dmn:allowedAnswers>"a" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaMxfUUEeesLuP4RHs4vA" name="feel-lower-case-function_001_f6ff05bcfa" typeRef="tfeel-lower-case-function_001_f6ff05bcfa_Result"/>
+    <dmn:literalExpression id="_jAaMw_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case("A")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jAaM0PUUEeesLuP4RHs4vA" name="feel-lower-case-function_004_2dbf99e8c0">
+    <dmn:description>Tests FEEL expression: 'lower case("aBc4")' and expects result: '"abc4" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'lower case("aBc4")'?</dmn:question>
+    <dmn:allowedAnswers>"abc4" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jAaM0fUUEeesLuP4RHs4vA" name="feel-lower-case-function_004_2dbf99e8c0" typeRef="tfeel-lower-case-function_004_2dbf99e8c0_Result"/>
+    <dmn:literalExpression id="_jAaMz_UUEeesLuP4RHs4vA">
+      <dmn:text>lower case("aBc4")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_jAaMwfUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.3 Table 60">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_jAaMwPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_jAaM3_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaM2_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaM4_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaMx_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaM0_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaMy_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaM1_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaMw_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jAaMz_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaM4PUUEeesLuP4RHs4vA" dmnElementRef="_jAaM4PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaM3PUUEeesLuP4RHs4vA" dmnElementRef="_jAaM3PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="203" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaM5PUUEeesLuP4RHs4vA" dmnElementRef="_jAaM5PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="300" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaMyPUUEeesLuP4RHs4vA" dmnElementRef="_jAaMyPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaM1PUUEeesLuP4RHs4vA" dmnElementRef="_jAaM1PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaMzPUUEeesLuP4RHs4vA" dmnElementRef="_jAaMzPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaM2PUUEeesLuP4RHs4vA" dmnElementRef="_jAaM2PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaMxPUUEeesLuP4RHs4vA" dmnElementRef="_jAaMxPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaM0PUUEeesLuP4RHs4vA" dmnElementRef="_jAaM0PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jAaMwfUUEeesLuP4RHs4vA" dmnElementRef="_jAaMwfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="303" y="199" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<definitions xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+                      xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
+                      xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
+                      xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" 
+                      xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" 
+                      xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase" 
+                      xmlns:trisofeed="http://trisotech.com/feed" 
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+                      xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+                      xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="_f27bb64b-6fc7-4e1f-9848-11ba35e0df36" 
+                      namespace="http://www.trisotech.com/definitions/_f27bb64b-6fc7-4e1f-9848-11ba35e0df36"          exporter="DMN Modeler" exporterVersion="6.2.1" 
+                      name="Imported Model" triso:logoChoice="Default">
+    <itemDefinition name="tPerson" label="tPerson" isCollection="false">
+        <itemComponent name="name" id="_9bb0759c-b3c1-482f-87f5-c047dc65cef0" isCollection="false">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="age" id="_929acc15-101c-4e49-9b11-494fff411e50" isCollection="false">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <businessKnowledgeModel id="_32543811-b499-4608-b784-6c6f294b1c58" name="Say Hello">
+        <variable name="Say Hello" id="_a8eb10e1-30e6-40d8-a564-a868f4e0af34" typeRef="string"/>
+        <encapsulatedLogic id="_acbb96c9-34a3-4628-8179-dfc5f583e695" kind="FEEL" typeRef="string" triso:expressionId="_39e3582e-df8d-44a4-8309-2d94bf4c0406">
+            <formalParameter name="Person" typeRef="tPerson" id="_4a626f74-2ecc-4759-b76a-04baec6b795d"/>
+            <literalExpression id="_c173a894-3719-4d2f-a365-25850e217310">
+                <text>"Hello " + Person.name + "!"</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_f27bb64b-6fc7-4e1f-9848-11ba35e0df36_D2" name="Page 1">
+            <dmndi:Size height="1050" width="1485"/>
+            <dmndi:DMNShape id="_f27bb64b-6fc7-4e1f-9848-11ba35e0df36_s1" dmnElementRef="_32543811-b499-4608-b784-6c6f294b1c58">
+                <dc:Bounds x="106" y="106" width="154" height="61"/>
+                <dmndi:DMNLabel sharedStyle="LS_f27bb64b-6fc7-4e1f-9848-11ba35e0df36_0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+        <dmndi:DMNStyle id="LS_f27bb64b-6fc7-4e1f-9848-11ba35e0df36_0" fontFamily="arial,helvetica,sans-serif" fontSize="11" fontBold="false" fontItalic="false" fontUnderline="false" fontStrikeThrough="false"/>
+    </dmndi:DMNDI>
+</definitions>

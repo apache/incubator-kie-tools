@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" expressionLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="http://www.trisotech.com/definitions/_c2dc9bd5-010e-4351-b375-7db74d8ba69d" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" name="stringFunctions" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition isCollection="false" name="tBasic" id="tBasic">
+        <itemComponent isCollection="false" name="startsWithX" id="_5d7320fd-aa96-4319-a4da-593ec491d0b0">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="startsWithB" id="_bc690f14-ecc7-402b-904d-ca2eeec91881">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="endsWithX" id="_9a4db404-cd4b-4de3-8dc6-f06a7c538dae">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="endsWithB" id="_1e0cc65d-a319-453e-b55b-e1eff815521c">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="containsX" id="_558c199a-17d9-46f4-8661-ec76fc67374d">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="containsB" id="_ca9df9fb-61f1-4f43-93ca-d9600b87285d">
+            <typeRef>boolean</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="substringC1" id="_82968175-bbd2-4541-8461-2898e9d9b86d">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="stringlength" id="_e87917e4-37ae-44a9-b156-d490292a036e">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="uppercase" id="_cf4985ae-5244-4b32-9abb-bf9f012233b7">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="lowercase" id="_38e20849-e3ab-4eff-847e-f7a017e89778">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="substringBeforeB" id="_814080bc-e9cd-4a79-aff0-ce64d6fef8df">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="substringAfterB" id="_b11a7ed7-6bad-4c8a-8edb-c768f2604ed8">
+            <typeRef>string</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="false" name="tReplace" id="tReplace">
+        <itemComponent isCollection="false" name="Aao" id="_1d5254b9-0a5f-42d2-be18-338518f861cc">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="AanplusStarstar" id="_71470763-6dbe-43a4-b5e3-eca10bab1814">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent isCollection="false" name="encloseVowels" id="_afe9608a-b74a-4a66-80f1-6de501eb8d9b">
+            <typeRef>string</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <inputData name="A" id="_0923ed0c-3674-4476-b84c-f9ad5e5e8048">
+        <variable typeRef="string" name="A"/>
+    </inputData>
+    <inputData name="B" id="_1df2ad51-3334-4098-b55f-df885fb0e412">
+        <variable typeRef="string" name="B"/>
+    </inputData>
+    <inputData name="NumC" id="_6a75944d-7013-4fc3-8770-ab8eaa0e0560">
+        <variable typeRef="number" name="NumC"/>
+    </inputData>
+    <decision name="Basic" id="_de5529b1-ed4c-4b39-9e36-e0e056aec20c">
+        <variable typeRef="tBasic" name="Basic"/>
+        <informationRequirement id="_17e8658a-1553-481b-872a-ea3ff99a3f30">
+            <requiredInput href="#_0923ed0c-3674-4476-b84c-f9ad5e5e8048"/>
+        </informationRequirement>
+        <informationRequirement id="_51006fa1-eb5e-4054-9de6-3e2c65300e35">
+            <requiredInput href="#_1df2ad51-3334-4098-b55f-df885fb0e412"/>
+        </informationRequirement>
+        <informationRequirement id="_754245ae-5901-4dc0-965c-81f00af82970">
+            <requiredInput href="#_6a75944d-7013-4fc3-8770-ab8eaa0e0560"/>
+        </informationRequirement>
+        <context>
+            <contextEntry>
+                <variable typeRef="boolean" name="startsWithX"/>
+                <literalExpression>
+                    <text>starts with(A,"x")</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="boolean" name="startsWithB"/>
+                <literalExpression>
+                    <text>starts with(A,B)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="boolean" name="endsWithX"/>
+                <literalExpression>
+                    <text>ends with(A,"x")</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="boolean" name="endsWithB"/>
+                <literalExpression>
+                    <text>ends with(A,B)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="boolean" name="containsX"/>
+                <literalExpression>
+                    <text>contains(A,"x")</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="boolean" name="containsB"/>
+                <literalExpression>
+                    <text>contains(A,B)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="substringC1"/>
+                <literalExpression>
+                    <text>substring(A,NumC,1)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="number" name="stringlength"/>
+                <literalExpression>
+                    <text>string length(A)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="uppercase"/>
+                <literalExpression>
+                    <text>upper case(A)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="lowercase"/>
+                <literalExpression>
+                    <text>lower case(B)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="substringBeforeB"/>
+                <literalExpression>
+                    <text>substring before(A,B)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="substringAfterB"/>
+                <literalExpression>
+                    <text>substring after(A,B)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="Matches" id="_93059496-257a-482b-b966-fcafe28cc84b">
+        <variable typeRef="boolean" name="Matches"/>
+        <informationRequirement id="cc95fad2-0f11-4967-b06f-b0bfade06761">
+            <requiredInput href="#_0923ed0c-3674-4476-b84c-f9ad5e5e8048"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>matches(A,"[a-z]{3}")</text>
+        </literalExpression>
+    </decision>
+    <decision name="Replace" id="_cc368e53-961d-4399-ad91-df00446b49d8">
+        <variable typeRef="tReplace" name="Replace"/>
+        <informationRequirement id="c43c1999-2a2f-419a-8816-a16d42932298">
+            <requiredInput href="#_0923ed0c-3674-4476-b84c-f9ad5e5e8048"/>
+        </informationRequirement>
+        <context>
+            <contextEntry>
+                <variable typeRef="string" name="Aao"/>
+                <literalExpression>
+                    <text>replace(A,"a","o")</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="AanplusStarstar"/>
+                <literalExpression>
+                    <text>replace(A,"(an)+", "**")</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="string" name="encloseVowels"/>
+                <literalExpression>
+                    <text>replace(A,"[aeiouy]","[$0]")</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <decision name="Constructor" id="_255687db-652a-44c5-b4ca-9b3de659fd31">
+        <variable typeRef="string" name="Constructor"/>
+        <informationRequirement id="_8cbea39c-fc2b-40b1-90f3-c602c710d06a">
+            <requiredInput href="#_6a75944d-7013-4fc3-8770-ab8eaa0e0560"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>string(NumC)</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_D1">
+            <dmndi:Size height="650.0" width="1096.0"/>
+            <dmndi:DMNShape dmnElementRef="_0923ed0c-3674-4476-b84c-f9ad5e5e8048" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s1">
+                <dc:Bounds height="60.0" width="153.0" x="365.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_1df2ad51-3334-4098-b55f-df885fb0e412" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s2">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_6a75944d-7013-4fc3-8770-ab8eaa0e0560" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s3">
+                <dc:Bounds height="60.0" width="153.0" x="578.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_de5529b1-ed4c-4b39-9e36-e0e056aec20c" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s4">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_93059496-257a-482b-b966-fcafe28cc84b" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s5">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_cc368e53-961d-4399-ad91-df00446b49d8" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s6">
+                <dc:Bounds height="61.0" width="154.0" x="578.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_255687db-652a-44c5-b4ca-9b3de659fd31" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_s7">
+                <dc:Bounds height="61.0" width="154.0" x="792.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_17e8658a-1553-481b-872a-ea3ff99a3f30" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_e1">
+                <di:waypoint x="441.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_51006fa1-eb5e-4054-9de6-3e2c65300e35" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_e2">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_754245ae-5901-4dc0-965c-81f00af82970" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_e3">
+                <di:waypoint x="654.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="cc95fad2-0f11-4967-b06f-b0bfade06761" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_e4">
+                <di:waypoint x="441.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="c43c1999-2a2f-419a-8816-a16d42932298" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_e5">
+                <di:waypoint x="441.0" y="331.0"/>
+                <di:waypoint x="655.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_8cbea39c-fc2b-40b1-90f3-c602c710d06a" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d_e6">
+                <di:waypoint x="654.0" y="331.0"/>
+                <di:waypoint x="869.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

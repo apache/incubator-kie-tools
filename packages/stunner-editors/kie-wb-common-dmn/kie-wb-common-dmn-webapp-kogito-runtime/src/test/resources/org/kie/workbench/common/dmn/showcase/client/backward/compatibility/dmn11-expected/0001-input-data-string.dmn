@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://github.com/agilepro/dmn-tck" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_0001-input-data-string" name="0001-input-data-string" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://github.com/agilepro/dmn-tck">
+	<dmn:extensionElements/>
+	<dmn:decision id="d_GreetingMessage" name="Greeting Message">
+		<dmn:extensionElements/>
+		<dmn:variable id="_215A03DB-39E7-4DDC-A3A2-27137DC09CA2" name="Greeting Message" typeRef="string"/>
+		<dmn:informationRequirement id="_62A5A325-DE2E-4DAB-81B0-261BFD455721">
+			<dmn:requiredInput href="#i_FullName"/>
+		</dmn:informationRequirement>
+		<dmn:literalExpression id="_4EFA4D67-5CE7-4816-AFEF-E70D4A69500E">
+			<dmn:text>"Hello " + Full Name</dmn:text>
+		</dmn:literalExpression>
+	</dmn:decision>
+	<dmn:inputData id="i_FullName" name="Full Name">
+		<dmn:extensionElements/>
+		<dmn:variable id="_F1E2768D-AD95-4827-9C68-BD80C9691DB2" name="Full Name" typeRef="string"/>
+	</dmn:inputData>
+	<dmndi:DMNDI>
+		<dmndi:DMNDiagram id="_94F32805-FCC5-43E1-AD96-B384AEA7E2D0" name="DRG">
+			<di:extension>
+				<kie:ComponentsWidthsExtension>
+					<kie:ComponentWidths dmnElementRef="_4EFA4D67-5CE7-4816-AFEF-E70D4A69500E"/>
+				</kie:ComponentsWidthsExtension>
+			</di:extension>
+			<dmndi:DMNShape id="dmnshape-drg-d_GreetingMessage" dmnElementRef="d_GreetingMessage" isCollapsed="false">
+				<dmndi:DMNStyle>
+					<dmndi:FillColor red="255" green="255" blue="255"/>
+					<dmndi:StrokeColor red="0" green="0" blue="0"/>
+					<dmndi:FontColor red="0" green="0" blue="0"/>
+				</dmndi:DMNStyle>
+				<dc:Bounds x="50" y="50" width="100" height="50"/>
+				<dmndi:DMNLabel/>
+			</dmndi:DMNShape>
+			<dmndi:DMNShape id="dmnshape-drg-i_FullName" dmnElementRef="i_FullName" isCollapsed="false">
+				<dmndi:DMNStyle>
+					<dmndi:FillColor red="255" green="255" blue="255"/>
+					<dmndi:StrokeColor red="0" green="0" blue="0"/>
+					<dmndi:FontColor red="0" green="0" blue="0"/>
+				</dmndi:DMNStyle>
+				<dc:Bounds x="50" y="225" width="100" height="50"/>
+				<dmndi:DMNLabel/>
+			</dmndi:DMNShape>
+			<dmndi:DMNEdge id="dmnedge-drg-_62A5A325-DE2E-4DAB-81B0-261BFD455721" dmnElementRef="_62A5A325-DE2E-4DAB-81B0-261BFD455721">
+				<di:waypoint x="100" y="250"/>
+				<di:waypoint x="100" y="75"/>
+			</dmndi:DMNEdge>
+		</dmndi:DMNDiagram>
+	</dmndi:DMNDI>
+</dmn:definitions>

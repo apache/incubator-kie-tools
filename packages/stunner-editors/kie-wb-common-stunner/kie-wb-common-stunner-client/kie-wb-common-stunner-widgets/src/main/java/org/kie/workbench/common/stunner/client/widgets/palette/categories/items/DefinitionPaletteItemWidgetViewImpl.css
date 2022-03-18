@@ -1,0 +1,18 @@
+.kie-palette-item-list-item {
+  height: 24px; /* IE11 */
+}
+
+.kie-palette-item-anchor-spacer {
+  display: inline-block !important; /* IE11 */
+}
+
+.kie-palette-item-icon-spacer {
+  vertical-align: super; /* IE11 */
+  display: inline-block; /*IE11*/
+  padding-right: 1em;
+  margin: auto;
+}
+
+.kie-palette-item-value-spacer {
+  display: inline-block !important;
+}

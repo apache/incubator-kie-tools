@@ -1,0 +1,68 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="http://www.trisotech.com/definitions/_1fedf2c0-0f4a-470c-bc66-a15528e8a49a"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_1fedf2c0-0f4a-470c-bc66-a15528e8a49a" name="literal - arithmetic" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401" namespace="http://www.trisotech.com/definitions/_1fedf2c0-0f4a-470c-bc66-a15528e8a49a">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="tLoan" name="tLoan" isCollection="false">
+    <dmn:itemComponent id="_561947e6-180a-416e-aa22-5e8e5d650624" name="principal" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_c1751fa0-4da6-4cb5-a234-45765d6b35ac" name="rate" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_006e0a06-26a6-42e1-9b3c-4b2502a567fe" name="termMonths" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:decision id="_ebf02591-49c6-448d-9f76-6358b0e011c3" name="payment">
+    <dmn:extensionElements/>
+    <dmn:variable id="_B6CBED5C-B419-4975-BDA3-3C5804E5D292" name="payment" typeRef="number"/>
+    <dmn:informationRequirement id="_20E384BE-C605-46FC-9A3E-5846770B92BE">
+      <dmn:requiredInput href="#_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_5DA034E1-BBFC-4643-B3A2-120FE2FF200A">
+      <dmn:text>(loan.principal*loan.rate/12)/(1-(1+loan.rate/12)**-loan.termMonths)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:inputData id="_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a" name="loan">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0014BF56-748F-4A8B-818A-17A1DBBAE8AC" name="loan" typeRef="tLoan"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_EF00C7A2-1BD8-43DD-BA27-57022C0F1EAE" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_5DA034E1-BBFC-4643-B3A2-120FE2FF200A"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_ebf02591-49c6-448d-9f76-6358b0e011c3" dmnElementRef="_ebf02591-49c6-448d-9f76-6358b0e011c3" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a" dmnElementRef="_1f4ae444-2e4e-4d26-b1f7-87a645c3f50a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="225" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_20E384BE-C605-46FC-9A3E-5846770B92BE" dmnElementRef="_20E384BE-C605-46FC-9A3E-5846770B92BE">
+        <di:waypoint x="100" y="250"/>
+        <di:waypoint x="100" y="75"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

@@ -18,6 +18,7 @@
 .project
 **/.settings/
 package-lock.json
+**/.mvn
 
 ## chrome-extension-pack-kogito-kie-editors
 **/logs/
@@ -29,7 +30,6 @@ package-lock.json
 **/.rpt2_cache
 
 # misc
-**/.DS_Store
 **/.env
 **/.env.local
 **/.env.development.local
@@ -57,10 +57,6 @@ package-lock.json
 **/mvnw.cmd
 **/.mvn
 
-## boxed-expression-component & feel-input-component
-packages/boxed-expression-component/src
-packages/feel-input-component/src
-
 # Eclipse, Netbeans and IntelliJ files
 **/nbproject
 **/*.ipr
@@ -76,3 +72,106 @@ packages/feel-input-component/src
 packages/vscode-extension-dmn-editor/server
 packages/vscode-extension-bpmn-editor/server
 packages/vscode-extension-pack-kogito-kie-editors/server
+packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/lib
+
+# imported from kogito-editors-java
+*.ipr
+*.iws
+*.iml
+.idea/*
+*/.idea/*
+.settings
+.metadata/*
+.gwt-tmp/
+target/
+bin/
+.errai/
+.DS_Store
+*.releaseBackup
+*.versionsBackup
+release.properties
+.gwt
+/war/WEB-INF/classes/
+packages/stunner-editors/errai-ioc/war/WEB-INF/classes/
+packages/stunner-editors/errai-tools/war/
+*/**/war/WEB-INF/classes
+*/**/war/AsyncDemo/
+*/**/war/ClientService/
+*/**/war/HelloWorld/
+*/**/war/QueryService/
+*/**/war/RPCDemo/
+*/**/war/Serialization/
+*/**/war/StockDemo/
+*.JUnit/
+*/**/gwt-unitCache/
+*/**/class_list.txt
+*.jpage
+packages/stunner-editors/**/.factorypath
+packages/stunner-editors/**/dependency-reduced-pom.xml
+packages/stunner-editors/**/org.kie.workbench.screens
+packages/stunner-editors/**/org.kie.workbench.widgets
+packages/stunner-editors/**/org.kie.workbench.forms
+packages/stunner-editors/**/videos/**
+packages/stunner-editors/**/*.mp4
+packages/stunner-editors/**/.netlify
+packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/org/
+packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/SCESIM.js
+packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/Jsonix-all.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNKogitoTestingWebapp/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DC.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DI.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DMN12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/DMNDI12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/KIE.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/Jsonix-all.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/MainJs.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/model/FormatterJs.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing/src/main/webapp/kogito-editors-js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/kogito-editors-js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DC.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DI.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DMN12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/DMNDI12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/KIE.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/Jsonix-all.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/src/main/webapp/model/MainJs.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JSIName.java
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JsUtils.java
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/MainJs.java
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/callbacks/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dc/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/di/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dmn12/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/dmndi12/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/java/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/model/kie/
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DC.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DI.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DMNDI12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/DMN12.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/KIE.js
+packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-marshaller/src/main/resources/org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/Jsonix-all.js
+packages/stunner-editors/**/src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoTesting/
+packages/stunner-editors/**/src/main/webapp/org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime/
+packages/stunner-editors/**/src/main/webapp/org.kie.workbench.common.stunner.kogito.StunnerStandaloneShowcase/
+packages/stunner-editors/**/src/main/webapp/org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor/
+packages/stunner-editors/**/src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNShowcase/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/classes/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/deploy/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/lib/
+packages/stunner-editors/**/src/main/webapp/WEB-INF/model/
+packages/stunner-editors/**/src/main/webapp/model/
+packages/stunner-editors/**/kie-wb-common-dmn-webapp
+
+# dashbuilder
+packages/dashbuilder/**/org.uberfire
+packages/dashbuilder/**/org.dashbuilder
+packages/dashbuilder/**/WEB-INF/classes/
+packages/dashbuilder/dashboard.zip
+packages/dashbuilder/nbproject
+packages/dashbuilder/uberfire-docs/src/main/asciidoc/*.html
+packages/dashbuilder/**/org.dashbuilder.DashbuilderAuthoring
+packages/dashbuilder/**/gwt-unitCache
+packages/dashbuilder/dashbuilder-authoring/src/main/webapp/WEB-INF/lib/
+packages/dashbuilder/dashbuilder-authoring/src/main/webapp/WEB-INF/classes/
+packages/dashbuilder/**/dependency-reduced-pom.xml

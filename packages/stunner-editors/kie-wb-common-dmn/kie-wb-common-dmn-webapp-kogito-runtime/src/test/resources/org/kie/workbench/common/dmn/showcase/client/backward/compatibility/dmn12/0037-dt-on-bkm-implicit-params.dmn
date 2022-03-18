@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler" exporterVersion="6.1.3" namespace="http://www.trisotech.com/definitions/_102a463a-acf1-4899-b16a-96b85824a709" name="DT on BKM implicit parameters" triso:logoChoice="Default" id="_102a463a-acf1-4899-b16a-96b85824a709" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <extensionElements/>
+    <itemDefinition name="tPerson" label="tPerson">
+        <itemComponent name="Name" id="_4587234e-85c7-4419-98d9-ebb66aa1e043">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="Gender" id="_f56cfffd-a9ad-4b10-b33e-d1172cacf3c5">
+            <typeRef>string</typeRef>
+            <allowedValues triso:constraintsType="enumeration">
+                <text>"Male","Female"</text>
+            </allowedValues>
+        </itemComponent>
+        <itemComponent name="Children" id="_c7bd7a3c-518a-414e-a180-4bf8b918bd04">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <inputData name="Person" id="_542f2377-ef0c-452c-a34d-1496eb75de23">
+        <variable typeRef="tPerson" name="Person" id="_1b34cc3f-a148-4617-a2e4-b6de00a99d36"/>
+    </inputData>
+    <decision name="Person's description" id="_d3722a6a-6a8f-4949-8480-9bd660152915">
+        <variable typeRef="string" name="Person's description" id="_0e20f081-b76f-4131-937c-4dcf20efb714"/>
+        <informationRequirement id="_3a0399ac-3d93-43ac-83d6-b9762662a641">
+            <requiredInput href="#_542f2377-ef0c-452c-a34d-1496eb75de23"/>
+        </informationRequirement>
+        <knowledgeRequirement id="ee972635-be5b-4665-89d2-68142d0501c7">
+            <requiredKnowledge href="#_d86b380d-733f-4c24-8143-c175d11cc95f"/>
+        </knowledgeRequirement>
+        <invocation typeRef="string" id="_37495c4b-0341-4c62-b219-16309a01bf2a">
+            <literalExpression id="literal__37495c4b-0341-4c62-b219-16309a01bf2a">
+                <text>Description</text>
+            </literalExpression>
+            <binding>
+                <parameter name="Person.Gender" id="_6f440f9b-298b-49ec-a8de-65241caa10f3"/>
+                <literalExpression id="_30bfbdc6-4cb2-4e3e-803d-e5feb9b578bf">
+                    <text>Person.Gender</text>
+                </literalExpression>
+            </binding>
+            <binding>
+                <parameter name="Person.Name" id="_5ee35025-43b5-4221-a40c-dc897ddf7196"/>
+                <literalExpression id="_1ab0c2d4-a659-4be2-b4f3-fb0b6f99f6a5">
+                    <text>Person.Name</text>
+                </literalExpression>
+            </binding>
+            <binding>
+                <parameter name="Person.Children" id="_8f6e0244-466c-461c-aebf-1d52ccc1f540"/>
+                <literalExpression id="_ccb609f3-d2b1-4f60-b126-0d03e1c3b019">
+                    <text>Person.Children</text>
+                </literalExpression>
+            </binding>
+        </invocation>
+    </decision>
+    <businessKnowledgeModel name="Description" id="_d86b380d-733f-4c24-8143-c175d11cc95f">
+        <variable name="Description" id="_4ec95bda-ae86-435a-8724-d804f0448d76"/>
+        <encapsulatedLogic>
+            <formalParameter typeRef="string" name="Person.Gender"/>
+            <formalParameter typeRef="string" name="Person.Name"/>
+            <formalParameter typeRef="number" name="Person.Children"/>
+            <decisionTable hitPolicy="UNIQUE" outputLabel="Description" typeRef="string" id="_5d73f8fd-009d-47c9-aa37-1b7fed64a0ac">
+                <input id="_061b2667-8680-4229-bbc6-1d2f371580a8">
+                    <inputExpression typeRef="string">
+                        <text>Person.Gender</text>
+                    </inputExpression>
+                    <inputValues triso:constraintsType="enumeration">
+                        <text>"Male","Female"</text>
+                    </inputValues>
+                </input>
+                <input id="_ad99f7c7-d615-46b8-ba4a-c44dacd4afbb">
+                    <inputExpression typeRef="string">
+                        <text>Person.Name</text>
+                    </inputExpression>
+                </input>
+                <input id="_3ded7b42-3e2f-4642-a82f-cc4189a068b7">
+                    <inputExpression typeRef="number">
+                        <text>Person.Children</text>
+                    </inputExpression>
+                </input>
+                <output id="_4681ea00-ee6c-4731-ae85-3bef92bef124"/>
+                <rule id="_60226276-8b6c-4d01-8615-ea2887968998">
+                    <inputEntry id="_60b3620f-278d-40b8-9664-9601178df810">
+                        <text>"Male"</text>
+                    </inputEntry>
+                    <inputEntry id="_84f9f0af-1817-4036-93e3-ccc2d0bab1c8">
+                        <text>-</text>
+                    </inputEntry>
+                    <inputEntry id="_eb5a6bb4-f1a7-42c9-bb2a-27ff44372a01">
+                        <text>-</text>
+                    </inputEntry>
+                    <outputEntry expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true" id="_b2516134-f85e-46fe-a48f-e97d15890193">
+                        <text>Person.Name + " is a dad of " + string(decimal(Person.Children,0)) + " children."</text>
+                    </outputEntry>
+                </rule>
+                <rule id="_55949bfa-9e7d-468d-8338-f98d01910a72">
+                    <inputEntry id="_f9adf8ef-6d54-482a-ad93-52bec6484d6c">
+                        <text>"Female"</text>
+                    </inputEntry>
+                    <inputEntry id="_fe58879f-d6b9-4bd0-adbf-e12dc8c1c19a">
+                        <text>-</text>
+                    </inputEntry>
+                    <inputEntry id="_22d2ef06-0b21-4fb0-89d3-e59bf59501df">
+                        <text>-</text>
+                    </inputEntry>
+                    <outputEntry expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" triso:unparsed="true" id="_5ac32905-7373-451e-b143-29c55833eaf6">
+                        <text>Person.Name + " is a mother of " + string(decimal(Person.Children,0)) + " children."</text>
+                    </outputEntry>
+                </rule>
+            </decisionTable>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_102a463a-acf1-4899-b16a-96b85824a709_D1">
+            <dmndi:Size height="650.0" width="667.0"/>
+            <dmndi:DMNShape dmnElementRef="_542f2377-ef0c-452c-a34d-1496eb75de23" id="_102a463a-acf1-4899-b16a-96b85824a709_s1">
+                <dc:Bounds height="60.0" width="153.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_d3722a6a-6a8f-4949-8480-9bd660152915" id="_102a463a-acf1-4899-b16a-96b85824a709_s2">
+                <dc:Bounds height="61.0" width="154.0" x="256.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_d86b380d-733f-4c24-8143-c175d11cc95f" id="_102a463a-acf1-4899-b16a-96b85824a709_s3">
+                <dc:Bounds height="61.0" width="154.0" x="363.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="ee972635-be5b-4665-89d2-68142d0501c7" id="_102a463a-acf1-4899-b16a-96b85824a709_e1">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="333.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_3a0399ac-3d93-43ac-83d6-b9762662a641" id="_102a463a-acf1-4899-b16a-96b85824a709_e2">
+                <di:waypoint x="226.0" y="331.0"/>
+                <di:waypoint x="333.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+
