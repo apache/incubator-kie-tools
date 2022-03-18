@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
 import { AuthenticationSession, Uri } from "vscode";
 import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
@@ -27,15 +26,12 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { getSwfServiceCatalogStore } from "./serviceCatalog";
-import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import {
-  SwfServiceCatalogChannelApi,
-  SwfServiceCatalogService,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SwfVsCodeExtensionSettings } from "./settings";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
@@ -88,26 +84,13 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       i18n,
       initialBackup,
       new SwfServiceCatalogChannelApiImpl({
+        swfServiceCatalogStore,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
-        onRefresh: () => {
-          vscode.window.setStatusBarMessage(
-            "Serverless Workflow Editor: Refreshing Service Catalog using Service Registries from Red Hat Hybrid Cloud Console...",
-            3000
-          );
-          return swfServiceCatalogStore.refresh();
-        },
-        onLogInToRhhcc: () => vscode.commands.executeCommand("extension.kogito.swf.logInToRhhcc"),
-        onImportFunctionFromCompletionItem: (
-          service: SwfServiceCatalogService,
-          importedFunction: SwfServiceCatalogFunction
-        ) => {
-          vscode.window.showInformationMessage(JSON.stringify(service) + JSON.stringify(importedFunction));
-        },
       })
     );
   }
 }
 
-function getUser(session: AuthenticationSession | undefined) {
+function getUser(session: AuthenticationSession | undefined): SwfServiceCatalogUser | undefined {
   return session ? { username: session.account.label } : undefined;
 }

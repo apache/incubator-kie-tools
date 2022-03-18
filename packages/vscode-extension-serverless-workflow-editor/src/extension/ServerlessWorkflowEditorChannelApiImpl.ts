@@ -38,7 +38,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
+import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
 import * as vscode from "vscode";
 
