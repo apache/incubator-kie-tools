@@ -24,7 +24,7 @@ import * as swfModelQueries from "./modelQueries";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
-} from "@kie-tools/serverless-workflow-service-catalog/src/api";
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SwfMonacoEditorCommandArgs } from "../commands";
 
 const completions = new Map<

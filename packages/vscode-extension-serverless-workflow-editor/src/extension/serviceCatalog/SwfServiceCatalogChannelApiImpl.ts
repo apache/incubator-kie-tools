@@ -17,6 +17,7 @@
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
@@ -26,15 +27,14 @@ import * as path from "path";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 import { COMMAND_IDS } from "../commands";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./rhhccServiceRegistry";
-import { SwfServiceCatalogServiceSourceType } from "@kie-tools/serverless-workflow-service-catalog/src/api";
-import { SwfVsCodeExtensionSettings } from "../settings";
+import { SwfVsCodeExtensionConfiguration } from "../configuration";
 
 const encoder = new TextEncoder();
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
     private readonly args: {
-      settings: SwfVsCodeExtensionSettings;
+      settings: SwfVsCodeExtensionConfiguration;
       baseFileAbsolutePath: string;
       defaultUser: SwfServiceCatalogUser | undefined;
       defaultServiceRegistryUrl: string | undefined;

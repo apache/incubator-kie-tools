@@ -21,7 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "./settings";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 import { COMMAND_IDS } from "./commands";
@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
-  const settings = new SwfVsCodeExtensionSettings();
+  const settings = new SwfVsCodeExtensionConfiguration();
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
 
   KogitoVsCode.startExtension({

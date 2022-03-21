@@ -2,11 +2,8 @@ import { editor, Position } from "monaco-editor";
 import * as React from "react";
 import { openWidget } from "../widgets";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/src/api";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogService,
-} from "@kie-tools/serverless-workflow-service-catalog/src/api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 // Part of an example
 //

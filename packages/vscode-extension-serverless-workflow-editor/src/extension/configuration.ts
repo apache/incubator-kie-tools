@@ -1,7 +1,7 @@
 import {
-  getInterpolateSettingsValue,
-  settingsTokenKeys,
-} from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
+  getInterpolatedConfigurationValue,
+  configurationTokenKeys,
+} from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import * as vscode from "vscode";
 
 export const CONFIGURATION_SECTIONS = {
@@ -10,11 +10,11 @@ export const CONFIGURATION_SECTIONS = {
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls",
 };
 
-export class SwfVsCodeExtensionSettings {
+export class SwfVsCodeExtensionConfiguration {
   public getSpecsDirPath() {
     return vscode.workspace
       .getConfiguration()
-      .get(CONFIGURATION_SECTIONS.specsStoragePath, `${settingsTokenKeys["${fileDirname}"]}/specs`);
+      .get(CONFIGURATION_SECTIONS.specsStoragePath, `${configurationTokenKeys["${fileDirname}"]}/specs`);
   }
 
   public shouldReferenceServiceRegistryFunctionsWithUrls() {
@@ -28,7 +28,7 @@ export class SwfVsCodeExtensionSettings {
   }
 
   public getInterpolatedSpecsDirPath(args: { baseFileAbsolutePath: string }) {
-    return getInterpolateSettingsValue({
+    return getInterpolatedConfigurationValue({
       currentFileAbsolutePath: args.baseFileAbsolutePath,
       value: this.getSpecsDirPath(),
     });

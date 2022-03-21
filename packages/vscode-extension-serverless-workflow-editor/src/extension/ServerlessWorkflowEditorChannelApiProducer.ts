@@ -29,10 +29,12 @@ import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "./settings";
+import {
+  SwfServiceCatalogChannelApi,
+  SwfServiceCatalogUser,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { FsWatchingServiceCatalogStore } from "./serviceCatalog/fs";
 import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
@@ -40,7 +42,7 @@ import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry"
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
-      settings: SwfVsCodeExtensionSettings;
+      settings: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
     }
   ) {}

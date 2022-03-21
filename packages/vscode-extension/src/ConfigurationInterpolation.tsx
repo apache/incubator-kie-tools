@@ -17,14 +17,17 @@
 import * as __path from "path";
 import * as vscode from "vscode";
 
-type SettingsValueInterpolationToken =
+type ConfigurationValueInterpolationToken =
   | "${workspaceFolder}"
   | "${fileDirname}"
   | "${fileExtname}"
   | "${fileBasename}"
   | "${fileBasenameNoExtension}";
 
-export const settingsTokenKeys: Record<SettingsValueInterpolationToken, SettingsValueInterpolationToken> = {
+export const configurationTokenKeys: Record<
+  ConfigurationValueInterpolationToken,
+  ConfigurationValueInterpolationToken
+> = {
   "${workspaceFolder}": "${workspaceFolder}",
   "${fileDirname}": "${fileDirname}",
   "${fileExtname}": "${fileExtname}",
@@ -39,7 +42,7 @@ export function doInterpolation(tokens: Record<string, string>, value: string) {
   );
 }
 
-export function getInterpolateSettingsValue(args: { currentFileAbsolutePath: string; value: string }) {
+export function getInterpolatedConfigurationValue(args: { currentFileAbsolutePath: string; value: string }) {
   const parsedPath = __path.parse(args.currentFileAbsolutePath);
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
@@ -50,7 +53,7 @@ export function getInterpolateSettingsValue(args: { currentFileAbsolutePath: str
 
   const fileExtensionWithDot = parsedPath.base.substring(parsedPath.base.indexOf("."));
 
-  const tokens: Record<SettingsValueInterpolationToken, string> = {
+  const tokens: Record<ConfigurationValueInterpolationToken, string> = {
     "${workspaceFolder}": workspace?.uri.path ?? parsedPath.dir,
     "${fileDirname}": parsedPath.dir,
     "${fileExtname}": fileExtensionWithDot,

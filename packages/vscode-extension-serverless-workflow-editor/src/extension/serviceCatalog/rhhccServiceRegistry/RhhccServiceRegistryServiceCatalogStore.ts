@@ -1,4 +1,5 @@
 import {
+  SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
@@ -7,8 +8,7 @@ import { RhhccAuthenticationStore } from "../../rhhcc/RhhccAuthenticationStore";
 import axios from "axios";
 import type * as openapiTypes from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
-import { SwfServiceCatalogFunctionSourceType } from "@kie-tools/serverless-workflow-service-catalog/src/api";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "../../settings";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 import * as vscode from "vscode";
 import * as path from "path";
 import * as yaml from "yaml";
@@ -24,7 +24,7 @@ export class RhhccServiceRegistryServiceCatalogStore {
     private readonly args: {
       baseFileAbsolutePath: string;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
-      settings: SwfVsCodeExtensionSettings;
+      settings: SwfVsCodeExtensionConfiguration;
     }
   ) {}
 

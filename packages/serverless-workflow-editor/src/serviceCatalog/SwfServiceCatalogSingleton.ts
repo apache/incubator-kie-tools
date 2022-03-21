@@ -18,7 +18,7 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogService,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/src/api";
+import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 interface SwfServiceCatalogApi {
   getServices(): SwfServiceCatalogService[];

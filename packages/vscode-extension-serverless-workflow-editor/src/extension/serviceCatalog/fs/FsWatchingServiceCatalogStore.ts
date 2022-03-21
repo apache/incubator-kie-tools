@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import { Disposable, FileType } from "vscode";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "../../settings";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
@@ -27,7 +27,7 @@ export class FsWatchingServiceCatalogStore {
   private configurationChangedCallback: Disposable | undefined;
   private fsWatcher: Disposable | undefined;
 
-  constructor(private readonly args: { baseFileAbsolutePath: string; settings: SwfVsCodeExtensionSettings }) {}
+  constructor(private readonly args: { baseFileAbsolutePath: string; settings: SwfVsCodeExtensionConfiguration }) {}
 
   public init(args: { onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any> }) {
     this.onChangeCallback = args.onNewServices;
