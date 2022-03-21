@@ -32,14 +32,14 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
 
           return [
             {
-              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
+              id: commandIds["OpenFunctionsCompletionItems"],
               title: `+ Add function...`,
               arguments: [
                 {
                   position,
                   node,
                   newCursorPosition,
-                } as SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItemsAtTheBottom"],
+                } as SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"],
               ],
             },
           ];

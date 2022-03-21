@@ -97,6 +97,11 @@
           "default": "${fileDirname}/specs",
           "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
         },
+        "kogito.sw.serviceRegistryUrl": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The Service Registry URL to fetch artifacts that improve the functions autocompletion mechanism."
+        },
         "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls": {
           "type": "boolean",
           "default": false,

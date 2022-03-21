@@ -47,37 +47,40 @@ const completions = new Map<
       const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
       return SwfServiceCatalogSingleton.get()
-        .getFunctions()
-        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
-        .map((swfServiceCatalogFunc) => {
-          const swfFunction: Omit<Specification.Function, "normalize"> = {
-            name: `$\{1:${swfServiceCatalogFunc.name}}`,
-            operation: swfServiceCatalogFunc.operation,
-            type: swfServiceCatalogFunc.type,
-          };
-          return {
-            kind:
-              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
-                ? monaco.languages.CompletionItemKind.Interface
-                : monaco.languages.CompletionItemKind.Reference,
-            label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
-            detail:
-              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
-                ? ""
-                : swfServiceCatalogFunc.operation,
-            insertText: JSON.stringify(swfFunction, null, 2) + separator,
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range: overwriteRange,
-            command: {
-              id: commandIds["ImportFunctionFromCompletionItem"],
-              title: "Import function from completion item",
-              arguments: [
-                {
-                  importedFunction: swfServiceCatalogFunc,
-                } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
-              ],
-            },
-          };
+        .getServices()
+        .flatMap((service) => {
+          return service.functions
+            .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+            .map((swfServiceCatalogFunc) => {
+              const swfFunction: Omit<Specification.Function, "normalize"> = {
+                name: `$\{1:${swfServiceCatalogFunc.name}}`,
+                operation: swfServiceCatalogFunc.operation,
+                type: swfServiceCatalogFunc.type,
+              };
+              return {
+                kind:
+                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                    ? monaco.languages.CompletionItemKind.Interface
+                    : monaco.languages.CompletionItemKind.Reference,
+                label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
+                detail:
+                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                    ? ""
+                    : swfServiceCatalogFunc.operation,
+                insertText: JSON.stringify(swfFunction, null, 2) + separator,
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range: overwriteRange,
+                command: {
+                  id: commandIds["ImportFunctionFromCompletionItem"],
+                  title: "Import function from completion item",
+                  arguments: [
+                    {
+                      containingService: service,
+                    } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
+                  ],
+                },
+              };
+            });
         });
     },
   ],

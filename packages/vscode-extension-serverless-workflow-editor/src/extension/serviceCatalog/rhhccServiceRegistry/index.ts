@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 
-export async function askForServiceRegistryUrl(args: { currentValue: URL | undefined }) {
+export async function askForServiceRegistryUrl(args: { currentValue: string | undefined }) {
   return vscode.window
     .showInputBox({
       ignoreFocusOut: true,
@@ -14,7 +14,7 @@ export async function askForServiceRegistryUrl(args: { currentValue: URL | undef
           new URL(value);
           return undefined;
         } catch (e) {
-          return "Must be a valid URL";
+          return "Error: The provided input is not a valid Service Registry URL.";
         }
       },
     })
@@ -22,6 +22,10 @@ export async function askForServiceRegistryUrl(args: { currentValue: URL | undef
       if (!urlString) {
         return;
       }
-      return new URL(urlString);
+      return urlString;
     });
+}
+
+export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatalogServiceId: string) {
+  return `${swfServiceCatalogServiceId}__latest.yaml`;
 }

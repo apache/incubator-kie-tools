@@ -160,8 +160,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInToRhhcc();
   }
 
-  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction: SwfServiceCatalogFunction): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction);
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(containingService: SwfServiceCatalogService): void {
+    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(containingService);
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {

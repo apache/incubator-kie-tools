@@ -3,7 +3,10 @@ import * as React from "react";
 import { openWidget } from "../widgets";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/src/api";
-import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/src/api";
+import {
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogService,
+} from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 // Part of an example
 //
@@ -23,16 +26,16 @@ export type SwfMonacoEditorCommandTypes =
   | "ImportFunctionFromCompletionItem"
   | "OpenFunctionsWidget"
   | "OpenStatesWidget"
-  | "OpenFunctionsCompletionItemsAtTheBottom";
+  | "OpenFunctionsCompletionItems";
 
 export type SwfMonacoEditorCommandArgs = {
   LogInToRhhcc: {};
   SetupServiceRegistryUrl: {};
   RefreshServiceCatalogFromRhhcc: {};
-  ImportFunctionFromCompletionItem: { importedFunction: SwfServiceCatalogFunction };
+  ImportFunctionFromCompletionItem: { containingService: SwfServiceCatalogService };
   OpenFunctionsWidget: { position: Position };
   OpenStatesWidget: { position: Position };
-  OpenFunctionsCompletionItemsAtTheBottom: { newCursorPosition: Position };
+  OpenFunctionsCompletionItems: { newCursorPosition: Position };
 };
 
 export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
@@ -51,7 +54,7 @@ export function initAugmentationCommands(
     ImportFunctionFromCompletionItem: editorInstance.addCommand(
       0,
       async (ctx, args: SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.importedFunction);
+        channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.containingService);
       }
     )!,
     LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args: SwfMonacoEditorCommandArgs["LogInToRhhcc"]) => {
@@ -63,9 +66,9 @@ export function initAugmentationCommands(
         channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
       }
     )!,
-    OpenFunctionsCompletionItemsAtTheBottom: editorInstance.addCommand(
+    OpenFunctionsCompletionItems: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItemsAtTheBottom"]) => {
+      async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"]) => {
         editorInstance.setPosition(args.newCursorPosition);
         editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
       }

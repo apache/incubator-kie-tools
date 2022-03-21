@@ -8,51 +8,73 @@ import axios from "axios";
 import type * as openapiTypes from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import { SwfServiceCatalogFunctionSourceType } from "@kie-tools/serverless-workflow-service-catalog/src/api";
-import { SwfVsCodeExtensionSettings } from "../../settings";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "../../settings";
+import * as vscode from "vscode";
+import * as path from "path";
+import * as yaml from "yaml";
+import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./index";
 
 export class RhhccServiceRegistryServiceCatalogStore {
   private onChangeCallback: undefined | ((services: SwfServiceCatalogService[]) => Promise<any>);
-  private _serviceRegistryUrl: URL | undefined;
-  private subscriptions = new Set<(serviceRegistryUrl: URL | undefined) => void>();
+  private urlVsPathConfigurationChangeCallback: vscode.Disposable;
+  private specsStoragePathConfigurationChangeCallback: vscode.Disposable;
+  private serviceRegistryUrlConfigurationChangeCallback: vscode.Disposable;
 
   constructor(
-    private readonly rhhccAuthenticationStore: RhhccAuthenticationStore,
-    private readonly settings: SwfVsCodeExtensionSettings
+    private readonly args: {
+      baseFileAbsolutePath: string;
+      rhhccAuthenticationStore: RhhccAuthenticationStore;
+      settings: SwfVsCodeExtensionSettings;
+    }
   ) {}
 
   public async init(args: { onNewServices: (swfServices: SwfServiceCatalogService[]) => Promise<any> }) {
     this.onChangeCallback = args.onNewServices;
+
+    this.urlVsPathConfigurationChangeCallback = vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration(CONFIGURATION_SECTIONS.shouldReferenceServiceRegistryFunctionsWithUrls)) {
+        return this.refresh();
+      }
+    });
+
+    this.specsStoragePathConfigurationChangeCallback = vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration(CONFIGURATION_SECTIONS.specsStoragePath)) {
+        return this.refresh();
+      }
+    });
+
+    this.serviceRegistryUrlConfigurationChangeCallback = vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistryUrl)) {
+        return this.refresh();
+      }
+    });
+
     return this.refresh();
   }
 
-  public get serviceRegistryUrl() {
-    return this._serviceRegistryUrl;
-  }
-
-  public setServiceRegistryUrl(serviceRegistryUrl: URL | undefined) {
-    this._serviceRegistryUrl = serviceRegistryUrl;
-    this.subscriptions.forEach((subscription) => subscription(serviceRegistryUrl));
-  }
-
   public async refresh() {
-    if (!this.rhhccAuthenticationStore.session) {
+    const specsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
+    const serviceRegistryUrl = this.args.settings.getServiceRegistryUrl();
+    const shouldReferenceFunctionsWithUrls = this.args.settings.shouldReferenceServiceRegistryFunctionsWithUrls();
+
+    if (!this.args.rhhccAuthenticationStore.session) {
       return this.onChangeCallback?.([]);
     }
 
-    if (!this._serviceRegistryUrl) {
+    if (!serviceRegistryUrl) {
       return this.onChangeCallback?.([]);
     }
 
     const requestHeaders = {
-      headers: { Authorization: "Bearer " + this.rhhccAuthenticationStore.session.accessToken },
+      headers: { Authorization: "Bearer " + this.args.rhhccAuthenticationStore.session.accessToken },
     };
 
     const serviceRegistryRestApi = {
-      getArtifactContentUrl: (args: { groupId: string; id: string }) => {
-        return `${this._serviceRegistryUrl?.toString()}/groups/${args.groupId}/artifacts/${args.id}`;
+      getArtifactContentUrl: (params: { groupId: string; id: string }) => {
+        return `${serviceRegistryUrl.toString()}/groups/${params.groupId}/artifacts/${params.id}`;
       },
       getArtifactsUrl: () => {
-        return `${this._serviceRegistryUrl?.toString()}/search/artifacts`;
+        return `${serviceRegistryUrl?.toString()}/search/artifacts`;
       },
     };
 
@@ -62,37 +84,39 @@ export class RhhccServiceRegistryServiceCatalogStore {
 
     const artifactsWithContent = await Promise.all(
       artifactsMetadata.artifacts
-        .filter((metadata) => metadata.type === "OPENAPI")
-        .map(async (metadata) => ({
-          metadata,
+        .filter((artifactMetadata) => artifactMetadata.type === "OPENAPI")
+        .map(async (artifactMetadata) => ({
+          metadata: artifactMetadata,
           content: (
-            await axios.get(serviceRegistryRestApi.getArtifactContentUrl(metadata), requestHeaders)
+            await axios.get(serviceRegistryRestApi.getArtifactContentUrl(artifactMetadata), requestHeaders)
           ).data as openapiTypes.OpenAPIV3.Document,
         }))
     );
 
-    const swfServiceCatalogServices: SwfServiceCatalogService[] = artifactsWithContent.map((artifact) => {
-      const serviceId = `${artifact.metadata.groupId}__${artifact.metadata.id}`;
+    const services: SwfServiceCatalogService[] = artifactsWithContent.map((artifact) => {
+      const serviceId = artifact.metadata.id;
+      const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
+      const specsDirRelativePath = path.relative(path.dirname(this.args.baseFileAbsolutePath), specsDirAbsolutePath);
+      const serviceFileRelativePath = path.join(specsDirRelativePath, serviceFileName);
 
-      //TODO tiago: fix empty string here
-      let functions = extractFunctions(artifact.content, "", {
+      let swfFunctions = extractFunctions(artifact.content, serviceFileRelativePath, {
         type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
-        serviceId: artifact.metadata.id,
+        serviceId: serviceId,
       });
 
-      // TODO tiago: I believe we should be doing that in a better way
-      if (this.settings.shouldReferenceServiceRegistryFunctionsWithUrls()) {
-        functions = functions.map((swfFunction) => ({
+      if (shouldReferenceFunctionsWithUrls) {
+        // TODO tiago: I believe we should be doing that in a better way
+        swfFunctions = swfFunctions.map((swfFunction) => ({
           ...swfFunction,
           operation: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
         }));
       }
 
       return {
-        name: serviceId,
-        rawContent: JSON.stringify(artifact.content, undefined, 2),
+        name: serviceFileName,
+        rawContent: yaml.stringify(artifact.content),
         type: SwfServiceCatalogServiceType.rest,
-        functions,
+        functions: swfFunctions,
         source: {
           type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY,
           id: serviceId,
@@ -100,16 +124,13 @@ export class RhhccServiceRegistryServiceCatalogStore {
       };
     });
 
-    return this.onChangeCallback?.(swfServiceCatalogServices);
+    return this.onChangeCallback?.(services);
   }
 
-  subscribeToServiceRegistryUrlChange(callback: (serviceRegistryUrl: URL | undefined) => any) {
-    this.subscriptions.add(callback);
-    return callback;
-  }
-
-  unsubscribeToServiceRegistryUrlChange(callback: (serviceRegistryUrl: URL | undefined) => any) {
-    this.subscriptions.delete(callback);
+  public dispose() {
+    this.urlVsPathConfigurationChangeCallback?.dispose();
+    this.specsStoragePathConfigurationChangeCallback?.dispose();
+    this.serviceRegistryUrlConfigurationChangeCallback?.dispose();
   }
 }
 

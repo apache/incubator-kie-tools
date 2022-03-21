@@ -18,8 +18,7 @@ import * as vscode from "vscode";
 import { Disposable, FileType } from "vscode";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfVsCodeExtensionSettings } from "../../settings";
-import { getInterpolateSettingsValue } from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "../../settings";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
@@ -33,7 +32,7 @@ export class FsWatchingServiceCatalogStore {
   public init(args: { onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any> }) {
     this.onChangeCallback = args.onNewServices;
 
-    const initialSpecsDirAbsolutePath = this.getConfiguredSpecsDirAbsolutePath();
+    const initialSpecsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
 
     this.fsWatcher = this.setupFsWatcher(initialSpecsDirAbsolutePath);
     this.configurationChangedCallback = this.getConfigurationChangedCallback();
@@ -43,22 +42,15 @@ export class FsWatchingServiceCatalogStore {
 
   private getConfigurationChangedCallback() {
     return vscode.workspace.onDidChangeConfiguration(async (e) => {
-      if (!e.affectsConfiguration("kogito.sw.specsStoragePath")) {
+      if (!e.affectsConfiguration(CONFIGURATION_SECTIONS.specsStoragePath)) {
         return;
       }
 
-      const newSpecsDirAbsolutePath = this.getConfiguredSpecsDirAbsolutePath();
+      const newSpecsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
       this.fsWatcher?.dispose();
       this.fsWatcher = this.setupFsWatcher(newSpecsDirAbsolutePath);
 
       return this.refresh(newSpecsDirAbsolutePath);
-    });
-  }
-
-  private getConfiguredSpecsDirAbsolutePath() {
-    return getInterpolateSettingsValue({
-      currentFileAbsolutePath: this.args.baseFileAbsolutePath,
-      value: this.args.settings.getSpecsDirPath(),
     });
   }
 

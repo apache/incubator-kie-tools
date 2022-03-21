@@ -30,7 +30,7 @@ import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore"
 import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfVsCodeExtensionSettings } from "./settings";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionSettings } from "./settings";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
@@ -41,7 +41,6 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
   constructor(
     private readonly args: {
       settings: SwfVsCodeExtensionSettings;
-      rhhccServiceRegistryServiceCatalogStore: RhhccServiceRegistryServiceCatalogStore;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
     }
   ) {}
@@ -56,12 +55,20 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     i18n: I18n<VsCodeI18n>,
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
+    const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
+      baseFileAbsolutePath: editor.document.uri.path,
+      rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
+      settings: this.args.settings,
+    });
+
+    const fsWatchingServiceCatalogStore = new FsWatchingServiceCatalogStore({
+      baseFileAbsolutePath: editor.document.uri.path,
+      settings: this.args.settings,
+    });
+
     const swfServiceCatalogStore = new SwfServiceCatalogStore({
-      fsWatchingServiceCatalogStore: new FsWatchingServiceCatalogStore({
-        baseFileAbsolutePath: editor.document.uri.path,
-        settings: this.args.settings,
-      }),
-      rhhccServiceRegistryServiceCatalogStore: this.args.rhhccServiceRegistryServiceCatalogStore,
+      fsWatchingServiceCatalogStore,
+      rhhccServiceRegistryServiceCatalogStore,
     });
 
     // TODO: This is a workaround
@@ -70,46 +77,43 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       KogitoEditorEnvelopeApi
     >;
 
-    swfServiceCatalogStore.init(async (services) =>
-      swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services)
-    );
+    swfServiceCatalogStore.init({
+      onNewServices: async (services) => {
+        swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services);
+      },
+    });
 
     const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
       swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_user.set(getUser(session));
 
       if (!session) {
-        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+        return rhhccServiceRegistryServiceCatalogStore.refresh();
       }
 
-      if (this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl) {
-        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+      const configuredServiceRegistryUrl = this.args.settings.getServiceRegistryUrl();
+      if (configuredServiceRegistryUrl) {
+        return rhhccServiceRegistryServiceCatalogStore.refresh();
       }
 
-      const serviceRegistryUrl = await askForServiceRegistryUrl({
-        currentValue: this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl,
-      });
-
-      this.args.rhhccServiceRegistryServiceCatalogStore.setServiceRegistryUrl(serviceRegistryUrl);
+      const serviceRegistryUrl = await askForServiceRegistryUrl({ currentValue: configuredServiceRegistryUrl });
+      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
       vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
-      return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+
+      return rhhccServiceRegistryServiceCatalogStore.refresh();
     });
 
-    const rhhccServiceRegistryUrlSubscription =
-      this.args.rhhccServiceRegistryServiceCatalogStore.subscribeToServiceRegistryUrlChange(
-        async (serviceRegistryUrl) => {
-          swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
-            serviceRegistryUrl?.toString()
-          );
-          await this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
-        }
-      );
+    const rhhccServiceRegistryUrlSubscription = vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistryUrl)) {
+        swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
+          this.args.settings.getServiceRegistryUrl()
+        );
+      }
+    });
 
     editor.panel.onDidDispose(() => {
       swfServiceCatalogStore.dispose();
+      rhhccServiceRegistryUrlSubscription.dispose();
       this.args.rhhccAuthenticationStore.unsubscribeToSessionChange(rhhccSessionSubscription);
-      this.args.rhhccServiceRegistryServiceCatalogStore.unsubscribeToServiceRegistryUrlChange(
-        rhhccServiceRegistryUrlSubscription
-      );
     });
 
     return new ServerlessWorkflowEditorChannelApiImpl(
@@ -124,8 +128,10 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       initialBackup,
       new SwfServiceCatalogChannelApiImpl({
         swfServiceCatalogStore,
+        baseFileAbsolutePath: editor.document.uri.path,
+        settings: this.args.settings,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
-        defaultServiceRegistryUrl: this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl?.toString(),
+        defaultServiceRegistryUrl: this.args.settings.getServiceRegistryUrl(),
       })
     );
   }

@@ -64,7 +64,12 @@ function serviceFileContentToOpenApiDocument(
   serviceFileRelativePath: string,
   serviceFileContent: string
 ): OpenAPIV3.Document {
-  const serviceOpenApiDocument = yaml.load(serviceFileContent) as OpenAPIV3.Document;
+  let serviceOpenApiDocument;
+  if (path.extname(serviceFileRelativePath) === ".json") {
+    serviceOpenApiDocument = JSON.parse(serviceFileContent) as OpenAPIV3.Document;
+  } else {
+    serviceOpenApiDocument = yaml.load(serviceFileContent) as OpenAPIV3.Document;
+  }
 
   if (!serviceOpenApiDocument.openapi || !serviceOpenApiDocument.info || !serviceOpenApiDocument.paths) {
     throw new Error(`'${serviceFileRelativePath}' is not an OpenAPI file`);

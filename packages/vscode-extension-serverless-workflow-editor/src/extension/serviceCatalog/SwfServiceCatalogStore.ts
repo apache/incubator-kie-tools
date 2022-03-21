@@ -17,10 +17,6 @@
 import { FsWatchingServiceCatalogStore } from "./fs";
 import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
-import * as vscode from "vscode";
-import { AuthenticationSession } from "vscode";
-import { askForServiceRegistryUrl } from "./rhhccServiceRegistry";
 
 export class SwfServiceCatalogStore {
   private fsSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
@@ -33,18 +29,20 @@ export class SwfServiceCatalogStore {
     }
   ) {}
 
-  public async init(callback: (swfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>) {
+  public async init(args: {
+    onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>;
+  }) {
     await this.args.fsWatchingServiceCatalogStore.init({
       onNewServices: (s) => {
         this.fsSwfServiceCatalogServices = s;
-        return callback(this.getCombinedSwfServiceCatalogServices());
+        return args.onNewServices(this.getCombinedSwfServiceCatalogServices());
       },
     });
 
     await this.args.rhhccServiceRegistryServiceCatalogStore.init({
       onNewServices: (s) => {
         this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
-        return callback(this.getCombinedSwfServiceCatalogServices());
+        return args.onNewServices(this.getCombinedSwfServiceCatalogServices());
       },
     });
   }
@@ -54,11 +52,11 @@ export class SwfServiceCatalogStore {
   }
 
   public async refresh() {
-    // Don't need to refresh this.fs because it keeps itself updated with FS Watchers
     return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
   }
 
   public dispose() {
     this.args.fsWatchingServiceCatalogStore.dispose();
+    this.args.rhhccServiceRegistryServiceCatalogStore.dispose();
   }
 }
