@@ -4,7 +4,7 @@ export async function askForServiceRegistryUrl(args: { currentValue: URL | undef
   return vscode.window
     .showInputBox({
       ignoreFocusOut: true,
-      title: "Serverless Workflow Editor :: Provide the Service Registry URL from Red Hat Hybrid Cloud Console",
+      title: "Serverless Workflow Editor",
       prompt:
         "Provide the Service Registry URL to import functions.\n\nThat's the 'Core Registry API' URL you see on the Connection menu inside the Service Registry instance.",
       value: args.currentValue?.toString(),

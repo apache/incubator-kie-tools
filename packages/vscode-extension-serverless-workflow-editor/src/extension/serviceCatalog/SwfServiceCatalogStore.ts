@@ -25,13 +25,11 @@ import { askForServiceRegistryUrl } from "./rhhccServiceRegistry";
 export class SwfServiceCatalogStore {
   private fsSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
   private rhhccServiceRegistriesSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
-  private rhhccStoreSubscription: (session: AuthenticationSession | undefined) => void;
 
   constructor(
     private readonly args: {
       fsWatchingServiceCatalogStore: FsWatchingServiceCatalogStore;
       rhhccServiceRegistryServiceCatalogStore: RhhccServiceRegistryServiceCatalogStore;
-      rhhccAuthenticationStore: RhhccAuthenticationStore;
     }
   ) {}
 
@@ -49,24 +47,6 @@ export class SwfServiceCatalogStore {
         return callback(this.getCombinedSwfServiceCatalogServices());
       },
     });
-
-    this.rhhccStoreSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
-      if (!session) {
-        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      if (this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl) {
-        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const serviceRegistryUrl = await askForServiceRegistryUrl({
-        currentValue: this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl,
-      });
-
-      this.args.rhhccServiceRegistryServiceCatalogStore.setServiceRegistryUrl(serviceRegistryUrl);
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
-      return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
-    });
   }
 
   private getCombinedSwfServiceCatalogServices() {
@@ -80,6 +60,5 @@ export class SwfServiceCatalogStore {
 
   public dispose() {
     this.args.fsWatchingServiceCatalogStore.dispose();
-    this.args.rhhccAuthenticationStore.unsubscribeToSessionChange(this.rhhccStoreSubscription);
   }
 }

@@ -148,6 +148,10 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_user();
   }
 
+  public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistryUrl();
+  }
+
   public kogitoSwfServiceCatalog_refresh(): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_refresh();
   }
@@ -158,5 +162,9 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction: SwfServiceCatalogFunction): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction);
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
+    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
   }
 }

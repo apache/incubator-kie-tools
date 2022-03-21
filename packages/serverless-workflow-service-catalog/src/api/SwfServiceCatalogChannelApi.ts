@@ -20,7 +20,9 @@ import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 export interface SwfServiceCatalogChannelApi {
   kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]>;
   kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined>;
+  kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined>;
   kogitoSwfServiceCatalog_refresh(): void;
   kogitoSwfServiceCatalog_logInToRhhcc(): void;
   kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction: SwfServiceCatalogFunction): void;
+  kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void;
 }

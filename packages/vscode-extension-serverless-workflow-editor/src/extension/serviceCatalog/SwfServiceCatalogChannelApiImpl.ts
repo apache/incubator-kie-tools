@@ -28,12 +28,17 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   constructor(
     private readonly args: {
       defaultUser: SwfServiceCatalogUser | undefined;
+      defaultServiceRegistryUrl: string | undefined;
       swfServiceCatalogStore: SwfServiceCatalogStore;
     }
   ) {}
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
     return { defaultValue: this.args.defaultUser };
+  }
+
+  public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
+    return { defaultValue: this.args.defaultServiceRegistryUrl };
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
@@ -51,5 +56,9 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction: SwfServiceCatalogFunction): void {
     vscode.window.showInformationMessage(JSON.stringify(importedFunction));
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
+    vscode.commands.executeCommand("extension.kogito.swf.setupServiceRegistryUrl");
   }
 }

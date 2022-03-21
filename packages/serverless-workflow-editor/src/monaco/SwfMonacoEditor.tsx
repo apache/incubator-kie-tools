@@ -40,6 +40,9 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
   const [services] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_services);
   const [user] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_user);
+  const [serviceRegistryUrl] = useSharedValue(
+    editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
+  );
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
@@ -53,9 +56,9 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
   }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
 
   useEffect(() => {
-    SwfServiceCatalogSingleton.init(services, user);
+    SwfServiceCatalogSingleton.init(services, user, serviceRegistryUrl);
     controller.forceRedraw();
-  }, [services, user, controller]);
+  }, [services, user, serviceRegistryUrl, controller]);
 
   useEffect(() => {
     if (!container.current) {

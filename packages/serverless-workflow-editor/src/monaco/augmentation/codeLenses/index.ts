@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
-import { SwfMonacoEditorCommandIds } from "../commands";
+import { SwfMonacoEditorCommandArgs, SwfMonacoEditorCommandIds } from "../commands";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
 import CodeLens = languages.CodeLens;
 
@@ -18,7 +18,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
         return;
       }
 
-      const importFunction = createCodeLenses({
+      const addFunction = createCodeLenses({
         model,
         rootNode,
         jsonPath: ["functions"],
@@ -33,8 +33,14 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           return [
             {
               id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
-              title: `+ Add function`,
-              arguments: [{ position, node, newCursorPosition }],
+              title: `+ Add function...`,
+              arguments: [
+                {
+                  position,
+                  node,
+                  newCursorPosition,
+                } as SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItemsAtTheBottom"],
+              ],
             },
           ];
         },
@@ -57,14 +63,14 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
           return [
             {
               id: commandIds["LogInToRhhcc"],
-              title: `↪ Log in to Red Hat Hybrid Cloud Console`,
-              arguments: [{ position, node }],
+              title: `↪ Log in to Red Hat Hybrid Cloud Console...`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["LogInToRhhcc"]],
             },
           ];
         },
       });
 
-      const refreshServicesFromRhhcc = createCodeLenses({
+      const setupServiceRegistryUrl = createCodeLenses({
         model,
         rootNode,
         jsonPath: ["functions"],
@@ -79,17 +85,57 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
             return [];
           }
 
+          const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+          if (serviceRegistryUrl) {
+            return [];
+          }
+
           return [
             {
-              id: commandIds["RefreshServiceCatalogFromRhhcc"],
-              title: `↺ Refresh from '${user.username}'`,
-              arguments: [{ position, node }],
+              id: commandIds["SetupServiceRegistryUrl"],
+              title: `↪ Setup Service Registry URL...`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["SetupServiceRegistryUrl"]],
             },
           ];
         },
       });
 
-      const codeLenses: CodeLens[] = [...logInToRhhcc, ...refreshServicesFromRhhcc, ...importFunction];
+      const refreshServiceRegistry = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (!user) {
+            return [];
+          }
+
+          const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+          if (!serviceRegistryUrl) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["RefreshServiceCatalogFromRhhcc"],
+              title: `↺ Refresh Service Registry (${user.username})`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["RefreshServiceCatalogFromRhhcc"]],
+            },
+          ];
+        },
+      });
+
+      const codeLenses: CodeLens[] = [
+        ...logInToRhhcc,
+        ...setupServiceRegistryUrl,
+        ...refreshServiceRegistry,
+        ...addFunction,
+      ];
 
       return {
         lenses: codeLenses.flatMap((s) => s),

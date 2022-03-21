@@ -1,8 +1,9 @@
-import { editor } from "monaco-editor";
+import { editor, Position } from "monaco-editor";
 import * as React from "react";
 import { openWidget } from "../widgets";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/src/api";
+import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 // Part of an example
 //
@@ -17,11 +18,22 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/src/api";
 
 export type SwfMonacoEditorCommandTypes =
   | "LogInToRhhcc"
+  | "SetupServiceRegistryUrl"
   | "RefreshServiceCatalogFromRhhcc"
   | "ImportFunctionFromCompletionItem"
   | "OpenFunctionsWidget"
   | "OpenStatesWidget"
   | "OpenFunctionsCompletionItemsAtTheBottom";
+
+export type SwfMonacoEditorCommandArgs = {
+  LogInToRhhcc: {};
+  SetupServiceRegistryUrl: {};
+  RefreshServiceCatalogFromRhhcc: {};
+  ImportFunctionFromCompletionItem: { importedFunction: SwfServiceCatalogFunction };
+  OpenFunctionsWidget: { position: Position };
+  OpenStatesWidget: { position: Position };
+  OpenFunctionsCompletionItemsAtTheBottom: { newCursorPosition: Position };
+};
 
 export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
@@ -30,72 +42,93 @@ export function initAugmentationCommands(
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
 ): SwfMonacoEditorCommandIds {
   return {
-    ImportFunctionFromCompletionItem: editorInstance.addCommand(0, async (ctx, args) => {
-      channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.importedFunction);
-    })!,
-    LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args) => {
+    SetupServiceRegistryUrl: editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfMonacoEditorCommandArgs["SetupServiceRegistryUrl"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistryUrl.send();
+      }
+    )!,
+    ImportFunctionFromCompletionItem: editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.importedFunction);
+      }
+    )!,
+    LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args: SwfMonacoEditorCommandArgs["LogInToRhhcc"]) => {
       channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();
     })!,
-    RefreshServiceCatalogFromRhhcc: editorInstance.addCommand(0, async (ctx, args) => {
-      channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
-    })!,
-    OpenFunctionsCompletionItemsAtTheBottom: editorInstance.addCommand(0, async (ctx, args) => {
-      editorInstance.setPosition(args.newCursorPosition);
-      editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
-    })!,
-    OpenFunctionsWidget: editorInstance.addCommand(0, async (ctx, args) => {
-      openWidget(editorInstance, {
-        position: args.position,
-        widgetId: "swf.functions.widget",
-        backgroundColor: "lightgreen",
-        domNodeHolder: {},
-        onReady: ({ container }) => {
-          console.info("Opening functions widget..");
-          // Part of an example
-          //
-          // ReactDOM.render(
-          //   <EmbeddedDivPingPong
-          //     apiImpl={pingPongChannelApiImpl}
-          //     name={"React " + Math.random()}
-          //     targetOrigin={window.location.origin}
-          //     renderView={renderPingPongReact}
-          //   />,
-          //   container
-          // );
-        },
-        onClose: ({ container }) => {
-          // Part of an example
-          //
-          // return ReactDOM.unmountComponentAtNode(container);
-        },
-      });
-    })!,
-    OpenStatesWidget: editorInstance.addCommand(0, async (ctx, args) => {
-      openWidget(editorInstance, {
-        position: args.position,
-        widgetId: "swf.states.widget",
-        backgroundColor: "lightblue",
-        domNodeHolder: {},
-        onReady: ({ container }) => {
-          console.info("Opening states widget..");
-          // Part of an example
-          //
-          // ReactDOM.render(
-          //   <EmbeddedDivPingPong
-          //     apiImpl={pingPongChannelApiImpl}
-          //     name={"React " + Math.random()}
-          //     targetOrigin={window.location.origin}
-          //     renderView={renderPingPongReact}
-          //   />,
-          //   container
-          // );
-        },
-        onClose: ({ container }) => {
-          // Part of an example
-          //
-          // return ReactDOM.unmountComponentAtNode(container);
-        },
-      });
-    })!,
+    RefreshServiceCatalogFromRhhcc: editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfMonacoEditorCommandArgs["RefreshServiceCatalogFromRhhcc"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
+      }
+    )!,
+    OpenFunctionsCompletionItemsAtTheBottom: editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItemsAtTheBottom"]) => {
+        editorInstance.setPosition(args.newCursorPosition);
+        editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
+      }
+    )!,
+    OpenFunctionsWidget: editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsWidget"]) => {
+        openWidget(editorInstance, {
+          position: args.position,
+          widgetId: "swf.functions.widget",
+          backgroundColor: "lightgreen",
+          domNodeHolder: {},
+          onReady: ({ container }) => {
+            console.info("Opening functions widget..");
+            // Part of an example
+            //
+            // ReactDOM.render(
+            //   <EmbeddedDivPingPong
+            //     apiImpl={pingPongChannelApiImpl}
+            //     name={"React " + Math.random()}
+            //     targetOrigin={window.location.origin}
+            //     renderView={renderPingPongReact}
+            //   />,
+            //   container
+            // );
+          },
+          onClose: ({ container }) => {
+            // Part of an example
+            //
+            // return ReactDOM.unmountComponentAtNode(container);
+          },
+        });
+      }
+    )!,
+    OpenStatesWidget: editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfMonacoEditorCommandArgs["OpenStatesWidget"]) => {
+        openWidget(editorInstance, {
+          position: args.position,
+          widgetId: "swf.states.widget",
+          backgroundColor: "lightblue",
+          domNodeHolder: {},
+          onReady: ({ container }) => {
+            console.info("Opening states widget..");
+            // Part of an example
+            //
+            // ReactDOM.render(
+            //   <EmbeddedDivPingPong
+            //     apiImpl={pingPongChannelApiImpl}
+            //     name={"React " + Math.random()}
+            //     targetOrigin={window.location.origin}
+            //     renderView={renderPingPongReact}
+            //   />,
+            //   container
+            // );
+          },
+          onClose: ({ container }) => {
+            // Part of an example
+            //
+            // return ReactDOM.unmountComponentAtNode(container);
+          },
+        });
+      }
+    )!,
   };
 }

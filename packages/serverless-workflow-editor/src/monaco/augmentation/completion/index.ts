@@ -25,6 +25,7 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/src/api";
+import { SwfMonacoEditorCommandArgs } from "../commands";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -41,7 +42,7 @@ const completions = new Map<
 >([
   [
     ["functions", "*"],
-    ({ model, currentNode, rootNode, overwriteRange, cursorPosition, commandIds }) => {
+    ({ currentNode, rootNode, overwriteRange, commandIds }) => {
       const separator = currentNode.type === "object" ? "," : "";
       const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
@@ -70,7 +71,11 @@ const completions = new Map<
             command: {
               id: commandIds["ImportFunctionFromCompletionItem"],
               title: "Import function from completion item",
-              arguments: [{ importedFunction: swfServiceCatalogFunc }],
+              arguments: [
+                {
+                  importedFunction: swfServiceCatalogFunc,
+                } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
+              ],
             },
           };
         });

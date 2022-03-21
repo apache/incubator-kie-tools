@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as vscode from "vscode";
 import { AuthenticationSession, Uri } from "vscode";
 import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
@@ -34,6 +35,7 @@ import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { FsWatchingServiceCatalogStore } from "./serviceCatalog/fs";
+import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
@@ -60,7 +62,6 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         settings: this.args.settings,
       }),
       rhhccServiceRegistryServiceCatalogStore: this.args.rhhccServiceRegistryServiceCatalogStore,
-      rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
     });
 
     // TODO: This is a workaround
@@ -73,14 +74,35 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services)
     );
 
-    const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange((session) => {
+    const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
       swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_user.set(getUser(session));
+
+      if (!session) {
+        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+
+      if (this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl) {
+        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+
+      const serviceRegistryUrl = await askForServiceRegistryUrl({
+        currentValue: this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl,
+      });
+
+      this.args.rhhccServiceRegistryServiceCatalogStore.setServiceRegistryUrl(serviceRegistryUrl);
+      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
+      return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
     });
 
     const rhhccServiceRegistryUrlSubscription =
-      this.args.rhhccServiceRegistryServiceCatalogStore.subscribeToServiceRegistryUrlChange(async () => {
-        await this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
-      });
+      this.args.rhhccServiceRegistryServiceCatalogStore.subscribeToServiceRegistryUrlChange(
+        async (serviceRegistryUrl) => {
+          swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
+            serviceRegistryUrl?.toString()
+          );
+          await this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+        }
+      );
 
     editor.panel.onDidDispose(() => {
       swfServiceCatalogStore.dispose();
@@ -103,6 +125,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       new SwfServiceCatalogChannelApiImpl({
         swfServiceCatalogStore,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
+        defaultServiceRegistryUrl: this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl?.toString(),
       })
     );
   }
