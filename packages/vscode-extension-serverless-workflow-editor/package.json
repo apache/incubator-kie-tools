@@ -124,15 +124,15 @@
       },
       {
         "command": "extension.kogito.swf.logInToRhhcc",
-        "title": "Serverless Wokflow: Log in to Red Hat Hybrid Cloud Console"
+        "title": "Serverless Workflow: Log in to Red Hat Hybrid Cloud Console"
       },
       {
         "command": "extension.kogito.swf.setupServiceRegistryUrl",
-        "title": "Serverless Wokflow: Setup Service Registry URL"
+        "title": "Serverless Workflow: Setup Service Registry URL"
       },
       {
         "command": "extension.kogito.swf.removeServiceRegistryUrl",
-        "title": "Serverless Wokflow: Remove Service Registry URL"
+        "title": "Serverless Workflow: Remove Service Registry URL"
       }
     ],
     "extensionDependencies": [
