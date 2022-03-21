@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as __path from "path";
+import * as path from "path";
 import * as vscode from "vscode";
 
 type ConfigurationValueInterpolationToken =
@@ -43,11 +43,11 @@ export function doInterpolation(tokens: Record<string, string>, value: string) {
 }
 
 export function getInterpolatedConfigurationValue(args: { currentFileAbsolutePath: string; value: string }) {
-  const parsedPath = __path.parse(args.currentFileAbsolutePath);
+  const parsedPath = path.parse(args.currentFileAbsolutePath);
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
-        const relative = __path.relative(workspace.uri.path, args.currentFileAbsolutePath);
-        return relative && !relative.startsWith("..") && !__path.isAbsolute(relative);
+        const relative = path.relative(workspace.uri.path, args.currentFileAbsolutePath);
+        return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
       })
     : undefined;
 

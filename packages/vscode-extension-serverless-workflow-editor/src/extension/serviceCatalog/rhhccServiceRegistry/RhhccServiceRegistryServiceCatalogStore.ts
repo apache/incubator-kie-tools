@@ -6,7 +6,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { RhhccAuthenticationStore } from "../../rhhcc/RhhccAuthenticationStore";
 import axios from "axios";
-import type * as openapiTypes from "openapi-types";
+import { OpenAPIV3 } from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 import * as vscode from "vscode";
@@ -89,7 +89,7 @@ export class RhhccServiceRegistryServiceCatalogStore {
           metadata: artifactMetadata,
           content: (
             await axios.get(serviceRegistryRestApi.getArtifactContentUrl(artifactMetadata), requestHeaders)
-          ).data as openapiTypes.OpenAPIV3.Document,
+          ).data as OpenAPIV3.Document,
         }))
     );
 

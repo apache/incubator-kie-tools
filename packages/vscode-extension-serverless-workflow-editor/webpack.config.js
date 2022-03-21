@@ -40,6 +40,12 @@ module.exports = async (env) => [
     },
   }),
   merge(commonConfig(env), {
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
+    },
+  }),
+  merge(commonConfig(env), {
     target: "web",
     entry: {
       "webview/ServerlessWorkflowEditorEnvelopeApp": "./src/webview/ServerlessWorkflowEditorEnvelopeApp.ts",

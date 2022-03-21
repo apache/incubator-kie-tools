@@ -78,7 +78,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     // TODO: Add support to YAML
     // initYamlCompletion(commands);
     // initYamlWidgets(commands);
-  }, [content, fileName, controller, theme]);
+  }, [content, fileName, controller, theme, editorEnvelopeCtx.channelApi]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

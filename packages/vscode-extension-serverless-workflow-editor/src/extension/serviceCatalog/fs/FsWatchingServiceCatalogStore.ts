@@ -141,7 +141,7 @@ export class FsWatchingServiceCatalogStore {
           baseFileAbsolutePath: this.args.baseFileAbsolutePath,
           specsDirAbsolutePath: specsDirAbsolutePath,
           serviceFileName: fileName,
-          serviceFileContent: Buffer.from(rawData).toString("utf-8"),
+          serviceFileContent: new TextDecoder("utf-8").decode(rawData),
         }),
       ];
     } catch (e) {
