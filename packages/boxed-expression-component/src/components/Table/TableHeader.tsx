@@ -101,7 +101,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   const renderCountColumn = useCallback(
     (column: ColumnInstance, rowIndex: number) => {
       const columnKey = getColumnKey(column);
-      const classNames = `${columnKey} fixed-column no-clickable-cell`;
+      const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
 
       return (
         <ThCell
@@ -323,7 +323,7 @@ const RenderResizableHeaderCell = ({
   const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
 
   const getCssClass = useCallback(() => {
-    const cssClasses = [columnKey];
+    const cssClasses = [columnKey, "data-header-cell"];
     if (!column.dataType) {
       cssClasses.push("no-clickable-cell");
     }

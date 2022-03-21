@@ -200,37 +200,13 @@
   outline: none !important;
 }
 
-.expression-container .table-component table thead tr th:focus:first-child {
+.expression-container .table-component table thead tr th.counter-header-cell:focus {
   border: 2px solid #438cb1;
 }
 
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  tr:last-child
-  th.decision-table--annotation.focused
-  > .react-resizable,
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  tr:last-child
-  th.decision-table--annotation:focus
-  > .react-resizable,
-.expression-container
-  .decision-table-expression
-  table
-  thead
-  tr:last-child
-  th.decision-table--input:focus
-  > .react-resizable {
-  outline: 2px solid #438cb1;
-  z-index: 3;
-}
-
-/* TODO: context and relation doesn't have blue border for header cells*/
-.expression-container .table-component table thead tr th.output:focus:before {
+.expression-container .context-expression .table-component table thead tr th.data-header-cell:focus:before,
+.expression-container .relation-expression .table-component table thead tr th.data-header-cell:focus:before,
+.expression-container .decision-table-expression .table-component table thead tr th.output:focus:before {
   content: "";
   display: block;
   width: 100%;
