@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.property.dimensions.GeneralRectangleDimensionsSet;
@@ -44,10 +46,8 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
                          DMNDecisionServiceSVGViewFactory::decisionService);
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_PALETTE =
-            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
-                    .put(DecisionService.class,
-                         DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(DecisionService.class, DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public Class<DMNDecisionServiceSVGViewFactory> getViewFactoryType() {
@@ -96,7 +96,7 @@ public class DMNDecisionServiceSVGShapeDefImpl implements DMNDecisionServiceSVGS
                           final Class<? extends ShapeFactory.GlyphConsumer> consumer,
                           final String defId) {
         if (org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette.PaletteGlyphConsumer.class.equals(consumer)) {
-            return GLYPHS_PALETTE.computeIfAbsent(type, (t) -> ShapeGlyph.create());
+            return GLYPHS_PALETTE.computeIfAbsent(type, t -> ShapeGlyph.create());
         }
         return getGlyph(type, defId);
     }

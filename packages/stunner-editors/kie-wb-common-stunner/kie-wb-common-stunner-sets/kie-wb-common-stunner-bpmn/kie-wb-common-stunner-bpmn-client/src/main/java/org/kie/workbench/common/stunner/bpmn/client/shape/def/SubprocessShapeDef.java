@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.SubprocessViewHandler;
@@ -50,13 +52,12 @@ public class SubprocessShapeDef extends BaseDimensionedShapeDef
                     .put(MultipleInstanceSubprocess.class, BPMNSVGViewFactory::multipleInstanceSubProcess);
 
     public static final Map<Class<? extends BaseSubprocess>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseSubprocess>, Glyph>()
-                    .put(ReusableSubprocess.class, BPMNGlyphFactory.SUBPROCESS_RESUABLE)
-                    .put(EmbeddedSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EMBEDDED)
-                    .put(EventSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EVENT)
-                    .put(AdHocSubprocess.class, BPMNGlyphFactory.SUBPROCESS_ADHOC)
-                    .put(MultipleInstanceSubprocess.class, BPMNGlyphFactory.SUBPROCESS_MULTIPLE_INSTANCE)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(ReusableSubprocess.class, BPMNGlyphFactory.SUBPROCESS_RESUABLE),
+                      new AbstractMap.SimpleEntry<>(EmbeddedSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EMBEDDED),
+                      new AbstractMap.SimpleEntry<>(EventSubprocess.class, BPMNGlyphFactory.SUBPROCESS_EVENT),
+                      new AbstractMap.SimpleEntry<>(AdHocSubprocess.class, BPMNGlyphFactory.SUBPROCESS_ADHOC),
+                      new AbstractMap.SimpleEntry<>(MultipleInstanceSubprocess.class, BPMNGlyphFactory.SUBPROCESS_MULTIPLE_INSTANCE))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     private static VerticalAlignment getSubprocessTextPosition(final BaseSubprocess bean) {
         if ((bean instanceof EmbeddedSubprocess)

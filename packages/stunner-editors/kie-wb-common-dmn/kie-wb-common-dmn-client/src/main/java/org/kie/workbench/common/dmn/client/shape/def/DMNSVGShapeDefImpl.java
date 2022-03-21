@@ -16,9 +16,11 @@
 
 package org.kie.workbench.common.dmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
@@ -54,36 +56,22 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition, DMN
                          DMNSVGViewFactory::textAnnotation);
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_TOOLBOX =
-            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
-                    .put(BusinessKnowledgeModel.class,
-                         DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_TOOLBOX)
-                    .put(Decision.class,
-                         DMNSVGGlyphFactory.DECISION_TOOLBOX)
-                    .put(DMNDiagram.class,
-                         DMNSVGGlyphFactory.DIAGRAM_TOOLBOX)
-                    .put(InputData.class,
-                         DMNSVGGlyphFactory.INPUT_DATA_TOOLBOX)
-                    .put(KnowledgeSource.class,
-                         DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_TOOLBOX)
-                    .put(TextAnnotation.class,
-                         DMNSVGGlyphFactory.TEXT_ANNOTATION_TOOLBOX)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(BusinessKnowledgeModel.class, DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_TOOLBOX),
+                      new AbstractMap.SimpleEntry<>(Decision.class, DMNSVGGlyphFactory.DECISION_TOOLBOX),
+                          new AbstractMap.SimpleEntry<>(DMNDiagram.class, DMNSVGGlyphFactory.DIAGRAM_TOOLBOX),
+                          new AbstractMap.SimpleEntry<>(InputData.class, DMNSVGGlyphFactory.INPUT_DATA_TOOLBOX),
+                          new AbstractMap.SimpleEntry<>(KnowledgeSource.class, DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_TOOLBOX),
+                          new AbstractMap.SimpleEntry<>(TextAnnotation.class, DMNSVGGlyphFactory.TEXT_ANNOTATION_TOOLBOX))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public static final Map<Class<? extends DMNDefinition>, Glyph> GLYPHS_PALETTE =
-            new Maps.Builder<Class<? extends DMNDefinition>, Glyph>()
-                    .put(BusinessKnowledgeModel.class,
-                         DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE)
-                    .put(Decision.class,
-                         DMNSVGGlyphFactory.DECISION_PALETTE)
-                    .put(InputData.class,
-                         DMNSVGGlyphFactory.INPUT_DATA_PALETTE)
-                    .put(DecisionService.class,
-                         DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE)
-                    .put(KnowledgeSource.class,
-                         DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE)
-                    .put(TextAnnotation.class,
-                         DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(BusinessKnowledgeModel.class, DMNSVGGlyphFactory.BUSINESS_KNOWLEDGE_MODEL_PALETTE),
+                      new AbstractMap.SimpleEntry<>(Decision.class, DMNSVGGlyphFactory.DECISION_PALETTE),
+                      new AbstractMap.SimpleEntry<>(InputData.class, DMNSVGGlyphFactory.INPUT_DATA_PALETTE),
+                      new AbstractMap.SimpleEntry<>(DecisionService.class, DMNSVGGlyphFactory.DECISION_SERVICE_PALETTE),
+                      new AbstractMap.SimpleEntry<>(KnowledgeSource.class, DMNSVGGlyphFactory.KNOWLEDGE_SOURCE_PALETTE),
+                      new AbstractMap.SimpleEntry<>(TextAnnotation.class, DMNSVGGlyphFactory.TEXT_ANNOTATION_PALETTE))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public Class<DMNSVGViewFactory> getViewFactoryType() {
@@ -103,7 +91,7 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition, DMN
     @Override
     public Glyph getGlyph(final Class<? extends DMNViewDefinition> type,
                           final String defId) {
-        return GLYPHS_TOOLBOX.computeIfAbsent(type, (t) -> ShapeGlyph.create());
+        return GLYPHS_TOOLBOX.computeIfAbsent(type, t -> ShapeGlyph.create());
     }
 
     @Override
@@ -111,7 +99,7 @@ public class DMNSVGShapeDefImpl implements DMNSVGShapeDef<DMNViewDefinition, DMN
                           final Class<? extends ShapeFactory.GlyphConsumer> consumer,
                           final String defId) {
         if (org.kie.workbench.common.stunner.core.client.components.palette.AbstractPalette.PaletteGlyphConsumer.class.equals(consumer)) {
-            return GLYPHS_PALETTE.computeIfAbsent(type, (t) -> ShapeGlyph.create());
+            return GLYPHS_PALETTE.computeIfAbsent(type, t -> ShapeGlyph.create());
         }
         return getGlyph(type, defId);
     }

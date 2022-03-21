@@ -17,12 +17,12 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.exception.BadCommandArgumentsException;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -39,15 +39,14 @@ import org.kie.workbench.common.stunner.core.rule.context.CardinalityContext;
 @Portable
 public class DeregisterNodeCommand extends AbstractGraphCommand {
 
-    private static Logger LOGGER = Logger.getLogger(DeregisterNodeCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(DeregisterNodeCommand.class.getName());
 
     protected final String uuid;
     transient Node<?, Edge> node;
     transient Node<?, Edge> removed;
 
     public DeregisterNodeCommand(final @MapsTo("uuid") String uuid) {
-        this.uuid = PortablePreconditions.checkNotNull("uuid",
-                                                       uuid);
+        this.uuid = Objects.requireNonNull(uuid, "Parameter named 'uuid' should be not null!");
         this.removed = null;
     }
 

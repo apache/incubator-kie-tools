@@ -16,12 +16,13 @@
 package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNDefinition;
 import org.kie.workbench.common.dmn.api.property.dmn.Id;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -62,9 +63,7 @@ public class DMNDiagram extends DMNModelInstrumentedBase implements DMNDefinitio
     private static final String stunnerCategory = Categories.DIAGRAM;
 
     @Labels
-    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
-            .add("dmn_diagram")
-            .build();
+    private static final Set<String> stunnerLabels = Stream.of("dmn_diagram").collect(Collectors.toSet());
 
     @Property
     @FormField(readonly = true)

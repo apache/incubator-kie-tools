@@ -16,8 +16,9 @@
 
 package org.kie.workbench.common.dmn.client.widgets.grid;
 
+import java.util.Objects;
+
 import com.ait.lienzo.client.core.types.Transform;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseBounds;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -38,8 +39,7 @@ public class BoundaryTransformMediator implements TransformMediator {
     private final GridWidget gridWidget;
 
     public BoundaryTransformMediator(final GridWidget gridWidget) {
-        this.gridWidget = PortablePreconditions.checkNotNull("gridWidget",
-                                                             gridWidget);
+        this.gridWidget = Objects.requireNonNull(gridWidget, "Parameter named 'gridWidget' should be not null!");
         updateBounds();
     }
 

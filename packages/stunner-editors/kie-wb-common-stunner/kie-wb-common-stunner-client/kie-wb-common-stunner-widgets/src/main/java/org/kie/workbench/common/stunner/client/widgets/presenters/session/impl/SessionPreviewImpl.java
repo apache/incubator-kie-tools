@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.session.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import javax.annotation.PostConstruct;
@@ -64,8 +65,6 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
-
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * A generic session's preview instance for subtypes of <code>AbstractClientSession</code>.
@@ -326,6 +325,10 @@ public class SessionPreviewImpl<S extends AbstractSession>
                    command,
                    result);
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private void onExecute(final AbstractCanvasHandler context,

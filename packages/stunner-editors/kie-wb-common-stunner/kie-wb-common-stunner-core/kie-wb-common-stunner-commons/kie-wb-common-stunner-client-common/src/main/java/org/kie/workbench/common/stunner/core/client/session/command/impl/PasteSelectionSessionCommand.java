@@ -68,7 +68,6 @@ import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.util.Counter;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.CONTROL;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.V;
@@ -81,7 +80,7 @@ import static org.kie.workbench.common.stunner.core.client.event.keyboard.Keyboa
 public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
     static final int DEFAULT_PADDING = 15;
-    private static Logger LOGGER = Logger.getLogger(PasteSelectionSessionCommand.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PasteSelectionSessionCommand.class.getName());
 
     private final SessionCommandManager<AbstractCanvasHandler> sessionCommandManager;
     private final ManagedInstance<CanvasCommandFactory<AbstractCanvasHandler>> canvasCommandFactoryInstance;
@@ -156,8 +155,7 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
 
     @Override
     public <V> void execute(final Callback<V> callback) {
-        checkNotNull("callback",
-                     callback);
+        checkNotNull("callback", callback);
 
         if (clipboardControl.hasElements()) {
             final CompositeCommand.Builder<AbstractCanvasHandler, CanvasViolation> nodesCommandBuilder = createCommandBuilder();
@@ -341,6 +339,10 @@ public class PasteSelectionSessionCommand extends AbstractClientSessionCommand<E
             setEnabled(true);
             fire();
         }
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private Consumer<Node> cloneNodeCallback(Node candidate, Counter processedNodesCountdown) {

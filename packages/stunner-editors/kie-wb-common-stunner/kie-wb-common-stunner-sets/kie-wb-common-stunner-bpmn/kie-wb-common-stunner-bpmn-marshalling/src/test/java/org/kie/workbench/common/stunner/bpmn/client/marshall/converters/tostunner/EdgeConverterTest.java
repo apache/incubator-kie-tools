@@ -16,13 +16,15 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.BaseElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.Result;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.EdgePropertyReader;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -75,11 +77,10 @@ public class EdgeConverterTest {
 
     @Test
     public void resultWithExistingNodes() {
-        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>()
-                .put("1", node1)
-                .put("2", node2)
-                .put("3", node3)
-                .build();
+        Map<String, BpmnNode> nodes = Stream.of(new AbstractMap.SimpleEntry<>("1", node1),
+                                                new AbstractMap.SimpleEntry<>("2", node2),
+                                                new AbstractMap.SimpleEntry<>("3", node3))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         when(reader.getSourceId()).thenReturn("1");
         when(reader.getTargetId()).thenReturn("2");
@@ -93,9 +94,8 @@ public class EdgeConverterTest {
 
     @Test
     public void resultWithMissingSourceNode() {
-        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>()
-                .put("2", node1)
-                .build();
+        Map<String, BpmnNode> nodes = Stream.of(new AbstractMap.SimpleEntry<>("2", node1))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Result<BpmnEdge> result = tested.result(nodes, edge, reader, message, key);
         BpmnEdge value = result.value();
@@ -105,9 +105,8 @@ public class EdgeConverterTest {
 
     @Test
     public void resultWithMissingTargetNode() {
-        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>()
-                .put("1", node1)
-                .build();
+        Map<String, BpmnNode> nodes = Stream.of(new AbstractMap.SimpleEntry<>("1", node1))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         Result<BpmnEdge> result = tested.result(nodes, edge, reader, message, key);
         BpmnEdge value = result.value();
@@ -117,10 +116,9 @@ public class EdgeConverterTest {
 
     @Test
     public void valid() {
-        Map<String, BpmnNode> nodes = new Maps.Builder<String, BpmnNode>()
-                .put("1", node1)
-                .put("2", node1)
-                .build();
+        Map<String, BpmnNode> nodes = Stream.of(new AbstractMap.SimpleEntry<>("1", node1),
+                                                new AbstractMap.SimpleEntry<>("2", node1))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         assertTrue(tested.valid(nodes, "1", "2"));
         assertFalse(tested.valid(nodes, "1", "3"));

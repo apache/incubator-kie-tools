@@ -17,12 +17,13 @@ package org.kie.workbench.common.dmn.api.definition.model;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.DMNViewDefinition;
 import org.kie.workbench.common.dmn.api.definition.HasExpression;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
@@ -59,9 +60,7 @@ public class BusinessKnowledgeModel extends DRGElement implements HasVariable<In
     private static final String stunnerCategory = Categories.NODES;
 
     @Labels
-    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
-            .add("business-knowledge-model")
-            .build();
+    private static final Set<String> stunnerLabels = Stream.of("business-knowledge-model").collect(Collectors.toSet());
 
     @Property
     @FormField(afterElement = "nameHolder")

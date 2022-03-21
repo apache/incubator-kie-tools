@@ -23,8 +23,6 @@
   <inherits name="com.google.gwt.i18n.I18N"/>
 
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorAPI"/>
-  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorClient"/>
-  <inherits name="org.uberfire.ext.editor.commons.UberfireCommonsEditorClient"/>
 
 </module>
