@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0066-feel-negation" name="0066-feel-negation" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>Semantics of negation</description>
+    <decision name="decision001" id="_decision001">
+        <description>Tests FEEL expression: 'not(true)' and expects result: 'false (boolean)'</description>
+        <question>Result of FEEL expression 'not(true)'?</question>
+        <allowedAnswers>false (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision001"/>
+        <literalExpression>
+            <text>not(true)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision002" id="_decision002">
+        <description>Tests FEEL expression: 'not(false)' and expects result: 'true (boolean)'</description>
+        <question>Result of FEEL expression 'not(false)'?</question>
+        <allowedAnswers>true (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision002"/>
+        <literalExpression>
+            <text>not(false)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003_a" id="_decision003_a">
+        <description>Tests FEEL expression: 'not(null)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'not(null)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_a"/>
+        <literalExpression>
+            <text>not(null)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003_b" id="_decision003_b">
+        <description>Tests FEEL expression: 'not(0)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'not(0)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_b"/>
+        <literalExpression>
+            <text>not(0)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003_c" id="_decision003_c">
+        <description>Tests FEEL expression: 'not(1)' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'not(1)'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_c"/>
+        <literalExpression>
+            <text>not(1)</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003_d" id="_decision003_d">
+        <description>Tests FEEL expression: 'not("true")' and expects result: 'null (boolean)'</description>
+        <question>Result of FEEL expression 'not("true")'?</question>
+        <allowedAnswers>null (boolean)</allowedAnswers>
+        <variable typeRef="boolean" name="decision003_d"/>
+        <literalExpression>
+            <text>not("true")</text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

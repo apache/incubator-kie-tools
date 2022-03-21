@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~  http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <artifactId>kie-wb-common-dmn</artifactId>
+    <version>0.0.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kie-wb-common-dmn-webapp-kogito-testing</artifactId>
+  <name>Kie Workbench - Common - DMN - Kogito testing webapp</name>
+  <description>Kie Workbench - Common - DMN - Kogito testing webapp</description>
+  <packaging>war</packaging>
+
+  <properties>
+    <errai.jboss.home>${project.build.directory}/wildfly-${version.org.wildfly}</errai.jboss.home>
+    <gwt.compiler.localWorkers>4</gwt.compiler.localWorkers>
+    <gwt.helper.includes>DMNClient,Marshaller</gwt.helper.includes>
+    <gwt.helper.rootDirectories>${project.parent.basedir}/</gwt.helper.rootDirectories>
+
+    <!-- this module is just and "playground" of components, to minimize CI times, we skip sonar here -->
+    <sonar.skip>true</sonar.skip>
+  </properties>
+
+  <dependencies>
+
+    <!--Logs-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-ext</artifactId>
+    </dependency>
+
+    <!-- This is a war file, so logback is not in scope test, but in scope compile -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+    </dependency>
+
+    <!-- MANSTIS - EVERYTHING BELOW THIS HAS BEEN _SANITISED_! -->
+
+    <!-- Errai -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <classifier>no_aop</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-ioc</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.google.inject</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-ui</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-cdi-shared</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Stunner -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-client-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-processors</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-api-mockito2</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.powermock</groupId>
+          <artifactId>powermock-module-junit4</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-widgets</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-forms-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- DMN Editor -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-dmn-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-dmn-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-dmn-webapp-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-kogito-webapp-base</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.annotation</groupId>
+          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-wires-core-grids</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Form modeler -->
+    <!-- Needed by stunner -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-forms-fields</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-forms-processing-engine</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-forms-adf-engine-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-forms-adf-engine-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-dynamic-forms-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Needed by forms for JSR303 validation -->
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Core UberFire dependencies -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-workbench-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-simple-docks-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- UberFire kogito dependencies -->
+    <dependency>
+      <groupId>com.google.elemental2</groupId>
+      <artifactId>elemental2-promise</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Generic ui components -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-ui</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.xml.bind</groupId>
+      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- GWT and extensions -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mortbay.jasper</groupId>
+          <artifactId>apache-el</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.ibm</groupId>
+          <artifactId>icu</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.ibm.icu</groupId>
+          <artifactId>icu4j</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <!-- kogito -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-kogito-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-kogito-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>appformer-kogito-bridge</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Client side FEEL -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel-gwt</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.errorprone</groupId>
+          <artifactId>error_prone_annotations</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-dmn-feel</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.rikkola.gwt</groupId>
+      <artifactId>antlr4-c3-gwt</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4gwt-runtime</artifactId>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.abego.treelayout</groupId>
+          <artifactId>org.abego.treelayout.core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>www-test/**</include>
+                <include>src/main/webapp/org.kie.workbench.common.dmn.showcase.DMNKogitoTestingWebapp/</include>
+                <include>src/main/webapp/WEB-INF/classes/</include>
+                <include>src/main/webapp/WEB-INF/deploy/</include>
+                <include>src/main/webapp/WEB-INF/lib/</include>
+                <include>**/gwt-unitCache/**</include>
+                <include>.gwt/**</include>
+                <include>.errai/</include>
+                <include>**/*.JUnit/**</include>
+                <include>repositories/</include>
+              </includes>
+            </fileset>
+            <fileset>
+              <directory>${basedir}/src/main/webapp/model/</directory>
+              <includes>
+                <include>**.js</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+
+      <!-- Exclude generated code from checkstyle validation -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <excludes>
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/js/**/*,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/jre/package-info.java,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JSIName.java,
+            org/kie/workbench/common/dmn/webapp/kogito/marshaller/mapper/JsUtils.java
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <profiles>
+
+    <!-- Profile to disable GWT compilation of showcase (useful in full downstream builds) -->
+    <profile>
+      <id>no-showcase</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <!-- Profile to build GWT code and package WAR for Community builds -->
+    <profile>
+      <id>kogito</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+
+      <build>
+        <plugins>
+          <!-- Include additional sources path for hot reload -->
+          <plugin>
+            <groupId>org.kie</groupId>
+            <artifactId>kie-gwthelper-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source</id>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <includes>${gwt.helper.includes}</includes> <!-- will include all GWT module whose configuration file name match that pattern -->
+                  <rootDirectories>${gwt.helper.rootDirectories}</rootDirectories> <!-- will search inside those directories -->
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <strict>true</strict>
+              <localWorkers>${gwt.compiler.localWorkers}</localWorkers>
+              <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
+              <draftCompile>true</draftCompile>
+              <extraJvmArgs>-Xmx3G -Xms512m -Xss1M -XX:CompileThreshold=7000 -XX:+UseSerialGC -Derrai.dynamic_validation.enabled=true -Derrai.jboss.home=${errai.jboss.home}</extraJvmArgs>
+              <module>org.kie.workbench.common.dmn.showcase.FastCompiledDMNKogitoTestingWebapp</module>
+              <logLevel>INFO</logLevel>
+              <noServer>false</noServer>
+              <disableCastChecking>true</disableCastChecking>
+              <runTarget>index.html</runTarget>
+              <hostedWebapp>src/main/webapp</hostedWebapp>
+              <gwtSdkFirstInClasspath>false</gwtSdkFirstInClasspath>
+              <generateJsInteropExports>true</generateJsInteropExports>
+              <logLevel>INFO</logLevel>
+
+              <compileSourcesArtifacts>
+                <!-- UberFire -->
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-client-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-simple-docks-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-wires-core-grids</compileSourcesArtifact>
+
+                <!-- Errai, Drools etc -->
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:errai-data-binding</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-ui</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-kogito-client</compileSourcesArtifact>
+
+                <!-- Client side FEEL -->
+                <compileSourcesArtifact>org.rikkola.gwt:antlr4-c3-gwt</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-feel-gwt-functions</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie:kie-dmn-model</compileSourcesArtifact>
+
+                <!-- UF-ext -->
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-commons-editor-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-commons</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-table</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-widgets-core-client</compileSourcesArtifact>
+
+                <!-- Forms -->
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-base</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-adf-engine-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-fields</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-processing-engine</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-shared</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-common-rendering-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-forms-crud-component</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dynamic-forms-client</compileSourcesArtifact>
+
+                <!-- Stunner -->
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-core-common</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-client-common</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-shapes-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-widgets</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-forms-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-stunner-kogito-client</compileSourcesArtifact>
+
+                <!-- DMN Editor -->
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-api</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-client</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-common</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-common</compileSourcesArtifact>
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-dmn-webapp-kogito-marshaller</compileSourcesArtifact>
+
+                <compileSourcesArtifact>org.kie.kogito.stunner.editors:appformer-client-api</compileSourcesArtifact>
+
+              </compileSourcesArtifacts>
+            </configuration>
+            <executions>
+              <execution>
+                <id>gwt-clean</id>
+                <phase>clean</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>gwt-compile</id>
+                <goals>
+                  <goal>resources</goal>
+                  <goal>compile</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+              <packagingExcludes>**/javax/**/*.*,**/client/**/*.class,**/*.symbolMap</packagingExcludes>
+              <archive>
+                <addMavenDescriptor>false</addMavenDescriptor>
+              </archive>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>unpack</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.jboss.errai</groupId>
+                      <artifactId>wildfly-dist</artifactId>
+                      <type>zip</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}</outputDirectory>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Unpack DMNMarshaller JS from dependency</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.kie.kogito.stunner.editors</groupId>
+                      <artifactId>kie-wb-common-dmn-webapp-kogito-marshaller</artifactId>
+                      <version>${project.version}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/DMNMarshaller</outputDirectory>
+                      <includes>**/*.js</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Unpack FormatterJS JS from dependency</id>
+                <phase>process-sources</phase>
+                <goals>
+                  <goal>unpack</goal>
+                </goals>
+                <configuration>
+                  <artifactItems>
+                    <artifactItem>
+                      <groupId>org.kie.kogito.stunner.editors</groupId>
+                      <artifactId>kie-wb-common-dmn-webapp-kogito-common</artifactId>
+                      <version>${project.version}</version>
+                      <type>jar</type>
+                      <overWrite>true</overWrite>
+                      <outputDirectory>${project.build.directory}/DMNMarshaller</outputDirectory>
+                      <includes>**/*.js</includes>
+                    </artifactItem>
+                  </artifactItems>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>Copy DMNMarshaller JS to WAR</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy todir="${basedir}/src/main/webapp/model" flatten="true">
+                      <fileset dir="${project.build.directory}/DMNMarshaller">
+                        <include name="**/*.js"/>
+                      </fileset>
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+              <execution>
+                <id>Copy dmn-loader assets to WAR</id>
+                <phase>process-resources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <target>
+                    <copy todir="${basedir}/src/main/webapp/kogito-editors-js">
+                      <fileset dir="${basedir}/../../../stunner-editors-dmn-loader/dist" includes="**/*" />
+                    </copy>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+</project>

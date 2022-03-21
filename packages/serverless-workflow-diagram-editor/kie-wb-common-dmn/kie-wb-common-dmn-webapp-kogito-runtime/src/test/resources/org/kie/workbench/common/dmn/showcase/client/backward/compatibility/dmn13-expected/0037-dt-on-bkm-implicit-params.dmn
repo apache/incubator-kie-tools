@@ -1,0 +1,170 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.trisotech.com/definitions/_102a463a-acf1-4899-b16a-96b85824a709" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_102a463a-acf1-4899-b16a-96b85824a709" name="DT on BKM implicit parameters" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_102a463a-acf1-4899-b16a-96b85824a709">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_FDF0E05C-750C-46C4-AD4F-36D7615A7C96" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_4587234e-85c7-4419-98d9-ebb66aa1e043" name="Name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_f56cfffd-a9ad-4b10-b33e-d1172cacf3c5" name="Gender" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+      <dmn:allowedValues id="_65684C21-C86D-4C05-95BA-234444CFA63E">
+        <dmn:text>"Male","Female"</dmn:text>
+      </dmn:allowedValues>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_c7bd7a3c-518a-414e-a180-4bf8b918bd04" name="Children" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_542f2377-ef0c-452c-a34d-1496eb75de23" name="Person">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1b34cc3f-a148-4617-a2e4-b6de00a99d36" name="Person" typeRef="tPerson"/>
+  </dmn:inputData>
+  <dmn:decision id="_d3722a6a-6a8f-4949-8480-9bd660152915" name="Person's description">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0e20f081-b76f-4131-937c-4dcf20efb714" name="Person's description" typeRef="string"/>
+    <dmn:informationRequirement id="_3a0399ac-3d93-43ac-83d6-b9762662a641">
+      <dmn:requiredInput href="#_542f2377-ef0c-452c-a34d-1496eb75de23"/>
+    </dmn:informationRequirement>
+    <dmn:knowledgeRequirement id="ee972635-be5b-4665-89d2-68142d0501c7">
+      <dmn:requiredKnowledge href="#_d86b380d-733f-4c24-8143-c175d11cc95f"/>
+    </dmn:knowledgeRequirement>
+    <dmn:invocation id="_37495c4b-0341-4c62-b219-16309a01bf2a" typeRef="string">
+      <dmn:literalExpression id="literal__37495c4b-0341-4c62-b219-16309a01bf2a">
+        <dmn:text>Description</dmn:text>
+      </dmn:literalExpression>
+      <dmn:binding>
+        <dmn:parameter id="_6f440f9b-298b-49ec-a8de-65241caa10f3" name="Person.Gender"/>
+        <dmn:literalExpression id="_30bfbdc6-4cb2-4e3e-803d-e5feb9b578bf">
+          <dmn:text>Person.Gender</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+      <dmn:binding>
+        <dmn:parameter id="_5ee35025-43b5-4221-a40c-dc897ddf7196" name="Person.Name"/>
+        <dmn:literalExpression id="_1ab0c2d4-a659-4be2-b4f3-fb0b6f99f6a5">
+          <dmn:text>Person.Name</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+      <dmn:binding>
+        <dmn:parameter id="_8f6e0244-466c-461c-aebf-1d52ccc1f540" name="Person.Children"/>
+        <dmn:literalExpression id="_ccb609f3-d2b1-4f60-b126-0d03e1c3b019">
+          <dmn:text>Person.Children</dmn:text>
+        </dmn:literalExpression>
+      </dmn:binding>
+    </dmn:invocation>
+  </dmn:decision>
+  <dmn:businessKnowledgeModel id="_d86b380d-733f-4c24-8143-c175d11cc95f" name="Description">
+    <dmn:extensionElements/>
+    <dmn:variable id="_4ec95bda-ae86-435a-8724-d804f0448d76" name="Description"/>
+    <dmn:encapsulatedLogic id="_4D7F0A0F-3B97-44CF-8D15-A8BA1E59086F" kind="FEEL">
+      <dmn:formalParameter id="_BB7ADE5F-B259-439C-B43B-D20CD3860DAD" name="Person.Gender" typeRef="string"/>
+      <dmn:formalParameter id="_317194F7-66E6-462F-A304-5FC8CC910DC1" name="Person.Name" typeRef="string"/>
+      <dmn:formalParameter id="_0674BC8A-5087-4698-AC3E-F8FFC9923ED2" name="Person.Children" typeRef="number"/>
+      <dmn:decisionTable id="_5d73f8fd-009d-47c9-aa37-1b7fed64a0ac" typeRef="string" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row" outputLabel="Description">
+        <dmn:input id="_061b2667-8680-4229-bbc6-1d2f371580a8">
+          <dmn:inputExpression id="_86A13BEE-633D-40D2-ACE7-ECB2D353279D" typeRef="string">
+            <dmn:text>Person.Gender</dmn:text>
+          </dmn:inputExpression>
+          <dmn:inputValues id="_0165C3DF-A7AD-46A7-BC08-28A3FCBF237A">
+            <dmn:text>"Male","Female"</dmn:text>
+          </dmn:inputValues>
+        </dmn:input>
+        <dmn:input id="_ad99f7c7-d615-46b8-ba4a-c44dacd4afbb">
+          <dmn:inputExpression id="_A0D7174C-63EE-4CD8-B8A9-60CD546597BB" typeRef="string">
+            <dmn:text>Person.Name</dmn:text>
+          </dmn:inputExpression>
+        </dmn:input>
+        <dmn:input id="_3ded7b42-3e2f-4642-a82f-cc4189a068b7">
+          <dmn:inputExpression id="_F77043AC-DC53-4298-831E-B0CA89453471" typeRef="number">
+            <dmn:text>Person.Children</dmn:text>
+          </dmn:inputExpression>
+        </dmn:input>
+        <dmn:output id="_4681ea00-ee6c-4731-ae85-3bef92bef124"/>
+        <dmn:annotation name=""/>
+        <dmn:rule id="_60226276-8b6c-4d01-8615-ea2887968998">
+          <dmn:inputEntry id="_60b3620f-278d-40b8-9664-9601178df810">
+            <dmn:text>"Male"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:inputEntry id="_84f9f0af-1817-4036-93e3-ccc2d0bab1c8">
+            <dmn:text>-</dmn:text>
+          </dmn:inputEntry>
+          <dmn:inputEntry id="_eb5a6bb4-f1a7-42c9-bb2a-27ff44372a01">
+            <dmn:text>-</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_b2516134-f85e-46fe-a48f-e97d15890193" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/">
+            <dmn:text>Person.Name + " is a dad of " + string(decimal(Person.Children,0)) + " children."</dmn:text>
+          </dmn:outputEntry>
+          <dmn:annotationEntry>
+            <dmn:text></dmn:text>
+          </dmn:annotationEntry>
+        </dmn:rule>
+        <dmn:rule id="_55949bfa-9e7d-468d-8338-f98d01910a72">
+          <dmn:inputEntry id="_f9adf8ef-6d54-482a-ad93-52bec6484d6c">
+            <dmn:text>"Female"</dmn:text>
+          </dmn:inputEntry>
+          <dmn:inputEntry id="_fe58879f-d6b9-4bd0-adbf-e12dc8c1c19a">
+            <dmn:text>-</dmn:text>
+          </dmn:inputEntry>
+          <dmn:inputEntry id="_22d2ef06-0b21-4fb0-89d3-e59bf59501df">
+            <dmn:text>-</dmn:text>
+          </dmn:inputEntry>
+          <dmn:outputEntry id="_5ac32905-7373-451e-b143-29c55833eaf6" expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/">
+            <dmn:text>Person.Name + " is a mother of " + string(decimal(Person.Children,0)) + " children."</dmn:text>
+          </dmn:outputEntry>
+          <dmn:annotationEntry>
+            <dmn:text></dmn:text>
+          </dmn:annotationEntry>
+        </dmn:rule>
+      </dmn:decisionTable>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_102a463a-acf1-4899-b16a-96b85824a709_D1" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_37495c4b-0341-4c62-b219-16309a01bf2a"/>
+          <kie:ComponentWidths dmnElementRef="literal__37495c4b-0341-4c62-b219-16309a01bf2a"/>
+          <kie:ComponentWidths dmnElementRef="_30bfbdc6-4cb2-4e3e-803d-e5feb9b578bf"/>
+          <kie:ComponentWidths dmnElementRef="_1ab0c2d4-a659-4be2-b4f3-fb0b6f99f6a5"/>
+          <kie:ComponentWidths dmnElementRef="_ccb609f3-d2b1-4f60-b126-0d03e1c3b019"/>
+          <kie:ComponentWidths dmnElementRef="_5d73f8fd-009d-47c9-aa37-1b7fed64a0ac"/>
+          <kie:ComponentWidths dmnElementRef="_4D7F0A0F-3B97-44CF-8D15-A8BA1E59086F"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_542f2377-ef0c-452c-a34d-1496eb75de23" dmnElementRef="_542f2377-ef0c-452c-a34d-1496eb75de23" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="150" y="331" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_d3722a6a-6a8f-4949-8480-9bd660152915" dmnElementRef="_d3722a6a-6a8f-4949-8480-9bd660152915" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="256" y="150" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_d86b380d-733f-4c24-8143-c175d11cc95f" dmnElementRef="_d86b380d-733f-4c24-8143-c175d11cc95f" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="363" y="331" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_3a0399ac-3d93-43ac-83d6-b9762662a641" dmnElementRef="_3a0399ac-3d93-43ac-83d6-b9762662a641">
+        <di:waypoint x="226" y="331"/>
+        <di:waypoint x="333" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-ee972635-be5b-4665-89d2-68142d0501c7" dmnElementRef="ee972635-be5b-4665-89d2-68142d0501c7">
+        <di:waypoint x="440" y="331"/>
+        <di:waypoint x="333" y="211"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

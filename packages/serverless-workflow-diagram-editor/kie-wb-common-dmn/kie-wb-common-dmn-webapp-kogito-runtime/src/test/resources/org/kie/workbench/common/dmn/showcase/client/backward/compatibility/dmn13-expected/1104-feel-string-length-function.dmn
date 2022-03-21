@@ -1,0 +1,163 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1104-feel-string-length-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i_XD4PUUEeesLuP4RHs4vA" name="1104-feel-string-length-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1104-feel-string-length-function">
+  <dmn:description>FEEL built-in function 'string length(string)' in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_i_XD4vUUEeesLuP4RHs4vA" name="tfeel-string-length-function_001_1afe6930d1_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_XD5vUUEeesLuP4RHs4vA" name="tfeel-string-length-function_002_249c23050d_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_XD6vUUEeesLuP4RHs4vA" name="tfeel-string-length-function_003_e1df507dee_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_XD7vUUEeesLuP4RHs4vA" name="tfeel-string-length-function_004_f4c02fac3d_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_XD8vUUEeesLuP4RHs4vA" name="tfeel-string-length-function_005_ca834dabac_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_i_XD9vUUEeesLuP4RHs4vA" name="tfeel-string-length-function_006_6c4930a0eb_Result" isCollection="false">
+    <dmn:typeRef>number</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_i_XD-PUUEeesLuP4RHs4vA" name="feel-string-length-function_006_6c4930a0eb">
+    <dmn:description>Tests FEEL expression: 'string length(string:"aaaaa dddd ")' and expects result: '11 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string length(string:"aaaaa dddd ")'?</dmn:question>
+    <dmn:allowedAnswers>11 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i_XD-fUUEeesLuP4RHs4vA" name="feel-string-length-function_006_6c4930a0eb" typeRef="tfeel-string-length-function_006_6c4930a0eb_Result"/>
+    <dmn:literalExpression id="_i_XD9_UUEeesLuP4RHs4vA">
+      <dmn:text>string length(string:"aaaaa dddd ")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_XD9PUUEeesLuP4RHs4vA" name="feel-string-length-function_005_ca834dabac">
+    <dmn:description>Tests FEEL expression: 'string length(string:"aaaaa dddd")' and expects result: '10 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string length(string:"aaaaa dddd")'?</dmn:question>
+    <dmn:allowedAnswers>10 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i_XD9fUUEeesLuP4RHs4vA" name="feel-string-length-function_005_ca834dabac" typeRef="tfeel-string-length-function_005_ca834dabac_Result"/>
+    <dmn:literalExpression id="_i_XD8_UUEeesLuP4RHs4vA">
+      <dmn:text>string length(string:"aaaaa dddd")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_XD5PUUEeesLuP4RHs4vA" name="feel-string-length-function_001_1afe6930d1">
+    <dmn:description>Tests FEEL expression: 'string length("")' and expects result: '0 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string length("")'?</dmn:question>
+    <dmn:allowedAnswers>0 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i_XD5fUUEeesLuP4RHs4vA" name="feel-string-length-function_001_1afe6930d1" typeRef="tfeel-string-length-function_001_1afe6930d1_Result"/>
+    <dmn:literalExpression id="_i_XD4_UUEeesLuP4RHs4vA">
+      <dmn:text>string length("")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_XD8PUUEeesLuP4RHs4vA" name="feel-string-length-function_004_f4c02fac3d">
+    <dmn:description>Tests FEEL expression: 'string length(string:"xyz123")' and expects result: '6 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string length(string:"xyz123")'?</dmn:question>
+    <dmn:allowedAnswers>6 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i_XD8fUUEeesLuP4RHs4vA" name="feel-string-length-function_004_f4c02fac3d" typeRef="tfeel-string-length-function_004_f4c02fac3d_Result"/>
+    <dmn:literalExpression id="_i_XD7_UUEeesLuP4RHs4vA">
+      <dmn:text>string length(string:"xyz123")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_i_XD4fUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.3 Table 60">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_i_XD6PUUEeesLuP4RHs4vA" name="feel-string-length-function_002_249c23050d">
+    <dmn:description>Tests FEEL expression: 'string length("a")' and expects result: '1 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string length("a")'?</dmn:question>
+    <dmn:allowedAnswers>1 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i_XD6fUUEeesLuP4RHs4vA" name="feel-string-length-function_002_249c23050d" typeRef="tfeel-string-length-function_002_249c23050d_Result"/>
+    <dmn:literalExpression id="_i_XD5_UUEeesLuP4RHs4vA">
+      <dmn:text>string length("a")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_i_XD7PUUEeesLuP4RHs4vA" name="feel-string-length-function_003_e1df507dee">
+    <dmn:description>Tests FEEL expression: 'string length("abc")' and expects result: '3 (number)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string length("abc")'?</dmn:question>
+    <dmn:allowedAnswers>3 (number)</dmn:allowedAnswers>
+    <dmn:variable id="_i_XD7fUUEeesLuP4RHs4vA" name="feel-string-length-function_003_e1df507dee" typeRef="tfeel-string-length-function_003_e1df507dee_Result"/>
+    <dmn:literalExpression id="_i_XD6_UUEeesLuP4RHs4vA">
+      <dmn:text>string length("abc")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_i_XD4PUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_i_XD9_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_XD8_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_XD4_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_XD7_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_XD5_UUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_i_XD6_UUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD-PUUEeesLuP4RHs4vA" dmnElementRef="_i_XD-PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD9PUUEeesLuP4RHs4vA" dmnElementRef="_i_XD9PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD5PUUEeesLuP4RHs4vA" dmnElementRef="_i_XD5PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="292" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD8PUUEeesLuP4RHs4vA" dmnElementRef="_i_XD8PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="385" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD4fUUEeesLuP4RHs4vA" dmnElementRef="_i_XD4fUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="133" y="478" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD6PUUEeesLuP4RHs4vA" dmnElementRef="_i_XD6PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_i_XD7PUUEeesLuP4RHs4vA" dmnElementRef="_i_XD7PUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

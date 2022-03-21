@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/dmn-tck/tck" name="feel-logic" id="_feel-logic" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <inputData name="A" id="i_a">
+        <variable typeRef="boolean" name="A"/>
+    </inputData>
+    <inputData name="B" id="i_b">
+        <variable typeRef="boolean" name="B"/>
+    </inputData>
+    <decision name="DecisionAnd" id="d_1">
+        <variable typeRef="boolean" name="DecisionAnd"/>
+        <informationRequirement id="_7606f2b4-fc80-4ee1-a7e0-dd720f70141f">
+            <requiredInput href="#i_a"/>
+        </informationRequirement>
+        <informationRequirement id="_9acd9374-1e94-4fb1-9f98-fee2444f9cfe">
+            <requiredInput href="#i_b"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>A and B</text>
+        </literalExpression>
+    </decision>
+    <decision name="DecisionOr" id="d_2">
+        <variable typeRef="boolean" name="DecisionOr"/>
+        <informationRequirement id="_666cfa05-0e2d-4065-8377-361ca78e35fa">
+            <requiredInput href="#i_a"/>
+        </informationRequirement>
+        <informationRequirement id="_5eac4395-b434-4719-aeff-dbd78d680ea4">
+            <requiredInput href="#i_b"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>A or B</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_feel-logic_D1">
+            <dmndi:Size height="650.0" width="668.0"/>
+            <dmndi:DMNShape dmnElementRef="i_a" id="_feel-logic_s1">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="i_b" id="_feel-logic_s2">
+                <dc:Bounds height="60.0" width="153.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_1" id="_feel-logic_s3">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_2" id="_feel-logic_s4">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_7606f2b4-fc80-4ee1-a7e0-dd720f70141f" id="_feel-logic_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_9acd9374-1e94-4fb1-9f98-fee2444f9cfe" id="_feel-logic_e2">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_666cfa05-0e2d-4065-8377-361ca78e35fa" id="_feel-logic_e3">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_5eac4395-b434-4719-aeff-dbd78d680ea4" id="_feel-logic_e4">
+                <di:waypoint x="440.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

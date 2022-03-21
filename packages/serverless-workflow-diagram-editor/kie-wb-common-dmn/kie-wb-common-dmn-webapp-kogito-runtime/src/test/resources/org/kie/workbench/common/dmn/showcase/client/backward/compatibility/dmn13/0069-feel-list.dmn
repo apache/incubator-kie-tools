@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.montera.com.au/spec/DMN/0069-feel-list" name="0069-feel-list" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <description>FEEL lists</description>
+
+    <decision name="decision001" id="_decision001">
+        <variable name="decision001"/>
+        <literalExpression>
+            <text>[1,2,3]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision001_a" id="_decision001_a">
+        <variable name="decision001_a"/>
+        <literalExpression>
+            <text>[]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision002" id="_decision002">
+        <variable name="decision002"/>
+        <literalExpression>
+            <text>[1,2,3][0]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision003" id="_decision003">
+        <variable name="decision003"/>
+        <literalExpression>
+            <text>[1,2,3][4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision004" id="_decision004">
+        <variable name="decision004"/>
+        <literalExpression>
+            <text>[1,2,3][1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision005" id="_decision005">
+        <variable name="decision005"/>
+        <literalExpression>
+            <text>[1,2,3][3]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision006" id="_decision006">
+        <variable name="decision006"/>
+        <literalExpression>
+            <text>[1,2,3][-1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision007" id="_decision007">
+        <variable name="decision007"/>
+        <literalExpression>
+            <text>[1,2,3][-3]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision008" id="_decision008">
+        <variable name="decision008"/>
+        <literalExpression>
+            <text>[1,2,3][-4]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision009" id="_decision009">
+        <variable name="decision009"/>
+        <literalExpression>
+            <text>[1,2,3][true]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision010" id="_decision010">
+        <variable name="decision010"/>
+        <literalExpression>
+            <text>[1,2,3][false]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision011" id="_decision011">
+        <variable name="decision011"/>
+        <literalExpression>
+            <text>[1,2,3][item >= 2]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision012" id="_decision012">
+        <variable name="decision012"/>
+        <literalExpression>
+            <text>true[true]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision013" id="_decision013">
+        <variable name="decision013"/>
+        <literalExpression>
+            <text>true[false]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision014" id="_decision014">
+        <variable name="decision014"/>
+        <literalExpression>
+            <text>100[true]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision015" id="_decision015">
+        <variable name="decision015"/>
+        <literalExpression>
+            <text>100[false]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision016" id="_decision016">
+        <variable name="decision016"/>
+        <literalExpression>
+            <text>"foo"[true]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision017" id="_decision017">
+        <variable name="decision017"/>
+        <literalExpression>
+            <text>"foo"[false]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision018" id="_decision018">
+        <variable name="decision018"/>
+        <literalExpression>
+            <text>true[1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision019" id="_decision019">
+        <variable name="decision019"/>
+        <literalExpression>
+            <text>100[1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision020" id="_decision020">
+        <variable name="decision020"/>
+        <literalExpression>
+            <text>"foo"[1]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision021" id="_decision021">
+        <variable name="decision021"/>
+        <literalExpression>
+            <text>true[0]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision022" id="_decision022">
+        <variable name="decision022"/>
+        <literalExpression>
+            <text>100[0]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision023" id="_decision023">
+        <variable name="decision023"/>
+        <literalExpression>
+            <text>"foo"[0]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision024" id="_decision024">
+        <variable name="decision024"/>
+        <literalExpression>
+            <text>[{a: 1}, {a: 2}, {a: 3}][item.a >= 2]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision025" id="_decision025">
+        <variable name="decision025"/>
+        <literalExpression>
+            <text>[{a: 1}, {a: 2}, {a: 3}][a >= 2]</text>
+        </literalExpression>
+    </decision>
+
+    <decision name="decision026" id="_decision026">
+        <variable name="decision026"/>
+        <literalExpression>
+            <text>[{item: 1}, {item: 2}, {item: 3}][item >= 2]</text>
+        </literalExpression>
+    </decision>
+
+</definitions>
+

@@ -1,0 +1,63 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_f52ca843-504b-4c3b-a6bc-4d377bffef7a" name="filter01" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.trisotech.com/definitions/_f52ca843-504b-4c3b-a6bc-4d377bffef7a">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="tEmployees" name="tEmployees" isCollection="true">
+    <dmn:itemComponent id="_c22147cb-9481-404e-8f48-f8eee8d25565" name="id" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_0b26fc3e-dcb9-4106-ac30-f536247fb48c" name="dept" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_e5120ba7-544a-4f7d-8712-f1c659b82f61" name="name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="tNameList" name="tNameList" isCollection="true">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_4a786da5-5cd2-4c3a-ba4d-dcb3051c1812" name="filter01">
+    <dmn:extensionElements/>
+    <dmn:variable id="_8E089C89-B20F-4EE8-B1A2-9CC4E108F310" name="filter01" typeRef="tns:tNameList"/>
+    <dmn:informationRequirement id="_1d1d61df-e3c2-4363-8182-b97e0d96ffb8">
+      <dmn:requiredInput href="#_17c8d488-19be-481b-b341-85043176a25c"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_DB9C6BE4-AD57-4506-8425-AA63BC0FB5E6">
+      <dmn:text>Employees[dept=20].name</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:inputData id="_17c8d488-19be-481b-b341-85043176a25c" name="Employees">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9B3FE827-5B15-47DB-8391-9078FEDBC046" name="Employees" typeRef="tns:tEmployees"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_f52ca843-504b-4c3b-a6bc-4d377bffef7a_D1" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_DB9C6BE4-AD57-4506-8425-AA63BC0FB5E6"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_4a786da5-5cd2-4c3a-ba4d-dcb3051c1812" dmnElementRef="_4a786da5-5cd2-4c3a-ba4d-dcb3051c1812" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="150" y="150" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_17c8d488-19be-481b-b341-85043176a25c" dmnElementRef="_17c8d488-19be-481b-b341-85043176a25c" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="151" y="331" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_1d1d61df-e3c2-4363-8182-b97e0d96ffb8" dmnElementRef="_1d1d61df-e3c2-4363-8182-b97e0d96ffb8">
+        <di:waypoint x="227" y="331"/>
+        <di:waypoint x="227" y="211"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

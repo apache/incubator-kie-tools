@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_6cb03678-38e5-4ee3-826b-d6622c738563" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_6cb03678-38e5-4ee3-826b-d6622c738563" namespace="http://www.trisotech.com/definitions/_6cb03678-38e5-4ee3-826b-d6622c738563" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" name="simple A table" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+	<decision id="_3b2953a3-745f-4d2e-b55d-75c8c5ae653c" name="Approval Status">
+		<variable name="Approval Status" typeRef="feel:string"/>
+		<informationRequirement>
+			<requiredInput href="#_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_41effb45-b3c4-46ac-b1da-122b3e428a98"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_8ff18665-84e9-49f2-a8df-8981b1844549"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="ANY" outputLabel="Approval Status" preferredOrientation="Rule-as-Row">
+			<input id="_62d2bb2d-dcf4-49fc-a96a-0c11dd6dee70" label="Age">
+				<inputExpression typeRef="feel:number">
+					<text>Age</text>
+				</inputExpression>
+			</input>
+			<input id="_d924d584-b27a-4288-921d-04e0ede1096d" label="RiskCategory">
+				<inputExpression typeRef="feel:string">
+					<text>RiskCategory</text>
+				</inputExpression>
+				<inputValues>
+					<text>"High", "Low", "Medium"</text>
+				</inputValues>
+			</input>
+			<input id="_bfebcb06-fc90-490f-a060-5bfd3d12fdb9" label="isAffordable">
+				<inputExpression typeRef="feel:boolean">
+					<text>isAffordable</text>
+				</inputExpression>
+			</input>
+			<output id="_ad9c87b6-994e-4009-9118-7a2e861912e9">
+				<outputValues>
+					<text>"Approved", "Declined"</text>
+				</outputValues>
+			</output>
+			<rule id="_ce051810-0ddf-4423-8de4-2474df9ab864">
+				<inputEntry id="_ce051810-0ddf-4423-8de4-2474df9ab864-0">
+					<text>&gt;=18</text>
+				</inputEntry>
+				<inputEntry id="_ce051810-0ddf-4423-8de4-2474df9ab864-1">
+					<text>"Medium","Low"</text>
+				</inputEntry>
+				<inputEntry id="_ce051810-0ddf-4423-8de4-2474df9ab864-2">
+					<text>true</text>
+				</inputEntry>
+				<outputEntry id="_ce051810-0ddf-4423-8de4-2474df9ab864-3">
+					<text>"Approved"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_c40019d2-e426-4786-87ba-8421a918adb7">
+				<inputEntry id="_c40019d2-e426-4786-87ba-8421a918adb7-0">
+					<text>&lt;18</text>
+				</inputEntry>
+				<inputEntry id="_c40019d2-e426-4786-87ba-8421a918adb7-1">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_c40019d2-e426-4786-87ba-8421a918adb7-2">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_c40019d2-e426-4786-87ba-8421a918adb7-3">
+					<text>"Declined"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_71054262-f580-4eb6-aa37-0c48eb974e07">
+				<inputEntry id="_71054262-f580-4eb6-aa37-0c48eb974e07-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_71054262-f580-4eb6-aa37-0c48eb974e07-1">
+					<text>"High"</text>
+				</inputEntry>
+				<inputEntry id="_71054262-f580-4eb6-aa37-0c48eb974e07-2">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_71054262-f580-4eb6-aa37-0c48eb974e07-3">
+					<text>"Declined"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_b4ca4f5f-86f9-4657-8bcc-637424f00da2">
+				<inputEntry id="_b4ca4f5f-86f9-4657-8bcc-637424f00da2-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_b4ca4f5f-86f9-4657-8bcc-637424f00da2-1">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_b4ca4f5f-86f9-4657-8bcc-637424f00da2-2">
+					<text>false</text>
+				</inputEntry>
+				<outputEntry id="_b4ca4f5f-86f9-4657-8bcc-637424f00da2-3">
+					<text>"Declined"</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<inputData id="_41effb45-b3c4-46ac-b1da-122b3e428a98" name="Age">
+		<variable name="Age" typeRef="feel:number"/>
+	</inputData>
+	<inputData id="_5a4bdb64-f0ef-4978-9e03-6f1ae64a1f17" name="RiskCategory">
+		<variable name="RiskCategory" typeRef="feel:string"/>
+	</inputData>
+	<inputData id="_8ff18665-84e9-49f2-a8df-8981b1844549" name="isAffordable">
+		<variable name="isAffordable" typeRef="feel:boolean"/>
+	</inputData>
+</definitions>

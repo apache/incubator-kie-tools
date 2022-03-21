@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/dmn-tck/tck" name="feel-constants" id="_feel-constants" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <decision name="Decision1" id="d_Decision1">
+        <variable typeRef="boolean" name="Decision1"/>
+        <literalExpression>
+            <text>true</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision2" id="d_Decision2">
+        <variable typeRef="boolean" name="Decision2"/>
+        <literalExpression>
+            <text>false</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_feel-constants_D2">
+            <dmndi:DMNShape dmnElementRef="d_Decision1" id="_feel-constants_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_Decision2" id="_feel-constants_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

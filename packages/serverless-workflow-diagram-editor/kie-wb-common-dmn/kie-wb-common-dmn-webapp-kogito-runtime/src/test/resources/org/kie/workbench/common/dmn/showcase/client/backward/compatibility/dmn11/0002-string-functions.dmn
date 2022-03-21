@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_c2dc9bd5-010e-4351-b375-7db74d8ba69d" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="_c2dc9bd5-010e-4351-b375-7db74d8ba69d" namespace="http://www.trisotech.com/definitions/_c2dc9bd5-010e-4351-b375-7db74d8ba69d" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.32.2; 1.0" name="stringFunctions" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../dmn.xsd" expressionLanguage="http://www.omg.org/spec/FEEL/20140401" typeLanguage="http://www.omg.org/spec/FEEL/20140401">
+	<itemDefinition id="tBasic" name="tBasic" isCollection="false">
+		<itemComponent id="_5d7320fd-aa96-4319-a4da-593ec491d0b0" name="startsWithX" isCollection="false">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+		<itemComponent id="_bc690f14-ecc7-402b-904d-ca2eeec91881" name="startsWithB" isCollection="false">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+		<itemComponent id="_9a4db404-cd4b-4de3-8dc6-f06a7c538dae" name="endsWithX" isCollection="false">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+		<itemComponent id="_1e0cc65d-a319-453e-b55b-e1eff815521c" name="endsWithB" isCollection="false">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+		<itemComponent id="_558c199a-17d9-46f4-8661-ec76fc67374d" name="containsX" isCollection="false">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+		<itemComponent id="_ca9df9fb-61f1-4f43-93ca-d9600b87285d" name="containsB" isCollection="false">
+			<typeRef>feel:boolean</typeRef>
+		</itemComponent>
+		<itemComponent id="_82968175-bbd2-4541-8461-2898e9d9b86d" name="substringC1" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_e87917e4-37ae-44a9-b156-d490292a036e" name="stringlength" isCollection="false">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_cf4985ae-5244-4b32-9abb-bf9f012233b7" name="uppercase" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_38e20849-e3ab-4eff-847e-f7a017e89778" name="lowercase" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_814080bc-e9cd-4a79-aff0-ce64d6fef8df" name="substringBeforeB" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_b11a7ed7-6bad-4c8a-8edb-c768f2604ed8" name="substringAfterB" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition id="tReplace" name="tReplace" isCollection="false">
+		<itemComponent id="_1d5254b9-0a5f-42d2-be18-338518f861cc" name="Aao" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_71470763-6dbe-43a4-b5e3-eca10bab1814" name="AanplusStarstar" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_afe9608a-b74a-4a66-80f1-6de501eb8d9b" name="encloseVowels" isCollection="false">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<inputData id="_0923ed0c-3674-4476-b84c-f9ad5e5e8048" name="A">
+		<variable name="A" typeRef="feel:string"/>
+	</inputData>
+	<inputData id="_1df2ad51-3334-4098-b55f-df885fb0e412" name="B">
+		<variable name="B" typeRef="feel:string"/>
+	</inputData>
+	<inputData id="_6a75944d-7013-4fc3-8770-ab8eaa0e0560" name="NumC">
+		<variable name="NumC" typeRef="feel:number"/>
+	</inputData>
+	<decision id="_de5529b1-ed4c-4b39-9e36-e0e056aec20c" name="Basic">
+		<variable name="Basic" typeRef="tns:tBasic"/>
+		<informationRequirement>
+			<requiredInput href="#_0923ed0c-3674-4476-b84c-f9ad5e5e8048"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_1df2ad51-3334-4098-b55f-df885fb0e412"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_6a75944d-7013-4fc3-8770-ab8eaa0e0560"/>
+		</informationRequirement>
+		<context>
+			<contextEntry>
+				<variable name="startsWithX" typeRef="feel:boolean"/>
+				<literalExpression>
+					<text>starts with(A,"x")</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="startsWithB" typeRef="feel:boolean"/>
+				<literalExpression>
+					<text>starts with(A,B)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="endsWithX" typeRef="feel:boolean"/>
+				<literalExpression>
+					<text>ends with(A,"x")</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="endsWithB" typeRef="feel:boolean"/>
+				<literalExpression>
+					<text>ends with(A,B)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="containsX" typeRef="feel:boolean"/>
+				<literalExpression>
+					<text>contains(A,"x")</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="containsB" typeRef="feel:boolean"/>
+				<literalExpression>
+					<text>contains(A,B)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="substringC1" typeRef="feel:string"/>
+				<literalExpression>
+					<text>substring(A,NumC,1)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="stringlength" typeRef="feel:number"/>
+				<literalExpression>
+					<text>string length(A)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="uppercase" typeRef="feel:string"/>
+				<literalExpression>
+					<text>upper case(A)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="lowercase" typeRef="feel:string"/>
+				<literalExpression>
+					<text>lower case(B)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="substringBeforeB" typeRef="feel:string"/>
+				<literalExpression>
+					<text>substring before(A,B)</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="substringAfterB" typeRef="feel:string"/>
+				<literalExpression>
+					<text>substring after(A,B)</text>
+				</literalExpression>
+			</contextEntry>
+		</context>
+	</decision>
+	<decision id="_93059496-257a-482b-b966-fcafe28cc84b" name="Matches">
+		<variable name="Matches" typeRef="feel:boolean"/>
+		<informationRequirement>
+			<requiredInput href="#_0923ed0c-3674-4476-b84c-f9ad5e5e8048"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_1df2ad51-3334-4098-b55f-df885fb0e412"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>matches(A,"[a-z]{3}")</text>
+		</literalExpression>
+	</decision>
+	<decision id="_cc368e53-961d-4399-ad91-df00446b49d8" name="Replace">
+		<variable name="Replace" typeRef="tns:tReplace"/>
+		<informationRequirement>
+			<requiredInput href="#_0923ed0c-3674-4476-b84c-f9ad5e5e8048"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_1df2ad51-3334-4098-b55f-df885fb0e412"/>
+		</informationRequirement>
+		<context>
+			<contextEntry>
+				<variable name="Aao" typeRef="feel:string"/>
+				<literalExpression>
+					<text>replace(A,"a","o")</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="AanplusStarstar" typeRef="feel:string"/>
+				<literalExpression>
+					<text>replace(A,"(an)+", "**")</text>
+				</literalExpression>
+			</contextEntry>
+			<contextEntry>
+				<variable name="encloseVowels" typeRef="feel:string"/>
+				<literalExpression>
+					<text>replace(A,"[aeiouy]","[$0]")</text>
+				</literalExpression>
+			</contextEntry>
+		</context>
+	</decision>
+	<decision id="_255687db-652a-44c5-b4ca-9b3de659fd31" name="Constructor">
+		<variable name="Constructor" typeRef="feel:string"/>
+		<informationRequirement>
+			<requiredInput href="#_6a75944d-7013-4fc3-8770-ab8eaa0e0560"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>string(NumC)</text>
+		</literalExpression>
+	</decision>
+</definitions>
