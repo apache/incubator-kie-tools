@@ -1,0 +1,74 @@
+<!--
+  ~ Copyright 2018 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<div>
+  <h3 data-i18n-key="Title"></h3>
+  <div data-field="data-type-button" class="data-type-button hidden">
+    <div class="expand-collapse">
+      <a data-field="expand-all" href="#" data-i18n-key="ExpandAll"></a>
+      <span>|</span>
+      <a data-field="collapse-all" href="#" data-i18n-key="CollapseAll"></a>
+    </div>
+    <div class="search-bar-container" data-field="search-bar-container"></div>
+    <div class="action-button">
+      <button
+        data-field="add-button"
+        class="pf-c-button pf-m-primary"
+        data-ouia-component-type="add-data-type-button"
+        data-ouia-component-id="new"
+      >
+        <span data-i18n-key="NewDataType"></span>
+      </button>
+      <span class="kie-import-java-classes" data-field="import-java-classes-container"></span>
+    </div>
+  </div>
+
+  <div data-field="placeholder" class="hidden kie-data-types-placeholder">
+    <div>
+      <i class="fa fa-object-group"></i>
+      <br />
+      <h1 data-i18n-key="NoCustomDataTitle"></h1>
+      <p data-i18n-key="NoCustomData1"></p>
+      <p data-i18n-key="NoCustomData2"></p>
+      <button
+        data-field="add-button-placeholder"
+        class="btn btn-primary"
+        data-ouia-component-type="add-data-type-button"
+        data-ouia-component-id="first"
+      >
+        <i class="fa fa-plus-circle"></i>
+        <span data-i18n-key="AddACustomDataType"></span>
+      </button>
+    </div>
+  </div>
+  <div data-field="no-data-types-found" class="hidden kie-data-types-placeholder">
+    <div>
+      <i class="fa fa-search-minus"></i>
+      <br />
+      <h1 data-i18n-key="NoCustomDataTypesFound1"></h1>
+      <p data-i18n-key="NoCustomDataTypesFound2"></p>
+    </div>
+  </div>
+  <div data-field="read-only-message" class="alert alert-info alert-dismissable opened hidden">
+    <button data-field="read-only-message-close-button" type="button" class="close">
+      <span class="pficon pficon-close"></span>
+    </button>
+    <span class="pficon pficon-info"></span>
+    <strong data-i18n-key="ReadOnlyMessage1"></strong>
+    <span data-i18n-key="ReadOnlyMessage2"></span>
+  </div>
+  <div data-field="list-items" class="hidden pf-list-compound-expansion"></div>
+</div>

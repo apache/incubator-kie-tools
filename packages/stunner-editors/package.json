@@ -1,0 +1,36 @@
+{
+  "name": "@kie-tools/stunner-editors",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "files": [
+    "**/dist/*"
+  ],
+  "dependencies": {
+    "@kie-tools/stunner-editors-dmn-loader": "0.0.0"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0"
+  },
+  "scripts": {
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "lint": "echo 'Linting'",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs -Pno-showcase && yarn dist",
+    "build:dev:win32": "yarn powershell mvn clean install `-DskipTests `-DskipITs `-Pno-showcase && yarn dist",
+    "build:dev": "run-script-os",
+    "build:prod:linux:darwin": "yarn lint && mvn clean install -DskipTests=$(build-env global.build.test --not) -DskipITs -Pno-showcase && yarn dist",
+    "build:prod:win32": "yarn lint && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs `-Pno-showcase && yarn dist",
+    "build:prod": "run-script-os",
+    "dist": "rimraf dist && mkdir dist && yarn dist:bpmn && yarn dist:dmn && yarn dist:scesim",
+    "dist:bpmn": "symlink-dir kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/target/kie-wb-common-stunner-bpmn-kogito-runtime ./dist/bpmn",
+    "dist:dmn": "symlink-dir kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime/target/kie-wb-common-dmn-webapp-kogito-runtime ./dist/dmn",
+    "dist:scesim": "symlink-dir drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-runtime/target/drools-wb-scenario-simulation-editor-kogito-runtime ./dist/scesim"
+  }
+}

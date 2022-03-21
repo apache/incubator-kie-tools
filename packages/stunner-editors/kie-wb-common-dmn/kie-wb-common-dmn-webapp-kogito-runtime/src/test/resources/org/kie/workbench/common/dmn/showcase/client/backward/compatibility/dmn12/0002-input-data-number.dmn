@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/agilepro/dmn-tck" name="0002-input-data-number" id="_0002-input-data-number" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <decision name="Yearly Salary" id="d_YearlySalary">
+        <variable typeRef="number" name="Yearly Salary"/>
+        <informationRequirement id="_94534179-9eda-4522-b970-aaffcb4e0c97">
+            <requiredInput href="#i_MonthlySalary"/>
+        </informationRequirement>
+        <literalExpression>
+            <text>12 * Monthly Salary</text>
+        </literalExpression>
+    </decision>
+    <inputData name="Monthly Salary" id="i_MonthlySalary">
+        <variable typeRef="number" name="Monthly Salary"/>
+    </inputData>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_0002-input-data-number_D1">
+            <dmndi:Size height="650.0" width="650.0"/>
+            <dmndi:DMNShape dmnElementRef="d_YearlySalary" id="_0002-input-data-number_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="i_MonthlySalary" id="_0002-input-data-number_s2">
+                <dc:Bounds height="60.0" width="153.0" x="151.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_94534179-9eda-4522-b970-aaffcb4e0c97" id="_0002-input-data-number_e1">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="227.0" y="211.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

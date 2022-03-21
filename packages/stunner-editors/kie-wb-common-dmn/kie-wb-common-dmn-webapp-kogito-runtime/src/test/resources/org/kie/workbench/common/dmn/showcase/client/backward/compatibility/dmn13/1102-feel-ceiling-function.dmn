@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="http://www.actico.com/spec/DMN/1102-feel-ceiling-function" name="1102-feel-ceiling-function" id="_i-UiEPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <description>FEEL built-in function 'ceiling(n)' in category numeric functions</description>
+    <itemDefinition name="tfeel-ceiling-function_001_3df249d9c6_Result" id="_i-UiEvUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-ceiling-function_002_1052993cd8_Result" id="_i-UiFvUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-ceiling-function_003_ca33989df5_Result" id="_i-UiGvUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-ceiling-function_004_be4a3e809c_Result" id="_i-UiHvUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-ceiling-function_005_cc56ed5373_Result" id="_i-UiIvUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tfeel-ceiling-function_006_bbdf3bf8d7_Result" id="_i-UiJvUUEeesLuP4RHs4vA">
+        <typeRef>number</typeRef>
+    </itemDefinition>
+    <decision name="feel-ceiling-function_001_3df249d9c6" id="_i-UiFPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'ceiling(1.5)' and expects result: '2 (number)'</description>
+        <question>Result of FEEL expression 'ceiling(1.5)'?</question>
+        <allowedAnswers>2 (number)</allowedAnswers>
+        <variable typeRef="tfeel-ceiling-function_001_3df249d9c6_Result" name="feel-ceiling-function_001_3df249d9c6" id="_i-UiFfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i-UiE_UUEeesLuP4RHs4vA">
+            <text>ceiling(1.5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-ceiling-function_002_1052993cd8" id="_i-UiGPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'ceiling(-1.5)' and expects result: '-1 (number)'</description>
+        <question>Result of FEEL expression 'ceiling(-1.5)'?</question>
+        <allowedAnswers>-1 (number)</allowedAnswers>
+        <variable typeRef="tfeel-ceiling-function_002_1052993cd8_Result" name="feel-ceiling-function_002_1052993cd8" id="_i-UiGfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i-UiF_UUEeesLuP4RHs4vA">
+            <text>ceiling(-1.5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-ceiling-function_003_ca33989df5" id="_i-UiHPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'ceiling(--1)' and expects result: '1 (number)'</description>
+        <question>Result of FEEL expression 'ceiling(--1)'?</question>
+        <allowedAnswers>1 (number)</allowedAnswers>
+        <variable typeRef="tfeel-ceiling-function_003_ca33989df5_Result" name="feel-ceiling-function_003_ca33989df5" id="_i-UiHfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i-UiG_UUEeesLuP4RHs4vA">
+            <text>ceiling(--1)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-ceiling-function_004_be4a3e809c" id="_i-UiIPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'ceiling(-5/2.3*5)' and expects result: '-10 (number)'</description>
+        <question>Result of FEEL expression 'ceiling(-5/2.3*5)'?</question>
+        <allowedAnswers>-10 (number)</allowedAnswers>
+        <variable typeRef="tfeel-ceiling-function_004_be4a3e809c_Result" name="feel-ceiling-function_004_be4a3e809c" id="_i-UiIfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i-UiH_UUEeesLuP4RHs4vA">
+            <text>ceiling(-5/2.3*5)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-ceiling-function_005_cc56ed5373" id="_i-UiJPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'ceiling(n:5.777)' and expects result: '6 (number)'</description>
+        <question>Result of FEEL expression 'ceiling(n:5.777)'?</question>
+        <allowedAnswers>6 (number)</allowedAnswers>
+        <variable typeRef="tfeel-ceiling-function_005_cc56ed5373_Result" name="feel-ceiling-function_005_cc56ed5373" id="_i-UiJfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i-UiI_UUEeesLuP4RHs4vA">
+            <text>ceiling(n:5.777)</text>
+        </literalExpression>
+    </decision>
+    <decision name="feel-ceiling-function_006_bbdf3bf8d7" id="_i-UiKPUUEeesLuP4RHs4vA">
+        <description>Tests FEEL expression: 'ceiling(n:-.33333)' and expects result: '0 (number)'</description>
+        <question>Result of FEEL expression 'ceiling(n:-.33333)'?</question>
+        <allowedAnswers>0 (number)</allowedAnswers>
+        <variable typeRef="tfeel-ceiling-function_006_bbdf3bf8d7_Result" name="feel-ceiling-function_006_bbdf3bf8d7" id="_i-UiKfUUEeesLuP4RHs4vA"/>
+        <literalExpression id="_i-UiJ_UUEeesLuP4RHs4vA">
+            <text>ceiling(n:-.33333)</text>
+        </literalExpression>
+    </decision>
+    <knowledgeSource name="DMN 1.1 - 10.3.4.5 Table 62" id="_i-UiEfUUEeesLuP4RHs4vA"/>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_i-UiEPUUEeesLuP4RHs4vA_D2">
+            <dmndi:DMNShape dmnElementRef="_i-UiKPUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i-UiFPUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i-UiEfUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s3">
+                <dc:Bounds height="69.0" width="100.0" x="133.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i-UiGPUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="393.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i-UiJPUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s5">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="486.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i-UiIPUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s6">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="579.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_i-UiHPUUEeesLuP4RHs4vA" id="_i-UiEPUUEeesLuP4RHs4vA_s7">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="672.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

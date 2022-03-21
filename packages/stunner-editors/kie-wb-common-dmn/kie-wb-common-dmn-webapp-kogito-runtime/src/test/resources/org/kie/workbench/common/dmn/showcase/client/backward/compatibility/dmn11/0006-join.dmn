@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_16bf03c7-8f3d-46d0-a921-6e335ccc7e29" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" id="_16bf03c7-8f3d-46d0-a921-6e335ccc7e29" namespace="http://www.trisotech.com/definitions/_16bf03c7-8f3d-46d0-a921-6e335ccc7e29" exporter="DMN Modeler; Method and Style trisofix.xslt; Method and Style trisofix.xslt" exporterVersion="5.0.33.1; 1.0; 1.0" name="join01" triso:logoChoice="Default">
+	<itemDefinition id="tEmployeeTable" name="tEmployeeTable" isCollection="true">
+		<itemComponent id="_008f96e5-b82b-4105-ab8f-52673390c75f" name="id">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_657371a7-e0a9-4f4c-987d-35cd10e2918b" name="name">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_fa7afb54-265e-4244-97bf-4789c48e3629" name="deptNum">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_df562869-8cda-4a15-a37d-e121a4f7abac" name="mgrName">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<itemDefinition id="tDeptTable" name="tDeptTable" isCollection="true">
+		<itemComponent id="_f7e37827-f9ab-4fb1-b07e-9e4367242e65" name="number">
+			<typeRef>feel:number</typeRef>
+		</itemComponent>
+		<itemComponent id="_fd0110de-a09b-4167-a5fe-103308ad6d0b" name="name">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+		<itemComponent id="_ee4e552c-4e8d-4a0c-8451-bae3eb2d4bd9" name="manager">
+			<typeRef>feel:string</typeRef>
+		</itemComponent>
+	</itemDefinition>
+	<decision id="_24c9e583-a87c-462d-ade3-be545e228abd" name="Join">
+		<variable name="Join" typeRef="feel:string"/>
+		<informationRequirement>
+			<requiredInput href="#_7985579c-554c-4d98-aad6-c9dbacff726b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_35b4f57c-e574-4963-a149-83cc0030e809"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_7b08bda2-fcf4-44e8-8022-08d9043e1dee"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>DeptTable[number = EmployeeTable[name=LastName].deptNum[1]].manager[1]</text>
+		</literalExpression>
+	</decision>
+	<inputData id="_7985579c-554c-4d98-aad6-c9dbacff726b" name="EmployeeTable">
+		<variable name="EmployeeTable" typeRef="tns:tEmployeeTable"/>
+	</inputData>
+	<inputData id="_35b4f57c-e574-4963-a149-83cc0030e809" name="DeptTable">
+		<variable name="DeptTable" typeRef="tns:tDeptTable"/>
+	</inputData>
+	<inputData id="_7b08bda2-fcf4-44e8-8022-08d9043e1dee" name="LastName">
+		<variable name="LastName" typeRef="feel:string"/>
+	</inputData>
+</definitions>

@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:feel="http://www.omg.org/spec/FEEL/20140401" xmlns:tns="http://www.trisotech.com/definitions/_95e3405c-eac4-4398-9de1-ca40c213f4ae" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" id="_95e3405c-eac4-4398-9de1-ca40c213f4ae" namespace="http://www.trisotech.com/definitions/_95e3405c-eac4-4398-9de1-ca40c213f4ae" exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.0.33.1; 1.0" name="listGen" triso:logoChoice="Default">
+	<itemDefinition id="tStringList" name="tStringList" isCollection="true">
+		<typeRef>feel:string</typeRef>
+	</itemDefinition>
+	<decision id="_102c003f-ec24-47a9-bfa1-36d05f1452f6" name="listGen1">
+		<variable name="listGen1" typeRef="tns:tStringList"/>
+		<literalExpression>
+			<text>["a","b","c"]</text>
+		</literalExpression>
+	</decision>
+	<inputData id="_018d53fc-1aef-4e1b-b418-c0fb7c36753b" name="a">
+		<variable name="a" typeRef="feel:string"/>
+	</inputData>
+	<inputData id="_7cd90c11-7224-41eb-95b0-109c0d5930c3" name="b">
+		<variable name="b" typeRef="feel:string"/>
+	</inputData>
+	<inputData id="_2b11df48-aba7-435d-a2ea-e10da78fb70e" name="c">
+		<variable name="c" typeRef="feel:string"/>
+	</inputData>
+	<decision id="_2504224f-d1c3-43cb-9216-8f9d4ffdfd72" name="listGen2">
+		<variable name="listGen2" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_018d53fc-1aef-4e1b-b418-c0fb7c36753b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_7cd90c11-7224-41eb-95b0-109c0d5930c3"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_2b11df48-aba7-435d-a2ea-e10da78fb70e"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>[a,b,c]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_5786c8b8-bea1-4b1f-9f7b-71be3f4ffbcc" name="listGen3">
+		<variable name="listGen3" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_7cd90c11-7224-41eb-95b0-109c0d5930c3"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_2b11df48-aba7-435d-a2ea-e10da78fb70e"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>["a",b,c]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_ca299168-4590-4040-bb10-beb7d1a6932b" name="listGen4">
+		<variable name="listGen4" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_2b11df48-aba7-435d-a2ea-e10da78fb70e"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="COLLECT" outputLabel="listGen4">
+			<input id="_d435103a-6330-42c5-8c2a-837980ab3c80" label="c">
+				<inputExpression typeRef="feel:string">
+					<text>c</text>
+				</inputExpression>
+			</input>
+			<output id="_341609e7-da91-4995-9440-4524ba897f43"/>
+			<rule id="_fe22a717-98b1-41a8-ba7f-ef1cc1b1e16c">
+				<inputEntry id="_fe22a717-98b1-41a8-ba7f-ef1cc1b1e16c-0">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_fe22a717-98b1-41a8-ba7f-ef1cc1b1e16c-1">
+					<text>"a"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_c047d896-0598-4024-8d26-9aecd3f3a82c">
+				<inputEntry id="_c047d896-0598-4024-8d26-9aecd3f3a82c-0">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_c047d896-0598-4024-8d26-9aecd3f3a82c-1">
+					<text>"b"</text>
+				</outputEntry>
+			</rule>
+			<rule id="_7efc19d7-b35a-4a32-a1e5-4e07485b578e">
+				<inputEntry id="_7efc19d7-b35a-4a32-a1e5-4e07485b578e-0">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_7efc19d7-b35a-4a32-a1e5-4e07485b578e-1">
+					<text>"c"</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<decision id="_4a428274-6c5f-4c4c-ac86-1e81df943704" name="listGen5">
+		<variable name="listGen5" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_018d53fc-1aef-4e1b-b418-c0fb7c36753b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_7cd90c11-7224-41eb-95b0-109c0d5930c3"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_2b11df48-aba7-435d-a2ea-e10da78fb70e"/>
+		</informationRequirement>
+		<decisionTable hitPolicy="COLLECT" outputLabel="listGen5">
+			<input id="_495db22e-f4ea-449a-87cd-c11a7a141c53" label="a">
+				<inputExpression typeRef="feel:string">
+					<text>a</text>
+				</inputExpression>
+			</input>
+			<input id="_f9f46efa-ba77-4c41-b12e-dd77e88341ef" label="b">
+				<inputExpression typeRef="feel:string">
+					<text>b</text>
+				</inputExpression>
+			</input>
+			<input id="_7805245a-fedd-4df9-be31-1d9d5b4ab7f5" label="c">
+				<inputExpression typeRef="feel:string">
+					<text>c</text>
+				</inputExpression>
+			</input>
+			<output id="_0f9f5ef5-816c-4fc3-9821-08accb65864c"/>
+			<rule id="_41eabf4d-0976-4582-b093-eec704ff5fbf">
+				<inputEntry id="_41eabf4d-0976-4582-b093-eec704ff5fbf-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_41eabf4d-0976-4582-b093-eec704ff5fbf-1">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_41eabf4d-0976-4582-b093-eec704ff5fbf-2">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_41eabf4d-0976-4582-b093-eec704ff5fbf-3">
+					<text>a</text>
+				</outputEntry>
+			</rule>
+			<rule id="_cf6c4ac0-9939-4e2a-8aed-dd095d8c01c1">
+				<inputEntry id="_cf6c4ac0-9939-4e2a-8aed-dd095d8c01c1-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_cf6c4ac0-9939-4e2a-8aed-dd095d8c01c1-1">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_cf6c4ac0-9939-4e2a-8aed-dd095d8c01c1-2">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_cf6c4ac0-9939-4e2a-8aed-dd095d8c01c1-3">
+					<text>b</text>
+				</outputEntry>
+			</rule>
+			<rule id="_decf0f70-9318-441e-9f1b-6fb6a2a07aef">
+				<inputEntry id="_decf0f70-9318-441e-9f1b-6fb6a2a07aef-0">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_decf0f70-9318-441e-9f1b-6fb6a2a07aef-1">
+					<text>-</text>
+				</inputEntry>
+				<inputEntry id="_decf0f70-9318-441e-9f1b-6fb6a2a07aef-2">
+					<text>-</text>
+				</inputEntry>
+				<outputEntry id="_decf0f70-9318-441e-9f1b-6fb6a2a07aef-3">
+					<text>c</text>
+				</outputEntry>
+			</rule>
+		</decisionTable>
+	</decision>
+	<inputData id="_c51e77a1-30a4-4f23-9054-6c359bf80e9f" name="wx">
+		<variable name="wx" typeRef="tns:tStringList"/>
+	</inputData>
+	<decision id="_50554bc6-d4e1-468b-a620-db2d35da5a0b" name="listGen6">
+		<variable name="listGen6" typeRef="tns:tStringList"/>
+		<literalExpression>
+			<text>[["w","x"],"y","z"]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_6d3062b2-55d4-4299-aeb2-a5e97e03daec" name="listGen7">
+		<variable name="listGen7" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_c51e77a1-30a4-4f23-9054-6c359bf80e9f"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>[wx,"y","z"]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_bd8b0287-1ff4-4c13-b0ef-68cff151cabd" name="listGen8">
+		<variable name="listGen8" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_018d53fc-1aef-4e1b-b418-c0fb7c36753b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_7cd90c11-7224-41eb-95b0-109c0d5930c3"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredDecision href="#_50554bc6-d4e1-468b-a620-db2d35da5a0b"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>[a,b,listGen6]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_64ccac33-c22b-454d-b763-5a77ffd38678" name="listGen9">
+		<variable name="listGen9" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredInput href="#_018d53fc-1aef-4e1b-b418-c0fb7c36753b"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredInput href="#_7cd90c11-7224-41eb-95b0-109c0d5930c3"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredDecision href="#_6d3062b2-55d4-4299-aeb2-a5e97e03daec"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>[a,b,listGen7]</text>
+		</literalExpression>
+	</decision>
+	<decision id="_9d464a01-5230-4270-88b6-f8e08d03e10b" name="listGen10">
+		<variable name="listGen10" typeRef="tns:tStringList"/>
+		<informationRequirement>
+			<requiredDecision href="#_6d3062b2-55d4-4299-aeb2-a5e97e03daec"/>
+		</informationRequirement>
+		<informationRequirement>
+			<requiredDecision href="#_ca299168-4590-4040-bb10-beb7d1a6932b"/>
+		</informationRequirement>
+		<literalExpression>
+			<text>[listGen4,listGen7]</text>
+		</literalExpression>
+	</decision>
+</definitions>

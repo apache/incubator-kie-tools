@@ -1,0 +1,322 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://www.drools.org/kie-dmn" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_0020_vacation_days" name="0020-vacation-days" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://www.drools.org/kie-dmn">
+  <dmn:extensionElements/>
+  <dmn:inputData id="i_Age" name="Age">
+    <dmn:extensionElements/>
+    <dmn:variable id="_AF29F7FD-86C2-4014-84B0-9D2F7E8CAAE8" name="Age" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:inputData id="i_Years_of_Service" name="Years of Service">
+    <dmn:extensionElements/>
+    <dmn:variable id="_A2B6EA06-7F72-470C-A488-324019525479" name="Years of Service" typeRef="number"/>
+  </dmn:inputData>
+  <dmn:decision id="d_Total_Vacation_Days" name="Total Vacation Days">
+    <dmn:extensionElements/>
+    <dmn:variable id="_98FB97A8-602D-426E-B408-AC3AB125DFB8" name="Total Vacation Days" typeRef="number"/>
+    <dmn:informationRequirement id="_28d41fff-1f61-46e9-93e2-68caff765c9e">
+      <dmn:requiredDecision href="#d_Base_Vacation_Days"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="a2ade7be-71c3-4081-8b5a-49f4dd9708b1">
+      <dmn:requiredDecision href="#d_Extra_days_case_1"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_181228f4-d219-4629-a1ba-86d45db60e46">
+      <dmn:requiredDecision href="#d_Extra_days_case_2"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_6abac4cd-3dbd-4335-879b-b003b9917792">
+      <dmn:requiredDecision href="#d_Extra_days_case_3"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_E23E99FC-DC04-4E57-A9B9-BB7896260F7B">
+      <dmn:text xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/">Base Vacation Days +	              max( Extra days case 1, Extra days case 3 ) +	              Extra days case 2</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="d_Extra_days_case_1" name="Extra days case 1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_11B07C1C-2111-41E0-8350-1AD10FFCA827" name="Extra days case 1" typeRef="number"/>
+    <dmn:informationRequirement id="_34e5b0ac-81ab-468a-9029-8118fc9a41da">
+      <dmn:requiredInput href="#i_Age"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_5b050dfd-c2d9-4c02-93e7-967df45078a2">
+      <dmn:requiredInput href="#i_Years_of_Service"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_2B6A073C-A2BC-4A98-A482-408587C0F515" hitPolicy="COLLECT" aggregation="MAX" preferredOrientation="Rule-as-Row">
+      <dmn:input id="d_Extra_days_case_1_dt_i_age">
+        <dmn:inputExpression id="_C28032CB-BA65-43B7-8103-3B237956869F" typeRef="number">
+          <dmn:text>Age</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="d_Extra_days_case_1_dt_i_years">
+        <dmn:inputExpression id="_5FC3CBCD-26F7-4224-8F08-199448693E90" typeRef="number">
+          <dmn:text>Years of Service</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="d_Extra_days_case_1_dt_o">
+        <dmn:defaultOutputEntry id="_64214803-C318-4FAE-BA47-E4D36CFCB3F0">
+          <dmn:text>0</dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:annotation name=""/>
+      <dmn:rule id="d_Extra_days_case_1_dt_r1">
+        <dmn:inputEntry id="d_Extra_days_case_1_dt_r1_i1">
+          <dmn:text>&lt;18,&gt;=60</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="d_Extra_days_case_1_dt_r1_i2">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="d_Extra_days_case_1_dt_r1_o1">
+          <dmn:text>5</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="d_Extra_days_case_1_dt_r2">
+        <dmn:inputEntry id="d_Extra_days_case_1_dt_r2_i1">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="d_Extra_days_case_1_dt_r2_i2">
+          <dmn:text>&gt;=30</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="d_Extra_days_case_1_dt_r2_o1">
+          <dmn:text>5</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="d_Extra_days_case_2" name="Extra days case 2">
+    <dmn:extensionElements/>
+    <dmn:variable id="_5835A209-4982-4D3A-9628-CDCA209F4EE2" name="Extra days case 2" typeRef="number"/>
+    <dmn:informationRequirement id="a507fa41-ff43-4600-80db-663ace4f240a">
+      <dmn:requiredInput href="#i_Age"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="c5c4f89b-1cc4-4215-b069-adeb6d8dac00">
+      <dmn:requiredInput href="#i_Years_of_Service"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_3EE0AD64-B1D3-4326-8FBB-71443220D1F6" hitPolicy="COLLECT" aggregation="MAX" preferredOrientation="Rule-as-Row">
+      <dmn:input id="d_Extra_days_case_2_dt_i_age">
+        <dmn:inputExpression id="_0D327FEE-3BE3-4011-897A-A8FB36B51D3C" typeRef="number">
+          <dmn:text>Age</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="d_Extra_days_case_2_dt_i_years">
+        <dmn:inputExpression id="_7F50C3BE-2A46-4CB4-AB1C-1A8024EE3936" typeRef="number">
+          <dmn:text>Years of Service</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="d_Extra_days_case_2_dt_o">
+        <dmn:defaultOutputEntry id="_0FCF87B8-AFA9-4697-B931-421959CFC5ED">
+          <dmn:text>0</dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:annotation name=""/>
+      <dmn:rule id="d_Extra_days_case_2_dt_r1">
+        <dmn:inputEntry id="d_Extra_days_case_2_dt_r1_i1">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="d_Extra_days_case_2_dt_r1_i2">
+          <dmn:text>&gt;=30</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="d_Extra_days_case_2_dt_r1_o1">
+          <dmn:text>3</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="d_Extra_days_case_2_dt_r2">
+        <dmn:inputEntry id="d_Extra_days_case_2_dt_r2_i1">
+          <dmn:text>&gt;=60</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="d_Extra_days_case_2_dt_r2_i2">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="d_Extra_days_case_2_dt_r2_o1">
+          <dmn:text>3</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="d_Extra_days_case_3" name="Extra days case 3">
+    <dmn:extensionElements/>
+    <dmn:variable id="_42F34222-DBA9-4927-BD70-1741791C1052" name="Extra days case 3" typeRef="number"/>
+    <dmn:informationRequirement id="_0273d369-0e99-48d8-b9a4-49185fcedf6e">
+      <dmn:requiredInput href="#i_Age"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_3614a6b9-e688-49df-8f1b-2976bdd8f67b">
+      <dmn:requiredInput href="#i_Years_of_Service"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="_07162995-D466-47C6-BC21-23EA4F7751AA" hitPolicy="COLLECT" aggregation="MAX" preferredOrientation="Rule-as-Row">
+      <dmn:input id="d_Extra_days_case_3_dt_i_age">
+        <dmn:inputExpression id="_95709CB9-EF03-42F3-850A-A34F5610864F" typeRef="number">
+          <dmn:text>Age</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:input id="d_Extra_days_case_3_dt_i_years">
+        <dmn:inputExpression id="_D43604DF-11D9-4425-992A-498F58BBB22F" typeRef="number">
+          <dmn:text>Years of Service</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="d_Extra_days_case_3_dt_o">
+        <dmn:defaultOutputEntry id="_0562AB16-C017-4D43-ABA2-C095575696EC">
+          <dmn:text>0</dmn:text>
+        </dmn:defaultOutputEntry>
+      </dmn:output>
+      <dmn:annotation name=""/>
+      <dmn:rule id="d_Extra_days_case_3_dt_r1">
+        <dmn:inputEntry id="d_Extra_days_case_3_dt_r1_i1">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="d_Extra_days_case_3_dt_r1_i2">
+          <dmn:text>[15..30)</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="d_Extra_days_case_3_dt_r1_o1">
+          <dmn:text>2</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+      <dmn:rule id="d_Extra_days_case_3_dt_r2">
+        <dmn:inputEntry id="d_Extra_days_case_3_dt_r2_i1">
+          <dmn:text>&gt;=45</dmn:text>
+        </dmn:inputEntry>
+        <dmn:inputEntry id="d_Extra_days_case_3_dt_r2_i2">
+          <dmn:text>-</dmn:text>
+        </dmn:inputEntry>
+        <dmn:outputEntry id="d_Extra_days_case_3_dt_r2_o1">
+          <dmn:text>2</dmn:text>
+        </dmn:outputEntry>
+        <dmn:annotationEntry>
+          <dmn:text></dmn:text>
+        </dmn:annotationEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:decision id="d_Base_Vacation_Days" name="Base Vacation Days">
+    <dmn:extensionElements/>
+    <dmn:variable id="_CA651FD4-4EA0-4AC6-950B-DC35913A7DD0" name="Base Vacation Days" typeRef="number"/>
+    <dmn:literalExpression id="_F1F67247-03E0-49FB-AAC7-1D5F089B4C8C">
+      <dmn:text>22</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_0020_vacation_days_D1" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_E23E99FC-DC04-4E57-A9B9-BB7896260F7B"/>
+          <kie:ComponentWidths dmnElementRef="_2B6A073C-A2BC-4A98-A482-408587C0F515"/>
+          <kie:ComponentWidths dmnElementRef="_3EE0AD64-B1D3-4326-8FBB-71443220D1F6"/>
+          <kie:ComponentWidths dmnElementRef="_07162995-D466-47C6-BC21-23EA4F7751AA"/>
+          <kie:ComponentWidths dmnElementRef="_F1F67247-03E0-49FB-AAC7-1D5F089B4C8C"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-i_Age" dmnElementRef="i_Age" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="258" y="512" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-i_Years_of_Service" dmnElementRef="i_Years_of_Service" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="471" y="512" width="153" height="60"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Total_Vacation_Days" dmnElementRef="d_Total_Vacation_Days" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="471" y="150" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Extra_days_case_1" dmnElementRef="d_Extra_days_case_1" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="150" y="331" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Extra_days_case_2" dmnElementRef="d_Extra_days_case_2" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="364" y="331" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Extra_days_case_3" dmnElementRef="d_Extra_days_case_3" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="578" y="331" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-d_Base_Vacation_Days" dmnElementRef="d_Base_Vacation_Days" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="792" y="331" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_28d41fff-1f61-46e9-93e2-68caff765c9e" dmnElementRef="_28d41fff-1f61-46e9-93e2-68caff765c9e">
+        <di:waypoint x="869" y="331"/>
+        <di:waypoint x="548" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-a2ade7be-71c3-4081-8b5a-49f4dd9708b1" dmnElementRef="a2ade7be-71c3-4081-8b5a-49f4dd9708b1">
+        <di:waypoint x="227" y="331"/>
+        <di:waypoint x="548" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_181228f4-d219-4629-a1ba-86d45db60e46" dmnElementRef="_181228f4-d219-4629-a1ba-86d45db60e46">
+        <di:waypoint x="441" y="331"/>
+        <di:waypoint x="548" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_6abac4cd-3dbd-4335-879b-b003b9917792" dmnElementRef="_6abac4cd-3dbd-4335-879b-b003b9917792">
+        <di:waypoint x="655" y="331"/>
+        <di:waypoint x="548" y="211"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_34e5b0ac-81ab-468a-9029-8118fc9a41da" dmnElementRef="_34e5b0ac-81ab-468a-9029-8118fc9a41da">
+        <di:waypoint x="334" y="512"/>
+        <di:waypoint x="227" y="392"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_5b050dfd-c2d9-4c02-93e7-967df45078a2" dmnElementRef="_5b050dfd-c2d9-4c02-93e7-967df45078a2">
+        <di:waypoint x="547" y="512"/>
+        <di:waypoint x="227" y="392"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-a507fa41-ff43-4600-80db-663ace4f240a" dmnElementRef="a507fa41-ff43-4600-80db-663ace4f240a">
+        <di:waypoint x="334" y="512"/>
+        <di:waypoint x="441" y="392"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-c5c4f89b-1cc4-4215-b069-adeb6d8dac00" dmnElementRef="c5c4f89b-1cc4-4215-b069-adeb6d8dac00">
+        <di:waypoint x="547" y="512"/>
+        <di:waypoint x="441" y="392"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_0273d369-0e99-48d8-b9a4-49185fcedf6e" dmnElementRef="_0273d369-0e99-48d8-b9a4-49185fcedf6e">
+        <di:waypoint x="334" y="512"/>
+        <di:waypoint x="655" y="392"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_3614a6b9-e688-49df-8f1b-2976bdd8f67b" dmnElementRef="_3614a6b9-e688-49df-8f1b-2976bdd8f67b">
+        <di:waypoint x="547" y="512"/>
+        <di:waypoint x="655" y="392"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

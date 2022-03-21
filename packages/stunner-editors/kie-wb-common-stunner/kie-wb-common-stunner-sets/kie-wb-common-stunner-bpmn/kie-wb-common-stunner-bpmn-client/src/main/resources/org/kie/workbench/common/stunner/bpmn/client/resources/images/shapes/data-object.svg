@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+    xmlns:stunner="http://kiegroup.org/2017/stunner"
+    xmlns="http://www.w3.org/2000/svg"
+    height="80px"
+    width="60px"
+    xml:space="preserve"
+    viewBox="0 0 600 800"
+    id="dataObject"
+    version="1.1">
+
+  <path
+      d="M 404.814,0 H 60.736 V 612 H 551.263 V 153 Z m 0,0 146.449,153 -146.47461,-1.1412 z"
+      class="annotation_data_object_main"
+  />
+
+  <path
+      class="annotation_data_object_fold"
+      d="M 407.78,5.025422 408.62229,150.15254 545.9156,151 Z"/>
+
+  <g stunner:transform="non-scalable"
+     class="annotation_group_data_object"
+     id="shapeDataObject"/>
+
+</svg>

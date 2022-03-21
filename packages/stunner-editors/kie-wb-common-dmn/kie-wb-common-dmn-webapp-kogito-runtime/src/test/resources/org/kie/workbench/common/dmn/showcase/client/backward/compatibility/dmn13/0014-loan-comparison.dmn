@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions exporter="DMN Modeler; Method and Style trisofix.xslt" exporterVersion="5.1.1; 1.1" namespace="http://www.trisotech.com/definitions/_56c7d4a5-e6db-4bba-ac5f-dc082a16f719" name="loanComparison" triso:logoChoice="Default" xsi:schemaLocation="http://www.omg.org/spec/DMN/20151101/dmn.xsd ../../DMN1.1%20final/dmn.xsd" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <itemDefinition name="tLoanProduct" label="tLoanProduct">
+        <itemComponent name="lenderName" id="_e4e050fd-9198-4b62-8f99-15cb2a0a2373">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="rate" id="_dc34919e-c7d1-4aab-b6d1-4be1174f6fd2">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="points" id="_9ca2f88a-3845-4b8d-864f-b86718eaa54d">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="fee" id="_5b870440-9692-4e81-959f-f2347c1768c9">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="tLoanTable" label="tLoanTable">
+        <typeRef>tLoanProduct</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tMetric" label="tMetric">
+        <itemComponent name="lenderName" id="_59994d58-3220-4cc6-8d91-783a008ac472">
+            <typeRef>string</typeRef>
+        </itemComponent>
+        <itemComponent name="rate" id="_63d8c69d-2431-43f5-bfa3-a014a6d2363e">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="points" id="_be9eaeb3-8d52-4d99-9d0a-325c15fa6b74">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="fee" id="_2a9fe07c-d72b-4f8b-9995-e1b194dd5aa9">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="loanAmt" id="_333f9092-d8a7-4e75-973d-82f30569e432">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="downPmtAmt" id="_790093df-4886-405a-8ad6-34de25812bdc">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="paymentAmt" id="_8f37cdc9-ff7a-4b8c-8849-c0b6a6cbb960">
+            <typeRef>number</typeRef>
+        </itemComponent>
+        <itemComponent name="equity36moPct" id="_3f4568e7-be52-4ce2-8704-be14aa6cd1d5">
+            <typeRef>number</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <itemDefinition isCollection="true" name="tMetrics" label="tMetrics">
+        <typeRef>tMetric</typeRef>
+    </itemDefinition>
+    <itemDefinition name="tRankedProducts" label="tRankedProducts">
+        <itemComponent name="metricsTable" id="_0ee333d1-03fc-4a77-8798-d0b351a19a36">
+            <typeRef>tMetrics</typeRef>
+        </itemComponent>
+        <itemComponent name="rankByRate" id="_f0790a52-d95d-466a-bc51-5766c046c717">
+            <typeRef>tMetrics</typeRef>
+        </itemComponent>
+        <itemComponent name="rankByDownPmt" id="_d54127c6-8418-45df-89da-2f84bedae37c">
+            <typeRef>tMetrics</typeRef>
+        </itemComponent>
+        <itemComponent name="rankByMonthlyPmt" id="_7f98fed9-552a-4b57-99de-495cb96e8484">
+            <typeRef>tMetrics</typeRef>
+        </itemComponent>
+        <itemComponent name="rankByEquityPct" id="_897183a6-2ca8-4437-b21d-8ba90555a9e0">
+            <typeRef>tMetrics</typeRef>
+        </itemComponent>
+    </itemDefinition>
+    <decision name="Bankrates" id="_c5dd7a17-b588-4daf-8c9b-677e65ce87be">
+        <variable typeRef="tLoanTable" name="Bankrates"/>
+        <relation>
+            <column name="lenderName" id="_23af7b70-cc60-4d84-8e5f-60d5a4ebfe86"/>
+            <column name="rate" id="_11fb4b39-53a6-4670-90c7-7f1b21bf3936"/>
+            <column name="points" id="_505d19fa-b5b3-4adc-8aca-5ecc1b58d4f5"/>
+            <column name="fee" id="_e9ed23a8-88c6-4cb0-a1f3-2a895999ef06"/>
+            <row id="_bc21b674-23cc-440d-b505-32d5f799e281">
+                <literalExpression>
+                    <text>"Oceans Capital"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03500</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0</text>
+                </literalExpression>
+            </row>
+            <row id="_6f3eb485-dddc-40f0-a153-8c989dc4b68d">
+                <literalExpression>
+                    <text>"eClick Lending"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03200</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>1.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>2700</text>
+                </literalExpression>
+            </row>
+            <row id="_36362bb9-5cd1-4b55-8ce2-a8cf02f6bed0">
+                <literalExpression>
+                    <text>"eClickLending"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03375</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>1200</text>
+                </literalExpression>
+            </row>
+            <row id="_922a8c6b-2bf0-4453-b1d2-1242c5527dce">
+                <literalExpression>
+                    <text>"AimLoan"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03000</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>1.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>3966</text>
+                </literalExpression>
+            </row>
+            <row id="_72d72621-d6aa-4c78-a6ee-b0086b27ea3a">
+                <literalExpression>
+                    <text>"Home Loans Today"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03125</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>1.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>285</text>
+                </literalExpression>
+            </row>
+            <row id="_4fd60510-7767-4cd9-9f5e-9783b9e6f688">
+                <literalExpression>
+                    <text>"Sebonic"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03125</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>4028</text>
+                </literalExpression>
+            </row>
+            <row id="_4a2aca46-7331-445b-b378-beb0a4b7064f">
+                <literalExpression>
+                    <text>"AimLoan"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03125</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>4317</text>
+                </literalExpression>
+            </row>
+            <row id="_3b1b71e2-7084-4869-bb08-52d5ad2bcf1e">
+                <literalExpression>
+                    <text>"eRates Mortgage"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03125</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>1.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>2518</text>
+                </literalExpression>
+            </row>
+            <row id="_d0e4ef04-9127-4931-b802-a0d4128a78c9">
+                <literalExpression>
+                    <text>"Home Loans Today"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03250</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0.1</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>822</text>
+                </literalExpression>
+            </row>
+            <row id="_a254dd15-1c62-4f4f-9ce2-83f6bfbcb487">
+                <literalExpression>
+                    <text>"AimLoan"</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>.03250</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>0</text>
+                </literalExpression>
+                <literalExpression>
+                    <text>1995</text>
+                </literalExpression>
+            </row>
+        </relation>
+    </decision>
+    <inputData name="RequestedAmt" id="_67c50a4c-3002-4d0a-9acf-4c76cb0364fa">
+        <variable typeRef="number" name="RequestedAmt"/>
+    </inputData>
+    <decision name="RankedProducts" id="_715940be-0f5d-4701-8155-fcba85874aa1">
+        <variable typeRef="tRankedProducts" name="RankedProducts"/>
+        <informationRequirement id="_43e49786-488c-468a-8fdf-c89b86a3df7b">
+            <requiredInput href="#_67c50a4c-3002-4d0a-9acf-4c76cb0364fa"/>
+        </informationRequirement>
+        <informationRequirement id="b8cf7372-c655-4529-9e27-c9c67cfd61c9">
+            <requiredDecision href="#_c5dd7a17-b588-4daf-8c9b-677e65ce87be"/>
+        </informationRequirement>
+        <knowledgeRequirement id="_111fdf59-f689-4263-8684-f4f1443bce48">
+            <requiredKnowledge href="#_83059f2e-2862-45a9-97a7-71ffaa860586"/>
+        </knowledgeRequirement>
+        <context>
+            <contextEntry>
+                <variable typeRef="tMetrics" name="metricsTable"/>
+                <literalExpression>
+                    <text>for i in Bankrates return FinancialMetrics(i,RequestedAmt)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="tMetrics" name="rankByRate"/>
+                <literalExpression>
+                    <text>sort(metricsTable, function(x,y) x.rate&lt;y.rate)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="tMetrics" name="rankByDownPmt"/>
+                <literalExpression>
+                    <text>sort(metricsTable, function(x,y) x.downPmtAmt&lt;y.downPmtAmt)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="tMetrics" name="rankByMonthlyPmt"/>
+                <literalExpression>
+                    <text>sort(metricsTable, function(x,y) x.paymentAmt&lt;y.paymentAmt)</text>
+                </literalExpression>
+            </contextEntry>
+            <contextEntry>
+                <variable typeRef="tMetrics" name="rankByEquityPct"/>
+                <literalExpression>
+                    <text>sort(metricsTable, function(x,y) x.equity36moPct&gt;y.equity36moPct)</text>
+                </literalExpression>
+            </contextEntry>
+        </context>
+    </decision>
+    <businessKnowledgeModel name="FinancialMetrics" id="_83059f2e-2862-45a9-97a7-71ffaa860586">
+        <variable name="FinancialMetrics"/>
+        <encapsulatedLogic>
+            <formalParameter typeRef="tLoanProduct" name="product"/>
+            <formalParameter typeRef="number" name="requestedAmt"/>
+            <context typeRef="tMetric">
+                <contextEntry>
+                    <variable typeRef="string" name="lenderName"/>
+                    <literalExpression>
+                        <text>product.lenderName</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="rate"/>
+                    <literalExpression>
+                        <text>product.rate</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="points"/>
+                    <literalExpression>
+                        <text>product.points</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="fee"/>
+                    <literalExpression>
+                        <text>product.fee</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="loanAmt"/>
+                    <literalExpression>
+                        <text>requestedAmt*(1+points/100)+fee</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="downPmtAmt"/>
+                    <literalExpression>
+                        <text>0.2*loanAmt</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="paymentAmt"/>
+                    <literalExpression>
+                        <text>monthlyPayment(loanAmt,rate,360)</text>
+                    </literalExpression>
+                </contextEntry>
+                <contextEntry>
+                    <variable typeRef="number" name="equity36moPct"/>
+                    <literalExpression>
+                        <text>1 - equity36Mo(loanAmt,rate,36,paymentAmt)/requestedAmt*0.8</text>
+                    </literalExpression>
+                </contextEntry>
+            </context>
+        </encapsulatedLogic>
+        <knowledgeRequirement id="_8467995b-a9f6-4bad-b3ba-f242d29754d3">
+            <requiredKnowledge href="#_8702e1b6-213b-4f75-bf56-99ac3835cde7"/>
+        </knowledgeRequirement>
+        <knowledgeRequirement id="_2db0c116-2a9e-4360-9f2c-2bdfe2ef69c3">
+            <requiredKnowledge href="#_daec318a-135b-4d54-9e7f-85af3aa662f7"/>
+        </knowledgeRequirement>
+    </businessKnowledgeModel>
+    <businessKnowledgeModel name="monthlyPayment" id="_8702e1b6-213b-4f75-bf56-99ac3835cde7">
+        <variable name="monthlyPayment"/>
+        <encapsulatedLogic>
+            <formalParameter typeRef="number" name="p"/>
+            <formalParameter typeRef="number" name="r"/>
+            <formalParameter typeRef="number" name="n"/>
+            <literalExpression typeRef="number">
+                <text>p*r/12/(1-(1+r/12)**-n)</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <businessKnowledgeModel name="equity36Mo" id="_daec318a-135b-4d54-9e7f-85af3aa662f7">
+        <variable name="equity36Mo"/>
+        <encapsulatedLogic>
+            <formalParameter typeRef="number" name="p"/>
+            <formalParameter typeRef="number" name="r"/>
+            <formalParameter typeRef="number" name="n"/>
+            <formalParameter typeRef="number" name="pmt"/>
+            <literalExpression typeRef="number">
+                <text>p*(1+r/12)**n - pmt*(-1+(1+r/12)**n)/r</text>
+            </literalExpression>
+        </encapsulatedLogic>
+    </businessKnowledgeModel>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_D1">
+            <dmndi:Size height="723.0" width="881.0"/>
+            <dmndi:DMNShape dmnElementRef="_c5dd7a17-b588-4daf-8c9b-677e65ce87be" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_s1">
+                <dc:Bounds height="61.0" width="154.0" x="150.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_67c50a4c-3002-4d0a-9acf-4c76cb0364fa" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_s2">
+                <dc:Bounds height="60.0" width="153.0" x="578.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_715940be-0f5d-4701-8155-fcba85874aa1" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_s3">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="150.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_83059f2e-2862-45a9-97a7-71ffaa860586" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_s4">
+                <dc:Bounds height="61.0" width="154.0" x="364.0" y="331.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_8702e1b6-213b-4f75-bf56-99ac3835cde7" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_s5">
+                <dc:Bounds height="61.0" width="154.0" x="257.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="_daec318a-135b-4d54-9e7f-85af3aa662f7" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_s6">
+                <dc:Bounds height="61.0" width="154.0" x="471.0" y="512.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNEdge dmnElementRef="_111fdf59-f689-4263-8684-f4f1443bce48" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_e1">
+                <di:waypoint x="441.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_43e49786-488c-468a-8fdf-c89b86a3df7b" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_e2">
+                <di:waypoint x="654.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="b8cf7372-c655-4529-9e27-c9c67cfd61c9" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_e3">
+                <di:waypoint x="227.0" y="331.0"/>
+                <di:waypoint x="441.0" y="211.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_8467995b-a9f6-4bad-b3ba-f242d29754d3" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_e4">
+                <di:waypoint x="334.0" y="512.0"/>
+                <di:waypoint x="441.0" y="392.0"/>
+            </dmndi:DMNEdge>
+            <dmndi:DMNEdge dmnElementRef="_2db0c116-2a9e-4360-9f2c-2bdfe2ef69c3" id="_56c7d4a5-e6db-4bba-ac5f-dc082a16f719_e5">
+                <di:waypoint x="548.0" y="512.0"/>
+                <di:waypoint x="441.0" y="392.0"/>
+            </dmndi:DMNEdge>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

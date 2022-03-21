@@ -1,0 +1,110 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+[data-i18n-prefix="StructureTypesTooltipView."] {
+  .structure-data-types-tooltip {
+    width: 270px;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    box-shadow: 0 3px 7px 2px rgba(0, 0, 0, 0.1);
+    display: none;
+    padding: 0 15px 15px;
+    transform: translatey(-50%);
+    margin-top: 10px;
+
+    &:after {
+      content: " ";
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 10px solid #fff;
+      top: 50%;
+      transform: translatey(-50%);
+      position: absolute;
+      left: -10px;
+      filter: drop-shadow(-3px 2px 1px rgba(0, 0, 0, 0.1));
+      z-index: 1;
+    }
+
+    .kie-data-type-type {
+      border-radius: 25px;
+      background-color: #ffffff;
+      padding: 0 8px 1px;
+      margin-left: 10px;
+      border: 1px solid #dddddd;
+      color: #555555;
+      font-size: 11px;
+      font-weight: 500;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    button {
+      position: absolute;
+      top: 7px;
+      right: 10px;
+    }
+
+    a {
+      margin: 10px 0 5px;
+      display: block;
+    }
+
+    h3 {
+      font-weight: 600;
+      max-width: 155px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    h3,
+    h3 + span {
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    h3 + span {
+      margin-top: 10px;
+    }
+
+    ul {
+      padding: 0 0 0 20px;
+      max-height: 170px;
+      overflow-y: auto;
+
+      li {
+        padding-bottom: 4px;
+      }
+    }
+
+    &.overflow {
+      margin-top: -40px;
+
+      ul {
+        max-height: 80px;
+      }
+
+      &:after {
+        margin-top: 50px;
+      }
+    }
+  }
+}

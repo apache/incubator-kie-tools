@@ -1,0 +1,1934 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.actico.com/spec/DMN/1116-feel-time-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_jEk7EPUUEeesLuP4RHs4vA" name="1116-feel-time-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.actico.com/spec/DMN/1116-feel-time-function">
+  <dmn:description>FEEL built-in function 'time(from [string])', 'time(from [time, date and time])' and 'time(hour,minute,second,offset)' in category conversion functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_jEusEfUUEeesLuP4RHs4vA" name="tfeel-time-function_001_bdf26fdc72_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusFfUUEeesLuP4RHs4vA" name="tfeel-time-function_002_9d2e399b96_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusGfUUEeesLuP4RHs4vA" name="tfeel-time-function_003_d1f0ea5bb9_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusHfUUEeesLuP4RHs4vA" name="tfeel-time-function_004_57aea91d1c_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusIfUUEeesLuP4RHs4vA" name="tfeel-time-function_005_32ea20b34f_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusJfUUEeesLuP4RHs4vA" name="tfeel-time-function_006_e266498180_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusKfUUEeesLuP4RHs4vA" name="tfeel-time-function_007_ee82c7bf12_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusLfUUEeesLuP4RHs4vA" name="tfeel-time-function_008_08078c6c29_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusMfUUEeesLuP4RHs4vA" name="tfeel-time-function_009_804c21ed52_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusNfUUEeesLuP4RHs4vA" name="tfeel-time-function_010_cc773bb44b_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusOfUUEeesLuP4RHs4vA" name="tfeel-time-function_011_ad5b3a26b5_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusPfUUEeesLuP4RHs4vA" name="tfeel-time-function_012_3c2f416fc9_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusQfUUEeesLuP4RHs4vA" name="tfeel-time-function_013_7f22c0bda8_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusRfUUEeesLuP4RHs4vA" name="tfeel-time-function_014_0dc13176e8_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusSfUUEeesLuP4RHs4vA" name="tfeel-time-function_015_376d693a79_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusTfUUEeesLuP4RHs4vA" name="tfeel-time-function_016_c3cccff405_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusUfUUEeesLuP4RHs4vA" name="tfeel-time-function_017_f3683885f5_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusVfUUEeesLuP4RHs4vA" name="tfeel-time-function_018_35f1f2cce8_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusWfUUEeesLuP4RHs4vA" name="tfeel-time-function_019_879be89d63_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusXfUUEeesLuP4RHs4vA" name="tfeel-time-function_020_72b421086e_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusYfUUEeesLuP4RHs4vA" name="tfeel-time-function_021_5c50fa1dff_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusZfUUEeesLuP4RHs4vA" name="tfeel-time-function_022_55e76d3595_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusafUUEeesLuP4RHs4vA" name="tfeel-time-function_023_5cbbb85435_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusbfUUEeesLuP4RHs4vA" name="tfeel-time-function_024_5f7f735e8f_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEuscfUUEeesLuP4RHs4vA" name="tfeel-time-function_025_139b25b795_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusdfUUEeesLuP4RHs4vA" name="tfeel-time-function_026_c5208af118_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusefUUEeesLuP4RHs4vA" name="tfeel-time-function_027_45082fd26c_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusffUUEeesLuP4RHs4vA" name="tfeel-time-function_028_eaea7a943c_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusgfUUEeesLuP4RHs4vA" name="tfeel-time-function_029_f0d5c2c16a_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEushfUUEeesLuP4RHs4vA" name="tfeel-time-function_030_390d4f4648_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusifUUEeesLuP4RHs4vA" name="tfeel-time-function_031_4d086a3b59_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusjfUUEeesLuP4RHs4vA" name="tfeel-time-function_032_d9b0d7f931_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEuskfUUEeesLuP4RHs4vA" name="tfeel-time-function_033_8420160da1_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEuslfUUEeesLuP4RHs4vA" name="tfeel-time-function_034_13c312c376_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusmfUUEeesLuP4RHs4vA" name="tfeel-time-function_035_fbfce88ac4_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusnfUUEeesLuP4RHs4vA" name="tfeel-time-function_036_eb05fabc01_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusofUUEeesLuP4RHs4vA" name="tfeel-time-function_037_eed195f693_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEuspfUUEeesLuP4RHs4vA" name="tfeel-time-function_038_05b311131c_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusqfUUEeesLuP4RHs4vA" name="tfeel-time-function_039_5b65992f0d_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusrfUUEeesLuP4RHs4vA" name="tfeel-time-function_040_6c9d17b491_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEussfUUEeesLuP4RHs4vA" name="tfeel-time-function_041_29a448d57e_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEustfUUEeesLuP4RHs4vA" name="tfeel-time-function_042_00146f2977_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusufUUEeesLuP4RHs4vA" name="tfeel-time-function_043_2edfae8414_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusvfUUEeesLuP4RHs4vA" name="tfeel-time-function_044_3073ffd026_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEuswfUUEeesLuP4RHs4vA" name="tfeel-time-function_045_ad1339e858_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusxfUUEeesLuP4RHs4vA" name="tfeel-time-function_046_7b80221ec1_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEusyfUUEeesLuP4RHs4vA" name="tfeel-time-function_047_33cd7b9b15_Result" isCollection="false">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEuszfUUEeesLuP4RHs4vA" name="tfeel-time-function_048_9bedd52886_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus0fUUEeesLuP4RHs4vA" name="tfeel-time-function_049_617d9e09d6_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus1fUUEeesLuP4RHs4vA" name="tfeel-time-function_050_524d9a8146_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus2fUUEeesLuP4RHs4vA" name="tfeel-time-function_051_a71d2a08f7_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus3fUUEeesLuP4RHs4vA" name="tfeel-time-function_052_d825d58888_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus4fUUEeesLuP4RHs4vA" name="tfeel-time-function_053_3d956966c0_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus5fUUEeesLuP4RHs4vA" name="tfeel-time-function_054_fdc3094237_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus6fUUEeesLuP4RHs4vA" name="tfeel-time-function_055_9b47db6ea4_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus7fUUEeesLuP4RHs4vA" name="tfeel-time-function_056_a8e828d64d_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus8fUUEeesLuP4RHs4vA" name="tfeel-time-function_057_d039115cce_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus9fUUEeesLuP4RHs4vA" name="tfeel-time-function_058_81dd4b1639_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jEus-fUUEeesLuP4RHs4vA" name="tfeel-time-function_059_c7e1705fe1_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32A_UUEeesLuP4RHs4vA" name="tfeel-time-function_060_0cf4734fae_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32B_UUEeesLuP4RHs4vA" name="tfeel-time-function_061_da2717f085_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32C_UUEeesLuP4RHs4vA" name="tfeel-time-function_062_6cd1313fa9_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32D_UUEeesLuP4RHs4vA" name="tfeel-time-function_063_e85c40b474_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32E_UUEeesLuP4RHs4vA" name="tfeel-time-function_064_df74038c67_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32F_UUEeesLuP4RHs4vA" name="tfeel-time-function_065_79eaef6fee_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32G_UUEeesLuP4RHs4vA" name="tfeel-time-function_066_5116e12fd3_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32H_UUEeesLuP4RHs4vA" name="tfeel-time-function_067_8285edad7b_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32I_UUEeesLuP4RHs4vA" name="tfeel-time-function_068_ad528abb23_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32J_UUEeesLuP4RHs4vA" name="tfeel-time-function_069_5096701e2e_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32K_UUEeesLuP4RHs4vA" name="tfeel-time-function_070_8b2e39f570_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32L_UUEeesLuP4RHs4vA" name="tfeel-time-function_071_cf9417648b_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32M_UUEeesLuP4RHs4vA" name="tfeel-time-function_072_4c8c3835e4_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32N_UUEeesLuP4RHs4vA" name="tfeel-time-function_073_a5fc245959_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32O_UUEeesLuP4RHs4vA" name="tfeel-time-function_074_387d4411ea_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32P_UUEeesLuP4RHs4vA" name="tfeel-time-function_075_1606dda03d_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32Q_UUEeesLuP4RHs4vA" name="tfeel-time-function_076_cb117ca612_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32R_UUEeesLuP4RHs4vA" name="tfeel-time-function_077_a4daad060c_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32S_UUEeesLuP4RHs4vA" name="tfeel-time-function_078_c2fe73418b_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32T_UUEeesLuP4RHs4vA" name="tfeel-time-function_079_d2d226c3cd_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32U_UUEeesLuP4RHs4vA" name="tfeel-time-function_080_2bbb8c86af_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32V_UUEeesLuP4RHs4vA" name="tfeel-time-function_081_69f4e0231e_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32W_UUEeesLuP4RHs4vA" name="tfeel-time-function_082_36a78e5396_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_jE32X_UUEeesLuP4RHs4vA" name="tfeel-time-function_083_6b608254c7_Result" isCollection="false">
+    <dmn:typeRef>time</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_jEusk_UUEeesLuP4RHs4vA" name="feel-time-function_033_8420160da1">
+    <dmn:description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00+01:00"))' and expects result: '10:20:00+01:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00+01:00"))'?</dmn:question>
+    <dmn:allowedAnswers>10:20:00+01:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEuslPUUEeesLuP4RHs4vA" name="feel-time-function_033_8420160da1" typeRef="ns1:tfeel-time-function_033_8420160da1_Result"/>
+    <dmn:literalExpression id="_jEuskvUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time("2017-08-10T10:20:00+01:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32PfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_074_387d4411ea">
+    <dmn:description>Tests FEEL expression: 'time("11:30:00T")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("11:30:00T")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32PvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_074_387d4411ea" typeRef="ns1:tfeel-time-function_074_387d4411ea_Result"/>
+    <dmn:literalExpression id="_jE32PPUUEeesLuP4RHs4vA">
+      <dmn:text>time("11:30:00T")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusN_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_010_cc773bb44b">
+    <dmn:description>Tests FEEL expression: 'time(12,null,null,null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(12,null,null,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusOPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_010_cc773bb44b" typeRef="ns1:tfeel-time-function_010_cc773bb44b_Result"/>
+    <dmn:literalExpression id="_jEusNvUUEeesLuP4RHs4vA">
+      <dmn:text>time(12,null,null,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusu_UUEeesLuP4RHs4vA" name="feel-time-function_043_2edfae8414">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 00, duration("-PT2H1M"))' and expects result: '11:59:00-02:01 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 00, duration("-PT2H1M"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:00-02:01 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusvPUUEeesLuP4RHs4vA" name="feel-time-function_043_2edfae8414" typeRef="ns1:tfeel-time-function_043_2edfae8414_Result"/>
+    <dmn:literalExpression id="_jEusuvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 00, duration("-PT2H1M"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusa_UUEeesLuP4RHs4vA" name="feel-time-function_023_5cbbb85435">
+    <dmn:description>Tests FEEL expression: 'time("00:00:00Z")' and expects result: '00:00:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("00:00:00Z")'?</dmn:question>
+    <dmn:allowedAnswers>00:00:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusbPUUEeesLuP4RHs4vA" name="feel-time-function_023_5cbbb85435" typeRef="ns1:tfeel-time-function_023_5cbbb85435_Result"/>
+    <dmn:literalExpression id="_jEusavUUEeesLuP4RHs4vA">
+      <dmn:text>time("00:00:00Z")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusX_UUEeesLuP4RHs4vA" name="feel-time-function_020_72b421086e">
+    <dmn:description>Tests FEEL expression: 'time("11:22:33.123456789")' and expects result: '11:22:33.123456789 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("11:22:33.123456789")'?</dmn:question>
+    <dmn:allowedAnswers>11:22:33.123456789 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusYPUUEeesLuP4RHs4vA" name="feel-time-function_020_72b421086e" typeRef="ns1:tfeel-time-function_020_72b421086e_Result"/>
+    <dmn:literalExpression id="_jEusXvUUEeesLuP4RHs4vA">
+      <dmn:text>time("11:22:33.123456789")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEust_UUEeesLuP4RHs4vA" name="feel-time-function_042_00146f2977">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 00, duration("PT2H1M"))' and expects result: '11:59:00+02:01 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 00, duration("PT2H1M"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:00+02:01 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusuPUUEeesLuP4RHs4vA" name="feel-time-function_042_00146f2977" typeRef="ns1:tfeel-time-function_042_00146f2977_Result"/>
+    <dmn:literalExpression id="_jEustvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 00, duration("PT2H1M"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32FfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_064_df74038c67">
+    <dmn:description>Tests FEEL expression: 'time("07:1:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("07:1:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32FvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_064_df74038c67" typeRef="ns1:tfeel-time-function_064_df74038c67_Result"/>
+    <dmn:literalExpression id="_jE32FPUUEeesLuP4RHs4vA">
+      <dmn:text>time("07:1:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32QfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_075_1606dda03d">
+    <dmn:description>Tests FEEL expression: 'time("2012T-12-2511:00:00Z")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("2012T-12-2511:00:00Z")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32QvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_075_1606dda03d" typeRef="ns1:tfeel-time-function_075_1606dda03d_Result"/>
+    <dmn:literalExpression id="_jE32QPUUEeesLuP4RHs4vA">
+      <dmn:text>time("2012T-12-2511:00:00Z")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus0_UUEeesLuP4RHs4vA" name="feel-time-function_049_617d9e09d6">
+    <dmn:description>Tests FEEL expression: 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01")))' and expects result: '23:59:01 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01")))'?</dmn:question>
+    <dmn:allowedAnswers>23:59:01 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus1PUUEeesLuP4RHs4vA" name="feel-time-function_049_617d9e09d6" typeRef="ns1:tfeel-time-function_049_617d9e09d6_Result"/>
+    <dmn:literalExpression id="_jEus0vUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:knowledgeSource id="_jEusEPUUEeesLuP4RHs4vA" name="DMN 1.1 - 10.3.4.1 Table 58">
+    <dmn:extensionElements/>
+  </dmn:knowledgeSource>
+  <dmn:decision id="_jEusE_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_001_bdf26fdc72">
+    <dmn:description>Tests FEEL expression: 'time(null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusFPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_001_bdf26fdc72" typeRef="ns1:tfeel-time-function_001_bdf26fdc72_Result"/>
+    <dmn:literalExpression id="_jEusEvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32OfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_073_a5fc245959">
+    <dmn:description>Tests FEEL expression: 'time("07:2")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("07:2")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32OvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_073_a5fc245959" typeRef="ns1:tfeel-time-function_073_a5fc245959_Result"/>
+    <dmn:literalExpression id="_jE32OPUUEeesLuP4RHs4vA">
+      <dmn:text>time("07:2")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusv_UUEeesLuP4RHs4vA" name="feel-time-function_044_3073ffd026">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 00, duration("PT2H1M0S"))' and expects result: '11:59:00+02:01 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 00, duration("PT2H1M0S"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:00+02:01 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEuswPUUEeesLuP4RHs4vA" name="feel-time-function_044_3073ffd026" typeRef="ns1:tfeel-time-function_044_3073ffd026_Result"/>
+    <dmn:literalExpression id="_jEusvvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 00, duration("PT2H1M0S"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32YfUUEeesLuP4RHs4vA" name="feel-time-function_083_6b608254c7">
+    <dmn:description>Tests FEEL expression: 'time(hour:11, minute:59, second:0, offset: duration("-PT2H"))' and expects result: '11:59:00-02:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(hour:11, minute:59, second:0, offset: duration("-PT2H"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:00-02:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32YvUUEeesLuP4RHs4vA" name="feel-time-function_083_6b608254c7" typeRef="ns1:tfeel-time-function_083_6b608254c7_Result"/>
+    <dmn:literalExpression id="_jE32YPUUEeesLuP4RHs4vA">
+      <dmn:text>time(hour:11, minute:59, second:0, offset: duration("-PT2H"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32HfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_066_5116e12fd3">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00@xyz/abc")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00@xyz/abc")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32HvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_066_5116e12fd3" typeRef="ns1:tfeel-time-function_066_5116e12fd3_Result"/>
+    <dmn:literalExpression id="_jE32HPUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00@xyz/abc")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusL_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_008_08078c6c29">
+    <dmn:description>Tests FEEL expression: 'time(12,null,null,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(12,null,null,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusMPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_008_08078c6c29" typeRef="ns1:tfeel-time-function_008_08078c6c29_Result"/>
+    <dmn:literalExpression id="_jEusLvUUEeesLuP4RHs4vA">
+      <dmn:text>time(12,null,null,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusM_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_009_804c21ed52">
+    <dmn:description>Tests FEEL expression: 'time(12,11,null,null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(12,11,null,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusNPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_009_804c21ed52" typeRef="ns1:tfeel-time-function_009_804c21ed52_Result"/>
+    <dmn:literalExpression id="_jEusMvUUEeesLuP4RHs4vA">
+      <dmn:text>time(12,11,null,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEuss_UUEeesLuP4RHs4vA" name="feel-time-function_041_29a448d57e">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 45, duration("-PT2H"))' and expects result: '11:59:45-02:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 45, duration("-PT2H"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:45-02:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEustPUUEeesLuP4RHs4vA" name="feel-time-function_041_29a448d57e" typeRef="ns1:tfeel-time-function_041_29a448d57e_Result"/>
+    <dmn:literalExpression id="_jEussvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 45, duration("-PT2H"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusb_UUEeesLuP4RHs4vA" name="feel-time-function_024_5f7f735e8f">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00+02:00")' and expects result: '13:20:00+02:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00+02:00")'?</dmn:question>
+    <dmn:allowedAnswers>13:20:00+02:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEuscPUUEeesLuP4RHs4vA" name="feel-time-function_024_5f7f735e8f" typeRef="ns1:tfeel-time-function_024_5f7f735e8f_Result"/>
+    <dmn:literalExpression id="_jEusbvUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00+02:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32XfUUEeesLuP4RHs4vA" name="feel-time-function_082_36a78e5396">
+    <dmn:description>Tests FEEL expression: 'time(hour:11, minute:59, second:0, offset: duration("PT2H1M0S"))' and expects result: '11:59:00+02:01 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(hour:11, minute:59, second:0, offset: duration("PT2H1M0S"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:00+02:01 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32XvUUEeesLuP4RHs4vA" name="feel-time-function_082_36a78e5396" typeRef="ns1:tfeel-time-function_082_36a78e5396_Result"/>
+    <dmn:literalExpression id="_jE32XPUUEeesLuP4RHs4vA">
+      <dmn:text>time(hour:11, minute:59, second:0, offset: duration("PT2H1M0S"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32GfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_065_79eaef6fee">
+    <dmn:description>Tests FEEL expression: 'time("07:01:2")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("07:01:2")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32GvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_065_79eaef6fee" typeRef="ns1:tfeel-time-function_065_79eaef6fee_Result"/>
+    <dmn:literalExpression id="_jE32GPUUEeesLuP4RHs4vA">
+      <dmn:text>time("07:01:2")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusY_UUEeesLuP4RHs4vA" name="feel-time-function_021_5c50fa1dff">
+    <dmn:description>Tests FEEL expression: 'time("23:59:00Z")' and expects result: '23:59:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("23:59:00Z")'?</dmn:question>
+    <dmn:allowedAnswers>23:59:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusZPUUEeesLuP4RHs4vA" name="feel-time-function_021_5c50fa1dff" typeRef="ns1:tfeel-time-function_021_5c50fa1dff_Result"/>
+    <dmn:literalExpression id="_jEusYvUUEeesLuP4RHs4vA">
+      <dmn:text>time("23:59:00Z")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusj_UUEeesLuP4RHs4vA" name="feel-time-function_032_d9b0d7f931">
+    <dmn:description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00-00:00"))' and expects result: '10:20:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00-00:00"))'?</dmn:question>
+    <dmn:allowedAnswers>10:20:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEuskPUUEeesLuP4RHs4vA" name="feel-time-function_032_d9b0d7f931" typeRef="ns1:tfeel-time-function_032_d9b0d7f931_Result"/>
+    <dmn:literalExpression id="_jEusjvUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time("2017-08-10T10:20:00-00:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusP_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_012_3c2f416fc9">
+    <dmn:description>Tests FEEL expression: 'time(null,null,15,null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,null,15,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusQPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_012_3c2f416fc9" typeRef="ns1:tfeel-time-function_012_3c2f416fc9_Result"/>
+    <dmn:literalExpression id="_jEusPvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,null,15,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusr_UUEeesLuP4RHs4vA" name="feel-time-function_040_6c9d17b491">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 45, duration("PT2H"))' and expects result: '11:59:45+02:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 45, duration("PT2H"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:45+02:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEussPUUEeesLuP4RHs4vA" name="feel-time-function_040_6c9d17b491" typeRef="ns1:tfeel-time-function_040_6c9d17b491_Result"/>
+    <dmn:literalExpression id="_jEusrvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 45, duration("PT2H"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusK_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_007_ee82c7bf12">
+    <dmn:description>Tests FEEL expression: 'time(null,11,45,null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,11,45,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusLPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_007_ee82c7bf12" typeRef="ns1:tfeel-time-function_007_ee82c7bf12_Result"/>
+    <dmn:literalExpression id="_jEusKvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,11,45,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusc_UUEeesLuP4RHs4vA" name="feel-time-function_025_139b25b795">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00-05:00")' and expects result: '13:20:00-05:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00-05:00")'?</dmn:question>
+    <dmn:allowedAnswers>13:20:00-05:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusdPUUEeesLuP4RHs4vA" name="feel-time-function_025_139b25b795" typeRef="ns1:tfeel-time-function_025_139b25b795_Result"/>
+    <dmn:literalExpression id="_jEuscvUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00-05:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32WfUUEeesLuP4RHs4vA" name="feel-time-function_081_69f4e0231e">
+    <dmn:description>Tests FEEL expression: 'time(from: "12:45:00")' and expects result: '12:45:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(from: "12:45:00")'?</dmn:question>
+    <dmn:allowedAnswers>12:45:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32WvUUEeesLuP4RHs4vA" name="feel-time-function_081_69f4e0231e" typeRef="ns1:tfeel-time-function_081_69f4e0231e_Result"/>
+    <dmn:literalExpression id="_jE32WPUUEeesLuP4RHs4vA">
+      <dmn:text>time(from: "12:45:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusm_UUEeesLuP4RHs4vA" name="feel-time-function_035_fbfce88ac4">
+    <dmn:description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00Z"))' and expects result: '10:20:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00Z"))'?</dmn:question>
+    <dmn:allowedAnswers>10:20:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusnPUUEeesLuP4RHs4vA" name="feel-time-function_035_fbfce88ac4" typeRef="ns1:tfeel-time-function_035_fbfce88ac4_Result"/>
+    <dmn:literalExpression id="_jEusmvUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time("2017-08-10T10:20:00Z"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusx_UUEeesLuP4RHs4vA" name="feel-time-function_046_7b80221ec1">
+    <dmn:description>Tests FEEL expression: 'string(time(11, 59, 45, duration("PT2H45M55S")))' and expects result: '"11:59:45+02:45:55" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string(time(11, 59, 45, duration("PT2H45M55S")))'?</dmn:question>
+    <dmn:allowedAnswers>"11:59:45+02:45:55" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusyPUUEeesLuP4RHs4vA" name="feel-time-function_046_7b80221ec1" typeRef="ns1:tfeel-time-function_046_7b80221ec1_Result"/>
+    <dmn:literalExpression id="_jEusxvUUEeesLuP4RHs4vA">
+      <dmn:text>string(time(11, 59, 45, duration("PT2H45M55S")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusV_UUEeesLuP4RHs4vA" name="feel-time-function_018_35f1f2cce8">
+    <dmn:description>Tests FEEL expression: 'time("00:00:00")' and expects result: '00:00:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("00:00:00")'?</dmn:question>
+    <dmn:allowedAnswers>00:00:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusWPUUEeesLuP4RHs4vA" name="feel-time-function_018_35f1f2cce8" typeRef="ns1:tfeel-time-function_018_35f1f2cce8_Result"/>
+    <dmn:literalExpression id="_jEusVvUUEeesLuP4RHs4vA">
+      <dmn:text>time("00:00:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus9_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_058_81dd4b1639">
+    <dmn:description>Tests FEEL expression: 'time("24:00:01")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("24:00:01")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus-PUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_058_81dd4b1639" typeRef="ns1:tfeel-time-function_058_81dd4b1639_Result"/>
+    <dmn:literalExpression id="_jEus9vUUEeesLuP4RHs4vA">
+      <dmn:text>time("24:00:01")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32JfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_068_ad528abb23">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00-19:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00-19:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32JvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_068_ad528abb23" typeRef="ns1:tfeel-time-function_068_ad528abb23_Result"/>
+    <dmn:literalExpression id="_jE32JPUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00-19:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32MfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_071_cf9417648b">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00+02:00@Europe/Paris")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00+02:00@Europe/Paris")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32MvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_071_cf9417648b" typeRef="ns1:tfeel-time-function_071_cf9417648b_Result"/>
+    <dmn:literalExpression id="_jE32MPUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00+02:00@Europe/Paris")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus1_UUEeesLuP4RHs4vA" name="feel-time-function_050_524d9a8146">
+    <dmn:description>Tests FEEL expression: 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01.987654321")))' and expects result: '23:59:01.987654321 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01.987654321")))'?</dmn:question>
+    <dmn:allowedAnswers>23:59:01.987654321 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus2PUUEeesLuP4RHs4vA" name="feel-time-function_050_524d9a8146" typeRef="ns1:tfeel-time-function_050_524d9a8146_Result"/>
+    <dmn:literalExpression id="_jEus1vUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time(date and time("2017-08-10T10:20:00"),time("23:59:01.987654321")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32RfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_076_cb117ca612">
+    <dmn:description>Tests FEEL expression: 'time(24, 59, 45, null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(24, 59, 45, null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32RvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_076_cb117ca612" typeRef="ns1:tfeel-time-function_076_cb117ca612_Result"/>
+    <dmn:literalExpression id="_jE32RPUUEeesLuP4RHs4vA">
+      <dmn:text>time(24, 59, 45, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusS_UUEeesLuP4RHs4vA" name="feel-time-function_015_376d693a79">
+    <dmn:description>Tests FEEL expression: 'time(12,00,00,null)' and expects result: '12:00:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(12,00,00,null)'?</dmn:question>
+    <dmn:allowedAnswers>12:00:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusTPUUEeesLuP4RHs4vA" name="feel-time-function_015_376d693a79" typeRef="ns1:tfeel-time-function_015_376d693a79_Result"/>
+    <dmn:literalExpression id="_jEusSvUUEeesLuP4RHs4vA">
+      <dmn:text>time(12,00,00,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusF_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_002_9d2e399b96">
+    <dmn:description>Tests FEEL expression: 'time(null,11,45,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,11,45,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusGPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_002_9d2e399b96" typeRef="ns1:tfeel-time-function_002_9d2e399b96_Result"/>
+    <dmn:literalExpression id="_jEusFvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,11,45,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32EfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_063_e85c40b474">
+    <dmn:description>Tests FEEL expression: 'time("7:00:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("7:00:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32EvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_063_e85c40b474" typeRef="ns1:tfeel-time-function_063_e85c40b474_Result"/>
+    <dmn:literalExpression id="_jE32EPUUEeesLuP4RHs4vA">
+      <dmn:text>time("7:00:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEush_UUEeesLuP4RHs4vA" name="feel-time-function_030_390d4f4648">
+    <dmn:description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00"))' and expects result: '10:20:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00"))'?</dmn:question>
+    <dmn:allowedAnswers>10:20:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusiPUUEeesLuP4RHs4vA" name="feel-time-function_030_390d4f4648" typeRef="ns1:tfeel-time-function_030_390d4f4648_Result"/>
+    <dmn:literalExpression id="_jEushvUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time("2017-08-10T10:20:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusf_UUEeesLuP4RHs4vA" name="feel-time-function_028_eaea7a943c">
+    <dmn:description>Tests FEEL expression: 'string(time("00:01:00@Etc/UTC"))' and expects result: '"00:01:00@Etc/UTC" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string(time("00:01:00@Etc/UTC"))'?</dmn:question>
+    <dmn:allowedAnswers>"00:01:00@Etc/UTC" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusgPUUEeesLuP4RHs4vA" name="feel-time-function_028_eaea7a943c" typeRef="ns1:tfeel-time-function_028_eaea7a943c_Result"/>
+    <dmn:literalExpression id="_jEusfvUUEeesLuP4RHs4vA">
+      <dmn:text>string(time("00:01:00@Etc/UTC"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusI_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_005_32ea20b34f">
+    <dmn:description>Tests FEEL expression: 'time(null,null,45,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,null,45,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusJPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_005_32ea20b34f" typeRef="ns1:tfeel-time-function_005_32ea20b34f_Result"/>
+    <dmn:literalExpression id="_jEusIvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,null,45,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32KfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_069_5096701e2e">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00+5:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00+5:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32KvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_069_5096701e2e" typeRef="ns1:tfeel-time-function_069_5096701e2e_Result"/>
+    <dmn:literalExpression id="_jE32KPUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00+5:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusp_UUEeesLuP4RHs4vA" name="feel-time-function_038_05b311131c">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 45, null)' and expects result: '11:59:45 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 45, null)'?</dmn:question>
+    <dmn:allowedAnswers>11:59:45 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusqPUUEeesLuP4RHs4vA" name="feel-time-function_038_05b311131c" typeRef="ns1:tfeel-time-function_038_05b311131c_Result"/>
+    <dmn:literalExpression id="_jEuspvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 45, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusR_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_014_0dc13176e8">
+    <dmn:description>Tests FEEL expression: 'time(null,null,null,null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,null,null,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusSPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_014_0dc13176e8" typeRef="ns1:tfeel-time-function_014_0dc13176e8_Result"/>
+    <dmn:literalExpression id="_jEusRvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,null,null,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus6_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_055_9b47db6ea4">
+    <dmn:description>Tests FEEL expression: 'time([])' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time([])'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus7PUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_055_9b47db6ea4" typeRef="ns1:tfeel-time-function_055_9b47db6ea4_Result"/>
+    <dmn:literalExpression id="_jEus6vUUEeesLuP4RHs4vA">
+      <dmn:text>time([])</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusg_UUEeesLuP4RHs4vA" name="feel-time-function_029_f0d5c2c16a">
+    <dmn:description>Tests FEEL expression: 'string(time("00:01:00@Europe/Paris"))' and expects result: '"00:01:00@Europe/Paris" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string(time("00:01:00@Europe/Paris"))'?</dmn:question>
+    <dmn:allowedAnswers>"00:01:00@Europe/Paris" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jEushPUUEeesLuP4RHs4vA" name="feel-time-function_029_f0d5c2c16a" typeRef="ns1:tfeel-time-function_029_f0d5c2c16a_Result"/>
+    <dmn:literalExpression id="_jEusgvUUEeesLuP4RHs4vA">
+      <dmn:text>string(time("00:01:00@Europe/Paris"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32BfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_060_0cf4734fae">
+    <dmn:description>Tests FEEL expression: 'time("25:00:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("25:00:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32BvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_060_0cf4734fae" typeRef="ns1:tfeel-time-function_060_0cf4734fae_Result"/>
+    <dmn:literalExpression id="_jE32BPUUEeesLuP4RHs4vA">
+      <dmn:text>time("25:00:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusz_UUEeesLuP4RHs4vA" name="feel-time-function_048_9bedd52886">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 45, duration("-PT0H"))' and expects result: '11:59:45Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 45, duration("-PT0H"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:45Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus0PUUEeesLuP4RHs4vA" name="feel-time-function_048_9bedd52886" typeRef="ns1:tfeel-time-function_048_9bedd52886_Result"/>
+    <dmn:literalExpression id="_jEuszvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 45, duration("-PT0H"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32UfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_079_d2d226c3cd">
+    <dmn:description>Tests FEEL expression: 'time(23, 59, 60, null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(23, 59, 60, null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32UvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_079_d2d226c3cd" typeRef="ns1:tfeel-time-function_079_d2d226c3cd_Result"/>
+    <dmn:literalExpression id="_jE32UPUUEeesLuP4RHs4vA">
+      <dmn:text>time(23, 59, 60, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus4_UUEeesLuP4RHs4vA" name="feel-time-function_053_3d956966c0">
+    <dmn:description>Tests FEEL expression: 'time(date("2017-08-10"))' and expects result: '00:00:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date("2017-08-10"))'?</dmn:question>
+    <dmn:allowedAnswers>00:00:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus5PUUEeesLuP4RHs4vA" name="feel-time-function_053_3d956966c0" typeRef="ns1:tfeel-time-function_053_3d956966c0_Result"/>
+    <dmn:literalExpression id="_jEus4vUUEeesLuP4RHs4vA">
+      <dmn:text>time(date("2017-08-10"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEuse_UUEeesLuP4RHs4vA" name="feel-time-function_027_45082fd26c">
+    <dmn:description>Tests FEEL expression: 'time("11:22:33+00:00")' and expects result: '11:22:33Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("11:22:33+00:00")'?</dmn:question>
+    <dmn:allowedAnswers>11:22:33Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusfPUUEeesLuP4RHs4vA" name="feel-time-function_027_45082fd26c" typeRef="ns1:tfeel-time-function_027_45082fd26c_Result"/>
+    <dmn:literalExpression id="_jEusevUUEeesLuP4RHs4vA">
+      <dmn:text>time("11:22:33+00:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusQ_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_013_7f22c0bda8">
+    <dmn:description>Tests FEEL expression: 'time(null,null,null,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,null,null,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusRPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_013_7f22c0bda8" typeRef="ns1:tfeel-time-function_013_7f22c0bda8_Result"/>
+    <dmn:literalExpression id="_jEusQvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,null,null,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEuso_UUEeesLuP4RHs4vA" name="feel-time-function_037_eed195f693">
+    <dmn:description>Tests FEEL expression: 'string(time(date and time("2017-09-04T11:20:00@Asia/Dhaka")))' and expects result: '"11:20:00@Asia/Dhaka" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string(time(date and time("2017-09-04T11:20:00@Asia/Dhaka")))'?</dmn:question>
+    <dmn:allowedAnswers>"11:20:00@Asia/Dhaka" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jEuspPUUEeesLuP4RHs4vA" name="feel-time-function_037_eed195f693" typeRef="ns1:tfeel-time-function_037_eed195f693_Result"/>
+    <dmn:literalExpression id="_jEusovUUEeesLuP4RHs4vA">
+      <dmn:text>string(time(date and time("2017-09-04T11:20:00@Asia/Dhaka")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32LfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_070_8b2e39f570">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00+5")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00+5")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32LvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_070_8b2e39f570" typeRef="ns1:tfeel-time-function_070_8b2e39f570_Result"/>
+    <dmn:literalExpression id="_jE32LPUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00+5")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusn_UUEeesLuP4RHs4vA" name="feel-time-function_036_eb05fabc01">
+    <dmn:description>Tests FEEL expression: 'string(time(date and time("2017-08-10T10:20:00@Europe/Paris")))' and expects result: '"10:20:00@Europe/Paris" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string(time(date and time("2017-08-10T10:20:00@Europe/Paris")))'?</dmn:question>
+    <dmn:allowedAnswers>"10:20:00@Europe/Paris" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusoPUUEeesLuP4RHs4vA" name="feel-time-function_036_eb05fabc01" typeRef="ns1:tfeel-time-function_036_eb05fabc01_Result"/>
+    <dmn:literalExpression id="_jEusnvUUEeesLuP4RHs4vA">
+      <dmn:text>string(time(date and time("2017-08-10T10:20:00@Europe/Paris")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus7_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_056_a8e828d64d">
+    <dmn:description>Tests FEEL expression: 'time("")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus8PUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_056_a8e828d64d" typeRef="ns1:tfeel-time-function_056_a8e828d64d_Result"/>
+    <dmn:literalExpression id="_jEus7vUUEeesLuP4RHs4vA">
+      <dmn:text>time("")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusH_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_004_57aea91d1c">
+    <dmn:description>Tests FEEL expression: 'time(12,0,null,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(12,0,null,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusIPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_004_57aea91d1c" typeRef="ns1:tfeel-time-function_004_57aea91d1c_Result"/>
+    <dmn:literalExpression id="_jEusHvUUEeesLuP4RHs4vA">
+      <dmn:text>time(12,0,null,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus3_UUEeesLuP4RHs4vA" name="feel-time-function_052_d825d58888">
+    <dmn:description>Tests FEEL expression: 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30Z")))' and expects result: '09:15:30Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30Z")))'?</dmn:question>
+    <dmn:allowedAnswers>09:15:30Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus4PUUEeesLuP4RHs4vA" name="feel-time-function_052_d825d58888" typeRef="ns1:tfeel-time-function_052_d825d58888_Result"/>
+    <dmn:literalExpression id="_jEus3vUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30Z")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32TfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_078_c2fe73418b">
+    <dmn:description>Tests FEEL expression: 'time(23, 60, 45, null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(23, 60, 45, null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32TvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_078_c2fe73418b" typeRef="ns1:tfeel-time-function_078_c2fe73418b_Result"/>
+    <dmn:literalExpression id="_jE32TPUUEeesLuP4RHs4vA">
+      <dmn:text>time(23, 60, 45, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32CfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_061_da2717f085">
+    <dmn:description>Tests FEEL expression: 'time("00:60:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("00:60:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32CvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_061_da2717f085" typeRef="ns1:tfeel-time-function_061_da2717f085_Result"/>
+    <dmn:literalExpression id="_jE32CPUUEeesLuP4RHs4vA">
+      <dmn:text>time("00:60:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusU_UUEeesLuP4RHs4vA" name="feel-time-function_017_f3683885f5">
+    <dmn:description>Tests FEEL expression: 'time("01:02:03")' and expects result: '01:02:03 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("01:02:03")'?</dmn:question>
+    <dmn:allowedAnswers>01:02:03 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusVPUUEeesLuP4RHs4vA" name="feel-time-function_017_f3683885f5" typeRef="ns1:tfeel-time-function_017_f3683885f5_Result"/>
+    <dmn:literalExpression id="_jEusUvUUEeesLuP4RHs4vA">
+      <dmn:text>time("01:02:03")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32DfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_062_6cd1313fa9">
+    <dmn:description>Tests FEEL expression: 'time("00:00:61")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("00:00:61")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32DvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_062_6cd1313fa9" typeRef="ns1:tfeel-time-function_062_6cd1313fa9_Result"/>
+    <dmn:literalExpression id="_jE32DPUUEeesLuP4RHs4vA">
+      <dmn:text>time("00:00:61")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusZ_UUEeesLuP4RHs4vA" name="feel-time-function_022_55e76d3595">
+    <dmn:description>Tests FEEL expression: 'time("11:00:00Z")' and expects result: '11:00:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("11:00:00Z")'?</dmn:question>
+    <dmn:allowedAnswers>11:00:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusaPUUEeesLuP4RHs4vA" name="feel-time-function_022_55e76d3595" typeRef="ns1:tfeel-time-function_022_55e76d3595_Result"/>
+    <dmn:literalExpression id="_jEusZvUUEeesLuP4RHs4vA">
+      <dmn:text>time("11:00:00Z")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusw_UUEeesLuP4RHs4vA" name="feel-time-function_045_ad1339e858">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 00, duration("-PT2H1M0S"))' and expects result: '11:59:00-02:01 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 00, duration("-PT2H1M0S"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:00-02:01 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusxPUUEeesLuP4RHs4vA" name="feel-time-function_045_ad1339e858" typeRef="ns1:tfeel-time-function_045_ad1339e858_Result"/>
+    <dmn:literalExpression id="_jEuswvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 00, duration("-PT2H1M0S"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32IfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_067_8285edad7b">
+    <dmn:description>Tests FEEL expression: 'time("13:20:00+19:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("13:20:00+19:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32IvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_067_8285edad7b" typeRef="ns1:tfeel-time-function_067_8285edad7b_Result"/>
+    <dmn:literalExpression id="_jE32IPUUEeesLuP4RHs4vA">
+      <dmn:text>time("13:20:00+19:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus8_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_057_d039115cce">
+    <dmn:description>Tests FEEL expression: 'time("23:59:60")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("23:59:60")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus9PUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_057_d039115cce" typeRef="ns1:tfeel-time-function_057_d039115cce_Result"/>
+    <dmn:literalExpression id="_jEus8vUUEeesLuP4RHs4vA">
+      <dmn:text>time("23:59:60")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32NfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_072_4c8c3835e4">
+    <dmn:description>Tests FEEL expression: 'time("7:20")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("7:20")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32NvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_072_4c8c3835e4" typeRef="ns1:tfeel-time-function_072_4c8c3835e4_Result"/>
+    <dmn:literalExpression id="_jE32NPUUEeesLuP4RHs4vA">
+      <dmn:text>time("7:20")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusG_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_003_d1f0ea5bb9">
+    <dmn:description>Tests FEEL expression: 'time(12,null,45,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(12,null,45,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusHPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_003_d1f0ea5bb9" typeRef="ns1:tfeel-time-function_003_d1f0ea5bb9_Result"/>
+    <dmn:literalExpression id="_jEusGvUUEeesLuP4RHs4vA">
+      <dmn:text>time(12,null,45,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusT_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_016_c3cccff405">
+    <dmn:description>Tests FEEL expression: 'time()' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time()'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusUPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_016_c3cccff405" typeRef="ns1:tfeel-time-function_016_c3cccff405_Result"/>
+    <dmn:literalExpression id="_jEusTvUUEeesLuP4RHs4vA">
+      <dmn:text>time()</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32SfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_077_a4daad060c">
+    <dmn:description>Tests FEEL expression: 'time(-24, 59, 45, null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(-24, 59, 45, null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32SvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_077_a4daad060c" typeRef="ns1:tfeel-time-function_077_a4daad060c_Result"/>
+    <dmn:literalExpression id="_jE32SPUUEeesLuP4RHs4vA">
+      <dmn:text>time(-24, 59, 45, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusi_UUEeesLuP4RHs4vA" name="feel-time-function_031_4d086a3b59">
+    <dmn:description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00+00:00"))' and expects result: '10:20:00Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00+00:00"))'?</dmn:question>
+    <dmn:allowedAnswers>10:20:00Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusjPUUEeesLuP4RHs4vA" name="feel-time-function_031_4d086a3b59" typeRef="ns1:tfeel-time-function_031_4d086a3b59_Result"/>
+    <dmn:literalExpression id="_jEusivUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time("2017-08-10T10:20:00+00:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus2_UUEeesLuP4RHs4vA" name="feel-time-function_051_a71d2a08f7">
+    <dmn:description>Tests FEEL expression: 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30+02:00")))' and expects result: '09:15:30+02:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30+02:00")))'?</dmn:question>
+    <dmn:allowedAnswers>09:15:30+02:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus3PUUEeesLuP4RHs4vA" name="feel-time-function_051_a71d2a08f7" typeRef="ns1:tfeel-time-function_051_a71d2a08f7_Result"/>
+    <dmn:literalExpression id="_jEus2vUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time(date and time("2017-09-05T10:20:00"),time("09:15:30+02:00")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusJ_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_006_e266498180">
+    <dmn:description>Tests FEEL expression: 'time(null,11,null,duration("P0D"))' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,11,null,duration("P0D"))'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusKPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_006_e266498180" typeRef="ns1:tfeel-time-function_006_e266498180_Result"/>
+    <dmn:literalExpression id="_jEusJvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,11,null,duration("P0D"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusO_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_011_ad5b3a26b5">
+    <dmn:description>Tests FEEL expression: 'time(null,0,null,null)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(null,0,null,null)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusPPUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_011_ad5b3a26b5" typeRef="ns1:tfeel-time-function_011_ad5b3a26b5_Result"/>
+    <dmn:literalExpression id="_jEusOvUUEeesLuP4RHs4vA">
+      <dmn:text>time(null,0,null,null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusl_UUEeesLuP4RHs4vA" name="feel-time-function_034_13c312c376">
+    <dmn:description>Tests FEEL expression: 'time(date and time("2017-08-10T10:20:00-01:00"))' and expects result: '10:20:00-01:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(date and time("2017-08-10T10:20:00-01:00"))'?</dmn:question>
+    <dmn:allowedAnswers>10:20:00-01:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusmPUUEeesLuP4RHs4vA" name="feel-time-function_034_13c312c376" typeRef="ns1:tfeel-time-function_034_13c312c376_Result"/>
+    <dmn:literalExpression id="_jEuslvUUEeesLuP4RHs4vA">
+      <dmn:text>time(date and time("2017-08-10T10:20:00-01:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusq_UUEeesLuP4RHs4vA" name="feel-time-function_039_5b65992f0d">
+    <dmn:description>Tests FEEL expression: 'time(11, 59, 45, duration("PT0H"))' and expects result: '11:59:45Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(11, 59, 45, duration("PT0H"))'?</dmn:question>
+    <dmn:allowedAnswers>11:59:45Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusrPUUEeesLuP4RHs4vA" name="feel-time-function_039_5b65992f0d" typeRef="ns1:tfeel-time-function_039_5b65992f0d_Result"/>
+    <dmn:literalExpression id="_jEusqvUUEeesLuP4RHs4vA">
+      <dmn:text>time(11, 59, 45, duration("PT0H"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusy_UUEeesLuP4RHs4vA" name="feel-time-function_047_33cd7b9b15">
+    <dmn:description>Tests FEEL expression: 'string(time(11, 59, 45, duration("-PT2H45M55S")))' and expects result: '"11:59:45-02:45:55" (string)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'string(time(11, 59, 45, duration("-PT2H45M55S")))'?</dmn:question>
+    <dmn:allowedAnswers>"11:59:45-02:45:55" (string)</dmn:allowedAnswers>
+    <dmn:variable id="_jEuszPUUEeesLuP4RHs4vA" name="feel-time-function_047_33cd7b9b15" typeRef="ns1:tfeel-time-function_047_33cd7b9b15_Result"/>
+    <dmn:literalExpression id="_jEusyvUUEeesLuP4RHs4vA">
+      <dmn:text>string(time(11, 59, 45, duration("-PT2H45M55S")))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32AfUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_059_c7e1705fe1">
+    <dmn:description>Tests FEEL expression: 'time("24:01:00")' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("24:01:00")'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32AvUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_059_c7e1705fe1" typeRef="ns1:tfeel-time-function_059_c7e1705fe1_Result"/>
+    <dmn:literalExpression id="_jE32APUUEeesLuP4RHs4vA">
+      <dmn:text>time("24:01:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusd_UUEeesLuP4RHs4vA" name="feel-time-function_026_c5208af118">
+    <dmn:description>Tests FEEL expression: 'time("11:22:33-00:00")' and expects result: '11:22:33Z (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("11:22:33-00:00")'?</dmn:question>
+    <dmn:allowedAnswers>11:22:33Z (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusePUUEeesLuP4RHs4vA" name="feel-time-function_026_c5208af118" typeRef="ns1:tfeel-time-function_026_c5208af118_Result"/>
+    <dmn:literalExpression id="_jEusdvUUEeesLuP4RHs4vA">
+      <dmn:text>time("11:22:33-00:00")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEus5_UUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_054_fdc3094237">
+    <dmn:description>Tests FEEL expression: 'time(2017)' and expects result: 'null (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(2017)'?</dmn:question>
+    <dmn:allowedAnswers>null (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEus6PUUEeesLuP4RHs4vA" name="feel-time-function_ErrorCase_054_fdc3094237" typeRef="ns1:tfeel-time-function_054_fdc3094237_Result"/>
+    <dmn:literalExpression id="_jEus5vUUEeesLuP4RHs4vA">
+      <dmn:text>time(2017)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jE32VfUUEeesLuP4RHs4vA" name="feel-time-function_080_2bbb8c86af">
+    <dmn:description>Tests FEEL expression: 'time(from:date and time("2012-12-24T23:59:00"))' and expects result: '23:59:00 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time(from:date and time("2012-12-24T23:59:00"))'?</dmn:question>
+    <dmn:allowedAnswers>23:59:00 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jE32VvUUEeesLuP4RHs4vA" name="feel-time-function_080_2bbb8c86af" typeRef="ns1:tfeel-time-function_080_2bbb8c86af_Result"/>
+    <dmn:literalExpression id="_jE32VPUUEeesLuP4RHs4vA">
+      <dmn:text>time(from:date and time("2012-12-24T23:59:00"))</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_jEusW_UUEeesLuP4RHs4vA" name="feel-time-function_019_879be89d63">
+    <dmn:description>Tests FEEL expression: 'time("11:22:33.444")' and expects result: '11:22:33.444 (time)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'time("11:22:33.444")'?</dmn:question>
+    <dmn:allowedAnswers>11:22:33.444 (time)</dmn:allowedAnswers>
+    <dmn:variable id="_jEusXPUUEeesLuP4RHs4vA" name="feel-time-function_019_879be89d63" typeRef="ns1:tfeel-time-function_019_879be89d63_Result"/>
+    <dmn:literalExpression id="_jEusWvUUEeesLuP4RHs4vA">
+      <dmn:text>time("11:22:33.444")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_jEk7EPUUEeesLuP4RHs4vA_D2" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_jEuskvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32PPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusNvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusuvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusavUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusXvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEustvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32FPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32QPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus0vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusEvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32OPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusvvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32YPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32HPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusLvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusMvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEussvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusbvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32XPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32GPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusYvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusjvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusPvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusrvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusKvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEuscvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32WPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusmvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusxvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusVvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus9vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32JPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32MPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus1vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32RPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusSvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusFvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32EPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEushvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusfvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusIvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32KPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEuspvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusRvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus6vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusgvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32BPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEuszvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32UPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus4vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusevUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusQvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusovUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32LPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusnvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus7vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusHvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus3vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32TPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32CPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusUvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32DPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusZvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEuswvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32IPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus8vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32NPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusGvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusTvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32SPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusivUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus2vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusJvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusOvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEuslvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusqvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusyvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32APUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusdvUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEus5vUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jE32VPUUEeesLuP4RHs4vA"/>
+          <kie:ComponentWidths dmnElementRef="_jEusWvUUEeesLuP4RHs4vA"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusk_UUEeesLuP4RHs4vA" dmnElementRef="_jEusk_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32PfUUEeesLuP4RHs4vA" dmnElementRef="_jE32PfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusN_UUEeesLuP4RHs4vA" dmnElementRef="_jEusN_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusu_UUEeesLuP4RHs4vA" dmnElementRef="_jEusu_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusa_UUEeesLuP4RHs4vA" dmnElementRef="_jEusa_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusX_UUEeesLuP4RHs4vA" dmnElementRef="_jEusX_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEust_UUEeesLuP4RHs4vA" dmnElementRef="_jEust_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32FfUUEeesLuP4RHs4vA" dmnElementRef="_jE32FfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="106" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32QfUUEeesLuP4RHs4vA" dmnElementRef="_jE32QfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus0_UUEeesLuP4RHs4vA" dmnElementRef="_jEus0_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusEPUUEeesLuP4RHs4vA" dmnElementRef="_jEusEPUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="303" y="292" width="100" height="69"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusE_UUEeesLuP4RHs4vA" dmnElementRef="_jEusE_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32OfUUEeesLuP4RHs4vA" dmnElementRef="_jE32OfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusv_UUEeesLuP4RHs4vA" dmnElementRef="_jEusv_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32YfUUEeesLuP4RHs4vA" dmnElementRef="_jE32YfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32HfUUEeesLuP4RHs4vA" dmnElementRef="_jE32HfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="276" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusL_UUEeesLuP4RHs4vA" dmnElementRef="_jEusL_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusM_UUEeesLuP4RHs4vA" dmnElementRef="_jEusM_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEuss_UUEeesLuP4RHs4vA" dmnElementRef="_jEuss_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusb_UUEeesLuP4RHs4vA" dmnElementRef="_jEusb_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32XfUUEeesLuP4RHs4vA" dmnElementRef="_jE32XfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32GfUUEeesLuP4RHs4vA" dmnElementRef="_jE32GfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusY_UUEeesLuP4RHs4vA" dmnElementRef="_jEusY_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusj_UUEeesLuP4RHs4vA" dmnElementRef="_jEusj_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="446" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusP_UUEeesLuP4RHs4vA" dmnElementRef="_jEusP_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusr_UUEeesLuP4RHs4vA" dmnElementRef="_jEusr_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusK_UUEeesLuP4RHs4vA" dmnElementRef="_jEusK_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusc_UUEeesLuP4RHs4vA" dmnElementRef="_jEusc_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32WfUUEeesLuP4RHs4vA" dmnElementRef="_jE32WfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusm_UUEeesLuP4RHs4vA" dmnElementRef="_jEusm_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusx_UUEeesLuP4RHs4vA" dmnElementRef="_jEusx_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusV_UUEeesLuP4RHs4vA" dmnElementRef="_jEusV_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="616" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus9_UUEeesLuP4RHs4vA" dmnElementRef="_jEus9_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32JfUUEeesLuP4RHs4vA" dmnElementRef="_jE32JfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32MfUUEeesLuP4RHs4vA" dmnElementRef="_jE32MfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus1_UUEeesLuP4RHs4vA" dmnElementRef="_jEus1_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32RfUUEeesLuP4RHs4vA" dmnElementRef="_jE32RfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusS_UUEeesLuP4RHs4vA" dmnElementRef="_jEusS_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusF_UUEeesLuP4RHs4vA" dmnElementRef="_jEusF_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32EfUUEeesLuP4RHs4vA" dmnElementRef="_jE32EfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="786" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEush_UUEeesLuP4RHs4vA" dmnElementRef="_jEush_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusf_UUEeesLuP4RHs4vA" dmnElementRef="_jEusf_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusI_UUEeesLuP4RHs4vA" dmnElementRef="_jEusI_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32KfUUEeesLuP4RHs4vA" dmnElementRef="_jE32KfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusp_UUEeesLuP4RHs4vA" dmnElementRef="_jEusp_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusR_UUEeesLuP4RHs4vA" dmnElementRef="_jEusR_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus6_UUEeesLuP4RHs4vA" dmnElementRef="_jEus6_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusg_UUEeesLuP4RHs4vA" dmnElementRef="_jEusg_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="956" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32BfUUEeesLuP4RHs4vA" dmnElementRef="_jE32BfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusz_UUEeesLuP4RHs4vA" dmnElementRef="_jEusz_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32UfUUEeesLuP4RHs4vA" dmnElementRef="_jE32UfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus4_UUEeesLuP4RHs4vA" dmnElementRef="_jEus4_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEuse_UUEeesLuP4RHs4vA" dmnElementRef="_jEuse_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusQ_UUEeesLuP4RHs4vA" dmnElementRef="_jEusQ_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEuso_UUEeesLuP4RHs4vA" dmnElementRef="_jEuso_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32LfUUEeesLuP4RHs4vA" dmnElementRef="_jE32LfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1126" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusn_UUEeesLuP4RHs4vA" dmnElementRef="_jEusn_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus7_UUEeesLuP4RHs4vA" dmnElementRef="_jEus7_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusH_UUEeesLuP4RHs4vA" dmnElementRef="_jEusH_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus3_UUEeesLuP4RHs4vA" dmnElementRef="_jEus3_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32TfUUEeesLuP4RHs4vA" dmnElementRef="_jE32TfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32CfUUEeesLuP4RHs4vA" dmnElementRef="_jE32CfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusU_UUEeesLuP4RHs4vA" dmnElementRef="_jEusU_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32DfUUEeesLuP4RHs4vA" dmnElementRef="_jE32DfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1296" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusZ_UUEeesLuP4RHs4vA" dmnElementRef="_jEusZ_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusw_UUEeesLuP4RHs4vA" dmnElementRef="_jEusw_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32IfUUEeesLuP4RHs4vA" dmnElementRef="_jE32IfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus8_UUEeesLuP4RHs4vA" dmnElementRef="_jEus8_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32NfUUEeesLuP4RHs4vA" dmnElementRef="_jE32NfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusG_UUEeesLuP4RHs4vA" dmnElementRef="_jEusG_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusT_UUEeesLuP4RHs4vA" dmnElementRef="_jEusT_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32SfUUEeesLuP4RHs4vA" dmnElementRef="_jE32SfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1466" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusi_UUEeesLuP4RHs4vA" dmnElementRef="_jEusi_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus2_UUEeesLuP4RHs4vA" dmnElementRef="_jEus2_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusJ_UUEeesLuP4RHs4vA" dmnElementRef="_jEusJ_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusO_UUEeesLuP4RHs4vA" dmnElementRef="_jEusO_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusl_UUEeesLuP4RHs4vA" dmnElementRef="_jEusl_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="486" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusq_UUEeesLuP4RHs4vA" dmnElementRef="_jEusq_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="579" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusy_UUEeesLuP4RHs4vA" dmnElementRef="_jEusy_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="672" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32AfUUEeesLuP4RHs4vA" dmnElementRef="_jE32AfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1636" y="765" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusd_UUEeesLuP4RHs4vA" dmnElementRef="_jEusd_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1806" y="106" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEus5_UUEeesLuP4RHs4vA" dmnElementRef="_jEus5_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1806" y="199" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jE32VfUUEeesLuP4RHs4vA" dmnElementRef="_jE32VfUUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1806" y="296" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_jEusW_UUEeesLuP4RHs4vA" dmnElementRef="_jEusW_UUEeesLuP4RHs4vA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1806" y="393" width="154" height="61"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

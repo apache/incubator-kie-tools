@@ -1,0 +1,196 @@
+<?xml version="1.0" ?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="http://www.montera.com.au/spec/DMN/0067-feel-split-function" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" id="_i9fboPUUEeesLuP4RHs4vA" name="0067-feel-split-function" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="http://www.montera.com.au/spec/DMN/0067-feel-split-function">
+  <dmn:description>FEEL built-in function 'split(string,delimiter)' in category string functions</dmn:description>
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_E67BA0A1-905F-40F8-8538-237521A5A381" name="tStringList" isCollection="true">
+    <dmn:typeRef>string</dmn:typeRef>
+  </dmn:itemDefinition>
+  <dmn:decision id="_decision001" name="decision001">
+    <dmn:description>Tests FEEL expression: 'split("John Doe", "s")' and expects result: '["John", "Doe"] (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split("John Doe", "s")'?</dmn:question>
+    <dmn:allowedAnswers>["John", "Doe"] (list)</dmn:allowedAnswers>
+    <dmn:variable id="_4F22DA7B-352B-4D52-B676-B37EB4D8734E" name="decision001" typeRef="tStringList"/>
+    <dmn:literalExpression id="_87B41DB4-DEC9-42D8-A5A4-81E7CA4DF841">
+      <dmn:text>split("John Doe", "s")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision001_a" name="decision001_a">
+    <dmn:description>Tests FEEL expression: 'split("a;b;c;;", ";")' and expects result: '["a", "b", "c", "", ""] (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split(10, -4)'?</dmn:question>
+    <dmn:allowedAnswers>["a", "b", "c", "", ""]</dmn:allowedAnswers>
+    <dmn:variable id="_710BAC62-2CDC-49BF-9D80-19755161116D" name="decision001_a" typeRef="tStringList"/>
+    <dmn:literalExpression id="_D1465F8F-C2A3-4384-9C16-C5298DDF3A54">
+      <dmn:text>split("a;b;c;;", ";")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision004" name="decision004">
+    <dmn:description>Tests FEEL expression: 'split()' and expects result: 'null (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split()'?</dmn:question>
+    <dmn:allowedAnswers>null (list)</dmn:allowedAnswers>
+    <dmn:variable id="_27524480-1D96-4A94-83B0-ACEBE4D6669F" name="decision004" typeRef="tStringList"/>
+    <dmn:literalExpression id="_6FD10106-AFAA-4C1D-A972-2E6239D21733">
+      <dmn:text>split()</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision005" name="decision005">
+    <dmn:description>Tests FEEL expression: 'split("foo")' and expects result: 'null (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split("foo")'?</dmn:question>
+    <dmn:allowedAnswers>null (list)</dmn:allowedAnswers>
+    <dmn:variable id="_656824C5-D5FB-41CD-B887-55A161A48284" name="decision005" typeRef="tStringList"/>
+    <dmn:literalExpression id="_D61367A4-DD41-4CA3-AA6E-62865F3BEF5A">
+      <dmn:text>split("foo")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision006" name="decision006">
+    <dmn:description>Tests FEEL expression: 'split(delimiter: ",", string:"foo,bar")' and expects result: '["foo", "bar"] (lost)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split(delimiter: ",", string:"foo,bar")'?</dmn:question>
+    <dmn:allowedAnswers>2 (list)</dmn:allowedAnswers>
+    <dmn:variable id="_9EFD7468-BC20-49B5-9319-AFBC9BC92B9A" name="decision006" typeRef="tStringList"/>
+    <dmn:literalExpression id="_505CEA77-AD8B-4108-B5B2-FDA60656F1BC">
+      <dmn:text>split(delimiter: ",", string:"foo,bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision007" name="decision007">
+    <dmn:description>Tests FEEL expression: 'split(delimiter: ",", str:"foo,bar")' and expects result: 'null (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split(delimiter: ",", str:"foo,bar")'?</dmn:question>
+    <dmn:allowedAnswers>null (list)</dmn:allowedAnswers>
+    <dmn:variable id="_062DEC38-D8BF-4683-9B06-FE172E396600" name="decision007" typeRef="tStringList"/>
+    <dmn:literalExpression id="_8EC03DE3-0A10-410B-8CD1-39134B4FD2D1">
+      <dmn:text>split(delimiter: ",", str:"foo,bar")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision008" name="decision008">
+    <dmn:description>Tests FEEL expression: 'split(null, null)' and expects result: 'null (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split(null, null)'?</dmn:question>
+    <dmn:allowedAnswers>null (list)</dmn:allowedAnswers>
+    <dmn:variable id="_F8C3768D-B1BC-4460-B1AD-07929E74BCD7" name="decision008" typeRef="tStringList"/>
+    <dmn:literalExpression id="_98208D81-A8D5-46B9-9398-CE8B78F57842">
+      <dmn:text>split(null, null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision008_a" name="decision008_a">
+    <dmn:description>Tests FEEL expression: 'split("foo", null)' and expects result: 'null (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split("foo", null)'?</dmn:question>
+    <dmn:allowedAnswers>null (list)</dmn:allowedAnswers>
+    <dmn:variable id="_4E144BE2-B108-4888-9B4A-25A602F8C8DC" name="decision008_a" typeRef="tStringList"/>
+    <dmn:literalExpression id="_887FB1CC-F6DD-4A66-8A81-B33F2B01E23B">
+      <dmn:text>split("foo", null)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decision id="_decision008_b" name="decision008_b">
+    <dmn:description>Tests FEEL expression: 'split(null, ",")' and expects result: 'null (list)'</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:question>Result of FEEL expression 'split(null, ",")'?</dmn:question>
+    <dmn:allowedAnswers>null (list)</dmn:allowedAnswers>
+    <dmn:variable id="_9B1D1CA2-9F64-4544-BF27-FBDC40B4985B" name="decision008_b" typeRef="tStringList"/>
+    <dmn:literalExpression id="_5A382FD4-A31B-4E7E-8D28-8F450017E02A">
+      <dmn:text>split(null, ",")</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_5E104BCB-7573-471D-9537-6DF2CCB86E15" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_87B41DB4-DEC9-42D8-A5A4-81E7CA4DF841"/>
+          <kie:ComponentWidths dmnElementRef="_D1465F8F-C2A3-4384-9C16-C5298DDF3A54"/>
+          <kie:ComponentWidths dmnElementRef="_6FD10106-AFAA-4C1D-A972-2E6239D21733"/>
+          <kie:ComponentWidths dmnElementRef="_D61367A4-DD41-4CA3-AA6E-62865F3BEF5A"/>
+          <kie:ComponentWidths dmnElementRef="_505CEA77-AD8B-4108-B5B2-FDA60656F1BC"/>
+          <kie:ComponentWidths dmnElementRef="_8EC03DE3-0A10-410B-8CD1-39134B4FD2D1"/>
+          <kie:ComponentWidths dmnElementRef="_98208D81-A8D5-46B9-9398-CE8B78F57842"/>
+          <kie:ComponentWidths dmnElementRef="_887FB1CC-F6DD-4A66-8A81-B33F2B01E23B"/>
+          <kie:ComponentWidths dmnElementRef="_5A382FD4-A31B-4E7E-8D28-8F450017E02A"/>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_decision001" dmnElementRef="_decision001" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="50" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision001_a" dmnElementRef="_decision001_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="225" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision004" dmnElementRef="_decision004" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="400" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision005" dmnElementRef="_decision005" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="575" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision006" dmnElementRef="_decision006" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="750" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision007" dmnElementRef="_decision007" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="925" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision008" dmnElementRef="_decision008" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1100" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision008_a" dmnElementRef="_decision008_a" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1275" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_decision008_b" dmnElementRef="_decision008_b" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="1450" y="50" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

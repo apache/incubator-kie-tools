@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions namespace="https://github.com/dmn-tck/tck" name="feel-constants" id="_feel-constants" xmlns="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:triso="http://www.trisotech.com/2015/triso/modeling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <decision name="Decision1" id="d_Decision1">
+        <variable typeRef="string" name="Decision1"/>
+        <literalExpression>
+            <text>"foo bar"</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision2" id="d_Decision2">
+        <variable typeRef="string" name="Decision2"/>
+        <literalExpression>
+            <text>"šomeÚnicodeŠtriňg"</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision3" id="d_Decision3">
+        <variable typeRef="string" name="Decision3"/>
+        <literalExpression>
+            <text>"横綱"</text>
+        </literalExpression>
+    </decision>
+    <decision name="Decision4" id="d_Decision4">
+        <variable typeRef="string" name="Decision4"/>
+        <literalExpression>
+            <text>"thisIsSomeLongStringThatMustBeProcessedSoHopefullyThisTestPassWithItAndIMustWriteSomethingMoreSoItIsLongerAndLongerAndLongerAndLongerAndLongerTillItIsReallyLong"</text>
+        </literalExpression>
+    </decision>
+    <dmndi:DMNDI>
+        <dmndi:DMNDiagram name="Page 1" id="_feel-constants_D2">
+            <dmndi:DMNShape dmnElementRef="d_Decision3" id="_feel-constants_s1">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="106.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_Decision4" id="_feel-constants_s2">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="199.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_Decision1" id="_feel-constants_s3">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="292.0"/>
+            </dmndi:DMNShape>
+            <dmndi:DMNShape dmnElementRef="d_Decision2" id="_feel-constants_s4">
+                <dc:Bounds height="61.0" width="154.0" x="106.0" y="385.0"/>
+            </dmndi:DMNShape>
+        </dmndi:DMNDiagram>
+    </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,781 @@
+/*
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+    ******************
+    BPMN shape styles.
+    ******************
+ */
+#gateway-background,
+#gateway-type #gateway,
+#gateway-subtypes #complex,
+#gateway-subtypes #event,
+#gateway-subtypes #exclusive,
+#gateway-subtypes #inclusive,
+#gateway-subtypes #parallel,
+#gateway-subtypes #parallel-event {
+  opacity: 0;
+  display: inline;
+}
+
+#parallelMultipleGateway #gateway-background {
+  opacity: 1;
+  fill: #fef4ea;
+}
+#parallelMultipleGateway #gateway {
+  opacity: 1;
+  fill: #ec7a08;
+}
+#parallelMultipleGateway #parallel {
+  opacity: 1;
+  fill: #ec7a08;
+}
+
+#exclusiveGateway #gateway-background {
+  opacity: 1;
+  fill: #fef4ea;
+  filter: none;
+}
+
+#exclusiveGateway #gateway {
+  opacity: 1;
+  fill: #ec7a08;
+}
+#exclusiveGateway #exclusive {
+  opacity: 1;
+  fill: #ec7a08;
+}
+
+#inclusiveGateway #gateway-background {
+  opacity: 1;
+  fill: #fef4ea;
+}
+#inclusiveGateway #gateway {
+  opacity: 1;
+  fill: #ec7a08;
+}
+#inclusiveGateway #inclusive {
+  opacity: 1;
+  fill: #ec7a08;
+}
+
+#eventGateway #gateway-background {
+  opacity: 1;
+  fill: #fef4ea;
+}
+#eventGateway #gateway {
+  opacity: 1;
+  fill: #ec7a08;
+}
+#eventGateway #event {
+  opacity: 1;
+  fill: #ec7a08;
+}
+
+.lane_background {
+  fill: #f2f2f2;
+}
+
+.lane_border {
+  stroke: #000000;
+  stroke-width: 0.5px;
+}
+
+.text_annotation_main {
+  fill: none;
+  stroke: #000000;
+  stroke-miterlimit: 10;
+}
+.text_annotation_background {
+  fill: none;
+  stroke: #000000;
+  stroke-opacity: 0;
+}
+
+.task_border {
+  stroke: black;
+  stroke-width: 1.5px;
+}
+
+.task_background {
+  fill: white;
+  stroke: none;
+}
+
+.annotation_group_data_object {
+  opacity: 1;
+}
+
+.annotation_data_object_icon {
+  opacity: 1;
+  fill: #000000;
+}
+
+.annotation_data_object_main {
+  fill: white;
+  stroke: #000000;
+  stroke-width: 7;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 1;
+  stroke-dasharray: 0;
+  stroke-opacity: 1;
+}
+
+.annotation_data_object_fold {
+  fill: white;
+  stroke: none;
+}
+
+.task_group_user {
+  opacity: 0;
+}
+
+.task_user_icon {
+  fill: #393f44;
+}
+
+.task_group_script {
+  opacity: 0;
+}
+
+.task_script_icon {
+  fill: #393f44;
+}
+
+.task_group_business_rule {
+  opacity: 0;
+}
+
+.task_group_service {
+  opacity: 0;
+}
+
+.task_group_generic_service {
+  opacity: 0;
+}
+
+.task_generic_service_icon {
+  fill: #393f44;
+}
+
+.task_business_rule_icon {
+  fill: #393f44;
+}
+
+.task_multiple_instance_icon {
+  stroke: #000000;
+  fill: #000000;
+}
+
+#userTask .task_group_user {
+  opacity: 1;
+}
+
+#scriptTask .task_group_script {
+  opacity: 1;
+}
+
+#businessRuleTask .task_group_business_rule {
+  opacity: 1;
+}
+
+#serviceTask .task_group_service {
+  opacity: 1;
+}
+
+#genericServiceTask .task_group_generic_service {
+  opacity: 1;
+}
+
+#dataObject .annotation_group_data_object {
+  opacity: 1;
+}
+
+#event-background,
+#event-type #intermediate,
+#event-type #end,
+#event-type #end_1_,
+#event-type #start,
+#event-subtypes #cancel-throwing,
+#event-subtypes #cancel-catching,
+#event-subtypes #compensation-throwing,
+#event-subtypes #compensation-catching,
+#event-subtypes #conditional-catching,
+#event-subtypes #conditional-throwing,
+#event-subtypes #end,
+#event-subtypes #end_1_,
+#event-subtypes #error-throwing,
+#event-subtypes #error-catching,
+#event-subtypes #escalation-throwing,
+#event-subtypes #escalation-catching,
+#event-subtypes #link-throwing,
+#event-subtypes #link-catching,
+#event-subtypes #message-throwing,
+#event-subtypes #message-catching,
+#event-subtypes #multiple-throwing,
+#event-subtypes #multiple-catching,
+#event-subtypes #parallel-multiple-throwing,
+#event-subtypes #parallel-multiple-catching,
+#event-subtypes #signal-throwing,
+#event-subtypes #signal-catching,
+#event-subtypes #wait {
+  opacity: 0;
+}
+#startNoneEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startNoneEvent #start {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startSignalEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startSignalEvent #start {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #4aa241;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #4aa241;
+}
+#startSignalEvent #signal-catching {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startEscalationEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startEscalationEvent #start {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #4aa241;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #4aa241;
+}
+#startEscalationEvent #escalation-catching {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startMessageEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startMessageEvent #start {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #4aa241;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #4aa241;
+}
+#startMessageEvent #message-catching {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startTimerEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startTimerEvent #start {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #4aa241;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #4aa241;
+}
+#startTimerEvent #wait {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startErrorEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startErrorEvent #start {
+  opacity: 1;
+  fill: #4aa241;
+}
+#startErrorEvent #error-catching {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startConditionalEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startConditionalEvent #start {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #4aa241;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #4aa241;
+}
+#startConditionalEvent #conditional-catching {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#startCompensationEvent #event-background {
+  opacity: 1;
+  fill: #e8fae6;
+}
+#startCompensationEvent #start {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #4aa241;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #4aa241;
+}
+#startCompensationEvent #compensation-catching {
+  opacity: 1;
+  fill: #4aa241;
+}
+
+#intermediateTimerEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateTimerEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+#intermediateTimerEvent #wait {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateConditionalEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateConditionalEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+#intermediateConditionalEvent #conditional-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateSignalCatchingEvent #signal-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+#intermediateSignalCatchingEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateSignalCatchingEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+
+#intermediateLinkCatchingEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateLinkCatchingEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+#intermediateLinkCatchingEvent #link-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateEscalationCatchingEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateEscalationCatchingEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+#intermediateEscalationCatchingEvent #escalation-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateCompensationCatchingEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateCompensationCatchingEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+#intermediateCompensationCatchingEvent #compensation-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateMessageCatchingEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateMessageCatchingEvent #intermediate {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+#intermediateMessageCatchingEvent #message-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateErrorCatchingEvent #event-background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+#intermediateErrorCatchingEvent #intermediate {
+  opacity: 1;
+  fill: #e5a000;
+}
+#intermediateErrorCatchingEvent #error-catching {
+  opacity: 1;
+  fill: #e5a000;
+}
+
+#intermediateSignalThrowingEvent #event-background {
+  opacity: 1;
+  fill: #bedee1;
+}
+#intermediateSignalThrowingEvent #intermediate {
+  opacity: 1;
+  fill: #007a87;
+}
+#intermediateSignalThrowingEvent #signal-throwing {
+  opacity: 1;
+  fill: #007a87;
+}
+
+#intermediateLinkThrowingEvent #event-background {
+  opacity: 1;
+  fill: #bedee1;
+}
+#intermediateLinkThrowingEvent #intermediate {
+  opacity: 1;
+  fill: #007a87;
+}
+#intermediateLinkThrowingEvent #link-throwing {
+  opacity: 1;
+  fill: #007a87;
+}
+
+#intermediateEscalationThrowingEvent #event-background {
+  opacity: 1;
+  fill: #bedee1;
+}
+#intermediateEscalationThrowingEvent #intermediate {
+  opacity: 1;
+  fill: #007a87;
+}
+#intermediateEscalationThrowingEvent #escalation-throwing {
+  opacity: 1;
+  fill: #007a87;
+}
+
+#intermediateMessageThrowingEvent #event-background {
+  opacity: 1;
+  fill: #bedee1;
+}
+#intermediateMessageThrowingEvent #intermediate {
+  opacity: 1;
+  fill: #007a87;
+}
+#intermediateMessageThrowingEvent #message-throwing {
+  opacity: 1;
+  fill: #007a87;
+}
+
+#intermediateCompensationThrowingEvent #event-background {
+  opacity: 1;
+  fill: #bedee1;
+}
+#intermediateCompensationThrowingEvent #intermediate {
+  opacity: 1;
+  fill: #007a87;
+}
+#intermediateCompensationThrowingEvent #compensation-throwing {
+  opacity: 1;
+  fill: #007a87;
+}
+
+#endNoneEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endNoneEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+
+#endSignalEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endSignalEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+#endSignalEvent #signal-throwing {
+  opacity: 1;
+  fill: #a30000;
+}
+
+#endEscalationEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endEscalationEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+#endEscalationEvent #escalation-throwing {
+  opacity: 1;
+  fill: #a30000;
+}
+
+#endCompensationEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endCompensationEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+#endCompensationEvent #compensation-throwing {
+  opacity: 1;
+  fill: #a30000;
+}
+
+#endMessageEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endMessageEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+#endMessageEvent #message-throwing {
+  opacity: 1;
+  fill: #a30000;
+}
+
+#endTerminateEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endTerminateEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+#endTerminateEvent #end_1_ {
+  opacity: 1;
+  fill: #a30000;
+}
+
+#endErrorEvent #event-background {
+  opacity: 1;
+  fill: #fce7e7;
+}
+#endErrorEvent #end {
+  opacity: 1;
+  fill: #a30000;
+}
+#endErrorEvent #error-throwing {
+  opacity: 1;
+  fill: #a30000;
+}
+
+.subProcess_border {
+  stroke: #393f44; /*this affects the reusable, ad hoc, and embedded subprocesses*/
+  stroke-width: 1.5px; /*this affects the adhoc and embedded subprocesses but not the collapsed one*/
+}
+
+.subProcess_reusable_border {
+  stroke: #393f44;
+  stroke-width: 5px;
+}
+
+.subProcess_background {
+  fill: #ffffff; /*this affects only the reusable subprocess*/
+}
+
+.subProcess_group_reusable {
+  opacity: 0;
+}
+
+.subProcess_group_event {
+  opacity: 0;
+}
+
+.subProcess_reusable_icon {
+  fill: #393f44;
+}
+
+.subProcess_event_background {
+  opacity: 1;
+  fill: #fafafa;
+}
+
+.subProcess_event_border {
+  stroke-dasharray: 2, 2;
+  stroke-width: 2px;
+  stroke: #393f44;
+}
+
+.subProcess_event_icon {
+  display: none;
+}
+
+.subProcess_reusable_icon {
+  stroke: #000000;
+  fill: #000000;
+}
+
+.subProcess_group_adHoc {
+  opacity: 0;
+}
+
+.subProcess_adHoc_icon {
+  stroke: #000000;
+  fill: #000000;
+}
+
+.subProcess_group_multipleInstanceSubProcess_group {
+  opacity: 0;
+}
+
+.subProcess_multipleInstance_icon {
+  stroke: #000000;
+  fill: #000000;
+}
+
+/* this is the little box around the icon. */
+.subProcess_reusable_boundingbox {
+  fill: none;
+  stroke: #393f44;
+  stroke-width: 1.5px;
+}
+
+#reusableSubProcess .subProcess {
+  stroke-width: 3px; /* this is the whole outline */
+  stroke: #393f44;
+}
+
+#reusableSubProcess .subProcess_group_reusable {
+  opacity: 1;
+}
+
+#adHocSubProcess .subProcess {
+  fill: #fafafa;
+}
+
+#adHocSubProcess .subProcess_group_adHoc {
+  opacity: 1;
+}
+
+#multipleInstanceSubProcess .subProcess {
+  fill: #f2f2f2;
+}
+
+#multipleInstanceSubProcess .subProcess_group_multipleInstance {
+  opacity: 1;
+}
+
+#eventSubProcess .subProcess_group_event {
+  opacity: 1;
+}
+
+#eventSubProcess .subProcess {
+  fill: #fafafa;
+}
+
+#embeddedSubProcess .subProcess {
+  fill: #fafafa;
+}
+
+/*
+    *******************************
+    Global BPMN text styles.
+    *******************************
+ */
+#text {
+  opacity: 1;
+  font-family: Open Sans;
+  font-weight: normal;
+  font-size: 12px;
+  fill: #000000;
+  stroke: #393f44;
+  stroke-width: 0px;
+  text-align: left;
+  align: left;
+}
