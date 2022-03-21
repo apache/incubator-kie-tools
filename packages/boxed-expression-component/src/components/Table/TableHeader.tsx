@@ -319,7 +319,7 @@ const RenderResizableHeaderCell = ({
   const width = column.width || DEFAULT_MIN_WIDTH;
   const isColspan = (column.columns?.length ?? 0) > 0 || false;
   const columnKey = getColumnKey(column);
-  const isFocusable = /^_\w{8}-(\w{4}-){3}\w{12}$/.test(columnKey);
+  const isFocusable = /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey);
   const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
 
   const getCssClass = useCallback(() => {

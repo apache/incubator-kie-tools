@@ -257,6 +257,8 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
+  // FIXME: doesn't work with functionDefinition header cell of invocation expression
+
   const nestedTbody = currentEl.querySelector("table > tbody") as HTMLTableSectionElement;
 
   if (nestedTbody) {

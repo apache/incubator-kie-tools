@@ -435,6 +435,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
         } else if (key === "Escape") {
           focusParentCell(e.currentTarget);
         } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey) {
+          // FIXME: special keys like F5 opens popover //
           return focusInsideCell(e.currentTarget, key !== "Enter");
         }
       },

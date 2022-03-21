@@ -203,9 +203,7 @@
 .expression-container .table-component table thead tr th.counter-header-cell:focus {
   border: 2px solid #438cb1;
 }
-
-.expression-container .context-expression .table-component table thead tr th.data-header-cell:focus:before,
-.expression-container .relation-expression .table-component table thead tr th.data-header-cell:focus:before,
+.expression-container .table-component table thead tr th.data-header-cell:focus:before,
 .expression-container .decision-table-expression .table-component table thead tr th.output:focus:before {
   content: "";
   display: block;
