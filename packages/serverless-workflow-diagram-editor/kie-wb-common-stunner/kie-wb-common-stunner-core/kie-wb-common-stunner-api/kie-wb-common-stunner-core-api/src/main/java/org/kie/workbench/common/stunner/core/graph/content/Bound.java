@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.content;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
+@JsType
 public class Bound {
 
     public static Bound create(final double x,

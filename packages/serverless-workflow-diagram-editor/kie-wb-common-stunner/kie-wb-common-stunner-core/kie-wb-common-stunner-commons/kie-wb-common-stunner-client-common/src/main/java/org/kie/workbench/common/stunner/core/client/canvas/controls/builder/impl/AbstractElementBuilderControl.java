@@ -103,16 +103,21 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
         final Set<String> labels = Arrays.stream(clientDefinitionManager.adapters().forDefinition().getLabels(definition)).collect(Collectors.toSet());
         final RuleSet ruleSet = canvasHandler.getRuleSet();
 
-        // Check containment rules.
         if (null != parent) {
             final Set<String> parentLabels = parent.getLabels();
 
-            final RuleViolations dockingViolations =
-                    ruleManager.evaluate(ruleSet, RuleEvaluationContextBuilder.DomainContexts.docking(parentLabels, labels));
-            if (isValid(dockingViolations)) {
-                return ParentAssignment.DOCKING;
+            // Check docking rules, in case parent is not root.
+            String rootUUID = getRootUUID();
+            boolean isParentRoot = null != rootUUID && rootUUID.equals(parent.getUUID());
+            if (!isParentRoot) {
+                final RuleViolations dockingViolations =
+                        ruleManager.evaluate(ruleSet, RuleEvaluationContextBuilder.DomainContexts.docking(parentLabels, labels));
+                if (isValid(dockingViolations)) {
+                    return ParentAssignment.DOCKING;
+                }
             }
 
+            // Check containment rules.
             final RuleViolations containmentViolations =
                     ruleManager.evaluate(ruleSet, RuleEvaluationContextBuilder.DomainContexts.containment(parentLabels, labels));
             if (isValid(containmentViolations)) {
@@ -326,13 +331,17 @@ public abstract class AbstractElementBuilderControl extends AbstractCanvasHandle
     public Node<View<?>, Edge> getParent(final double _x,
                                          final double _y) {
         if (_x > -1 && _y > -1) {
-            final String rootUUID = canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
+            final String rootUUID = getRootUUID();
             graphBoundsIndexer.setRootUUID(rootUUID).build(canvasHandler.getDiagram().getGraph());
             final Node<View<?>, Edge> r = graphBoundsIndexer.getAt(_x,
                                                                    _y);
             return r;
         }
         return null;
+    }
+
+    private String getRootUUID() {
+        return canvasHandler.getDiagram().getMetadata().getCanvasRootUUID();
     }
 
     public Point2D getComputedChildCoordinates(final Node<View<?>, Edge> parent,

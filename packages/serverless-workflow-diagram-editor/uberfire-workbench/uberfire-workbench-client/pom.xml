@@ -19,7 +19,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>uberfire-workbench</artifactId>
     <version>0.0.0</version>
   </parent>
@@ -37,7 +37,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -58,11 +58,11 @@
       <artifactId>elemental2-promise</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
@@ -76,7 +76,7 @@
       <artifactId>elemental2-dom</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
     <dependency>

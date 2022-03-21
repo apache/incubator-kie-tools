@@ -41,13 +41,13 @@ public abstract class AbstractCanvasGraphCommand
      * The private instance of the graph command.
      * It's a private stateful command instance - will be used for undoing the operation on the graph.
      */
-    private Command<GraphCommandExecutionContext, RuleViolation> graphCommand;
+    protected Command<GraphCommandExecutionContext, RuleViolation> graphCommand;
 
     /**
      * The private instance of the canvas command.
      * It's a private stateful command instance - will be used for undoing the operation on the graph.
      */
-    private Command<AbstractCanvasHandler, CanvasViolation> canvasCommand;
+    protected Command<AbstractCanvasHandler, CanvasViolation> canvasCommand;
 
     /**
      * Creates a new command instance for the graph context.

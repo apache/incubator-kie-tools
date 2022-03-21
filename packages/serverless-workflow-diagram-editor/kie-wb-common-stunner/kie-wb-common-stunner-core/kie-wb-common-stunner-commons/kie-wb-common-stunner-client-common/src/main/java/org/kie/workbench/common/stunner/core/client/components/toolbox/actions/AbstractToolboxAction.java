@@ -28,8 +28,8 @@ public abstract class AbstractToolboxAction implements ToolboxAction<AbstractCan
         //Marker interface
     }
 
-    private final DefinitionUtils definitionUtils;
-    private final ClientTranslationService translationService;
+    protected final DefinitionUtils definitionUtils;
+    protected final ClientTranslationService translationService;
 
     protected AbstractToolboxAction(final DefinitionUtils definitionUtils,
                                     final ClientTranslationService translationService) {

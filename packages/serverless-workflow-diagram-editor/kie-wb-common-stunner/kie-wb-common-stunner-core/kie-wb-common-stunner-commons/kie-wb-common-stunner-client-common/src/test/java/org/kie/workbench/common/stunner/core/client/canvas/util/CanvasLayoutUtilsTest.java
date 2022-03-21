@@ -583,7 +583,7 @@ public class CanvasLayoutUtilsTest {
         final Point2D rootPos = new Point2D(xRootPosition, yRootPosition);
         final double nodeSizeHeight = 50.0d;
         final double nodeSizeWidth = 100.0d;
-        final Bounds bounds = Bounds.create();
+        final Bounds bounds = Bounds.createEmpty();
         bounds.setUpperLeft(Bound.create(0, 0));
         bounds.setLowerRight(Bound.create(nodeSizeWidth, nodeSizeHeight));
         node.setContent(new ViewImpl<>(new EdgeImpl("uuid"), bounds));
@@ -929,7 +929,7 @@ public class CanvasLayoutUtilsTest {
     private Node<View<?>, Edge> createNodeWithSize(final double width, final double height) {
 
         final Node<View<?>, Edge> node = new NodeImpl<>(UUID.randomUUID().toString());
-        final Bounds bounds = Bounds.create();
+        final Bounds bounds = Bounds.createEmpty();
         bounds.setUpperLeft(Bound.create(0, 0));
         bounds.setLowerRight(Bound.create(width, height));
         final ViewImpl<EdgeImpl> viewImpl = new ViewImpl<>(new EdgeImpl("uuid"), bounds);

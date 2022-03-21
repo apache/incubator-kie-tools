@@ -18,6 +18,8 @@ package org.kie.workbench.common.stunner.core.graph.impl;
 
 import java.util.Objects;
 
+import jsinterop.annotations.JsIgnore;
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -28,8 +30,10 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
 @Portable
+@JsType
 public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
+    @JsIgnore
     private final GraphNodeStore<Node> nodeStore;
 
     public static <C> GraphImpl<C> build(final String uuid) {

@@ -134,10 +134,10 @@ public class NodeProxyTest {
         commandFactories = new ManagedInstanceStub<>(commandFactory);
         sourceNode = new NodeImpl<>("sourceNode");
         sourceNode.setContent(new ViewImpl<>(mock(Object.class),
-                                             Bounds.create()));
+                                             Bounds.createEmpty()));
         targetNode = new NodeImpl<>(TARGET_NODE_ID);
         targetNode.setContent(new ViewImpl<>(mock(Object.class),
-                                             Bounds.create()));
+                                             Bounds.createEmpty()));
         edge = new EdgeImpl<>(EDGE_ID);
         graph = new GraphImpl<>("graphUUID", new GraphNodeStoreImpl());
         graph.addNode(sourceNode);
@@ -187,7 +187,7 @@ public class NodeProxyTest {
     public void testCreateTargetNodeInSomeParent() {
         Node<View<?>, Edge> parentNode = new NodeImpl<>(PARENT_NODE_ID);
         parentNode.setContent(new ViewImpl<>(mock(Object.class),
-                                             Bounds.create()));
+                                             Bounds.createEmpty()));
         DirectGraphCommandExecutionContext context = new DirectGraphCommandExecutionContext(definitionManager,
                                                                                             factoryManager,
                                                                                             new MapIndexBuilder().build(graph));

@@ -20,7 +20,7 @@
     xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>uberfire-layout-editor</artifactId>
     <version>0.0.0</version>
   </parent>
@@ -33,12 +33,12 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
@@ -49,7 +49,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
     </dependency>
 
@@ -69,7 +69,7 @@
       <artifactId>cdi-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>

@@ -18,7 +18,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.kie.kogito.stunner.editors</groupId>
+  <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
   <artifactId>stunner-editors-parent</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
@@ -92,7 +92,6 @@
     <module>appformer-bom</module>
     <module>appformer-client-api</module>
     <module>appformer-kogito-bridge</module>
-    <module>appformer-js-monaco</module>
     <module>uberfire-api</module>
     <module>uberfire-client-api</module>
     <module>uberfire-workbench</module>
@@ -101,19 +100,15 @@
     <!-- KIE-WB-COMMON -->
     <module>kie-wb-common-bom</module>
     <module>kie-wb-common-widgets</module>
-    <module>kie-wb-common-forms</module>
     <module>kie-wb-common-stunner</module>
-    <module>kie-wb-common-dmn</module>
-    <module>kie-wb-common-kogito</module>
-
-    <!-- DROOLS-WB -->
-    <module>drools-wb-bom</module>
-    <module>drools-wb-screens</module>
 
     <!-- LIENZO -->
     <module>lienzo-core</module>
     <module>lienzo-tests</module>
     <module>lienzo-webapp</module>
+
+    <!-- SW-EDITOR -->
+    <module>sw-editor</module>
 
   </modules>
 
@@ -313,15 +308,6 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Common BOMs -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-bom</artifactId>
-        <version>${version.org.kie}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <!-- There is no official Selenium BOM, so we are using one maintained by Arquillian.
      (contains only pure Selenium deps, no ARQ deps are leaking from this BOM) -->
       <dependency>
@@ -334,7 +320,7 @@
 
       <!-- All errai's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>errai-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -343,7 +329,7 @@
 
       <!-- All appformer's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>appformer-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
@@ -352,17 +338,8 @@
 
       <!-- All kie-wb-common's modules and third-party versions are defined in this POM -->
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- All drools-wb's modules and third-party versions are defined in this POM -->
-      <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
-        <artifactId>drools-wb-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -370,23 +347,23 @@
 
       <!-- Lienzo artifacts for kogito stream -->
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-core</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
         <classifier>sources</classifier>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
       </dependency>
       <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${version.org.kie.kogito.lienzo}</version>
         <classifier>sources</classifier>
@@ -674,7 +651,6 @@
           <exclude>org/appformer/**/*.java</exclude>
           <exclude>org/uberfire/**/*.java</exclude>
           <exclude>org/kie/workbench/**/*.java</exclude>
-          <exclude>org/drools/workbench/**/*.java</exclude>
         </excludes>
       </resource>
       <resource>
@@ -1091,7 +1067,6 @@
                       <ignoreClass>javax.enterprise.*</ignoreClass>
 
                       <!-- TODO: Fix and remove these ignores -->
-                      <ignoreClass>org.kie.dmn.feel.*</ignoreClass>
                       <ignoreClass>org.dominokit.domino.logger.ConsoleLoggerAdapter</ignoreClass>
                       <ignoreClass>org.slf4j.*</ignoreClass>
                       <ignoreClass>org.antlr.v4.runtime.*</ignoreClass>
@@ -2187,11 +2162,6 @@
                               <exclude name="**/.errai/**/*.class"/>
                               <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
 
-                              <!--
-                                JaCoCo cannot add different classes with same name in the report, so
-                                removing it until KOGITO-4647 is done. -->
-                              <exclude name="**/kie-dmn-feel-gwt/target/classes/**/*.class"/>
-                              <!--
                                 TODO: there are multiple classes of the same fully qualified name in kie-server modules.
                                 They need to be renamed to enable coverage reporting for them.
                                 -->

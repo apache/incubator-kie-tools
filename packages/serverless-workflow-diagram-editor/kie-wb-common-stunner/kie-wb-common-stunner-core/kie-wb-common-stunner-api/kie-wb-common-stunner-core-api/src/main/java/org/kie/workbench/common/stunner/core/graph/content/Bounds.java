@@ -18,37 +18,35 @@ package org.kie.workbench.common.stunner.core.graph.content;
 
 import java.util.Objects;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.util.HashUtil;
 
 @Portable
+@JsType
 public class Bounds {
 
-    public static Bounds create() {
-        return create(0d, 0d, 0d, 0d);
-    }
-
     public static Bounds createEmpty() {
-        return create(null, null);
+        return create(0d, 0d, 0d, 0d);
     }
 
     public static Bounds createMinBounds(final double x1,
                                          final double y1) {
-        return create(Bound.create(x1, y1),
-                      null);
+        return createFromBounds(Bound.create(x1, y1),
+                                null);
     }
 
     public static Bounds create(final double x1,
                                 final double y1,
                                 final double x2,
                                 final double y2) {
-        return create(Bound.create(x1, y1),
-                      Bound.create(x2, y2));
+        return createFromBounds(Bound.create(x1, y1),
+                                Bound.create(x2, y2));
     }
 
-    public static Bounds create(final Bound xy0,
-                                final Bound xy1) {
+    public static Bounds createFromBounds(final Bound xy0,
+                                          final Bound xy1) {
         return new Bounds(xy0,
                           xy1);
     }

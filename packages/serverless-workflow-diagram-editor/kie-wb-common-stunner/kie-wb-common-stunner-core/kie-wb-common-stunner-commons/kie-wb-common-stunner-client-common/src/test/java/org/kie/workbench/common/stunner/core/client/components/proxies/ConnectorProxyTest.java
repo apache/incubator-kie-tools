@@ -103,7 +103,7 @@ public class ConnectorProxyTest {
         commandFactories = new ManagedInstanceStub<>(commandFactory);
         sourceNode = new NodeImpl<>("sourceNode");
         sourceNode.setContent(new ViewImpl<>(mock(Object.class),
-                                             Bounds.create()));
+                                             Bounds.createEmpty()));
         edge = new EdgeImpl<>(EDGE_ID);
         proxy = spy(new ElementProxy(commandManager, selectionEvent, commandFactories, definitionUtils, sessionManager));
         view = spy(new ElementProxyTest.ElementProxyViewMock<>());

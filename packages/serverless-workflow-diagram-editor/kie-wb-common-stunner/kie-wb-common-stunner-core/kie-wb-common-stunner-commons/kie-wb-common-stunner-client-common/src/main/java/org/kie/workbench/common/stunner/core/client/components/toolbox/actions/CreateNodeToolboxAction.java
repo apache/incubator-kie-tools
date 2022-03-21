@@ -104,6 +104,19 @@ public class CreateNodeToolboxAction
     }
 
     @Override
+    public String getTitle(final AbstractCanvasHandler canvasHandler,
+                           final String uuid) {
+        final String titleKey = getTitleKey(canvasHandler,
+                                            uuid);
+        final String titleDefinitionId = getTitleDefinitionId(canvasHandler,
+                                                              uuid);
+        // TODO: SW Editor - Customize title.
+        String nodeTitle = definitionUtils.getTitle(titleDefinitionId);
+        String edgeTitle = definitionUtils.getTitle(edgeId);
+        return translationService.getValue(titleKey) + " " + edgeTitle + " to " + nodeTitle;
+    }
+
+    @Override
     protected String getGlyphId(final AbstractCanvasHandler canvasHandler,
                                 final String uuid) {
         return nodeId;

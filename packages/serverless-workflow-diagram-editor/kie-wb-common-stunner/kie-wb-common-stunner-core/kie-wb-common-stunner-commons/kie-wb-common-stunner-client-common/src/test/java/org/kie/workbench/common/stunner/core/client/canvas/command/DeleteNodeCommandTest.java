@@ -105,7 +105,7 @@ public class DeleteNodeCommandTest {
     public void startNodeTestCanvasCommands() {
         this.tested = new DeleteNodeCommand(graphHolder.startNode);
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCompositedCommand();
         assertNotNull(compositeCommand);
         assertTrue(3 == compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
@@ -144,7 +144,7 @@ public class DeleteNodeCommandTest {
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
         assertEquals(CommandResult.Type.INFO, result.getType());
 
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCompositedCommand();
         assertNotNull(compositeCommand);
         assertEquals(7, compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
@@ -178,7 +178,7 @@ public class DeleteNodeCommandTest {
                                             options);
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
         assertEquals(CommandResult.Type.INFO, result.getType());
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCompositedCommand();
         assertNotNull(compositeCommand);
         assertEquals(6, compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();

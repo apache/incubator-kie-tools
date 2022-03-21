@@ -56,6 +56,10 @@ public class MorphNodeCommand extends AbstractCanvasGraphCommand {
                                           shapeSetId);
     }
 
+    public Node<? extends Definition<?>, Edge> getCandidate() {
+        return candidate;
+    }
+
     @Override
     public String toString() {
         return getClass().getSimpleName() +

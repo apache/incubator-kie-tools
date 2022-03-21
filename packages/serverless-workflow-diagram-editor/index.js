@@ -18,38 +18,14 @@ const nodePath = require("path");
 const nodeFs = require("fs");
 
 module.exports = {
-  dmnEditorPath: () => {
-    const path = nodePath.resolve(__dirname, "dist", "dmn");
+  swEditorPath: () => {
+    const path = nodePath.resolve(__dirname, "dist", "sw");
 
     if (!nodeFs.existsSync(path)) {
-      throw new Error(`Stunner Editors :: DMN Editor path doesn't exist: ${path}`);
+      throw new Error(`Serverless Workflow Editor :: Serverless Editor path doesn't exist: ${path}`);
     }
 
-    console.info(`Stunner Editors :: DMN Editor path: ${path}`);
-
-    return path;
-  },
-
-  bpmnEditorPath: () => {
-    const path = nodePath.resolve(__dirname, "dist", "bpmn");
-
-    if (!nodeFs.existsSync(path)) {
-      throw new Error(`Stunner Editors :: BPMN Editor path doesn't exist: ${path}`);
-    }
-
-    console.info(`Stunner Editors :: BPMN Editor path: ${path}`);
-
-    return path;
-  },
-
-  scesimEditorPath: () => {
-    const path = nodePath.resolve(__dirname, "dist", "scesim");
-
-    if (!nodeFs.existsSync(path)) {
-      throw new Error(`Stunner Editors :: SceSim Editor path doesn't exist: ${path}`);
-    }
-
-    console.info(`Stunner Editors :: SceSim Editor path: ${path}`);
+    console.info(`Serverless Workflow Editor :: Serverless Editor path: ${path}`);
 
     return path;
   },

@@ -104,12 +104,13 @@ public class FlowActionsToolboxFactory
                              targetConnectors.stream()
                                      .flatMap(defaultConnectorId -> {
                                          final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
-                                         final Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
-                                                                                              node,
-                                                                                              defaultConnectorId,
-                                                                                              definitionsAllowedFilter);
-                                         final Set<String> morphTargets = lookup.lookupMorphBaseDefinitions(targets);
-                                         return morphTargets.stream().map(defId -> newCreateNodeToolboxAction(qualifier)
+                                         Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
+                                                                                        node,
+                                                                                        defaultConnectorId,
+                                                                                        definitionsAllowedFilter);
+                                         // TODO: Disabled for SW PoC
+                                         // targets = lookup.lookupMorphBaseDefinitions(targets);
+                                         return targets.stream().map(defId -> newCreateNodeToolboxAction(qualifier)
                                                  .setEdgeId(defaultConnectorId)
                                                  .setNodeId(defId));
                                      }))

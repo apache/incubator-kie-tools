@@ -93,7 +93,7 @@ public abstract class AbstractCloneCommandTest extends AbstractGraphCommandTest 
 
     protected static final String CLONE_EDGE_UUID = UUID.uuid();
 
-    protected Bounds candidateBounds = Bounds.create();
+    protected Bounds candidateBounds = Bounds.createEmpty();
 
     public void setUp() {
         super.init();

@@ -21,7 +21,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>uberfire-widgets-core</artifactId>
     <version>0.0.0</version>
   </parent>
@@ -35,7 +35,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
 
@@ -48,7 +48,7 @@
 
     <!-- Errai Core -->
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>

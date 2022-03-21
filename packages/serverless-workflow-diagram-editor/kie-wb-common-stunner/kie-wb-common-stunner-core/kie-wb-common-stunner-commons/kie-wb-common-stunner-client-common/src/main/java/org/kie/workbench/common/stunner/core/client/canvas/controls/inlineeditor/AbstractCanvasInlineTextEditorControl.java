@@ -26,7 +26,6 @@ import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.DomGlobal;
 import org.jboss.errai.common.client.dom.HTMLElement;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.kie.workbench.common.forms.adf.definitions.DynamicReadOnly;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
@@ -52,7 +51,6 @@ import org.kie.workbench.common.stunner.core.client.shape.view.event.ViewEventTy
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -229,14 +227,14 @@ public abstract class AbstractCanvasInlineTextEditorControl
     }
 
     boolean allowOnlyVisualChanges(final Element element) {
-
-        if (element.getContent() instanceof Definition) {
+        // TODO
+        /*if (element.getContent() instanceof Definition) {
             final Definition definition = (Definition) element.getContent();
             if (definition.getDefinition() instanceof DynamicReadOnly) {
                 return ((DynamicReadOnly) definition.getDefinition()).isAllowOnlyVisualChange();
             }
-        }
-        return false;
+        }*/
+        return true;
     }
 
     @Override

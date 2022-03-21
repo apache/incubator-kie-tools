@@ -6,7 +6,7 @@
     <artifactId>errai-javax-enterprise</artifactId>
 
     <parent>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>stunner-editors-parent</artifactId>
         <version>0.0.0</version>
         <relativePath>../pom.xml</relativePath>
@@ -14,7 +14,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.kie.kogito.stunner.editors</groupId>
+            <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
             <artifactId>errai-codegen</artifactId>
         </dependency>
     </dependencies>

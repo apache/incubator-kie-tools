@@ -16,11 +16,13 @@
 
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
+import jsinterop.annotations.JsType;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 
 @Portable
+@JsType
 public final class ViewImpl<W> implements View<W> {
 
     protected W definition;

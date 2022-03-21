@@ -9,7 +9,7 @@
   <url>http://jboss.org/errai/errai</url>
 
   <parent>
-    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>stunner-editors-parent</artifactId>
     <version>0.0.0</version>
     <relativePath>../pom.xml</relativePath>

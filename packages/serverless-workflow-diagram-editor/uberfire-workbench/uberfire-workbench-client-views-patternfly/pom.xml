@@ -19,7 +19,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.kie.kogito.stunner.editors</groupId>
+    <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>uberfire-workbench</artifactId>
     <version>0.0.0</version>
   </parent>
@@ -37,7 +37,7 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -58,15 +58,15 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
     <dependency>
@@ -74,7 +74,7 @@
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-ui</artifactId>
       <exclusions>
         <exclusion>
@@ -84,11 +84,11 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
@@ -107,7 +107,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>errai-cdi-client</artifactId>
       <exclusions>
         <exclusion>
@@ -141,12 +141,6 @@
           <artifactId>jetty-annotations</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>appformer-js-monaco</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -268,27 +262,6 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
-          <execution>
-            <id>unpack-appformer-js-monaco</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.kie.kogito.stunner.editors</groupId>
-                  <artifactId>appformer-js-monaco</artifactId>
-                  <version>${project.version}</version>
-                  <type>jar</type>
-                  <overWrite>true</overWrite>
-                  <outputDirectory>${project.build.directory}/appformer-js-monaco</outputDirectory>
-                </artifactItem>
-              </artifactItems>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -384,24 +357,6 @@
                   <includes>
                     <include>daterangepicker.css</include>
                     <include>daterangepicker.js</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-monaco-resources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/uberfire/client/views/static/appformer-js-monaco/</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.build.directory}/appformer-js-monaco/META-INF/resources/webjars/appformer-js-monaco/${project.version}/monaco-editor</directory>
-                  <includes>
-                    <include>monaco.min.js</include>
                   </includes>
                 </resource>
               </resources>
