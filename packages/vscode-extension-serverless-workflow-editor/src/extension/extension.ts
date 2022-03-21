@@ -23,6 +23,8 @@ import * as vscode from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
 import { SwfVsCodeExtensionSettings } from "./settings";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
+import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
+import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -33,6 +35,10 @@ export function activate(context: vscode.ExtensionContext) {
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
   const settings = new SwfVsCodeExtensionSettings();
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
+  const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore(
+    rhhccAuthenticationStore,
+    settings
+  );
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
@@ -48,7 +54,11 @@ export function activate(context: vscode.ExtensionContext) {
         "dist/webview/editors/serverless-workflow"
       ),
     ]),
-    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({ settings, rhhccAuthenticationStore }),
+    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
+      settings,
+      rhhccAuthenticationStore,
+      rhhccServiceRegistryServiceCatalogStore,
+    }),
     backendProxy,
   });
 
@@ -59,21 +69,50 @@ export function activate(context: vscode.ExtensionContext) {
   );
 
   context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.swf.setupServiceRegistryUrl", async () => {
+      const serviceRegistryUrl = await askForServiceRegistryUrl({
+        currentValue: rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl,
+      });
+
+      if (!serviceRegistryUrl) {
+        return;
+      }
+
+      rhhccServiceRegistryServiceCatalogStore.setServiceRegistryUrl(serviceRegistryUrl);
+      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("extension.kogito.swf.removeServiceRegistryUrl", () => {
+      rhhccServiceRegistryServiceCatalogStore.setServiceRegistryUrl(undefined);
+      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL removed.", 3000);
+    })
+  );
+
+  context.subscriptions.push(
     vscode.authentication.onDidChangeSessions(async (e) => {
       if (e.provider.id === "redhat-mas-account-auth") {
-        await updateRhhccSession(rhhccAuthenticationStore);
+        await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
       }
     })
   );
 
-  updateRhhccSession(rhhccAuthenticationStore);
+  context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration("kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls")) {
+        return rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+    })
+  );
+
+  updateRhhccAuthenticationSession(rhhccAuthenticationStore);
 
   console.info("Extension is successfully setup.");
 }
 
-async function updateRhhccSession(rhhccAuthenticationStore: RhhccAuthenticationStore) {
-  const session = await vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]);
-  rhhccAuthenticationStore.setSession(session);
+async function updateRhhccAuthenticationSession(rhhccAuthenticationStore: RhhccAuthenticationStore) {
+  rhhccAuthenticationStore.setSession(await vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]));
 }
 
 export function deactivate() {

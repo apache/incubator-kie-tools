@@ -21,8 +21,8 @@ import {
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import * as vscode from "vscode";
+import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
@@ -45,11 +45,8 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    vscode.window.setStatusBarMessage(
-      "Serverless Workflow Editor: Refreshing Service Catalog using Service Registries from Red Hat Hybrid Cloud Console...",
-      3000
-    );
-    return this.args.swfServiceCatalogStore.refresh();
+    vscode.window.setStatusBarMessage("Serverless Workflow Editor: Refreshing...");
+    this.args.swfServiceCatalogStore.refresh().then(() => vscode.window.setStatusBarMessage(""));
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(importedFunction: SwfServiceCatalogFunction): void {

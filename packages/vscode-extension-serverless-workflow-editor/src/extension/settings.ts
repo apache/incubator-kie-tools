@@ -7,4 +7,8 @@ export class SwfVsCodeExtensionSettings {
       .getConfiguration()
       .get("kogito.sw.specsStoragePath", `${settingsTokenKeys["${fileDirname}"]}/specs`);
   }
+
+  public shouldReferenceServiceRegistryFunctionsWithUrls() {
+    return vscode.workspace.getConfiguration().get("kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls", false);
+  }
 }

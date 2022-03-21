@@ -13,12 +13,12 @@ export class RhhccAuthenticationStore {
     this.subscriptions.forEach((subscription) => subscription(session));
   }
 
-  public subscribe(subscription: (session: vscode.AuthenticationSession | undefined) => any) {
+  public subscribeToSessionChange(subscription: (session: vscode.AuthenticationSession | undefined) => any) {
     this.subscriptions.add(subscription);
     return subscription;
   }
 
-  public unsubscribe(subscription: (session: vscode.AuthenticationSession | undefined) => any) {
+  public unsubscribeToSessionChange(subscription: (session: vscode.AuthenticationSession | undefined) => any) {
     this.subscriptions.delete(subscription);
   }
 }

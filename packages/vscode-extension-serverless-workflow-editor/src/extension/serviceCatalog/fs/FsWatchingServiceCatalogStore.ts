@@ -18,46 +18,80 @@ import * as vscode from "vscode";
 import { Disposable, FileType } from "vscode";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfVsCodeExtensionSettings } from "../../settings";
+import { getInterpolateSettingsValue } from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
 export class FsWatchingServiceCatalogStore {
-  private onChangeCallback: (services: SwfServiceCatalogService[]) => Promise<any>;
+  private onChangeCallback: undefined | ((services: SwfServiceCatalogService[]) => Promise<any>);
+  private configurationChangedCallback: Disposable | undefined;
+  private fsWatcher: Disposable | undefined;
 
-  private readonly onDispose: () => void;
+  constructor(private readonly args: { baseFileAbsolutePath: string; settings: SwfVsCodeExtensionSettings }) {}
 
-  constructor(private readonly args: { baseFileAbsolutePath: string; specsDirAbsolutePath: string }) {
+  public init(args: { onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any> }) {
+    this.onChangeCallback = args.onNewServices;
+
+    const initialSpecsDirAbsolutePath = this.getConfiguredSpecsDirAbsolutePath();
+
+    this.fsWatcher = this.setupFsWatcher(initialSpecsDirAbsolutePath);
+    this.configurationChangedCallback = this.getConfigurationChangedCallback();
+
+    return this.refresh(initialSpecsDirAbsolutePath);
+  }
+
+  private getConfigurationChangedCallback() {
+    return vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (!e.affectsConfiguration("kogito.sw.specsStoragePath")) {
+        return;
+      }
+
+      const newSpecsDirAbsolutePath = this.getConfiguredSpecsDirAbsolutePath();
+      this.fsWatcher?.dispose();
+      this.fsWatcher = this.setupFsWatcher(newSpecsDirAbsolutePath);
+
+      return this.refresh(newSpecsDirAbsolutePath);
+    });
+  }
+
+  private getConfiguredSpecsDirAbsolutePath() {
+    return getInterpolateSettingsValue({
+      currentFileAbsolutePath: this.args.baseFileAbsolutePath,
+      value: this.args.settings.getSpecsDirPath(),
+    });
+  }
+
+  private setupFsWatcher(absolutePath: string): Disposable {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
-      `${args.specsDirAbsolutePath}/*.{json,yaml,yml}`,
+      `${absolutePath}/*.{json,yaml,yml}`,
       false,
       false,
       false
     );
 
-    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh());
-    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh());
-    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh());
+    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh(absolutePath));
+    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh(absolutePath));
+    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh(absolutePath));
 
-    this.onDispose = () => {
-      onDidCreate.dispose();
-      onDidChange.dispose();
-      onDidDelete.dispose();
-      fsWatcher.dispose();
+    return {
+      dispose: () => {
+        onDidCreate.dispose();
+        onDidChange.dispose();
+        onDidDelete.dispose();
+        fsWatcher.dispose();
+      },
     };
   }
 
-  public init(callback: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>) {
-    this.onChangeCallback = callback;
-    return this.refresh();
-  }
-
   public dispose(): void {
-    this.onDispose();
+    this.fsWatcher?.dispose();
+    this.configurationChangedCallback?.dispose();
   }
 
-  private async refresh() {
+  private async refresh(specsDirAbsolutePath: string) {
     try {
-      const services = await this.readFileSystemServices();
+      const services = await this.readFileSystemServices(specsDirAbsolutePath);
       return this.onChangeCallback?.(services);
     } catch (e) {
       console.error("Could not refresh SWF Service Catalog services", e);
@@ -65,18 +99,18 @@ export class FsWatchingServiceCatalogStore {
     }
   }
 
-  private readFileSystemServices(): Promise<SwfServiceCatalogService[]> {
+  private readFileSystemServices(specsDirAbsolutePath: string): Promise<SwfServiceCatalogService[]> {
     return new Promise<SwfServiceCatalogService[]>((resolve, reject) => {
       try {
-        const specsDirAbsolutePath = vscode.Uri.parse(this.args.specsDirAbsolutePath);
+        const specsDirAbsolutePathUri = vscode.Uri.parse(specsDirAbsolutePath);
 
-        vscode.workspace.fs.stat(specsDirAbsolutePath).then((stats) => {
+        vscode.workspace.fs.stat(specsDirAbsolutePathUri).then((stats) => {
           if (!stats || stats.type !== FileType.Directory) {
-            reject(`Invalid specs dir path: ${this.args.specsDirAbsolutePath}`);
+            reject(`Invalid specs dir path: ${specsDirAbsolutePath}`);
             return;
           }
 
-          vscode.workspace.fs.readDirectory(specsDirAbsolutePath).then((files) => {
+          vscode.workspace.fs.readDirectory(specsDirAbsolutePathUri).then((files) => {
             if (!files || files.length <= 0) {
               resolve([]);
               return;
@@ -89,8 +123,8 @@ export class FsWatchingServiceCatalogStore {
                 return;
               }
 
-              const fileUrl = specsDirAbsolutePath.with({ path: this.args.specsDirAbsolutePath + "/" + fileName }); // FIXME: windows?
-              promises.push(this.readServiceFile(fileUrl, fileName));
+              const fileUrl = specsDirAbsolutePathUri.with({ path: specsDirAbsolutePath + "/" + fileName }); // FIXME: windows?
+              promises.push(this.readServiceFile(fileUrl, fileName, specsDirAbsolutePath));
             });
 
             if (promises.length > 0) {
@@ -107,13 +141,13 @@ export class FsWatchingServiceCatalogStore {
     });
   }
 
-  private async readServiceFile(fileUrl: vscode.Uri, fileName: string) {
+  private async readServiceFile(fileUrl: vscode.Uri, fileName: string, specsDirAbsolutePath: string) {
     const rawData = await vscode.workspace.fs.readFile(fileUrl);
     try {
       return [
         parseOpenApi({
           baseFileAbsolutePath: this.args.baseFileAbsolutePath,
-          specsDirAbsolutePath: this.args.specsDirAbsolutePath,
+          specsDirAbsolutePath: specsDirAbsolutePath,
           serviceFileName: fileName,
           serviceFileContent: Buffer.from(rawData).toString("utf-8"),
         }),

@@ -14,35 +14,15 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogStore } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { FsWatchingServiceCatalogStore } from "./fs";
-import { getInterpolateSettingsValue } from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
-import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry";
+import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
+import * as vscode from "vscode";
 import { AuthenticationSession } from "vscode";
+import { askForServiceRegistryUrl } from "./rhhccServiceRegistry";
 
-export function getSwfServiceCatalogStore(args: {
-  currentFileAbsolutePath: string;
-  configuredSpecsDirPath: string;
-  rhhccAuthenticationStore: RhhccAuthenticationStore;
-}): SwfServiceCatalogStore {
-  const interpolatedSpecsDirAbsolutePath = getInterpolateSettingsValue({
-    currentFileAbsolutePath: args.currentFileAbsolutePath,
-    value: args.configuredSpecsDirPath,
-  });
-
-  return new CompositeServiceCatalogStore({
-    fsWatchingServiceCatalogStore: new FsWatchingServiceCatalogStore({
-      baseFileAbsolutePath: args.currentFileAbsolutePath,
-      specsDirAbsolutePath: interpolatedSpecsDirAbsolutePath,
-    }),
-    rhhccServiceRegistryServiceCatalogStore: new RhhccServiceRegistryServiceCatalogStore(args.rhhccAuthenticationStore),
-    rhhccAuthenticationStore: args.rhhccAuthenticationStore,
-  });
-}
-
-export class CompositeServiceCatalogStore implements SwfServiceCatalogStore {
+export class SwfServiceCatalogStore {
   private fsSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
   private rhhccServiceRegistriesSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
   private rhhccStoreSubscription: (session: AuthenticationSession | undefined) => void;
@@ -56,17 +36,35 @@ export class CompositeServiceCatalogStore implements SwfServiceCatalogStore {
   ) {}
 
   public async init(callback: (swfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>) {
-    await this.args.fsWatchingServiceCatalogStore.init((s) => {
-      this.fsSwfServiceCatalogServices = s;
-      return callback(this.getCombinedSwfServiceCatalogServices());
+    await this.args.fsWatchingServiceCatalogStore.init({
+      onNewServices: (s) => {
+        this.fsSwfServiceCatalogServices = s;
+        return callback(this.getCombinedSwfServiceCatalogServices());
+      },
     });
 
-    await this.args.rhhccServiceRegistryServiceCatalogStore.init((s) => {
-      this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
-      return callback(this.getCombinedSwfServiceCatalogServices());
+    await this.args.rhhccServiceRegistryServiceCatalogStore.init({
+      onNewServices: (s) => {
+        this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
+        return callback(this.getCombinedSwfServiceCatalogServices());
+      },
     });
 
-    this.rhhccStoreSubscription = this.args.rhhccAuthenticationStore.subscribe(() => {
+    this.rhhccStoreSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
+      if (!session) {
+        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+
+      if (this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl) {
+        return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+
+      const serviceRegistryUrl = await askForServiceRegistryUrl({
+        currentValue: this.args.rhhccServiceRegistryServiceCatalogStore.serviceRegistryUrl,
+      });
+
+      this.args.rhhccServiceRegistryServiceCatalogStore.setServiceRegistryUrl(serviceRegistryUrl);
+      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
       return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
     });
   }
@@ -82,6 +80,6 @@ export class CompositeServiceCatalogStore implements SwfServiceCatalogStore {
 
   public dispose() {
     this.args.fsWatchingServiceCatalogStore.dispose();
-    this.args.rhhccAuthenticationStore.unsubscribe(this.rhhccStoreSubscription);
+    this.args.rhhccAuthenticationStore.unsubscribeToSessionChange(this.rhhccStoreSubscription);
   }
 }

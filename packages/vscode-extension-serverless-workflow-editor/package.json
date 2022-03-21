@@ -96,6 +96,11 @@
           "type": "string",
           "default": "${fileDirname}/specs",
           "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
+        },
+        "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file."
         }
       }
     },
@@ -115,6 +120,14 @@
       {
         "command": "extension.kogito.swf.logInToRhhcc",
         "title": "Serverless Wokflow: Log in to Red Hat Hybrid Cloud Console"
+      },
+      {
+        "command": "extension.kogito.swf.setupServiceRegistryUrl",
+        "title": "Serverless Wokflow: Setup Service Registry URL"
+      },
+      {
+        "command": "extension.kogito.swf.removeServiceRegistryUrl",
+        "title": "Serverless Wokflow: Remove Service Registry URL"
       }
     ],
     "extensionDependencies": [

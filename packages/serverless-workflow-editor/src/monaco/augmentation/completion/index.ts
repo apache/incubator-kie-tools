@@ -55,9 +55,15 @@ const completions = new Map<
             type: swfServiceCatalogFunc.type,
           };
           return {
-            kind: monaco.languages.CompletionItemKind.Module,
+            kind:
+              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                ? monaco.languages.CompletionItemKind.Interface
+                : monaco.languages.CompletionItemKind.Reference,
             label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
-            detail: swfFunction.operation,
+            detail:
+              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                ? ""
+                : swfServiceCatalogFunc.operation,
             insertText: JSON.stringify(swfFunction, null, 2) + separator,
             insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
             range: overwriteRange,
@@ -278,7 +284,7 @@ function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalo
     case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
       return "fs: ";
     case SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY:
-      return `${swfServiceCatalogFunction.source.serviceId} `;
+      return `${swfServiceCatalogFunction.source.serviceId}: `;
     default:
       return "";
   }
