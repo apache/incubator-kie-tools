@@ -16,9 +16,43 @@ package v1
 
 import (
 	"github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
+
+// KogitoSupportingServiceSpec defines the desired state of KogitoSupportingService.
+// +k8s:openapi-gen=true
+type KogitoSupportingServiceSpec struct {
+	KogitoServiceSpec `json:",inline"`
+
+	// Defines the type for the supporting service, eg: DataIndex, JobsService
+	// Default value: JobsService
+	// +operator-sdk:csv:customresourcedefinitions:type=spec
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Service Type"
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Enum=DataIndex;Explainability;JobsService;MgmtConsole;TaskConsole;TrustyAI;TrustyUI
+	ServiceType api.ServiceType `json:"serviceType"`
+}
+
+// GetRuntime ...
+func (k *KogitoSupportingServiceSpec) GetRuntime() api.RuntimeType {
+	return api.QuarkusRuntimeType
+}
+
+// GetServiceType ...
+func (k *KogitoSupportingServiceSpec) GetServiceType() api.ServiceType {
+	return k.ServiceType
+}
+
+// SetServiceType ...
+func (k *KogitoSupportingServiceSpec) SetServiceType(serviceType api.ServiceType) {
+	k.ServiceType = serviceType
+}
+
+// KogitoSupportingServiceStatus defines the observed state of KogitoSupportingService.
+// +k8s:openapi-gen=true
+type KogitoSupportingServiceStatus struct {
+	KogitoServiceStatus `json:",inline"`
+}
 
 // +kubebuilder:object:root=true
 // +k8s:openapi-gen=true
@@ -40,8 +74,8 @@ type KogitoSupportingService struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   v1beta1.KogitoSupportingServiceSpec   `json:"spec,omitempty"`
-	Status v1beta1.KogitoSupportingServiceStatus `json:"status,omitempty"`
+	Spec   KogitoSupportingServiceSpec   `json:"spec,omitempty"`
+	Status KogitoSupportingServiceStatus `json:"status,omitempty"`
 }
 
 // GetSpec ...

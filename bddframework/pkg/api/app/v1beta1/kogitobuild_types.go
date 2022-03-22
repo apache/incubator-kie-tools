@@ -31,7 +31,6 @@ type KogitoBuildSpec struct {
 	// RemoteSource - pulls the source code from a Git repository, builds the binary and then the final Kogito service image.
 	//
 	// LocalSource - takes an uploaded resource file such as DRL (rules), DMN (decision) or BPMN (process), builds the binary and the final Kogito service image.
-	// +operator-sdk:csv:customresourcedefinitions:type=spec
 	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Build Type"
 	// +kubebuilder:validation:Enum=Binary;RemoteSource;LocalSource
 	Type api.KogitoBuildType `json:"type"`
@@ -54,6 +53,7 @@ type KogitoBuildSpec struct {
 	//
 	// Ignored for binary builds.
 	// +optional
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Kogito Git Source"
 	GitSource GitSource `json:"gitSource,omitempty"`
 
 	// Which runtime Kogito service base image to use when building the Kogito service.

@@ -16,9 +16,50 @@ package v1
 
 import (
 	"github.com/kiegroup/kogito-operator/apis"
-	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
+
+// KogitoRuntimeSpec defines the desired state of KogitoRuntime.
+type KogitoRuntimeSpec struct {
+	KogitoServiceSpec `json:",inline"`
+
+	// Annotates the pods managed by the operator with the required metadata for Istio to setup its sidecars, enabling the mesh. Defaults to false.
+	// +operator-sdk:csv:customresourcedefinitions:type=spec
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Enable Istio"
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,xDescriptors="urn:alm:descriptor:com.tectonic.ui:booleanSwitch"
+	EnableIstio bool `json:"enableIstio,omitempty"`
+
+	// The name of the runtime used, either Quarkus or SpringBoot.
+	//
+	// Default value: quarkus
+	// +operator-sdk:csv:customresourcedefinitions:type=spec
+	// +operator-sdk:csv:customresourcedefinitions:type=spec,displayName="Runtime"
+	// +kubebuilder:validation:Enum=quarkus;springboot
+	Runtime api.RuntimeType `json:"runtime,omitempty"`
+}
+
+// GetRuntime ...
+func (k *KogitoRuntimeSpec) GetRuntime() api.RuntimeType {
+	if len(k.Runtime) == 0 {
+		k.Runtime = api.QuarkusRuntimeType
+	}
+	return k.Runtime
+}
+
+// IsEnableIstio ...
+func (k *KogitoRuntimeSpec) IsEnableIstio() bool {
+	return k.EnableIstio
+}
+
+// SetEnableIstio ...
+func (k *KogitoRuntimeSpec) SetEnableIstio(enableIstio bool) {
+	k.EnableIstio = enableIstio
+}
+
+// KogitoRuntimeStatus defines the observed state of KogitoRuntime.
+type KogitoRuntimeStatus struct {
+	KogitoServiceStatus `json:",inline"`
+}
 
 // +kubebuilder:object:root=true
 // +k8s:openapi-gen=true
@@ -39,8 +80,8 @@ type KogitoRuntime struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
 
-	Spec   v1beta1.KogitoRuntimeSpec   `json:"spec,omitempty"`
-	Status v1beta1.KogitoRuntimeStatus `json:"status,omitempty"`
+	Spec   KogitoRuntimeSpec   `json:"spec,omitempty"`
+	Status KogitoRuntimeStatus `json:"status,omitempty"`
 }
 
 // GetRuntimeSpec ...
