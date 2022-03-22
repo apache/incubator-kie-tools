@@ -23,6 +23,7 @@ import cloneDeep from "lodash/cloneDeep";
 import { FormStatus } from "./FormStatus";
 import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 import { Validator } from "./Validator";
+import { FormI18n } from "./i18n";
 
 interface FormHook {
   name?: string;
@@ -36,6 +37,7 @@ interface FormHook {
   propertiesEntryPath?: string;
   validator?: Validator;
   removeRequired?: boolean;
+  i18n: FormI18n;
 }
 
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
@@ -53,12 +55,13 @@ export function useForm({
   propertiesEntryPath = "definitions",
   validator,
   removeRequired = false,
+  i18n,
 }: FormHook) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
   const [formModel, setFormModel] = useState<object>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
-  const formValidator = useMemo(() => (validator ? validator : new Validator()), [validator]);
+  const formValidator = useMemo(() => (validator ? validator : new Validator(i18n)), [validator]);
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {

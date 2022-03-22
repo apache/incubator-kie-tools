@@ -26,9 +26,10 @@ export const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?
 export class DmnValidator extends Validator {
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
-  constructor(private readonly i18n: DmnFormI18n) {
-    super();
+  constructor(i18n: DmnFormI18n) {
+    super(i18n);
     this.setupValidator();
+    this.i18n = i18n;
   }
 
   // Add meta schema v4 and period format
@@ -61,10 +62,10 @@ export class DmnValidator extends Validator {
         details: validator.errors?.map((error: any) => {
           if (error.keyword === "format") {
             if ((error.params as any).format === "days and time duration") {
-              return { ...error, message: this.i18n.form.validation.daysAndTimeError };
+              return { ...error, message: (this.i18n as DmnFormI18n).validation.daysAndTimeError };
             }
             if ((error.params as any).format === "years and months duration") {
-              return { ...error, message: this.i18n.form.validation.yearsAndMonthsError };
+              return { ...error, message: (this.i18n as DmnFormI18n).validation.yearsAndMonthsError };
             }
           }
           return error;
@@ -73,9 +74,9 @@ export class DmnValidator extends Validator {
     };
   }
 
-  public getBridge(formSchema: any): DmnFormJsonSchemaBridge {
+  public getBridge(formSchema: object): DmnFormJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
-    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n);
+    return new DmnFormJsonSchemaBridge(formDraft4, validator, this.i18n as DmnFormI18n);
   }
 }

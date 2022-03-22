@@ -34,32 +34,9 @@ interface FormDictionary extends ReferenceDictionary {
         message: Array<string | Wrapped<"jira">>;
       };
     };
-    validation: {
-      daysAndTimeError: string;
-      yearsAndMonthsError: string;
-    };
-    preProcessing: {
-      selectPlaceholder: string;
-      daysAndTimePlaceholder: string;
-      yearsAndMonthsPlaceholder: string;
-    };
   };
-  result: {
-    evaluation: {
-      success: string;
-      skipped: string;
-      failed: string;
-    };
-    error: {
-      title: string;
-      explanation: string;
-      message: Array<string | Wrapped<"jira">>;
-    };
-    dateTooltip: Array<string | Wrapped<"date">>;
-    withoutResponse: {
-      title: string;
-      explanation: string;
-    };
+  schema: {
+    selectPlaceholder: string;
   };
 }
 

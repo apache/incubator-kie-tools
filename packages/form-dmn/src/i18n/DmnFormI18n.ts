@@ -17,32 +17,14 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { FormI18n } from "@kie-tools/form";
 
-interface DmnFormDictionary extends ReferenceDictionary {
-  form: {
-    status: {
-      autoGenerationError: {
-        title: string;
-        explanation: string;
-        checkNotificationPanel: Array<string | Wrapped<"link">>;
-      };
-      emptyForm: {
-        title: string;
-        explanation: string;
-      };
-      validatorError: {
-        title: string;
-        message: Array<string | Wrapped<"jira">>;
-      };
-    };
-    validation: {
-      daysAndTimeError: string;
-      yearsAndMonthsError: string;
-    };
-    preProcessing: {
-      selectPlaceholder: string;
-      daysAndTimePlaceholder: string;
-      yearsAndMonthsPlaceholder: string;
-    };
+export interface DmnFormI18n extends FormI18n {
+  validation: {
+    daysAndTimeError: string;
+    yearsAndMonthsError: string;
+  };
+  dmnSchema: {
+    daysAndTimePlaceholder: string;
+    yearsAndMonthsPlaceholder: string;
   };
   result: {
     evaluation: {
@@ -62,5 +44,3 @@ interface DmnFormDictionary extends ReferenceDictionary {
     };
   };
 }
-
-export interface DmnFormI18n extends DmnFormDictionary, FormI18n {}

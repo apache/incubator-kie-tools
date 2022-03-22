@@ -16,8 +16,11 @@
 
 import Ajv from "ajv";
 import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
+import { FormI18n } from "./i18n";
 
 export class Validator {
+  constructor(public i18n: FormI18n) {}
+
   protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
 
   public createValidator(formSchema: object) {
@@ -35,6 +38,6 @@ export class Validator {
   }
 
   public getBridge(formSchema: object) {
-    return new FormJsonSchemaBridge(formSchema, this.createValidator(formSchema));
+    return new FormJsonSchemaBridge(formSchema, this.createValidator(formSchema), this.i18n);
   }
 }

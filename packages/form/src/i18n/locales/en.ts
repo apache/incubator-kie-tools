@@ -29,46 +29,19 @@ export const en: FormI18n = {
       },
       emptyForm: {
         title: "No Form",
-        explanation: `Associated ${en_common.names.dmn} doesn't have any inputs.`,
+        explanation: `Without inputs.`,
       },
       validatorError: {
         title: "An error occurred while trying to generate the form",
         message: [
-          `This ${en_common.names.dmn} model contains a construct that is not yet supported. Please refer to `,
+          `The JSON schema contains a construct that is not yet supported. Please refer to `,
           wrapped("jira"),
           " and report an issue. Don't forget to upload the current file.",
         ],
       },
     },
-    validation: {
-      daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
-      yearsAndMonthsError: "should match format P1Y(ears)2M(onths)",
-    },
-    preProcessing: {
-      selectPlaceholder: "Select...",
-      daysAndTimePlaceholder: "P1DT5H or P2D or PT1H2M10S",
-      yearsAndMonthsPlaceholder: "P1Y5M or P2Y or P1M",
-    },
   },
-  result: {
-    evaluation: {
-      success: "Evaluated with success",
-      skipped: "Evaluation skipped",
-      failed: "Evaluation failed",
-    },
-    error: {
-      title: `${en_common.terms.oops}!`,
-      explanation: "Result cannot be rendered because of an error.",
-      message: [
-        `This result contains a construct that is not yet supported. Please refer to `,
-        wrapped("jira"),
-        " and report an issue. Don't forget to upload the current file, and the used inputs",
-      ],
-    },
-    dateTooltip: ["This value is in UTC. The value in your current timezone is ", wrapped("date")],
-    withoutResponse: {
-      title: "No response",
-      explanation: "Response appears after decisions are evaluated.",
-    },
+  schema: {
+    selectPlaceholder: "Select...",
   },
 };

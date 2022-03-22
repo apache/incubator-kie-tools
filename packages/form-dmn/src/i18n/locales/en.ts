@@ -40,15 +40,17 @@ export const en: DmnFormI18n = {
         ],
       },
     },
-    validation: {
-      daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
-      yearsAndMonthsError: "should match format P1Y(ears)2M(onths)",
-    },
-    preProcessing: {
-      selectPlaceholder: "Select...",
-      daysAndTimePlaceholder: "P1DT5H or P2D or PT1H2M10S",
-      yearsAndMonthsPlaceholder: "P1Y5M or P2Y or P1M",
-    },
+  },
+  validation: {
+    daysAndTimeError: "should match format P1D(ays)T2H(ours)3M(inutes)1S(econds)",
+    yearsAndMonthsError: "should match format P1Y(ears)2M(onths)",
+  },
+  schema: {
+    selectPlaceholder: "Select...",
+  },
+  dmnSchema: {
+    daysAndTimePlaceholder: "P1DT5H or P2D or PT1H2M10S",
+    yearsAndMonthsPlaceholder: "P1Y5M or P2Y or P1M",
   },
   result: {
     evaluation: {

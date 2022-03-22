@@ -82,6 +82,7 @@ export function DmnForm(props: BaseProps<InputRow, DmnSchema>) {
     onValidate: props.onValidate,
     propertiesEntryPath: "definitions.InputSet",
     removeRequired: true,
+    i18n,
   });
 
   return (

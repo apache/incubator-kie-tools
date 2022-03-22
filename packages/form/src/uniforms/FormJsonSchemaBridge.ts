@@ -15,8 +15,17 @@
  */
 
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
+import { FormI18n } from "../i18n";
 
 export class FormJsonSchemaBridge extends JSONSchemaBridge {
+  constructor(
+    public readonly formSchema: object,
+    public readonly validator: (model: object) => void,
+    public i18n: FormI18n
+  ) {
+    super(formSchema, validator);
+  }
+
   public getProps(name: string, props: Record<string, any>) {
     const finalProps = super.getProps(name, props);
     if (finalProps.label) {
@@ -42,7 +51,7 @@ export class FormJsonSchemaBridge extends JSONSchemaBridge {
     }
 
     if (field.enum) {
-      field.placeholder = "Select...";
+      field.placeholder = this.i18n.schema.selectPlaceholder;
     }
 
     return field;

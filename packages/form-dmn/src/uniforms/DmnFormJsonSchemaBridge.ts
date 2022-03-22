@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FormJsonSchemaBridge } from "@kie-tools/form";
+import { FormI18n, FormJsonSchemaBridge } from "@kie-tools/form";
 import { DmnFormI18n } from "../i18n";
 
 const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
@@ -27,12 +27,9 @@ export enum Duration {
 }
 
 export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
-  constructor(
-    public readonly formSchema: object,
-    public readonly validator: (model: object) => void,
-    private readonly i18n: DmnFormI18n
-  ) {
-    super(formSchema, validator);
+  constructor(formSchema: object, validator: (model: object) => void, i18n: DmnFormI18n) {
+    super(formSchema, validator, i18n);
+    this.i18n = i18n;
   }
 
   public getType(name: string) {
@@ -54,10 +51,10 @@ export class DmnFormJsonSchemaBridge extends FormJsonSchemaBridge {
     const field = super.getField(name);
 
     if (field?.format === DAYS_AND_TIME_DURATION_FORMAT) {
-      field.placeholder = this.i18n.form.preProcessing.daysAndTimePlaceholder;
+      field.placeholder = (this.i18n as DmnFormI18n).dmnSchema.daysAndTimePlaceholder;
     }
     if (field?.format === YEARS_AND_MONTHS_DURATION_FORMAT) {
-      field.placeholder = this.i18n.form.preProcessing.yearsAndMonthsPlaceholder;
+      field.placeholder = (this.i18n as DmnFormI18n).dmnSchema.yearsAndMonthsPlaceholder;
     }
     if (field?.format === "time") {
       field.placeholder = "hh:mm:ss";
