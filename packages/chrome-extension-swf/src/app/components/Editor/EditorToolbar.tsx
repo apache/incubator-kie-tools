@@ -117,7 +117,7 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
   md: "hidden",
 };
 
-export function EditorToolbarNew(props: Props) {
+export function EditorToolbar(props: Props) {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const settings = useSettings();
@@ -756,8 +756,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     if (!workspacePromise.data) {
       return;
     }
-
-    console.log(workspacePromise.data.files);
 
     if (workspacePromise.data.files.length === 1) {
       await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });

@@ -194,7 +194,6 @@ export function WorkspacesContextProvider(props: Props) {
       preferredName?: string;
       gitConfig?: { email: string; name: string };
     }) => {
-      console.log(args);
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },

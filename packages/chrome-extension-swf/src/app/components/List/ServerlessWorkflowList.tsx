@@ -42,6 +42,8 @@ import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { WorkspacesListDrawerPanelContent } from "./WorkspacesListDrawerPanelContent";
 import { WorkspaceCard, WorkspaceCardError } from "./WorkspaceCard";
+import { useOpenShift } from "../../openshift/OpenShiftContext";
+import { useSettings } from "../../settings/SettingsContext";
 
 export function ServerlessWorkflowList() {
   const routes = useRoutes();
@@ -49,6 +51,16 @@ export function ServerlessWorkflowList() {
   const queryParams = useQueryParams();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
+  const openshiftService = useOpenShift();
+  const { openshift } = useSettings();
+
+  useEffect(() => {
+    const getWorkflow = async () => {
+      const workflows = await openshiftService.fetchWorkflows(openshift.config);
+      console.log(workflows);
+    };
+    getWorkflow();
+  }, [openshift.config, openshiftService]);
 
   const emptyState = useMemo(
     () => (

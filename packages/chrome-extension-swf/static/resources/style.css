@@ -648,3 +648,10 @@ section.kie-tools--settings-tab {
     opacity: 0;
   }
 }
+
+.pf-c-alert {
+  position: fixed;
+  overflow: visible;
+  top: 10rem;
+  right: 0.5rem;
+}

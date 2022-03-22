@@ -38,7 +38,7 @@ import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
-import { EditorToolbarNew } from "./EditorToolbarNew";
+import { EditorToolbar } from "./EditorToolbar";
 
 export interface ServerlessWorkflowEditorProps {
   workspaceId: string;
@@ -90,15 +90,6 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
       },
       [workspaceFilePromise]
     )
-  );
-
-  const setContentErrorAlert = useAlert(
-    alerts,
-    useCallback(() => {
-      return (
-        <Alert ouiaId="set-content-error-alert" variant="danger" title={i18n.editorPage.alerts.setContentError.title} />
-      );
-    }, [i18n])
   );
 
   // auto-save
@@ -167,59 +158,68 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
     });
   }, [editor, saveContent, workspaceFilePromise]);
 
-  const handleResourceContentRequest = useCallback(
-    async (request: ResourceContentRequest) => {
-      return workspaces.resourceContentGet({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
-        workspaceId: props.workspaceId,
-        relativePath: request.path,
-        opts: request.opts,
-      });
-    },
-    [props.workspaceId, workspaces]
-  );
+  // const setContentErrorAlert = useAlert(
+  //   alerts,
+  //   useCallback(() => {
+  //     return (
+  //       <Alert ouiaId="set-content-error-alert" variant="danger" title={i18n.editorPage.alerts.setContentError.title} />
+  //     );
+  //   }, [i18n])
+  // );
 
-  const handleResourceListRequest = useCallback(
-    async (request: ResourceListRequest) => {
-      return workspaces.resourceContentList({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
-        workspaceId: props.workspaceId,
-        globPattern: request.pattern,
-        opts: request.opts,
-      });
-    },
-    [workspaces, props.workspaceId]
-  );
+  // const handleResourceContentRequest = useCallback(
+  //   async (request: ResourceContentRequest) => {
+  //     return workspaces.resourceContentGet({
+  //       fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+  //       workspaceId: props.workspaceId,
+  //       relativePath: request.path,
+  //       opts: request.opts,
+  //     });
+  //   },
+  //   [props.workspaceId, workspaces]
+  // );
 
-  const handleOpenFile = useCallback(
-    async (relativePath: string) => {
-      if (!workspaceFilePromise.data) {
-        return;
-      }
+  // const handleResourceListRequest = useCallback(
+  //   async (request: ResourceListRequest) => {
+  //     return workspaces.resourceContentList({
+  //       fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+  //       workspaceId: props.workspaceId,
+  //       globPattern: request.pattern,
+  //       opts: request.opts,
+  //     });
+  //   },
+  //   [workspaces, props.workspaceId]
+  // );
 
-      const file = await workspaces.getFile({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
-        workspaceId: workspaceFilePromise.data.workspaceId,
-        relativePath,
-      });
+  // const handleOpenFile = useCallback(
+  //   async (relativePath: string) => {
+  //     if (!workspaceFilePromise.data) {
+  //       return;
+  //     }
 
-      if (!file) {
-        throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
-      }
+  //     const file = await workspaces.getFile({
+  //       fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+  //       workspaceId: workspaceFilePromise.data.workspaceId,
+  //       relativePath,
+  //     });
 
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          workspaceId: file.workspaceId,
-          fileRelativePath: file.relativePath,
-        }),
-      });
-    },
-    [workspaceFilePromise, workspaces, history, routes]
-  );
+  //     if (!file) {
+  //       throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
+  //     }
 
-  const handleSetContentError = useCallback(() => {
-    setContentErrorAlert.show();
-  }, [setContentErrorAlert]);
+  //     history.replace({
+  //       pathname: routes.workspaceWithFilePath.path({
+  //         workspaceId: file.workspaceId,
+  //         fileRelativePath: file.relativePath,
+  //       }),
+  //     });
+  //   },
+  //   [workspaceFilePromise, workspaces, history, routes]
+  // );
+
+  // const handleSetContentError = useCallback(() => {
+  //   setContentErrorAlert.show();
+  // }, [setContentErrorAlert]);
 
   return (
     <OnlineEditorPage>
@@ -239,7 +239,7 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <Page>
-            <EditorToolbarNew workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+            <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
             <PageSection variant={PageSectionVariants.default}>
               <div style={{ height: "100%" }}>
                 {!isEditorReady && <LoadingSpinner />}
@@ -250,10 +250,6 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
                       file={embeddedEditorFile}
                       channelType={ChannelType.EMBEDDED}
                       editorEnvelopeLocator={globals.envelopeLocator}
-                      kogitoWorkspace_openFile={handleOpenFile}
-                      kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                      kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                      kogitoEditor_setContentError={handleSetContentError}
                       locale={locale}
                     />
                   </div>
