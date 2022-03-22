@@ -54,32 +54,62 @@ func SetKogitoRuntimeReplicas(namespace, name string, nbPods int) error {
 // GetKogitoRuntimeStub Get basic KogitoRuntime stub with all needed fields initialized
 func GetKogitoRuntimeStub(namespace, runtimeType, name, imageTag string) api.KogitoRuntimeInterface {
 	replicas := int32(1)
-	spec := v1beta1.KogitoRuntimeSpec{
-		Runtime: api.RuntimeType(runtimeType),
-		KogitoServiceSpec: v1beta1.KogitoServiceSpec{
-			Image: imageTag,
-			// Use insecure registry flag in tests
-			InsecureImageRegistry: true,
-			Replicas:              &replicas,
-			// Extends the probe interval for slow test environment
-			Probes: v1beta1.KogitoProbe{
-				ReadinessProbe: corev1.Probe{
-					FailureThreshold: 12,
+	if config.UseProductOperator() {
+		return &v1.KogitoRuntime{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: name,
+				Namespace: namespace,
+			},
+			Spec: v1.KogitoRuntimeSpec{
+				Runtime: api.RuntimeType(runtimeType),
+				KogitoServiceSpec: v1.KogitoServiceSpec{
+					Image: imageTag,
+					// Use insecure registry flag in tests
+					InsecureImageRegistry: true,
+					Replicas:              &replicas,
+					// Extends the probe interval for slow test environment
+					Probes: v1.KogitoProbe{
+						ReadinessProbe: corev1.Probe{
+							FailureThreshold: 12,
+						},
+						LivenessProbe: corev1.Probe{
+							FailureThreshold: 12,
+						},
+						StartupProbe: corev1.Probe{
+							FailureThreshold: 12,
+						},
+					},
 				},
-				LivenessProbe: corev1.Probe{
-					FailureThreshold: 12,
-				},
-				StartupProbe: corev1.Probe{
-					FailureThreshold: 12,
+			},
+		}
+	}
+	return &v1beta1.KogitoRuntime{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: name,
+			Namespace: namespace,
+		},
+		Spec: v1beta1.KogitoRuntimeSpec{
+			Runtime: api.RuntimeType(runtimeType),
+			KogitoServiceSpec: v1beta1.KogitoServiceSpec{
+				Image: imageTag,
+				// Use insecure registry flag in tests
+				InsecureImageRegistry: true,
+				Replicas:              &replicas,
+				// Extends the probe interval for slow test environment
+				Probes: v1beta1.KogitoProbe{
+					ReadinessProbe: corev1.Probe{
+						FailureThreshold: 12,
+					},
+					LivenessProbe: corev1.Probe{
+						FailureThreshold: 12,
+					},
+					StartupProbe: corev1.Probe{
+						FailureThreshold: 12,
+					},
 				},
 			},
 		},
 	}
-
-	if config.UseProductOperator() {
-		return &v1.KogitoRuntime{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: spec}
-	}
-	return &v1beta1.KogitoRuntime{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: spec}
 }
 
 func getKogitoRuntime(namespace, name string) (api.KogitoRuntimeInterface, error) {

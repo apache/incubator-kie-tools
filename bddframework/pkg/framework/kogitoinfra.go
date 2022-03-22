@@ -65,15 +65,20 @@ func cliInstallKogitoInfraComponent(namespace string, infraResource api.KogitoIn
 
 // GetKogitoInfraResourceStub Get basic KogitoInfra stub with all needed fields initialized
 func GetKogitoInfraResourceStub(namespace, name, targetResourceType, targetResourceName string) (api.KogitoInfraInterface, error) {
+
+	if config.UseProductOperator() {
+		infraResource, err := parseRHPAMKogitoInfraResource(targetResourceType)
+		if err != nil {
+			return nil, err
+		}
+		infraResource.SetName(targetResourceName)
+		return &rhpamv1.KogitoInfra{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: rhpamv1.KogitoInfraSpec{Resource: infraResource}}, nil
+	}
 	infraResource, err := parseKogitoInfraResource(targetResourceType)
 	if err != nil {
 		return nil, err
 	}
 	infraResource.SetName(targetResourceName)
-
-	if config.UseProductOperator() {
-		return &rhpamv1.KogitoInfra{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: v1beta1.KogitoInfraSpec{Resource: infraResource}}, nil
-	}
 	return &v1beta1.KogitoInfra{ObjectMeta: metav1.ObjectMeta{Name: name, Namespace: namespace}, Spec: v1beta1.KogitoInfraSpec{Resource: infraResource}}, nil
 }
 
@@ -90,6 +95,23 @@ func parseKogitoInfraResource(targetResourceType string) (*v1beta1.InfraResource
 		return &v1beta1.InfraResource{APIVersion: infrastructure.MongoDBAPIVersion, Kind: infrastructure.MongoDBKind}, nil
 	case infrastructure.KnativeEventingBrokerKind:
 		return &v1beta1.InfraResource{APIVersion: infrastructure.KnativeEventingAPIVersion, Kind: infrastructure.KnativeEventingBrokerKind}, nil
+	default:
+		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
+	}
+}
+
+func parseRHPAMKogitoInfraResource(targetResourceType string) (*rhpamv1.InfraResource, error) {
+	switch targetResourceType {
+	case infrastructure.InfinispanKind:
+		return &rhpamv1.InfraResource{APIVersion: infrastructure.InfinispanAPIVersion, Kind: infrastructure.InfinispanKind}, nil
+	case infrastructure.KafkaKind:
+		return &rhpamv1.InfraResource{APIVersion: infrastructure.KafkaAPIVersion, Kind: infrastructure.KafkaKind}, nil
+	case infrastructure.KeycloakKind:
+		return &rhpamv1.InfraResource{APIVersion: infrastructure.KeycloakAPIVersion, Kind: infrastructure.KeycloakKind}, nil
+	case infrastructure.MongoDBKind:
+		return &rhpamv1.InfraResource{APIVersion: infrastructure.MongoDBAPIVersion, Kind: infrastructure.MongoDBKind}, nil
+	case infrastructure.KnativeEventingBrokerKind:
+		return &rhpamv1.InfraResource{APIVersion: infrastructure.KnativeEventingAPIVersion, Kind: infrastructure.KnativeEventingBrokerKind}, nil
 	default:
 		return nil, fmt.Errorf("Unknown KogitoInfra target resource type %s", targetResourceType)
 	}
