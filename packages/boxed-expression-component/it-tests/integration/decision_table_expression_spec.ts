@@ -342,10 +342,6 @@ describe("Decision Table Keyboard Navigation Tests", () => {
   });
 
   describe("Keyboard interaction with annotation cell", () => {
-    const isAnnotationCellViewModeAndFocused = () => {
-      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
-    };
-
     beforeEach(() => {
       cy.contains("th", "annotation-1").as("annotationCell").focus().type("{enter}");
 
@@ -358,7 +354,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
       cy.get("@annotationCell").should("have.text", "annotation-1 edited");
 
-      isAnnotationCellViewModeAndFocused();
+      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
     });
 
     it("Cancel editing", () => {
@@ -367,7 +363,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
       cy.get("@annotationCell").should("not.contain.text", "not to save text");
 
-      isAnnotationCellViewModeAndFocused();
+      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
     });
 
     it("Edit and save clicking outside", () => {
@@ -379,7 +375,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
       cy.get("@annotationCell").should("have.text", "annotation-1 edited");
 
-      isAnnotationCellViewModeAndFocused();
+      cy.get("@annotationCell").should("not.be.focused").get("input").should("not.exist");
     });
   });
 });

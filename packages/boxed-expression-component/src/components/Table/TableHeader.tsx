@@ -24,7 +24,7 @@ import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
-import { focusCurrentCell, getParentCell } from "./common";
+import { focusCurrentCell, focusNextCell, getParentCell } from "./common";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -130,11 +130,19 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
             value={column.label as string}
             onTextChange={(value, event: ChangeEvent<HTMLInputElement>) => {
               onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value });
-              focusCurrentCell(event.target);
+            }}
+            onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+              const parentCell = getParentCell(event.target as HTMLElement);
+              //this timeout prevent the cell focus to call the input's blur and the onValueBlur
+              setTimeout(() => {
+                if (/(enter)/i.test(event.key)) {
+                  focusCurrentCell(parentCell);
+                }
+              }, 0);
             }}
             onCancel={(event: React.KeyboardEvent<HTMLInputElement>) => {
               const parentCell = getParentCell(event.target as HTMLElement);
-              //this timeout prevent the chell focus to call the input's blur and the onValueBlur
+              //this timeout prevent the cell focus to call the input's blur and the onValueBlur
               setTimeout(() => {
                 focusCurrentCell(parentCell);
               }, 0);

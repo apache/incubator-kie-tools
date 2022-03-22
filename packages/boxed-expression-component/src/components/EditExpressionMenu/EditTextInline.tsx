@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { ChangeEvent, useCallback, useMemo, useState, FocusEvent } from "react";
+import { ChangeEvent, useCallback, useMemo, useState, FocusEvent, useEffect, useRef } from "react";
 import * as _ from "lodash";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 
@@ -28,6 +28,8 @@ export interface EditTextInlineProps {
   onCancel?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   /** Callback executed when user toggle the state to edit/read mode */
   onToggle?: (isReadMode: boolean) => void;
+  /** Callback executed when user press a key */
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
 export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
@@ -35,8 +37,10 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
   onTextChange,
   onCancel = () => {},
   onToggle = () => {},
+  onKeyDown = () => {},
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [toggle, setToggle] = useState(true);
 
@@ -50,21 +54,34 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
     [onTextChange, onToggle]
   );
 
-  const onKeyDown = useMemo(
+  const onInputKeyDown = useMemo(
     () => (event: React.KeyboardEvent<HTMLInputElement>) => {
       const pressedEnter = _.lowerCase(event.key) === "enter";
       const pressedEscape = _.lowerCase(event.key) === "escape";
+
+      onKeyDown(event);
+
       if (pressedEnter) {
         event.currentTarget.blur();
       }
       if (pressedEscape) {
+        onCancel(event);
         setToggle(true);
         onToggle(true);
-        onCancel(event);
       }
     },
-    [onCancel, onToggle]
+    [onKeyDown, onCancel, onToggle]
   );
+
+  useEffect(() => {
+    // Typescript don't accept the conversion between DOM event and React event
+    const onKeyDownForInput: any = onInputKeyDown;
+    const input = inputRef.current;
+    input?.addEventListener("keydown", onKeyDownForInput);
+    return () => {
+      input?.removeEventListener("keydown", onKeyDownForInput);
+    };
+  }, [onInputKeyDown]);
 
   const onClick = useMemo(
     () => () => {
@@ -86,12 +103,12 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
     </p>
   ) : (
     <input
+      ref={inputRef}
       type="text"
       autoFocus
       defaultValue={value}
       onBlur={onValueBlur}
       style={{ borderRadius: "0.5em", width: "100%" }}
-      onKeyDown={onKeyDown}
     />
   );
 };
