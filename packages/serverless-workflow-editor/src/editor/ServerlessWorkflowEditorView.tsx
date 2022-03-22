@@ -13,7 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Editor, EditorApi, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  Editor,
+  EditorApi,
+  EditorInitArgs,
+  EditorTheme,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
@@ -26,7 +32,10 @@ export class ServerlessWorkflowEditorView implements Editor {
   public af_componentId: "serverless-workflow-editor";
   public af_componentTitle: "Serverless Workflow Editor";
 
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>) {
+  constructor(
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
+    private readonly initArgs: EditorInitArgs
+  ) {
     this.editorRef = React.createRef<EditorApi>();
   }
 
@@ -50,6 +59,7 @@ export class ServerlessWorkflowEditorView implements Editor {
     return (
       <ServerlessWorkflowEditor
         ref={this.editorRef}
+        channelType={this.initArgs.channel}
         onReady={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
         onStateControlCommandUpdate={(command) =>
           this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(command)

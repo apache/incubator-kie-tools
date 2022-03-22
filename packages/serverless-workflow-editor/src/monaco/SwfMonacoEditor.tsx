@@ -20,7 +20,7 @@ import { DefaultSwfMonacoEditorController, SwfMonacoEditorApi } from "./SwfMonac
 import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
-import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { SwfServiceCatalogSingleton } from "../serviceCatalog";
 import { ServerlessWorkflowEditorChannelApi } from "../editor";
@@ -29,10 +29,11 @@ interface Props {
   content: string;
   fileName: string;
   onContentChange: (content: string) => void;
+  channelType: ChannelType;
 }
 
 const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEditorApi | undefined, Props> = (
-  { content, fileName, onContentChange },
+  { content, fileName, onContentChange, channelType },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
@@ -73,12 +74,12 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
     initJsonCompletion(commands);
-    initJsonCodeLenses(commands);
+    initJsonCodeLenses(commands, channelType);
 
     // TODO: Add support to YAML
     // initYamlCompletion(commands);
     // initYamlWidgets(commands);
-  }, [content, fileName, controller, theme, editorEnvelopeCtx.channelApi]);
+  }, [content, fileName, channelType, controller, theme, editorEnvelopeCtx.channelApi]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

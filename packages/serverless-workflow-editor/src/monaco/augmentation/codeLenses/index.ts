@@ -4,9 +4,10 @@ import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
 import { SwfMonacoEditorCommandArgs, SwfMonacoEditorCommandIds } from "../commands";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import CodeLens = languages.CodeLens;
 
-export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {
+export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds, channelType: ChannelType): void {
   monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: (model, cancellationToken) => {
       if (cancellationToken.isCancellationRequested) {
@@ -131,9 +132,9 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
       });
 
       const codeLenses: CodeLens[] = [
-        ...logInToRhhcc,
-        ...setupServiceRegistryUrl,
-        ...refreshServiceRegistry,
+        ...(channelType === ChannelType.VSCODE_DESKTOP ? logInToRhhcc : []),
+        ...(channelType === ChannelType.VSCODE_DESKTOP ? setupServiceRegistryUrl : []),
+        ...(channelType === ChannelType.VSCODE_DESKTOP ? refreshServiceRegistry : []),
         ...addFunction,
       ];
 
