@@ -31,6 +31,7 @@ export interface SwfMonacoEditorApi {
   getContent: () => string;
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
+  dispose: () => void;
 }
 
 export enum MonacoEditorOperation {
@@ -83,7 +84,6 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
-
     if (this.editor !== undefined) {
       this.setTheme(theme);
       return this.editor;
@@ -133,5 +133,9 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       default:
         return "vs";
     }
+  }
+
+  public dispose(): void {
+    this.editor?.dispose();
   }
 }

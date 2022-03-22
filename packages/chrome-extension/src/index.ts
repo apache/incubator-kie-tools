@@ -84,7 +84,7 @@ function init(globals: Globals) {
   } else if (pageType === GitHubPageType.VIEW) {
     renderSingleEditorReadonlyApp({ ...globals, fileInfo });
   } else if (pageType === GitHubPageType.PR_FILES_OR_COMMITS) {
-    renderPrEditorsApp({ ...globals, contentPath: fileInfo.path });
+    renderPrEditorsApp({ ...globals });
   } else if (pageType === GitHubPageType.PR_HOME) {
     renderOpenRepoInExternalEditorApp({
       ...globals,

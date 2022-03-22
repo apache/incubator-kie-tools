@@ -53,7 +53,6 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
       return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", editorEnvelopeCtx.operatingSystem,isReadOnly);
     }
-
     throw new Error(`Unsupported extension '${fileName}'`);
   }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
 
@@ -77,6 +76,11 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     initJsonCompletion(commands);
     initJsonCodeLenses(commands, channelType, editorEnvelopeCtx.operatingSystem);
 
+    return () => {
+      // disposing the editor - this is required when updating the content (PR)
+      controller.dispose();
+    };
+    
     // TODO: Add support to YAML
     // initYamlCompletion(commands);
     // initYamlWidgets(commands);

@@ -127,8 +127,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   }, [props.locale]);
 
   useEffectAfterFirstRender(() => {
+    console.log("use effect called");
     props.file.getFileContents().then((content) => {
-      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
+      console.log("new content ---> ", content, props.file.fileName);
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content!, path: props.file.fileName });
     });
   }, [props.file.getFileContents]);
 
