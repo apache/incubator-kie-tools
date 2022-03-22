@@ -22,9 +22,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.dashbuilder.dataset.DataSetLookup;
-import org.dashbuilder.dataset.DataSetOp;
 import org.dashbuilder.dataset.date.DayOfWeek;
 import org.dashbuilder.dataset.date.Month;
 import org.dashbuilder.dataset.filter.ColumnFilter;
@@ -53,18 +53,21 @@ import org.dashbuilder.json.JsonValue;
 public class DataSetLookupJSONMarshaller {
 
     private static final String UUID = "dataSetUuid";
+    private static final String DATASET_UUID = "uuid";
     private static final String ROWCOUNT = "rowCount";
     private static final String ROWOFFSET = "rowOffset";
 
     protected static final String COLUMN = "column";
     private static final String SOURCE = "source";
     private static final String FILTEROPS = "filterOps";
+    private static final String FILTER = "filter";
 
     protected static final String FUNCTION_TYPE = "function";
     protected static final String FUNCTION_ARGS = "args";
     protected static final String FUNCTION_LABEL_VALUE = "labelValue";
 
     private static final String GROUPOPS = "groupOps";
+    private static final String GROUP = "group";
     private static final String COLUMNGROUP = "columnGroup";
     private static final String GROUPSTRATEGY = "groupStrategy";
     private static final String MAXINTERVALS = "maxIntervals";
@@ -86,6 +89,7 @@ public class DataSetLookupJSONMarshaller {
     private static final String JOIN = "join";
 
     private static final String SORTOPS = "sortOps";
+    private static final String SORT = "sort";
     private static final String SORTORDER = "sortOrder";
 
     private static Map<String, Collection<String>> _keysAliasMap = new HashMap<String, Collection<String>>();
@@ -334,21 +338,26 @@ public class DataSetLookupJSONMarshaller {
         if (json == null) {
             return null;
         }
-        DataSetLookup dataSetLookup = new DataSetLookup();
-        dataSetLookup.setDataSetUUID(json.get(UUID) != null ? json.getString(UUID) : null);
+        var dataSetLookup = new DataSetLookup();
+        var uuid = json.getFirst(Arrays.asList(DATASET_UUID, UUID));
+        dataSetLookup.setDataSetUUID(uuid != null ? uuid.asString() : null);
         dataSetLookup.setNumberOfRows(json.get(ROWCOUNT) != null ? Integer.parseInt(json.getString(ROWCOUNT), 10) : -1);
         dataSetLookup.setRowOffset(json.get(ROWOFFSET) != null ? Integer.parseInt(json.getString(ROWOFFSET), 10) : 0);
 
-        List<DataSetOp> dataSetOpList = dataSetLookup.getOperationList();
+        var dataSetOpList = dataSetLookup.getOperationList();
+
+        var filterArray = Optional.ofNullable(json.getArray(FILTEROPS)).orElse(json.getArray(FILTER));
+        var groupArray = Optional.ofNullable(json.getArray(GROUPOPS)).orElse(json.getArray(GROUP));
+        var sortArray = Optional.ofNullable(json.getArray(SORTOPS)).orElse(json.getArray(SORT));
 
         Collection c = null;
-        if ((c = parseFilterOperations(json.getArray(FILTEROPS))) != null) {
+        if ((c = parseFilterOperations(filterArray)) != null) {
             dataSetOpList.addAll(c);
         }
-        if ((c = parseGroupOperations(json.getArray(GROUPOPS))) != null) {
+        if ((c = parseGroupOperations(groupArray)) != null) {
             dataSetOpList.addAll(c);
         }
-        if ((c = parseSortOperations(json.getArray(SORTOPS))) != null) {
+        if ((c = parseSortOperations(sortArray)) != null) {
             dataSetOpList.addAll(c);
         }
 

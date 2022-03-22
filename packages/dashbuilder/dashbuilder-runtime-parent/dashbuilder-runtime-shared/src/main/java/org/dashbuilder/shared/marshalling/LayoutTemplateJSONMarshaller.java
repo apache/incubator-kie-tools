@@ -16,9 +16,11 @@
 package org.dashbuilder.shared.marshalling;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -43,9 +45,11 @@ public class LayoutTemplateJSONMarshaller {
     private static final String PARTS = "parts";
     private static final String DRAG_TYPE_NAME = "dragTypeName";
     private static final String LAYOUT_COMPONENTS = "layoutComponents";
+    private static final String COMPONENTS = "components";
     private static final String ROWS = "rows";
     private static final String SPAN = "span";
     private static final String LAYOUT_COLUMNS = "layoutColumns";
+    private static final String COLUMNS = "columns";
     private static final String LAYOUT_PROPERTIES = "layoutProperties";
     private static final String PROPERTIES = "properties";
     private static final String NAME = "name";
@@ -54,9 +58,9 @@ public class LayoutTemplateJSONMarshaller {
     private static final String SETTINGS = "settings";
 
     // default values
-    private static final String DEFAULT_HEIGHT = "1";
-    private static final String DEFAULT_SPAN = "12";
-    private static final String DEFAULT_DRAG_TYPE = "org.dashbuilder.client.editor.DisplayerDragComponent";
+    static final String DEFAULT_HEIGHT = "1";
+    static final String DEFAULT_SPAN = "12";
+    static final String DEFAULT_DRAG_TYPE = "org.dashbuilder.client.editor.DisplayerDragComponent";
 
     // to make the json more user friendly
     // replacement for Drag type
@@ -71,6 +75,13 @@ public class LayoutTemplateJSONMarshaller {
         TYPES_DRAG.put("HTML","org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent");
         TYPES_DRAG.put("Displayer", "org.dashbuilder.client.editor.DisplayerDragComponent");
         TYPES_DRAG.put("External", "org.dashbuilder.client.editor.external.ExternalDragComponent");
+        TYPES_DRAG.put("TABS", "org.dashbuilder.client.navigation.layout.editor.NavTabListDragComponent");
+        TYPES_DRAG.put("CAROUSEL", "org.dashbuilder.client.navigation.layout.editor.NavCarouselDragComponent");
+        TYPES_DRAG.put("TILES", "org.dashbuilder.client.navigation.layout.editor.NavTilesDragComponent");
+        TYPES_DRAG.put("TREE", "org.dashbuilder.client.navigation.layout.editor.NavTreeDragComponent");
+        TYPES_DRAG.put("MENU", "org.dashbuilder.client.navigation.layout.editor.NavMenuBarDragComponent");
+        TYPES_DRAG.put("DIV", "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.TargetDivDragComponent");
+
         instance = new LayoutTemplateJSONMarshaller();
     }
 
@@ -95,12 +106,22 @@ public class LayoutTemplateJSONMarshaller {
         var template = new LayoutTemplate();
         var style = object.getString(STYLE);
         var name = object.getString(NAME);
+        var rows = object.getArray(ROWS);
+        var components = object.getArray(COMPONENTS);
         template.setName(name == null ? "Page " + System.currentTimeMillis() : name);
         template.setStyle(style == null ? Style.FLUID : Style.valueOf(style));
         extractProperties(object.getObject(LAYOUT_PROPERTIES), template::addLayoutProperty);
         extractProperties(object.getObject(PROPERTIES), template::addLayoutProperty);
-        extractRows(object.getArray(ROWS), template::addRow);
 
+        if (rows != null) {
+            extractRows(object.getArray(ROWS), template::addRow);
+        } else if (components != null) {
+            var row = new LayoutRow(DEFAULT_HEIGHT, Collections.emptyMap());
+            var column = new LayoutColumn(DEFAULT_SPAN);
+            row.add(column);
+            extractComponents(components, column::add);
+            template.addRow(row);
+        }
         return template;
     }
 
@@ -122,7 +143,8 @@ public class LayoutTemplateJSONMarshaller {
         var height = object.getString(HEIGHT);
         var row = new LayoutRow(height == null ? DEFAULT_HEIGHT : height,
                 extractProperties(object.getObject(PROPERTIES)));
-        extractColumns(object.getArray(LAYOUT_COLUMNS), row::add);
+        var ltColumns =  Optional.ofNullable(object.getArray(LAYOUT_COLUMNS)).orElse(object.getArray(COLUMNS));
+        extractColumns(ltColumns, row::add);
         return row;
     }
 
@@ -138,7 +160,8 @@ public class LayoutTemplateJSONMarshaller {
                 extractProperties(object.getObject(PROPERTIES)));
 
         extractRows(object.getArray(ROWS), column::addRow);
-        extractComponents(object.getArray(LAYOUT_COMPONENTS), column::add);
+        var componentsArray = Optional.ofNullable(object.getArray(LAYOUT_COMPONENTS)).orElse(object.getArray(COMPONENTS));
+        extractComponents(componentsArray, column::add);
         return column;
     }
 

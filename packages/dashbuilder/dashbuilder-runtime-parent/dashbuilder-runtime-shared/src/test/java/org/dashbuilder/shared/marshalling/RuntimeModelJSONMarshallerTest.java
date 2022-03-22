@@ -96,7 +96,16 @@ public class RuntimeModelJSONMarshallerTest {
     @Test
     public void fromJsonTest() {
         var model = marshaller.fromJson(RUNTIME_MODEL_JSON);
+        checkModel(model);
+    }
+    
+    @Test
+    public void fromJsonTestWithPages() {
+        var model = marshaller.fromJson(RUNTIME_MODEL_JSON.replaceAll("layoutTemplates", "pages"));
+        checkModel(model);
+    }
 
+    private void checkModel(RuntimeModel model) {
         var item = model.getNavTree().getItemById("TestId");
         assertEquals(123l, model.getLastModified().longValue());
         assertEquals("My Template", model.getLayoutTemplates().get(0).getName());

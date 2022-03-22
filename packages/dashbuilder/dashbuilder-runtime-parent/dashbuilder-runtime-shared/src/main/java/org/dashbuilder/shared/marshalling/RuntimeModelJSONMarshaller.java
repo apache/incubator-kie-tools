@@ -42,6 +42,7 @@ public class RuntimeModelJSONMarshaller {
     private static String LAST_MODIFIED = "lastModified";
     private static String NAV_TREE = "navTree";
     private static String LAYOUT_TEMPLATES = "layoutTemplates";
+    private static String PAGES = "pages";
     private static String EXTERNAL_DATASET_DEFS = "datasets";
     
     
@@ -115,6 +116,11 @@ public class RuntimeModelJSONMarshaller {
         var lastModified = jsonObject.getNumber(LAST_MODIFIED);
         var layoutTemplates = new ArrayList<LayoutTemplate>();
         var externalDefs = new ArrayList<ExternalDataSetDef>();
+        
+        if (ltArray == null) {
+            ltArray = jsonObject.getArray(PAGES);
+        }
+        
 
         for (int i = 0; i < ltArray.length(); i++) {
             var ltJson = ltArray.getObject(i);

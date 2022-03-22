@@ -39,42 +39,96 @@ public class LayoutTemplateJSONMarshallerTest {
     private static final String LCR_HEIGHT = "LCR HEIGHT";
     private static final String LCOMP_DRAG_TYPE = "LCOMP_DRAG_TYPE";
     String LT_JSON = "{\n" +
-                     "  \"style\": \"PAGE\",\n" +
-                     "  \"name\": \"test Layout Template\",\n" +
-                     "  \"layoutProperties\": {\n" +
-                     "    \"LTPROPERTY\": \"LTVALUE\"\n" +
-                     "  },\n" +
-                     "  \"rows\": [\n" +
-                     "    {\n" +
-                     "      \"height\": \"ROW HEIGHT\",\n" +
-                     "      \"properties\": {\n" +
-                     "        \"LTPROPERTY\": \"LTVALUE\"\n" +
-                     "      },\n" +
-                     "      \"layoutColumns\": [\n" +
-                     "        {\n" +
-                     "          \"height\": \"COLUMN HEIGHT\",\n" +
-                     "          \"span\": \"COLUMN SPAN\",\n" +
-                     "          \"properties\": {\n" +
-                     "            \"LTPROPERTY\": \"LTVALUE\"\n" +
-                     "          },\n" +
-                     "          \"rows\": [\n" +
-                     "            {\n" +
-                     "              \"height\": \"LCR HEIGHT\"\n" +
-                     "            }\n" +
-                     "          ],\n" +
-                     "          \"layoutComponents\": [\n" +
-                     "            {\n" +
-                     "              \"dragTypeName\": \"LCOMP_DRAG_TYPE\",\n" +
-                     "              \"properties\": {\n" +
-                     "                \"LTPROPERTY\": \"LTVALUE\"\n" +
-                     "              }\n" +
-                     "            }\n" +
-                     "          ]\n" +
-                     "        }\n" +
-                     "      ]\n" +
-                     "    }\n" +
-                     "  ]\n" +
-                     "}";
+            "  \"style\": \"PAGE\",\n" +
+            "  \"name\": \"test Layout Template\",\n" +
+            "  \"layoutProperties\": {\n" +
+            "    \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "  },\n" +
+            "  \"rows\": [\n" +
+            "    {\n" +
+            "      \"height\": \"ROW HEIGHT\",\n" +
+            "      \"properties\": {\n" +
+            "        \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "      },\n" +
+            "      \"layoutColumns\": [\n" +
+            "        {\n" +
+            "          \"height\": \"COLUMN HEIGHT\",\n" +
+            "          \"span\": \"COLUMN SPAN\",\n" +
+            "          \"properties\": {\n" +
+            "            \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "          },\n" +
+            "          \"rows\": [\n" +
+            "            {\n" +
+            "              \"height\": \"LCR HEIGHT\"\n" +
+            "            }\n" +
+            "          ],\n" +
+            "          \"layoutComponents\": [\n" +
+            "            {\n" +
+            "              \"dragTypeName\": \"LCOMP_DRAG_TYPE\",\n" +
+            "              \"properties\": {\n" +
+            "                \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "              }\n" +
+            "            }\n" +
+            "          ]\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    String LT_JSON_READABLE = "{\n" +
+            "  \"style\": \"PAGE\",\n" +
+            "  \"name\": \"test Layout Template\",\n" +
+            "  \"properties\": {\n" +
+            "    \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "  },\n" +
+            "  \"rows\": [\n" +
+            "    {\n" +
+            "      \"height\": \"ROW HEIGHT\",\n" +
+            "      \"properties\": {\n" +
+            "        \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "      },\n" +
+            "      \"columns\": [\n" +
+            "        {\n" +
+            "          \"height\": \"COLUMN HEIGHT\",\n" +
+            "          \"span\": \"COLUMN SPAN\",\n" +
+            "          \"properties\": {\n" +
+            "            \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "          },\n" +
+            "          \"rows\": [\n" +
+            "            {\n" +
+            "              \"height\": \"LCR HEIGHT\"\n" +
+            "            }\n" +
+            "          ],\n" +
+            "          \"components\": [\n" +
+            "            {\n" +
+            "              \"dragTypeName\": \"LCOMP_DRAG_TYPE\",\n" +
+            "              \"properties\": {\n" +
+            "                \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "              }\n" +
+            "            }\n" +
+            "          ]\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+    String LT_JSON_GENERATE_ROW = "{\n" +
+            "  \"style\": \"PAGE\",\n" +
+            "  \"name\": \"test Layout Template\",\n" +
+            "  \"properties\": {\n" +
+            "    \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "  },\n" +
+            "  \"components\": [\n" +
+            "    {\n" +
+            "        \"dragTypeName\": \"LCOMP_DRAG_TYPE\",\n" +
+            "        \"properties\": {\n" +
+            "        \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "        }\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
 
     @Test
     public void toJsonTest() {
@@ -99,8 +153,35 @@ public class LayoutTemplateJSONMarshallerTest {
 
     @Test
     public void fromJsonTest() {
+        var lt = LayoutTemplateJSONMarshaller.get().fromJson(LT_JSON);
+        checkLayoutTemplate(lt);
+    }
 
-        LayoutTemplate lt = LayoutTemplateJSONMarshaller.get().fromJson(LT_JSON);
+    @Test
+    public void fromReadableJsonTest() {
+        var lt = LayoutTemplateJSONMarshaller.get().fromJson(LT_JSON_READABLE);
+        checkLayoutTemplate(lt);
+
+    }
+
+    @Test
+    public void fromGenerateRowJsonTest() {
+        var lt = LayoutTemplateJSONMarshaller.get().fromJson(LT_JSON_GENERATE_ROW);
+        assertEquals(LT_NAME, lt.getName());
+        assertEquals(PROP_VAL, lt.getLayoutProperties().get(PROP_KEY));
+
+        LayoutRow layoutRow = lt.getRows().get(0);
+        assertEquals(LayoutTemplateJSONMarshaller.DEFAULT_HEIGHT, layoutRow.getHeight());
+
+        LayoutColumn layoutColumn = layoutRow.getLayoutColumns().get(0);
+        assertEquals(LayoutTemplateJSONMarshaller.DEFAULT_SPAN, layoutColumn.getSpan());
+
+        LayoutComponent layoutComponent = layoutColumn.getLayoutComponents().get(0);
+        assertEquals(LCOMP_DRAG_TYPE, layoutComponent.getDragTypeName());
+        assertEquals(PROP_VAL, layoutComponent.getProperties().get(PROP_KEY));
+    }
+
+    public void checkLayoutTemplate(LayoutTemplate lt) {
         assertEquals(LT_NAME, lt.getName());
         assertEquals(PROP_VAL, lt.getLayoutProperties().get(PROP_KEY));
 
@@ -119,28 +200,28 @@ public class LayoutTemplateJSONMarshallerTest {
         assertEquals(LCOMP_DRAG_TYPE, layoutComponent.getDragTypeName());
         assertEquals(PROP_VAL, layoutComponent.getProperties().get(PROP_KEY));
     }
-    
+
     @Test
     public void dragComponentReplacementTest() {
         var object = Json.createObject();
-        
+
         object.set("type", Json.create("HtmL"));
         var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
-        assertEquals("org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent", dragType);
-        
-        
+        assertEquals("org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
+                dragType);
+
         object.set("type", Json.create("displayer"));
         dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
         assertEquals("org.dashbuilder.client.editor.DisplayerDragComponent", dragType);
     }
-    
+
     @Test
     public void dragComponentMissingTest() {
         var object = Json.createObject();
         var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
         assertEquals("org.dashbuilder.client.editor.DisplayerDragComponent", dragType);
     }
-    
+
     @Test
     public void legacyDragType() {
         var object = Json.createObject();
