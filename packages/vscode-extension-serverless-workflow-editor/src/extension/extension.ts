@@ -33,15 +33,15 @@ export function activate(context: vscode.ExtensionContext) {
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
-  const settings = new SwfVsCodeExtensionConfiguration();
+  const configuration = new SwfVsCodeExtensionConfiguration();
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsServerlessWorkflow",
-    generateSvgCommandId: "extension.kogito.getPreviewSvgSw",
-    silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgSw",
+    generateSvgCommandId: "extension.kogito.swf.getPreviewSvg",
+    silentlyGenerateSvgCommandId: "extension.kogito.swf.silentlyGenerateSvg",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "sw",
@@ -51,7 +51,7 @@ export function activate(context: vscode.ExtensionContext) {
       ),
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
-      settings,
+      configuration,
       rhhccAuthenticationStore,
     }),
     backendProxy,
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.setupServiceRegistryUrl, async () => {
       const serviceRegistryUrl = await askForServiceRegistryUrl({
-        currentValue: settings.getServiceRegistryUrl(),
+        currentValue: configuration.getConfiguredServiceRegistryUrl(),
       });
 
       if (!serviceRegistryUrl) {

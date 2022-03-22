@@ -10,7 +10,7 @@ import { OpenAPIV3 } from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 import * as vscode from "vscode";
-import * as path from "path";
+import { posix as posixPath } from "path";
 import * as yaml from "yaml";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./index";
 
@@ -22,9 +22,9 @@ export class RhhccServiceRegistryServiceCatalogStore {
 
   constructor(
     private readonly args: {
-      baseFileAbsolutePath: string;
+      baseFileAbsolutePosixPath: string;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
-      settings: SwfVsCodeExtensionConfiguration;
+      configuration: SwfVsCodeExtensionConfiguration;
     }
   ) {}
 
@@ -53,9 +53,10 @@ export class RhhccServiceRegistryServiceCatalogStore {
   }
 
   public async refresh() {
-    const specsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
-    const serviceRegistryUrl = this.args.settings.getServiceRegistryUrl();
-    const shouldReferenceFunctionsWithUrls = this.args.settings.shouldReferenceServiceRegistryFunctionsWithUrls();
+    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
+    const serviceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
+    const shouldReferenceFunctionsWithUrls =
+      this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
 
     if (!this.args.rhhccAuthenticationStore.session) {
       return this.onChangeCallback?.([]);
@@ -96,10 +97,13 @@ export class RhhccServiceRegistryServiceCatalogStore {
     const services: SwfServiceCatalogService[] = artifactsWithContent.map((artifact) => {
       const serviceId = artifact.metadata.id;
       const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
-      const specsDirRelativePath = path.relative(path.dirname(this.args.baseFileAbsolutePath), specsDirAbsolutePath);
-      const serviceFileRelativePath = path.join(specsDirRelativePath, serviceFileName);
+      const specsDirRelativePosixPath = posixPath.relative(
+        posixPath.dirname(this.args.baseFileAbsolutePosixPath),
+        specsDirAbsolutePosixPath
+      );
+      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
 
-      let swfFunctions = extractFunctions(artifact.content, serviceFileRelativePath, {
+      let swfFunctions = extractFunctions(artifact.content, serviceFileRelativePosixPath, {
         type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
         serviceId: serviceId,
       });

@@ -32,8 +32,8 @@ function doParse(fileName: string): SwfServiceCatalogService {
   return parseOpenApi({
     serviceFileName: fileName,
     serviceFileContent: content,
-    specsDirAbsolutePath: "/Users/tiago/open-api-tests/specs",
-    baseFileAbsolutePath: "/Users/tiago/open-api-tests/myfile.txt",
+    specsDirAbsolutePosixPath: "/Users/tiago/open-api-tests/specs",
+    baseFileAbsolutePosixPath: "/Users/tiago/open-api-tests/myfile.txt",
   });
 }
 

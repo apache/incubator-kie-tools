@@ -27,17 +27,21 @@ export class FsWatchingServiceCatalogStore {
   private configurationChangedCallback: Disposable | undefined;
   private fsWatcher: Disposable | undefined;
 
-  constructor(private readonly args: { baseFileAbsolutePath: string; settings: SwfVsCodeExtensionConfiguration }) {}
+  constructor(
+    private readonly args: { baseFileAbsolutePosixPath: string; configuration: SwfVsCodeExtensionConfiguration }
+  ) {}
 
   public init(args: { onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any> }) {
     this.onChangeCallback = args.onNewServices;
 
-    const initialSpecsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
+    const initialSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(
+      this.args
+    );
 
-    this.fsWatcher = this.setupFsWatcher(initialSpecsDirAbsolutePath);
+    this.fsWatcher = this.setupFsWatcher(initialSpecsDirAbsolutePosixPath);
     this.configurationChangedCallback = this.getConfigurationChangedCallback();
 
-    return this.refresh(initialSpecsDirAbsolutePath);
+    return this.refresh(initialSpecsDirAbsolutePosixPath);
   }
 
   private getConfigurationChangedCallback() {
@@ -46,25 +50,25 @@ export class FsWatchingServiceCatalogStore {
         return;
       }
 
-      const newSpecsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
+      const newSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
       this.fsWatcher?.dispose();
-      this.fsWatcher = this.setupFsWatcher(newSpecsDirAbsolutePath);
+      this.fsWatcher = this.setupFsWatcher(newSpecsDirAbsolutePosixPath);
 
-      return this.refresh(newSpecsDirAbsolutePath);
+      return this.refresh(newSpecsDirAbsolutePosixPath);
     });
   }
 
-  private setupFsWatcher(absolutePath: string): Disposable {
+  private setupFsWatcher(absolutePosixPath: string): Disposable {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
-      `${absolutePath}/*.{json,yaml,yml}`,
+      `${absolutePosixPath}/*.{json,yaml,yml}`,
       false,
       false,
       false
     );
 
-    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh(absolutePath));
-    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh(absolutePath));
-    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh(absolutePath));
+    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh(absolutePosixPath));
+    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh(absolutePosixPath));
+    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh(absolutePosixPath));
 
     return {
       dispose: () => {
@@ -81,9 +85,9 @@ export class FsWatchingServiceCatalogStore {
     this.configurationChangedCallback?.dispose();
   }
 
-  private async refresh(specsDirAbsolutePath: string) {
+  private async refresh(specsDirAbsolutePosixPath: string) {
     try {
-      const services = await this.readFileSystemServices(specsDirAbsolutePath);
+      const services = await this.readFileSystemServices(specsDirAbsolutePosixPath);
       return this.onChangeCallback?.(services);
     } catch (e) {
       console.error("Could not refresh SWF Service Catalog services", e);
@@ -91,18 +95,18 @@ export class FsWatchingServiceCatalogStore {
     }
   }
 
-  private readFileSystemServices(specsDirAbsolutePath: string): Promise<SwfServiceCatalogService[]> {
+  private readFileSystemServices(specsDirAbsolutePosixPath: string): Promise<SwfServiceCatalogService[]> {
     return new Promise<SwfServiceCatalogService[]>((resolve, reject) => {
       try {
-        const specsDirAbsolutePathUri = vscode.Uri.parse(specsDirAbsolutePath);
+        const specsDirAbsolutePosixPathUri = vscode.Uri.parse(specsDirAbsolutePosixPath);
 
-        vscode.workspace.fs.stat(specsDirAbsolutePathUri).then((stats) => {
+        vscode.workspace.fs.stat(specsDirAbsolutePosixPathUri).then((stats) => {
           if (!stats || stats.type !== FileType.Directory) {
-            reject(`Invalid specs dir path: ${specsDirAbsolutePath}`);
+            reject(`Invalid specs dir path: ${specsDirAbsolutePosixPath}`);
             return;
           }
 
-          vscode.workspace.fs.readDirectory(specsDirAbsolutePathUri).then((files) => {
+          vscode.workspace.fs.readDirectory(specsDirAbsolutePosixPathUri).then((files) => {
             if (!files || files.length <= 0) {
               resolve([]);
               return;
@@ -115,8 +119,8 @@ export class FsWatchingServiceCatalogStore {
                 return;
               }
 
-              const fileUrl = specsDirAbsolutePathUri.with({ path: specsDirAbsolutePath + "/" + fileName }); // FIXME: windows?
-              promises.push(this.readServiceFile(fileUrl, fileName, specsDirAbsolutePath));
+              const fileUri = specsDirAbsolutePosixPathUri.with({ path: specsDirAbsolutePosixPath + "/" + fileName });
+              promises.push(this.readServiceFile(fileUri, fileName, specsDirAbsolutePosixPath));
             });
 
             if (promises.length > 0) {
@@ -133,13 +137,13 @@ export class FsWatchingServiceCatalogStore {
     });
   }
 
-  private async readServiceFile(fileUrl: vscode.Uri, fileName: string, specsDirAbsolutePath: string) {
+  private async readServiceFile(fileUrl: vscode.Uri, fileName: string, specsDirAbsolutePosixPath: string) {
     const rawData = await vscode.workspace.fs.readFile(fileUrl);
     try {
       return [
         parseOpenApi({
-          baseFileAbsolutePath: this.args.baseFileAbsolutePath,
-          specsDirAbsolutePath: specsDirAbsolutePath,
+          baseFileAbsolutePosixPath: this.args.baseFileAbsolutePosixPath,
+          specsDirAbsolutePosixPath: specsDirAbsolutePosixPath,
           serviceFileName: fileName,
           serviceFileContent: new TextDecoder("utf-8").decode(rawData),
         }),

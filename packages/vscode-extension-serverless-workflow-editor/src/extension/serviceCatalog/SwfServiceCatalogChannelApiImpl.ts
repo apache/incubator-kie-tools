@@ -23,7 +23,7 @@ import {
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import * as vscode from "vscode";
 import { Uri } from "vscode";
-import * as path from "path";
+import { posix as posixPath } from "path";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 import { COMMAND_IDS } from "../commands";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./rhhccServiceRegistry";
@@ -34,8 +34,8 @@ const encoder = new TextEncoder();
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
     private readonly args: {
-      settings: SwfVsCodeExtensionConfiguration;
-      baseFileAbsolutePath: string;
+      configuration: SwfVsCodeExtensionConfiguration;
+      baseFileAbsolutePosixPath: string;
       defaultUser: SwfServiceCatalogUser | undefined;
       defaultServiceRegistryUrl: string | undefined;
       swfServiceCatalogStore: SwfServiceCatalogStore;
@@ -69,11 +69,14 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     }
 
     const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(containingService.source.id);
-    const specsDirAbsolutePath = this.args.settings.getInterpolatedSpecsDirPath(this.args);
+    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
 
-    const serviceFileAbsolutePath = path.join(specsDirAbsolutePath, serviceFileName);
-    vscode.workspace.fs.writeFile(Uri.parse(serviceFileAbsolutePath), encoder.encode(containingService.rawContent));
-    vscode.window.showInformationMessage(`Wrote ${serviceFileAbsolutePath}.`);
+    const serviceFileAbsolutePosixPath = posixPath.join(specsDirAbsolutePosixPath, serviceFileName);
+    vscode.workspace.fs.writeFile(
+      Uri.parse(serviceFileAbsolutePosixPath),
+      encoder.encode(containingService.rawContent)
+    );
+    vscode.window.showInformationMessage(`Wrote ${serviceFileAbsolutePosixPath}.`);
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {

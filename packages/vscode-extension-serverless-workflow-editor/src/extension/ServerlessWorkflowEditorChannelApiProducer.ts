@@ -42,7 +42,7 @@ import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry"
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
-      settings: SwfVsCodeExtensionConfiguration;
+      configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
     }
   ) {}
@@ -58,14 +58,14 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
     const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
-      baseFileAbsolutePath: editor.document.uri.path,
+      baseFileAbsolutePosixPath: editor.document.uri.path,
       rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
-      settings: this.args.settings,
+      configuration: this.args.configuration,
     });
 
     const fsWatchingServiceCatalogStore = new FsWatchingServiceCatalogStore({
-      baseFileAbsolutePath: editor.document.uri.path,
-      settings: this.args.settings,
+      baseFileAbsolutePosixPath: editor.document.uri.path,
+      configuration: this.args.configuration,
     });
 
     const swfServiceCatalogStore = new SwfServiceCatalogStore({
@@ -92,7 +92,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         return rhhccServiceRegistryServiceCatalogStore.refresh();
       }
 
-      const configuredServiceRegistryUrl = this.args.settings.getServiceRegistryUrl();
+      const configuredServiceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
       if (configuredServiceRegistryUrl) {
         return rhhccServiceRegistryServiceCatalogStore.refresh();
       }
@@ -107,7 +107,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     const rhhccServiceRegistryUrlSubscription = vscode.workspace.onDidChangeConfiguration(async (e) => {
       if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistryUrl)) {
         swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
-          this.args.settings.getServiceRegistryUrl()
+          this.args.configuration.getConfiguredServiceRegistryUrl()
         );
       }
     });
@@ -130,10 +130,10 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       initialBackup,
       new SwfServiceCatalogChannelApiImpl({
         swfServiceCatalogStore,
-        baseFileAbsolutePath: editor.document.uri.path,
-        settings: this.args.settings,
+        baseFileAbsolutePosixPath: editor.document.uri.path,
+        configuration: this.args.configuration,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
-        defaultServiceRegistryUrl: this.args.settings.getServiceRegistryUrl(),
+        defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
       })
     );
   }

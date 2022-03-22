@@ -11,26 +11,26 @@ export const CONFIGURATION_SECTIONS = {
 };
 
 export class SwfVsCodeExtensionConfiguration {
-  public getSpecsDirPath() {
+  public getConfiguredSpecsDirPath() {
     return vscode.workspace
       .getConfiguration()
       .get(CONFIGURATION_SECTIONS.specsStoragePath, `${configurationTokenKeys["${fileDirname}"]}/specs`);
   }
 
-  public shouldReferenceServiceRegistryFunctionsWithUrls() {
+  public getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls() {
     return vscode.workspace
       .getConfiguration()
       .get(CONFIGURATION_SECTIONS.shouldReferenceServiceRegistryFunctionsWithUrls, false);
   }
 
-  public getServiceRegistryUrl() {
+  public getConfiguredServiceRegistryUrl() {
     return vscode.workspace.getConfiguration().get(CONFIGURATION_SECTIONS.serviceRegistryUrl, "");
   }
 
-  public getInterpolatedSpecsDirPath(args: { baseFileAbsolutePath: string }) {
+  public getInterpolatedSpecsDirAbsolutePosixPath(args: { baseFileAbsolutePosixPath: string }) {
     return getInterpolatedConfigurationValue({
-      currentFileAbsolutePath: args.baseFileAbsolutePath,
-      value: this.getSpecsDirPath(),
+      currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
+      value: this.getConfiguredSpecsDirPath(),
     });
   }
 }

@@ -79,7 +79,7 @@
       "properties": {
         "kogito.sw.runOnSave": {
           "type": "string",
-          "default": "extension.kogito.silentlyGenerateSvgSw",
+          "default": "extension.kogito.swf.silentlyGenerateSvg",
           "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
         },
         "kogito.sw.svgFilenameTemplate": {
@@ -111,16 +111,16 @@
     },
     "commands": [
       {
-        "command": "extension.kogito.getPreviewSvgSw",
-        "title": "Get Serverless Workflow Editor Preview SVG",
+        "command": "extension.kogito.swf.getPreviewSvg",
+        "title": "Serverless Workflow: Generate SVG",
         "icon": {
           "light": "./static/svg-icon-light.png",
           "dark": "./static/svg-icon-dark.png"
         }
       },
       {
-        "command": "extension.kogito.silentlyGenerateSvgSw",
-        "title": "Generate SVG without any notification"
+        "command": "extension.kogito.swf.silentlyGenerateSvg",
+        "title": "Serverless Workflow: Generate SVG without any notification"
       },
       {
         "command": "extension.kogito.swf.logInToRhhcc",
