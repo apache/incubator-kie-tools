@@ -16,9 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -40,10 +41,12 @@ public class UnDockNodeCommand extends AbstractGraphCommand {
 
     public UnDockNodeCommand(final @MapsTo("parentUUID") String parentUUID,
                              final @MapsTo("candidateUUID") String candidateUUID) {
-        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
-                                                             parentUUID);
-        this.candidateUUID = PortablePreconditions.checkNotNull("candidateUUID",
-                                                                candidateUUID);
+        this.parentUUID = checkNotNull("parentUUID", parentUUID);
+        this.candidateUUID = checkNotNull("candidateUUID", candidateUUID);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public UnDockNodeCommand(final Node<?, Edge> parent,

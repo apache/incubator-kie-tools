@@ -17,6 +17,7 @@ package org.kie.workbench.common.stunner.shapes.client.factory;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,12 +30,10 @@ import com.google.gwt.safehtml.shared.SafeUri;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.shapes.def.picture.PictureProvider;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 public class PictureProvidersManager {
 
-    private static Logger LOGGER = Logger.getLogger(PictureProvidersManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PictureProvidersManager.class.getName());
 
     private final ManagedInstance<PictureProvider> pictureProviderManagedInstances;
     private final List<PictureProvider> providers = new LinkedList<>();
@@ -51,8 +50,7 @@ public class PictureProvidersManager {
 
     @SuppressWarnings("unchecked")
     public SafeUri getUri(final Object source) {
-        checkNotNull("source",
-                     source);
+        Objects.requireNonNull(source, "Parameter named 'source' should be not null!");
         final Class<?> type = source.getClass();
         PictureProvider provider = providers.stream()
                 .filter(pictureProvider -> pictureProvider.getSourceType().equals(type)).findFirst().orElse(null);

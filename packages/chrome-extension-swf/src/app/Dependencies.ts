@@ -21,8 +21,9 @@ export class Dependencies {
 
   public readonly applicationServices = {
     menu: () => document.querySelector(".pf-c-nav__list") as HTMLUListElement | null,
-    main: () => document.querySelector(".ins-c-render") as HTMLElement | null,
-    page: () => document.querySelector(".applicationServices") as HTMLElement | null,
+    main: () => document.querySelector(".pf-c-page__main") as HTMLElement | null,
+    mainContainer: () => document.querySelector(".chr-render") as HTMLElement | null,
+    page: () => document.querySelector(".chr-render") as HTMLElement | null,
   };
 
   public readonly deploymentViewer = {

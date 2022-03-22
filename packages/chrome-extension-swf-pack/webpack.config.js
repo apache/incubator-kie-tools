@@ -56,6 +56,7 @@ module.exports = async (env) => {
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
           { from: "./static/envelope", to: "./envelope" },
           { from: `./${manifestFile}`, to: "./manifest.json" },
         ],

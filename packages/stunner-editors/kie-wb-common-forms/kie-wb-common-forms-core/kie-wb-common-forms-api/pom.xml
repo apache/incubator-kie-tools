@@ -25,40 +25,13 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
-    </dependency>
-
-
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>errai-data-binding</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
     </dependency>
   </dependencies>
 

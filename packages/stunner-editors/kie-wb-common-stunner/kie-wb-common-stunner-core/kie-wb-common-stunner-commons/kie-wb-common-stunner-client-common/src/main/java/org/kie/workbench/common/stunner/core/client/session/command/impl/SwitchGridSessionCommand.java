@@ -15,6 +15,8 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
+import java.util.Objects;
+
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
@@ -23,13 +25,11 @@ import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
-
 @Dependent
 @Default
 public class SwitchGridSessionCommand extends AbstractClientSessionCommand<EditorSession> {
 
-    public final static CanvasGrid[] GRIDS = new CanvasGrid[]{
+    public static final CanvasGrid[] GRIDS = new CanvasGrid[]{
             CanvasGrid.SMALL_POINT_GRID, CanvasGrid.DEFAULT_GRID,
             CanvasGrid.DRAG_GRID, null
     };
@@ -54,8 +54,7 @@ public class SwitchGridSessionCommand extends AbstractClientSessionCommand<Edito
 
     @Override
     public <V> void execute(final Callback<V> callback) {
-        checkNotNull("callback",
-                     callback);
+        Objects.requireNonNull(callback, "Parameter named 'callback' should be not null!");
         if (++gridIndex == GRIDS.length) {
             gridIndex = 0;
         }

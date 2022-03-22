@@ -15,7 +15,142 @@
  */
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface ChromeExtensionDictionary extends ReferenceDictionary {}
+interface ChromeExtensionDictionary extends ReferenceDictionary {
+  editorPage: {
+    textEditorModal: {
+      title: (fileName: string) => string;
+    };
+    alerts: {
+      setContentError: {
+        action: string;
+        title: string;
+      };
+      copy: string;
+      updateGist: string;
+      createGist: string;
+      errorPushingGist: string;
+      forcePushWarning: string;
+      invalidCurrentGist: string;
+      invalidGistFilename: string;
+      error: string;
+      unsaved: {
+        message: string;
+        titleLocal: string;
+        titleGit: string;
+        proceedAnyway: string;
+      };
+    };
+  };
+  editorToolbar: {
+    closeAndReturnHome: string;
+    saveAndDownload: string;
+    sendChangesToGitHub: string;
+    copySource: string;
+    downloadSVG: string;
+    setGitHubToken: string;
+    createGist: string;
+    cantCreateGistTooltip: string;
+    cantUpdateGistTooltip: string;
+    share: string;
+    embed: string;
+  };
+  openshift: {
+    common: {
+      deployYourModel: string;
+      deployInstanceInfo: string;
+      disclaimer: string;
+      learnMore: string;
+      requiredField: string;
+      deploying: string;
+      saving: string;
+      setupFirst: string;
+    };
+    configWizard: {
+      header: {
+        provider: string;
+      };
+      steps: {
+        first: {
+          name: string;
+          introduction: string;
+          goToGetStartedPage: string;
+          followSteps: string;
+          informNamespace: string;
+          inputReason: string;
+          namespacePlaceholder: string;
+        };
+        second: {
+          name: string;
+          introduction: string;
+          accessLoginCommand: string;
+          accessDisplayToken: string;
+          copyInformation: string;
+          inputReason: string;
+          hostPlaceholder: string;
+          tokenPlaceholder: string;
+        };
+        final: {
+          name: string;
+          connectionError: string;
+          connectionSuccess: string;
+          introduction: string;
+          configNote: string;
+          connectionErrorLong: string;
+          checkInfo: string;
+          possibleErrorReasons: {
+            introduction: string;
+            emptyField: string;
+            tokenExpired: string;
+            instanceExpired: string;
+          };
+        };
+      };
+    };
+    configModal: {
+      hostInfo: string;
+      namespaceInfo: string;
+      tokenInfo: string;
+      validationError: string;
+      connectionError: string;
+      configExpiredWarning: string;
+      useWizard: string;
+    };
+  };
+  embedModal: {
+    title: string;
+    description: string;
+    copy: string;
+    source: {
+      current: {
+        label: string;
+        description: string;
+      };
+      gist: {
+        tooltip: string;
+        label: string;
+        description: string;
+      };
+    };
+    embedCode: string;
+    copiedToClipboard: string;
+  };
+  githubTokenModal: {
+    header: {
+      title: string;
+      subtitle: string;
+    };
+    footer: {
+      createNewToken: string;
+      placeHolder: string;
+    };
+    body: {
+      disclaimer: string;
+      learnMore: string;
+      note: string;
+    };
+  };
+}
 
-export interface ChromeExtensionI18n extends ChromeExtensionDictionary {}
+export interface ChromeExtensionI18n extends ChromeExtensionDictionary, CommonI18n {}

@@ -54,7 +54,6 @@ import org.kie.workbench.common.stunner.core.graph.impl.GraphImpl;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.AbstractTreeTraverseCallback;
 import org.kie.workbench.common.stunner.core.graph.processing.traverse.tree.TreeWalkTraverseProcessorImpl;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.util.HashUtil.combineHashCodes;
 
 public class GraphUtils {
@@ -160,8 +159,7 @@ public class GraphUtils {
                                                                                   final Function<Node, Element> parentSupplier,
                                                                                   final Node<?, ? extends Edge> candidate,
                                                                                   final Predicate<String> parentDefIdFilter) {
-        checkNotNull("candidate",
-                     candidate);
+        checkNotNull("candidate", candidate);
         Element<?> p = parentSupplier.apply(candidate);
         while (null != p && null != p.asNode() && p.getContent() instanceof Definition) {
             final String cID = getElementDefinitionId(definitionManager, p);
@@ -178,10 +176,8 @@ public class GraphUtils {
                                                                                   final Function<Node, Element> parentSupplier,
                                                                                   final Node<?, ? extends Edge> candidate,
                                                                                   final String parentDefId) {
-        checkNotNull("candidate",
-                     candidate);
-        checkNotNull("parentDefId",
-                     parentDefId);
+        checkNotNull("candidate", candidate);
+        checkNotNull("parentDefId", parentDefId);
         return getParentByDefinitionId(definitionManager,
                                        parentSupplier,
                                        candidate,
@@ -389,6 +385,10 @@ public class GraphUtils {
     private static boolean instanceOf(final Object item,
                                       final Class<?> clazz) {
         return null != item && item.getClass().equals(clazz);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public static OptionalInt getChildIndex(final Element element,

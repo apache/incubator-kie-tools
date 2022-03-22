@@ -15,9 +15,10 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
@@ -37,7 +38,7 @@ public class UpdateControlPointPositionCommand extends AbstractControlPointComma
     public UpdateControlPointPositionCommand(final @MapsTo("edgeUUID") String edgeUUID,
                                              final @MapsTo("controlPoints") ControlPoint[] controlPoints) {
         super(edgeUUID);
-        this.controlPoints = PortablePreconditions.checkNotNull("controlPoints", controlPoints);
+        this.controlPoints = Objects.requireNonNull(controlPoints, "Parameter named 'controlPoints' should be not null!");
     }
 
     @Override

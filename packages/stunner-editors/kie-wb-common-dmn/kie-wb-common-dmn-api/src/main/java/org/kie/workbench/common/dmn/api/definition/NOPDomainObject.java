@@ -15,11 +15,11 @@
  */
 package org.kie.workbench.common.dmn.api.definition;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.model.Categories;
 import org.kie.workbench.common.dmn.api.resource.i18n.DMNAPIConstants;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
@@ -50,7 +50,7 @@ public class NOPDomainObject implements DomainObject {
     public static final transient String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private final Set<String> stunnerLabels = new Sets.Builder<String>().build();
+    private final Set<String> stunnerLabels = new HashSet<>();
 
     private static String UUID = uuid();
 

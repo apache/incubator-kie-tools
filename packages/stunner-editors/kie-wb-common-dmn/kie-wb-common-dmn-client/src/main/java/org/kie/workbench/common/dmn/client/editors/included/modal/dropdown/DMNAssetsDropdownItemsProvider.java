@@ -16,17 +16,18 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.modal.dropdown;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.editors.included.DMNIncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.IncludedModel;
 import org.kie.workbench.common.dmn.api.editors.included.PMMLIncludedModel;
@@ -133,21 +134,17 @@ public class DMNAssetsDropdownItemsProvider implements KieAssetsDropdownItemsPro
     private Map<String, String> buildMetaData(final IncludedModel includedModel) {
         if (includedModel instanceof DMNIncludedModel) {
             final DMNIncludedModel idm = (DMNIncludedModel) includedModel;
-            return new Maps
-                    .Builder<String, String>()
-                    .put(PATH_METADATA, includedModel.getPath())
-                    .put(IMPORT_TYPE_METADATA, includedModel.getImportType())
-                    .put(DRG_ELEMENT_COUNT_METADATA, idm.getDrgElementsCount().toString())
-                    .put(ITEM_DEFINITION_COUNT_METADATA, idm.getItemDefinitionsCount().toString())
-                    .build();
+            return Stream.of(new AbstractMap.SimpleEntry<>(PATH_METADATA, includedModel.getPath()),
+                             new AbstractMap.SimpleEntry<>(IMPORT_TYPE_METADATA, includedModel.getImportType()),
+                             new AbstractMap.SimpleEntry<>(DRG_ELEMENT_COUNT_METADATA, idm.getDrgElementsCount().toString()),
+                             new AbstractMap.SimpleEntry<>(ITEM_DEFINITION_COUNT_METADATA, idm.getItemDefinitionsCount().toString()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         } else if (includedModel instanceof PMMLIncludedModel) {
             final PMMLIncludedModel ipm = (PMMLIncludedModel) includedModel;
-            return new Maps
-                    .Builder<String, String>()
-                    .put(PATH_METADATA, includedModel.getPath())
-                    .put(IMPORT_TYPE_METADATA, includedModel.getImportType())
-                    .put(PMML_MODEL_COUNT_METADATA, ipm.getModelCount().toString())
-                    .build();
+            return Stream.of(new AbstractMap.SimpleEntry<>(PATH_METADATA, includedModel.getPath()),
+                             new AbstractMap.SimpleEntry<>(IMPORT_TYPE_METADATA, includedModel.getImportType()),
+                             new AbstractMap.SimpleEntry<>(PMML_MODEL_COUNT_METADATA, ipm.getModelCount().toString()))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         }
         return Collections.emptyMap();
     }

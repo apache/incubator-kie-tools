@@ -18,13 +18,13 @@ package org.uberfire.client.views.pfly.notifications;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.client.views.pfly.notifications.animations.LinearFadeOutAnimation;
 import org.uberfire.client.workbench.widgets.notification.NotificationManager;
 import org.uberfire.workbench.events.NotificationEvent;
@@ -32,9 +32,9 @@ import org.uberfire.workbench.events.NotificationEvent;
 @Dependent
 public class NotificationPopupsManagerView implements NotificationManager.View {
 
-    private final int SPACING = 48;
-    private final List<PopupHandle> activeNotifications = new ArrayList<PopupHandle>();
-    private final List<PopupHandle> pendingRemovals = new ArrayList<PopupHandle>();
+    private static final int SPACING = 48;
+    private final List<PopupHandle> activeNotifications = new ArrayList<>();
+    private final List<PopupHandle> pendingRemovals = new ArrayList<>();
     //When true we are in the process of removing a notification message
     private boolean removing = false;
     private int initialSpacing = SPACING;
@@ -42,8 +42,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
     @Override
     public void setContainer(final IsWidget container) {
-        this.container = PortablePreconditions.checkNotNull("container",
-                                                            container);
+        this.container = checkNotNull("container", container);
     }
 
     @Override
@@ -135,7 +134,7 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
                 view.hide();
                 activeNotifications.remove(handle);
                 removing = false;
-                if (pendingRemovals.size() > 0) {
+                if (!pendingRemovals.isEmpty()) {
                     PopupHandle popupHandle = pendingRemovals.remove(0);
                     hide(popupHandle);
                 }
@@ -171,6 +170,10 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
         return (container.asWidget().getElement().getClientWidth() - getWidth()) / 2;
     }
 
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+    }
+
     private static class PopupHandle implements NotificationManager.NotificationPopupHandle {
 
         final NotificationPopupView view;
@@ -178,10 +181,8 @@ public class NotificationPopupsManagerView implements NotificationManager.View {
 
         PopupHandle(NotificationPopupView view,
                     NotificationEvent event) {
-            this.view = PortablePreconditions.checkNotNull("view",
-                                                           view);
-            this.event = PortablePreconditions.checkNotNull("event",
-                                                            event);
+            this.view = checkNotNull("view", view);
+            this.event = checkNotNull("event", event);
         }
     }
 }

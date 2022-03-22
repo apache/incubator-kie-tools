@@ -16,13 +16,14 @@
 package org.kie.workbench.common.stunner.bpmn.definition;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FieldParam;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormDefinition;
 import org.kie.workbench.common.forms.adf.definitions.annotations.FormField;
@@ -97,10 +98,9 @@ public class BPMNDiagramImpl implements BPMNDiagram<DiagramSet, ProcessData, Roo
     protected RectangleDimensionsSet dimensionsSet;
 
     @Labels
-    private final Set<String> labels = new Sets.Builder<String>()
-            .add("canContainArtifacts")
-            .add("diagram")
-            .build();
+    private final Set<String> labels = Stream.of("canContainArtifacts",
+                                                 "diagram")
+            .collect(Collectors.toSet());
 
     public static final Double WIDTH = 950d;
     public static final Double HEIGHT = 950d;

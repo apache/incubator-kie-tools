@@ -46,6 +46,11 @@
     </dependency>
 
     <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
     </dependency>
@@ -64,11 +69,6 @@
           <artifactId>jboss-annotations-api_1.2_spec</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
     </dependency>
 
     <dependency>

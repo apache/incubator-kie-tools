@@ -25,33 +25,33 @@ export function runScriptOnPage(scriptString: string) {
   scriptTag.remove();
 }
 
-let lastUri = window.location.pathname + window.location.search;
+// let lastUri = window.location.pathname + window.location.search;
 
 export function runAfterUriChange(logger: Logger, callback: () => void) {
   const checkUriThenCallback = () => {
-    const currentUri = window.location.pathname + window.location.search;
+    // const currentUri = window.location.pathname + window.location.search;
 
-    if (lastUri === currentUri) {
-      return;
-    }
+    // if (lastUri === currentUri) {
+    //   return;
+    // }
 
-    logger.log(`URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
-    lastUri = currentUri;
+    // logger.log(`URI changed from '${lastUri}' to '${currentUri}'. Restarting the extension.`);
+    // lastUri = currentUri;
     callback();
   };
 
-  runScriptOnPage(`
-  var _wr = function(type) {
-      var orig = history[type];
-      return function() {
-          var rv = orig.apply(this, arguments);
-          var e = new Event(type);
-          e.arguments = arguments;
-          window.dispatchEvent(e);
-          return rv;
-      };
-  };
-  history.replaceState = _wr('replaceState');`);
+  // runScriptOnPage(`
+  // var _wr = function(type) {
+  //     var orig = history[type];
+  //     return function() {
+  //         var rv = orig.apply(this, arguments);
+  //         var e = new Event(type);
+  //         e.arguments = arguments;
+  //         window.dispatchEvent(e);
+  //         return rv;
+  //     };
+  // };
+  // history.replaceState = _wr('replaceState');`);
 
   window.addEventListener("replaceState", () => {
     logger.log("replaceState event happened");

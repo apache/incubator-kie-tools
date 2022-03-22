@@ -28,9 +28,9 @@ import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.drools.workbench.screens.scenariosimulation.client.commands.ScenarioSimulationContext;
 import org.drools.workbench.screens.scenariosimulation.client.enums.GridWidget;
 import org.drools.workbench.screens.scenariosimulation.client.rightpanel.TestToolsView;
+import org.drools.workbench.screens.scenariosimulation.model.dmo.ModelField;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTree;
 import org.drools.workbench.screens.scenariosimulation.model.typedescriptor.FactModelTuple;
-import org.kie.soup.project.datamodel.oracle.ModelField;
 import org.uberfire.client.callbacks.Callback;
 
 public abstract class AbstractDMODataManagementStrategy extends AbstractDataManagementStrategy {

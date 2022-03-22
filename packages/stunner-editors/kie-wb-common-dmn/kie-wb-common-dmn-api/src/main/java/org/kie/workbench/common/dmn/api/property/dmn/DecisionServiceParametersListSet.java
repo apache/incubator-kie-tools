@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.dmn.api.property.dmn;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -23,7 +24,6 @@ import javax.validation.Valid;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
 import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.model.Categories;
 import org.kie.workbench.common.dmn.api.definition.model.DecisionService;
 import org.kie.workbench.common.dmn.api.property.DMNPropertySet;
@@ -43,8 +43,7 @@ public class DecisionServiceParametersListSet implements DMNPropertySet {
     private static final String stunnerCategory = Categories.DOMAIN_OBJECTS;
 
     @Labels
-    private static final Set<String> stunnerLabels = new Sets.Builder<String>()
-            .build();
+    private static final Set<String> stunnerLabels = new HashSet<>();
 
     @Property
     @FormField(type = DecisionParametersListFieldType.class)

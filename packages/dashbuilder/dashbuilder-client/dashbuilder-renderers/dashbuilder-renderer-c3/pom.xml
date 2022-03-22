@@ -18,7 +18,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.webjars</groupId>
+        <groupId>org.webjars.bowergithub.c3js</groupId>
         <artifactId>c3</artifactId>
         <version>${version.org.webjars.bower.c3}</version>
       </dependency>
@@ -32,7 +32,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.webjars</groupId>
+      <groupId>org.webjars.bowergithub.c3js</groupId>
       <artifactId>c3</artifactId>
     </dependency>
     <dependency>
@@ -167,7 +167,7 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>org.webjars</groupId>
+                  <groupId>org.webjars.bowergithub.c3js</groupId>
                   <artifactId>c3</artifactId>
                   <version>${version.org.webjars.bower.c3}</version>
                   <type>jar</type>
@@ -216,7 +216,7 @@
               <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/renderer/c3/client/exports/js</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/${version.org.webjars.bower.c3}</directory>
+                  <directory>${project.build.directory}/c3/META-INF/resources/webjars/c3/</directory>
                   <includes>
                     <include>c3.min.js</include>
                   </includes>

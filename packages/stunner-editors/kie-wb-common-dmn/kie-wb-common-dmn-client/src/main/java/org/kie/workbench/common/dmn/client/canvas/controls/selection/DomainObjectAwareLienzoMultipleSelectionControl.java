@@ -48,7 +48,6 @@ import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeXOfEvent;
 import static org.uberfire.ext.wires.core.grids.client.util.CoordinateUtilities.getRelativeYOfEvent;
 
@@ -181,7 +180,7 @@ public class DomainObjectAwareLienzoMultipleSelectionControl<H extends AbstractC
     }
 
     void handleDomainObjectSelectedEvent(final @Observes DomainObjectSelectionEvent event) {
-        checkNotNull("event", event);
+        Objects.requireNonNull(event, "Parameter named 'event' should be not null!");
         if (Objects.equals(getCanvasHandler(), event.getCanvasHandler())) {
             selectedDomainObject = Optional.ofNullable(event.getDomainObject());
         }

@@ -16,10 +16,12 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.client.shape.view.handler.EventInterruptingViewHandler;
@@ -67,23 +69,15 @@ public class StartEventShapeDef
                          BPMNSVGViewFactory::startCompensationEvent);
 
     public static final Map<Class<? extends BaseStartEvent>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseStartEvent>, Glyph>()
-                    .put(StartNoneEvent.class,
-                         BPMNGlyphFactory.EVENT_START_NONE)
-                    .put(StartTimerEvent.class,
-                         BPMNGlyphFactory.EVENT_START_TIMER)
-                    .put(StartSignalEvent.class,
-                         BPMNGlyphFactory.EVENT_START_SIGNAL)
-                    .put(StartMessageEvent.class,
-                         BPMNGlyphFactory.EVENT_START_MESSAGE)
-                    .put(StartErrorEvent.class,
-                         BPMNGlyphFactory.EVENT_START_ERROR)
-                    .put(StartConditionalEvent.class,
-                         BPMNGlyphFactory.EVENT_START_CONDITIONAL)
-                    .put(StartEscalationEvent.class,
-                         BPMNGlyphFactory.EVENT_START_ESCALATION)
-                    .put(StartCompensationEvent.class, BPMNGlyphFactory.EVENT_START_COMPENSATION)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(StartNoneEvent.class, BPMNGlyphFactory.EVENT_START_NONE),
+                      new AbstractMap.SimpleEntry<>(StartTimerEvent.class, BPMNGlyphFactory.EVENT_START_TIMER),
+                      new AbstractMap.SimpleEntry<>(StartSignalEvent.class, BPMNGlyphFactory.EVENT_START_SIGNAL),
+                      new AbstractMap.SimpleEntry<>(StartMessageEvent.class, BPMNGlyphFactory.EVENT_START_MESSAGE),
+                      new AbstractMap.SimpleEntry<>(StartErrorEvent.class, BPMNGlyphFactory.EVENT_START_ERROR),
+                      new AbstractMap.SimpleEntry<>(StartConditionalEvent.class, BPMNGlyphFactory.EVENT_START_CONDITIONAL),
+                      new AbstractMap.SimpleEntry<>(StartEscalationEvent.class, BPMNGlyphFactory.EVENT_START_ESCALATION),
+                      new AbstractMap.SimpleEntry<>(StartCompensationEvent.class, BPMNGlyphFactory.EVENT_START_COMPENSATION))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public FontHandler<BaseStartEvent, SVGShapeView> newFontHandler() {

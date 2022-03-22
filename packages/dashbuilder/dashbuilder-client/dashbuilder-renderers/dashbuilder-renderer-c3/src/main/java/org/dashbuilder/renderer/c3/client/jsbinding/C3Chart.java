@@ -45,4 +45,7 @@ public class C3Chart {
     @JsMethod
     public native void resize();
     
+    @JsMethod
+    public native void destroy();
+
 }

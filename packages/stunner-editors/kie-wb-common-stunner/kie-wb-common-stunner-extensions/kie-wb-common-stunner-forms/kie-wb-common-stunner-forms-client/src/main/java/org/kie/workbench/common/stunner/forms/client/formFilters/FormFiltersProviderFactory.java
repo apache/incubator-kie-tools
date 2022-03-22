@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 
 public class FormFiltersProviderFactory {
@@ -29,7 +29,7 @@ public class FormFiltersProviderFactory {
     private static final Map<Class<?>, StunnerFormElementFilterProvider> providers = new HashMap<>();
 
     public static void registerProvider(StunnerFormElementFilterProvider provider) {
-        PortablePreconditions.checkNotNull("provider", provider);
+        Objects.requireNonNull(provider, "Parameter named 'provider' should be not null!");
 
         providers.put(provider.getDefinitionType(), provider);
     }

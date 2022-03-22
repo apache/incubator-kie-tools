@@ -16,11 +16,11 @@
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -56,8 +56,7 @@ public class SetConnectionSourceNodeCommand extends AbstractGraphCommand {
     public SetConnectionSourceNodeCommand(final @MapsTo("sourceNodeUUID") String sourceNodeUUID,
                                           final @MapsTo("edgeUUID") String edgeUUID,
                                           final @MapsTo("magnet") Connection connection) {
-        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
-                                                           edgeUUID);
+        this.edgeUUID = Objects.requireNonNull(edgeUUID, "Parameter named 'edgeUUID' should be not null!");
         this.sourceNodeUUID = sourceNodeUUID;
         this.connection = connection;
         this.lastSourceNodeUUID = null;

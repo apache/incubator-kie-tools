@@ -16,11 +16,10 @@
 
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import * as ReactDOM from "react-dom";
-import "../resources/style.css";
-import { ResourceContentServiceFactory } from "./app/components/common/ChromeResourceContentService";
-import { ImageUris } from "./app/components/common/GlobalContext";
-import { Globals } from "./app/components/common/Main";
-import { renderServerlessWorkflowMenuApp } from "./app/components/ServerlessWorkflowMenu/renderServerlessWorkflowMenuApp";
+import "../static/resources/style.css";
+import { ResourceContentServiceFactory } from "./app/common/ChromeResourceContentService";
+import { GlobalProps } from "./app/common/Global";
+import { renderServerlessWorkflowMenuApp } from "./app/renderServerlessWorkflowMenuApp";
 import { Dependencies } from "./app/Dependencies";
 import { RedHatConsolePageType } from "./app/openshift/RedHatConsolePageType";
 import { mainContainer, runAfterUriChange } from "./app/utils";
@@ -29,7 +28,8 @@ import { Logger } from "./Logger";
 export function startExtension(args: {
   name: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
-  imageUris: ImageUris;
+  resourcesUriPath: string;
+  imagesUriPath: string;
 }) {
   const logger = new Logger(args.name);
   const resourceContentServiceFactory = new ResourceContentServiceFactory();
@@ -42,18 +42,19 @@ export function startExtension(args: {
       dependencies: dependencies,
       editorEnvelopeLocator: args.editorEnvelopeLocator,
       resourceContentServiceFactory: resourceContentServiceFactory,
-      imageUris: args.imageUris,
+      resourcesUriPath: args.resourcesUriPath,
+      imagesUriPath: args.imagesUriPath,
     });
 
   runAfterUriChange(logger, () => setTimeout(runInit, 0));
   setTimeout(runInit, 0);
 }
 
-function init(globals: Globals) {
+function init(globals: GlobalProps) {
   globals.logger.log(`---`);
   globals.logger.log(`Starting Chrome Extension.`);
 
-  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies);
+  unmountPreviouslyRenderedFeatures(globals.id, globals.logger, globals.dependencies!);
 
   const pageType = discoverCurrentPageType();
 

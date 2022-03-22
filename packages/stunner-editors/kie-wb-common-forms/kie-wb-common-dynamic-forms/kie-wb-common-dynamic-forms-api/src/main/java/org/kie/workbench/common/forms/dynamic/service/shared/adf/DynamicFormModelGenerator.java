@@ -19,6 +19,7 @@ package org.kie.workbench.common.forms.dynamic.service.shared.adf;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,7 +27,6 @@ import java.util.stream.Stream;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.forms.adf.engine.shared.FormBuildingService;
 import org.kie.workbench.common.forms.adf.engine.shared.FormElementFilter;
 import org.kie.workbench.common.forms.adf.engine.shared.formGeneration.util.PropertyValueExtractor;
@@ -52,8 +52,7 @@ public class DynamicFormModelGenerator {
     }
 
     public StaticModelFormRenderingContext getContextForModel(Object model, FormElementFilter... filters) {
-        PortablePreconditions.checkNotNull("model",
-                                           model);
+        Objects.requireNonNull(model, "Parameter named 'model' should be not null!");
 
         Optional<FormElementFilter[]> optional = Optional.ofNullable(filters);
         Stream<FormElementFilter> streamFilter = optional.map(value -> Stream.of(value)).orElseGet(Stream::empty);

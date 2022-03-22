@@ -23,12 +23,6 @@
   <!-- Errai -->
   <inherits name="org.jboss.errai.ui.UI"/>
 
-  <!-- Uberfire -->
-  <inherits name="org.uberfire.ext.widgets.common.UberfireWidgetsCommons"/>
-
-  <!-- Common -->
-  <inherits name="org.kie.workbench.common.widgets.KieWorkbenchWidgetsCommon"/>
-
   <!-- Stunner -->
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientApi"/>
   <inherits name="org.kie.workbench.common.stunner.core.StunnerClientCommon"/>
@@ -36,7 +30,6 @@
   <inherits name="org.kie.workbench.common.stunner.forms.StunnerFormsClient"/>
 
   <!-- Kogito -->
-  <inherits name="org.kie.workbench.common.kogito.KogitoClient"/>
   <inherits name="org.appformer.kogito.bridge.AppformerKogitoBridge"/>
 
   <source path="client"/>

@@ -15,11 +15,11 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -46,12 +46,9 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
     public UpdateElementPositionCommand(final @MapsTo("uuid") String uuid,
                                         final @MapsTo("location") Point2D location,
                                         final @MapsTo("previousLocation") Point2D previousLocation) {
-        this.uuid = PortablePreconditions.checkNotNull("uuid",
-                                                       uuid);
-        this.location = PortablePreconditions.checkNotNull("location",
-                                                           location);
-        this.previousLocation = PortablePreconditions.checkNotNull("previousLocation",
-                                                                   previousLocation);
+        this.uuid = checkNotNull("uuid", uuid);
+        this.location = checkNotNull("location", location);
+        this.previousLocation = checkNotNull("previousLocation", previousLocation);
         this.node = null;
     }
 
@@ -60,8 +57,11 @@ public final class UpdateElementPositionCommand extends AbstractGraphCommand {
         this(node.getUUID(),
              location,
              GraphUtils.getPosition(node.getContent()));
-        this.node = PortablePreconditions.checkNotNull("node",
-                                                       node);
+        this.node = checkNotNull("node", node);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public Point2D getLocation() {

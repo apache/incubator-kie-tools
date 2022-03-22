@@ -344,12 +344,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.assertj</groupId>
@@ -462,19 +456,6 @@
           </excludes>
         </configuration>
       </plugin>
-
-      <!-- The kogito-testing is used just for development/testing, we don't want to publish it into remote repos. -->
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>default-deploy</id>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -545,9 +526,6 @@
               <logLevel>INFO</logLevel>
 
               <compileSourcesArtifacts>
-
-                <compileSourcesArtifact>org.kie.soup:kie-soup-commons</compileSourcesArtifact>
-
                 <!-- UberFire -->
                 <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-api</compileSourcesArtifact>
                 <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-client-api</compileSourcesArtifact>
@@ -659,7 +637,6 @@
                     <artifactItem>
                       <groupId>org.jboss.errai</groupId>
                       <artifactId>wildfly-dist</artifactId>
-                      <version>${version.org.jboss.errai.wildfly}</version>
                       <type>zip</type>
                       <overWrite>false</overWrite>
                       <outputDirectory>${project.build.directory}</outputDirectory>

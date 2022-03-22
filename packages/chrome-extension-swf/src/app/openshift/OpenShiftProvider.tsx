@@ -18,7 +18,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DeployArgs, DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftService } from "./OpenShiftService";
-import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 
 interface Props {
   children: React.ReactNode;
@@ -124,30 +124,22 @@ export function OpenShiftProvider(props: Props) {
       try {
         const resourceRouteMap = await service.getResourceRouteMap(config);
 
-        for (const [resourceName, routeUrl] of resourceRouteMap) {
-          const workflowFileName = await fetchWorkflowName(config, resourceName);
-          if (!workflowFileName) {
+        for (const [resourceName] of resourceRouteMap) {
+          try {
+            const workflow = await fetchWorkflow(config, resourceName);
+            if (workflow) {
+              workflows.push(workflow);
+            }
+          } catch {
             continue;
           }
-
-          const response = await fetch(`${routeUrl}/${workflowFileName}`);
-          if (!response.ok) {
-            continue;
-          }
-
-          const content = await response.text();
-
-          workflows.push({
-            name: workflowFileName,
-            content: content,
-          });
         }
       } catch (error) {
         console.error(error);
       }
       return workflows;
     },
-    [fetchWorkflowName, service]
+    [fetchWorkflow, service]
   );
 
   const value = useMemo(

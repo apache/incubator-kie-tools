@@ -16,8 +16,8 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { KafkaSettingsConfig } from "../kafka/KafkaSettingsConfig";
-import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
+import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 
 export const SW_JSON_EXTENSION = "sw.json";
 

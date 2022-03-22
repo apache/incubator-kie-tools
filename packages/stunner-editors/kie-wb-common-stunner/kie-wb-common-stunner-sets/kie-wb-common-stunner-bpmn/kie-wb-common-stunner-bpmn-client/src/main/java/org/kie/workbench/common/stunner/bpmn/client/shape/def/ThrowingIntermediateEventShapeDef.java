@@ -15,9 +15,11 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.shape.def;
 
+import java.util.AbstractMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNGlyphFactory;
 import org.kie.workbench.common.stunner.bpmn.client.resources.BPMNSVGViewFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseThrowingIntermediateEvent;
@@ -45,13 +47,12 @@ public class ThrowingIntermediateEventShapeDef
                     .put(IntermediateCompensationEventThrowing.class, BPMNSVGViewFactory::intermediateCompensationThrowingEvent);
 
     public static final Map<Class<? extends BaseThrowingIntermediateEvent>, Glyph> GLYPHS =
-            new Maps.Builder<Class<? extends BaseThrowingIntermediateEvent>, Glyph>()
-                    .put(IntermediateSignalEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_SIGNAL)
-                    .put(IntermediateLinkEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_LINK)
-                    .put(IntermediateMessageEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_MESSAGE)
-                    .put(IntermediateEscalationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_ESCALATION)
-                    .put(IntermediateCompensationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_COMPENSATION)
-                    .build();
+            Stream.of(new AbstractMap.SimpleEntry<>(IntermediateSignalEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_SIGNAL),
+                      new AbstractMap.SimpleEntry<>(IntermediateLinkEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_LINK),
+                      new AbstractMap.SimpleEntry<>(IntermediateMessageEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_MESSAGE),
+                      new AbstractMap.SimpleEntry<>(IntermediateEscalationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_ESCALATION),
+                      new AbstractMap.SimpleEntry<>(IntermediateCompensationEventThrowing.class, BPMNGlyphFactory.EVENT_INTERMEDIATE_THROWING_COMPENSATION))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     @Override
     public FontHandler<BaseThrowingIntermediateEvent, SVGShapeView> newFontHandler() {

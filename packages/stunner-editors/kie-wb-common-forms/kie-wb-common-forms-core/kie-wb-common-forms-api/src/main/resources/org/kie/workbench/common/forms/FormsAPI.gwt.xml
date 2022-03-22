@@ -4,13 +4,8 @@
     "http://google-web-toolkit.googlecode.com/svn/tags/2.5.0/distro-source/core/src/gwt-module.dtd">
 <module>
 
-
-
-  <inherits name="org.uberfire.UberfireAPI"/>
   <inherits name="org.uberfire.ext.layout.editor.UberfireLayoutEditorAPI"/>
   <inherits name="org.kie.workbench.common.forms.service.FormsAPIServiceShared"/>
-
-  <inherits name="org.kie.soup.commons.KIESoupCommons"/>
 
   <source path="model"/>
 </module>

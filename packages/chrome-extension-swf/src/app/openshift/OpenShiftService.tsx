@@ -15,7 +15,7 @@
  */
 
 import { DeployArgs } from "./OpenShiftContext";
-import { OpenShiftSettingsConfig } from "./OpenShiftSettingsConfig";
+import { isConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
@@ -27,6 +27,7 @@ import {
   KNativeServices,
   ListKNativeServices,
 } from "./resources/KNativeService";
+import { GetProject } from "./resources/Project";
 import { KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateSecret, DeleteSecret } from "./resources/Secret";
 
@@ -216,5 +217,26 @@ export class OpenShiftService {
     const randomPart = Math.random().toString(36).substring(2, 11);
     const milliseconds = new Date().getMilliseconds();
     return `${randomPart}${milliseconds}`;
+  }
+
+  public async isConnectionEstablished(config: OpenShiftSettingsConfig): Promise<boolean> {
+    try {
+      await this.fetchResource(
+        config.proxy,
+        new GetProject({
+          host: config.host,
+          namespace: config.namespace,
+          token: config.token,
+        })
+      );
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  public async onCheckConfig(config: OpenShiftSettingsConfig) {
+    return isConfigValid(config) && (await this.isConnectionEstablished(config));
   }
 }
