@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2017 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License atå
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<svg id="state" version="1.1" xmlns="http://www.w3.org/2000/svg"
+     xmlns:stunner="http://kiegroup.org/2017/stunner"
+     x=".75" y=".75"
+     width="154px" height="102px"
+     viewBox="-1.5 -1.5 154 102">
+  <rect id="state" class="state_background" x="0" y="0" width="150px" height="98px" rx="5" ry="5"/>
+  <rect id="state-border" class="state_border" x="0" y="0" width="150px" height="98px" rx="5" ry="5" stunner:shape-state="stroke"/>
+
+
+  <g class="state_group_inject" stunner:transform="non-scalable" transform="translate(10,10) scale(0.8,0.8)">
+    <path class="state_inject_icon" d="m8.89967,6.36789c-1.31116,0 -2.36532,1.08485 -2.36532,2.43245l0,16.32391c0,1.34823 1.05417,2.43245 2.36532,2.43245l21.62287,0c1.31052,0 2.3666,-1.08421 2.3666,-2.43245l0,-16.32391c0,-1.34759 -1.05608,-2.43245 -2.3666,-2.43245l-21.62287,0zm1.3802,7.0966l18.86184,0c0.73645,0 1.32969,0.60923 1.32969,1.36613l0,9.16914c0,0.75754 -0.59325,1.36613 -1.32969,1.36613c-0.20649,0 -19.13353,0 -18.86184,0c-0.73581,0 -1.32778,-0.60859 -1.32778,-1.36613l0,-9.16914c0,-0.7569 0.59197,-1.36613 1.32778,-1.36613z"/>
+  </g>
+  <g class="state_group_switch" stunner:transform="non-scalable" transform="translate(10,10) scale(1.2,1.2)">
+    <path class="state_switch_icon" d="m18.49469,8.10264l-0.00844,2.26275c-0.08703,0.52511 -0.2453,0.9711 -0.48321,1.32865c-2.80665,2.9936 -2.85072,2.91188 -4.38317,4.48184c-2.86382,2.57473 -3.09733,3.98403 -3.25104,5.14117l-2.15027,0.02903l3.14634,3.17676l3.09406,-3.17108l-1.88342,-0.03503c-0.01852,-0.43421 0.32852,-1.18147 1.03314,-2.07217l5.21612,-5.11176c0.74487,-0.89987 1.45795,-1.04976 1.91542,-3.93899l-0.01503,-2.12098l-2.2305,0.02981z"/>
+    <path class="state_switch_icon" d="m19.00437,16.88135l-1.51102,1.54642c1.27885,0.78257 1.67441,1.84782 2.05383,2.91823l-2.05171,0.05241l3.13975,3.14457l2.99901,-3.11642l-1.90246,-0.08307c-0.53165,-2.32396 -1.50248,-3.6746 -2.7274,-4.46214z"/>
+  </g>
+  <g class="state_group_operation" id="state_group_operation" stunner:transform="non-scalable">
+    <image x="10px" y="10px" id="state_operation_icon" class="state-opeeration" href="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="/>
+  </g>
+  <g class="state_group_event" stunner:transform="non-scalable" transform="translate(10,10) scale(0.16,0.16)">
+    <path class="state_event_icon" d="m93.74461,0.00045c-11.45626,0.05598 -23.83168,5.42051 -34.36431,19.10064c-23.92787,-2.54008 -31.26318,12.02617 -34.02531,23.56238c-38.69941,5.22863 -28.89741,55.8065 1.27175,53.32284l7.95559,-0.0692c-0.11562,2.33729 -0.16205,4.63505 0.61547,6.45852l-12.04733,6.3686l4.59507,14.07769l14.16554,-2.34766c2.38788,4.07231 5.22826,7.10853 8.20157,9.8392l-2.93109,15.22904l13.69477,5.43636l8.5633,-12.05353c5.77415,1.05226 9.52189,1.61133 13.33562,1.36685l4.76716,13.09222l15.26883,-3.85971l-0.82579,-14.07201c3.49163,-1.63155 8.34906,-6.30578 10.80193,-10.52959l12.68397,5.18l7.2776,-13.33923l-11.88662,-8.42068c1.61019,-3.54897 2.86843,-8.67236 2.28669,-13.14648l6.86573,-0.10697c27.62773,1.94493 42.28239,-48.73207 0.63148,-63.47106c-0.14417,-16.04428 -17.15786,-31.7147 -36.90162,-31.61822zm-0.81287,12.0959c15.68698,0.0042 29.38294,16.19591 26.80301,29.96664c30.85666,-1.08239 29.30676,40.73865 10.41177,41.6171l-105.03958,1.22628c-19.56565,-3.20364 -18.68461,-35.36165 10.59987,-30.98519c1.21677,-21.77186 12.93661,-26.66397 30.69787,-21.84621c7.65228,-14.53324 17.42473,-19.98105 26.52706,-19.97862zm-31.63755,84.79787l36.41289,-0.2305c1.95026,17.11106 -8.65283,21.48943 -17.86029,21.33144c-9.59104,0.0605 -20.03453,-5.7856 -18.5526,-21.10094z"/>
+  </g>
+</svg>

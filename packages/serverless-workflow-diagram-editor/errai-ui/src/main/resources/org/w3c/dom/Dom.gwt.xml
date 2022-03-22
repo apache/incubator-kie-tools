@@ -1,0 +1,5 @@
+<module>
+  <super-source path="super"/>
+  <define-property name="errai.i18n.default_per_key" values="true,false" />
+  <set-property name="errai.i18n.default_per_key" value="false"/>
+</module>
