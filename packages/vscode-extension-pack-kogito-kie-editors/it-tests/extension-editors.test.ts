@@ -43,6 +43,8 @@ describe("Editors are loading properly", () => {
   const DEMO_SCESIM: string = "demo.scesim";
   const DEMO_PMML: string = "demo.pmml";
 
+  const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
+
   const REUSABLE_DMN: string = "reusable-model.dmn";
   const WID_BPMN: string = "process-wid.bpmn";
 
@@ -189,6 +191,7 @@ describe("Editors are loading properly", () => {
   /**
    * As the opened sceism file is empty, a prompt to specify file under test should be shown
    */
+
   it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
@@ -333,6 +336,36 @@ describe("Editors are loading properly", () => {
       dataTypeTypeBracketFormat,
       false
     );
+
+    await webview.switchBack();
+  });
+
+  it("Opens MultipleInstanceSubprocess.bpmn file in BPMN Editor and test value change", async function () {
+    this.timeout(40000);
+    webview = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
+    await testHelper.switchWebviewToFrame(webview);
+    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    const explorerPanel = await bpmnEditorTester.openDiagramExplorer();
+    await explorerPanel.selectDiagramNode("Multiple Instance Sub-Process");
+
+    let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+
+    const newProcessName = "Changed Multiple Instance Sub-Process";
+    await propertiesPanel.changeProperty("Name", newProcessName, "textarea");
+    await propertiesPanel.assertPropertyValue("Name", newProcessName, "textarea");
+
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
+
+    const newProcessMIExecutionValue = "Sequential";
+    let processMIExecutionMode = await propertiesPanel.getProperty("MI Execution mode", "select");
+    await bpmnEditorTester.scrollElementIntoView(processMIExecutionMode);
+    const customProcessMIExecutionOption = await processMIExecutionMode.findElement(
+      By.xpath("//select/option[@value='" + newProcessMIExecutionValue + "']")
+    );
+    await customProcessMIExecutionOption.click();
+
+    await propertiesPanel.assertPropertyValue("MI Execution mode", newProcessMIExecutionValue, "select");
 
     await webview.switchBack();
   });
