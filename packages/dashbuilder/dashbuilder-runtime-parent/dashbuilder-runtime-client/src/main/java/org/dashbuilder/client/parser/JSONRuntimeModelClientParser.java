@@ -24,7 +24,7 @@ import org.dashbuilder.shared.model.RuntimeModel;
 public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
 
     private static String PROPERTY_KEY = "VALUE";
-    private static String PROPERTY_REPLACEMENT_PATTERN = "\\$\\{"+PROPERTY_KEY+"\\}";
+    private static String PROPERTY_REPLACEMENT_PATTERN = "\\$\\{" + PROPERTY_KEY + "\\}";
 
     @Override
     public RuntimeModel parse(String jsonContent) {
@@ -39,8 +39,8 @@ public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
     }
 
     @Override
-    public String supportedType() {
-        return "json";
+    public boolean test(String content) {
+        return content.trim().startsWith("{");
     }
 
 }
