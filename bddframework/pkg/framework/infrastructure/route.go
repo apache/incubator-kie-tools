@@ -21,7 +21,6 @@ import (
 	"github.com/RHsyseng/operator-utils/pkg/resource/compare"
 	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	routev1 "github.com/openshift/api/route/v1"
@@ -105,7 +104,7 @@ func (r *routeHandler) CreateRoute(instance api.KogitoService) *routev1.Route {
 				TargetPort: intstr.FromString(framework.DefaultPortName),
 			},
 			To: routev1.RouteTargetReference{
-				Kind: openshift.KindService.Name,
+				Kind: KindService.Name,
 				Name: instance.GetName(),
 			},
 		},

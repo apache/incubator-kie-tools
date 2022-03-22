@@ -15,7 +15,6 @@
 package framework
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	appsv1 "github.com/openshift/api/apps/v1"
 	dockerv10 "github.com/openshift/api/image/docker10"
 	"github.com/stretchr/testify/assert"
@@ -148,7 +147,7 @@ func Test_addMetadataFromDockerImage(t *testing.T) {
 func Test_discoverPortsAndProbesFromImage(t *testing.T) {
 	dockerImage := &dockerv10.DockerImage{Config: &dockerv10.DockerConfig{
 		Labels: map[string]string{
-			openshift.ImageLabelForExposeServices: "8080:http",
+			imageLabelForExposeServices: "8080:http",
 		},
 	}}
 	dc := &appsv1.DeploymentConfig{

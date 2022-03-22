@@ -17,6 +17,7 @@ package kogitobuild
 import (
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/framework"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -32,11 +33,11 @@ type BuildConfigHandler interface {
 }
 
 type buildConfigHandler struct {
-	BuildContext
+	operator.Context
 }
 
 // NewBuildConfigHandler ...
-func NewBuildConfigHandler(context BuildContext) BuildConfigHandler {
+func NewBuildConfigHandler(context operator.Context) BuildConfigHandler {
 	return &buildConfigHandler{
 		context,
 	}

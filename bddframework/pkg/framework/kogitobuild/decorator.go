@@ -55,11 +55,11 @@ type DecoratorHandler interface {
 }
 
 type decoratorHandler struct {
-	BuildContext
+	operator.Context
 }
 
 // NewDecoratorHandler ...
-func NewDecoratorHandler(context BuildContext) DecoratorHandler {
+func NewDecoratorHandler(context operator.Context) DecoratorHandler {
 	return &decoratorHandler{
 		context,
 	}
@@ -124,7 +124,7 @@ func (b *decoratorHandler) decoratorForLocalSourceBuilder() decorator {
 func (b *decoratorHandler) decoratorForSourceBuilder() decorator {
 	return func(build api.KogitoBuildInterface, bc *buildv1.BuildConfig) {
 		bc.Name = GetBuildBuilderName(build)
-		imageStreamHandler := NewImageSteamHandler(b.BuildContext)
+		imageStreamHandler := NewImageSteamHandler(b.Context)
 		baseImage := corev1.ObjectReference{
 			Kind:      kindImageStreamTag,
 			Namespace: build.GetNamespace(),
@@ -211,7 +211,7 @@ func (b *decoratorHandler) decoratorForSourceRuntimeBuilder() decorator {
 func (b *decoratorHandler) decoratorForRuntimeBuilder() decorator {
 	return func(build api.KogitoBuildInterface, bc *buildv1.BuildConfig) {
 		bc.Name = build.GetName()
-		imageStreamHandler := NewImageSteamHandler(b.BuildContext)
+		imageStreamHandler := NewImageSteamHandler(b.Context)
 		baseImage := corev1.ObjectReference{
 			Kind:      kindImageStreamTag,
 			Namespace: build.GetNamespace(),

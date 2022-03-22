@@ -20,6 +20,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
+	app2 "github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/kiegroup/kogito-operator/version/app"
 	"reflect"
@@ -43,15 +44,13 @@ func TestNewWhenBuildingFromRemoteSource(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(build).OnOpenShift().Build()
-	context := BuildContext{
-		Context: operator.Context{
-			Client:  cli,
-			Log:     test.TestLogger,
-			Scheme:  meta.GetRegisteredSchema(),
-			Version: app.Version,
-		},
+	context := operator.Context{
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: app.Version,
 	}
-	deltaProcessor := &deltaProcessor{BuildContext: context, build: build}
+	deltaProcessor := &deltaProcessor{Context: context, build: build}
 	manager := deltaProcessor.getBuildManager()
 	assert.NotNil(t, manager)
 
@@ -95,15 +94,13 @@ func TestNewWhenBuildingFromLocalSource(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
-	context := BuildContext{
-		Context: operator.Context{
-			Client:  cli,
-			Log:     test.TestLogger,
-			Scheme:  meta.GetRegisteredSchema(),
-			Version: app.Version,
-		},
+	context := operator.Context{
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: app.Version,
 	}
-	deltaProcessor := &deltaProcessor{BuildContext: context, build: build}
+	deltaProcessor := &deltaProcessor{Context: context, build: build}
 	manager := deltaProcessor.getBuildManager()
 	assert.NotNil(t, manager)
 
@@ -148,15 +145,13 @@ func TestNewWhenBuildingFromBinary(t *testing.T) {
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
 
-	context := BuildContext{
-		Context: operator.Context{
-			Client:  cli,
-			Log:     test.TestLogger,
-			Scheme:  meta.GetRegisteredSchema(),
-			Version: app.Version,
-		},
+	context := operator.Context{
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: app.Version,
 	}
-	deltaProcessor := &deltaProcessor{BuildContext: context, build: build}
+	deltaProcessor := &deltaProcessor{Context: context, build: build}
 	manager := deltaProcessor.getBuildManager()
 	assert.NotNil(t, manager)
 
@@ -189,15 +184,14 @@ func TestNewWhenSanityCheckComplainAboutType(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
-	context := BuildContext{
-		Context: operator.Context{
-			Client:  cli,
-			Log:     test.TestLogger,
-			Scheme:  meta.GetRegisteredSchema(),
-			Version: app.Version,
-		},
+	context := operator.Context{
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: app.Version,
 	}
-	manager, err := NewDeltaProcessor(context, build)
+	buildHandler := app2.NewKogitoBuildHandler(context)
+	manager, err := NewDeltaProcessor(context, build, buildHandler)
 	assert.Error(t, err)
 	assert.Nil(t, manager)
 }
@@ -214,15 +208,14 @@ func TestNewWhenSanityCheckComplainAboutGit(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(build).Build()
-	context := BuildContext{
-		Context: operator.Context{
-			Client:  cli,
-			Log:     test.TestLogger,
-			Scheme:  meta.GetRegisteredSchema(),
-			Version: app.Version,
-		},
+	context := operator.Context{
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: app.Version,
 	}
-	manager, err := NewDeltaProcessor(context, build)
+	buildHandler := app2.NewKogitoBuildHandler(context)
+	manager, err := NewDeltaProcessor(context, build, buildHandler)
 	assert.Error(t, err)
 	assert.Nil(t, manager)
 }

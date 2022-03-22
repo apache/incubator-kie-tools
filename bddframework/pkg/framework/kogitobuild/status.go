@@ -17,8 +17,9 @@ package kogitobuild
 import (
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/framework"
+	"github.com/kiegroup/kogito-operator/core/manager"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -44,13 +45,15 @@ type StatusHandler interface {
 }
 
 type statusHandler struct {
-	BuildContext
+	operator.Context
+	buildHandler manager.KogitoBuildHandler
 }
 
 // NewStatusHandler ...
-func NewStatusHandler(context BuildContext) StatusHandler {
+func NewStatusHandler(context operator.Context, buildHandler manager.KogitoBuildHandler) StatusHandler {
 	return &statusHandler{
-		context,
+		Context:      context,
+		buildHandler: buildHandler,
 	}
 }
 
@@ -144,7 +147,8 @@ func (s *statusHandler) handleConditionTransition(instance api.KogitoBuildInterf
 }
 
 func (s *statusHandler) updateBuildsStatus(instance api.KogitoBuildInterface) (err error) {
-	buildsStatus, err := openshift.BuildConfigC(s.Client).GetBuildsStatusByLabel(
+	buildConfig := NewBuildHandler(s.Context, s.buildHandler)
+	buildsStatus, err := buildConfig.GetBuildsStatusByLabel(
 		instance.GetNamespace(),
 		strings.Join([]string{
 			strings.Join([]string{framework.LabelAppKey, GetApplicationName(instance)}, "="),

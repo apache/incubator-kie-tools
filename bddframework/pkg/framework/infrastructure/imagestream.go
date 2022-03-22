@@ -15,17 +15,25 @@
 package infrastructure
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
+	dockerv10 "github.com/openshift/api/image/docker10"
 	imgv1 "github.com/openshift/api/image/v1"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"reflect"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+)
+
+const (
+	//ImageTagLatest is the default name for the latest image tag
+	ImageTagLatest = "latest"
 )
 
 const (
@@ -46,6 +54,17 @@ var imageStreamAnnotations = map[string]string{
 
 // ImageStreamHandler ...
 type ImageStreamHandler interface {
+	// FetchDockerImage fetches a docker image based on a ImageStreamTag with the defined key (namespace and name).
+	// Returns nil if not found
+	FetchDockerImage(key types.NamespacedName) (*dockerv10.DockerImage, error)
+	// FetchTag fetches for a particular ImageStreamTag on OpenShift cluster.
+	// If tag is nil or empty, will search for "latest".
+	// Returns nil if the object was not found.
+	FetchTag(key types.NamespacedName, tag string) (*imgv1.ImageStreamTag, error)
+	// CreateTagIfNotExists will create a new ImageStreamTag if not exists
+	CreateTagIfNotExists(image *imgv1.ImageStreamTag) (bool, error)
+	// CreateImageStream will create a new ImageStream if not exists
+	CreateImageStream(is *imgv1.ImageStream) (bool, error)
 	FetchImageStream(key types.NamespacedName) (*imgv1.ImageStream, error)
 	MustFetchImageStream(key types.NamespacedName) (*imgv1.ImageStream, error)
 	CreateImageStreamIfNotExists(key types.NamespacedName, tag string, addFromReference bool, imageName string, insecureImageRegistry bool) (*imgv1.ImageStream, error)
@@ -218,7 +237,7 @@ func (i *imageStreamHandler) findTagStatusCondition(is *imgv1.ImageStream, tag s
 
 func (i *imageStreamHandler) fetchTag(key types.NamespacedName, tag string) (*imgv1.ImageStreamTag, error) {
 	i.Log.Debug("fetching image stream tag", "tag", tag)
-	ist, err := openshift.ImageStreamC(i.Client).FetchTag(key, tag)
+	ist, err := i.FetchTag(key, tag)
 	if err != nil {
 		i.Log.Error(err, "Error occurs while fetching image stream tag", "tag", tag)
 		return nil, err
@@ -246,4 +265,67 @@ func (i *imageStreamHandler) RemoveSharedImageStreamOwnerShip(key types.Namespac
 	}
 	i.Log.Debug("Owner reference doesn't match. Skip to remove owner reference.", "imageStream", is.GetName(), "owner", owner.GetName())
 	return
+}
+
+func (i *imageStreamHandler) FetchTag(key types.NamespacedName, tag string) (*imgv1.ImageStreamTag, error) {
+	if len(tag) == 0 {
+		tag = ImageTagLatest
+	}
+	tagRefName := fmt.Sprintf("%s:%s", key.Name, tag)
+	isTag, err := i.Client.ImageCli.ImageStreamTags(key.Namespace).Get(context.TODO(), tagRefName, v1.GetOptions{})
+	if err != nil && errors.IsNotFound(err) {
+		i.Log.Debug("Image '%s' not found on namespace %s", tagRefName, key.Namespace)
+		return nil, nil
+	} else if err != nil {
+		return nil, err
+	}
+	return isTag, err
+}
+
+func (i *imageStreamHandler) FetchDockerImage(key types.NamespacedName) (*dockerv10.DockerImage, error) {
+	dockerImage := &dockerv10.DockerImage{}
+	isTag, err := i.FetchTag(key, "")
+	if err != nil {
+		return nil, err
+	} else if isTag == nil {
+		return nil, nil
+	}
+	i.Log.Debug("Found image '%s' in the namespace '%s'", key.Name, key.Namespace)
+	// is there any metadata to read from?
+	if len(isTag.Image.DockerImageMetadata.Raw) != 0 {
+		err = json.Unmarshal(isTag.Image.DockerImageMetadata.Raw, dockerImage)
+		if err != nil {
+			return nil, err
+		}
+		return dockerImage, nil
+	}
+
+	i.Log.Warn("Can't find any metadata in the docker image for the imagestream '%s' in the namespace '%s'", key.Name, key.Namespace)
+	return nil, nil
+}
+
+func (i *imageStreamHandler) CreateTagIfNotExists(is *imgv1.ImageStreamTag) (bool, error) {
+	is, err := i.Client.ImageCli.ImageStreamTags(is.Namespace).Create(context.TODO(), is, v1.CreateOptions{})
+	if err != nil && !errors.IsAlreadyExists(err) {
+		i.Log.Debug("Error while creating Image Stream Tag '%s' in namespace '%s'", is.Name, is.Namespace)
+		return false, err
+	} else if errors.IsAlreadyExists(err) {
+		i.Log.Debug("Image Stream Tag already exists in the namespace")
+		return false, nil
+	}
+	i.Log.Debug("Image Stream Tag %s created in namespace %s", is.Name, is.Namespace)
+	return true, nil
+}
+
+func (i *imageStreamHandler) CreateImageStream(is *imgv1.ImageStream) (bool, error) {
+	is, err := i.Client.ImageCli.ImageStreams(is.Namespace).Create(context.TODO(), is, v1.CreateOptions{})
+	if err != nil && !errors.IsAlreadyExists(err) {
+		i.Log.Debug("Error while creating Image Stream '%s' in namespace '%s'", is.Name, is.Namespace)
+		return false, err
+	} else if errors.IsAlreadyExists(err) {
+		i.Log.Debug("Image Stream already exists in the namespace")
+		return false, nil
+	}
+	i.Log.Debug("Image Stream %s created in namespace %s", is.Name, is.Namespace)
+	return true, nil
 }

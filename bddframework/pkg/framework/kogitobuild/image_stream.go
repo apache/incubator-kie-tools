@@ -105,11 +105,11 @@ type ImageStreamHandler interface {
 }
 
 type imageStreamHandler struct {
-	BuildContext
+	operator.Context
 }
 
 // NewImageSteamHandler ...
-func NewImageSteamHandler(context BuildContext) ImageStreamHandler {
+func NewImageSteamHandler(context operator.Context) ImageStreamHandler {
 	return &imageStreamHandler{
 		context,
 	}

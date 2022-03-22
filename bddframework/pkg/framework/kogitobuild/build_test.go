@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package openshift
+package kogitobuild
 
 import (
 	"context"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	buildv1 "github.com/openshift/api/build/v1"
 	"github.com/stretchr/testify/assert"
@@ -28,7 +30,13 @@ import (
 
 func Test_buildConfig_TriggerBuildFromFile_BCNotFound(t *testing.T) {
 	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
-	buildCLI := newBuildConfigWithBCRetries(cli, 1, 1*time.Second)
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	buildHandler := app.NewKogitoBuildHandler(context)
+	buildCLI := newBuildHandlerWithBCRetries(context, 1, 1*time.Second, buildHandler)
 	buildOpts := &buildv1.BinaryBuildRequestOptions{AsFile: "myfile.dmn", ObjectMeta: v1.ObjectMeta{Name: "mybuild"}}
 	build, err := buildCLI.TriggerBuildFromFile(t.Name(), nil, buildOpts, false, meta.GetRegisteredSchema())
 	// buildconfig is not there, raise an error
@@ -40,7 +48,13 @@ func Test_buildConfig_TriggerBuildFromFile_BCNotFound(t *testing.T) {
 
 func Test_buildConfig_TriggerBuildFromFile_BCNotFound_Binary(t *testing.T) {
 	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
-	buildCLI := newBuildConfigWithBCRetries(cli, 1, 1*time.Second)
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	buildHandler := app.NewKogitoBuildHandler(context)
+	buildCLI := newBuildHandlerWithBCRetries(context, 1, 1*time.Second, buildHandler)
 	buildOpts := &buildv1.BinaryBuildRequestOptions{AsFile: "target.tar.gz", ObjectMeta: v1.ObjectMeta{Name: "mybuild"}}
 	build, err := buildCLI.TriggerBuildFromFile(t.Name(), nil, buildOpts, true, meta.GetRegisteredSchema())
 	// buildconfig is not there, raise an error
@@ -53,7 +67,13 @@ func Test_buildConfig_TriggerBuildFromFile_BCNotFound_Binary(t *testing.T) {
 func Test_buildConfig_TriggerBuildFromFile_BCNotFoundThenFound(t *testing.T) {
 	var wg sync.WaitGroup
 	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
-	buildCLI := newBuildConfig(cli)
+	ctx := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	buildHandler := app.NewKogitoBuildHandler(ctx)
+	buildCLI := NewBuildHandler(ctx, buildHandler)
 	buildConfig := &buildv1.BuildConfig{
 		ObjectMeta: v1.ObjectMeta{Name: "mybuild-builder", Namespace: t.Name()},
 		Spec:       buildv1.BuildConfigSpec{},
@@ -81,7 +101,13 @@ func Test_buildConfig_TriggerBuildFromFile_BCNotFoundThenFound(t *testing.T) {
 func Test_buildConfig_TriggerBuildFromFile_BCNotFoundThenFound_Binary(t *testing.T) {
 	var wg sync.WaitGroup
 	cli := test.NewFakeClientBuilder().OnOpenShift().Build()
-	buildCLI := newBuildConfig(cli)
+	ctx := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
+	}
+	buildHandler := app.NewKogitoBuildHandler(ctx)
+	buildCLI := NewBuildHandler(ctx, buildHandler)
 	buildConfig := &buildv1.BuildConfig{
 		ObjectMeta: v1.ObjectMeta{Name: "mybuild", Namespace: t.Name()},
 		Spec:       buildv1.BuildConfigSpec{},

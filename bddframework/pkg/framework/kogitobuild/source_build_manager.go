@@ -23,14 +23,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-type sourceManager struct {
-	manager
+type sourceBuildManager struct {
+	buildManager
 }
 
-func (m *sourceManager) GetRequestedResources() (map[reflect.Type][]client.Object, error) {
+func (m *sourceBuildManager) GetRequestedResources() (map[reflect.Type][]client.Object, error) {
 	resources := make(map[reflect.Type][]client.Object)
-	decoratorHandler := NewDecoratorHandler(m.BuildContext)
-	buildConfigHandler := NewBuildConfigHandler(m.BuildContext)
+	decoratorHandler := NewDecoratorHandler(m.Context)
+	buildConfigHandler := NewBuildConfigHandler(m.Context)
 	builderBC := buildConfigHandler.newBuildConfig(m.build, decoratorHandler.decoratorForSourceBuilder(), m.getBuilderDecorator(), decoratorHandler.decoratorForCustomLabels())
 	runtimeBC := buildConfigHandler.newBuildConfig(m.build, decoratorHandler.decoratorForRuntimeBuilder(), decoratorHandler.decoratorForSourceRuntimeBuilder(), decoratorHandler.decoratorForCustomLabels())
 	builderIS := newOutputImageStreamForBuilder(&builderBC)
@@ -50,8 +50,8 @@ func (m *sourceManager) GetRequestedResources() (map[reflect.Type][]client.Objec
 	return resources, nil
 }
 
-func (m *sourceManager) getBuilderDecorator() decorator {
-	decoratorHandler := NewDecoratorHandler(m.BuildContext)
+func (m *sourceBuildManager) getBuilderDecorator() decorator {
+	decoratorHandler := NewDecoratorHandler(m.Context)
 	if api.LocalSourceBuildType == m.build.GetSpec().GetType() {
 		return decoratorHandler.decoratorForLocalSourceBuilder()
 	}

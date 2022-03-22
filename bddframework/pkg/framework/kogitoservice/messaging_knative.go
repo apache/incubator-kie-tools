@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
@@ -99,8 +98,8 @@ func (k *knativeMessagingDeployer) newTrigger(e messagingEventMeta, service api.
 				Ref: &duckv1.KReference{
 					Name:       service.GetName(),
 					Namespace:  service.GetNamespace(),
-					Kind:       openshift.KindService.Name,
-					APIVersion: openshift.KindService.GroupVersion.Version,
+					Kind:       infrastructure.KindService.Name,
+					APIVersion: infrastructure.KindService.GroupVersion.Version,
 				},
 			},
 		},
@@ -139,8 +138,8 @@ func (k *knativeMessagingDeployer) newSinkBinding(service api.KogitoService, inf
 			},
 			BindingSpec: duckv1.BindingSpec{
 				Subject: tracker.Reference{
-					APIVersion: openshift.KindDeployment.GroupVersion.String(),
-					Kind:       openshift.KindDeployment.Name,
+					APIVersion: infrastructure.KindDeployment.GroupVersion.String(),
+					Kind:       infrastructure.KindDeployment.Name,
 					Namespace:  service.GetNamespace(),
 					Name:       service.GetName(),
 				},

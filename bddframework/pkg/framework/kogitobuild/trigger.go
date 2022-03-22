@@ -16,7 +16,7 @@ package kogitobuild
 
 import (
 	"context"
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
+	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "github.com/openshift/api/build/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -40,12 +40,14 @@ type TriggerHandler interface {
 
 type triggerHandler struct {
 	operator.Context
+	buildHandler manager.KogitoBuildHandler
 }
 
 // NewTriggerHandler ...
-func NewTriggerHandler(context operator.Context) TriggerHandler {
+func NewTriggerHandler(context operator.Context, buildHandler manager.KogitoBuildHandler) TriggerHandler {
 	return &triggerHandler{
-		context,
+		Context:      context,
+		buildHandler: buildHandler,
 	}
 }
 
@@ -55,7 +57,7 @@ func (t *triggerHandler) StartNewBuild(buildConfig *v1.BuildConfig) error {
 	if err := t.cancelRunningBuilds(buildConfig); err != nil {
 		return err
 	}
-	if _, err := openshift.BuildConfigC(t.Client).TriggerBuild(buildConfig, triggeredBy); err != nil {
+	if _, err := NewBuildHandler(t.Context, t.buildHandler).TriggerBuild(buildConfig, triggeredBy); err != nil {
 		t.Log.Error(err, "Failed to start a new build", "For Build Config", buildConfig.Name)
 		return err
 	}
@@ -65,7 +67,7 @@ func (t *triggerHandler) StartNewBuild(buildConfig *v1.BuildConfig) error {
 // cancelRunningBuilds cancels any running builds for the given BuildConfig
 func (t *triggerHandler) cancelRunningBuilds(buildConfig *v1.BuildConfig) error {
 	builds, err := t.Client.BuildCli.Builds(buildConfig.Namespace).List(context.TODO(),
-		metav1.ListOptions{LabelSelector: strings.Join([]string{openshift.BuildConfigLabelSelector, buildConfig.Name}, "=")},
+		metav1.ListOptions{LabelSelector: strings.Join([]string{BuildConfigLabelSelector, buildConfig.Name}, "=")},
 	)
 	if err != nil {
 		return err

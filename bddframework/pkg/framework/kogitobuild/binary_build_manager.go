@@ -22,14 +22,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
-type binaryManager struct {
-	manager
+type binaryBuildManager struct {
+	buildManager
 }
 
-func (m *binaryManager) GetRequestedResources() (map[reflect.Type][]client.Object, error) {
+func (m *binaryBuildManager) GetRequestedResources() (map[reflect.Type][]client.Object, error) {
 	resources := make(map[reflect.Type][]client.Object)
-	decoratorHandler := NewDecoratorHandler(m.BuildContext)
-	buildConfigHandler := NewBuildConfigHandler(m.BuildContext)
+	decoratorHandler := NewDecoratorHandler(m.Context)
+	buildConfigHandler := NewBuildConfigHandler(m.Context)
 	buildConfig := buildConfigHandler.newBuildConfig(m.build, decoratorHandler.decoratorForRuntimeBuilder(), decoratorHandler.decoratorForBinaryRuntimeBuilder(), decoratorHandler.decoratorForCustomLabels())
 	imageStream, err := newOutputImageStreamForRuntime(m.Context, &buildConfig, m.build)
 	if err != nil {

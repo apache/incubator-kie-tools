@@ -15,9 +15,9 @@
 package kogitobuild
 
 import (
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
+	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	buildv1 "github.com/openshift/api/build/v1"
 	"github.com/stretchr/testify/assert"
@@ -37,7 +37,7 @@ func TestStartNewBuild(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "mybuildconfig-1",
 			Namespace: t.Name(),
-			Labels:    map[string]string{openshift.BuildConfigLabelSelector: "mybuildconfig"}},
+			Labels:    map[string]string{BuildConfigLabelSelector: "mybuildconfig"}},
 		Spec: buildv1.BuildSpec{},
 		Status: buildv1.BuildStatus{
 			Phase:     buildv1.BuildPhaseRunning,
@@ -50,15 +50,16 @@ func TestStartNewBuild(t *testing.T) {
 		Log:    test.TestLogger,
 		Scheme: meta.GetRegisteredSchema(),
 	}
-	triggerHandler := NewTriggerHandler(context)
+	buildHandler := app.NewKogitoBuildHandler(context)
+	triggerHandler := NewTriggerHandler(context, buildHandler)
 	err := triggerHandler.StartNewBuild(bc)
 	// we reach an error state since the FakeCli can't update the status for our build.
 	// and thus the go routine that waits for this status will fail as well :)
 	assert.Error(t, err)
 
-	builds, err := openshift.BuildConfigC(cli).GetBuildsStatusByLabel(
-		t.Name(), strings.Join([]string{openshift.BuildConfigLabelSelector, "mybuildconfig"}, "="))
+	builds, err := NewBuildHandler(context, buildHandler).GetBuildsStatusByLabel(
+		t.Name(), strings.Join([]string{BuildConfigLabelSelector, "mybuildconfig"}, "="))
 	assert.NoError(t, err)
 	assert.NotNil(t, builds)
-	assert.Len(t, builds.Running, 1)
+	assert.Len(t, builds.GetRunning(), 1)
 }

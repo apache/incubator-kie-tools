@@ -66,10 +66,8 @@ func Test_resolveSourceStrategyImageNameForBuilds(t *testing.T) {
 		{"Quarkus Custom Base", args{buildQuarkusCustom, false}, "my-image:1.0"},
 	}
 
-	context := BuildContext{
-		Context: operator.Context{
-			Version: app.Version,
-		},
+	context := operator.Context{
+		Version: app.Version,
 	}
 	imageStreamHandler := NewImageSteamHandler(context)
 	for _, tt := range tests {

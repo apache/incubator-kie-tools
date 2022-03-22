@@ -18,8 +18,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/kiegroup/kogito-operator/core/client/openshift"
-
 	appsv1 "github.com/openshift/api/apps/v1"
 	dockerv10 "github.com/openshift/api/image/docker10"
 
@@ -52,7 +50,9 @@ const (
 
 	labelNamespaceSep               = "/"
 	dockerLabelServicesSep, portSep = ",", ":"
-	portFormatWrongMessage          = "Service on " + openshift.ImageLabelForExposeServices + " label in wrong format. Won't be possible to expose Services for this application. Should be PORT_NUMBER:PROTOCOL. e.g. 8080:http"
+	// imageLabelForExposeServices is the label defined in images to identify ports that need to be exposed by the container
+	imageLabelForExposeServices = "io.openshift.expose-services"
+	portFormatWrongMessage      = "Service on " + imageLabelForExposeServices + " label in wrong format. Won't be possible to expose Services for this application. Should be PORT_NUMBER:PROTOCOL. e.g. 8080:http"
 )
 
 var defaultProbe = &corev1.Probe{
@@ -130,7 +130,7 @@ func DiscoverPortsAndProbesFromImage(dc *appsv1.DeploymentConfig, dockerImage *d
 	var containerPorts []corev1.ContainerPort
 	var nonSecureProbe *corev1.Probe
 	for key, value := range dockerImage.Config.Labels {
-		if key == openshift.ImageLabelForExposeServices {
+		if key == imageLabelForExposeServices {
 			services := strings.Split(value, dockerLabelServicesSep)
 			for _, service := range services {
 				ports := strings.Split(service, portSep)

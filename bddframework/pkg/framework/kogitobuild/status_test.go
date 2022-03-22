@@ -21,6 +21,7 @@ import (
 	"github.com/kiegroup/kogito-operator/core/framework/util"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
+	app2 "github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	buildv1 "github.com/openshift/api/build/v1"
 	"github.com/stretchr/testify/assert"
@@ -45,14 +46,13 @@ func TestStatusChangeWhenConsecutiveErrorsOccur(t *testing.T) {
 	}
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
 	err := errors.New("error")
-	context := BuildContext{
-		Context: operator.Context{
-			Client: cli,
-			Log:    test.TestLogger,
-			Scheme: meta.GetRegisteredSchema(),
-		},
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
 	}
-	buildStatusHandler := NewStatusHandler(context)
+	buildHandler := app2.NewKogitoBuildHandler(context)
+	buildStatusHandler := NewStatusHandler(context, buildHandler)
 	buildStatusHandler.HandleStatusChange(instance, err)
 
 	test.AssertFetchMustExist(t, cli, instance)
@@ -87,14 +87,12 @@ func TestStatusChangeWhenBuildsAreRunning(t *testing.T) {
 		},
 	}
 	cli := test.NewFakeClientBuilder().OnOpenShift().AddK8sObjects(instance).Build()
-	context := BuildContext{
-		Context: operator.Context{
-			Client: cli,
-			Log:    test.TestLogger,
-			Scheme: meta.GetRegisteredSchema(),
-		},
+	context := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
 	}
-	deltaProcessor := &deltaProcessor{BuildContext: context, build: instance}
+	deltaProcessor := &deltaProcessor{Context: context, build: instance}
 	manager := deltaProcessor.getBuildManager()
 	requested, err := manager.GetRequestedResources()
 	assert.NoError(t, err)
@@ -157,14 +155,13 @@ func TestStatusChangeWhenBuildsAreRunning(t *testing.T) {
 	// recreating the Client with our objects to make sure that the BCs will be there
 	cli = test.NewFakeClientBuilder().AddK8sObjects(k8sObjs...).AddBuildObjects(buildObjs...).Build()
 	err = nil
-	context1 := BuildContext{
-		Context: operator.Context{
-			Client: cli,
-			Log:    test.TestLogger,
-			Scheme: meta.GetRegisteredSchema(),
-		},
+	context1 := operator.Context{
+		Client: cli,
+		Log:    test.TestLogger,
+		Scheme: meta.GetRegisteredSchema(),
 	}
-	buildStatusHandler := NewStatusHandler(context1)
+	buildHandler := app2.NewKogitoBuildHandler(context)
+	buildStatusHandler := NewStatusHandler(context1, buildHandler)
 	buildStatusHandler.HandleStatusChange(instance, err)
 	test.AssertFetchMustExist(t, cli, instance)
 	conditions := *instance.Status.Conditions

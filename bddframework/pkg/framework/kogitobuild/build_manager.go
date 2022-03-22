@@ -21,6 +21,8 @@ import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
+	"github.com/kiegroup/kogito-operator/core/manager"
+	"github.com/kiegroup/kogito-operator/core/operator"
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -38,19 +40,21 @@ type DeltaProcessor interface {
 }
 
 type deltaProcessor struct {
-	BuildContext
-	build api.KogitoBuildInterface
+	operator.Context
+	build        api.KogitoBuildInterface
+	buildHandler manager.KogitoBuildHandler
 }
 
 // NewDeltaProcessor creates a new DeltaProcessor instance for the given KogitoBuild
-func NewDeltaProcessor(context BuildContext, build api.KogitoBuildInterface) (DeltaProcessor, error) {
+func NewDeltaProcessor(context operator.Context, build api.KogitoBuildInterface, buildHandler manager.KogitoBuildHandler) (DeltaProcessor, error) {
 	setDefaults(build)
 	if err := sanityCheck(build); err != nil {
 		return nil, err
 	}
 	return &deltaProcessor{
-		BuildContext: context,
+		Context:      context,
 		build:        build,
+		buildHandler: buildHandler,
 	}, nil
 }
 
@@ -73,12 +77,13 @@ func sanityCheck(build api.KogitoBuildInterface) error {
 	return nil
 }
 
-type manager struct {
+type buildManager struct {
 	build api.KogitoBuildInterface
-	BuildContext
+	operator.Context
 }
 
-type buildManager interface {
+// BuildManager ...
+type BuildManager interface {
 	GetRequestedResources() (map[reflect.Type][]client.Object, error)
 	GetDeployedResources() (map[reflect.Type][]client.Object, error)
 	GetComparator() compare.MapComparator
@@ -127,22 +132,22 @@ func (d *deltaProcessor) ProcessDelta() (resultErr error) {
 	return
 }
 
-func (d *deltaProcessor) getBuildManager() buildManager {
-	manager := manager{
-		BuildContext: d.BuildContext,
-		build:        d.build,
+func (d *deltaProcessor) getBuildManager() BuildManager {
+	buildManager := buildManager{
+		Context: d.Context,
+		build:   d.build,
 	}
 	if api.LocalSourceBuildType == d.build.GetSpec().GetType() ||
 		api.RemoteSourceBuildType == d.build.GetSpec().GetType() {
-		manager.Log = manager.Log.WithValues("build_type", "source")
-		return &sourceManager{manager}
+		buildManager.Log = buildManager.Log.WithValues("build_type", "source")
+		return &sourceBuildManager{buildManager}
 	}
 
-	manager.Log = manager.Log.WithValues("build_type", "binary")
-	return &binaryManager{manager}
+	buildManager.Log = buildManager.Log.WithValues("build_type", "binary")
+	return &binaryBuildManager{buildManager}
 }
 
-func (m *manager) GetDeployedResources() (map[reflect.Type][]client.Object, error) {
+func (m *buildManager) GetDeployedResources() (map[reflect.Type][]client.Object, error) {
 	objectTypes := []client.ObjectList{&buildv1.BuildConfigList{}, &imgv1.ImageStreamList{}}
 	resources, err := kubernetes.ResourceC(m.Client).ListAll(objectTypes, m.build.GetNamespace(), m.build)
 	if err != nil {
@@ -154,7 +159,7 @@ func (m *manager) GetDeployedResources() (map[reflect.Type][]client.Object, erro
 	return resources, nil
 }
 
-func (m *manager) GetComparator() compare.MapComparator {
+func (m *buildManager) GetComparator() compare.MapComparator {
 	resourceComparator := compare.DefaultComparator()
 	resourceComparator.SetComparator(
 		framework.NewComparatorBuilder().
@@ -191,7 +196,7 @@ func (d *deltaProcessor) onBuildConfigChange(instance api.KogitoBuildInterface, 
 			// building from source
 			if bc.GetName() == GetBuildBuilderName(instance) {
 				d.Log.Info("Changes detected for build config, starting again", "Build Config", bc.GetName())
-				triggerHandler := NewTriggerHandler(d.Context)
+				triggerHandler := NewTriggerHandler(d.Context, d.buildHandler)
 				if err := triggerHandler.StartNewBuild(bc.(*buildv1.BuildConfig)); err != nil {
 					return err
 				}
@@ -203,7 +208,7 @@ func (d *deltaProcessor) onBuildConfigChange(instance api.KogitoBuildInterface, 
 
 // AddSharedImageStreamToResources adds the shared ImageStream in the given resource map.
 // Normally used during reconciliation phase to bring a not yet owned ImageStream to the deployed list.
-func (m *manager) addSharedImageStreamToResources(resources map[reflect.Type][]client.Object, name, ns string) error {
+func (m *buildManager) addSharedImageStreamToResources(resources map[reflect.Type][]client.Object, name, ns string) error {
 	if m.Client.IsOpenshift() {
 		// is the image already there?
 		for _, is := range resources[reflect.TypeOf(imgv1.ImageStream{})] {

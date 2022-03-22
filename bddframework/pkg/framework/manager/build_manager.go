@@ -22,4 +22,5 @@ import (
 // KogitoBuildHandler ...
 type KogitoBuildHandler interface {
 	FetchKogitoBuildInstance(key types.NamespacedName) (api.KogitoBuildInterface, error)
+	CreateBuild() api.BuildsInterface
 }
