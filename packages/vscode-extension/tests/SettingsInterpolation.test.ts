@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { interpolateSettingsValue } from "@kie-tools-core/vscode-extension/dist/generateSvg";
+import { doInterpolation } from "@kie-tools-core/vscode-extension/dist/SettingsInterpolation";
 
 describe("generateSvg", () => {
   test("Should replace tokens with mapped values", () => {
@@ -26,7 +26,7 @@ describe("generateSvg", () => {
 
     const originalText = "This text has myToken1, ${myToken2} and myToken3!";
 
-    const resultText = interpolateSettingsValue({ tokens, value: originalText });
+    const resultText = doInterpolation(tokens, originalText);
 
     expect(resultText).toBe("This text has Token 1 Value, Token 2 Value and 10!");
   });
@@ -37,7 +37,7 @@ describe("generateSvg", () => {
 
     const originalText = "This text has myToken1myToken1myToken1 myToken1";
 
-    const resultText = interpolateSettingsValue({ tokens, value: originalText });
+    const resultText = doInterpolation(tokens, originalText);
 
     expect(resultText).toBe("This text has Token 1 ValueToken 1 ValueToken 1 Value Token 1 Value");
   });

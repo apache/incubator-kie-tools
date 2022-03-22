@@ -17,21 +17,33 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
         return;
       }
 
+      const importFunction = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const newCursorPosition = model.getPositionAt(node.offset + 1);
+
+          return [
+            {
+              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
+              title: `+ Import function`,
+              arguments: [{ position, node, newCursorPosition }],
+            },
+          ];
+        },
+      });
+
       const codeLenses: CodeLens[] = [
         // TODO: Implement code lenses
         // Follow this example
         //
-        // createCodeLenses({
-        //   model,
-        //   rootNode,
-        //   jsonPath: ["functions"],
-        //   positionLensAt: "begin",
-        //   commandDelegate: ({ position }) => ({
-        //     id: commandIds["OpenFunctionsWidget"],
-        //     title: `◎ Discover`,
-        //     arguments: [{ position }],
-        //   }),
-        // }),
+        ...importFunction,
       ];
 
       return {
@@ -48,27 +60,28 @@ function createCodeLenses(args: {
   model: monaco.editor.ITextModel;
   rootNode: jsonc.Node;
   jsonPath: JSONPath;
-  commandDelegate: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"];
+  commandDelegates: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"][];
   positionLensAt: "begin" | "end";
 }) {
   const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
-  return nodes.map((node) => {
-    let position;
-    if (args.positionLensAt === "begin") {
-      position = args.model.getPositionAt(node.offset);
-    } else {
-      position = args.model.getPositionAt(node.offset + node.length);
-    }
+  return nodes.flatMap((node) => {
+    // Only position at the end if the type is object or array and has at least one child.
+    const position =
+      args.positionLensAt === "end" &&
+      (node.type === "object" || node.type === "array") &&
+      (node.children?.length ?? 0) > 0
+        ? args.model.getPositionAt(node.offset + node.length)
+        : args.model.getPositionAt(node.offset);
 
-    return {
-      command: args.commandDelegate({ position, node }),
+    return args.commandDelegates({ position, node }).map((command) => ({
+      command,
       range: {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
         startColumn: position.column,
         endColumn: position.column,
       },
-    };
+    }));
   });
 }
 

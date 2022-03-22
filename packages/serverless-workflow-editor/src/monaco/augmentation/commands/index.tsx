@@ -13,14 +13,18 @@ import { openWidget } from "../widgets";
 //   },
 // };
 
-export type SwfMonacoEditorCommandTypes = "OpenFunctionsWidget" | "OpenStatesWidget" | "RunFunctionsCompletion";
+export type SwfMonacoEditorCommandTypes =
+  | "OpenFunctionsWidget"
+  | "OpenStatesWidget"
+  | "OpenFunctionsCompletionItemsAtTheBottom";
 
 export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
 export function initAugmentationCommands(editorInstance: editor.IStandaloneCodeEditor): SwfMonacoEditorCommandIds {
   return {
-    RunFunctionsCompletion: editorInstance.addCommand(0, async (ctx, args) => {
-      console.info("Running functions completion command...");
+    OpenFunctionsCompletionItemsAtTheBottom: editorInstance.addCommand(0, async (ctx, args) => {
+      editorInstance.setPosition(args.newCursorPosition);
+      editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
     })!,
     OpenFunctionsWidget: editorInstance.addCommand(0, async (ctx, args) => {
       openWidget(editorInstance, {
