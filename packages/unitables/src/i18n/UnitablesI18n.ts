@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { UnitablesI18n } from "./UnitablesI18n";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-export interface DmnAutoTableI18n extends UnitablesI18n {
+interface UnitablesDictionary extends ReferenceDictionary {
   addParameter: string;
   builtInAggregator: string;
   choose: string;
@@ -74,4 +75,9 @@ export interface DmnAutoTableI18n extends UnitablesI18n {
   selectExpression: string;
   selectFunctionKind: string;
   selectLogicType: string;
+  schema: {
+    selectPlaceholder: "Select...";
+  };
 }
+
+export interface UnitablesI18n extends UnitablesDictionary, CommonI18n {}

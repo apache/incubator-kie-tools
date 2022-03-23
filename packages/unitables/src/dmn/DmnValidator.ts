@@ -17,15 +17,18 @@
 import Ajv from "ajv";
 import metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
 import { DmnTableJsonSchemaBridge } from "./DmnTableJsonSchemaBridge";
+import { Validator } from "@kie-tools/form";
+import { DmnAutoTableI18n } from "../i18n";
 
 const DAYS_AND_TIME = /^(-|\+)?P(?:([-+]?[0-9]*)D)?(?:T(?:([-+]?[0-9]*)H)?(?:([-+]?[0-9]*)M)?(?:([-+]?[0-9]*)S)?)?$/;
 const YEARS_AND_MONTHS = /^(-|\+)?P(?:([-+]?[0-9]*)Y)?(?:([-+]?[0-9]*)M)?$/;
 
-export class DmnValidator {
+export class DmnValidator extends Validator {
   protected readonly ajv = new Ajv({ allErrors: true, schemaId: "auto", useDefaults: true });
   private readonly SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
 
-  constructor() {
+  constructor(i18n: DmnAutoTableI18n) {
+    super(i18n);
     this.setupValidator();
   }
 

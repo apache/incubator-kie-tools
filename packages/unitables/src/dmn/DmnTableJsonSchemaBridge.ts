@@ -14,38 +14,21 @@
  * limitations under the License.
  */
 
-import { JSONSchemaBridge } from "uniforms-bridge-json-schema/esm";
-import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
+import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/src/uniforms";
+import { FEEL_CONTEXT } from "@kie-tools/form-dmn/dist/uniforms";
+import { UnitablesJsonSchemaBridge } from "../core/UnitablesJsonSchemaBridge";
 
-export class DmnTableJsonSchemaBridge extends JSONSchemaBridge {
-  public getProps(name: string, props: Record<string, any> = {}) {
-    const ready = super.getProps(name, props);
-    ready.label = "";
-    ready.style = { height: "100%" };
-    if (ready.required) {
-      ready.required = false;
-    }
-    return ready;
-  }
-
+export class DmnTableJsonSchemaBridge extends UnitablesJsonSchemaBridge {
   public getField(name: string) {
     const field = super.getField(name);
-    if (field.format === "days and time duration") {
+    if (field.format === DAYS_AND_TIME_DURATION_FORMAT) {
       field.placeholder = "P1DT5H or P2D or PT1H2M10S";
     }
-    if (field.format === "years and months duration") {
+    if (field.format === YEARS_AND_MONTHS_DURATION_FORMAT) {
       field.placeholder = "P1Y5M or P2Y or P1M";
     }
-    if (field.type === "string" && field.enum) {
-      field.placeholder = "Select...";
-      field.direction = SelectDirection.up;
-      field.menuAppendTo = document.body;
-    }
-    if (!field.type && field["x-dmn-type"] === "FEEL:context") {
+    if (!field.type && field["x-dmn-type"] === FEEL_CONTEXT) {
       field.placeholder = `{ "x": <value> }`;
-    }
-    if (!field.type) {
-      field.type = "string";
     }
     return field;
   }

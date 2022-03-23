@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { DmnAutoTableI18n } from "..";
+import { UnitablesI18n } from "../UnitablesI18n";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
-export const en: DmnAutoTableI18n = {
+export const en: UnitablesI18n = {
   ...en_common,
   addParameter: "Add parameter",
   builtInAggregator: "Builtin Aggregator",
@@ -76,4 +76,7 @@ export const en: DmnAutoTableI18n = {
   selectExpression: "Select expression",
   selectFunctionKind: "Select Function Kind",
   selectLogicType: "Select logic type",
+  schema: {
+    selectPlaceholder: "Select...",
+  },
 };

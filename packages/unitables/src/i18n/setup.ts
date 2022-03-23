@@ -20,6 +20,7 @@ import { en } from "./locales";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import { DmnAutoTableI18n } from "./DmnAutoTableI18n";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
+import { UnitablesI18n } from "./UnitablesI18n";
 
 export const dmnAutoTableI18nDefaults: I18nDefaults<DmnAutoTableI18n> = {
   locale: "en",
@@ -30,4 +31,15 @@ export const DmnAutoTableI18nContext = React.createContext<I18nContextType<DmnAu
 
 export function useDmnAutoTableI18n(): I18nContextType<DmnAutoTableI18n> {
   return useContext(DmnAutoTableI18nContext);
+}
+
+export const autoTableI18nDefaults: I18nDefaults<UnitablesI18n> = {
+  locale: "en",
+  dictionary: en,
+};
+export const autoTableDictionaries: I18nDictionaries<UnitablesI18n> = new Map([["en", en]]);
+export const AutoTableI18nContext = React.createContext<I18nContextType<UnitablesI18n>>({} as never);
+
+export function useAutoTableI18n(): I18nContextType<UnitablesI18n> {
+  return useContext(AutoTableI18nContext);
 }
