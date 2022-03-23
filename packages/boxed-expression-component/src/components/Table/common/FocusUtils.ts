@@ -269,7 +269,7 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     .header-cell-info >:first-child:not(.function-definition-container), 
     .with-popover-menu, 
     .logic-type-not-present,
-    .logic-type-selector div:not(showing-placeholder) button
+    .logic-type-selector button
   `) as HTMLElement;
 
   if (cellWithClickActionElement) {

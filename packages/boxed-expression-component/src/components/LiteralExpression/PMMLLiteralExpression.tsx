@@ -33,6 +33,9 @@ export const PMMLLiteralExpression: React.FunctionComponent<PMMLLiteralExpressio
 
   const onSelectToggle = useCallback(
     (isOpen) => {
+      if (!props.getOptions() || !props.getOptions().length) {
+        return;
+      }
       setSelectOpen(isOpen);
       boxedExpression.setIsContextMenuOpen(isOpen);
     },

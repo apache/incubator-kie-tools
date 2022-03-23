@@ -15,6 +15,7 @@
  */
 
 import { render } from "@testing-library/react";
+import { usingTestingBoxedExpressionI18nContext } from "../../test-utils";
 import * as React from "react";
 import {
   cellFocus,
@@ -29,6 +30,8 @@ import {
   focusUpperCell,
   getParentCell,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
+import { PMMLLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
+import { LogicType } from "@kie-tools/boxed-expression-component";
 
 /**
  * Create Mock HTML Table.
@@ -491,12 +494,20 @@ describe("FocusUtils tests", () => {
 
     it("should open the Select menu component", () => {
       const selectWrapper = render(
-        <div className="logic-type-selector">
-          <button></button>
-        </div>,
+        usingTestingBoxedExpressionI18nContext(
+          <div className="logic-type-selector logic-type-selected">
+            <PMMLLiteralExpression
+              logicType={LogicType.PMMLLiteralExpression}
+              getOptions={() => ["a", "b", "c"]}
+              selected="a"
+              noOptionsLabel={"no options label"}
+            />
+          </div>
+        ).wrapper,
         { baseElement: parentCell }
       ).container.children[0] as HTMLDivElement;
-      const selectMenuBtn = (selectWrapper.firstChild || document.createElement("button")) as HTMLButtonElement;
+      const selectMenuBtn = (selectWrapper.querySelector("button") ||
+        document.createElement("button")) as HTMLButtonElement;
       const mockParentCellFocus = jest.spyOn(parentCell, "focus");
       const mockSelectMenuBtnClick = jest.spyOn(selectMenuBtn, "click");
 

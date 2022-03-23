@@ -421,8 +421,6 @@ export const Table: React.FunctionComponent<TableProps> = ({
           e.preventDefault();
         }
 
-        /* FIXME: Popover text field in online editor: esc key not working: this depends on packages/keyboard-shortcuts/src/channel/Hooks.tsx:39 */
-
         if (key === "ArrowLeft" || (key === "Tab" && e.shiftKey)) {
           focusPrevCell(e.currentTarget, rowSpan, key === "ArrowLeft");
         } else if (key === "ArrowRight" || (key === "Tab" && !e.shiftKey)) {
