@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./SwfServiceCatalogChannelApiImpl";
-export * from "./SwfServiceCatalogStore";
 export * from "./parsers";

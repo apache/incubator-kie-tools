@@ -27,6 +27,6 @@ export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, Se
     ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
-    return new ServerlessWorkflowEditorView(ctx);
+    return new ServerlessWorkflowEditorView(ctx, initArgs);
   }
 }

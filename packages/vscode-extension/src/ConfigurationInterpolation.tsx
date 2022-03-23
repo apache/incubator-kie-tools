@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-import * as __path from "path";
+import * as path from "path";
 import * as vscode from "vscode";
 
-type SettingsValueInterpolationToken =
+type ConfigurationValueInterpolationToken =
   | "${workspaceFolder}"
   | "${fileDirname}"
   | "${fileExtname}"
   | "${fileBasename}"
   | "${fileBasenameNoExtension}";
 
-export const settingsTokenKeys: Record<SettingsValueInterpolationToken, SettingsValueInterpolationToken> = {
+export const configurationTokenKeys: Record<
+  ConfigurationValueInterpolationToken,
+  ConfigurationValueInterpolationToken
+> = {
   "${workspaceFolder}": "${workspaceFolder}",
   "${fileDirname}": "${fileDirname}",
   "${fileExtname}": "${fileExtname}",
@@ -39,18 +42,18 @@ export function doInterpolation(tokens: Record<string, string>, value: string) {
   );
 }
 
-export function getInterpolateSettingsValue(args: { filePath: string; value: string }) {
-  const parsedPath = __path.parse(args.filePath);
+export function getInterpolatedConfigurationValue(args: { currentFileAbsolutePosixPath: string; value: string }) {
+  const parsedPath = path.parse(args.currentFileAbsolutePosixPath);
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
-        const relative = __path.relative(workspace.uri.path, args.filePath);
-        return relative && !relative.startsWith("..") && !__path.isAbsolute(relative);
+        const relative = path.relative(workspace.uri.path, args.currentFileAbsolutePosixPath);
+        return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
       })
     : undefined;
 
   const fileExtensionWithDot = parsedPath.base.substring(parsedPath.base.indexOf("."));
 
-  const tokens: Record<SettingsValueInterpolationToken, string> = {
+  const tokens: Record<ConfigurationValueInterpolationToken, string> = {
     "${workspaceFolder}": workspace?.uri.path ?? parsedPath.dir,
     "${fileDirname}": parsedPath.dir,
     "${fileExtname}": fileExtensionWithDot,

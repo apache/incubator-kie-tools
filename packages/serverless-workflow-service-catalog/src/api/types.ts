@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+export interface SwfServiceCatalogUser {
+  username: string;
+}
+
 export enum SwfServiceCatalogServiceType {
   rest = "rest",
   graphql = "graphql",
@@ -21,12 +25,22 @@ export enum SwfServiceCatalogServiceType {
 
 export interface SwfServiceCatalogService {
   name: string;
-  id: string;
   type: SwfServiceCatalogServiceType;
+  source: SwfServiceCatalogServiceSource;
 
   functions: SwfServiceCatalogFunction[];
   rawContent: string;
 }
+
+export type SwfServiceCatalogServiceSource =
+  | {
+      id: string;
+      type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY;
+    }
+  | {
+      type: SwfServiceCatalogServiceSourceType.LOCAL_FS;
+      absoluteFilePath: string;
+    };
 
 export enum SwfServiceCatalogFunctionType {
   rest = "rest",
@@ -43,7 +57,28 @@ export enum SwfServiceCatalogFunctionArgumentType {
   array = "array",
 }
 
+export enum SwfServiceCatalogFunctionSourceType {
+  RHHCC_SERVICE_REGISTRY,
+  LOCAL_FS,
+}
+
+export enum SwfServiceCatalogServiceSourceType {
+  RHHCC_SERVICE_REGISTRY,
+  LOCAL_FS,
+}
+
+export type SwfServiceCatalogFunctionSource =
+  | {
+      serviceId: string;
+      type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY;
+    }
+  | {
+      type: SwfServiceCatalogFunctionSourceType.LOCAL_FS;
+      serviceFileAbsolutePath: string;
+    };
+
 export interface SwfServiceCatalogFunction {
+  source: SwfServiceCatalogFunctionSource;
   name: string;
   operation: string;
   arguments: Record<string, SwfServiceCatalogFunctionArgumentType>;

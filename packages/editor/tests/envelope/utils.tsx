@@ -15,6 +15,7 @@
  */
 
 import {
+  ChannelType,
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType,
