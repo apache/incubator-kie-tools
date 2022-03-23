@@ -257,8 +257,6 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
-  // FIXME: doesn't work with functionDefinition header cell of invocation expression
-
   const nestedTbody = currentEl.querySelector("table > tbody") as HTMLTableSectionElement;
 
   if (nestedTbody) {
@@ -267,7 +265,7 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
   }
 
   const cellWithClickActionElement = currentEl.querySelector(`
-    .header-cell-info *:first-child, 
+    .header-cell-info >:first-child:not(.function-definition-container), 
     .with-popover-menu, 
     .logic-type-not-present,
     .logic-type-selector button
