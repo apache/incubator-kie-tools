@@ -1,4 +1,4 @@
-import * as React from "React";
+import * as React from "react";
 import { useState, useCallback } from "react";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -9,6 +9,7 @@ import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { useWorkspaces } from "../../workspace/WorkspacesContext";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -23,6 +24,7 @@ export interface DeployToolbarProps {
 export function DeployToolbar(props: DeployToolbarProps) {
   const openshift = useOpenShift();
   const settings = useSettings();
+  const workspaces = useWorkspaces();
   const [deployStatus, setDeployStatus] = useState(FormValiationOptions.INITIAL);
   const [isLoading, setLoading] = useState(false);
 
@@ -37,23 +39,28 @@ export function DeployToolbar(props: DeployToolbarProps) {
     }
 
     setLoading(true);
-    const success = await openshift.deploy({
+    const resourceName = await openshift.deploy({
       openShiftConfig: settings.openshift.config,
       workflow: {
         name: props.workspace.descriptor.name ?? "workflow",
         content: content,
       },
       kafkaConfig: settings.apacheKafka.config,
+      resourceName: props.workspace.descriptor.deploymentResourceName,
     });
     setLoading(false);
 
-    setDeployStatus(success ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR);
+    setDeployStatus(resourceName ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR);
+    if (resourceName) {
+      workspaces.descriptorService.setDeploymentResourceName(props.workspace.descriptor.workspaceId, resourceName);
+    }
   }, [
     props.editor,
-    props.workspace.descriptor.name,
+    props.workspace.descriptor,
     openshift,
     settings.openshift.config,
     settings.apacheKafka.config,
+    workspaces.descriptorService,
   ]);
 
   return (

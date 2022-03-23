@@ -18,6 +18,8 @@ import * as React from "react";
 import { useContext } from "react";
 import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
+import { Deployments } from "./resources/Deployment";
+import { KNativeServices } from "./resources/KNativeService";
 
 export const SW_JSON_EXTENSION = "sw.json";
 
@@ -25,6 +27,7 @@ export interface DeployArgs {
   workflow: DeploymentWorkflow;
   openShiftConfig: OpenShiftSettingsConfig;
   kafkaConfig?: KafkaSettingsConfig;
+  resourceName?: string;
 }
 
 export interface DeploymentWorkflow {
@@ -33,13 +36,15 @@ export interface DeploymentWorkflow {
 }
 
 export interface OpenShiftContextType {
-  deploy(args: DeployArgs): Promise<boolean>;
+  deploy(args: DeployArgs): Promise<string>;
 
   fetchOpenApiFile(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflowRoute(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflowName(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflow(config: OpenShiftSettingsConfig, resourceName: string): Promise<DeploymentWorkflow | undefined>;
   fetchWorkflows(config: OpenShiftSettingsConfig): Promise<DeploymentWorkflow[]>;
+  listServices(config: OpenShiftSettingsConfig): Promise<KNativeServices | undefined>;
+  listDeployments(config: OpenShiftSettingsConfig): Promise<Deployments | undefined>;
 }
 
 export const OpenShiftContext = React.createContext<OpenShiftContextType>({} as any);

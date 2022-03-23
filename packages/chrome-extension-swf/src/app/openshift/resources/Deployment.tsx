@@ -120,7 +120,7 @@ export class ListDeployments extends ResourceFetch {
   }
 
   public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments?labelSelector=${KOGITO_CREATED_BY}`;
+    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments`; //?labelSelector=${KOGITO_CREATED_BY}`;
   }
 }
 

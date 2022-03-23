@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useCallback, useEffect } from "react";
+import { useMemo, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -44,6 +44,7 @@ import { WorkspacesListDrawerPanelContent } from "./WorkspacesListDrawerPanelCon
 import { WorkspaceCard, WorkspaceCardError } from "./WorkspaceCard";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { useSettings } from "../../settings/SettingsContext";
+import { KNativeService } from "../../openshift/resources/KNativeService";
 
 export function ServerlessWorkflowList() {
   const routes = useRoutes();
@@ -53,14 +54,18 @@ export function ServerlessWorkflowList() {
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const openshiftService = useOpenShift();
   const { openshift } = useSettings();
+  const [workflowsMap, setWorkflowsMap] = useState<Map<string, KNativeService>>();
 
   useEffect(() => {
-    const getWorkflow = async () => {
-      const workflows = await openshiftService.fetchWorkflows(openshift.config);
-      console.log(workflows);
+    const mapDeployments = async () => {
+      const deployments = await openshiftService.listDeployments(openshift.config);
+      const services = await openshiftService.listServices(openshift.config);
+      console.log({ deployments, services });
+
+      console.log(workspaceDescriptorsPromise.data);
     };
-    getWorkflow();
-  }, [openshift.config, openshiftService]);
+    mapDeployments();
+  }, [openshift.config, openshiftService, workspaceDescriptorsPromise.data]);
 
   const emptyState = useMemo(
     () => (

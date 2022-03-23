@@ -650,7 +650,7 @@ section.kie-tools--settings-tab {
 }
 
 .pf-c-alert {
-  position: fixed;
+  position: fixed !important;
   overflow: visible;
   top: 10rem;
   right: 0.5rem;

@@ -30,6 +30,7 @@ import {
 import { GetProject } from "./resources/Project";
 import { KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateSecret, DeleteSecret } from "./resources/Secret";
+import { Deployments, ListDeployments } from "./resources/Deployment";
 
 export const DEFAULT_CREATED_BY = "kie-tools-chrome-extension";
 
@@ -106,7 +107,7 @@ export class OpenShiftService {
     );
   }
 
-  public async deploy(args: DeployArgs): Promise<void> {
+  public async deploy(args: DeployArgs): Promise<string> {
     const resourceName = `swf-${this.generateRandomId()}`;
 
     const commonArgs = {
@@ -160,7 +161,7 @@ export class OpenShiftService {
     );
 
     if (!args.kafkaConfig) {
-      return;
+      throw new Error("No Kafka config");
     }
 
     const kafkaClientIdKey = "kafka-client-id";
@@ -191,6 +192,16 @@ export class OpenShiftService {
       }),
       rollbacks.slice(--rollbacksCount)
     );
+
+    return resourceName;
+  }
+
+  public async listServices(config: OpenShiftSettingsConfig) {
+    return await this.fetchResource<KNativeServices>(config.proxy, new ListKNativeServices(config));
+  }
+
+  public async listDeployments(config: OpenShiftSettingsConfig) {
+    return await this.fetchResource<Deployments>(config.proxy, new ListDeployments(config));
   }
 
   public async fetchResource<T = Resource>(

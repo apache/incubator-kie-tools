@@ -29,13 +29,7 @@ export function OpenShiftProvider(props: Props) {
 
   const deploy = useCallback(
     async (args: DeployArgs) => {
-      try {
-        await service.deploy(args);
-        return true;
-      } catch (error) {
-        console.error(error);
-        return false;
-      }
+      return await service.deploy(args);
     },
     [service]
   );
@@ -142,6 +136,28 @@ export function OpenShiftProvider(props: Props) {
     [fetchWorkflow, service]
   );
 
+  const listServices = useCallback(
+    async (config: OpenShiftSettingsConfig) => {
+      try {
+        return await service.listServices(config);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [service]
+  );
+
+  const listDeployments = useCallback(
+    async (config: OpenShiftSettingsConfig) => {
+      try {
+        return await service.listDeployments(config);
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [service]
+  );
+
   const value = useMemo(
     () => ({
       deploy,
@@ -150,8 +166,19 @@ export function OpenShiftProvider(props: Props) {
       fetchWorkflows,
       fetchWorkflowName,
       fetchWorkflowRoute,
+      listServices,
+      listDeployments,
     }),
-    [deploy, fetchOpenApiFile, fetchWorkflow, fetchWorkflows, fetchWorkflowName, fetchWorkflowRoute]
+    [
+      deploy,
+      fetchOpenApiFile,
+      fetchWorkflow,
+      fetchWorkflows,
+      fetchWorkflowName,
+      fetchWorkflowRoute,
+      listServices,
+      listDeployments,
+    ]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;
