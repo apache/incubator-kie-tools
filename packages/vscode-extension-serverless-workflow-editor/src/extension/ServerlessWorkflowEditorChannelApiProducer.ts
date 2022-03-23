@@ -38,6 +38,7 @@ import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { FsWatchingServiceCatalogStore } from "./serviceCatalog/fs";
 import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
+import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
@@ -134,7 +135,8 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         configuration: this.args.configuration,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
         defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
-      })
+      }),
+      new SwfLanguageServiceChannelApiImpl()
     );
   }
 }

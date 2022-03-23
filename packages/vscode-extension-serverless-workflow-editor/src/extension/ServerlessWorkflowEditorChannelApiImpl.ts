@@ -15,7 +15,12 @@
  */
 
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
-import { EditorContent, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import {
+  EditorContent,
+  EditorTheme,
+  KogitoEditorChannelApi,
+  StateControlCommand,
+} from "@kie-tools-core/editor/dist/api";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
 import {
   KogitoEdit,
@@ -32,18 +37,19 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
-  SwfServiceCatalogFunction,
+  SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
 import * as vscode from "vscode";
+import { CompletionItem, CodeLens, TextDocumentIdentifier, Position } from "vscode-languageserver-types";
 
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
-  private readonly defaultApiImpl: KogitoEditorChannelApiImpl;
+  private readonly defaultApiImpl: KogitoEditorChannelApi;
 
   constructor(
     private readonly editor: KogitoEditor,
@@ -55,7 +61,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     viewType: string,
     i18n: I18n<VsCodeI18n>,
     initialBackup = editor.document.initialBackup,
-    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApiImpl
+    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
+    private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
   ) {
     this.defaultApiImpl = new KogitoEditorChannelApiImpl(
       editor,
@@ -166,5 +173,21 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
+  }
+
+  public async kogitoSwfLanguageService__doCompletion(
+    textDocumentIdentifier: TextDocumentIdentifier,
+    position: Position
+  ): Promise<CompletionItem[]> {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__doCompletion(
+      textDocumentIdentifier,
+      position
+    );
+  }
+
+  public async kogitoSwfLanguageService__doCodeLenses(
+    textDocumentIdentifier: TextDocumentIdentifier
+  ): Promise<CodeLens[]> {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__doCodeLenses(textDocumentIdentifier);
   }
 }

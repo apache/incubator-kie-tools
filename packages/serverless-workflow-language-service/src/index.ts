@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
+import { CodeLens, CompletionItem, Position, TextDocumentIdentifier } from "vscode-languageserver-types";
 
-export interface ServerlessWorkflowEditorChannelApi
-  extends KogitoEditorChannelApi,
-    SwfServiceCatalogChannelApi,
-    SwfLanguageServiceChannelApi {}
+export interface SwfLanguageServiceChannelApi {
+  kogitoSwfLanguageService__doCompletion(
+    textDocumentIdentifier: TextDocumentIdentifier,
+    position: Position
+  ): Promise<CompletionItem[]>;
+  kogitoSwfLanguageService__doCodeLenses(textDocumentIdentifier: TextDocumentIdentifier): Promise<CodeLens[]>;
+}
