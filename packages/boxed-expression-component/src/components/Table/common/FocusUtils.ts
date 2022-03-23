@@ -257,8 +257,6 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
-  // TODO: focusInsideCell: doesn't' open menu for the first th of a function expression //
-
   const nestedTbody = currentEl.querySelector("table > tbody") as HTMLTableSectionElement;
 
   if (nestedTbody) {
@@ -267,6 +265,7 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
   }
 
   const cellWithClickActionElement = currentEl.querySelector(`
+    .counter-header-cell .selected-function-kind,
     .header-cell-info >:first-child:not(.function-definition-container), 
     .with-popover-menu, 
     .logic-type-not-present,
