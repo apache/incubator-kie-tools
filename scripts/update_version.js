@@ -53,6 +53,7 @@ Promise.resolve()
   .then(() => updateNpmPackages(newVersion))
   .then((version) => updateMvnPackages(version))
   .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
+  .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
   .then((version) => updateChromeExtensionManifestFiles(version))
   .then((version) => updateExtendedServicesConfigFile(version))
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
@@ -99,6 +100,25 @@ async function updateSpecialInternalMvnPackagesOnStunnerEditors(version) {
     `packages/stunner-editors/appformer-bom`,
     `packages/stunner-editors/kie-wb-common-bom`,
     `packages/stunner-editors/drools-wb-bom`,
+  ];
+
+  for (const module of modules) {
+    execSync(
+      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
+      execOpts
+    );
+  }
+
+  return version;
+}
+
+async function updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version) {
+  console.info("[update-version] Updating special Maven packages on Serverless Workflow Diagram Editor...");
+
+  const modules = [
+    `packages/serverless-workflow-diagram-editor/errai-bom`,
+    `packages/serverless-workflow-diagram-editor/appformer-bom`,
+    `packages/serverless-workflow-diagram-editor/kie-wb-common-bom`,
   ];
 
   for (const module of modules) {

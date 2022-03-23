@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/backend-extended-services",
-  "version": "0.0.0",
+  "version": "0.18.0",
   "description": "",
   "license": "Apache-2.0",
   "repository": {
@@ -12,7 +12,7 @@
     "**/target/*.jar"
   ],
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.18.0"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
