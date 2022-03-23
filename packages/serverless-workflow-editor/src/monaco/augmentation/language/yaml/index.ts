@@ -17,11 +17,15 @@
 import { setDiagnosticsOptions } from "monaco-yaml";
 
 import {
+  SW_SPEC_AUTH_SCHEMA,
   SW_SPEC_COMMON_SCHEMA,
+  SW_SPEC_ERRORS_SCHEMA,
   SW_SPEC_EVENTS_SCHEMA,
   SW_SPEC_FUNCTIONS_SCHEMA,
   SW_SPEC_RETRIES_SCHEMA,
-  SW_SPEC_SCHEMA,
+  SW_SPEC_SECRETS_SCHEMA,
+  SW_SPEC_TIMEOUTS_SCHEMA,
+  SW_SPEC_WORKFLOW_SCHEMA,
 } from "../schemas";
 import { JSONSchema7 } from "json-schema";
 
@@ -33,9 +37,19 @@ export function initYamlSchemaDiagnostics() {
     format: true,
     schemas: [
       {
+        uri: "auth.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_AUTH_SCHEMA as JSONSchema7,
+      },
+      {
         uri: "common.json",
         fileMatch: ["*"],
-        schema: SW_SPEC_COMMON_SCHEMA,
+        schema: SW_SPEC_COMMON_SCHEMA as JSONSchema7,
+      },
+      {
+        uri: "errors.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_ERRORS_SCHEMA as JSONSchema7,
       },
       {
         uri: "events.json",
@@ -53,9 +67,19 @@ export function initYamlSchemaDiagnostics() {
         schema: SW_SPEC_RETRIES_SCHEMA as JSONSchema7,
       },
       {
+        uri: "secrets.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_SECRETS_SCHEMA as JSONSchema7,
+      },
+      {
+        uri: "timeouts.json",
+        fileMatch: ["*"],
+        schema: SW_SPEC_TIMEOUTS_SCHEMA as JSONSchema7,
+      },
+      {
         uri: "workflow.json",
         fileMatch: ["*"],
-        schema: SW_SPEC_SCHEMA as JSONSchema7,
+        schema: SW_SPEC_WORKFLOW_SCHEMA as JSONSchema7,
       },
     ],
   });

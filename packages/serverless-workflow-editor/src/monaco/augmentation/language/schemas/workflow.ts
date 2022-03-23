@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export const SW_SPEC_SCHEMA = {
+export const SW_SPEC_WORKFLOW_SCHEMA = {
   $id: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
   $schema: "http://json-schema.org/draft-07/schema#",
   description: "Serverless Workflow specification - workflow schema",

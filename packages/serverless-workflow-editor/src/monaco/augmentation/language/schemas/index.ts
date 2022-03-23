@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+export { SW_SPEC_AUTH_SCHEMA } from "./auth";
 export { SW_SPEC_COMMON_SCHEMA } from "./common";
+export { SW_SPEC_ERRORS_SCHEMA } from "./errors";
 export { SW_SPEC_EVENTS_SCHEMA } from "./events";
 export { SW_SPEC_FUNCTIONS_SCHEMA } from "./functions";
 export { SW_SPEC_RETRIES_SCHEMA } from "./retries";
-export { SW_SPEC_SCHEMA } from "./workflow";
+export { SW_SPEC_WORKFLOW_SCHEMA } from "./workflow";
+export { SW_SPEC_SECRETS_SCHEMA } from "./secrets";
+export { SW_SPEC_TIMEOUTS_SCHEMA } from "./timeouts";
