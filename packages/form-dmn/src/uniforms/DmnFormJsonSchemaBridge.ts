@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { FormI18n, FormJsonSchemaBridge } from "@kie-tools/form";
+import { FormJsonSchemaBridge } from "@kie-tools/form";
 import { DmnFormI18n } from "../i18n";
 
-const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
-const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
+export const DAYS_AND_TIME_DURATION_FORMAT = "days and time duration";
+export const YEARS_AND_MONTHS_DURATION_FORMAT = "years and months duration";
 export const FEEL_CONTEXT = "FEEL:context";
 
 export enum Duration {
