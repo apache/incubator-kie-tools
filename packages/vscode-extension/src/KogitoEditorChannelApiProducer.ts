@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { KogitoEditor } from "./KogitoEditor";
 import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
@@ -23,6 +23,7 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { Uri } from "vscode";
+import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 
 /**
  * Produces instances of KogitoEditorChannelApi to be used if we want to provide the extension a Channel API with
@@ -52,4 +53,30 @@ export interface KogitoEditorChannelApiProducer {
     i18n: I18n<VsCodeI18n>,
     initialBackup?: Uri
   ): KogitoEditorChannelApi;
+}
+
+export class DefaultKogitoEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
+  get(
+    editor: KogitoEditor,
+    resourceContentService: ResourceContentService,
+    workspaceApi: WorkspaceApi,
+    backendProxy: BackendProxy,
+    notificationsApi: NotificationsApi,
+    javaCodeCompletionApi: JavaCodeCompletionApi,
+    viewType: string,
+    i18n: I18n<VsCodeI18n>,
+    initialBackup?: Uri
+  ): KogitoEditorChannelApi {
+    return new KogitoEditorChannelApiImpl(
+      editor,
+      resourceContentService,
+      workspaceApi,
+      backendProxy,
+      notificationsApi,
+      javaCodeCompletionApi,
+      viewType,
+      i18n,
+      initialBackup
+    );
+  }
 }

@@ -34,6 +34,7 @@ public class NavTreeJSONMarshaller {
     private static final String NAV_ITEM_DESC = "description";
     private static final String NAV_ITEM_MODIF = "modifiable";
     private static final String NAV_ITEM_CTX = "context";
+    private static final String NAV_ITEM_PAGE = "page";
     private static final String NAV_TREE_ROOT_ITEMS = "root_items";
     private static final String NAV_GROUP_CHILDREN = "children";
 
@@ -77,7 +78,7 @@ public class NavTreeJSONMarshaller {
     public JsonArray toJson(List<NavItem> navItemList) throws JsonException {
         JsonArray json = Json.createArray();
         if (navItemList != null) {
-            for (int i=0; i<navItemList.size(); i++) {
+            for (int i = 0; i < navItemList.size(); i++) {
                 NavItem navItem = navItemList.get(i);
                 json.set(i, toJson(navItem));
             }
@@ -127,7 +128,7 @@ public class NavTreeJSONMarshaller {
         NavItem navItem = null;
         String type = json.getString(NAV_ITEM_TYPE);
         if (type == null) {
-            throw new RuntimeException("Nav item type not specified");
+            type = NavItem.Type.ITEM.toString();
         }
 
         if (NavItem.Type.DIVIDER.toString().equals(type)) {
@@ -142,6 +143,23 @@ public class NavTreeJSONMarshaller {
         String desc = json.getString(NAV_ITEM_DESC);
         String modif = json.getString(NAV_ITEM_MODIF);
         String ctx = json.getString(NAV_ITEM_CTX);
+        String page = json.getString(NAV_ITEM_PAGE);
+        
+        if (name == null) {
+            name = id;
+        }
+        
+        if (page != null && NavItem.Type.ITEM.equals(navItem.getType())) {
+            if (ctx == null) {
+                ctx = "resourceId=" + page + ";resourceType=PERSPECTIVE";
+            }
+            if (name == null) {
+                name = page;
+            }
+            if (id == null) {
+                id = "nav_item_" + page.replaceAll(" ", "_");
+            }
+        }
 
         navItem.setId(id);
         navItem.setName(name);

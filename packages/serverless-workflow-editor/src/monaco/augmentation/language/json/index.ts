@@ -23,7 +23,7 @@ import {
   SW_SPEC_SCHEMA,
 } from "../schemas";
 
-export function initJsonSchema() {
+export function initJsonSchemaDiagnostics() {
   // Uncommenting this will disable syntax highlighting for JSON as well and stop using the JSON Schema for SWF.
   //
   // monaco.languages.json.jsonDefaults.setModeConfiguration({

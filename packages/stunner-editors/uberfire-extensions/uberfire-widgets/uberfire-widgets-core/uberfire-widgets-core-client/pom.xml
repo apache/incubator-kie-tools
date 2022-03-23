@@ -33,25 +33,6 @@
   <description>Uberfire Widgets Core Client</description>
 
   <dependencies>
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
-      <artifactId>gwtbootstrap3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
@@ -63,17 +44,6 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>errai-cdi-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <!-- Errai Core -->

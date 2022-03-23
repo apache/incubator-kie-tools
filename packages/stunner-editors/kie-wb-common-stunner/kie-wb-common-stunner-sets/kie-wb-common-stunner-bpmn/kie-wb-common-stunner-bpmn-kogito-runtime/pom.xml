@@ -66,6 +66,10 @@
 
     <!-- Errai -->
     <dependency>
+      <groupId>org.kie.kogito.stunner.editors</groupId>
+      <artifactId>errai-cdi-client</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>provided</scope>
@@ -569,6 +573,7 @@
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:uberfire-simple-docks-client</compileSourcesArtifact>
 
             <!-- Errai, Drools etc -->
+            <compileSourcesArtifact>org.kie.kogito.stunner.editors:errai-cdi-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:errai-data-binding</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-ui</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:kie-wb-common-kogito-client</compileSourcesArtifact>

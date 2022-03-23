@@ -74,10 +74,6 @@
       <artifactId>elemental2-dom</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.elemental2</groupId>
-      <artifactId>elemental2-promise</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.google.jsinterop</groupId>
       <artifactId>jsinterop-annotations</artifactId>
     </dependency>
@@ -101,10 +97,6 @@
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
@@ -124,10 +116,6 @@
       <scope>test</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
       <artifactId>powermock-api-mockito2</artifactId>

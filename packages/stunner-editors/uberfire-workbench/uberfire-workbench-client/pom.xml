@@ -59,10 +59,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>
     </dependency>
     <dependency>
@@ -82,10 +78,6 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.google.jsinterop</groupId>

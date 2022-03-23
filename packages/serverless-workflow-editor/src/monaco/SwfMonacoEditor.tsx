@@ -21,7 +21,9 @@ import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
-import { useSharedValue } from "@kie-tools-core/envelope-bus/src/hooks";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { SwfServiceCatalogSingleton } from "../serviceCatalog";
+import { ServerlessWorkflowEditorChannelApi } from "../editor";
 
 interface Props {
   content: string;
@@ -34,19 +36,24 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
-  const envelopeContext = useKogitoEditorEnvelopeContext();
-  const [theme] = useSharedValue(envelopeContext.channelApi.shared.kogitoEditor_theme);
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
+  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
+  const [services] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_services);
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "json", envelopeContext.operatingSystem);
+      return new DefaultSwfMonacoEditorController(content, onContentChange, "json", editorEnvelopeCtx.operatingSystem);
     }
     if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", envelopeContext.operatingSystem);
+      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", editorEnvelopeCtx.operatingSystem);
     }
 
     throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, envelopeContext.operatingSystem, fileName, onContentChange]);
+  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
+
+  useEffect(() => {
+    SwfServiceCatalogSingleton.init(services);
+  }, [services]);
 
   useEffect(() => {
     if (!container.current) {

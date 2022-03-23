@@ -20,7 +20,6 @@
 <module>
 
   <inherits name="org.uberfire.UberfireAPI" />
-  <inherits name="org.uberfire.ext.widgets.core.UberfireWidgetsCore"/>
 
   <inherits name="elemental2.webstorage.WebStorage"/>
 

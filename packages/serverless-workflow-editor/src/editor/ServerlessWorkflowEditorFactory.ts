@@ -18,12 +18,15 @@ import {
   Editor,
   EditorFactory,
   EditorInitArgs,
-  KogitoEditorChannelApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
+import { ServerlessWorkflowEditorChannelApi } from "./ServerlessWorkflowEditorChannelApi";
 
-export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
-  public async createEditor(ctx: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>, initArgs: EditorInitArgs) {
+export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, ServerlessWorkflowEditorChannelApi> {
+  public async createEditor(
+    ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
+    initArgs: EditorInitArgs
+  ) {
     return new ServerlessWorkflowEditorView(ctx);
   }
 }

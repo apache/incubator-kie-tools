@@ -57,6 +57,7 @@ export async function startExtension(args: {
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
   const vsCodeNotificationsApi = new VsCodeNotificationsApi(workspaceApi);
   const vsCodeJavaCodeCompletionChannelApi = new VsCodeJavaCodeCompletionImpl();
+
   const editorFactory = new KogitoEditorFactory(
     args.context,
     editorStore,
