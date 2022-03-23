@@ -5,9 +5,14 @@ import { JSONPath } from "vscode-json-languageservice";
 import { SwfMonacoEditorCommandArgs, SwfMonacoEditorCommandIds } from "../commands";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 import CodeLens = languages.CodeLens;
 
-export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds, channelType: ChannelType): void {
+export function initJsonCodeLenses(
+  commandIds: SwfMonacoEditorCommandIds,
+  channelType: ChannelType,
+  os: OperatingSystem | undefined
+): void {
   monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: (model, cancellationToken) => {
       if (cancellationToken.isCancellationRequested) {
@@ -131,10 +136,12 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds, channe
         },
       });
 
+      const displayRhhccIntegration = channelType === ChannelType.VSCODE_DESKTOP && os === OperatingSystem.MACOS;
+
       const codeLenses: CodeLens[] = [
-        ...(channelType === ChannelType.VSCODE_DESKTOP ? logInToRhhcc : []),
-        ...(channelType === ChannelType.VSCODE_DESKTOP ? setupServiceRegistryUrl : []),
-        ...(channelType === ChannelType.VSCODE_DESKTOP ? refreshServiceRegistry : []),
+        ...(displayRhhccIntegration ? logInToRhhcc : []),
+        ...(displayRhhccIntegration ? setupServiceRegistryUrl : []),
+        ...(displayRhhccIntegration ? refreshServiceRegistry : []),
         ...addFunction,
       ];
 
