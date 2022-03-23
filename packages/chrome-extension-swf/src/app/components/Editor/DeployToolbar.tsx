@@ -1,4 +1,4 @@
-import * as React from "React";
+import * as React from "react";
 import { useState, useCallback } from "react";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
