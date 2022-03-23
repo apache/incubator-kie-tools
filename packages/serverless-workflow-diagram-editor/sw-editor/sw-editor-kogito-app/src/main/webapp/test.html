@@ -1,0 +1,268 @@
+<!--
+  ~ Copyright 2019 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SW Editor Test Page (Read-Only)</title>
+
+    <script>
+      function loadDiagram(diagram) {
+        var path = "somePath";
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().setContent(path, diagram);
+        document.getElementById("download_btn").disabled = false;
+      }
+
+      function callPreview() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().getPreview();
+      }
+
+      function download() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans
+          .get("SWDiagramEditor")
+          .get()
+          .getContent()
+          .then(function (process) {
+            var d = document.createElement("a");
+            d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(process));
+            d.setAttribute("download", "process.sw");
+            d.style.display = "none";
+
+            document.body.appendChild(d);
+            d.click();
+            document.body.removeChild(d);
+          });
+      }
+
+      var openFile = function (event) {
+        var input = event.target;
+        var reader = new FileReader();
+        reader.onload = function () {
+          var diagram = reader.result;
+          loadDiagram(diagram);
+        };
+
+        reader.readAsText(input.files[0]);
+      };
+    </script>
+  </head>
+  <body>
+    <div id="editor">
+      Wait until the editor is loaded to open a SW file:<br />
+      <input type="button" onclick="loadDiagram('')" value="Create new" />
+      <input type="button" onclick="callPreview()" value="Call Preview" />
+      or
+      <input type="file" onchange="openFile(event)" value="Choose SW file" accept="sw,txt" />
+      When you are ready you can
+      <input type="button" id="download_btn" value="Download the diagram" onclick="download()" disabled />
+    </div>
+
+    <div style="display: inline; float: left; padding: 25px">
+      <label for="selectExample">Examples:&nbsp;</label>
+      <select id="selectExample">
+        <option value="Basic" selected>Basic</option>
+        <option value="Errors">Errors</option>
+        <option value="Events">Events</option>
+        <option value="ErrorsAndEvents">Errors And Events</option>
+      </select>
+      <input type="button" onclick="loadText()" value="Load JSON Content" style="display: block; margin-bottom: 5px" />
+      <textarea id="jsonRawContent" rows="50" cols="50" style="font-size: larger"></textarea>
+    </div>
+
+    <div style="display: inline; float: left; width: 50%">
+      <iframe id="editorFrame" src="index.html" width="100%" height="880px" frameborder="0" scrolling="no"></iframe>
+    </div>
+
+    <script>
+      function applyText(object) {
+        setText(JSON.stringify(object, null, " "));
+      }
+      function setText(object) {
+        document.getElementById("jsonRawContent").value = object;
+      }
+      function loadText() {
+        loadDiagram(getText());
+      }
+      function getText() {
+        return document.getElementById("jsonRawContent").value;
+      }
+
+      const examples = [
+        // Basic example
+        "{\n" +
+          '  "id": "helloworld",\n' +
+          '  "version": "1.0",\n' +
+          '  "specVersion": "0.8",\n' +
+          '  "name": "Hello World Workflow",\n' +
+          '  "description": "Inject Hello World",\n' +
+          '  "start": "Hello State",\n' +
+          '  "states": [\n' +
+          "    {\n" +
+          '      "name": "Hello State",\n' +
+          '      "type": "inject",\n' +
+          '      "data": {\n' +
+          '        "result": "Hello World!"\n' +
+          "      },\n" +
+          '      "end": true\n' +
+          "    }\n" +
+          "  ]\n" +
+          "}",
+        // Error example
+        "{\n" +
+          ' "id": "helloworld",\n' +
+          ' "version": "1.0",\n' +
+          ' "specVersion": "0.8",\n' +
+          ' "name": "Hello World Workflow",\n' +
+          ' "description": "Inject Hello World",\n' +
+          ' "start": "Hello State",\n' +
+          ' "states": [\n' +
+          "  {\n" +
+          '   "name": "Hello State",\n' +
+          '   "type": "inject",\n' +
+          '   "end": false,\n' +
+          '   "transition": "State1",\n' +
+          '   "onErrors": [\n' +
+          "    {\n" +
+          '     "errorRef": "Some Error",\n' +
+          '     "end": false,\n' +
+          '     "transition": "Error1"\n' +
+          "    }\n" +
+          "   ]\n" +
+          "  },\n" +
+          "  {\n" +
+          '   "name": "Error1",\n' +
+          '   "type": "inject",\n' +
+          '   "end": true\n' +
+          "  },\n" +
+          "  {\n" +
+          '   "name": "State1",\n' +
+          '   "type": "inject",\n' +
+          '   "end": true\n' +
+          "  }\n" +
+          " ]\n" +
+          "}",
+        // Simple Event State Example
+        "{\n" +
+          '  "id": "simpleEventStateExample",\n' +
+          '  "version": "1.0",\n' +
+          '  "name": "Simple Event State Example",\n' +
+          '  "states": [\n' +
+          "    {\n" +
+          '      "name": "Event State 1",\n' +
+          '      "type": "event",\n' +
+          '      "onEvents": [\n' +
+          "        {\n" +
+          '          "eventRefs": [' +
+          '            "Event1"' +
+          "          ],\n" +
+          '          "actions": [\n' +
+          "            {\n" +
+          '              "functionRef": "Function1"\n' +
+          "            }\n" +
+          "          ]\n" +
+          "        }\n" +
+          "      ],\n" +
+          '      "end": true\n' +
+          "    }\n" +
+          "  ],\n" +
+          '  "events": [\n' +
+          "    {\n" +
+          '      "name": "Event1",\n' +
+          '      "type": "EventDef1Type",\n' +
+          '      "source": "EventDef1Source"\n' +
+          "    }\n" +
+          "  ],\n" +
+          '  "functions": [\n' +
+          "    {\n" +
+          '      "name": "Function1",\n' +
+          '      "operation": "openapiservicedef.json#someFunction",\n' +
+          '      "type": "rest"\n' +
+          "    }\n" +
+          "  ]\n" +
+          "}",
+        "{\n" +
+          '  "id": "helloworld",\n' +
+          '  "version": "1.0",\n' +
+          '  "specVersion": "0.8",\n' +
+          '  "name": "Hello World Workflow",\n' +
+          '  "description": "Inject Hello World",\n' +
+          '  "start": "Initial State",\n' +
+          '  "states": [\n' +
+          "    {\n" +
+          '      "name": "Initial State",\n' +
+          '      "type": "inject",\n' +
+          '      "end": false,\n' +
+          '      "transition": "State1",\n' +
+          '      "onErrors": [\n' +
+          "        {\n" +
+          '          "errorRef": "SomeError1",\n' +
+          '          "end": false,\n' +
+          '          "transition": "ErrorState1"\n' +
+          "        },\n" +
+          "        {\n" +
+          '          "errorRef": "SomeError2",\n' +
+          '          "end": false,\n' +
+          '          "transition": "ErrorState2"\n' +
+          "        }\n" +
+          "      ]\n" +
+          "    },\n" +
+          "    {\n" +
+          '      "name": "ErrorState1",\n' +
+          '      "type": "inject",\n' +
+          '      "end": true\n' +
+          "    },\n" +
+          "    {\n" +
+          '      "name": "ErrorState2",\n' +
+          '      "type": "inject",\n' +
+          '      "end": true\n' +
+          "    },\n" +
+          "    {\n" +
+          '      "name": "State1",\n' +
+          '      "type": "inject",\n' +
+          '      "end": false,\n' +
+          '      "transition": "EventState1"\n' +
+          "    },\n" +
+          "    {\n" +
+          '      "name": "EventState1",\n' +
+          '      "type": "event",\n' +
+          '      "onEvents": [\n' +
+          "        {\n" +
+          '          "eventRefs": [\n' +
+          '            "Event1"\n' +
+          "          ],\n" +
+          '          "actions": [\n' +
+          "            {\n" +
+          '              "functionRef": "Function1"\n' +
+          "            }\n" +
+          "          ]\n" +
+          "        }\n" +
+          "      ],\n" +
+          '      "end": true\n' +
+          "    }\n" +
+          "  ]\n" +
+          "}",
+      ];
+
+      document.getElementById("selectExample").onchange = function (e) {
+        var i = document.getElementById("selectExample").selectedIndex;
+        setText(examples[i]);
+      };
+
+      setText(examples[0]);
+    </script>
+  </body>
+</html>

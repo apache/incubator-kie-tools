@@ -41,6 +41,7 @@ public class TargetDivDragComponent implements PerspectiveEditorNavComponent,
                                                HasModalConfiguration {
 
     public static final String ID_PARAMETER = "ID_PARAMETER";
+    public static final String DIV_ID = "divId";
     @Inject
     private PlaceManager placeManager;
     private ModalConfigurationContext configContext;
@@ -67,6 +68,9 @@ public class TargetDivDragComponent implements PerspectiveEditorNavComponent,
     @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
         String id = ctx.getComponent().getProperties().get(ID_PARAMETER);
+        if (id == null) {
+            id = ctx.getComponent().getProperties().get(DIV_ID);
+        }
         return createDiv(id);
     }
 

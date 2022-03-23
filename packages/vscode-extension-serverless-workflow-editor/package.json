@@ -14,8 +14,8 @@
     "build:prod": "rimraf dist && webpack && yarn pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
     "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
-    "compile": "webpack",
-    "watch": "webpack",
+    "compile": "webpack --env dev",
+    "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
@@ -91,6 +91,11 @@
           "type": "string",
           "default": "${fileDirname}",
           "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
+        },
+        "kogito.sw.specsStoragePath": {
+          "type": "string",
+          "default": "${fileDirname}/specs",
+          "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
         }
       }
     },

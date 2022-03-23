@@ -1,0 +1,13 @@
+.mixin (@a) when (@a = "safari") {
+  background-color: black;
+}
+
+.mixin (@a) when (@a = "mozilla") {
+  background-color: white;
+}
+
+.class1 {
+  .mixin(@user_agent);
+}
+
+@importedColor: grey;

@@ -32,6 +32,7 @@ import { sleep } from "../VSCodeTestHelper";
 export enum PropertiesPanelSection {
   PROCESS = "Process",
   PROCESS_DATA = "Process Data",
+  IMPLEMENTATION_EXECUTION = "Implementation/Execution",
   Advanced = "Advanced",
 }
 
@@ -143,8 +144,12 @@ export default class PropertiesPanelHelper {
    * @param propertyName
    * @param propertyValue
    */
-  public async changeProperty(propertyName: string, propertyValue: string): Promise<PropertiesPanelHelper> {
-    const property = await this.getProperty(propertyName);
+  public async changeProperty(
+    propertyName: string,
+    propertyValue: string,
+    propertyType?: string
+  ): Promise<PropertiesPanelHelper> {
+    const property = await this.getProperty(propertyName, propertyType);
     await property.clear();
     await property.sendKeys(propertyValue);
 

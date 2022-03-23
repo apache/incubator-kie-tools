@@ -17,7 +17,6 @@ import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
 import org.dashbuilder.client.external.transformer.resources.JSONAtaInjector;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
-import org.dashbuilder.dataset.DataSet;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookup;
 import org.dashbuilder.dataset.client.ClientDataSetManager;
@@ -62,6 +61,7 @@ public class ExternalDataSetClientProvider {
     }
 
     public void register(ExternalDataSetDef def) {
+        clientDataSetManager.removeDataSet(def.getUUID());
         externalDataSets.put(def.getUUID(), def);
     }
 
@@ -70,10 +70,12 @@ public class ExternalDataSetClientProvider {
     }
 
     public void unregister(String uuid) {
+        clearRegisteredDataSets();
         externalDataSets.remove(uuid);
     }
 
     public void clear() {
+        clearRegisteredDataSets();
         externalDataSets.clear();
     }
 
@@ -125,7 +127,7 @@ public class ExternalDataSetClientProvider {
 
         dataSet.setUUID(uuid);
         clientDataSetManager.registerDataSet(dataSet);
-        DataSet lookupResult = DataSetFactory.newEmptyDataSet();
+        var lookupResult = DataSetFactory.newEmptyDataSet();
         try {
             lookupResult = clientDataSetManager.lookupDataSet(lookup);
         } catch (Exception e) {
@@ -174,6 +176,10 @@ public class ExternalDataSetClientProvider {
         var json = Global.JSON.parse(responseText);
         var result = JSONAtaTransformer.jsonata(expression).evaluate(json);
         return Global.JSON.stringify(result);
+    }
+    
+    private void clearRegisteredDataSets() {
+        externalDataSets.keySet().forEach(d -> clientDataSetManager.removeDataSet(d));
     }
 
 }

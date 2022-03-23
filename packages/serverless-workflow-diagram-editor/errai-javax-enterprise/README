@@ -1,0 +1,18 @@
+This project provides a handful of modified javax.enterprise interfaces. These
+override their official counterparts for Errai client-side code. Our versions
+can be successfully compiled by the GWT compiler.
+
+== Attention Eclipse (m2e or m2eclipse) Users ==
+
+The build configuration that Maven Integration for Eclipse creates from this
+POM yields an Eclipse project that won't compile. Here's how you fix it:
+
+In the Package Explorer view:
+
+- Expand src/main/java
+- Expand javax.enterprise (within src/main/java)
+- Right click on super (within javax.enterprise)
+- From the popup menu, choose Build Path -> Use as Source Folder
+
+The project should now compile, and dependent projects in your workspace
+(errai-cdi-client for example) should now also build cleanly.
