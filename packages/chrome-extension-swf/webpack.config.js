@@ -55,6 +55,7 @@ module.exports = async (env, argv) => {
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },
+    ignoreWarnings: [/Failed to parse source map/],
     devServer: {
       https: false,
       historyApiFallback: false,

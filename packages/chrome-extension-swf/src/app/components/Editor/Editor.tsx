@@ -262,17 +262,7 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
     <OnlineEditorPage>
       <PromiseStateWrapper
         promise={workspaceFilePromise}
-        pending={
-          <Bullseye>
-            <TextContent>
-              <Bullseye>
-                <Spinner />
-              </Bullseye>
-              <br />
-              <Text component={TextVariants.p}>{`Loading...`}</Text>
-            </TextContent>
-          </Bullseye>
-        }
+        pending={<Loading />}
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <Page>

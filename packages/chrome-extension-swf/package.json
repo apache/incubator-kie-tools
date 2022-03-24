@@ -37,6 +37,7 @@
     "react-dropzone": "^11.4.2",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.2.1",
+    "swagger-ui": "^4.9.0",
     "swagger-ui-react": "^4.8.1"
   },
   "devDependencies": {

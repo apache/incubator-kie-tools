@@ -16935,7 +16935,7 @@ react-debounce-input@=3.2.4:
     lodash.debounce "^4"
     prop-types "^15.7.2"
 
-react-dom@^17.0.2:
+react-dom@=17.0.2, react-dom@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
   integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
@@ -17143,7 +17143,7 @@ react-transition-group@^4.4.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
-react@^17.0.2:
+react@=17.0.2, react@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
   integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
@@ -19206,6 +19206,47 @@ swagger-ui-react@^4.8.1:
     randombytes "^2.1.0"
     react-copy-to-clipboard "5.0.4"
     react-debounce-input "=3.2.4"
+    react-immutable-proptypes "2.2.0"
+    react-immutable-pure-component "^2.2.0"
+    react-inspector "^5.1.1"
+    react-redux "^7.2.4"
+    react-syntax-highlighter "^15.4.5"
+    redux "^4.1.2"
+    redux-immutable "^4.0.0"
+    remarkable "^2.0.1"
+    reselect "^4.1.5"
+    serialize-error "^8.1.0"
+    sha.js "^2.4.11"
+    swagger-client "^3.18.4"
+    url-parse "^1.5.8"
+    xml "=1.0.1"
+    xml-but-prettier "^1.0.1"
+    zenscroll "^4.0.2"
+
+swagger-ui@^4.9.0:
+  version "4.9.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui/-/swagger-ui-4.9.0.tgz#6800c3e49c9f0c7275e8c6787e6a2dfcee849ad3"
+  integrity sha512-+ZzuIsXq8OIG2w9TjOI7znZGaCrT0wEe2v6FrgCJ9tmGWteL1qWjo2kCQBFrQynwN9+nrg3p/+HtNoyuJDMhtA==
+  dependencies:
+    "@babel/runtime-corejs3" "^7.16.8"
+    "@braintree/sanitize-url" "=6.0.0"
+    base64-js "^1.5.1"
+    classnames "^2.3.1"
+    css.escape "1.5.1"
+    deep-extend "0.6.0"
+    dompurify "=2.3.3"
+    ieee754 "^1.2.1"
+    immutable "^3.x.x"
+    js-file-download "^0.4.12"
+    js-yaml "=4.1.0"
+    lodash "^4.17.21"
+    prop-types "^15.8.1"
+    randexp "^0.5.3"
+    randombytes "^2.1.0"
+    react "=17.0.2"
+    react-copy-to-clipboard "5.0.4"
+    react-debounce-input "=3.2.4"
+    react-dom "=17.0.2"
     react-immutable-proptypes "2.2.0"
     react-immutable-pure-component "^2.2.0"
     react-inspector "^5.1.1"
