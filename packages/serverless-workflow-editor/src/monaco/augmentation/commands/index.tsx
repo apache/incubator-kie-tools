@@ -3,7 +3,10 @@ import * as React from "react";
 import { openWidget } from "../widgets";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import {
+  SwfMonacoEditorCommandArgs,
+  SwfMonacoEditorCommandIds,
+} from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
 
 // Part of an example
 //
@@ -15,27 +18,6 @@ import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service
 //     console.info(`Received PONG from '${source}' in reply to '${replyingTo}'`);
 //   },
 // };
-
-export type SwfMonacoEditorCommandTypes =
-  | "LogInToRhhcc"
-  | "SetupServiceRegistryUrl"
-  | "RefreshServiceCatalogFromRhhcc"
-  | "ImportFunctionFromCompletionItem"
-  | "OpenFunctionsWidget"
-  | "OpenStatesWidget"
-  | "OpenFunctionsCompletionItems";
-
-export type SwfMonacoEditorCommandArgs = {
-  LogInToRhhcc: {};
-  SetupServiceRegistryUrl: {};
-  RefreshServiceCatalogFromRhhcc: {};
-  ImportFunctionFromCompletionItem: { containingService: SwfServiceCatalogService };
-  OpenFunctionsWidget: { position: Position };
-  OpenStatesWidget: { position: Position };
-  OpenFunctionsCompletionItems: { newCursorPosition: Position };
-};
-
-export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
 
 export function initAugmentationCommands(
   editorInstance: editor.IStandaloneCodeEditor,
@@ -66,7 +48,10 @@ export function initAugmentationCommands(
     OpenFunctionsCompletionItems: editorInstance.addCommand(
       0,
       async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"]) => {
-        editorInstance.setPosition(args.newCursorPosition);
+        editorInstance.setPosition({
+          lineNumber: args.newCursorPosition.line + 1,
+          column: args.newCursorPosition.character + 1,
+        });
         editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
       }
     )!,
@@ -74,7 +59,7 @@ export function initAugmentationCommands(
       0,
       async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsWidget"]) => {
         openWidget(editorInstance, {
-          position: args.position,
+          position: new Position(args.position.line, args.position.character),
           widgetId: "swf.functions.widget",
           backgroundColor: "lightgreen",
           domNodeHolder: {},
@@ -104,7 +89,7 @@ export function initAugmentationCommands(
       0,
       async (ctx, args: SwfMonacoEditorCommandArgs["OpenStatesWidget"]) => {
         openWidget(editorInstance, {
-          position: args.position,
+          position: new Position(args.position.line, args.position.character),
           widgetId: "swf.states.widget",
           backgroundColor: "lightblue",
           domNodeHolder: {},

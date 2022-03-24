@@ -176,13 +176,11 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   }
 
   public async kogitoSwfLanguageService__doCompletion(
-    textDocumentIdentifier: TextDocumentIdentifier,
-    position: Position
+    content: string,
+    uri: string,
+    cursorPosition: Position
   ): Promise<CompletionItem[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__doCompletion(
-      textDocumentIdentifier,
-      position
-    );
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__doCompletion(content, uri, cursorPosition);
   }
 
   public async kogitoSwfLanguageService__doCodeLenses(

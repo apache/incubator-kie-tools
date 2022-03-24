@@ -25,7 +25,7 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfMonacoEditorCommandArgs } from "../commands";
+import { SwfMonacoEditorCommandArgs } from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { TextEdit } from "vscode-json-languageservice";
@@ -240,10 +240,11 @@ export function initJsonCompletion(
       cancellationToken: CancellationToken
     ) => {
       const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__doCompletion(
-        { uri: model.uri.toString() },
+        model.getValue(),
+        model.uri.toString(),
         {
-          character: cursorPosition.column,
-          line: cursorPosition.lineNumber,
+          line: cursorPosition.lineNumber - 1,
+          character: cursorPosition.column - 1,
         }
       );
 
@@ -253,69 +254,69 @@ export function initJsonCompletion(
 
       const monacoCompletionItems: languages.CompletionItem[] = lsCompletionItems.map((c) => ({
         kind: c.kind ?? languages.CompletionItemKind.Module,
-        label: c.label,
-        sortText: c.sortText,
-        detail: c.detail,
-        filterText: c.filterText,
-        insertText: c.insertText ?? c.textEdit?.newText ?? "",
+        label: "ls" + c.label,
+        sortText: "ls" + c.sortText,
+        detail: "ls" + c.detail,
+        filterText: "ls" + c.filterText,
+        insertText: "ls" + c.insertText ?? c.textEdit?.newText ?? "",
         range: {
-          startLineNumber: (c.textEdit as TextEdit).range.start.line,
-          startColumn: (c.textEdit as TextEdit).range.start.character,
-          endLineNumber: (c.textEdit as TextEdit).range.end.line,
-          endColumn: (c.textEdit as TextEdit).range.end.character,
+          startLineNumber: (c.textEdit as TextEdit).range.start.line + 1,
+          startColumn: (c.textEdit as TextEdit).range.start.character + 1,
+          endLineNumber: (c.textEdit as TextEdit).range.end.line + 1,
+          endColumn: (c.textEdit as TextEdit).range.end.character + 1,
         },
       }));
 
-      return {
-        suggestions: monacoCompletionItems,
+      const rootNode = jsonc.parseTree(model.getValue());
+      if (!rootNode) {
+        return;
+      }
+
+      const cursorOffset = model.getOffsetAt(cursorPosition);
+
+      const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
+      if (!currentNode) {
+        return;
+      }
+
+      const currentNodePosition = {
+        start: model.getPositionAt(currentNode.offset),
+        end: model.getPositionAt(currentNode.offset + currentNode.length),
       };
 
-      // const rootNode = jsonc.parseTree(model.getValue());
-      // if (!rootNode) {
-      //   return;
-      // }
-      //
-      // const cursorOffset = model.getOffsetAt(cursorPosition);
-      //
-      // const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
-      // if (!currentNode) {
-      //   return;
-      // }
-      //
-      // const currentNodePosition = {
-      //   start: model.getPositionAt(currentNode.offset),
-      //   end: model.getPositionAt(currentNode.offset + currentNode.length),
-      // };
-      //
-      // const currentWordPosition = model.getWordAtPosition(cursorPosition);
-      //
-      // const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
-      //   ? Range.fromPositions(currentNodePosition.start, currentNodePosition.end)
-      //   : new Range(
-      //       cursorPosition.lineNumber,
-      //       currentWordPosition?.startColumn ?? cursorPosition.column,
-      //       cursorPosition.lineNumber,
-      //       currentWordPosition?.endColumn ?? cursorPosition.column
-      //     );
-      //
-      // const cursorJsonLocation = jsonc.getLocation(model.getValue(), cursorOffset);
-      //
-      // return {
-      //   suggestions: Array.from(completions.entries())
-      //     .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
-      //     .flatMap(([_, completionItemsDelegate]) =>
-      //       completionItemsDelegate({
-      //         model,
-      //         cursorPosition,
-      //         context,
-      //         commandIds,
-      //         currentNode,
-      //         currentNodePosition,
-      //         rootNode,
-      //         overwriteRange,
-      //       })
-      //     ),
-      // };
+      const currentWordPosition = model.getWordAtPosition(cursorPosition);
+
+      const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
+        ? Range.fromPositions(currentNodePosition.start, currentNodePosition.end)
+        : new Range(
+            cursorPosition.lineNumber,
+            currentWordPosition?.startColumn ?? cursorPosition.column,
+            cursorPosition.lineNumber,
+            currentWordPosition?.endColumn ?? cursorPosition.column
+          );
+
+      const cursorJsonLocation = jsonc.getLocation(model.getValue(), cursorOffset);
+      console.error(cursorJsonLocation);
+
+      return {
+        suggestions: [
+          ...monacoCompletionItems,
+          ...Array.from(completions.entries())
+            .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
+            .flatMap(([_, completionItemsDelegate]) =>
+              completionItemsDelegate({
+                model,
+                cursorPosition,
+                context,
+                commandIds,
+                currentNode,
+                currentNodePosition,
+                rootNode,
+                overwriteRange,
+              })
+            ),
+        ],
+      };
     },
   });
 }

@@ -2,7 +2,10 @@ import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
-import { SwfMonacoEditorCommandArgs, SwfMonacoEditorCommandIds } from "../commands";
+import {
+  SwfMonacoEditorCommandArgs,
+  SwfMonacoEditorCommandIds,
+} from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
@@ -42,9 +45,10 @@ export function initJsonCodeLenses(
               title: `+ Add function...`,
               arguments: [
                 {
-                  position,
-                  node,
-                  newCursorPosition,
+                  newCursorPosition: {
+                    line: newCursorPosition.lineNumber - 1,
+                    character: newCursorPosition.column - 1,
+                  },
                 } as SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"],
               ],
             },

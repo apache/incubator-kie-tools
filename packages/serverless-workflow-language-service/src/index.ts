@@ -18,8 +18,9 @@ import { CodeLens, CompletionItem, Position, TextDocumentIdentifier } from "vsco
 
 export interface SwfLanguageServiceChannelApi {
   kogitoSwfLanguageService__doCompletion(
-    textDocumentIdentifier: TextDocumentIdentifier,
-    position: Position
+    content: string,
+    uri: string,
+    cursorPosition: Position
   ): Promise<CompletionItem[]>;
   kogitoSwfLanguageService__doCodeLenses(textDocumentIdentifier: TextDocumentIdentifier): Promise<CodeLens[]>;
 }

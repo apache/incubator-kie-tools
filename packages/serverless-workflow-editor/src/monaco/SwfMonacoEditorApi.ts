@@ -15,7 +15,7 @@
  */
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
+import { SwfMonacoEditorCommandIds } from "../editor/ServerlessWorkflowEditorEnvelopeApi";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
