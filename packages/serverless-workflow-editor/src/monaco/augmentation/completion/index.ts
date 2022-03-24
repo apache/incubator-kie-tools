@@ -28,6 +28,7 @@ import {
 import { SwfMonacoEditorCommandArgs } from "../commands";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { TextEdit } from "vscode-json-languageservice";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -245,17 +246,23 @@ export function initJsonCompletion(
           line: cursorPosition.lineNumber,
         }
       );
-      const monacoCompletionItems = lsCompletionItems.map((c) => ({
+
+      if (cancellationToken.isCancellationRequested) {
+        return undefined;
+      }
+
+      const monacoCompletionItems: languages.CompletionItem[] = lsCompletionItems.map((c) => ({
         kind: c.kind ?? languages.CompletionItemKind.Module,
         label: c.label,
         sortText: c.sortText,
         detail: c.detail,
-        insertText: c.insertText ?? "",
+        filterText: c.filterText,
+        insertText: c.insertText ?? c.textEdit?.newText ?? "",
         range: {
-          startLineNumber: 0,
-          startColumn: 0,
-          endColumn: 0,
-          endLineNumber: 0,
+          startLineNumber: (c.textEdit as TextEdit).range.start.line,
+          startColumn: (c.textEdit as TextEdit).range.start.character,
+          endLineNumber: (c.textEdit as TextEdit).range.end.line,
+          endColumn: (c.textEdit as TextEdit).range.end.character,
         },
       }));
 
@@ -263,10 +270,6 @@ export function initJsonCompletion(
         suggestions: monacoCompletionItems,
       };
 
-      // if (cancellationToken.isCancellationRequested) {
-      //   return;
-      // }
-      //
       // const rootNode = jsonc.parseTree(model.getValue());
       // if (!rootNode) {
       //   return;
