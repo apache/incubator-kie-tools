@@ -181,22 +181,42 @@ public class DataTypeListTest {
     }
 
     @Test
-    public void activateReactComponents() {
+    public void activateReactComponentsOnVsCodeDesktop() {
         // Included channel
-        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE)).thenReturn(true);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE_DESKTOP)).thenReturn(true);
 
         dataTypeList.activateReactComponents();
 
-        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE);
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE_DESKTOP);
         verify(view, times(1)).renderImportJavaClasses();
 
         // Excluded channel
         reset(kogitoChannelHelperMock, view);
-        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE)).thenReturn(false);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE_DESKTOP)).thenReturn(false);
 
         dataTypeList.activateReactComponents();
 
-        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE);
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE_DESKTOP);
+        verify(view, never()).renderImportJavaClasses();
+    }
+
+    @Test
+    public void activateReactComponentsOnVsCodeWeb() {
+        // Included channel
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE_WEB)).thenReturn(true);
+
+        dataTypeList.activateReactComponents();
+
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE_WEB);
+        verify(view, times(1)).renderImportJavaClasses();
+
+        // Excluded channel
+        reset(kogitoChannelHelperMock, view);
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(Channel.VSCODE_WEB)).thenReturn(false);
+
+        dataTypeList.activateReactComponents();
+
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(Channel.VSCODE_WEB);
         verify(view, never()).renderImportJavaClasses();
     }
 
