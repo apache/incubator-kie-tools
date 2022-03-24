@@ -32,11 +32,9 @@ import { useCancelableEffect, useController, usePrevious } from "../../reactExt/
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { AlertsController, useAlert } from "../../alerts/Alerts";
+import { AlertsController } from "../../alerts/Alerts";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { EditorToolbar } from "./EditorToolbar";
-import SwaggerUI from "swagger-ui-react";
-import "swagger-ui-react/swagger-ui.css";
 
 const Loading = () => (
   <Bullseye>
@@ -62,12 +60,9 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
   const { editor, editorRef } = useEditorRef();
   const workspaces = useWorkspaces();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
-  const workspaceOpenApiFilePromise = useWorkspaceFilePromise(props.workspaceId, "./openapi.yml");
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
-  const [openApiSwaggerFile, setOpenApiSwaggerFile] = useState<string>();
   const [alerts, alertsRef] = useController<AlertsController>();
   const lastContent = useRef<string>();
-  const lastOpenApiContent = useRef<string>();
 
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
 
@@ -100,32 +95,6 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
         });
       },
       [workspaceFilePromise]
-    )
-  );
-
-  // update EmbeddedEditorFile, but only if content is different than what was saved
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        if (!workspaceOpenApiFilePromise.data) {
-          return;
-        }
-
-        workspaceOpenApiFilePromise.data.getFileContentsAsString().then((content) => {
-          if (canceled.get()) {
-            return;
-          }
-
-          if (content === lastOpenApiContent.current) {
-            return;
-          }
-
-          lastOpenApiContent.current = content;
-
-          setOpenApiSwaggerFile(content);
-        });
-      },
-      [workspaceOpenApiFilePromise]
     )
   );
 
@@ -282,9 +251,6 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
                   </div>
                 )}
               </div>
-            </PageSection>
-            <PageSection variant={PageSectionVariants.default}>
-              {openApiSwaggerFile && <SwaggerUI spec={openApiSwaggerFile} />}
             </PageSection>
           </Page>
         )}

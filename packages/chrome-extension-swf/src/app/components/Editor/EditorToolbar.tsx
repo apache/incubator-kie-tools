@@ -85,6 +85,9 @@ import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { WorkspaceStatusIndicator } from "../../workspace/components/WorkspaceStatusIndicator";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { DeployToolbar } from "./DeployToolbar";
+import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
+import { SwaggerEditorModal } from "./SwaggerEditor/SwaggerEditorModal";
+import { LoadingSpinner } from "../../common/LoadingSpinner";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -140,6 +143,8 @@ export function EditorToolbar(props: Props) {
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
+  const workspaceOpenApiFilePromise = useWorkspaceFilePromise(props.workspaceFile.workspaceId, "./openapi.yml");
+  const [swaggerModalOpen, setSwaggerModalOpen] = useState(false);
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
@@ -757,37 +762,35 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       return;
     }
 
-    if (workspacePromise.data.files.length === 1) {
-      await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
-      history.replace({ pathname: routes.home.path({}) });
-      return;
-    }
+    await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
+    history.replace({ pathname: routes.home.path({}) });
+    return;
 
-    const nextFile = workspacePromise.data.files
-      .filter((f) => {
-        return (
-          f.relativePath !== props.workspaceFile.relativePath && editorEnvelopeLocator.hasMappingFor(f.relativePath)
-        );
-      })
-      .pop();
+    // const nextFile = workspacePromise.data.files
+    //   .filter((f) => {
+    //     return (
+    //       f.relativePath !== props.workspaceFile.relativePath && editorEnvelopeLocator.hasMappingFor(f.relativePath)
+    //     );
+    //   })
+    //   .pop();
 
-    await workspaces.deleteFile({
-      fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-      file: props.workspaceFile,
-    });
+    // await workspaces.deleteFile({
+    //   fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+    //   file: props.workspaceFile,
+    // });
 
-    if (!nextFile) {
-      history.replace({ pathname: routes.home.path({}) });
-      return;
-    }
+    // if (!nextFile) {
+    //   history.replace({ pathname: routes.home.path({}) });
+    //   return;
+    // }
 
-    history.replace({
-      pathname: routes.workspaceWithFilePath.path({
-        workspaceId: nextFile.workspaceId,
-        fileRelativePath: nextFile.relativePath,
-      }),
-    });
-  }, [routes, history, workspacePromise.data, props.workspaceFile, workspaces, editorEnvelopeLocator]);
+    // history.replace({
+    //   pathname: routes.workspaceWithFilePath.path({
+    //     workspaceId: nextFile.workspaceId,
+    //     fileRelativePath: nextFile.relativePath,
+    //   }),
+    // });
+  }, [routes, history, workspacePromise.data, props.workspaceFile, workspaces]);
 
   const workspaceNameRef = useRef<HTMLInputElement>(null);
 
@@ -1600,6 +1603,23 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarContent>
                   </Toolbar>
                 </FlexItem>
+                <PromiseStateWrapper
+                  promise={workspaceOpenApiFilePromise}
+                  pending={<LoadingSpinner />}
+                  resolved={(file) => (
+                    <FlexItem>
+                      <Button isInline={true} variant={ButtonVariant.link} onClick={() => setSwaggerModalOpen(true)}>
+                        OpenAPI spec
+                      </Button>
+                      <SwaggerEditorModal
+                        workspaceFile={file}
+                        isOpen={swaggerModalOpen}
+                        workspaceName={workspace.descriptor.name}
+                        onClose={() => setSwaggerModalOpen(false)}
+                      />
+                    </FlexItem>
+                  )}
+                />
                 <FlexItem>
                   <DeployToolbar editor={props.editor} workspace={workspace} />
                 </FlexItem>
