@@ -187,7 +187,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     useCallback(
       ({ canceled }) => {
         if (dmnRunnerState.isExpanded && dmnRunnerState.mode === DmnRunnerMode.FORM) {
-          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex], canceled);
+          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}, canceled);
         }
       },
       [
@@ -206,7 +206,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
       ({ canceled }) => {
         if (dmnRunnerState.error) {
           // if there is an error generating the form, the last form data is submitted
-          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex], canceled);
+          updateDmnRunnerResults(dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex] ?? {}, canceled);
         } else if (previousFormError) {
           setTimeout(() => {
             formRef.current?.submit();
