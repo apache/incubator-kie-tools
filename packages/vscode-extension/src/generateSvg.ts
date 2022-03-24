@@ -21,23 +21,9 @@ import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { getInterpolatedConfigurationValue, configurationTokenKeys } from "./ConfigurationInterpolation";
 
 const encoder = new TextEncoder();
-
-type SettingsValueInterpolationToken =
-  | "${workspaceFolder}"
-  | "${fileDirname}"
-  | "${fileExtname}"
-  | "${fileBasename}"
-  | "${fileBasenameNoExtension}";
-
-export function interpolateSettingsValue(args: { tokens: Record<string, string>; value: string }) {
-  const { tokens, value } = args;
-  return Object.entries(tokens).reduce(
-    (result, [tokenName, tokenValue]) => result.replaceAll(tokenName, tokenValue),
-    value
-  );
-}
 
 export async function generateSvg(args: {
   editorStore: KogitoEditorStore;
@@ -60,25 +46,7 @@ export async function generateSvg(args: {
     return;
   }
 
-  const parsedPath = __path.parse(editor.document.uri.fsPath);
-  const workspace = vscode.workspace.workspaceFolders?.length
-    ? vscode.workspace.workspaceFolders.find((workspace) => {
-        const relative = __path.relative(workspace.uri.fsPath, editor.document.uri.fsPath);
-        return relative && !relative.startsWith("..") && !__path.isAbsolute(relative);
-      })
-    : undefined;
-
-  const fileExtensionWithDot = parsedPath.base.substring(parsedPath.base.indexOf("."));
-  const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(parsedPath.base)?.type;
-
-  const tokens: Record<SettingsValueInterpolationToken, string> = {
-    "${workspaceFolder}": workspace?.uri.fsPath ?? parsedPath.dir,
-    "${fileDirname}": parsedPath.dir,
-    "${fileExtname}": fileExtensionWithDot,
-    "${fileBasename}": parsedPath.base,
-    "${fileBasenameNoExtension}": parsedPath.base.substring(0, parsedPath.base.indexOf(".")),
-  };
-
+  const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(__path.parse(editor.document.uri.path).base)?.type;
   const svgFilenameTemplateId = `kogito.${fileType}.svgFilenameTemplate`;
   const svgFilePathTemplateId = `kogito.${fileType}.svgFilePath`;
 
@@ -92,14 +60,15 @@ export async function generateSvg(args: {
     return;
   }
 
-  const svgFileName = interpolateSettingsValue({
-    tokens,
-    value: svgFilenameTemplate ? svgFilenameTemplate : "${fileBasenameNoExtension}-svg.svg",
+  const svgFileName = getInterpolatedConfigurationValue({
+    currentFileAbsolutePosixPath: editor.document.uri.path,
+    value: svgFilenameTemplate || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
   });
-  const svgFilePath = interpolateSettingsValue({
-    tokens,
-    value: svgFilePathTemplate ? svgFilePathTemplate : "${fileDirname}",
+  const svgFilePath = getInterpolatedConfigurationValue({
+    currentFileAbsolutePosixPath: editor.document.uri.path,
+    value: svgFilePathTemplate || `${configurationTokenKeys["${fileDirname}"]}`,
   });
+
   const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
 
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
@@ -110,7 +79,7 @@ export async function generateSvg(args: {
         return;
       }
 
-      args.workspaceApi.kogitoWorkspace_openFile(svgUri.fsPath);
+      args.workspaceApi.kogitoWorkspace_openFile(svgUri.path);
     });
   }
 }

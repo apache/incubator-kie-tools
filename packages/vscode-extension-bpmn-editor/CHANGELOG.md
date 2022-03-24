@@ -1,3 +1,9 @@
+# 0.17.0 (alpha)
+
+- [KOGITO-4686](https://issues.redhat.com/browse/KOGITO-4686) - Cannot open DMN/BPMN files from command line with VS Code
+- [KOGITO-6496](https://issues.redhat.com/browse/KOGITO-6496) - Remove unused/unnecessary dependencies with KIE V7 from `stunner-editors`
+- [KOGITO-6181](https://issues.redhat.com/browse/KOGITO-6181) - Stunner-based editors are losing focus when asked for the SVG
+
 # 0.16.0 (alpha)
 
 - _(No new features)_

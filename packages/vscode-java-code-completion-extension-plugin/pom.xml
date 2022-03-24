@@ -31,15 +31,14 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <tycho.version>2.3.0</tycho.version>
+    <tycho.version>2.5.0</tycho.version>
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
     <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <jdt.ls.version>1.7.0-SNAPSHOT</jdt.ls.version>
+    <jdt.ls.version>1.7.0.20211216164144</jdt.ls.version>
 
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
-
 
     <!-- Code coverage -->
     <jacoco.version>0.7.9</jacoco.version>
@@ -61,11 +60,11 @@
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.6.0/repository/</url>
+      <url>https://download.eclipse.org/jdtls/snapshots/repository/latest/</url>
     </repository>
     <repository>
       <id>jdt.ls.maven</id>
-      <url>https://repo.eclipse.org/content/repositories/jdtls-snapshots/</url>
+      <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
     </repository>
   </repositories>
   <build>

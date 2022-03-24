@@ -17,20 +17,14 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <parent>
-    <groupId>org.kie</groupId>
-    <artifactId>kie-parent</artifactId>
-    <version>7.58.0.Final</version>
-  </parent>
-
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>stunner-editors-parent</artifactId>
   <version>0.0.0</version>
   <packaging>pom</packaging>
 
-  <name>Kogito Editors Java - Parent</name>
-  <description>Kogito Editors Java - Parent</description>
+  <name>Stunner Editors Java - Parent</name>
+  <description>Stunner Editors Java - Parent</description>
 
   <url>http://kogito.kie.org</url>
   <inceptionYear>2021</inceptionYear>
@@ -143,28 +137,25 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+
     <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
   <properties>
-    <!-- Overriding version that comes from kie-parent to enable the 'npx' goal. -->
-    <version.frontend-maven-plugin>1.12.0</version.frontend-maven-plugin>
-
-    <!-- For kie-parent and modules in kie-bom, kie-soup-bom, drools-bom, jbpm-bom and kie-dmn-bom -->
-    <version.org.kie7>7.65.0.Final</version.org.kie7>
-    <version.org.kie>8.17.0.Beta</version.org.kie>
-
-    <!-- 3.18+ breaks GWT compilation -->
-    <version.org.eclipse.jdt>3.17.0</version.org.eclipse.jdt>
-
     <!-- Properties from ERRAI parent POM -->
     <!-- The version from kie-parent is not compatible with errai-validation -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
@@ -186,25 +177,19 @@
     <version.org.webjars.bowergithub.gliffy.canvas2svg>0.1</version.org.webjars.bowergithub.gliffy.canvas2svg>
     <version.org.webjars.bower.mustachejs>3.0.1</version.org.webjars.bower.mustachejs>
     <version.org.webjars.bower.jqueryui>1.12.1</version.org.webjars.bower.jqueryui>
-    <version.bundle.plugin>3.3.0</version.bundle.plugin><!-- 3.2.0 sometimes fails with NPE during parallel build-->
     <!-- Make OSGi happy -->
     <osgi.snapshot.qualifier>${maven.build.timestamp}</osgi.snapshot.qualifier>
     <jboss.releases.repo.url>https://repository.jboss.org/nexus/service/local/staging/deploy/maven2/</jboss.releases.repo.url>
     <jboss.snapshots.repo.url>https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
-    <!-- Newer version in kie-parent causes ServiceLoader error -->
-    <version.ch.qos.logback>1.1.3</version.ch.qos.logback>
-    <!-- Synchronized with GWT 2.9.0 -->
-    <version.org.eclipse.jetty>9.2.14.v20151106</version.org.eclipse.jetty>
+
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
     <revapi.oldUberFireVersion>${version.org.uberfire.latestFinal.release}</revapi.oldUberFireVersion>
     <revapi.newUberFireVersion>${project.version}</revapi.newUberFireVersion>
-    <version.com.googlecode.jsonsimple>1.1.1</version.com.googlecode.jsonsimple>
-    <version.com.googlecode.jtype>0.1.1</version.com.googlecode.jtype>
 
     <version.org.kie.kogito.lienzo>${project.version}</version.org.kie.kogito.lienzo>
 
     <!-- Properties from KIE-WB-COMMON parent POM -->
-    <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
+
     <spotbugs.failOnViolation>true</spotbugs.failOnViolation>
     <checkstyle.header.template><![CDATA[
 ^\/\*$\n^
@@ -229,31 +214,106 @@
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
-
     <jacoco.haltOnFailure>false</jacoco.haltOnFailure>
     <code.coverage.disabled>false</code.coverage.disabled>
+
+    <!-- General -->
+    <version.checkstyle>8.19</version.checkstyle>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.testTarget>${maven.compiler.target}</maven.compiler.testTarget>
+    <maven.compiler.testSource>${maven.compiler.source}</maven.compiler.testSource>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <!-- JaCoCo coverage data file location -->
+    <!--suppress UnresolvedMavenProperty -->
+    <project.root.dir>${maven.multiModuleProjectDirectory}</project.root.dir>
+    <jacoco.exec.file>${project.root.dir}/target/jacoco.exec</jacoco.exec.file>
+    <checkstyle.header.extensions>java</checkstyle.header.extensions>
+
+    <!-- Maven Plugins -->
+    <version.antrun.plugin>1.8</version.antrun.plugin>
+    <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
+    <version.bundle.plugin>3.3.0</version.bundle.plugin>
+    <version.checkstyle.plugin>3.0.0</version.checkstyle.plugin>
+    <version.clean.plugin>3.1.0</version.clean.plugin>
+    <version.compiler.plugin>3.8.0-jboss-2</version.compiler.plugin>
+    <version.dependency.plugin>3.1.1</version.dependency.plugin>
+    <version.deploy.plugin>2.8.2</version.deploy.plugin>
+    <version.enforcer.plugin>3.0.0-M1</version.enforcer.plugin>
+    <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
+    <version.install.plugin>2.5.2</version.install.plugin>
+    <version.jacoco.plugin>0.8.5</version.jacoco.plugin>
+    <version.jar.plugin>3.1.0</version.jar.plugin>
+    <version.jarjar.plugin>1.5</version.jarjar.plugin>
+    <version.javadoc.plugin>3.0.1</version.javadoc.plugin>
+    <version.org.eclipse.m2e.lifecycle-mapping>1.0.0</version.org.eclipse.m2e.lifecycle-mapping>
+    <version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin>0.14.0</version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin>
+    <version.org.kie.gwthelper.maven>1.3</version.org.kie.gwthelper.maven>
+    <version.replacer.plugin>1.5.2</version.replacer.plugin>
+    <version.resources.plugin>3.1.0</version.resources.plugin>
+    <version.shade.plugin>3.2.1</version.shade.plugin>
+    <version.site.plugin>3.7.1</version.site.plugin>
+    <version.spotbugs-maven-plugin>3.1.8</version.spotbugs-maven-plugin>
+    <version.sonar.plugin>3.9.1.2184</version.sonar.plugin>
+    <version.source.plugin>3.0.1</version.source.plugin>
+    <version.surefire.plugin>2.22.2</version.surefire.plugin>
+    <version.war.plugin>3.2.2</version.war.plugin>
+    <version.zanata.plugin>2.3.0</version.zanata.plugin>
+
+    <!-- KIE Libraries -->
+    <version.org.kie>8.19.0.Beta</version.org.kie>
     <version.org.kogito.gwt-jsonix-schema-compiler>1.3.0</version.org.kogito.gwt-jsonix-schema-compiler>
+
+    <!-- Third party Libraries -->
+    <version.ch.qos.logback>1.1.3</version.ch.qos.logback> <!-- Newer version in kie-parent causes ServiceLoader error -->
+    <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
+    <version.com.google.guava>30.1-jre</version.com.google.guava>
+    <version.com.google.gwt>2.9.0</version.com.google.gwt>
+    <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
+    <version.com.thoughtworks.xstream>1.4.19</version.com.thoughtworks.xstream>
+    <version.enforce-managed-deps-rule>1.3</version.enforce-managed-deps-rule>
+    <version.enfore-victims-rule>1.3.4</version.enfore-victims-rule>
+    <version.illegal-transitive-dependency-check>1.7.4</version.illegal-transitive-dependency-check>
+    <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
+    <version.javax.enterprise>2.0.SP1</version.javax.enterprise>
+    <version.net.bytebuddy>1.10.3</version.net.bytebuddy>
+    <version.net.sourceforge.cssparser>0.9.21</version.net.sourceforge.cssparser>
+    <version.org.antlrgwt>4.8.2</version.org.antlrgwt>
+    <version.org.antlr4c3gwt>1.1.12</version.org.antlr4c3gwt>
+    <version.org.apache.regexp>1.8.2</version.org.apache.regexp>
+    <version.org.codehaus.mojo.extra-enforcer-rules>1.0</version.org.codehaus.mojo.extra-enforcer-rules>
+    <version.org.codehaus.selenium.plugin>2.3</version.org.codehaus.selenium.plugin>
+    <version.org.commonjava.plugin>1.0</version.org.commonjava.plugin>
+    <version.org.eclipse.emf.gwt>2.9.0</version.org.eclipse.emf.gwt>
+    <version.org.freemarker>2.3.31</version.org.freemarker>
+    <version.org.hisrc.jsonix.jsonix-scripts>3.0.0</version.org.hisrc.jsonix.jsonix-scripts>
+    <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
+    <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
+    <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
+    <version.org.javassist>3.26.0-GA</version.org.javassist>
+    <version.org.jboss.arquillian.selenium>3.13.0</version.org.jboss.arquillian.selenium>
+    <version.org.jboss.errai.wildfly>19.1.0.SP1</version.org.jboss.errai.wildfly> <!--  WildFly version used together with  the GWT's Super Dev Mode  -->
+    <version.org.jboss.maven-jdocbook-plugin>2.3.5</version.org.jboss.maven-jdocbook-plugin>
+    <version.org.jboss.pressbang>2.0.0</version.org.jboss.pressbang>
+    <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>1.0.0.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
+    <version.org.jsoup>1.8.3</version.org.jsoup>
+    <version.org.ow2.asm>7.1</version.org.ow2.asm>
+    <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
+
+    <!-- Test Libraries -->
+    <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>
+    <version.junit>4.13.1</version.junit>
+    <version.org.assertj>3.14.0</version.org.assertj>
+    <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
+    <version.org.mockito>3.6.0</version.org.mockito>
+    <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
+    <version.org.xmlunit>2.8.2</version.org.xmlunit>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <!-- Common BOMs -->
-      <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
-        <version>${version.org.kie7}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>narayana-integration-bom</artifactId>
-        <version>${version.org.kie7}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
       <dependency>
         <groupId>org.kie</groupId>
         <artifactId>kie-dmn-bom</artifactId>
@@ -262,10 +322,12 @@
         <scope>import</scope>
       </dependency>
 
+      <!-- There is no official Selenium BOM, so we are using one maintained by Arquillian.
+     (contains only pure Selenium deps, no ARQ deps are leaking from this BOM) -->
       <dependency>
-        <groupId>com.google.elemental2</groupId>
-        <artifactId>elemental2-dom</artifactId>
-        <version>${version.com.google.elemental2}</version>
+        <groupId>org.jboss.arquillian.selenium</groupId>
+        <artifactId>selenium-bom</artifactId>
+        <version>${version.org.jboss.arquillian.selenium}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -330,12 +392,274 @@
         <classifier>sources</classifier>
       </dependency>
 
-      <!-- log4j-to-slf4j -->
+      <!-- KIE Libraries -->
       <dependency>
-        <groupId>org.apache.logging.log4j</groupId>
-        <artifactId>log4j-to-slf4j</artifactId>
-        <version>${version.org.apache.logging.log4j}</version>
+        <groupId>org.kogito</groupId>
+        <artifactId>gwt-jsonix-schema-compiler</artifactId>
+        <version>${version.org.kogito.gwt-jsonix-schema-compiler}</version>
       </dependency>
+
+      <!-- Third Party Libraries -->
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-core</artifactId>
+        <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-core</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-dom</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.elemental2</groupId>
+        <artifactId>elemental2-promise</artifactId>
+        <version>${version.com.google.elemental2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>${version.com.google.guava}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${version.com.google.gwt}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${version.com.google.inject.guice}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>${version.com.google.inject.guice}</version>
+        <classifier>no_aop</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.jsinterop</groupId>
+        <artifactId>base</artifactId>
+        <version>${version.com.google.jsinterop.base}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>${version.javax.enterprise}</version>
+        <!-- Avoid collisions with equivalent JBoss Spec APIs -->
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4gwt-runtime</artifactId>
+        <version>${version.org.antlrgwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hisrc.jsonix</groupId>
+        <artifactId>jsonix-scripts</artifactId>
+        <version>${version.org.hisrc.jsonix.jsonix-scripts}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.rikkola.gwt</groupId>
+        <artifactId>antlr4-c3-gwt</artifactId>
+        <version>${version.org.antlr4c3gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>${version.com.thoughtworks.xstream}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.annotation</groupId>
+        <artifactId>javax.annotation-api</artifactId>
+        <version>${version.javax.annotation-api}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>${version.net.bytebuddy}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sourceforge.cssparser</groupId>
+        <artifactId>cssparser</artifactId>
+        <version>${version.net.sourceforge.cssparser}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipselabs</groupId>
+        <artifactId>org.eclipse.emf.gwt.ecore</artifactId>
+        <version>${version.org.eclipse.emf.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.eclipselabs</groupId>
+        <artifactId>org.eclipse.emf.gwt.common</artifactId>
+        <version>${version.org.eclipse.emf.gwt}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.freemarker</groupId>
+        <artifactId>freemarker</artifactId>
+        <version>${version.org.freemarker}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>${version.org.javassist}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3</artifactId>
+        <version>${version.org.gwtbootstrap3}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.gwtbootstrap3</groupId>
+        <artifactId>gwtbootstrap3-extras</artifactId>
+        <version>${version.org.gwtbootstrap3-extras}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.errai</groupId>
+        <artifactId>wildfly-dist</artifactId>
+        <version>${version.org.jboss.errai.wildfly}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.annotation</groupId>
+        <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+        <version>${version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>${version.org.jsoup}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.w3c.css</groupId>
+        <artifactId>sac</artifactId>
+        <version>${version.org.w3c.css.sac}</version>
+      </dependency>
+
+      <!-- TEST -->
+      <dependency>
+        <groupId>io.github.bonigarcia</groupId>
+        <artifactId>webdrivermanager</artifactId>
+        <version>${version.io.github.bonigarcia}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${version.org.assertj}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${version.junit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt.gwtmockito</groupId>
+        <artifactId>gwtmockito</artifactId>
+        <version>${version.com.google.gwt.gwtmockito}</version>
+        <exclusions>
+          <exclusion>
+            <!--  Collides with 'org.jboss.spec.javax.el:jboss-el-api_3.0_spec'  -->
+            <groupId>org.mortbay.jasper</groupId>
+            <artifactId>apache-el</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>${version.org.mockito}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-inline</artifactId>
+        <version>${version.org.mockito}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito2</artifactId>
+        <version>${version.powermock.api.mockito2}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${version.org.xmlunit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj</artifactId>
+        <version>${version.org.xmlunit}</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -367,21 +691,6 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-            </manifest>
-          </archive>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-source-plugin</artifactId>
         <executions>
           <execution>
@@ -394,6 +703,7 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>
@@ -420,7 +730,7 @@
       <plugin>
         <groupId>com.google.code.maven-replacer-plugin</groupId>
         <artifactId>replacer</artifactId>
-        <version>1.5.2</version>
+        <version>${version.replacer.plugin}</version>
         <configuration>
           <includes>
             <include>**/*Constants_de.properties</include>
@@ -451,7 +761,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>2.3.0</version>
+        <version>${version.zanata.plugin}</version>
         <configuration>
           <excludes>**/ErraiApp.properties</excludes>
           <projectConfig>${session.executionRootDirectory}/src/main/config/zanata.xml</projectConfig>
@@ -462,6 +772,7 @@
       </plugin>
 
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <!-- Temporary workaround for https://issues.jboss.org/browse/ERRAI-1101. Needs to stay here until
@@ -502,14 +813,696 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-shade-plugin</artifactId>
-          <version>3.2.1</version>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${version.buildhelper.plugin}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>parse-version</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>add-source</id>
+              <phase>generate-sources</phase>
+              <goals>
+                <goal>add-source</goal>
+              </goals>
+              <configuration>
+                <sources>
+                  <source>target/generated-sources/annotations</source>
+                </sources>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
 
         <plugin>
-          <groupId>org.codehaus.gmaven</groupId>
-          <artifactId>gmaven-plugin</artifactId>
-          <version>1.5</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>${version.antrun.plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.apache.ant</groupId>
+              <artifactId>ant-apache-regexp</artifactId>
+              <version>${version.org.apache.regexp}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${version.checkstyle.plugin}</version>
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <checkstyleRules>
+                  <module name="Checker">
+                    <!-- Checks for whitespace. -->
+                    <module name="FileTabCharacter">
+                      <property name="severity" value="error"/>
+                      <property name="eachLine" value="true"/>
+                    </module>
+                    <module name="TreeWalker">
+                      <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
+                      <module name="RedundantImport"/>
+                      <module name="AvoidStarImport">
+                        <property name="allowClassImports" value="false"/>
+                        <property name="allowStaticMemberImports" value="false"/>
+                      </module>
+                      <module name="CustomImportOrder">
+                        <property name="customImportOrderRules"
+                                  value="STANDARD_JAVA_PACKAGE###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STATIC"/>
+                        <property name="specialImportsRegExp" value="^javax\."/>
+                        <property name="standardPackageRegExp" value="^java\."/>
+                        <property name="sortImportsInGroupAlphabetically" value="true"/>
+                        <property name="separateLineBetweenGroups" value="true"/>
+                      </module>
+                      <module name="UnusedImports"/>
+                      <module name="NeedBraces">
+                        <property name="tokens"
+                                  value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
+                      </module>
+                      <module name="EqualsHashCode"/>
+                    </module>
+                    <module name="RegexpHeader">
+                      <property name="header" value="${checkstyle.header.template}"/>
+                      <property name="fileExtensions" value="${checkstyle.header.extensions}"/>
+                    </module>
+                  </module>
+                </checkstyleRules>
+                <outputFile>${project.build.directory}/checkstyle.log</outputFile>
+                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                <includeResources>true</includeResources>
+                <includeTestResources>true</includeTestResources>
+                <consoleOutput>false</consoleOutput>
+                <logViolationsToConsole>${checkstyle.logViolationsToConsole}</logViolationsToConsole>
+                <failsOnError>false</failsOnError>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>com.puppycrawl.tools</groupId>
+              <artifactId>checkstyle</artifactId>
+              <version>${version.checkstyle}</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>com.sun</groupId>
+                  <artifactId>tools</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${version.clean.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.compiler.plugin}</version>
+          <configuration>
+            <showDeprecation>true</showDeprecation>
+            <showWarnings>true</showWarnings>
+            <source>${maven.compiler.source}</source>
+            <target>${maven.compiler.target}</target>
+            <testSource>${maven.compiler.testSource}</testSource>
+            <testTarget>${maven.compiler.testTarget}</testTarget>
+            <compilerArgs>
+              <arg>-Xlint:unchecked</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.dependency.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.deploy.plugin}</version>
+          <configuration>
+            <retryFailedDeploymentCount>10</retryFailedDeploymentCount>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>${version.enforcer.plugin}</version>
+          <executions>
+            <execution>
+              <id>enforce-plugin-versions</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <requirePluginVersions>
+                    <message>One or more plugins do not have valid version! The version needs to be
+                      explicitly specified, can not be a -SNAPSHOT version and can not be one of
+                      the special (and buggy) Maven versions (LATEST, RELEASE).
+                    </message>
+                    <unCheckedPluginList>org.kie:kie-maven-plugin</unCheckedPluginList>
+                  </requirePluginVersions>
+                  <requireFilesDontExist>
+                    <files>
+                      <file>${project.basedir}/src/main/resources/logback-test.xml</file>
+                      <file>${project.basedir}/src/main/filtered-resources/logback-test.xml</file>
+                    </files>
+                  </requireFilesDontExist>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-managed-deps</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>initialize</phase>
+              <configuration>
+                <rules>
+                  <requireManagedDeps
+                      implementation="org.commonjava.maven.enforcer.rule.EnforceManagedDepsRule">
+                    <checkProfiles>true</checkProfiles>
+                    <failOnViolation>true</failOnViolation>
+                  </requireManagedDeps>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>enforce-direct-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>none</phase>
+              <configuration>
+                <rules>
+                  <illegalTransitiveDependencyCheck
+                      implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                    <reportOnly>${illegaltransitivereportonly}</reportOnly>
+                    <regexIgnoredClasses combine.children="append">
+                      <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
+                           usually contain references to other dependencies which are not part of the project
+                           (transitive dependencies), which then results in the dependency check failure.
+                           From the maintenance point of view, ignoring these generated classes seems like the
+                           best option. -->
+                      <regexIgnoredClass>
+                        org\.jboss\.errai\.marshalling\.server\.impl\.ServerMarshallingFactory.*
+                      </regexIgnoredClass>
+                      <!-- The maven-shade-plugin needs these classes to be compile-scope in guvnor-ala-openshift-client to be picked up, and
+                           then referenced in guvnor-ala-openshift-provider. When we don't need to shade anymore, we can remove these lines. -->
+                      <regexIgnoredClass>io\.fabric8\.kubernetes.*</regexIgnoredClass>
+                      <regexIgnoredClass>io\.fabric8\.openshift.*</regexIgnoredClass>
+                      <regexIgnoredClass>com\.sun\.net\.httpserver\..+</regexIgnoredClass>
+                      <regexIgnoredClass>javax\..+</regexIgnoredClass>
+                      <regexIgnoredClass>org\.w3c\.dom\..+</regexIgnoredClass>
+                      <regexIgnoredClass>org\.xml\.sax\..+</regexIgnoredClass>
+                    </regexIgnoredClasses>
+                  </illegalTransitiveDependencyCheck>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-blacklisted-dependencies</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <bannedDependencies>
+                    <excludes combine.children="append">
+                      <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                      <exclude>commons-logging:commons-log*</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                      <exclude>log4j:log4j</exclude>
+                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                      <exclude>javassist:javassist</exclude>
+                      <exclude>org.apache.cxf:cxf-bundle-jaxrs</exclude>
+                      <exclude>org.jboss.weld.se:weld-se
+                      </exclude><!-- Use weld-se-core instead -->
+                      <exclude>org.jboss.weld.servlet:weld-servlet
+                      </exclude><!-- Use weld-servlet-core instead -->
+                      <exclude>org.mockito:mockito-all</exclude><!-- Use mockito-core instead -->
+                    </excludes>
+                  </bannedDependencies>
+                </rules>
+                <fail>true</fail>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>validate</phase>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <ignoreClasses>
+                      <!-- Ban 'org.elasticsearch:elasticsearch' internal classes, as the artifact contains
+                        some duplicated classes for Joda time ones and it has the joda artifact
+                        as transitive dependency as well. -->
+                      <ignoreClass>org.joda.time.*</ignoreClass>
+                      <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
+                           See https://github.com/kiegroup/kie-tools/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
+                      <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
+                      <ignoreClass>javax.inject.Provider</ignoreClass>
+                      <ignoreClass>javax.inject.Named</ignoreClass>
+                      <ignoreClass>javax.inject.Scope</ignoreClass>
+                      <ignoreClass>javax.inject.Qualifier</ignoreClass>
+                      <ignoreClass>javax.inject.Singleton</ignoreClass>
+                      <ignoreClass>javax.enterprise.*</ignoreClass>
+
+                      <!-- TODO: Fix and remove these ignores -->
+                      <ignoreClass>org.kie.dmn.feel.*</ignoreClass>
+                      <ignoreClass>org.dominokit.domino.logger.ConsoleLoggerAdapter</ignoreClass>
+                      <ignoreClass>org.slf4j.*</ignoreClass>
+                      <ignoreClass>org.antlr.v4.runtime.*</ignoreClass>
+
+                      <!-- Classes from gwt-user duplicated in errai-uibinder -->
+                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
+                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderGenerator</ignoreClass>
+                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
+                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
+                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
+                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
+                           and there is very little chance this will get ever fixed. -->
+                      <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
+                      <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
+                    </ignoreClasses>
+                    <dependencies>
+                      <!-- gwt-user bundles javax.servlet classes which usually conflicts with the servlet dependencies
+                           in -webapp modules. -->
+                      <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>javax.servlet.*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
+                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
+                           duplicate classes check seems to be the only way. -->
+                      <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <!-- netty-all duplicates many netty-* jars but they are managed to the same version -->
+                      <dependency>
+                        <groupId>io.netty</groupId>
+                        <artifactId>netty-all</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.apache.xmlbeans</groupId>
+                        <artifactId>xmlbeans</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org/jira/browse/XMLBEANS-499 -->
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable$Util</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLStreamException</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
+                          <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.wildfly.security</groupId>
+                        <artifactId>wildfly-elytron</artifactId>
+                        <type>jar</type>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                    <findAllDuplicates>true</findAllDuplicates>
+                  </banDuplicateClasses>
+                </rules>
+                <fail>true</fail>
+              </configuration>
+            </execution>
+            <execution>
+              <id>no-duplicate-declared-dependencies</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicatePomDependencyVersions/>
+                </rules>
+              </configuration>
+            </execution>
+            <execution>
+              <id>ban-unwanted-deps</id>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <phase>validate</phase>
+              <configuration>
+                <rules>
+                  <bannedDependencies>
+                    <excludes>
+                      <!-- Ban unwanted logging deps -->
+                      <!-- In case of transitive dependency, exclude it and use jcl-over-slf4j instead -->
+                      <exclude>commons-logging:commons-log*</exclude>
+                      <!-- In case of transitive dependency, exclude it and use log4j-over-slf4j instead -->
+                      <exclude>log4j:log4j</exclude>
+                      <!-- Ban 'javassist:javassist' in favor of 'org.javassist:javassist' -->
+                      <exclude>javassist:javassist</exclude>
+                    </excludes>
+                  </bannedDependencies>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>extra-enforcer-rules</artifactId>
+              <version>${version.org.codehaus.mojo.extra-enforcer-rules}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.ow2.asm</groupId>
+              <artifactId>asm-analysis</artifactId>
+              <version>${version.org.ow2.asm}</version>
+            </dependency>
+            <dependency>
+              <groupId>de.is24.maven.enforcer.rules</groupId>
+              <artifactId>illegal-transitive-dependency-check</artifactId>
+              <version>${version.illegal-transitive-dependency-check}</version>
+            </dependency>
+            <dependency>
+              <groupId>com.redhat.victims</groupId>
+              <artifactId>enforce-victims-rule</artifactId>
+              <version>${version.enfore-victims-rule}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.commonjava.maven.enforcer</groupId>
+              <artifactId>enforce-managed-deps-rule</artifactId>
+              <version>${version.enforce-managed-deps-rule}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.failsafe.plugin}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <includes>
+                  <include>org/appformer/**/*IntegrationTest.java</include>
+                  <include>org/uberfire/**/*IntegrationTest.java</include>
+                  <include>org/kie/workbench/**/*IntegrationTest.java</include>
+                  <include>org/kie/workbench/**/*IT.java</include>
+                  <include>org/drools/workbench/**/*IntegrationTest.java</include>
+                  <include>org/drools/workbench/**/*IT.java</include>
+                </includes>
+                <argLine>-Xmx1024m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <includes>
+              <!-- Include integration tests from appformer and uberfire -->
+              <include>org/appformer/**/*IntegrationTest.java</include>
+              <include>org/uberfire/**/*IntegrationTest.java</include>
+              <!-- Include integration tests from kie-wb-common -->
+              <include>org/kie/workbench/**/*IntegrationTest.java</include>
+              <include>org/kie/workbench/**/*IT.java</include>
+              <!-- Include integration tests from drools-wb -->
+              <include>org/drools/workbench/**/*IntegrationTest.java</include>
+              <include>org/drools/workbench/**/*IT.java</include>
+            </includes>
+            <argLine>-Xmx1024m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${version.install.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.jar.plugin}</version>
+          <executions>
+            <execution>
+              <id>default-jar</id>
+              <configuration>
+                <archive>
+                  <manifestEntries combine.children="append">
+                    <Automatic-Module-Name>${java.module.name}</Automatic-Module-Name>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <!-- No OSGi manifestEntries for <goal>jar</goal>: if it supported, then felix has already added them -->
+            <execution>
+              <id>test-jar</id>
+              <goals>
+                <goal>test-jar</goal>
+              </goals>
+              <configuration>
+                <skipIfEmpty>true</skipIfEmpty>
+                <excludes>
+                  <exclude>**/logback-test.xml</exclude>
+                  <exclude>**/jndi.properties</exclude>
+                </excludes>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-SymbolicName>${java.module.name}.tests</Bundle-SymbolicName>
+                    <Bundle-Version>
+                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                    </Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <index>true</index>
+              <manifest>
+                <addDefaultSpecificationEntries>
+                  true
+                </addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>
+                  true
+                </addDefaultImplementationEntries>
+              </manifest>
+              <manifestEntries>
+                <Implementation-URL>${project.url}</Implementation-URL>
+                <Java-Version>${java.version}</Java-Version>
+                <Java-Vendor>${java.vendor}</Java-Vendor>
+                <Os-Name>${os.name}</Os-Name>
+                <Os-Arch>${os.arch}</Os-Arch>
+                <Os-Version>${os.version}</Os-Version>
+                <Scm-Url>${project.scm.url}</Scm-Url>
+                <Scm-Connection>${project.scm.connection}</Scm-Connection>
+                <Scm-Revision>${buildNumber}</Scm-Revision>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${version.javadoc.plugin}</version>
+          <configuration>
+            <links>
+              <link>http://docs.oracle.com/javase/8/docs/api</link>
+            </links>
+            <minmemory>128m</minmemory>
+            <maxmemory>512m</maxmemory>
+            <author>false</author>
+            <breakiterator>true</breakiterator>
+            <quiet>true</quiet>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${version.jacoco.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jvnet.jaxb2.maven2</groupId>
+          <artifactId>maven-jaxb2-plugin</artifactId>
+          <version>${version.org.jvnet.jaxb2.maven2.maven-jaxb2-plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-gwthelper-maven-plugin</artifactId>
+          <version>${version.org.kie.gwthelper.maven}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${version.resources.plugin}</version>
+          <configuration>
+            <encoding>${project.build.sourceEncoding}</encoding>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${version.site.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>${version.shade.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.source.plugin}</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar-no-fork</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
+                    <Bundle-Version>
+                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                    </Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>
+                      ${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
+                    </Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+            <execution>
+              <id>attach-test-sources</id>
+              <goals>
+                <goal>test-jar-no-fork</goal>
+              </goals>
+              <configuration>
+                <archive>
+                  <manifestEntries>
+                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
+                    <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
+                    <Bundle-Version>
+                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
+                    </Bundle-Version>
+                    <Bundle-Name>${project.name}</Bundle-Name>
+                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
+                    <Eclipse-SourceBundle>
+                      ${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
+                    </Eclipse-SourceBundle>
+                  </manifestEntries>
+                </archive>
+              </configuration>
+            </execution>
+          </executions>
+          <configuration>
+            <archive>
+              <index>true</index>
+              <manifest>
+                <addDefaultSpecificationEntries>
+                  true
+                </addDefaultSpecificationEntries>
+                <addDefaultImplementationEntries>
+                  true
+                </addDefaultImplementationEntries>
+              </manifest>
+              <manifestEntries>
+                <Implementation-URL>${project.url}</Implementation-URL>
+                <Java-Version>${java.version}</Java-Version>
+                <Java-Vendor>${java.vendor}</Java-Vendor>
+                <Os-Name>${os.name}</Os-Name>
+                <Os-Arch>${os.arch}</Os-Arch>
+                <Os-Version>${os.version}</Os-Version>
+                <Scm-Url>${project.scm.url}</Scm-Url>
+                <Scm-Connection>${project.scm.connection}</Scm-Connection>
+                <Scm-Revision>${buildNumber}</Scm-Revision>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.surefire.plugin}</version>
+          <configuration>
+            <includes>
+              <!-- Include all from appformer and uberfire -->
+              <include>org/appformer/**/*Test.java</include>
+              <include>org/uberfire/**/*Test.java</include>
+              <!-- Include all from kie-wb-common -->
+              <include>org/kie/workbench/**/*Test.java</include>
+              <!-- Include all from drools-wb -->
+              <include>org/drools/workbench/**/*Test.java</include>
+            </includes>
+            <excludes>
+              <!-- Exclude all from errai as each module has its own configuration -->
+              <exclude>org/jboss/errai/**/*.java</exclude>
+              <!-- Exclude integration tests from appformer and uberfire -->
+              <exclude>org/appformer/**/*IntegrationTest.java</exclude>
+              <exclude>org/uberfire/**/*IntegrationTest.java</exclude>
+              <!-- Exclude integration tests from kie-wb-common -->
+              <exclude>org/kie/workbench/**/*IntegrationTest.java</exclude>
+              <exclude>org/kie/workbench/**/*IT.java</exclude>
+              <!-- Exclude integration tests from drools-wb -->
+              <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
+              <exclude>org/drools/workbench/**/*IT.java</exclude>
+            </excludes>
+            <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+          </configuration>
         </plugin>
 
         <plugin>
@@ -534,54 +1527,42 @@
         </plugin>
 
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>${version.war.plugin}</version>
+        </plugin>
+
+        <plugin>
           <groupId>org.jboss.maven.plugins</groupId>
           <artifactId>maven-jdocbook-plugin</artifactId>
-          <version>2.3.5</version>
+          <version>${version.org.jboss.maven-jdocbook-plugin}</version>
           <extensions>true</extensions>
           <dependencies>
             <dependency>
               <groupId>org.jboss.pressgang</groupId>
               <artifactId>pressgang-jdocbook-style</artifactId>
               <type>jdocbook-style</type>
-              <version>2.0.0</version>
+              <version>${version.org.jboss.pressbang}</version>
             </dependency>
             <dependency>
               <groupId>org.jboss.pressgang</groupId>
               <!--Non-namespaced version for DocBook 4.5 compatibility. For XSD namespaced version, use pressgang-xslt-ns -->
               <artifactId>pressgang-xslt</artifactId>
-              <version>2.0.0</version>
+              <version>${version.org.jboss.pressbang}</version>
             </dependency>
           </dependencies>
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <configuration>
-            <includes>
-              <!-- Include integration tests from appformer and uberfire -->
-              <include>org/appformer/**/*IntegrationTest.java</include>
-              <include>org/uberfire/**/*IntegrationTest.java</include>
-              <!-- Include integration tests from kie-wb-common -->
-              <include>org/kie/workbench/**/*IntegrationTest.java</include>
-              <include>org/kie/workbench/**/*IT.java</include>
-              <!-- Include integration tests from drools-wb -->
-              <include>org/drools/workbench/**/*IntegrationTest.java</include>
-              <include>org/drools/workbench/**/*IT.java</include>
-            </includes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-          </configuration>
-        </plugin>
-
-        <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>jarjar-maven-plugin</artifactId>
-          <version>1.5</version>
+          <version>${version.jarjar.plugin}</version>
         </plugin>
 
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
+          <version>${org.eclipse.m2e.lifecycle-mapping}</version>
           <configuration>
             <lifecycleMappingMetadata>
               <pluginExecutions>
@@ -713,181 +1694,9 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${version.enforcer.plugin}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>extra-enforcer-rules</artifactId>
-              <version>1.0</version>
-            </dependency>
-          </dependencies>
-          <executions>
-            <execution>
-              <id>ban-unwanted-deps</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>validate</phase>
-              <configuration>
-                <rules>
-                  <bannedDependencies>
-                    <excludes>
-                      <!-- Ban unwanted logging deps -->
-                      <!-- In case of transitive dependency, exclude it and use jcl-over-slf4j instead -->
-                      <exclude>commons-logging:commons-log*</exclude>
-                      <!-- In case of transitive dependency, exclude it and use log4j-over-slf4j instead -->
-                      <exclude>log4j:log4j</exclude>
-
-                      <!-- Ban 'javassist:javassist' in favor of 'org.javassist:javassist' -->
-                      <exclude>javassist:javassist</exclude>
-                    </excludes>
-                  </bannedDependencies>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>ban-duplicated-classes</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <phase>validate</phase>
-              <configuration>
-                <rules>
-                  <banDuplicateClasses>
-                    <ignoreClasses>
-                      <!-- Ban 'org.elasticsearch:elasticsearch' internal classes, as the artifact contains
-                        some duplicated classes for Joda time ones and it has the joda artifact
-                        as transitive dependency as well. -->
-                      <ignoreClass>org.joda.time.*</ignoreClass>
-                      <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                           See https://github.com/kiegroup/kie-tools/blob/main/packages/stunner-editors/errai-javax-enterprise/README -->
-                      <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
-                      <ignoreClass>javax.inject.Provider</ignoreClass>
-                      <ignoreClass>javax.inject.Named</ignoreClass>
-                      <ignoreClass>javax.inject.Scope</ignoreClass>
-                      <ignoreClass>javax.inject.Qualifier</ignoreClass>
-                      <ignoreClass>javax.inject.Singleton</ignoreClass>
-                      <ignoreClass>javax.enterprise.*</ignoreClass>
-
-                      <!-- TODO: Fix and remove these ignores -->
-                      <ignoreClass>org.kie.dmn.feel.*</ignoreClass>
-                      <ignoreClass>org.dominokit.domino.logger.ConsoleLoggerAdapter</ignoreClass>
-                      <ignoreClass>org.slf4j.*</ignoreClass>
-                      <ignoreClass>org.antlr.v4.runtime.*</ignoreClass>
-
-                      <!-- Classes from gwt-user duplicated in errai-uibinder -->
-                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderWriter</ignoreClass>
-                      <ignoreClass>com.google.gwt.uibinder.rebind.UiBinderGenerator</ignoreClass>
-                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
-                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
-                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
-                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
-                           and there is very little chance this will get ever fixed. -->
-                      <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
-                      <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
-                    </ignoreClasses>
-                    <dependencies>
-                      <!-- gwt-user bundles javax.servlet classes which usually conflicts with the servlet dependencies
-                           in -webapp modules. -->
-                      <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-user</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>javax.servlet.*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- gwt-dev bundles dozens of different 3rd party dependencies, but can not be usually excluded
-                           as e.g. GWT Mockito tests are using the com.google.gwt classes inside. Ignoring it for the
-                           duplicate classes check seems to be the only way. -->
-                      <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-dev</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <!-- netty-all duplicates many netty-* jars but they are managed to the same version -->
-                      <dependency>
-                        <groupId>io.netty</groupId>
-                        <artifactId>netty-all</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <groupId>org.apache.xmlbeans</groupId>
-                        <artifactId>xmlbeans</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org/jira/browse/XMLBEANS-499 -->
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable$Util</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLStreamException</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
-                          <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                      <dependency>
-                        <groupId>org.wildfly.security</groupId>
-                        <artifactId>wildfly-elytron</artifactId>
-                        <type>jar</type>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                    </dependencies>
-                    <findAllDuplicates>true</findAllDuplicates>
-                  </banDuplicateClasses>
-                </rules>
-                <fail>true</fail>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <configuration>
-            <encoding>UTF-8</encoding>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>build-helper-maven-plugin</artifactId>
-          <executions>
-            <execution>
-              <goals>
-                <goal>parse-version</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>add-source</id>
-              <phase>generate-sources</phase>
-              <goals>
-                <goal>add-source</goal>
-              </goals>
-              <configuration>
-                <sources>
-                  <source>target/generated-sources/annotations</source>
-                </sources>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
           <groupId>org.apache.felix</groupId>
           <artifactId>maven-bundle-plugin</artifactId>
+          <version>${version.bundle.plugin}</version>
           <extensions>true</extensions>
           <configuration>
             <!-- Split packages in combination with <Export-Package> causes bloated jars otherwise -->
@@ -905,90 +1714,9 @@
         </plugin>
 
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <includes>
-              <!-- Include all from appformer and uberfire -->
-              <include>org/appformer/**/*Test.java</include>
-              <include>org/uberfire/**/*Test.java</include>
-              <!-- Include all from kie-wb-common -->
-              <include>org/kie/workbench/**/*Test.java</include>
-              <!-- Include all from drools-wb -->
-              <include>org/drools/workbench/**/*Test.java</include>
-            </includes>
-            <excludes>
-              <!-- Exclude all from errai as each module has its own configuration -->
-              <exclude>org/jboss/errai/**/*.java</exclude>
-              <!-- Exclude integration tests from appformer and uberfire -->
-              <exclude>org/appformer/**/*IntegrationTest.java</exclude>
-              <exclude>org/uberfire/**/*IntegrationTest.java</exclude>
-              <!-- Exclude integration tests from kie-wb-common -->
-              <exclude>org/kie/workbench/**/*IntegrationTest.java</exclude>
-              <exclude>org/kie/workbench/**/*IT.java</exclude>
-              <!-- Exclude integration tests from drools-wb -->
-              <exclude>org/drools/workbench/**/*IntegrationTest.java</exclude>
-              <exclude>org/drools/workbench/**/*IT.java</exclude>
-            </excludes>
-            <argLine>-Xmx1024m -Dfile.encoding=UTF-8</argLine>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>attach-sources</id>
-              <goals>
-                <goal>jar-no-fork</goal>
-              </goals>
-              <configuration>
-                <archive>
-                  <manifestEntries>
-                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                    <Bundle-SymbolicName>${project.artifactId}.source</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>
-                      ${project.artifactId};version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                    </Eclipse-SourceBundle>
-                  </manifestEntries>
-                </archive>
-              </configuration>
-            </execution>
-            <execution>
-              <id>attach-test-sources</id>
-              <goals>
-                <goal>test-jar-no-fork</goal>
-              </goals>
-              <configuration>
-                <archive>
-                  <manifestEntries>
-                    <Bundle-ManifestVersion>2</Bundle-ManifestVersion>
-                    <Bundle-SymbolicName>${project.artifactId}.tests.source</Bundle-SymbolicName>
-                    <Bundle-Version>
-                      ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}
-                    </Bundle-Version>
-                    <Bundle-Name>${project.name}</Bundle-Name>
-                    <Bundle-Vendor>${project.organization.name}</Bundle-Vendor>
-                    <Eclipse-SourceBundle>
-                      ${project.artifactId}.tests;version="${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}.${osgi.snapshot.qualifier}";roots:="."
-                    </Eclipse-SourceBundle>
-                  </manifestEntries>
-                </archive>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-
-        <plugin>
           <groupId>org.commonjava.maven.plugins</groupId>
           <artifactId>project-sources-maven-plugin</artifactId>
-          <version>1.0</version>
+          <version>${version.org.commonjava.plugin}</version>
           <executions>
             <execution>
               <id>project-sources-archive</id>
@@ -1002,35 +1730,14 @@
 
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
-          <artifactId>versions-maven-plugin</artifactId>
-          <version>2.2</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <configuration>
-            <links>
-              <link>http://docs.oracle.com/javase/8/docs/api</link>
-            </links>
-            <minmemory>128m</minmemory>
-            <maxmemory>512m</maxmemory>
-            <author>false</author>
-            <breakiterator>true</breakiterator>
-            <quiet>true</quiet>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>jaxb2-maven-plugin</artifactId>
-          <version>1.3</version>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
           <artifactId>selenium-maven-plugin</artifactId>
-          <version>2.3</version>
+          <version>${version.org.codehaus.selenium.plugin}</version>
+        </plugin>
+
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${version.spotbugs-maven-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -1170,6 +1877,7 @@
                 <include>**/*Test.java</include>
                 <include>**/*Tests.java</include>
               </includes>
+              <argLine>-Xmx1024m -Dfile.encoding=${project.build.sourceEncoding}</argLine>
             </configuration>
             <executions>
               <execution>
@@ -1359,6 +2067,196 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>ban-duplicated-classes</id>
+                <!-- The execution's configuration is part of the pluginManagement. This piece here only makes sure the
+                     execution is enabled (by specifying a phase) for full profile builds. -->
+                <phase>validate</phase>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <configuration>
+                  <source>${maven.compiler.source}</source>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>spotbugs-check</id>
+                <phase>compile</phase>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!--
+     Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
+   -->
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>kiegroup</sonar.organization>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>generate-aggregated-jacoco-report</id>
+                <phase>validate</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <!--
+                    Jacoco ant "report" task provides control over scope of the generated report. The report task
+                    requires access to sources, classes and .exec file containing coverage data. The configuration
+                    below uses sources and classes of the entire project (each of its modules) and a single jacoco.exec
+                    file placed in project root directory.
+                    Jacoco maven plugin does not provide such a level of control and requires an artificial module that
+                    depends on all modules in the project to generate an aggregated report for all the modules.
+                    This necessity of creating a reporting module in every project is rather intrusive.
+                    See:
+                    https://www.jacoco.org/jacoco/trunk/doc/report-aggregate-mojo.html and
+                    https://groups.google.com/forum/#!topic/jacoco/oMxNZs_DNII
+                  -->
+                  <target>
+                    <echo message="Generating JaCoCo Reports"/>
+                    <taskdef name="report" classname="org.jacoco.ant.ReportTask"/>
+                    <mkdir dir="${project.reporting.outputDirectory}/jacoco"/>
+                    <report>
+                      <executiondata>
+                        <fileset dir="${project.root.dir}/target">
+                          <!--
+                            Include a single jacoco.exec file, which should be used in append mode by every module.
+                          -->
+                          <include name="jacoco.exec"/>
+                        </fileset>
+                      </executiondata>
+                      <structure name="Coverage Report">
+                        <group name="${project.artifactId}">
+                          <classfiles>
+                            <fileset dir="${project.root.dir}">
+                              <!--
+                                Include class files from every module.
+                              -->
+                              <include name="**/target/classes/**/*.class"/>
+                              <!--
+                                Following classes are excluded as they are present in multiple modules. Usually they
+                                are a product of tests or 3rd party dependencies that got unwrapped in target/classes
+                                folder during the build. These are not a subject of test coverage measurement.
+                              -->
+                              <exclude name="**/target/**/target/classes/**/*.class"/>
+                              <exclude name="**/.errai/**/*.class"/>
+                              <exclude name="**/target/classes/org/jboss/errai/**/*.class"/>
+
+                              <!--
+                                JaCoCo cannot add different classes with same name in the report, so
+                                removing it until KOGITO-4647 is done. -->
+                              <exclude name="**/kie-dmn-feel-gwt/target/classes/**/*.class"/>
+                              <!--
+                                TODO: there are multiple classes of the same fully qualified name in kie-server modules.
+                                They need to be renamed to enable coverage reporting for them.
+                                -->
+                              <exclude name="**/target/classes/**/org/kie/server/gateway/KieServerGateway.class"/>
+                              <exclude name="**/target/classes/**/org/kie/server/springboot/samples/KieServerApplication.class"/>
+                            </fileset>
+                          </classfiles>
+                          <sourcefiles encoding="UTF-8">
+                            <fileset dir="${project.root.dir}">
+                              <!--
+                                Include source files from every module.
+                              -->
+                              <include name="**/src/main/**/*.java"/>
+                            </fileset>
+                          </sourcefiles>
+                        </group>
+                      </structure>
+                      <!-- The same report is generated in each module -->
+                      <xml destfile="${project.reporting.outputDirectory}/jacoco/jacoco.xml"/>
+                    </report>
+                  </target>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.ant</artifactId>
+                <!-- Keep the version in sync with jacoco-maven-plugin -->
+                <version>${version.jacoco.plugin}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+          <plugin>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>${version.sonar.plugin}</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>sonar</goal>
+                </goals>
+                <phase>validate</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>sonarcloud-analysis-pull-request</id>
+      <activation>
+        <property>
+          <name>env.ghprbPullId</name>
+        </property>
+      </activation>
+      <properties>
+        <sonar.pullrequest.provider>GitHub</sonar.pullrequest.provider>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.branch>${env.ghprbSourceBranch}</sonar.pullrequest.branch>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.key>${env.ghprbPullId}</sonar.pullrequest.key>
+        <!--suppress UnresolvedMavenProperty -->
+        <sonar.pullrequest.base>${env.ghprbTargetBranch}</sonar.pullrequest.base>
+      </properties>
     </profile>
   </profiles>
 </project>

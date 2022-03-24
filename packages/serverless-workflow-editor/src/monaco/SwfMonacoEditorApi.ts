@@ -16,13 +16,13 @@
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { SwfMonacoEditorCommandIds } from "./augmentation/commands";
-import { initJsonSchema } from "./augmentation/language/json";
-import { initYamlSchema } from "./augmentation/language/yaml";
+import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
+import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
-initJsonSchema();
-initYamlSchema();
+initJsonSchemaDiagnostics();
+initYamlSchemaDiagnostics();
 
 export interface SwfMonacoEditorApi {
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
@@ -30,6 +30,7 @@ export interface SwfMonacoEditorApi {
   redo: () => void;
   getContent: () => string;
   setTheme: (theme: EditorTheme) => void;
+  forceRedraw: () => void;
 }
 
 export enum MonacoEditorOperation {
@@ -46,7 +47,7 @@ export interface SwfMonacoEditorInstance {
 export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   private readonly model: editor.ITextModel;
 
-  public editor: editor.IStandaloneCodeEditor;
+  public editor: editor.IStandaloneCodeEditor | undefined;
 
   constructor(
     content: string,
@@ -92,7 +93,7 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       language: this.language,
       scrollBeyondLastLine: false,
       automaticLayout: true,
-      fontSize: 14,
+      fontSize: 12,
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
@@ -114,7 +115,11 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   }
 
   public getContent(): string {
-    return this.editor.getModel()?.getValue() || "";
+    return this.editor?.getModel()?.getValue() || "";
+  }
+
+  public forceRedraw() {
+    this.editor?.render(true);
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

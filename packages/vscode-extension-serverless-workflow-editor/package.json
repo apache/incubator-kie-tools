@@ -14,8 +14,8 @@
     "build:prod": "rimraf dist && webpack && yarn pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
     "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
-    "compile": "webpack",
-    "watch": "webpack",
+    "compile": "webpack --env dev",
+    "watch": "webpack --env dev",
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
@@ -31,7 +31,7 @@
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
-  "browser": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extensionWeb.js",
   "engines": {
     "vscode": "^1.46.0"
   },
@@ -79,7 +79,7 @@
       "properties": {
         "kogito.sw.runOnSave": {
           "type": "string",
-          "default": "extension.kogito.silentlyGenerateSvgSw",
+          "default": "extension.kogito.swf.silentlyGenerateSvg",
           "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
         },
         "kogito.sw.svgFilenameTemplate": {
@@ -91,22 +91,52 @@
           "type": "string",
           "default": "${fileDirname}",
           "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
+        },
+        "kogito.sw.specsStoragePath": {
+          "type": "string",
+          "default": "${fileDirname}/specs",
+          "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
+        },
+        "kogito.sw.serviceRegistryUrl": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The Service Registry URL to fetch artifacts that improve the functions autocompletion mechanism."
+        },
+        "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file."
         }
       }
     },
     "commands": [
       {
-        "command": "extension.kogito.getPreviewSvgSw",
-        "title": "Get Serverless Workflow Editor Preview SVG",
+        "command": "extension.kogito.swf.getPreviewSvg",
+        "title": "Serverless Workflow: Generate SVG",
         "icon": {
           "light": "./static/svg-icon-light.png",
           "dark": "./static/svg-icon-dark.png"
         }
       },
       {
-        "command": "extension.kogito.silentlyGenerateSvgSw",
-        "title": "Generate SVG without any notification"
+        "command": "extension.kogito.swf.silentlyGenerateSvg",
+        "title": "Serverless Workflow: Generate SVG without any notification"
+      },
+      {
+        "command": "extension.kogito.swf.logInToRhhcc",
+        "title": "Serverless Workflow: Log in to Red Hat Hybrid Cloud Console"
+      },
+      {
+        "command": "extension.kogito.swf.setupServiceRegistryUrl",
+        "title": "Serverless Workflow: Setup Service Registry URL"
+      },
+      {
+        "command": "extension.kogito.swf.removeServiceRegistryUrl",
+        "title": "Serverless Workflow: Remove Service Registry URL"
       }
+    ],
+    "extensionDependencies": [
+      "redhat.vscode-redhat-account"
     ]
   }
 }

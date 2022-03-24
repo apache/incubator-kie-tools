@@ -1,0 +1,41 @@
+.test,
+.something {
+  background: greenyellow;
+}
+
+.test {
+  margin-top: 3px;
+}
+
+.merge {
+  background: greenyellow;
+}
+
+div.title {
+  text-decoration: #000;
+}
+
+div.store .name {
+  text-emphasis: #000;
+}
+
+div.item.active {
+  background: #fafafa;
+}
+
+div.item div.comment {
+  color: #999;
+}
+
+div.item .name,
+div.store .name {
+  color: blue;
+}
+
+div h1 {
+  border-left: 1px;
+}
+
+.dummy:hover:after {
+  display: block;
+}

@@ -34,9 +34,15 @@ const commonConfig = (env) =>
 
 module.exports = async (env) => [
   merge(commonConfig(env), {
-    target: "web",
+    target: "node",
     entry: {
       "extension/extension": "./src/extension/extension.ts",
+    },
+  }),
+  merge(commonConfig(env), {
+    target: "webworker",
+    entry: {
+      "extension/extensionWeb": "./src/extension/extension.ts",
     },
   }),
   merge(commonConfig(env), {

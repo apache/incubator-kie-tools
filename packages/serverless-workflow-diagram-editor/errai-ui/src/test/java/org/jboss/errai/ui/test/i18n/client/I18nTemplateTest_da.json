@@ -1,0 +1,11 @@
+{
+  "I18nComponent.welcome": "Velkommen til errai-ui i18n demo.",
+  "I18nComponent.Label_1_": "label 1:",
+  "I18nComponent.value_one": "værdi, en",
+  "I18nComponent.Label_2_": "label 2:",
+  "I18nComponent.value_two": "værdi to",
+  "I18nComponent.Email_": "Email:",
+  "I18nComponent.email-placeholder": "Indtast din e-mailadresse...",
+  "I18nComponent.Password_": "adgangskode:",
+  "I18nComponent.password-title": "Din adgangskode går her."
+}

@@ -19,103 +19,221 @@ import { CancellationToken, editor, languages, Position, Range } from "monaco-ed
 import * as jsonc from "jsonc-parser";
 import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
-import CompletionItemKind = languages.CompletionItemKind;
+import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
+import * as swfModelQueries from "./modelQueries";
+import {
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionSourceType,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfMonacoEditorCommandArgs } from "../commands";
 
 const completions = new Map<
   jsonc.JSONPath,
   (args: {
-    workflow?: Specification.Workflow;
+    model: editor.ITextModel;
     cursorPosition: Position;
-    nodePositions: { start: Position; end: Position };
+    context: languages.CompletionContext;
+    currentNode: jsonc.Node;
+    overwriteRange: Range;
+    currentNodePosition: { start: Position; end: Position };
     commandIds: SwfMonacoEditorInstance["commands"];
-    actualNode: jsonc.Node;
+    rootNode: jsonc.Node;
   }) => languages.CompletionItem[]
 >([
   [
-    ["functions"], // This JSONPath is a pre-filtering of the completion item.
-    ({ cursorPosition, commandIds, actualNode }) => {
-      /*
-        Here we can use any logic that we want, based on the `actualNode` that at the cursor position.
-      */
+    ["functions", "*"],
+    ({ currentNode, rootNode, overwriteRange, commandIds }) => {
+      const separator = currentNode.type === "object" ? "," : "";
+      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
-      return [
-        // Part of an example
-        //
-        // {
-        //   kind: CompletionItemKind.Snippet,
-        //   label: "Completion item that triggers a command",
-        //   sortText: "a", // Keep it at the top
-        //   insertText: "",
-        //   range: {
-        //     startColumn: cursorPosition.column,
-        //     endColumn: cursorPosition.column,
-        //     startLineNumber: cursorPosition.lineNumber,
-        //     endLineNumber: cursorPosition.lineNumber,
-        //   },
-        //   command: {
-        //     id: commandIds["RunFunctionsCompletion"],
-        //     title: "",
-        //     arguments: [{ cursorPosition, actualNode }], // The actualNode is passed to the command, so it can make decisions based on it too.
-        //   },
-        // },
-        // {
-        //   kind: CompletionItemKind.Snippet,
-        //   label: "Completion item that inserts text",
-        //   sortText: "a", // Keep it at the top
-        //   insertText: "Awesome text made from a completion item",
-        //   range: {
-        //     startColumn: cursorPosition.column,
-        //     endColumn: cursorPosition.column,
-        //     startLineNumber: cursorPosition.lineNumber,
-        //     endLineNumber: cursorPosition.lineNumber,
-        //   },
-        // },
-      ];
+      return SwfServiceCatalogSingleton.get()
+        .getServices()
+        .flatMap((service) => {
+          return service.functions
+            .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+            .map((swfServiceCatalogFunc) => {
+              const swfFunction: Omit<Specification.Function, "normalize"> = {
+                name: `$\{1:${swfServiceCatalogFunc.name}}`,
+                operation: swfServiceCatalogFunc.operation,
+                type: swfServiceCatalogFunc.type,
+              };
+              return {
+                kind:
+                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                    ? monaco.languages.CompletionItemKind.Interface
+                    : monaco.languages.CompletionItemKind.Reference,
+                label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
+                detail:
+                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                    ? ""
+                    : swfServiceCatalogFunc.operation,
+                insertText: JSON.stringify(swfFunction, null, 2) + separator,
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range: overwriteRange,
+                command: {
+                  id: commandIds["ImportFunctionFromCompletionItem"],
+                  title: "Import function from completion item",
+                  arguments: [
+                    {
+                      containingService: service,
+                    } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
+                  ],
+                },
+              };
+            });
+        });
+    },
+  ],
+  [
+    ["functions", "*", "operation"],
+    ({ currentNode, rootNode, overwriteRange }) => {
+      if (!currentNode.parent?.parent) {
+        return [];
+      }
+
+      // As "rest" is the default, if the value is undefined, it's a rest function too.
+      const isRestFunction =
+        (jsonc.findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
+      if (!isRestFunction) {
+        return [];
+      }
+
+      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
+      return SwfServiceCatalogSingleton.get()
+        .getFunctions()
+        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+        .map((swfServiceCatalogFunc) => {
+          return {
+            kind: monaco.languages.CompletionItemKind.Value,
+            label: swfServiceCatalogFunc.operation,
+            detail: swfServiceCatalogFunc.operation,
+            filterText: `"${swfServiceCatalogFunc.operation}"`,
+            insertText: `"${swfServiceCatalogFunc.operation}"`,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: overwriteRange,
+          };
+        });
+    },
+  ],
+  [
+    ["states", "*", "actions", "*", "functionRef"],
+    ({ overwriteRange, currentNode, rootNode }) => {
+      if (currentNode.type !== "property") {
+        console.debug("Cannot autocomplete: functionRef should be a property.");
+        return [];
+      }
+
+      return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
+        const swfServiceCatalogFunc = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+        if (!swfServiceCatalogFunc) {
+          return [];
+        }
+
+        let argIndex = 1;
+        const swfFunctionRefArgs: Record<string, string> = {};
+        Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
+          swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
+        });
+
+        const swfFunctionRef: Omit<Specification.Functionref, "normalize"> = {
+          refName: swfFunction.name,
+          arguments: swfFunctionRefArgs,
+        };
+
+        return [
+          {
+            kind: monaco.languages.CompletionItemKind.Module,
+            label: `${swfFunctionRef.refName}`,
+            sortText: swfFunctionRef.refName,
+            detail: `${swfServiceCatalogFunc.operation}`,
+            insertText: JSON.stringify(swfFunctionRef, null, 2),
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: overwriteRange,
+          },
+        ];
+      });
     },
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "refName"],
-    ({ cursorPosition, actualNode, workflow, nodePositions }) => {
-      // `refName` is going to be a property node with two string nodes as children. The first one is `refName`, and the second one is the actual value.
-      if (actualNode.parent?.children?.[1] !== actualNode) {
-        console.debug("Nothing to complete. Not on functionRef value.");
+    ({ overwriteRange, rootNode }) => {
+      return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
+        return [
+          {
+            kind: monaco.languages.CompletionItemKind.Value,
+            label: swfFunction.name,
+            sortText: swfFunction.name,
+            detail: swfFunction.name,
+            filterText: `"${swfFunction.name}"`,
+            insertText: `"${swfFunction.name}"`,
+            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+            range: overwriteRange,
+          },
+        ];
+      });
+    },
+  ],
+  [
+    ["states", "*", "actions", "*", "functionRef", "arguments"],
+    ({ overwriteRange, currentNode, rootNode }) => {
+      if (currentNode.type !== "property") {
+        console.debug("Cannot autocomplete: functionRef should be a property.");
         return [];
       }
 
-      if (typeof workflow?.functions === "string") {
-        console.debug("Nothing to complete. Functions property is a string.");
+      if (!currentNode.parent) {
         return [];
       }
 
-      const range = new Range(
-        nodePositions.start.lineNumber,
-        nodePositions.start.column,
-        nodePositions.end.lineNumber,
-        nodePositions.end.column
-      );
+      const swfFunctionRefName: string = jsonc.findNodeAtLocation(currentNode.parent, ["refName"])?.value;
+      if (!swfFunctionRefName) {
+        return [];
+      }
 
-      return Array.from(workflow?.functions ?? []).map((f) => ({
-        kind: CompletionItemKind.Snippet,
-        detail: "Function",
-        label: f.name,
-        sortText: f.name,
-        filterText: f.name,
-        insertText: `"${f.name}"`,
-        range,
-      }));
+      const swfFunction = swfModelQueries
+        .getFunctions(rootNode)
+        ?.filter((f) => f.name === swfFunctionRefName)
+        .pop();
+      if (!swfFunction) {
+        return [];
+      }
+
+      const swfServiceCatalogFunc = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+      if (!swfServiceCatalogFunc) {
+        return [];
+      }
+
+      let argIndex = 1;
+      const swfFunctionRefArgs: Record<string, string> = {};
+      Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
+        swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
+      });
+
+      return [
+        {
+          kind: monaco.languages.CompletionItemKind.Module,
+          label: `'${swfFunctionRefName}' arguments`,
+          sortText: `${swfFunctionRefName} arguments`,
+          detail: swfFunction.operation,
+          insertText: JSON.stringify(swfFunctionRefArgs, null, 2),
+          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+          range: overwriteRange,
+        },
+      ];
     },
   ],
 ]);
 
 export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands"]): void {
   monaco.languages.registerCompletionItemProvider("json", {
+    triggerCharacters: [" ", ":"],
     provideCompletionItems: (
       model: editor.ITextModel,
-      position: Position,
+      cursorPosition: Position,
       context: languages.CompletionContext,
-      token: CancellationToken
+      cancellationToken: CancellationToken
     ): languages.ProviderResult<languages.CompletionList> => {
-      if (token.isCancellationRequested) {
+      if (cancellationToken.isCancellationRequested) {
         return;
       }
 
@@ -124,41 +242,58 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
         return;
       }
 
-      const cursorOffset = model.getOffsetAt(position);
+      const cursorOffset = model.getOffsetAt(cursorPosition);
 
-      const actualNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
-      if (!actualNode) {
+      const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
+      if (!currentNode) {
         return;
       }
 
-      const nodePositions = {
-        start: model.getPositionAt(actualNode.offset),
-        end: model.getPositionAt(actualNode.offset + actualNode.length),
+      const currentNodePosition = {
+        start: model.getPositionAt(currentNode.offset),
+        end: model.getPositionAt(currentNode.offset + currentNode.length),
       };
 
-      let workflow: Specification.Workflow | undefined;
-      try {
-        workflow = Specification.Workflow.fromSource(model.getValue());
-      } catch (e) {
-        console.error("Could not create Workflow from model", e);
-        workflow = undefined;
-      }
+      const currentWordPosition = model.getWordAtPosition(cursorPosition);
 
-      const location = jsonc.getLocation(model.getValue(), cursorOffset);
+      const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
+        ? Range.fromPositions(currentNodePosition.start, currentNodePosition.end)
+        : new Range(
+            cursorPosition.lineNumber,
+            currentWordPosition?.startColumn ?? cursorPosition.column,
+            cursorPosition.lineNumber,
+            currentWordPosition?.endColumn ?? cursorPosition.column
+          );
+
+      const cursorJsonLocation = jsonc.getLocation(model.getValue(), cursorOffset);
 
       return {
         suggestions: Array.from(completions.entries())
-          .filter(([jsonPath, _]) => location.matches(jsonPath))
+          .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
           .flatMap(([_, completionItemsDelegate]) =>
             completionItemsDelegate({
-              cursorPosition: position,
+              model,
+              cursorPosition,
+              context,
               commandIds,
-              actualNode,
-              nodePositions,
-              workflow,
+              currentNode,
+              currentNodePosition,
+              rootNode,
+              overwriteRange,
             })
           ),
       };
     },
   });
+}
+
+function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalogFunction) {
+  switch (swfServiceCatalogFunction.source.type) {
+    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
+      return "fs: ";
+    case SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY:
+      return `${swfServiceCatalogFunction.source.serviceId}: `;
+    default:
+      return "";
+  }
 }

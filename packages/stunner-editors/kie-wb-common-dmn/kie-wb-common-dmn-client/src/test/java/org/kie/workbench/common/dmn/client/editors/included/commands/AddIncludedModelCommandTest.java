@@ -16,9 +16,12 @@
 
 package org.kie.workbench.common.dmn.client.editors.included.commands;
 
+import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.event.Event;
 
@@ -26,7 +29,6 @@ import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.dmn.api.definition.model.ItemDefinition;
 import org.kie.workbench.common.dmn.api.editors.included.DMNImportTypes;
 import org.kie.workbench.common.dmn.client.api.included.legacy.DMNIncludeModelsClient;
@@ -172,12 +174,11 @@ public class AddIncludedModelCommandTest {
         final String anPackage = "path.file.com";
         final Integer expectedDrgElementsCount = 2;
         final Integer expectedDataTypesCount = 3;
-        final Map<String, String> metaData = new Maps.Builder<String, String>()
-                .put(PATH_METADATA, path)
-                .put(IMPORT_TYPE_METADATA, DMNImportTypes.DMN.getDefaultNamespace())
-                .put(DRG_ELEMENT_COUNT_METADATA, expectedDrgElementsCount.toString())
-                .put(ITEM_DEFINITION_COUNT_METADATA, expectedDataTypesCount.toString())
-                .build();
+        final Map<String, String> metaData = Stream.of(new AbstractMap.SimpleEntry<>(PATH_METADATA, path),
+                                                       new AbstractMap.SimpleEntry<>(IMPORT_TYPE_METADATA, DMNImportTypes.DMN.getDefaultNamespace()),
+                                                       new AbstractMap.SimpleEntry<>(DRG_ELEMENT_COUNT_METADATA, expectedDrgElementsCount.toString()),
+                                                       new AbstractMap.SimpleEntry<>(ITEM_DEFINITION_COUNT_METADATA, expectedDataTypesCount.toString()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         final BaseIncludedModelActiveRecord includedModel = command.createIncludedModel(new KieAssetsDropdownItem(modelName, anPackage, value, metaData));
         assertTrue(includedModel instanceof DMNIncludedModelActiveRecord);

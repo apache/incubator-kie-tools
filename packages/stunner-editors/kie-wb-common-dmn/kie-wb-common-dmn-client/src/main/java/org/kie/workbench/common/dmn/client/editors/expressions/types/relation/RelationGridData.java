@@ -20,8 +20,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.dmn.api.definition.model.Relation;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveColumnsCommand;
 import org.kie.workbench.common.dmn.client.commands.expressions.types.relation.MoveRowsCommand;
@@ -76,11 +77,7 @@ public class RelationGridData extends DelegatingGridData {
     @Override
     public void moveColumnTo(final int index,
                              final GridColumn<?> column) {
-        moveColumnsTo(index,
-                      new Lists.Builder<GridColumn<?>>()
-                              .add(column)
-                              .build()
-        );
+        moveColumnsTo(index, Stream.of(column).collect(Collectors.toList()));
     }
 
     @Override

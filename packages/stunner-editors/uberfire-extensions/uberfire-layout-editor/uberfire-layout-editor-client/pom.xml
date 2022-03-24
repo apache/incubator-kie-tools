@@ -39,11 +39,6 @@
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-commons-editor-client</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-ioc</artifactId>
       <exclusions>
         <exclusion>
@@ -52,29 +47,10 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>errai-ui</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-commons</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>uberfire-layout-editor-api</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.elemental2</groupId>
-      <artifactId>elemental2-dom</artifactId>
     </dependency>
 
     <dependency>
@@ -83,6 +59,10 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>javax.annotation</groupId>
+      <artifactId>javax.annotation-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>javax.enterprise</groupId>
@@ -90,28 +70,12 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-client-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-javax-enterprise</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-widgets-core-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.editors</groupId>
-      <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
 
     <!-- test -->

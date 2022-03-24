@@ -28,10 +28,9 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
-import { SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
+import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
-import { MonacoEditorOperation } from "../monaco/SwfMonacoEditorApi";
-import { EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
   /**
@@ -62,6 +61,11 @@ interface Props {
    * @param notifications List of Notifications
    */
   setNotifications: (path: string, notifications: Notification[]) => void;
+
+  /**
+   * ChannelType where the component is running.
+   */
+  channelType: ChannelType;
 }
 
 export type ServerlessWorkflowEditorRef = {
@@ -72,10 +76,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [initialContent, setInitialContent] = useState({
-    originalContent: "",
-    path: "",
-  });
+  const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
   const swfMonacoEditorRef = useRef<SwfMonacoEditorApi>(null);
@@ -178,6 +179,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         <DrawerContentBody style={{ overflowY: "hidden" }}>
           {initialContent.path !== "" && (
             <SwfMonacoEditor
+              channelType={props.channelType}
               content={initialContent.originalContent}
               fileName={initialContent.path}
               onContentChange={onContentChanged}

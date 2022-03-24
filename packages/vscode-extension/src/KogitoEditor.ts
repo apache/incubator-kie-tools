@@ -15,7 +15,7 @@
  */
 
 import * as vscode from "vscode";
-import { ColorThemeKind } from "vscode";
+import { ColorThemeKind, UIKind } from "vscode";
 import {
   ChannelType,
   EditorApi,
@@ -36,13 +36,13 @@ export class KogitoEditor implements EditorApi {
 
   public constructor(
     public readonly document: KogitoEditableDocument,
-    private readonly panel: vscode.WebviewPanel,
+    public readonly panel: vscode.WebviewPanel,
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
+    public readonly envelopeServer = new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
       {
         postMessage: (msg) => {
           try {
@@ -61,7 +61,7 @@ export class KogitoEditor implements EditorApi {
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
             isReadOnly: false,
-            channel: ChannelType.VSCODE,
+            channel: vscode.env.uiKind === UIKind.Desktop ? ChannelType.VSCODE_DESKTOP : ChannelType.VSCODE_WEB,
           }
         )
     )

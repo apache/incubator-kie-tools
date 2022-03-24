@@ -16,9 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.graph.impl;
 
+import java.util.Objects;
+
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -38,8 +39,7 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
     public GraphImpl(final @MapsTo("uuid") String uuid,
                      final @MapsTo("nodeStore") GraphNodeStore<Node> nodeStore) {
         super(uuid);
-        this.nodeStore = PortablePreconditions.checkNotNull("nodeStore",
-                                                            nodeStore);
+        this.nodeStore = Objects.requireNonNull(nodeStore, "Parameter named 'nodeStore' should be not null!");
     }
 
     @Override

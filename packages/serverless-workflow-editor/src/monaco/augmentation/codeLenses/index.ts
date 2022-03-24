@@ -2,10 +2,17 @@ import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
-import { SwfMonacoEditorCommandIds } from "../commands";
+import { SwfMonacoEditorCommandArgs, SwfMonacoEditorCommandIds } from "../commands";
+import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 import CodeLens = languages.CodeLens;
 
-export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {
+export function initJsonCodeLenses(
+  commandIds: SwfMonacoEditorCommandIds,
+  channelType: ChannelType,
+  os: OperatingSystem | undefined
+): void {
   monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: (model, cancellationToken) => {
       if (cancellationToken.isCancellationRequested) {
@@ -17,21 +24,125 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
         return;
       }
 
+      const addFunction = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const newCursorPosition = model.getPositionAt(node.offset + 1);
+
+          return [
+            {
+              id: commandIds["OpenFunctionsCompletionItems"],
+              title: `+ Add function...`,
+              arguments: [
+                {
+                  position,
+                  node,
+                  newCursorPosition,
+                } as SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"],
+              ],
+            },
+          ];
+        },
+      });
+
+      const logInToRhhcc = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (user) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["LogInToRhhcc"],
+              title: `↪ Log in to Red Hat Hybrid Cloud Console...`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["LogInToRhhcc"]],
+            },
+          ];
+        },
+      });
+
+      const setupServiceRegistryUrl = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (!user) {
+            return [];
+          }
+
+          const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+          if (serviceRegistryUrl) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["SetupServiceRegistryUrl"],
+              title: `↪ Setup Service Registry URL...`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["SetupServiceRegistryUrl"]],
+            },
+          ];
+        },
+      });
+
+      const refreshServiceRegistry = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (!user) {
+            return [];
+          }
+
+          const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+          if (!serviceRegistryUrl) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["RefreshServiceCatalogFromRhhcc"],
+              title: `↺ Refresh Service Registry (${user.username})`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["RefreshServiceCatalogFromRhhcc"]],
+            },
+          ];
+        },
+      });
+
+      const displayRhhccIntegration = channelType === ChannelType.VSCODE_DESKTOP && os === OperatingSystem.MACOS;
+
       const codeLenses: CodeLens[] = [
-        // TODO: Implement code lenses
-        // Follow this example
-        //
-        // createCodeLenses({
-        //   model,
-        //   rootNode,
-        //   jsonPath: ["functions"],
-        //   positionLensAt: "begin",
-        //   commandDelegate: ({ position }) => ({
-        //     id: commandIds["OpenFunctionsWidget"],
-        //     title: `◎ Discover`,
-        //     arguments: [{ position }],
-        //   }),
-        // }),
+        ...(displayRhhccIntegration ? logInToRhhcc : []),
+        ...(displayRhhccIntegration ? setupServiceRegistryUrl : []),
+        ...(displayRhhccIntegration ? refreshServiceRegistry : []),
+        ...addFunction,
       ];
 
       return {
@@ -48,27 +159,28 @@ function createCodeLenses(args: {
   model: monaco.editor.ITextModel;
   rootNode: jsonc.Node;
   jsonPath: JSONPath;
-  commandDelegate: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"];
+  commandDelegates: (args: { position: Position; node: jsonc.Node }) => CodeLens["command"][];
   positionLensAt: "begin" | "end";
 }) {
   const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
-  return nodes.map((node) => {
-    let position;
-    if (args.positionLensAt === "begin") {
-      position = args.model.getPositionAt(node.offset);
-    } else {
-      position = args.model.getPositionAt(node.offset + node.length);
-    }
+  return nodes.flatMap((node) => {
+    // Only position at the end if the type is object or array and has at least one child.
+    const position =
+      args.positionLensAt === "end" &&
+      (node.type === "object" || node.type === "array") &&
+      (node.children?.length ?? 0) > 0
+        ? args.model.getPositionAt(node.offset + node.length)
+        : args.model.getPositionAt(node.offset);
 
-    return {
-      command: args.commandDelegate({ position, node }),
+    return args.commandDelegates({ position, node }).map((command) => ({
+      command,
       range: {
         startLineNumber: position.lineNumber,
         endLineNumber: position.lineNumber,
         startColumn: position.column,
         endColumn: position.column,
       },
-    };
+    }));
   });
 }
 

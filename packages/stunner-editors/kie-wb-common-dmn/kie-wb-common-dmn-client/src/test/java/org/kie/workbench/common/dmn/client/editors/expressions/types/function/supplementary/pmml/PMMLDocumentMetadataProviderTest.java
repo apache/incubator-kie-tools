@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.definition.model.Import;
 import org.kie.workbench.common.dmn.api.definition.model.ImportDMN;
@@ -195,10 +196,9 @@ public class PMMLDocumentMetadataProviderTest {
                                                    "document",
                                                    DMNImportTypes.PMML.getDefaultNamespace(),
                                                    singletonList(new PMMLModelMetadata("model",
-                                                                                       new Sets.Builder<PMMLParameterMetadata>()
-                                                                                               .add(new PMMLParameterMetadata("zParameter1"))
-                                                                                               .add(new PMMLParameterMetadata("aParameter2"))
-                                                                                               .build()))));
+                                                                                       Stream.of(new PMMLParameterMetadata("zParameter1"),
+                                                                                                 new PMMLParameterMetadata("aParameter2"))
+                                                                                               .collect(Collectors.toSet())))));
 
         final ServiceCallback<List<PMMLDocumentMetadata>> callback = loadPMMLIncludedDocuments();
 

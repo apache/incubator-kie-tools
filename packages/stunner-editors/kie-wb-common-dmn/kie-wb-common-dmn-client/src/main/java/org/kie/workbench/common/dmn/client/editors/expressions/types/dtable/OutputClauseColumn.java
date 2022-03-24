@@ -17,10 +17,10 @@
 package org.kie.workbench.common.dmn.client.editors.expressions.types.dtable;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.NameAndDataTypeDOMElementColumnRenderer;
 import org.kie.workbench.common.dmn.client.widgets.grid.columns.factory.TextAreaSingletonDOMElementFactory;
 import org.kie.workbench.common.dmn.client.widgets.grid.model.DMNSimpleGridColumn;
@@ -44,12 +44,14 @@ public class OutputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, S
               new NameAndDataTypeDOMElementColumnRenderer<>(factory),
               width,
               gridWidget);
-        this.headerMetaDataSupplier = PortablePreconditions.checkNotNull("headerMetaDataSupplier",
-                                                                         headerMetaDataSupplier);
-        this.factory = PortablePreconditions.checkNotNull("factory",
-                                                          factory);
+        this.headerMetaDataSupplier = checkNotNull("headerMetaDataSupplier", headerMetaDataSupplier);
+        this.factory = checkNotNull("factory", factory);
         setMovable(true);
         setResizable(true);
+    }
+
+    private static <T> T checkNotNull(String objName, T obj) {
+        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override
@@ -62,8 +64,8 @@ public class OutputClauseColumn extends DMNSimpleGridColumn<DecisionTableGrid, S
                      final GridBodyCellRenderContext context,
                      final Consumer<GridCellValue<String>> callback) {
         factory.attachDomElement(context,
-                                 (e) -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
-                                 (e) -> e.setFocus(true));
+                                 e -> e.setValue(assertCellValue(assertCell(cell).getValue()).getValue()),
+                                 e -> e.setFocus(true));
     }
 
     @Override
