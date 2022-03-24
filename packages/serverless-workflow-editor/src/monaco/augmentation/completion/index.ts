@@ -21,6 +21,11 @@ import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
 import * as swfModelQueries from "./modelQueries";
+import {
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionSourceType,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfMonacoEditorCommandArgs } from "../commands";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -37,27 +42,45 @@ const completions = new Map<
 >([
   [
     ["functions", "*"],
-    ({ model, currentNode, rootNode, overwriteRange, cursorPosition }) => {
+    ({ currentNode, rootNode, overwriteRange, commandIds }) => {
       const separator = currentNode.type === "object" ? "," : "";
       const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
       return SwfServiceCatalogSingleton.get()
-        .getFunctions()
-        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
-        .map((swfServiceCatalogFunc) => {
-          const swfFunction: Omit<Specification.Function, "normalize"> = {
-            name: `$\{1:${swfServiceCatalogFunc.name}}`,
-            operation: swfServiceCatalogFunc.operation,
-            type: swfServiceCatalogFunc.type,
-          };
-          return {
-            kind: monaco.languages.CompletionItemKind.Module,
-            label: swfServiceCatalogFunc.name,
-            detail: swfFunction.operation,
-            insertText: JSON.stringify(swfFunction, null, 2) + separator,
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range: overwriteRange,
-          };
+        .getServices()
+        .flatMap((service) => {
+          return service.functions
+            .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+            .map((swfServiceCatalogFunc) => {
+              const swfFunction: Omit<Specification.Function, "normalize"> = {
+                name: `$\{1:${swfServiceCatalogFunc.name}}`,
+                operation: swfServiceCatalogFunc.operation,
+                type: swfServiceCatalogFunc.type,
+              };
+              return {
+                kind:
+                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                    ? monaco.languages.CompletionItemKind.Interface
+                    : monaco.languages.CompletionItemKind.Reference,
+                label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
+                detail:
+                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                    ? ""
+                    : swfServiceCatalogFunc.operation,
+                insertText: JSON.stringify(swfFunction, null, 2) + separator,
+                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
+                range: overwriteRange,
+                command: {
+                  id: commandIds["ImportFunctionFromCompletionItem"],
+                  title: "Import function from completion item",
+                  arguments: [
+                    {
+                      containingService: service,
+                    } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
+                  ],
+                },
+              };
+            });
         });
     },
   ],
@@ -262,4 +285,15 @@ export function initJsonCompletion(commandIds: SwfMonacoEditorInstance["commands
       };
     },
   });
+}
+
+function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalogFunction) {
+  switch (swfServiceCatalogFunction.source.type) {
+    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
+      return "fs: ";
+    case SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY:
+      return `${swfServiceCatalogFunction.source.serviceId}: `;
+    default:
+      return "";
+  }
 }

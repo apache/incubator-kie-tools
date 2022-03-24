@@ -21,7 +21,7 @@ import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
-import { getInterpolateSettingsValue, settingsTokenKeys } from "./SettingsInterpolation";
+import { getInterpolatedConfigurationValue, configurationTokenKeys } from "./ConfigurationInterpolation";
 
 const encoder = new TextEncoder();
 
@@ -60,13 +60,13 @@ export async function generateSvg(args: {
     return;
   }
 
-  const svgFileName = getInterpolateSettingsValue({
-    filePath: editor.document.uri.path,
-    value: svgFilenameTemplate || `${settingsTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
+  const svgFileName = getInterpolatedConfigurationValue({
+    currentFileAbsolutePosixPath: editor.document.uri.path,
+    value: svgFilenameTemplate || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
   });
-  const svgFilePath = getInterpolateSettingsValue({
-    filePath: editor.document.uri.path,
-    value: svgFilePathTemplate || `${settingsTokenKeys["${fileDirname}"]}`,
+  const svgFilePath = getInterpolatedConfigurationValue({
+    currentFileAbsolutePosixPath: editor.document.uri.path,
+    value: svgFilePathTemplate || `${configurationTokenKeys["${fileDirname}"]}`,
   });
 
   const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });

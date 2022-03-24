@@ -18,21 +18,28 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogService,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogUser } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 interface SwfServiceCatalogApi {
   getServices(): SwfServiceCatalogService[];
+  getUser(): SwfServiceCatalogUser | undefined;
+  getServiceRegistryUrl(): string | undefined;
   getFunctions(serviceId?: string): SwfServiceCatalogFunction[];
   getFunctionByOperation(operationId: string): SwfServiceCatalogFunction | undefined;
 }
 
 class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
-  constructor(private readonly services: SwfServiceCatalogService[] = []) {}
+  constructor(
+    private readonly services: SwfServiceCatalogService[] = [],
+    private readonly user: SwfServiceCatalogUser | undefined = undefined,
+    private readonly serviceRegistryUrl: string | undefined = undefined
+  ) {}
 
-  public getFunctionByOperation(operationId: string): SwfServiceCatalogFunction | undefined {
-    for (const swfService of this.services) {
-      for (const swfFunction of swfService.functions) {
-        if (swfFunction.operation === operationId) {
-          return swfFunction;
+  public getFunctionByOperation(operation: string): SwfServiceCatalogFunction | undefined {
+    for (const swfServiceCatalogService of this.services) {
+      for (const swfServiceCatalogFunction of swfServiceCatalogService.functions) {
+        if (swfServiceCatalogFunction.operation === operation) {
+          return swfServiceCatalogFunction;
         }
       }
     }
@@ -40,19 +47,20 @@ class SwfServiceCatalogApiImpl implements SwfServiceCatalogApi {
     return undefined;
   }
 
-  public getFunctions(serviceId?: string): SwfServiceCatalogFunction[] {
-    const result: SwfServiceCatalogFunction[] = [];
-
-    this.services.forEach((service) => {
-      if (!serviceId || (serviceId && service.id === serviceId)) {
-        result.push(...service.functions);
-      }
-    });
-    return result;
+  public getFunctions(): SwfServiceCatalogFunction[] {
+    return this.services.flatMap((service) => service.functions);
   }
 
-  public getServices(): SwfServiceCatalogService[] {
+  public getServices() {
     return this.services;
+  }
+
+  public getUser() {
+    return this.user;
+  }
+
+  public getServiceRegistryUrl() {
+    return this.serviceRegistryUrl;
   }
 }
 
@@ -63,7 +71,11 @@ export class SwfServiceCatalogSingleton {
     return SwfServiceCatalogSingleton.instance;
   }
 
-  public static init(services: SwfServiceCatalogService[] = []) {
-    SwfServiceCatalogSingleton.instance = new SwfServiceCatalogApiImpl(services);
+  public static init(
+    services: SwfServiceCatalogService[] = [],
+    user: SwfServiceCatalogUser | undefined,
+    serviceRegistryUrl: string | undefined
+  ) {
+    SwfServiceCatalogSingleton.instance = new SwfServiceCatalogApiImpl(services, user, serviceRegistryUrl);
   }
 }
