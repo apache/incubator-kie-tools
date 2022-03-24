@@ -21,3 +21,8 @@ export type SwfMonacoEditorCommandArgs = {
 };
 
 export type SwfMonacoEditorCommandIds = Record<SwfMonacoEditorCommandTypes, string>;
+
+export interface SwfMonacoCommandExecution<T extends SwfMonacoEditorCommandTypes> {
+  name: T;
+  args: SwfMonacoEditorCommandArgs[T];
+}

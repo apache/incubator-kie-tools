@@ -7,7 +7,7 @@ import {
   Range,
   TextDocumentIdentifier,
 } from "vscode-languageserver-types";
-import * as asd from "vscode-languageserver-textdocument";
+import { TextDocument } from "vscode-languageserver-textdocument";
 import * as jsonc from "jsonc-parser";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
 import { Specification } from "@severlessworkflow/sdk-typescript";
@@ -17,29 +17,28 @@ import {
   SwfServiceCatalogService,
 } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 import * as swfModelQueries from "./modelQueries";
-import { SwfMonacoEditorCommandIds } from "@kie-tools/serverless-workflow-editor/dist/editor/ServerlessWorkflowEditorEnvelopeApi";
+import { SwfMonacoCommandExecution } from "@kie-tools/serverless-workflow-editor/dist/editor/ServerlessWorkflowEditorEnvelopeApi";
 
 const completions = new Map<
   jsonc.JSONPath,
   (args: {
-    model: asd.TextDocument;
+    model: TextDocument;
     cursorPosition: Position;
     currentNode: jsonc.Node;
     overwriteRange: Range;
     currentNodePosition: { start: Position; end: Position };
-    commandIds: SwfMonacoEditorCommandIds;
     rootNode: jsonc.Node;
   }) => CompletionItem[]
 >([
   [
     ["functions", "*"],
-    ({ currentNode, rootNode, overwriteRange, commandIds }) => {
+    ({ currentNode, rootNode, overwriteRange }) => {
       const separator = currentNode.type === "object" ? "," : "";
-      const existingOperations = [] as string[]; //swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
+      const existingOperations = [] as string[]; // FIXME: tiago swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
       return ([] as SwfServiceCatalogService[]) //FIXME: tiago
-        .flatMap((service) => {
-          return service.functions
+        .flatMap((swfServiceCatalogService) =>
+          swfServiceCatalogService.functions
             .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
             .map((swfServiceCatalogFunc) => {
               const swfFunction: Omit<Specification.Function, "normalize"> = {
@@ -47,6 +46,14 @@ const completions = new Map<
                 operation: swfServiceCatalogFunc.operation,
                 type: swfServiceCatalogFunc.type,
               };
+
+              const command: SwfMonacoCommandExecution<"ImportFunctionFromCompletionItem"> = {
+                name: "ImportFunctionFromCompletionItem",
+                args: {
+                  containingService: swfServiceCatalogService,
+                },
+              };
+
               return {
                 kind:
                   swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
@@ -62,18 +69,14 @@ const completions = new Map<
                   range: overwriteRange,
                 },
                 insertTextFormat: InsertTextFormat.Snippet,
-                // command: {
-                //   id: commandIds["ImportFunctionFromCompletionItem"],
-                //   title: "Import function from completion item",
-                //   arguments: [
-                //     {
-                //       containingService: service,
-                //     } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
-                //   ],
-                // },
+                command: {
+                  command: command.name,
+                  title: "Import function from completion item",
+                  arguments: [command.args],
+                },
               };
-            });
-        });
+            })
+        );
     },
   ],
   [
@@ -235,18 +238,19 @@ function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalo
 }
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
-  public async kogitoSwfLanguageService__doCompletion(
-    content: string,
-    uri: string,
-    cursorPosition: Position
-  ): Promise<CompletionItem[]> {
-    const model = asd.TextDocument.create(uri, "json", 0, content);
-    const rootNode = jsonc.parseTree(content);
+  public async kogitoSwfLanguageService__doCompletion(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+  }): Promise<CompletionItem[]> {
+    const model = TextDocument.create(args.uri, "json", 0, args.content);
+    const rootNode = jsonc.parseTree(args.content);
     if (!rootNode) {
       return [];
     }
 
-    const cursorOffset = model.offsetAt(cursorPosition);
+    const cursorOffset = model.offsetAt(args.cursorPosition);
 
     const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
     if (!currentNode) {
@@ -258,57 +262,24 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
       end: model.positionAt(currentNode.offset + currentNode.length),
     };
 
-    // const currentWordPosition = model.getWordAtPosition(cursorPosition);
-
     const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
       ? Range.create(currentNodePosition.start, currentNodePosition.end)
-      : Range.create(cursorPosition, cursorPosition);
-    // : Range.create(
-    //     {
-    //       line: cursorPosition.line,
-    //       character: currentWordPosition?.startColumn ?? cursorPosition.character,
-    //     },
-    //     {
-    //       line: cursorPosition.line,
-    //       character: currentWordPosition?.endColumn ?? cursorPosition.character,
-    //     }
-    //   );
+      : args.cursorWordRange;
 
-    const cursorJsonLocation = jsonc.getLocation(content, cursorOffset);
-
-    console.error(cursorJsonLocation);
+    const cursorJsonLocation = jsonc.getLocation(args.content, cursorOffset);
 
     return Array.from(completions.entries())
       .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
       .flatMap(([_, completionItemsDelegate]) =>
         completionItemsDelegate({
           model,
-          cursorPosition,
-          commandIds: {} as SwfMonacoEditorCommandIds,
+          cursorPosition: args.cursorPosition,
           currentNode,
           currentNodePosition,
           rootNode,
           overwriteRange,
         })
       );
-
-    // return [
-    //   {
-    //     kind: CompletionItemKind.Value,
-    //     label: "myCompletionItem",
-    //     sortText: "myCompletionItem",
-    //     detail: "myCompletionItem",
-    //     filterText: "myCompletionItem",
-    //     insertTextFormat: InsertTextFormat.Snippet,
-    //     textEdit: {
-    //       newText: "myCompletionItem",
-    //       range: {
-    //         start: position,
-    //         end: position,
-    //       },
-    //     },
-    //   },
-    // ];
   }
   public async kogitoSwfLanguageService__doCodeLenses(
     textDocumentIdentifier: TextDocumentIdentifier

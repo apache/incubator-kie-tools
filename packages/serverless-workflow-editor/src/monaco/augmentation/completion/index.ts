@@ -15,319 +15,131 @@
  */
 
 import * as monaco from "monaco-editor";
-import { CancellationToken, editor, languages, Position, Range } from "monaco-editor";
-import * as jsonc from "jsonc-parser";
 import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
-import * as swfModelQueries from "./modelQueries";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfMonacoEditorCommandArgs } from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { TextEdit } from "vscode-json-languageservice";
-
-const completions = new Map<
-  jsonc.JSONPath,
-  (args: {
-    model: editor.ITextModel;
-    cursorPosition: Position;
-    context: languages.CompletionContext;
-    currentNode: jsonc.Node;
-    overwriteRange: Range;
-    currentNodePosition: { start: Position; end: Position };
-    commandIds: SwfMonacoEditorInstance["commands"];
-    rootNode: jsonc.Node;
-  }) => languages.CompletionItem[]
->([
-  [
-    ["functions", "*"],
-    ({ currentNode, rootNode, overwriteRange, commandIds }) => {
-      const separator = currentNode.type === "object" ? "," : "";
-      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-
-      return SwfServiceCatalogSingleton.get()
-        .getServices()
-        .flatMap((service) => {
-          return service.functions
-            .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
-            .map((swfServiceCatalogFunc) => {
-              const swfFunction: Omit<Specification.Function, "normalize"> = {
-                name: `$\{1:${swfServiceCatalogFunc.name}}`,
-                operation: swfServiceCatalogFunc.operation,
-                type: swfServiceCatalogFunc.type,
-              };
-              return {
-                kind:
-                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
-                    ? monaco.languages.CompletionItemKind.Interface
-                    : monaco.languages.CompletionItemKind.Reference,
-                label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
-                detail:
-                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
-                    ? ""
-                    : swfServiceCatalogFunc.operation,
-                insertText: JSON.stringify(swfFunction, null, 2) + separator,
-                insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-                range: overwriteRange,
-                command: {
-                  id: commandIds["ImportFunctionFromCompletionItem"],
-                  title: "Import function from completion item",
-                  arguments: [
-                    {
-                      containingService: service,
-                    } as SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"],
-                  ],
-                },
-              };
-            });
-        });
-    },
-  ],
-  [
-    ["functions", "*", "operation"],
-    ({ currentNode, rootNode, overwriteRange }) => {
-      if (!currentNode.parent?.parent) {
-        return [];
-      }
-
-      // As "rest" is the default, if the value is undefined, it's a rest function too.
-      const isRestFunction =
-        (jsonc.findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
-      if (!isRestFunction) {
-        return [];
-      }
-
-      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-      return SwfServiceCatalogSingleton.get()
-        .getFunctions()
-        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
-        .map((swfServiceCatalogFunc) => {
-          return {
-            kind: monaco.languages.CompletionItemKind.Value,
-            label: swfServiceCatalogFunc.operation,
-            detail: swfServiceCatalogFunc.operation,
-            filterText: `"${swfServiceCatalogFunc.operation}"`,
-            insertText: `"${swfServiceCatalogFunc.operation}"`,
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range: overwriteRange,
-          };
-        });
-    },
-  ],
-  [
-    ["states", "*", "actions", "*", "functionRef"],
-    ({ overwriteRange, currentNode, rootNode }) => {
-      if (currentNode.type !== "property") {
-        console.debug("Cannot autocomplete: functionRef should be a property.");
-        return [];
-      }
-
-      return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        const swfServiceCatalogFunc = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
-        if (!swfServiceCatalogFunc) {
-          return [];
-        }
-
-        let argIndex = 1;
-        const swfFunctionRefArgs: Record<string, string> = {};
-        Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
-          swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
-        });
-
-        const swfFunctionRef: Omit<Specification.Functionref, "normalize"> = {
-          refName: swfFunction.name,
-          arguments: swfFunctionRefArgs,
-        };
-
-        return [
-          {
-            kind: monaco.languages.CompletionItemKind.Module,
-            label: `${swfFunctionRef.refName}`,
-            sortText: swfFunctionRef.refName,
-            detail: `${swfServiceCatalogFunc.operation}`,
-            insertText: JSON.stringify(swfFunctionRef, null, 2),
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range: overwriteRange,
-          },
-        ];
-      });
-    },
-  ],
-  [
-    ["states", "*", "actions", "*", "functionRef", "refName"],
-    ({ overwriteRange, rootNode }) => {
-      return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        return [
-          {
-            kind: monaco.languages.CompletionItemKind.Value,
-            label: swfFunction.name,
-            sortText: swfFunction.name,
-            detail: swfFunction.name,
-            filterText: `"${swfFunction.name}"`,
-            insertText: `"${swfFunction.name}"`,
-            insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-            range: overwriteRange,
-          },
-        ];
-      });
-    },
-  ],
-  [
-    ["states", "*", "actions", "*", "functionRef", "arguments"],
-    ({ overwriteRange, currentNode, rootNode }) => {
-      if (currentNode.type !== "property") {
-        console.debug("Cannot autocomplete: functionRef should be a property.");
-        return [];
-      }
-
-      if (!currentNode.parent) {
-        return [];
-      }
-
-      const swfFunctionRefName: string = jsonc.findNodeAtLocation(currentNode.parent, ["refName"])?.value;
-      if (!swfFunctionRefName) {
-        return [];
-      }
-
-      const swfFunction = swfModelQueries
-        .getFunctions(rootNode)
-        ?.filter((f) => f.name === swfFunctionRefName)
-        .pop();
-      if (!swfFunction) {
-        return [];
-      }
-
-      const swfServiceCatalogFunc = SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
-      if (!swfServiceCatalogFunc) {
-        return [];
-      }
-
-      let argIndex = 1;
-      const swfFunctionRefArgs: Record<string, string> = {};
-      Object.keys(swfServiceCatalogFunc.arguments).forEach((argName) => {
-        swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
-      });
-
-      return [
-        {
-          kind: monaco.languages.CompletionItemKind.Module,
-          label: `'${swfFunctionRefName}' arguments`,
-          sortText: `${swfFunctionRefName} arguments`,
-          detail: swfFunction.operation,
-          insertText: JSON.stringify(swfFunctionRefArgs, null, 2),
-          insertTextRules: monaco.languages.CompletionItemInsertTextRule.InsertAsSnippet,
-          range: overwriteRange,
-        },
-      ];
-    },
-  ],
-]);
+import * as ls from "vscode-languageserver-types";
+import { SwfMonacoEditorCommandTypes } from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
 
 export function initJsonCompletion(
   commandIds: SwfMonacoEditorInstance["commands"],
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
 ): void {
   monaco.languages.registerCompletionItemProvider("json", {
-    triggerCharacters: [" ", ":"],
+    triggerCharacters: [" ", ":", '"'],
     provideCompletionItems: async (
-      model: editor.ITextModel,
-      cursorPosition: Position,
-      context: languages.CompletionContext,
-      cancellationToken: CancellationToken
+      model: monaco.editor.ITextModel,
+      cursorPosition: monaco.Position,
+      context: monaco.languages.CompletionContext,
+      cancellationToken: monaco.CancellationToken
     ) => {
-      const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__doCompletion(
-        model.getValue(),
-        model.uri.toString(),
-        {
+      const currentWordPosition = model.getWordAtPosition(cursorPosition);
+
+      const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__doCompletion({
+        content: model.getValue(),
+        uri: model.uri.toString(),
+        cursorPosition: {
           line: cursorPosition.lineNumber - 1,
           character: cursorPosition.column - 1,
-        }
-      );
+        },
+        cursorWordRange: {
+          start: {
+            line: cursorPosition.lineNumber - 1,
+            character: (currentWordPosition?.startColumn ?? cursorPosition.column) - 1,
+          },
+          end: {
+            line: cursorPosition.lineNumber - 1,
+            character: (currentWordPosition?.endColumn ?? cursorPosition.column) - 1,
+          },
+        },
+      });
 
       if (cancellationToken.isCancellationRequested) {
         return undefined;
       }
 
-      const monacoCompletionItems: languages.CompletionItem[] = lsCompletionItems.map((c) => ({
-        kind: c.kind ?? languages.CompletionItemKind.Module,
-        label: "ls" + c.label,
-        sortText: "ls" + c.sortText,
-        detail: "ls" + c.detail,
-        filterText: "ls" + c.filterText,
-        insertText: "ls" + c.insertText ?? c.textEdit?.newText ?? "",
+      const monacoCompletionItems: monaco.languages.CompletionItem[] = lsCompletionItems.map((c) => ({
+        kind: toMonacoCompletionItemKind(c.kind),
+        label: c.label,
+        sortText: c.sortText,
+        detail: c.detail,
+        filterText: c.filterText,
+        insertText: c.insertText ?? c.textEdit?.newText ?? "",
+        command: c.command
+          ? {
+              id: commandIds[c.command.command as SwfMonacoEditorCommandTypes],
+              arguments: c.command.arguments,
+              title: c.command.title,
+            }
+          : undefined,
         range: {
-          startLineNumber: (c.textEdit as TextEdit).range.start.line + 1,
-          startColumn: (c.textEdit as TextEdit).range.start.character + 1,
-          endLineNumber: (c.textEdit as TextEdit).range.end.line + 1,
-          endColumn: (c.textEdit as TextEdit).range.end.character + 1,
+          startLineNumber: (c.textEdit as ls.TextEdit).range.start.line + 1,
+          startColumn: (c.textEdit as ls.TextEdit).range.start.character + 1,
+          endLineNumber: (c.textEdit as ls.TextEdit).range.end.line + 1,
+          endColumn: (c.textEdit as ls.TextEdit).range.end.character + 1,
         },
       }));
 
-      const rootNode = jsonc.parseTree(model.getValue());
-      if (!rootNode) {
-        return;
-      }
-
-      const cursorOffset = model.getOffsetAt(cursorPosition);
-
-      const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
-      if (!currentNode) {
-        return;
-      }
-
-      const currentNodePosition = {
-        start: model.getPositionAt(currentNode.offset),
-        end: model.getPositionAt(currentNode.offset + currentNode.length),
-      };
-
-      const currentWordPosition = model.getWordAtPosition(cursorPosition);
-
-      const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
-        ? Range.fromPositions(currentNodePosition.start, currentNodePosition.end)
-        : new Range(
-            cursorPosition.lineNumber,
-            currentWordPosition?.startColumn ?? cursorPosition.column,
-            cursorPosition.lineNumber,
-            currentWordPosition?.endColumn ?? cursorPosition.column
-          );
-
-      const cursorJsonLocation = jsonc.getLocation(model.getValue(), cursorOffset);
-      console.error(cursorJsonLocation);
-
       return {
-        suggestions: [
-          ...monacoCompletionItems,
-          ...Array.from(completions.entries())
-            .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
-            .flatMap(([_, completionItemsDelegate]) =>
-              completionItemsDelegate({
-                model,
-                cursorPosition,
-                context,
-                commandIds,
-                currentNode,
-                currentNodePosition,
-                rootNode,
-                overwriteRange,
-              })
-            ),
-        ],
+        suggestions: monacoCompletionItems,
       };
     },
   });
 }
 
-function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalogFunction) {
-  switch (swfServiceCatalogFunction.source.type) {
-    case SwfServiceCatalogFunctionSourceType.LOCAL_FS:
-      return "fs: ";
-    case SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY:
-      return `${swfServiceCatalogFunction.source.serviceId}: `;
+function toMonacoCompletionItemKind(lsCompletionItemKind: ls.CompletionItemKind | undefined) {
+  switch (lsCompletionItemKind) {
+    case ls.CompletionItemKind.Text:
+      return monaco.languages.CompletionItemKind.Text;
+    case ls.CompletionItemKind.Method:
+      return monaco.languages.CompletionItemKind.Method;
+    case ls.CompletionItemKind.Function:
+      return monaco.languages.CompletionItemKind.Function;
+    case ls.CompletionItemKind.Constructor:
+      return monaco.languages.CompletionItemKind.Constructor;
+    case ls.CompletionItemKind.Field:
+      return monaco.languages.CompletionItemKind.Field;
+    case ls.CompletionItemKind.Variable:
+      return monaco.languages.CompletionItemKind.Variable;
+    case ls.CompletionItemKind.Class:
+      return monaco.languages.CompletionItemKind.Class;
+    case ls.CompletionItemKind.Interface:
+      return monaco.languages.CompletionItemKind.Interface;
+    case ls.CompletionItemKind.Module:
+      return monaco.languages.CompletionItemKind.Module;
+    case ls.CompletionItemKind.Property:
+      return monaco.languages.CompletionItemKind.Property;
+    case ls.CompletionItemKind.Unit:
+      return monaco.languages.CompletionItemKind.Unit;
+    case ls.CompletionItemKind.Value:
+      return monaco.languages.CompletionItemKind.Value;
+    case ls.CompletionItemKind.Enum:
+      return monaco.languages.CompletionItemKind.Enum;
+    case ls.CompletionItemKind.Keyword:
+      return monaco.languages.CompletionItemKind.Keyword;
+    case ls.CompletionItemKind.Snippet:
+      return monaco.languages.CompletionItemKind.Snippet;
+    case ls.CompletionItemKind.Color:
+      return monaco.languages.CompletionItemKind.Color;
+    case ls.CompletionItemKind.File:
+      return monaco.languages.CompletionItemKind.File;
+    case ls.CompletionItemKind.Reference:
+      return monaco.languages.CompletionItemKind.Reference;
+    case ls.CompletionItemKind.Folder:
+      return monaco.languages.CompletionItemKind.Folder;
+    case ls.CompletionItemKind.EnumMember:
+      return monaco.languages.CompletionItemKind.EnumMember;
+    case ls.CompletionItemKind.Constant:
+      return monaco.languages.CompletionItemKind.Constant;
+    case ls.CompletionItemKind.Struct:
+      return monaco.languages.CompletionItemKind.Struct;
+    case ls.CompletionItemKind.Event:
+      return monaco.languages.CompletionItemKind.Event;
+    case ls.CompletionItemKind.Operator:
+      return monaco.languages.CompletionItemKind.Operator;
+    case ls.CompletionItemKind.TypeParameter:
+      return monaco.languages.CompletionItemKind.TypeParameter;
     default:
-      return "";
+      throw new Error("Can't convert from LS Completion Kind to Monaco Completion Kind");
   }
 }

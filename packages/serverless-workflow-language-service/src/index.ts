@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, TextDocumentIdentifier } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Position, Range, TextDocumentIdentifier } from "vscode-languageserver-types";
 
 export interface SwfLanguageServiceChannelApi {
-  kogitoSwfLanguageService__doCompletion(
-    content: string,
-    uri: string,
-    cursorPosition: Position
-  ): Promise<CompletionItem[]>;
+  kogitoSwfLanguageService__doCompletion(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+  }): Promise<CompletionItem[]>;
   kogitoSwfLanguageService__doCodeLenses(textDocumentIdentifier: TextDocumentIdentifier): Promise<CodeLens[]>;
 }

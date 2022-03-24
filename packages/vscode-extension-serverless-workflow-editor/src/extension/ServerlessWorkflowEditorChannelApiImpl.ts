@@ -46,7 +46,7 @@ import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
 import * as vscode from "vscode";
-import { CompletionItem, CodeLens, TextDocumentIdentifier, Position } from "vscode-languageserver-types";
+import { CompletionItem, CodeLens, TextDocumentIdentifier, Position, Range } from "vscode-languageserver-types";
 
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
@@ -175,12 +175,13 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
   }
 
-  public async kogitoSwfLanguageService__doCompletion(
-    content: string,
-    uri: string,
-    cursorPosition: Position
-  ): Promise<CompletionItem[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__doCompletion(content, uri, cursorPosition);
+  public async kogitoSwfLanguageService__doCompletion(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+  }): Promise<CompletionItem[]> {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__doCompletion(args);
   }
 
   public async kogitoSwfLanguageService__doCodeLenses(
