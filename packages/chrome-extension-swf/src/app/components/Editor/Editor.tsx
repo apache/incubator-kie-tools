@@ -18,7 +18,6 @@ import * as React from "react";
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useChromeExtensionI18n } from "../../i18n";
 import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
 import { useGlobals } from "../../common/GlobalContext";
@@ -27,7 +26,7 @@ import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/d
 import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { PromiseStateWrapper } from "../../workspace/hooks/PromiseState";
+import { PromiseStateWrapper, usePromiseState } from "../../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { useCancelableEffect, useController, usePrevious } from "../../reactExt/Hooks";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -35,10 +34,21 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
-import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
-import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
 import { EditorToolbar } from "./EditorToolbar";
+import SwaggerUI from "swagger-ui-react";
+import "swagger-ui-react/swagger-ui.css";
+
+const Loading = () => (
+  <Bullseye>
+    <TextContent>
+      <Bullseye>
+        <Spinner />
+      </Bullseye>
+      <br />
+      <Text component={TextVariants.p}>{`Loading...`}</Text>
+    </TextContent>
+  </Bullseye>
+);
 
 export interface ServerlessWorkflowEditorProps {
   workspaceId: string;
@@ -48,15 +58,16 @@ export interface ServerlessWorkflowEditorProps {
 
 export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
   const globals = useGlobals();
-  const routes = useRoutes();
-  const history = useHistory();
-  const { i18n, locale } = useChromeExtensionI18n();
+  const { locale } = useChromeExtensionI18n();
   const { editor, editorRef } = useEditorRef();
   const workspaces = useWorkspaces();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
+  const workspaceOpenApiFilePromise = useWorkspaceFilePromise(props.workspaceId, "./openapi.yml");
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+  const [openApiSwaggerFile, setOpenApiSwaggerFile] = useState<string>();
   const [alerts, alertsRef] = useController<AlertsController>();
   const lastContent = useRef<string>();
+  const lastOpenApiContent = useRef<string>();
 
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
 
@@ -89,6 +100,32 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
         });
       },
       [workspaceFilePromise]
+    )
+  );
+
+  // update EmbeddedEditorFile, but only if content is different than what was saved
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!workspaceOpenApiFilePromise.data) {
+          return;
+        }
+
+        workspaceOpenApiFilePromise.data.getFileContentsAsString().then((content) => {
+          if (canceled.get()) {
+            return;
+          }
+
+          if (content === lastOpenApiContent.current) {
+            return;
+          }
+
+          lastOpenApiContent.current = content;
+
+          setOpenApiSwaggerFile(content);
+        });
+      },
+      [workspaceOpenApiFilePromise]
     )
   );
 
@@ -240,7 +277,7 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
         resolved={(file) => (
           <Page>
             <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
-            <PageSection variant={PageSectionVariants.default}>
+            <PageSection variant={PageSectionVariants.default} style={{ height: "100%" }}>
               <div style={{ height: "100%" }}>
                 {!isEditorReady && <LoadingSpinner />}
                 {embeddedEditorFile && (
@@ -255,6 +292,9 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
                   </div>
                 )}
               </div>
+            </PageSection>
+            <PageSection variant={PageSectionVariants.default}>
+              {openApiSwaggerFile && <SwaggerUI spec={openApiSwaggerFile} />}
             </PageSection>
           </Page>
         )}

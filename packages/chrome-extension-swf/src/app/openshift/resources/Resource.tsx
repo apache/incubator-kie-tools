@@ -30,6 +30,7 @@ export interface Resource {
     annotations: Record<string, string>;
     creationTimestamp: string;
     workspaceId: string;
+    namespace: string;
   };
 }
 

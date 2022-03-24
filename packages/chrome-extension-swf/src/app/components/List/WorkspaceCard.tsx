@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -43,6 +43,17 @@ import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
 import { DeleteDropdownWithConfirmation } from "./DeleteDropdownWithConfirmation";
 import { RelativeDate } from "../../dates/RelativeDate";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
+import { useOpenShift } from "../../openshift/OpenShiftContext";
+import { useSettings } from "../../settings/SettingsContext";
+
+export interface DeploymentDetails {
+  workspaceId: string;
+  url?: string;
+  pods?: number;
+  resourceName?: string;
+  namespace?: string;
+  creationTimestamp?: string;
+}
 
 export function WorkspaceLoadingCard() {
   return (
@@ -93,21 +104,68 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   );
 }
 
-export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
+export function WorkspaceCard(props: {
+  workspaceId: string;
+  isSelected: boolean;
+  onSelect: () => void;
+  deploymentDetailsMap: Map<string, DeploymentDetails>;
+}) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const routes = useRoutes();
   const history = useHistory();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
+  const openshiftService = useOpenShift();
+  const { openshift } = useSettings();
+  const workspaceDeploymentDetail = useMemo(
+    () =>
+      workspacePromise.data?.descriptor.deploymentResourceName &&
+      props.deploymentDetailsMap.get(workspacePromise.data?.descriptor.deploymentResourceName),
+    [props.deploymentDetailsMap, workspacePromise.data?.descriptor.deploymentResourceName]
+  );
 
   const editableFiles = useMemo(() => {
+    console.log(workspacePromise.data?.files);
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
   }, [editorEnvelopeLocator, workspacePromise.data?.files]);
 
   const workspaceName = useMemo(() => {
     return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
   }, [workspacePromise.data]);
+
+  useEffect(() => {
+    if (workspacePromise.data?.files.find((file) => file.name.includes("openapi"))) {
+      return;
+    }
+    const fetchOpenApiSpec = async () => {
+      if (!workspacePromise.data?.descriptor.deploymentResourceName) {
+        return;
+      }
+      const openApiContents = await openshiftService.fetchOpenApiFile(
+        openshift.config,
+        workspacePromise.data?.descriptor.deploymentResourceName
+      );
+      if (openApiContents) {
+        await workspaces.addFile({
+          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+          workspaceId: props.workspaceId,
+          name: "openapi",
+          destinationDirRelativePath: ".",
+          content: openApiContents,
+          extension: "yml",
+        });
+      }
+    };
+    fetchOpenApiSpec();
+  }, [
+    openshift.config,
+    openshiftService,
+    props.workspaceId,
+    workspacePromise.data?.descriptor.deploymentResourceName,
+    workspacePromise.data?.files,
+    workspaces,
+  ]);
 
   return (
     <PromiseStateWrapper
@@ -186,6 +244,22 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
                     <b>{`, Last updated: `}</b>
                     <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
+                    {workspaceDeploymentDetail && (
+                      <>
+                        <b>{`, Resource name: `}</b>
+                        {workspaceDeploymentDetail.resourceName}
+                        <b>{`, Namespace: `}</b>
+                        {workspaceDeploymentDetail.namespace}
+                        <b>{`, Deployed: `}</b>
+                        <RelativeDate date={new Date(workspaceDeploymentDetail.creationTimestamp ?? "")} />
+                        <b>{`, URL: `}</b>
+                        <a href={workspaceDeploymentDetail.url} target="_blank">
+                          {workspaceDeploymentDetail.url}
+                        </a>
+                        <b>{`, Pods: `}</b>
+                        {workspaceDeploymentDetail.pods}
+                      </>
+                    )}
                   </Text>
                 </TextContent>
               </CardBody>
@@ -247,6 +321,22 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     <RelativeDate date={new Date(workspacePromise.data?.descriptor.createdDateISO ?? "")} />
                     <b>{`, Last updated: `}</b>
                     <RelativeDate date={new Date(workspacePromise.data?.descriptor.lastUpdatedDateISO ?? "")} />
+                    {workspaceDeploymentDetail && (
+                      <>
+                        <b>{`, Resource name: `}</b>
+                        {workspaceDeploymentDetail.resourceName}
+                        <b>{`, Namespace: `}</b>
+                        {workspaceDeploymentDetail.namespace}
+                        <b>{`, Deployed: `}</b>
+                        <RelativeDate date={new Date(workspaceDeploymentDetail.creationTimestamp ?? "")} />
+                        <b>{`, URL: `}</b>
+                        <a href={workspaceDeploymentDetail.url} target="_blank">
+                          {workspaceDeploymentDetail.url}
+                        </a>
+                        <b>{`, Pods: `}</b>
+                        {workspaceDeploymentDetail.pods}
+                      </>
+                    )}
                   </Text>
                 </TextContent>
               </CardBody>

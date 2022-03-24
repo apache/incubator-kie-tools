@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useCallback, useEffect, useState } from "react";
+import { useMemo, useCallback, useEffect, useState, useRef } from "react";
 import { useHistory } from "react-router";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -41,10 +41,11 @@ import { useWorkspaceDescriptorsPromise } from "../../workspace/hooks/Workspaces
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { WorkspacesListDrawerPanelContent } from "./WorkspacesListDrawerPanelContent";
-import { WorkspaceCard, WorkspaceCardError } from "./WorkspaceCard";
+import { DeploymentDetails, WorkspaceCard, WorkspaceCardError } from "./WorkspaceCard";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { useSettings } from "../../settings/SettingsContext";
-import { KNativeService } from "../../openshift/resources/KNativeService";
+
+const DEPLOYMENTS_DETAILS_POLLING_INTERVAL = 5000;
 
 export function ServerlessWorkflowList() {
   const routes = useRoutes();
@@ -54,17 +55,63 @@ export function ServerlessWorkflowList() {
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const openshiftService = useOpenShift();
   const { openshift } = useSettings();
-  const [workflowsMap, setWorkflowsMap] = useState<Map<string, KNativeService>>();
+  const [deploymentDetailsMap, setDeploymentDetailsMap] = useState(new Map<string, DeploymentDetails>());
+  const deploymentsDetailsPolling = useRef<number>();
 
   useEffect(() => {
     const mapDeployments = async () => {
+      if (!workspaceDescriptorsPromise.data) {
+        return;
+      }
       const deployments = await openshiftService.listDeployments(openshift.config);
       const services = await openshiftService.listServices(openshift.config);
-      console.log({ deployments, services });
 
-      console.log(workspaceDescriptorsPromise.data);
+      const map = new Map<string, DeploymentDetails>();
+
+      workspaceDescriptorsPromise.data.forEach((descriptor) => {
+        if (descriptor.deploymentResourceName) {
+          map.set(descriptor.deploymentResourceName, {
+            workspaceId: descriptor.workspaceId,
+            resourceName: descriptor.deploymentResourceName,
+          });
+        }
+      });
+
+      deployments?.items.forEach((deployment) => {
+        const resourceName = deployment.metadata.labels["serving.knative.dev/service"];
+        if (resourceName) {
+          const details = map.get(resourceName);
+          if (details) {
+            details.pods = deployment.status.replicas ?? 0;
+            map.set(resourceName, details);
+          }
+        }
+      });
+
+      services?.items.forEach((service) => {
+        const resourceName = service.metadata.name;
+        if (resourceName) {
+          const details = map.get(resourceName);
+          if (details) {
+            details.creationTimestamp = service.metadata.creationTimestamp;
+            details.namespace = service.metadata.namespace;
+            details.url = service.status.url;
+            map.set(resourceName, details);
+          }
+        }
+      });
+
+      setDeploymentDetailsMap(map);
     };
     mapDeployments();
+    deploymentsDetailsPolling.current = window.setInterval(
+      () => mapDeployments(),
+      DEPLOYMENTS_DETAILS_POLLING_INTERVAL
+    );
+
+    return () => {
+      window.clearInterval(deploymentsDetailsPolling.current);
+    };
   }, [openshift.config, openshiftService, workspaceDescriptorsPromise.data]);
 
   const emptyState = useMemo(
@@ -94,7 +141,7 @@ export function ServerlessWorkflowList() {
 
   const expandWorkspace = useCallback(
     (workspaceId: string) => {
-      const expand = workspaceId !== expandedWorkspaceId ? workspaceId : undefined;
+      const expand = workspaceId !== expandedWorkspaceId && workspaceId;
       if (!expand) {
         closeExpandedWorkspace();
         return;
@@ -169,6 +216,7 @@ export function ServerlessWorkflowList() {
                                         workspaceId={workspace.workspaceId}
                                         onSelect={() => expandWorkspace(workspace.workspaceId)}
                                         isSelected={workspace.workspaceId === expandedWorkspaceId}
+                                        deploymentDetailsMap={deploymentDetailsMap}
                                       />
                                     </ErrorBoundary>
                                   </StackItem>
