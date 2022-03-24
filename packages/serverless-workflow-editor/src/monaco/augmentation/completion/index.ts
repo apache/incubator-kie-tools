@@ -232,40 +232,36 @@ export function initJsonCompletion(
 ): void {
   monaco.languages.registerCompletionItemProvider("json", {
     triggerCharacters: [" ", ":"],
-    provideCompletionItems: (
+    provideCompletionItems: async (
       model: editor.ITextModel,
       cursorPosition: Position,
       context: languages.CompletionContext,
       cancellationToken: CancellationToken
-    ): languages.ProviderResult<languages.CompletionList> => {
-      return channelApi.requests
-        .kogitoSwfLanguageService__doCompletion(
-          { uri: model.uri.toString() },
-          {
-            character: cursorPosition.column,
-            line: cursorPosition.lineNumber,
-          }
-        )
-        .then((cs) => {
-          return cs.map((c) => ({
-            kind: c.kind ?? languages.CompletionItemKind.Module,
-            label: c.label,
-            sortText: c.sortText,
-            detail: c.detail,
-            insertText: c.insertText ?? "",
-            range: {
-              startLineNumber: 0,
-              startColumn: 0,
-              endColumn: 0,
-              endLineNumber: 0,
-            },
-          }));
-        })
-        .then((cs) => {
-          return {
-            suggestions: cs,
-          };
-        });
+    ) => {
+      const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__doCompletion(
+        { uri: model.uri.toString() },
+        {
+          character: cursorPosition.column,
+          line: cursorPosition.lineNumber,
+        }
+      );
+      const monacoCompletionItems = lsCompletionItems.map((c) => ({
+        kind: c.kind ?? languages.CompletionItemKind.Module,
+        label: c.label,
+        sortText: c.sortText,
+        detail: c.detail,
+        insertText: c.insertText ?? "",
+        range: {
+          startLineNumber: 0,
+          startColumn: 0,
+          endColumn: 0,
+          endLineNumber: 0,
+        },
+      }));
+
+      return {
+        suggestions: monacoCompletionItems,
+      };
 
       // if (cancellationToken.isCancellationRequested) {
       //   return;

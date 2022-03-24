@@ -9,11 +9,17 @@
       "examples/*"
     ],
     "nohoist": [
-      "@kogito-tooling/serverless-workflow-editor",
-      "@kogito-tooling/serverless-workflow-editor/mermaid",
-      "@kogito-tooling/serverless-workflow-editor/mermaid/**",
-      "@kogito-tooling/serverless-workflow-editor/@types/mermaid",
-      "@kogito-tooling/serverless-workflow-editor/@types/mermaid/**"
+      "@kie-tools/serverless-workflow-editor",
+      "@kie-tools/serverless-workflow-editor/mermaid",
+      "@kie-tools/serverless-workflow-editor/mermaid/**",
+      "@kie-tools/serverless-workflow-editor/@types/mermaid",
+      "@kie-tools/serverless-workflow-editor/@types/mermaid/**",
+      "@kie-tools/serverless-workflow-editor",
+      "@kie-tools/serverless-workflow-editor/monaco-editor",
+      "@kie-tools/serverless-workflow-editor/monaco-editor/**",
+      "vscode-extension-serverless-workflow-editor",
+      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
+      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**"
     ]
   },
   "scripts": {
