@@ -238,7 +238,7 @@ function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalo
 }
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
-  public async kogitoSwfLanguageService__doCompletion(args: {
+  public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
@@ -281,7 +281,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
         })
       );
   }
-  public async kogitoSwfLanguageService__doCodeLenses(
+  public async kogitoSwfLanguageService__getCodeLenses(
     textDocumentIdentifier: TextDocumentIdentifier
   ): Promise<CodeLens[]> {
     return [];

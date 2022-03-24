@@ -17,11 +17,11 @@
 import { CodeLens, CompletionItem, Position, Range, TextDocumentIdentifier } from "vscode-languageserver-types";
 
 export interface SwfLanguageServiceChannelApi {
-  kogitoSwfLanguageService__doCompletion(args: {
+  kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]>;
-  kogitoSwfLanguageService__doCodeLenses(textDocumentIdentifier: TextDocumentIdentifier): Promise<CodeLens[]>;
+  kogitoSwfLanguageService__getCodeLenses(textDocumentIdentifier: TextDocumentIdentifier): Promise<CodeLens[]>;
 }

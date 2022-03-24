@@ -35,7 +35,7 @@ export function initJsonCompletion(
     ) => {
       const currentWordPosition = model.getWordAtPosition(cursorPosition);
 
-      const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__doCompletion({
+      const lsCompletionItems = await channelApi.requests.kogitoSwfLanguageService__getCompletionItems({
         content: model.getValue(),
         uri: model.uri.toString(),
         cursorPosition: {
