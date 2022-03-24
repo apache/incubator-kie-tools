@@ -1,0 +1,37 @@
+{
+  "name": "@kie-tools/unitables",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "echo 'Linting....'",
+    "test": "run-script-if --env KIE_TOOLS_BUILD_test -c 'jest --silent --verbose'",
+    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "yarn build:dev",
+    "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json --watch",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "dependencies": {
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools/boxed-expression-component": "0.0.0",
+    "@kie-tools/form": "0.0.0",
+    "@types/react-table": "^7.0.25",
+    "ajv": "^6.12.6",
+    "ajv-errors": "^1.0.1",
+    "lodash": "^4.17.21",
+    "react-table": "^7.6.2",
+    "uniforms": "^3.5.5",
+    "uniforms-bridge-json-schema": "^3.5.5",
+    "uniforms-patternfly": "^4.7.4"
+  },
+  "files": [
+    "dist"
+  ]
+}
