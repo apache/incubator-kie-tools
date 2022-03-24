@@ -381,11 +381,11 @@ export function DmnForm(props: Props) {
   const onValidate = useCallback(
     (model, error: any) => {
       props.onValidate?.(model, error);
-      setFormModel((previousModel: any) => {
-        if (Object.keys(diff(model, previousModel)).length > 0) {
+      setFormModel((previousModel?: object) => {
+        if (Object.keys(diff(model, previousModel ?? {})).length > 0) {
           return model;
         }
-        return previousModel;
+        return previousModel ?? {};
       });
       if (!error) {
         return;
