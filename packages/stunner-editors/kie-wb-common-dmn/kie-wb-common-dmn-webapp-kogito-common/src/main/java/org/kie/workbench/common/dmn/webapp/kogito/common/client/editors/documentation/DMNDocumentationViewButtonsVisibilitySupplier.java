@@ -25,7 +25,8 @@ import javax.inject.Inject;
 
 import org.appformer.client.context.EditorContextProvider;
 
-import static org.appformer.client.context.Channel.VSCODE;
+import static org.appformer.client.context.Channel.VSCODE_DESKTOP;
+import static org.appformer.client.context.Channel.VSCODE_WEB;
 
 @Dependent
 @Alternative
@@ -41,6 +42,6 @@ public class DMNDocumentationViewButtonsVisibilitySupplier extends org.kie.workb
 
     @Override
     public boolean isButtonsVisible() {
-        return !Objects.equals(contextProvider.getChannel(), VSCODE);
+        return !(Objects.equals(contextProvider.getChannel(), VSCODE_DESKTOP) || Objects.equals(contextProvider.getChannel(), VSCODE_WEB));
     }
 }

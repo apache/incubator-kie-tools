@@ -85,7 +85,8 @@ public class KogitoDecisionNavigatorDock extends DecisionNavigatorDock {
         final Channel channel = context.getChannel();
         switch (channel) {
             case GITHUB:
-            case VSCODE:
+            case VSCODE_DESKTOP:
+            case VSCODE_WEB:
             case ONLINE_MULTI_FILE:
                 return UberfireDockPosition.EAST;
             default:
