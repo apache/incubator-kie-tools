@@ -17,12 +17,16 @@
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionArgumentType,
+  SwfServiceCatalogFunctionSource,
+  SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "../../api";
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
+import { posix as posixPath } from "path";
 
 const APPLICATION_JSON = "application/json";
 
@@ -32,74 +36,101 @@ type OpenapiPathOperations = Pick<
 >;
 
 export function parseOpenApi(args: {
-  fileName: string;
-  storagePath: string;
-  content: string;
+  baseFileAbsolutePosixPath: string;
+  specsDirAbsolutePosixPath: string;
+  serviceFileName: string;
+  serviceFileContent: string;
 }): SwfServiceCatalogService {
-  const servicePath = `${args.storagePath}/${args.fileName}`;
-  const contentDoc = readOpenapiDoc(args.content);
+  const specsDirRelativePosixPath = posixPath.relative(
+    posixPath.dirname(args.baseFileAbsolutePosixPath),
+    args.specsDirAbsolutePosixPath
+  );
+  const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, args.serviceFileName);
+  const serviceFileAbsolutePosixPath = posixPath.join(args.specsDirAbsolutePosixPath, args.serviceFileName);
+  const serviceOpenApiDocument = serviceFileContentToOpenApiDocument(
+    serviceFileRelativePosixPath,
+    args.serviceFileContent
+  );
 
-  const functionDefinitions = extractFunctions(contentDoc, servicePath);
+  const swfServiceCatalogFunctions = extractFunctions(serviceOpenApiDocument, serviceFileRelativePosixPath, {
+    type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
+    serviceFileAbsolutePath: serviceFileAbsolutePosixPath,
+  });
 
   return {
-    name: contentDoc.info.title ?? servicePath,
+    name: serviceOpenApiDocument.info.title ?? serviceFileAbsolutePosixPath,
     type: SwfServiceCatalogServiceType.rest,
-    id: servicePath,
-    functions: functionDefinitions,
-    rawContent: args.content,
+    source: { type: SwfServiceCatalogServiceSourceType.LOCAL_FS, absoluteFilePath: serviceFileAbsolutePosixPath },
+    functions: swfServiceCatalogFunctions,
+    rawContent: args.serviceFileContent,
   };
 }
 
-function readOpenapiDoc(content: string): OpenAPIV3.Document {
-  const contentDoc = yaml.load(content) as OpenAPIV3.Document;
-
-  if (!contentDoc.openapi || !contentDoc.info || !contentDoc.paths) {
-    throw new Error("Invalid format");
+function serviceFileContentToOpenApiDocument(
+  serviceFileRelativePosixPath: string,
+  serviceFileContent: string
+): OpenAPIV3.Document {
+  let serviceOpenApiDocument;
+  if (posixPath.extname(serviceFileRelativePosixPath) === ".json") {
+    serviceOpenApiDocument = JSON.parse(serviceFileContent) as OpenAPIV3.Document;
+  } else {
+    serviceOpenApiDocument = yaml.load(serviceFileContent) as OpenAPIV3.Document;
   }
-  return contentDoc;
+
+  if (!serviceOpenApiDocument.openapi || !serviceOpenApiDocument.info || !serviceOpenApiDocument.paths) {
+    throw new Error(`'${serviceFileRelativePosixPath}' is not an OpenAPI file`);
+  }
+
+  return serviceOpenApiDocument;
 }
 
-function extractFunctions(contentDoc: OpenAPIV3.Document, servicePath: string): SwfServiceCatalogFunction[] {
-  const swfFunctions = Object.entries(contentDoc.paths).map(
+export function extractFunctions(
+  serviceOpenApiDocument: OpenAPIV3.Document,
+  serviceFileRelativePosixPath: string,
+  source: SwfServiceCatalogFunctionSource
+): SwfServiceCatalogFunction[] {
+  const swfServiceCatalogFunctions = Object.entries(serviceOpenApiDocument.paths).map(
     ([endpoint, pathItem]: [string, OpenAPIV3.PathItemObject]) => {
-      return extractPathItemFunctions(pathItem, servicePath, endpoint, contentDoc);
+      return extractPathItemFunctions(pathItem, serviceFileRelativePosixPath, endpoint, serviceOpenApiDocument, source);
     }
   );
-  return [].concat.apply([], swfFunctions);
+  return [].concat.apply([], swfServiceCatalogFunctions);
 }
 
 function extractPathItemFunctions(
   pathItem: OpenapiPathOperations,
-  servicePath: string,
+  serviceFileRelativePosixPath: string,
   endpoint: string,
-  contentDoc: OpenAPIV3.Document
+  serviceOpenApiDocument: OpenAPIV3.Document,
+  source: SwfServiceCatalogFunctionSource
 ): SwfServiceCatalogFunction[] {
-  const swfFunctions: SwfServiceCatalogFunction[] = [];
+  const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
 
   Object.values(pathItem).forEach((pathOperation: OpenAPIV3.OperationObject) => {
-    const body: OpenAPIV3.RequestBodyObject = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
+    const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
 
     // Looking only at application/json mime types, we might consider others.
     if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
-      const name: string = pathOperation.operationId ?? endpoint.replace(/^\/+/, "");
-      const operation = `${servicePath}#${name}`;
+      const name = pathOperation.operationId ?? endpoint.replace(/^\/+/, "");
+      const operation = `${serviceFileRelativePosixPath}#${name}`;
 
       const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = extractFunctionArguments(
         body.content[APPLICATION_JSON].schema ?? {},
-        contentDoc
+        serviceOpenApiDocument
       );
 
-      const functionDef: SwfServiceCatalogFunction = {
+      const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
+        source,
         name,
         operation,
         type: SwfServiceCatalogFunctionType.rest,
         arguments: functionArguments,
       };
-      swfFunctions.push(functionDef);
+      swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
     }
   });
 
-  return swfFunctions;
+  return swfServiceCatalogFunctions;
 }
 
 function extractFunctionArguments(

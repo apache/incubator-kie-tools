@@ -152,7 +152,11 @@ export class KogitoEditorEnvelopeApiImpl<
   }
 
   private registerDefaultShortcuts(initArgs: EditorInitArgs) {
-    if (initArgs.channel === ChannelType.VSCODE || initArgs.isReadOnly) {
+    if (
+      initArgs.channel === ChannelType.VSCODE_DESKTOP ||
+      initArgs.channel === ChannelType.VSCODE_WEB ||
+      initArgs.isReadOnly
+    ) {
       return;
     }
 

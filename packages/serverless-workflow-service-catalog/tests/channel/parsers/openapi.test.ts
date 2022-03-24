@@ -21,6 +21,7 @@ import {
   SwfServiceCatalogFunctionArgumentType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
@@ -29,9 +30,10 @@ function doParse(fileName: string): SwfServiceCatalogService {
   const content = fs.readFileSync(filePath).toString("utf-8");
 
   return parseOpenApi({
-    fileName,
-    content,
-    storagePath: "specs",
+    serviceFileName: fileName,
+    serviceFileContent: content,
+    specsDirAbsolutePosixPath: "/Users/tiago/open-api-tests/specs",
+    baseFileAbsolutePosixPath: "/Users/tiago/open-api-tests/myfile.txt",
   });
 }
 
@@ -41,7 +43,9 @@ describe("openapi parser", () => {
 
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
-    expect(result.id).toBe("specs/multiplication.yaml");
+    expect(result.source.type).toBe(SwfServiceCatalogServiceSourceType.LOCAL_FS);
+    if (result.source.type !== SwfServiceCatalogServiceSourceType.LOCAL_FS) throw new Error("Assertion error.");
+    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/multiplication.yaml");
     expect(result.name).toBe("Generated API");
 
     expect(result.functions).toHaveLength(2);
@@ -70,9 +74,10 @@ describe("openapi parser", () => {
 
     expect(result).not.toBeNull();
     expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
-    expect(result.id).toBe("specs/hiring.yaml");
+    expect(result.source.type).toBe(SwfServiceCatalogServiceSourceType.LOCAL_FS);
+    if (result.source.type !== SwfServiceCatalogServiceSourceType.LOCAL_FS) throw new Error("Assertion error.");
+    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/hiring.yaml");
     expect(result.name).toBe("process-usertasks-timer-quarkus-with-console API");
-
     expect(result.functions).toHaveLength(1);
 
     const functionDef = result.functions[0];
@@ -88,10 +93,10 @@ describe("openapi parser", () => {
   it("parse wrong format test", async () => {
     expect(() => {
       doParse("wrong.txt");
-    }).toThrowError("Invalid format");
+    }).toThrowError("'specs/wrong.txt' is not an OpenAPI file");
 
     expect(() => {
       doParse("wrong.json");
-    }).toThrowError("Invalid format");
+    }).toThrowError("'specs/wrong.json' is not an OpenAPI file");
   });
 });

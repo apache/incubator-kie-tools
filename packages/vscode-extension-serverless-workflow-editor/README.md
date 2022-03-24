@@ -16,11 +16,11 @@ Create and edit Serverless Workflow definition files (\*.sw.json, \*.sw.yaml, \*
 
 ### Settings
 
-| Setting                         | Description                                             | Default value                            |
-| ------------------------------- | ------------------------------------------------------- | ---------------------------------------- |
-| `kogito.sw.runOnSave`           | Execute a command on each save operation of the SW file | `extension.kogito.silentlyGenerateSvgSw` |
-| `kogito.sw.svgFilenameTemplate` | Filename template to be used when generating SVG files  | `${fileBasenameNoExtension}-svg.svg`     |
-| `kogito.sw.svgFilePath`         | Where to save generated SVG files                       | `${fileDirname}`                         |
+| Setting                         | Description                                             | Default value                              |
+| ------------------------------- | ------------------------------------------------------- | ------------------------------------------ |
+| `kogito.sw.runOnSave`           | Execute a command on each save operation of the SW file | `extension.kogito.swf.silentlyGenerateSvg` |
+| `kogito.sw.svgFilenameTemplate` | Filename template to be used when generating SVG files  | `${fileBasenameNoExtension}-svg.svg`       |
+| `kogito.sw.svgFilePath`         | Where to save generated SVG files                       | `${fileDirname}`                           |
 
 The `kogito.sw.svgFilenameTemplate` and `kogito.sw.svgFilePath` settings accept the following variables as tokens:
 

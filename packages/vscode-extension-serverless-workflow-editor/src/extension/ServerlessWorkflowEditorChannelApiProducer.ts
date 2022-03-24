@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Uri } from "vscode";
+import * as vscode from "vscode";
+import { AuthenticationSession, Uri } from "vscode";
 import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
@@ -25,14 +26,26 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
-import { getSwfServiceCatalogStore } from "./serviceCatalog";
-import { SwfServiceCatalogChannelApiImpl } from "@kie-tools/serverless-workflow-service-catalog/src/channel";
+import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
+import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfVsCodeExtensionSettings } from "./settings";
+import {
+  SwfServiceCatalogChannelApi,
+  SwfServiceCatalogUser,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
+import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
+import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
+import { FsWatchingServiceCatalogStore } from "./serviceCatalog/fs";
+import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
-  constructor(private readonly args: { settings: SwfVsCodeExtensionSettings }) {}
+  constructor(
+    private readonly args: {
+      configuration: SwfVsCodeExtensionConfiguration;
+      rhhccAuthenticationStore: RhhccAuthenticationStore;
+    }
+  ) {}
   get(
     editor: KogitoEditor,
     resourceContentService: ResourceContentService,
@@ -44,9 +57,20 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     i18n: I18n<VsCodeI18n>,
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
-    const swfServiceCatalogStore = getSwfServiceCatalogStore({
-      filePath: editor.document.uri.path,
-      configuredSpecsDirPath: this.args.settings.getSpecsDirPath(),
+    const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
+      baseFileAbsolutePosixPath: editor.document.uri.path,
+      rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
+      configuration: this.args.configuration,
+    });
+
+    const fsWatchingServiceCatalogStore = new FsWatchingServiceCatalogStore({
+      baseFileAbsolutePosixPath: editor.document.uri.path,
+      configuration: this.args.configuration,
+    });
+
+    const swfServiceCatalogStore = new SwfServiceCatalogStore({
+      fsWatchingServiceCatalogStore,
+      rhhccServiceRegistryServiceCatalogStore,
     });
 
     // TODO: This is a workaround
@@ -55,12 +79,43 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       KogitoEditorEnvelopeApi
     >;
 
-    swfServiceCatalogStore.init(async (services) =>
-      swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services)
-    );
+    swfServiceCatalogStore.init({
+      onNewServices: async (services) => {
+        swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services);
+      },
+    });
+
+    const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
+      swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_user.set(getUser(session));
+
+      if (!session) {
+        return rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+
+      const configuredServiceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
+      if (configuredServiceRegistryUrl) {
+        return rhhccServiceRegistryServiceCatalogStore.refresh();
+      }
+
+      const serviceRegistryUrl = await askForServiceRegistryUrl({ currentValue: configuredServiceRegistryUrl });
+      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
+      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
+
+      return rhhccServiceRegistryServiceCatalogStore.refresh();
+    });
+
+    const rhhccServiceRegistryUrlSubscription = vscode.workspace.onDidChangeConfiguration(async (e) => {
+      if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistryUrl)) {
+        swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
+          this.args.configuration.getConfiguredServiceRegistryUrl()
+        );
+      }
+    });
 
     editor.panel.onDidDispose(() => {
       swfServiceCatalogStore.dispose();
+      rhhccServiceRegistryUrlSubscription.dispose();
+      this.args.rhhccAuthenticationStore.unsubscribeToSessionChange(rhhccSessionSubscription);
     });
 
     return new ServerlessWorkflowEditorChannelApiImpl(
@@ -73,7 +128,17 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       viewType,
       i18n,
       initialBackup,
-      new SwfServiceCatalogChannelApiImpl()
+      new SwfServiceCatalogChannelApiImpl({
+        swfServiceCatalogStore,
+        baseFileAbsolutePosixPath: editor.document.uri.path,
+        configuration: this.args.configuration,
+        defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
+        defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
+      })
     );
   }
+}
+
+function getUser(session: AuthenticationSession | undefined): SwfServiceCatalogUser | undefined {
+  return session ? { username: session.account.label } : undefined;
 }

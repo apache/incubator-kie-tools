@@ -26,7 +26,8 @@ export interface Association {
 }
 
 export enum ChannelType {
-  VSCODE = "VSCODE",
+  VSCODE_DESKTOP = "VSCODE_DESKTOP",
+  VSCODE_WEB = "VSCODE_WEB",
   ONLINE = "ONLINE",
   GITHUB = "GITHUB",
   DESKTOP = "DESKTOP",

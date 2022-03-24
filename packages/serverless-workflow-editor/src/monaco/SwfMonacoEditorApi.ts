@@ -30,6 +30,7 @@ export interface SwfMonacoEditorApi {
   redo: () => void;
   getContent: () => string;
   setTheme: (theme: EditorTheme) => void;
+  forceRedraw: () => void;
 }
 
 export enum MonacoEditorOperation {
@@ -46,7 +47,7 @@ export interface SwfMonacoEditorInstance {
 export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   private readonly model: editor.ITextModel;
 
-  public editor: editor.IStandaloneCodeEditor;
+  public editor: editor.IStandaloneCodeEditor | undefined;
 
   constructor(
     content: string,
@@ -114,7 +115,11 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   }
 
   public getContent(): string {
-    return this.editor.getModel()?.getValue() || "";
+    return this.editor?.getModel()?.getValue() || "";
+  }
+
+  public forceRedraw() {
+    this.editor?.render(true);
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

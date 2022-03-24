@@ -2,10 +2,17 @@ import * as monaco from "monaco-editor";
 import { languages, Position } from "monaco-editor";
 import * as jsonc from "jsonc-parser";
 import { JSONPath } from "vscode-json-languageservice";
-import { SwfMonacoEditorCommandIds } from "../commands";
+import { SwfMonacoEditorCommandArgs, SwfMonacoEditorCommandIds } from "../commands";
+import { SwfServiceCatalogSingleton } from "../../../serviceCatalog";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
 import CodeLens = languages.CodeLens;
 
-export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void {
+export function initJsonCodeLenses(
+  commandIds: SwfMonacoEditorCommandIds,
+  channelType: ChannelType,
+  os: OperatingSystem | undefined
+): void {
   monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: (model, cancellationToken) => {
       if (cancellationToken.isCancellationRequested) {
@@ -17,7 +24,7 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
         return;
       }
 
-      const importFunction = createCodeLenses({
+      const addFunction = createCodeLenses({
         model,
         rootNode,
         jsonPath: ["functions"],
@@ -31,19 +38,111 @@ export function initJsonCodeLenses(commandIds: SwfMonacoEditorCommandIds): void 
 
           return [
             {
-              id: commandIds["OpenFunctionsCompletionItemsAtTheBottom"],
-              title: `+ Import function`,
-              arguments: [{ position, node, newCursorPosition }],
+              id: commandIds["OpenFunctionsCompletionItems"],
+              title: `+ Add function...`,
+              arguments: [
+                {
+                  position,
+                  node,
+                  newCursorPosition,
+                } as SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"],
+              ],
             },
           ];
         },
       });
 
+      const logInToRhhcc = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (user) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["LogInToRhhcc"],
+              title: `↪ Log in to Red Hat Hybrid Cloud Console...`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["LogInToRhhcc"]],
+            },
+          ];
+        },
+      });
+
+      const setupServiceRegistryUrl = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (!user) {
+            return [];
+          }
+
+          const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+          if (serviceRegistryUrl) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["SetupServiceRegistryUrl"],
+              title: `↪ Setup Service Registry URL...`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["SetupServiceRegistryUrl"]],
+            },
+          ];
+        },
+      });
+
+      const refreshServiceRegistry = createCodeLenses({
+        model,
+        rootNode,
+        jsonPath: ["functions"],
+        positionLensAt: "begin",
+        commandDelegates: ({ position, node }) => {
+          if (node.type !== "array") {
+            return [];
+          }
+
+          const user = SwfServiceCatalogSingleton.get().getUser();
+          if (!user) {
+            return [];
+          }
+
+          const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+          if (!serviceRegistryUrl) {
+            return [];
+          }
+
+          return [
+            {
+              id: commandIds["RefreshServiceCatalogFromRhhcc"],
+              title: `↺ Refresh Service Registry (${user.username})`,
+              arguments: [{ position, node } as SwfMonacoEditorCommandArgs["RefreshServiceCatalogFromRhhcc"]],
+            },
+          ];
+        },
+      });
+
+      const displayRhhccIntegration = channelType === ChannelType.VSCODE_DESKTOP && os === OperatingSystem.MACOS;
+
       const codeLenses: CodeLens[] = [
-        // TODO: Implement code lenses
-        // Follow this example
-        //
-        ...importFunction,
+        ...(displayRhhccIntegration ? logInToRhhcc : []),
+        ...(displayRhhccIntegration ? setupServiceRegistryUrl : []),
+        ...(displayRhhccIntegration ? refreshServiceRegistry : []),
+        ...addFunction,
       ];
 
       return {
