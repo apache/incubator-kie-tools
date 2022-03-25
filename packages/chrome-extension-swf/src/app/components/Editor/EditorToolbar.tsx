@@ -309,7 +309,7 @@ export function EditorToolbar(props: Props) {
   }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data, githubAuthInfo]);
 
   const downloadSvg = useCallback(() => {
-    props.editor?.getPreview().then((previewSvg) => {
+    props.editor?.getPreview().then((previewSvg: BlobPart) => {
       if (downloadPreviewRef.current && previewSvg) {
         const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
         downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
@@ -1622,9 +1622,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </FlexItem>
                   )}
                 />
-                <FlexItem>
-                  <DeployToolbar editor={props.editor} workspace={workspace} />
-                </FlexItem>
               </Flex>
             </Flex>
           </PageSection>

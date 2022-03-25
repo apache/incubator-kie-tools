@@ -29,9 +29,9 @@ digraph G {
   "@kie-tools/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/chrome-extension-swf" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "chrome-extension-swf-pack" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -104,9 +104,9 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "purple" ];
+  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "purple" ];
   "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/pmml-editor" [ style = "solid", color = "purple" ];
   "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/unitables" [ style = "solid", color = "purple" ];
-  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "purple" ];
   "chrome-extension-swf-pack" -> "@kie-tools-core/chrome-extension-swf" [ style = "solid", color = "black" ];
   "chrome-extension-swf-pack" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
