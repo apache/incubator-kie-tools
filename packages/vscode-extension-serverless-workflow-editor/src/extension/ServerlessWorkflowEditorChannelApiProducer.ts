@@ -45,6 +45,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
+      swfLanguageService: SwfLanguageServiceChannelApiImpl;
     }
   ) {}
   get(
@@ -136,7 +137,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
         defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
       }),
-      new SwfLanguageServiceChannelApiImpl()
+      this.args.swfLanguageService
     );
   }
 }

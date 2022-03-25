@@ -5,19 +5,22 @@ import {
   InsertTextFormat,
   Position,
   Range,
-  TextDocumentIdentifier,
 } from "vscode-languageserver-types";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as jsonc from "jsonc-parser";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
+import { JSONPath } from "jsonc-parser";
+import {
+  SwfLanguageServiceChannelApi,
+  SwfLanguageServiceCommandArgs,
+  SwfLanguageServiceCommandExecution,
+} from "@kie-tools/serverless-workflow-language-service";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
-} from "@kie-tools/serverless-workflow-service-catalog/src/api";
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as swfModelQueries from "./modelQueries";
-import { SwfMonacoCommandExecution } from "@kie-tools/serverless-workflow-editor/dist/editor/ServerlessWorkflowEditorEnvelopeApi";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -47,7 +50,7 @@ const completions = new Map<
                 type: swfServiceCatalogFunc.type,
               };
 
-              const command: SwfMonacoCommandExecution<"ImportFunctionFromCompletionItem"> = {
+              const command: SwfLanguageServiceCommandExecution<"ImportFunctionFromCompletionItem"> = {
                 name: "ImportFunctionFromCompletionItem",
                 args: {
                   containingService: swfServiceCatalogService,
@@ -99,8 +102,8 @@ const completions = new Map<
         .map((swfServiceCatalogFunc) => {
           return {
             kind: CompletionItemKind.Value,
-            label: swfServiceCatalogFunc.operation,
-            detail: swfServiceCatalogFunc.operation,
+            label: `"${swfServiceCatalogFunc.operation}"`,
+            detail: `"${swfServiceCatalogFunc.operation}"`,
             filterText: `"${swfServiceCatalogFunc.operation}"`,
             textEdit: {
               newText: `"${swfServiceCatalogFunc.operation}"`,
@@ -140,7 +143,7 @@ const completions = new Map<
           {
             kind: CompletionItemKind.Module,
             label: `${swfFunctionRef.refName}`,
-            sortText: swfFunctionRef.refName,
+            sortText: `${swfFunctionRef.refName}`,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
               newText: JSON.stringify(swfFunctionRef, null, 2),
@@ -159,9 +162,9 @@ const completions = new Map<
         return [
           {
             kind: CompletionItemKind.Value,
-            label: swfFunction.name,
-            sortText: swfFunction.name,
-            detail: swfFunction.name,
+            label: `"${swfFunction.name}"`,
+            sortText: `"${swfFunction.name}"`,
+            detail: `"${swfFunction.name}"`,
             filterText: `"${swfFunction.name}"`,
             textEdit: {
               newText: `"${swfFunction.name}"`,
@@ -237,6 +240,86 @@ function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalo
   }
 }
 
+function createCodeLenses(args: {
+  model: TextDocument;
+  rootNode: jsonc.Node;
+  jsonPath: JSONPath;
+  commandDelegates: (args: {
+    position: Position;
+    node: jsonc.Node;
+  }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
+  positionLensAt: "begin" | "end";
+}): CodeLens[] {
+  const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
+  return nodes.flatMap((node) => {
+    // Only position at the end if the type is object or array and has at least one child.
+    const position =
+      args.positionLensAt === "end" &&
+      (node.type === "object" || node.type === "array") &&
+      (node.children?.length ?? 0) > 0
+        ? args.model.positionAt(node.offset + node.length)
+        : args.model.positionAt(node.offset);
+
+    return args.commandDelegates({ position, node }).map((command) => ({
+      command: {
+        command: command.name,
+        title: command.title,
+        arguments: command.args,
+      },
+      range: {
+        start: position,
+        end: position,
+      },
+    }));
+  });
+}
+
+// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
+// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
+export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
+  if (!root) {
+    return [];
+  }
+
+  let nodes: jsonc.Node[] = [root];
+
+  for (const segment of path) {
+    if (segment === "*") {
+      nodes = nodes.flatMap((s) => s.children ?? []);
+      continue;
+    }
+
+    if (typeof segment === "number") {
+      const index = segment as number;
+      nodes = nodes.flatMap((n) => {
+        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
+          return [];
+        }
+
+        return [n.children[index]];
+      });
+    }
+
+    if (typeof segment === "string") {
+      nodes = nodes.flatMap((n) => {
+        if (n.type !== "object" || !Array.isArray(n.children)) {
+          return [];
+        }
+
+        for (const prop of n.children) {
+          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
+            return [prop.children[1]];
+          }
+        }
+
+        return [];
+      });
+    }
+  }
+
+  return nodes;
+}
+
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
@@ -281,9 +364,134 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
         })
       );
   }
-  public async kogitoSwfLanguageService__getCodeLenses(
-    textDocumentIdentifier: TextDocumentIdentifier
-  ): Promise<CodeLens[]> {
-    return [];
+
+  public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
+    const model = TextDocument.create(args.uri, "json", 0, args.content);
+
+    const rootNode = jsonc.parseTree(model.getText());
+    if (!rootNode) {
+      return [];
+    }
+
+    const addFunction = createCodeLenses({
+      model,
+      rootNode,
+      jsonPath: ["functions"],
+      positionLensAt: "begin",
+      commandDelegates: ({ position, node }) => {
+        if (node.type !== "array") {
+          return [];
+        }
+
+        const newCursorPosition = model.positionAt(node.offset + 1);
+
+        return [
+          {
+            name: "OpenFunctionsCompletionItems",
+            title: `+ Add function...`,
+            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs["OpenFunctionsCompletionItems"]],
+          },
+        ];
+      },
+    });
+
+    const logInToRhhcc = createCodeLenses({
+      model,
+      rootNode,
+      jsonPath: ["functions"],
+      positionLensAt: "begin",
+      commandDelegates: ({ position, node }) => {
+        if (node.type !== "array") {
+          return [];
+        }
+
+        // FIXME: tiago
+        // const user = SwfServiceCatalogSingleton.get().getUser();
+        // if (user) {
+        //   return [];
+        // }
+
+        return [
+          {
+            name: "LogInToRhhcc",
+            title: `↪ Log in to Red Hat Hybrid Cloud Console...`,
+            args: [{ position, node } as SwfLanguageServiceCommandArgs["LogInToRhhcc"]],
+          },
+        ];
+      },
+    });
+
+    const setupServiceRegistryUrl = createCodeLenses({
+      model,
+      rootNode,
+      jsonPath: ["functions"],
+      positionLensAt: "begin",
+      commandDelegates: ({ position, node }) => {
+        if (node.type !== "array") {
+          return [];
+        }
+
+        // FIXME: tiago
+        // const user = SwfServiceCatalogSingleton.get().getUser();
+        // if (!user) {
+        //   return [];
+        // }
+        //
+        // const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+        // if (serviceRegistryUrl) {
+        //   return [];
+        // }
+
+        return [
+          {
+            name: "SetupServiceRegistryUrl",
+            title: `↪ Setup Service Registry URL...`,
+            args: [{ position, node } as SwfLanguageServiceCommandArgs["SetupServiceRegistryUrl"]],
+          },
+        ];
+      },
+    });
+
+    const refreshServiceRegistry = createCodeLenses({
+      model,
+      rootNode,
+      jsonPath: ["functions"],
+      positionLensAt: "begin",
+      commandDelegates: ({ position, node }) => {
+        if (node.type !== "array") {
+          return [];
+        }
+
+        // FIXME: tiago
+        // const user = SwfServiceCatalogSingleton.get().getUser();
+        // if (!user) {
+        //   return [];
+        // }
+        //
+        // const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
+        // if (!serviceRegistryUrl) {
+        //   return [];
+        // }
+
+        return [
+          {
+            name: "RefreshServiceCatalogFromRhhcc",
+            // FIXME: tiago
+            // title: `↺ Refresh Service Registry (${user.username})`,
+            title: `↺ Refresh Service Registry (tiagobento)`,
+            args: [{ position, node } as SwfLanguageServiceCommandArgs["RefreshServiceCatalogFromRhhcc"]],
+          },
+        ];
+      },
+    });
+
+    const displayRhhccIntegration = false; // FIXME: tiago channelType === ChannelType.VSCODE_DESKTOP && os === OperatingSystem.MACOS;
+
+    return [
+      ...(displayRhhccIntegration ? logInToRhhcc : []),
+      ...(displayRhhccIntegration ? setupServiceRegistryUrl : []),
+      ...(displayRhhccIntegration ? refreshServiceRegistry : []),
+      ...addFunction,
+    ];
   }
 }

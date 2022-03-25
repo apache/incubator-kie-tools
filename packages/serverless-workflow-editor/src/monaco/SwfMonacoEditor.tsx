@@ -22,7 +22,6 @@ import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { SwfServiceCatalogSingleton } from "../serviceCatalog";
 import { ServerlessWorkflowEditorChannelApi } from "../editor";
 
 interface Props {
@@ -38,12 +37,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 ) => {
   const container = useRef<HTMLDivElement>(null);
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
-  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
-  const [services] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_services);
-  const [user] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_user);
-  const [serviceRegistryUrl] = useSharedValue(
-    editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
-  );
+  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
@@ -55,11 +49,6 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 
     throw new Error(`Unsupported extension '${fileName}'`);
   }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
-
-  useEffect(() => {
-    SwfServiceCatalogSingleton.init(services, user, serviceRegistryUrl);
-    controller.forceRedraw();
-  }, [services, user, serviceRegistryUrl, controller]);
 
   useEffect(() => {
     if (!container.current) {
@@ -74,11 +63,11 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
     initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
-    initJsonCodeLenses(commands, channelType, editorEnvelopeCtx.operatingSystem);
+    initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
     // TODO: Add support to YAML
-    // initYamlCompletion(commands);
-    // initYamlWidgets(commands);
+    // initYamlCompletion(commands, editorEnvelopeCtx.channelApi);
+    // initYamlWidgets(commands, editorEnvelopeCtx.channelApi);
   }, [
     content,
     fileName,

@@ -19,6 +19,9 @@
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
     "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
   },
+  "dependencies": {
+    "@kie-tools/serverless-workflow-service-catalog": "0.0.0"
+  },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
     "vscode-languageserver-types": "^3.16.0"

@@ -19,7 +19,7 @@ import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as ls from "vscode-languageserver-types";
-import { SwfMonacoEditorCommandTypes } from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
+import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-language-service";
 
 export function initJsonCompletion(
   commandIds: SwfMonacoEditorInstance["commands"],
@@ -67,7 +67,7 @@ export function initJsonCompletion(
         insertText: c.insertText ?? c.textEdit?.newText ?? "",
         command: c.command
           ? {
-              id: commandIds[c.command.command as SwfMonacoEditorCommandTypes],
+              id: commandIds[c.command.command as SwfLanguageServiceCommandTypes],
               arguments: c.command.arguments,
               title: c.command.title,
             }

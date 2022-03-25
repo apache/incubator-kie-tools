@@ -15,7 +15,7 @@
  */
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { SwfMonacoEditorCommandIds } from "../editor/ServerlessWorkflowEditorEnvelopeApi";
+import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
@@ -40,7 +40,7 @@ export enum MonacoEditorOperation {
 }
 
 export interface SwfMonacoEditorInstance {
-  commands: SwfMonacoEditorCommandIds;
+  commands: SwfLanguageServiceCommandIds;
   instance: editor.IStandaloneCodeEditor;
 }
 
@@ -79,10 +79,6 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   }
 
   public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {
-    if (!container) {
-      throw new Error("We need a container to show the editor!");
-    }
-
     if (this.editor !== undefined) {
       this.setTheme(theme);
       return this.editor;
@@ -96,6 +92,8 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       fontSize: 12,
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
+
+    this.editor.updateOptions({ wordBasedSuggestions: false });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);

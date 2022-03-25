@@ -184,9 +184,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCompletionItems(args);
   }
 
-  public async kogitoSwfLanguageService__getCodeLenses(
-    textDocumentIdentifier: TextDocumentIdentifier
-  ): Promise<CodeLens[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(textDocumentIdentifier);
+  public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
   }
 }

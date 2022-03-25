@@ -4,9 +4,9 @@ import { openWidget } from "../widgets";
 import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
-  SwfMonacoEditorCommandArgs,
-  SwfMonacoEditorCommandIds,
-} from "../../../editor/ServerlessWorkflowEditorEnvelopeApi";
+  SwfLanguageServiceCommandArgs,
+  SwfLanguageServiceCommandIds,
+} from "@kie-tools/serverless-workflow-language-service";
 
 // Part of an example
 //
@@ -22,32 +22,32 @@ import {
 export function initAugmentationCommands(
   editorInstance: editor.IStandaloneCodeEditor,
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
-): SwfMonacoEditorCommandIds {
+): SwfLanguageServiceCommandIds {
   return {
     SetupServiceRegistryUrl: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["SetupServiceRegistryUrl"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["SetupServiceRegistryUrl"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistryUrl.send();
       }
     )!,
     ImportFunctionFromCompletionItem: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["ImportFunctionFromCompletionItem"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["ImportFunctionFromCompletionItem"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.containingService);
       }
     )!,
-    LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args: SwfMonacoEditorCommandArgs["LogInToRhhcc"]) => {
+    LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args: SwfLanguageServiceCommandArgs["LogInToRhhcc"]) => {
       channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();
     })!,
     RefreshServiceCatalogFromRhhcc: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["RefreshServiceCatalogFromRhhcc"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["RefreshServiceCatalogFromRhhcc"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
       }
     )!,
     OpenFunctionsCompletionItems: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsCompletionItems"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["OpenFunctionsCompletionItems"]) => {
         editorInstance.setPosition({
           lineNumber: args.newCursorPosition.line + 1,
           column: args.newCursorPosition.character + 1,
@@ -57,7 +57,7 @@ export function initAugmentationCommands(
     )!,
     OpenFunctionsWidget: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["OpenFunctionsWidget"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["OpenFunctionsWidget"]) => {
         openWidget(editorInstance, {
           position: new Position(args.position.line, args.position.character),
           widgetId: "swf.functions.widget",
@@ -87,7 +87,7 @@ export function initAugmentationCommands(
     )!,
     OpenStatesWidget: editorInstance.addCommand(
       0,
-      async (ctx, args: SwfMonacoEditorCommandArgs["OpenStatesWidget"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["OpenStatesWidget"]) => {
         openWidget(editorInstance, {
           position: new Position(args.position.line, args.position.character),
           widgetId: "swf.states.widget",

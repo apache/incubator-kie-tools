@@ -25,6 +25,8 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./confi
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 import { COMMAND_IDS } from "./commands";
+import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
+import * as ls from "vscode-languageserver-types";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -35,6 +37,7 @@ export function activate(context: vscode.ExtensionContext) {
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
   const configuration = new SwfVsCodeExtensionConfiguration();
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
+  const swfLanguageService = new SwfLanguageServiceChannelApiImpl();
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
@@ -53,9 +56,85 @@ export function activate(context: vscode.ExtensionContext) {
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
       configuration,
       rhhccAuthenticationStore,
+      swfLanguageService,
     }),
     backendProxy,
   });
+
+  context.subscriptions.push(
+    vscode.languages.registerCodeLensProvider(
+      { scheme: "file", language: "serverless-workflow" },
+      {
+        provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
+          const lsCodeLenses = await swfLanguageService.kogitoSwfLanguageService__getCodeLenses({
+            uri: document.uri.toString(),
+            content: document.getText(),
+          });
+
+          const vscodeCodeLenses: vscode.CodeLens[] = lsCodeLenses.map((c) => {
+            return new vscode.CodeLens(
+              new vscode.Range(
+                new vscode.Position(c.range.start.line, c.range.start.character),
+                new vscode.Position(c.range.end.line, c.range.end.character)
+              ),
+              c.command
+            );
+          });
+
+          return vscodeCodeLenses;
+        },
+      }
+    )
+  );
+
+  context.subscriptions.push(
+    vscode.languages.registerCompletionItemProvider(
+      { scheme: "file", language: "serverless-workflow" },
+      {
+        provideCompletionItems: async (
+          document: vscode.TextDocument,
+          position: vscode.Position,
+          token: vscode.CancellationToken,
+          context: vscode.CompletionContext
+        ) => {
+          const cursorWordRange = document.getWordRangeAtPosition(position);
+
+          const lsCompletionItems = await swfLanguageService.kogitoSwfLanguageService__getCompletionItems({
+            uri: document.uri.toString(),
+            content: document.getText(),
+            cursorPosition: position,
+            cursorWordRange: {
+              start: cursorWordRange?.start ?? position,
+              end: cursorWordRange?.end ?? position,
+            },
+          });
+
+          const vscodeCompletionItems: vscode.CompletionItem[] = lsCompletionItems.map((c) => {
+            const rangeStart = (c.textEdit as ls.TextEdit).range.start;
+            const rangeEnd = (c.textEdit as ls.TextEdit).range.end;
+            return {
+              kind: c.kind,
+              label: c.label,
+              sortText: c.sortText,
+              detail: c.detail,
+              filterText: c.filterText,
+              insertText: c.insertText ?? c.textEdit?.newText ?? "",
+              command: c.command,
+              range: new vscode.Range(
+                new vscode.Position(rangeStart.line, rangeStart.character),
+                new vscode.Position(rangeEnd.line, rangeEnd.character)
+              ),
+            };
+          });
+
+          return { items: vscodeCompletionItems };
+        },
+      },
+      ` `,
+      `:`,
+      `"`
+    )
+  );
 
   context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.loginToRhhcc, () => {

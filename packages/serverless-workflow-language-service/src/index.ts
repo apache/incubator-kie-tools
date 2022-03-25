@@ -15,6 +15,7 @@
  */
 
 import { CodeLens, CompletionItem, Position, Range, TextDocumentIdentifier } from "vscode-languageserver-types";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export interface SwfLanguageServiceChannelApi {
   kogitoSwfLanguageService__getCompletionItems(args: {
@@ -23,5 +24,32 @@ export interface SwfLanguageServiceChannelApi {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]>;
-  kogitoSwfLanguageService__getCodeLenses(textDocumentIdentifier: TextDocumentIdentifier): Promise<CodeLens[]>;
+
+  kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
+}
+
+export type SwfLanguageServiceCommandTypes =
+  | "LogInToRhhcc"
+  | "SetupServiceRegistryUrl"
+  | "RefreshServiceCatalogFromRhhcc"
+  | "ImportFunctionFromCompletionItem"
+  | "OpenFunctionsWidget"
+  | "OpenStatesWidget"
+  | "OpenFunctionsCompletionItems";
+
+export type SwfLanguageServiceCommandArgs = {
+  LogInToRhhcc: {};
+  SetupServiceRegistryUrl: {};
+  RefreshServiceCatalogFromRhhcc: {};
+  ImportFunctionFromCompletionItem: { containingService: SwfServiceCatalogService };
+  OpenFunctionsWidget: { position: Position };
+  OpenStatesWidget: { position: Position };
+  OpenFunctionsCompletionItems: { newCursorPosition: Position };
+};
+
+export type SwfLanguageServiceCommandIds = Record<SwfLanguageServiceCommandTypes, string>;
+
+export interface SwfLanguageServiceCommandExecution<T extends SwfLanguageServiceCommandTypes> {
+  name: T;
+  args: SwfLanguageServiceCommandArgs[T];
 }
