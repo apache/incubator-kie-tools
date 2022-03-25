@@ -1,3 +1,8 @@
+# 0.18.0 (alpha)
+
+- [KOGITO-6899](https://issues.redhat.com/browse/KOGITO-6899) - [SWF Editor] Integrate Service Catalog with Service Registries on Red Hat Hybrid Cloud Console
+- [KOGITO-6562](https://issues.redhat.com/browse/KOGITO-6562) - [SWF Editor] Make Service Catalog available through autocomplete
+
 # 0.17.0 (alpha)
 
 - [KOGITO-6554](https://issues.redhat.com/browse/KOGITO-6554) - Serverless Workflow Editor VS Code PoC (Milestone 0)

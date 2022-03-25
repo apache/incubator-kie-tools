@@ -28,7 +28,8 @@ import static org.appformer.client.context.Channel.DESKTOP;
 import static org.appformer.client.context.Channel.EMBEDDED;
 import static org.appformer.client.context.Channel.GITHUB;
 import static org.appformer.client.context.Channel.ONLINE;
-import static org.appformer.client.context.Channel.VSCODE;
+import static org.appformer.client.context.Channel.VSCODE_DESKTOP;
+import static org.appformer.client.context.Channel.VSCODE_WEB;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Mockito.when;
 
@@ -58,8 +59,14 @@ public class EditorReadOnlyProviderTest {
     }
 
     @Test
-    public void testIsReadOnlyDiagramWhenIsVsCode() {
-        when(contextProvider.getChannel()).thenReturn(VSCODE);
+    public void testIsReadOnlyDiagramWhenIsVsCodeDesktop() {
+        when(contextProvider.getChannel()).thenReturn(VSCODE_DESKTOP);
+        assertFalse(readOnlyProvider.isReadOnlyDiagram());
+    }
+
+    @Test
+    public void testIsReadOnlyDiagramWhenIsVsCodeWeb() {
+        when(contextProvider.getChannel()).thenReturn(VSCODE_WEB);
         assertFalse(readOnlyProvider.isReadOnlyDiagram());
     }
 

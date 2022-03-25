@@ -1,3 +1,12 @@
+# 0.18.0 (alpha)
+
+- [KOGITO-5735](https://issues.redhat.com/browse/KOGITO-5735) - Stunner - Provide an initial JS / TS API to interact with nodes and connectors
+- [KOGITO-6899](https://issues.redhat.com/browse/KOGITO-6899) - [SWF Editor] Integrate Service Catalog with Service Registries on Red Hat Hybrid Cloud Console
+- [KOGITO-6562](https://issues.redhat.com/browse/KOGITO-6562) - [SWF Editor] Make Service Catalog available through autocomplete
+- [KOGITO-6830](https://issues.redhat.com/browse/KOGITO-6830) - Remove `kie-soup-bom`dependency from the `stunner-editors` package
+- [KOGITO-6832](https://issues.redhat.com/browse/KOGITO-6832) - Stunner - Update Tooltip message for Priority property in Task
+- [KOGITO-6841](https://issues.redhat.com/browse/KOGITO-6841) - Remove `kie-parent` from the `stunner-editors` package
+
 # 0.17.0 (alpha)
 
 - [KOGITO-4936](https://issues.redhat.com/browse/KOGITO-4936) - [DMN Designer] React/GWT - Import Java classes as data objects on Kogito - UI component
