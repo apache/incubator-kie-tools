@@ -1433,6 +1433,23 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 <FlexItem>
                   <DeployToolbar editor={props.editor} workspace={workspace} />
                 </FlexItem>
+                <PromiseStateWrapper
+                  promise={workspaceOpenApiFilePromise}
+                  pending={<LoadingSpinner />}
+                  resolved={(file) => (
+                    <FlexItem>
+                      <Button isInline={true} variant={ButtonVariant.link} onClick={() => setSwaggerModalOpen(true)}>
+                        OpenAPI spec
+                      </Button>
+                      <SwaggerEditorModal
+                        workspaceFile={file}
+                        isOpen={swaggerModalOpen}
+                        workspaceName={workspace.descriptor.name}
+                        onClose={() => setSwaggerModalOpen(false)}
+                      />
+                    </FlexItem>
+                  )}
+                />
                 <FlexItem>
                   <Toolbar>
                     <ToolbarContent style={{ paddingRight: 0 }}>
@@ -1605,23 +1622,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarContent>
                   </Toolbar>
                 </FlexItem>
-                <PromiseStateWrapper
-                  promise={workspaceOpenApiFilePromise}
-                  pending={<LoadingSpinner />}
-                  resolved={(file) => (
-                    <FlexItem>
-                      <Button isInline={true} variant={ButtonVariant.link} onClick={() => setSwaggerModalOpen(true)}>
-                        OpenAPI spec
-                      </Button>
-                      <SwaggerEditorModal
-                        workspaceFile={file}
-                        isOpen={swaggerModalOpen}
-                        workspaceName={workspace.descriptor.name}
-                        onClose={() => setSwaggerModalOpen(false)}
-                      />
-                    </FlexItem>
-                  )}
-                />
               </Flex>
             </Flex>
           </PageSection>
