@@ -4,4 +4,5 @@ export const COMMAND_IDS = {
   removeServiceRegistryUrl: "extension.kogito.swf.removeServiceRegistryUrl",
   getPreviewSvg: "extension.kogito.swf.getPreviewSvg",
   silentlyGetPreviewSvg: "extension.kogito.swf.silentlyGenerateSvg",
+  swfLsCommand: "extension.kogito.swf.ls.command",
 };

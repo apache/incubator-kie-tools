@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, Range, TextDocumentIdentifier } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export interface SwfLanguageServiceChannelApi {
@@ -29,25 +29,29 @@ export interface SwfLanguageServiceChannelApi {
 }
 
 export type SwfLanguageServiceCommandTypes =
-  | "LogInToRhhcc"
-  | "SetupServiceRegistryUrl"
-  | "RefreshServiceCatalogFromRhhcc"
-  | "ImportFunctionFromCompletionItem"
-  | "OpenFunctionsWidget"
-  | "OpenStatesWidget"
-  | "OpenFunctionsCompletionItems";
+  | "swf.ls.commands.LogInToRhhcc"
+  | "swf.ls.commands.SetupServiceRegistryUrl"
+  | "swf.ls.commands.RefreshServiceCatalogFromRhhcc"
+  | "swf.ls.commands.ImportFunctionFromCompletionItem"
+  | "swf.ls.commands.OpenFunctionsWidget"
+  | "swf.ls.commands.OpenStatesWidget"
+  | "swf.ls.commands.OpenFunctionsCompletionItems";
 
 export type SwfLanguageServiceCommandArgs = {
-  LogInToRhhcc: {};
-  SetupServiceRegistryUrl: {};
-  RefreshServiceCatalogFromRhhcc: {};
-  ImportFunctionFromCompletionItem: { containingService: SwfServiceCatalogService };
-  OpenFunctionsWidget: { position: Position };
-  OpenStatesWidget: { position: Position };
-  OpenFunctionsCompletionItems: { newCursorPosition: Position };
+  "swf.ls.commands.LogInToRhhcc": {};
+  "swf.ls.commands.SetupServiceRegistryUrl": {};
+  "swf.ls.commands.RefreshServiceCatalogFromRhhcc": {};
+  "swf.ls.commands.ImportFunctionFromCompletionItem": { containingService: SwfServiceCatalogService };
+  "swf.ls.commands.OpenFunctionsWidget": { position: Position };
+  "swf.ls.commands.OpenStatesWidget": { position: Position };
+  "swf.ls.commands.OpenFunctionsCompletionItems": { newCursorPosition: Position };
 };
 
 export type SwfLanguageServiceCommandIds = Record<SwfLanguageServiceCommandTypes, string>;
+
+export type SwfLanguageServiceCommandHandlers = {
+  [K in SwfLanguageServiceCommandTypes]: (args: SwfLanguageServiceCommandArgs[K]) => any;
+};
 
 export interface SwfLanguageServiceCommandExecution<T extends SwfLanguageServiceCommandTypes> {
   name: T;

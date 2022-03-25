@@ -27,6 +27,10 @@ import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry"
 import { COMMAND_IDS } from "./commands";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import * as ls from "vscode-languageserver-types";
+import {
+  SwfLanguageServiceCommandHandlers,
+  SwfLanguageServiceCommandTypes,
+} from "@kie-tools/serverless-workflow-language-service";
 
 let backendProxy: VsCodeBackendProxy;
 
@@ -64,6 +68,51 @@ export function activate(context: vscode.ExtensionContext) {
     backendProxy,
   });
 
+  const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
+    "swf.ls.commands.ImportFunctionFromCompletionItem": (args) => {
+      // FIXME: tiago
+      // Copy from kogitoSwfServiceCatalog_importFunctionFromCompletionItem
+      console.error(args);
+    },
+    "swf.ls.commands.RefreshServiceCatalogFromRhhcc": (args) => {
+      // FIXME: tiago
+      // Copy from kogitoSwfServiceCatalog_refresh
+      console.error(args);
+    },
+    "swf.ls.commands.SetupServiceRegistryUrl": (args) => {
+      vscode.commands.executeCommand(COMMAND_IDS.setupServiceRegistryUrl, args);
+    },
+    "swf.ls.commands.LogInToRhhcc": (args) => {
+      vscode.commands.executeCommand(COMMAND_IDS.loginToRhhcc, args);
+    },
+    "swf.ls.commands.OpenFunctionsCompletionItems": (args) => {
+      if (!vscode.window.activeTextEditor) {
+        return;
+      }
+
+      vscode.window.activeTextEditor.selection = new vscode.Selection(
+        new vscode.Position(args.newCursorPosition.line, args.newCursorPosition.character),
+        new vscode.Position(args.newCursorPosition.line, args.newCursorPosition.character)
+      );
+
+      vscode.commands.executeCommand("editor.action.triggerSuggest");
+    },
+    "swf.ls.commands.OpenFunctionsWidget": (args) => {
+      console.info("No op");
+    },
+    "swf.ls.commands.OpenStatesWidget": (args) => {
+      console.info("No op");
+    },
+  };
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_IDS.swfLsCommand, (args: ls.Command) => {
+      const commandArgs = args.arguments ?? [];
+      const commandHandler = swfLsCommandHandlers[args.command as SwfLanguageServiceCommandTypes];
+      (commandHandler as (...args: any[]) => any)?.(...commandArgs);
+    })
+  );
+
   context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(
       { scheme: "file", language: "serverless-workflow-json" },
@@ -81,6 +130,12 @@ export function activate(context: vscode.ExtensionContext) {
                 new vscode.Position(c.range.end.line, c.range.end.character)
               ),
               c.command
+                ? {
+                    command: COMMAND_IDS.swfLsCommand,
+                    title: c.command.title,
+                    arguments: [c.command],
+                  }
+                : undefined
             );
           });
 
@@ -122,7 +177,13 @@ export function activate(context: vscode.ExtensionContext) {
               detail: c.detail,
               filterText: c.filterText,
               insertText: c.insertText ?? c.textEdit?.newText ?? "",
-              command: c.command,
+              command: c.command
+                ? {
+                    command: COMMAND_IDS.swfLsCommand,
+                    title: c.command.title ?? "",
+                    arguments: [c.command],
+                  }
+                : undefined,
               range: new vscode.Range(
                 new vscode.Position(rangeStart.line, rangeStart.character),
                 new vscode.Position(rangeEnd.line, rangeEnd.character)

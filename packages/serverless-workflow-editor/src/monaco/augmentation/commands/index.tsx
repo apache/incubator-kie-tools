@@ -24,30 +24,33 @@ export function initAugmentationCommands(
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
 ): SwfLanguageServiceCommandIds {
   return {
-    SetupServiceRegistryUrl: editorInstance.addCommand(
+    "swf.ls.commands.SetupServiceRegistryUrl": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["SetupServiceRegistryUrl"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.SetupServiceRegistryUrl"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistryUrl.send();
       }
     )!,
-    ImportFunctionFromCompletionItem: editorInstance.addCommand(
+    "swf.ls.commands.ImportFunctionFromCompletionItem": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["ImportFunctionFromCompletionItem"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.ImportFunctionFromCompletionItem"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.containingService);
       }
     )!,
-    LogInToRhhcc: editorInstance.addCommand(0, async (ctx, args: SwfLanguageServiceCommandArgs["LogInToRhhcc"]) => {
-      channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();
-    })!,
-    RefreshServiceCatalogFromRhhcc: editorInstance.addCommand(
+    "swf.ls.commands.LogInToRhhcc": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["RefreshServiceCatalogFromRhhcc"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.LogInToRhhcc"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();
+      }
+    )!,
+    "swf.ls.commands.RefreshServiceCatalogFromRhhcc": editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceCatalogFromRhhcc"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
       }
     )!,
-    OpenFunctionsCompletionItems: editorInstance.addCommand(
+    "swf.ls.commands.OpenFunctionsCompletionItems": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["OpenFunctionsCompletionItems"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsCompletionItems"]) => {
         editorInstance.setPosition({
           lineNumber: args.newCursorPosition.line + 1,
           column: args.newCursorPosition.character + 1,
@@ -55,9 +58,9 @@ export function initAugmentationCommands(
         editorInstance.trigger("OpenFunctionsCompletionItemsAtTheBottom", "editor.action.triggerSuggest", {});
       }
     )!,
-    OpenFunctionsWidget: editorInstance.addCommand(
+    "swf.ls.commands.OpenFunctionsWidget": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["OpenFunctionsWidget"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsWidget"]) => {
         openWidget(editorInstance, {
           position: new Position(args.position.line, args.position.character),
           widgetId: "swf.functions.widget",
@@ -85,9 +88,9 @@ export function initAugmentationCommands(
         });
       }
     )!,
-    OpenStatesWidget: editorInstance.addCommand(
+    "swf.ls.commands.OpenStatesWidget": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["OpenStatesWidget"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenStatesWidget"]) => {
         openWidget(editorInstance, {
           position: new Position(args.position.line, args.position.character),
           widgetId: "swf.states.widget",

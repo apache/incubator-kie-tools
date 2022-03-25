@@ -53,8 +53,8 @@ const completions = new Map<
                 type: swfServiceCatalogFunc.type,
               };
 
-              const command: SwfLanguageServiceCommandExecution<"ImportFunctionFromCompletionItem"> = {
-                name: "ImportFunctionFromCompletionItem",
+              const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportFunctionFromCompletionItem"> = {
+                name: "swf.ls.commands.ImportFunctionFromCompletionItem",
                 args: {
                   containingService: swfServiceCatalogService,
                 },
@@ -396,9 +396,11 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
 
         return [
           {
-            name: "OpenFunctionsCompletionItems",
+            name: "swf.ls.commands.OpenFunctionsCompletionItems",
             title: `+ Add function...`,
-            args: [{ newCursorPosition } as SwfLanguageServiceCommandArgs["OpenFunctionsCompletionItems"]],
+            args: [
+              { newCursorPosition } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsCompletionItems"],
+            ],
           },
         ];
       },
@@ -421,9 +423,9 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
 
         return [
           {
-            name: "LogInToRhhcc",
+            name: "swf.ls.commands.LogInToRhhcc",
             title: `↪ Log in to Red Hat Hybrid Cloud Console...`,
-            args: [{ position } as SwfLanguageServiceCommandArgs["LogInToRhhcc"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.LogInToRhhcc"]],
           },
         ];
       },
@@ -451,9 +453,9 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
 
         return [
           {
-            name: "SetupServiceRegistryUrl",
+            name: "swf.ls.commands.SetupServiceRegistryUrl",
             title: `↪ Setup Service Registry URL...`,
-            args: [{ position } as SwfLanguageServiceCommandArgs["SetupServiceRegistryUrl"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.SetupServiceRegistryUrl"]],
           },
         ];
       },
@@ -481,9 +483,9 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
 
         return [
           {
-            name: "RefreshServiceCatalogFromRhhcc",
+            name: "swf.ls.commands.RefreshServiceCatalogFromRhhcc",
             title: `↺ Refresh Service Registry (${userName})`,
-            args: [{ position } as SwfLanguageServiceCommandArgs["RefreshServiceCatalogFromRhhcc"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceCatalogFromRhhcc"]],
           },
         ];
       },
