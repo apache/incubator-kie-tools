@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { dirname } from "path";
 import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
@@ -56,6 +57,7 @@ export class CreateBuild extends ResourceFetch {
   }
 
   protected async requestBody(): Promise<string | undefined> {
+    const modelPath = `${this.PROJECT_METAINF_RESOURCES}/${this.args.file.name}`;
     return `
       kind: Build
       apiVersion: build.openshift.io/v1
@@ -98,7 +100,8 @@ export class CreateBuild extends ResourceFetch {
           dockerfile: |
             FROM ${this.BASE_IMAGE}
             ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"
-            RUN echo -e $'${this.args.file.content}' > '${this.PROJECT_METAINF_RESOURCES}/${this.args.file.name}' \
+            RUN mkdir -p '${dirname(modelPath)}' \
+                && echo -e $'${this.args.file.content}' > '${modelPath}' \
                 && ${this.MVNW_PATH} clean package -B -ntp -f ${this.POM_PATH} \
                 && cp ${this.QUARKUS_APP_FOLDER}/*.jar ${this.DEPLOYMENTS_FOLDER} \
                 && cp -R ${this.QUARKUS_APP_FOLDER}/lib/ ${this.DEPLOYMENTS_FOLDER} \
