@@ -119,7 +119,7 @@ export function ServerlessWorkflowList() {
       <EmptyState>
         <EmptyStateIcon icon={PlusCircleIcon} />
         <Title headingLevel="h4" size="lg">
-          Your deployed Serverless Workflows are shown here
+          Your Serverless Workflows are shown here
         </Title>
         <EmptyStateBody>
           For help getting started, access the <a>quick start guide</a>.

@@ -42,7 +42,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
     const resourceName = await openshift.deploy({
       openShiftConfig: settings.openshift.config,
       workflow: {
-        name: props.workspace.descriptor.name ?? "workflow",
+        name: (props.workspace.descriptor.name ?? "workflow") + ".sw.json",
         content: content,
       },
       kafkaConfig: settings.apacheKafka.config,

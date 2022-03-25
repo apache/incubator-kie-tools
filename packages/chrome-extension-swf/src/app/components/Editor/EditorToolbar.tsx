@@ -665,14 +665,14 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             {"Current file's SVG"}
           </DropdownItem>
         )}
-        <DropdownItem
+        {/* <DropdownItem
           onClick={downloadWorkspaceZip}
           key={"download-zip-item"}
           description={`A zip file including all files will be downloaded`}
           icon={<FolderIcon />}
         >
           All files
-        </DropdownItem>
+        </DropdownItem> */}
       </DropdownGroup>,
       ...(workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL ||
       workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
@@ -733,7 +733,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       props.workspaceFile,
       shouldIncludeDownloadSvgDropdownItem,
       downloadSvg,
-      downloadWorkspaceZip,
       i18n,
       canCreateGitHubGist,
       canCreateGitRepository,
@@ -1431,6 +1430,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 flexWrap={{ default: "nowrap" }}
                 grow={{ default: "grow" }}
               >
+                <FlexItem>
+                  <DeployToolbar editor={props.editor} workspace={workspace} />
+                </FlexItem>
                 <FlexItem>
                   <Toolbar>
                     <ToolbarContent style={{ paddingRight: 0 }}>

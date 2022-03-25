@@ -75,7 +75,7 @@ function init(globals: GlobalProps) {
     return;
   }
 
-  throw new Error(`Unknown OpenShiftPageType ${pageType}`);
+  throw new Error(`Unknown RedHatConsolePageType ${pageType}`);
 }
 
 function unmountPreviouslyRenderedFeatures(id: string, logger: Logger, dependencies: Dependencies) {
