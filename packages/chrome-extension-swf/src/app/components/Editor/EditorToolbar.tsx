@@ -309,7 +309,7 @@ export function EditorToolbar(props: Props) {
   }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data, githubAuthInfo]);
 
   const downloadSvg = useCallback(() => {
-    props.editor?.getPreview().then((previewSvg: BlobPart) => {
+    props.editor?.getPreview().then((previewSvg) => {
       if (downloadPreviewRef.current && previewSvg) {
         const fileBlob = new Blob([previewSvg], { type: "image/svg+xml" });
         downloadPreviewRef.current.href = URL.createObjectURL(fileBlob);
