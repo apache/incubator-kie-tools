@@ -37,14 +37,17 @@ export function activate(context: vscode.ExtensionContext) {
   backendProxy = new VsCodeBackendProxy(context, backendI18n);
   const configuration = new SwfVsCodeExtensionConfiguration();
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
-  const swfLanguageService = new SwfLanguageServiceChannelApiImpl();
+  const swfLanguageService = new SwfLanguageServiceChannelApiImpl({
+    configuration,
+    rhhccAuthenticationStore,
+  });
 
   KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsServerlessWorkflow",
-    generateSvgCommandId: "extension.kogito.swf.getPreviewSvg",
-    silentlyGenerateSvgCommandId: "extension.kogito.swf.silentlyGenerateSvg",
+    generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
+    silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "sw",
@@ -63,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(
-      { scheme: "file", language: "serverless-workflow" },
+      { scheme: "file", language: "serverless-workflow-json" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
           const lsCodeLenses = await swfLanguageService.kogitoSwfLanguageService__getCodeLenses({
@@ -89,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.languages.registerCompletionItemProvider(
-      { scheme: "file", language: "serverless-workflow" },
+      { scheme: "file", language: "serverless-workflow-json" },
       {
         provideCompletionItems: async (
           document: vscode.TextDocument,

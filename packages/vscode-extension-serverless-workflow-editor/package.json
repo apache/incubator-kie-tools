@@ -41,7 +41,8 @@
   ],
   "activationEvents": [
     "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow",
-    "onLanguage:serverless-workflow"
+    "onLanguage:serverless-workflow-json",
+    "onLanguage:serverless-workflow-yaml"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -62,20 +63,50 @@
     ],
     "languages": [
       {
-        "id": "serverless-workflow",
+        "id": "serverless-workflow-json",
         "extensions": [
-          ".sw.json",
-          ".sw.yaml",
-          ".sw.yml"
+          ".sw.json"
         ],
         "aliases": [
-          "Serverless Workflow",
-          "sw.json",
+          "Serverless Workflow (JSON)",
+          "sw.json"
+        ],
+        "configuration": "./languageConfiguration/jsonLanguageConfiguration.json"
+      },
+      {
+        "id": "serverless-workflow-yaml",
+        "extensions": [
+          ".sw.yml",
+          ".sw.yaml"
+        ],
+        "aliases": [
+          "Serverless Workflow (YAML)",
           "sw.yaml",
           "sw.yml"
-        ]
+        ],
+        "configuration": "./languageConfiguration/yamlLanguageConfiguration.json"
       }
     ],
+    "grammars": [
+      {
+        "language": "serverless-workflow-json",
+        "scopeName": "source.json",
+        "path": "./syntaxes/JSON.tmLanguage.json"
+      },
+      {
+        "language": "serverless-workflow-yaml",
+        "scopeName": "source.yaml",
+        "path": "./syntaxes/YAML.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "[serverless-workflow-json]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[serverless-workflow-yaml]": {
+        "editor.wordBasedSuggestions": false
+      }
+    },
     "configuration": {
       "title": "Serverless Workflow Editor",
       "properties": {

@@ -46,7 +46,7 @@ import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
 import * as vscode from "vscode";
-import { CompletionItem, CodeLens, TextDocumentIdentifier, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;

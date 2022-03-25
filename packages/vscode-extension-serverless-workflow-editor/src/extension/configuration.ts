@@ -1,6 +1,6 @@
 import {
-  getInterpolatedConfigurationValue,
   configurationTokenKeys,
+  getInterpolatedConfigurationValue,
 } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import * as vscode from "vscode";
 

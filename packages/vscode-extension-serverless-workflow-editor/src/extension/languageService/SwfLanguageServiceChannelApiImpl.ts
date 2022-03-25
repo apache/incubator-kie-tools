@@ -21,6 +21,9 @@ import {
   SwfServiceCatalogService,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as swfModelQueries from "./modelQueries";
+import * as vscode from "vscode";
+import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
+import { SwfVsCodeExtensionConfiguration } from "../configuration";
 
 const completions = new Map<
   jsonc.JSONPath,
@@ -321,13 +324,19 @@ export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath
 }
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
+  constructor(
+    private readonly args: {
+      rhhccAuthenticationStore: RhhccAuthenticationStore;
+      configuration: SwfVsCodeExtensionConfiguration;
+    }
+  ) {}
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    const model = TextDocument.create(args.uri, "json", 0, args.content);
+    const model = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
     const rootNode = jsonc.parseTree(args.content);
     if (!rootNode) {
       return [];
@@ -366,7 +375,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    const model = TextDocument.create(args.uri, "json", 0, args.content);
+    const model = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
 
     const rootNode = jsonc.parseTree(model.getText());
     if (!rootNode) {
@@ -405,17 +414,16 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
           return [];
         }
 
-        // FIXME: tiago
-        // const user = SwfServiceCatalogSingleton.get().getUser();
-        // if (user) {
-        //   return [];
-        // }
+        const userName = this.args.rhhccAuthenticationStore.session?.account.label;
+        if (userName) {
+          return [];
+        }
 
         return [
           {
             name: "LogInToRhhcc",
             title: `↪ Log in to Red Hat Hybrid Cloud Console...`,
-            args: [{ position, node } as SwfLanguageServiceCommandArgs["LogInToRhhcc"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs["LogInToRhhcc"]],
           },
         ];
       },
@@ -431,22 +439,21 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
           return [];
         }
 
-        // FIXME: tiago
-        // const user = SwfServiceCatalogSingleton.get().getUser();
-        // if (!user) {
-        //   return [];
-        // }
-        //
-        // const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
-        // if (serviceRegistryUrl) {
-        //   return [];
-        // }
+        const userName = this.args.rhhccAuthenticationStore.session?.account.label;
+        if (!userName) {
+          return [];
+        }
+
+        const serviceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
+        if (serviceRegistryUrl) {
+          return [];
+        }
 
         return [
           {
             name: "SetupServiceRegistryUrl",
             title: `↪ Setup Service Registry URL...`,
-            args: [{ position, node } as SwfLanguageServiceCommandArgs["SetupServiceRegistryUrl"]],
+            args: [{ position } as SwfLanguageServiceCommandArgs["SetupServiceRegistryUrl"]],
           },
         ];
       },
@@ -462,30 +469,27 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
           return [];
         }
 
-        // FIXME: tiago
-        // const user = SwfServiceCatalogSingleton.get().getUser();
-        // if (!user) {
-        //   return [];
-        // }
-        //
-        // const serviceRegistryUrl = SwfServiceCatalogSingleton.get().getServiceRegistryUrl();
-        // if (!serviceRegistryUrl) {
-        //   return [];
-        // }
+        const userName = this.args.rhhccAuthenticationStore.session?.account.label;
+        if (!userName) {
+          return [];
+        }
+
+        const serviceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
+        if (!serviceRegistryUrl) {
+          return [];
+        }
 
         return [
           {
             name: "RefreshServiceCatalogFromRhhcc",
-            // FIXME: tiago
-            // title: `↺ Refresh Service Registry (${user.username})`,
-            title: `↺ Refresh Service Registry (tiagobento)`,
-            args: [{ position, node } as SwfLanguageServiceCommandArgs["RefreshServiceCatalogFromRhhcc"]],
+            title: `↺ Refresh Service Registry (${userName})`,
+            args: [{ position } as SwfLanguageServiceCommandArgs["RefreshServiceCatalogFromRhhcc"]],
           },
         ];
       },
     });
 
-    const displayRhhccIntegration = false; // FIXME: tiago channelType === ChannelType.VSCODE_DESKTOP && os === OperatingSystem.MACOS;
+    const displayRhhccIntegration = vscode.env.uiKind === vscode.UIKind.Desktop;
 
     return [
       ...(displayRhhccIntegration ? logInToRhhcc : []),
