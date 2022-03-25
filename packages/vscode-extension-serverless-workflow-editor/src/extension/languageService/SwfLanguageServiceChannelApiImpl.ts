@@ -489,6 +489,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
       },
     });
 
+    // FIXME: Tiago: This should take the OS into account as well. RHHCC integration only works on macOS.
     const displayRhhccIntegration = vscode.env.uiKind === vscode.UIKind.Desktop;
 
     return [
