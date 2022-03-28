@@ -60,7 +60,7 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
         id: "swf",
         source: "web",
       },
-      "Serverless Workflow",
+      "Serverless Workflow | Red Hat OpenShift Application Services",
       "https://console.redhat.com/application-services/swf/#/"
     );
 

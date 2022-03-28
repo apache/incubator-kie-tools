@@ -153,17 +153,3 @@ export function ApacheKafkaSettingsTab() {
     </Page>
   );
 }
-
-export function obfuscate(token?: string) {
-  if (!token) {
-    return undefined;
-  }
-
-  if (token.length <= 8) {
-    return token;
-  }
-
-  const stars = new Array(token.length - 8).join("*");
-  const pieceToObfuscate = token.substring(4, token.length - 4);
-  return token.replace(pieceToObfuscate, stars);
-}

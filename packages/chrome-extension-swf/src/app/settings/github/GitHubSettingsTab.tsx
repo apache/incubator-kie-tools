@@ -51,7 +51,6 @@ export function GitHubSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
-  const [githubSignInOption, setGitHubSignInOption] = useState(GitHubSignInOption.PERSONAL_ACCESS_TOKEN);
   const [potentialGitHubToken, setPotentialGitHubToken] = useState<string | undefined>(undefined);
   const [isGitHubTokenValid, setIsGitHubTokenValid] = useState(true);
 
@@ -154,58 +153,49 @@ export function GitHubSettingsTab() {
         </PageSection>
       )}
       {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
-        <>
-          <PageSection>
-            {githubSignInOption == GitHubSignInOption.PERSONAL_ACCESS_TOKEN && (
-              <>
-                <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-                  <>
-                    <p>
-                      <span className="pf-u-mr-sm">Disclaimer</span>
-                      <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-                        Learn more
-                        <ExternalLinkAltIcon className="pf-u-mx-sm" />
-                      </a>
-                    </p>
-                  </>
-                  <br />
-                  <h3>
-                    <a href={GITHUB_TOKENS_URL} target={"_blank"}>
-                      Create a new token
-                      <ExternalLinkAltIcon className="pf-u-mx-sm" />
-                    </a>
-                  </h3>
-                  <br />
-                  <Form>
-                    <FormGroup
-                      isRequired={true}
-                      helperTextInvalid={githubTokenHelperText}
-                      validated={githubTokenValidated}
-                      label={"Token"}
-                      fieldId={"github-pat"}
-                      helperText={"Your token must include the 'repo' scope."}
-                    >
-                      <InputGroup>
-                        <TextInput
-                          autoComplete={"off"}
-                          id="token-input"
-                          name="tokenInput"
-                          aria-describedby="token-text-input-helper"
-                          placeholder={"Paste your GitHub token here"}
-                          maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                          validated={githubTokenValidated}
-                          value={githubTokenToDisplay}
-                          onPaste={onPasteGitHubToken}
-                          autoFocus={true}
-                        />
-                      </InputGroup>
-                    </FormGroup>
-                  </Form>
-                </PageSection>
-              </>
-            )}
-          </PageSection>
-        </>
+        <PageSection>
+          <>
+            <p>
+              <span className="pf-u-mr-sm">Disclaimer</span>
+              <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
+                Learn more
+                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              </a>
+            </p>
+          </>
+          <br />
+          <h3>
+            <a href={GITHUB_TOKENS_URL} target={"_blank"}>
+              Create a new token
+              <ExternalLinkAltIcon className="pf-u-mx-sm" />
+            </a>
+          </h3>
+          <br />
+          <Form>
+            <FormGroup
+              isRequired={true}
+              helperTextInvalid={githubTokenHelperText}
+              validated={githubTokenValidated}
+              label={"Token"}
+              fieldId={"github-pat"}
+              helperText={"Your token must include the 'repo' scope."}
+            >
+              <InputGroup>
+                <TextInput
+                  autoComplete={"off"}
+                  id="token-input"
+                  name="tokenInput"
+                  aria-describedby="token-text-input-helper"
+                  placeholder={"Paste your GitHub token here"}
+                  maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                  validated={githubTokenValidated}
+                  value={githubTokenToDisplay}
+                  onPaste={onPasteGitHubToken}
+                />
+              </InputGroup>
+            </FormGroup>
+          </Form>
+        </PageSection>
       )}
     </Page>
   );
