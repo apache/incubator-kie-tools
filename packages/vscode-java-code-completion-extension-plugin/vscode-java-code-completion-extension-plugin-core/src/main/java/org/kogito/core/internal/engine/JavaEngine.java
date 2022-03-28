@@ -77,7 +77,6 @@ public class JavaEngine {
     protected int getEndOfLinePosition(String content, int lineNumber) {
         String[] split = content.split("\n");
         JavaLanguageServerPlugin.logInfo(split[lineNumber]);
-        System.out.println("Line: " + split[lineNumber]);
         return split[lineNumber].length();
     }
 

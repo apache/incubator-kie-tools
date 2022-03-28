@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/**
+ * It remove the class package and the generic type (if present)
+ * @param javaClassName
+ */
 export const getJavaClassSimpleName = (javaClassName: string) => {
-  return javaClassName.split(".").pop()!;
+  return javaClassName.split(".").pop()!.split("<")[0]!;
 };

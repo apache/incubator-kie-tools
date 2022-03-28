@@ -55,13 +55,15 @@ export const ImportJavaClassesWizardSecondStep = ({
         javaCodeCompletionService
           .getFields(className)
           .then((javaCodeCompletionFields) => {
-            const retrievedFields = javaCodeCompletionFields.map((javaCodeCompletionField) =>
-              generateJavaClassField(
-                javaCodeCompletionField.accessor,
-                javaCodeCompletionField.fqcn,
-                selectedJavaClasses
-              )
-            );
+            const retrievedFields = javaCodeCompletionFields
+              .filter((javaCodeCompletionField) => javaCodeCompletionField.type !== "void")
+              .map((javaCodeCompletionField) =>
+                generateJavaClassField(
+                  javaCodeCompletionField.accessor,
+                  javaCodeCompletionField.type,
+                  selectedJavaClasses
+                )
+              );
             retrievedFields.sort((a, b) => (a.name < b.name ? -1 : 1));
             onSelectedJavaClassedFieldsLoaded(className, retrievedFields);
           })

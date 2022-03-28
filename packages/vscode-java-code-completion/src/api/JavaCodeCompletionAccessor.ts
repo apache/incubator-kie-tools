@@ -17,4 +17,5 @@
 export interface JavaCodeCompletionAccessor {
   fqcn: string;
   accessor: string;
+  type: string;
 }

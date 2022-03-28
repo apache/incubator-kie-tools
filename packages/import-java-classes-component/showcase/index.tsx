@@ -41,22 +41,22 @@ const Showcase: React.FunctionComponent = () => {
 
   const getJavaCodeCompletionFieldsMock = async (className: string) => {
     const bookClassFieldsList = [
-      { fqcn: "org.kie.test.kogito.Author", accessor: "author" },
-      { fqcn: "java.lang.String", accessor: "title" },
-      { fqcn: "java.lang.Integer", accessor: "year" },
-      { fqcn: "org.kie.test.kogito.Boom", accessor: "boom" },
+      { fqcn: "com.Book", accessor: "author", type: "org.kie.test.kogito.Author" },
+      { fqcn: "com.Book", accessor: "title", type: "java.lang.String" },
+      { fqcn: "com.Book", accessor: "year", type: "java.lang.Integer" },
+      { fqcn: "com.Book", accessor: "boom", type: "org.kie.test.kogito.Boom" },
     ];
     const boomClassFieldsList = [
-      { fqcn: "java.util.Date", accessor: "time" },
-      { fqcn: "java.lang.Boolean", accessor: "big" },
-      { fqcn: "java.lang.String", accessor: "color" },
-      { fqcn: "java.time.Duration", accessor: "countdown" },
+      { fqcn: "com.Boom", accessor: "time", type: "java.util.Date" },
+      { fqcn: "com.Boom", accessor: "big", type: "java.lang.Boolean" },
+      { fqcn: "com.Boom", accessor: "color", type: "java.lang.String" },
+      { fqcn: "com.Boom", accessor: "countdown", type: "java.time.Duration" },
     ];
     const authorClassFieldsList = [
-      { fqcn: "int", accessor: "age" },
-      { fqcn: "java.lang.String", accessor: "name" },
-      { fqcn: "java.lang.String", accessor: "color" },
-      { fqcn: "java.time.Duration", accessor: "countdown" },
+      { fqcn: "com.Author", accessor: "age", type: "int" },
+      { fqcn: "com.Author", accessor: "name", type: "java.lang.String" },
+      { fqcn: "com.Author", accessor: "color", type: "java.lang.String" },
+      { fqcn: "com.Author", accessor: "countdown", type: "java.time.Duration" },
     ];
 
     await delay();
