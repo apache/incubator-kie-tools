@@ -214,7 +214,7 @@ export function SettingsContextProvider(props: any) {
     readServiceAccountConfigCookie()
   );
 
-  // service account
+  // service registry
   const [serviceRegistryConfig, setServiceRegistryConfig] = useState<ServiceRegistrySettingsConfig>(
     readServiceRegistryConfigCookie()
   );
@@ -302,15 +302,11 @@ export function SettingsContextProvider(props: any) {
   return (
     <SettingsContext.Provider value={value}>
       <SettingsDispatchContext.Provider value={dispatch}>
-        {githubAuthStatus !== AuthStatus.LOADING && (
-          <>
-            <Drawer title="Settings" isExpanded={isOpen}>
-              <DrawerContent panelContent={panelContent}>
-                <DrawerContentBody>{props.children}</DrawerContentBody>
-              </DrawerContent>
-            </Drawer>
-          </>
-        )}
+        <Drawer title="Settings" isExpanded={isOpen}>
+          <DrawerContent panelContent={panelContent}>
+            <DrawerContentBody>{props.children}</DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
       </SettingsDispatchContext.Provider>
     </SettingsContext.Provider>
   );

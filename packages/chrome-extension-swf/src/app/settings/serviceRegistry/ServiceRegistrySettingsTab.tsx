@@ -49,17 +49,17 @@ export function ServiceRegistrySettingsTab() {
       <PageSection>
         <Form>
           <TextContent>
-            <Text component={TextVariants.h3}>Service Account</Text>
+            <Text component={TextVariants.h3}>Service Registry</Text>
           </TextContent>
           <FormGroup
-            label={"Client ID"}
+            label={"Core Registry Api"}
             labelIcon={
-              <Popover bodyContent={"Client ID"}>
+              <Popover bodyContent={"Core Registry Api"}>
                 <button
                   type="button"
-                  aria-label="More info for client id field"
+                  aria-label="More info for core registry api field"
                   onClick={(e) => e.preventDefault()}
-                  aria-describedby="client-id-field"
+                  aria-describedby="core-registry-api-field"
                   className="pf-c-form__group-label-help"
                 >
                   <HelpIcon noVerticalAlign />
@@ -67,7 +67,7 @@ export function ServiceRegistrySettingsTab() {
               </Popover>
             }
             isRequired
-            fieldId="client-id-field"
+            fieldId="core-registry-api-field"
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
@@ -75,14 +75,14 @@ export function ServiceRegistrySettingsTab() {
                 autoComplete={"off"}
                 isRequired
                 type="text"
-                id="client-id-field"
-                name="client-id-field"
-                aria-label="Client ID field"
-                aria-describedby="client-id-field-helper"
+                id="core-registry-api-field"
+                name="core-registry-api-field"
+                aria-label="Core Registry API field"
+                aria-describedby="core-registry-api-field-helper"
                 value={settings.serviceRegistry.config.coreRegistryApi}
                 onChange={onCoreRegistryApiChanged}
                 tabIndex={6}
-                data-testid="client-id-text-field"
+                data-testid="core-registry-api-text-field"
               />
               <InputGroupText>
                 <Button isSmall variant="plain" aria-label="Clear client id button" onClick={onClearCoreRegistryApi}>

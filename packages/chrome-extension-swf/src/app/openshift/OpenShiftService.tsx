@@ -160,7 +160,7 @@ export class OpenShiftService {
       rollbacks.slice(--rollbacksCount)
     );
 
-    if (!args.kafkaConfig) {
+    if (!args.kafkaConfig || !args.serviceAccountConfig) {
       // Conclude the flow (do not create kafka resources)
       return resourceName;
     }

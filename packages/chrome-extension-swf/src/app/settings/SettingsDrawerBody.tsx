@@ -21,6 +21,7 @@ import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
 import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
+import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
 
 export enum SettingsTabs {
   GITHUB = "github",
@@ -58,16 +59,16 @@ export function SettingsDrawerBody() {
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.SERVICE_ACCOUNT}
-        title={<TabTitleText>Account</TabTitleText>}
+        title={<TabTitleText>Service Account</TabTitleText>}
       >
         <ServiceAccountSettingsTab />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
         eventKey={SettingsTabs.SERVICE_REGISTRY}
-        title={<TabTitleText>Registry</TabTitleText>}
+        title={<TabTitleText>Service Registry</TabTitleText>}
       >
-        <ServiceAccountSettingsTab />
+        <ServiceRegistrySettingsTab />
       </Tab>
       <Tab className="kie-tools--settings-tab" eventKey={SettingsTabs.KAFKA} title={<TabTitleText>Kafka</TabTitleText>}>
         <ApacheKafkaSettingsTab />
