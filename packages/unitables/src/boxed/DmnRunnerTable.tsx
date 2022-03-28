@@ -29,7 +29,7 @@ import {
 import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
 import "./DmnRunnerTable.css";
 import { DmnRunnerClause, DmnRunnerRule } from "./DmnRunnerTableTypes";
-import { useDmnAutoTableI18n } from "../i18n";
+import { useDmnUnitablesI18n } from "../i18n";
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -55,7 +55,7 @@ export interface DmnRunnerTableProps extends ExpressionProps {
 }
 
 export function DmnRunnerTable(props: DmnRunnerTableProps) {
-  const { i18n } = useDmnAutoTableI18n();
+  const { i18n } = useDmnUnitablesI18n();
 
   const getColumnPrefix = useCallback((groupType?: string) => {
     switch (groupType) {

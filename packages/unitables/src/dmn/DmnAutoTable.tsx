@@ -23,7 +23,7 @@ import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamati
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { DmnRunnerClause, DmnRunnerRule, DmnRunnerTable } from "../boxed";
 import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
-import { dmnAutoTableDictionaries, DmnAutoTableI18nContext, dmnAutoTableI18nDefaults } from "../i18n";
+import { dmnUnitablesDictionaries, dmnUnitablesI18n, DmnUnitablesI18nContext, dmnUnitablesI18nDefaults } from "../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import nextId from "react-id-generator";
 import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
@@ -37,7 +37,7 @@ import { DmnAutoRowApi } from "./DmnAutoRow";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useGrid } from "../core/Grid";
-import { DmnSchema } from "@kie-tools/form-dmn";
+import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -74,7 +74,7 @@ export type DmnSchemaProperties = { "x-dmn-type": string; type: string; $ref: st
 
 interface Props {
   jsonSchema: DmnSchema;
-  inputRows: Array<object>;
+  inputRows: Array<InputRow>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>;
   results?: Array<DecisionResult[] | undefined>;
   error: boolean;
@@ -93,6 +93,11 @@ export function DmnAutoTable(props: Props) {
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const rowsRef = useMemo(() => new Map<number, React.RefObject<DmnAutoRowApi> | null>(), []);
+  const i18n = useMemo(() => {
+    dmnUnitablesI18n.setLocale(dmnUnitablesI18nDefaults.locale ?? navigator.language);
+    return dmnUnitablesI18n.getCurrent();
+  }, []);
+
   const inputColumnsCache = useRef<ColumnInstance[]>([]);
   const outputColumnsCache = useRef<ColumnInstance[]>([]);
 
@@ -141,7 +146,8 @@ export function DmnAutoTable(props: Props) {
     inputColumnsCache,
     outputColumnsCache,
     defaultModel,
-    defaultValues
+    defaultValues,
+    i18n
   );
 
   const shouldRender = useMemo(() => {
@@ -276,10 +282,10 @@ export function DmnAutoTable(props: Props) {
     <>
       {shouldRender && jsonSchemaBridge && inputRules && outputRules && (
         <I18nDictionariesProvider
-          defaults={dmnAutoTableI18nDefaults}
-          dictionaries={dmnAutoTableDictionaries}
+          defaults={dmnUnitablesI18nDefaults}
+          dictionaries={dmnUnitablesDictionaries}
           initialLocale={navigator.language}
-          ctx={DmnAutoTableI18nContext}
+          ctx={DmnUnitablesI18nContext}
         >
           {dmnAutoTableError ? (
             dmnAutoTableError

@@ -16,7 +16,7 @@
 
 import { UnitablesI18n } from "./UnitablesI18n";
 
-export interface DmnAutoTableI18n extends UnitablesI18n {
+export interface DmnUnitablesI18n extends UnitablesI18n {
   addParameter: string;
   builtInAggregator: string;
   choose: string;

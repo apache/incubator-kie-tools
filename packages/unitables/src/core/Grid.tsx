@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import { joinName } from "uniforms";
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
-import { AutoField } from "./AutoField";
 import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DmnRunnerRule } from "../boxed";
 import { DecisionResult, DmnSchemaProperties, DmnValidator, FORMS_ID, Result } from "../dmn";
@@ -25,23 +23,9 @@ import { ColumnInstance } from "react-table";
 import { DmnTableJsonSchemaBridge } from "../dmn/DmnTableJsonSchemaBridge";
 import { DmnAutoRow, DmnAutoRowApi } from "../dmn/DmnAutoRow";
 import { diff } from "deep-object-diff";
-
-interface InputField {
-  dataType: DataType;
-  width: number;
-  name: string;
-  cellDelegate: (formId: string) => React.ReactNode;
-}
-
-interface InputWithInsideProperties extends InputField {
-  insideProperties: Array<InputField>;
-}
-
-type InputFields = InputField | InputWithInsideProperties;
-
-export function isInputWithInsideProperties(toBeDetermined: InputFields): toBeDetermined is InputWithInsideProperties {
-  return (toBeDetermined as InputWithInsideProperties).insideProperties !== undefined;
-}
+import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
+import { UnitablesI18n } from "../i18n";
+import { isInputWithInsideProperties } from "./UnitablesJsonSchemaBridge";
 
 interface OutputField {
   dataType: DataType;
@@ -68,8 +52,6 @@ export function isOutputWithInsideProperties(
 }
 
 const CELL_MINIMUM_WIDTH = 150;
-const DEFAULT_DATE_TIME_CELL_WDITH = 296;
-const DEFAULT_DATE_CELL_WIDTH = 180;
 
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -82,115 +64,27 @@ export function usePrevious<T>(value: T) {
 }
 
 export function useGrid(
-  jsonSchema: object,
+  jsonSchema: DmnSchema,
   results: Array<DecisionResult[] | undefined> | undefined,
-  inputRows: Array<object>,
-  setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>,
+  inputRows: Array<InputRow>,
+  setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>,
   rowCount: number,
   formsDivRendered: boolean,
   rowsRef: Map<number, React.RefObject<DmnAutoRowApi> | null>,
   inputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
   outputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
   defaultModel: React.MutableRefObject<Array<object>>,
-  defaultValues: object
+  defaultValues: object,
+  i18n: UnitablesI18n
 ) {
-  const removeInputName = useCallback((fullName: string) => {
-    return fullName.match(/\./) ? fullName.split(".").slice(1).join("-") : fullName;
-  }, []);
-
-  const getDataTypeProps = useCallback((type: string | undefined) => {
-    let extractedType = (type ?? "").split("FEEL:").pop();
-    if ((extractedType?.length ?? 0) > 1) {
-      extractedType = (type ?? "").split(":").pop()?.split("}").join("").trim();
-    }
-    switch (extractedType) {
-      case "<Undefined>":
-        return { dataType: DataType.Undefined, width: CELL_MINIMUM_WIDTH };
-      case "Any":
-        return { dataType: DataType.Any, width: CELL_MINIMUM_WIDTH };
-      case "boolean":
-        return { dataType: DataType.Boolean, width: CELL_MINIMUM_WIDTH };
-      case "context":
-        return { dataType: DataType.Context, width: CELL_MINIMUM_WIDTH };
-      case "date":
-        return { dataType: DataType.Date, width: DEFAULT_DATE_CELL_WIDTH };
-      case "date and time":
-        return { dataType: DataType.DateTime, width: DEFAULT_DATE_TIME_CELL_WDITH };
-      case "days and time duration":
-        return { dataType: DataType.DateTimeDuration, width: CELL_MINIMUM_WIDTH };
-      case "number":
-        return { dataType: DataType.Number, width: CELL_MINIMUM_WIDTH };
-      case "string":
-        return { dataType: DataType.String, width: CELL_MINIMUM_WIDTH };
-      case "time":
-        return { dataType: DataType.Time, width: CELL_MINIMUM_WIDTH };
-      case "years and months duration":
-        return { dataType: DataType.YearsMonthsDuration, width: CELL_MINIMUM_WIDTH };
-      default:
-        return { dataType: (extractedType as DataType) ?? DataType.Undefined, width: CELL_MINIMUM_WIDTH };
-    }
-  }, []);
-
-  const deepGenerateInputFields = useCallback(
-    (jsonSchemaBridge: DmnTableJsonSchemaBridge, fieldName: any, parentName = ""): InputFields | undefined => {
-      const joinedName = joinName(parentName, fieldName);
-      if (jsonSchemaBridge) {
-        const field = jsonSchemaBridge.getField(joinedName);
-
-        if (field.type === "object") {
-          const insideProperties: Array<InputField> = jsonSchemaBridge
-            .getSubfields(joinedName)
-            .reduce((acc: Array<InputField>, subField: string) => {
-              const field = deepGenerateInputFields(
-                jsonSchemaBridge,
-                subField,
-                joinedName
-              ) as InputWithInsideProperties;
-              if (field && field.insideProperties) {
-                return [...acc, ...field.insideProperties];
-              }
-              return [...acc, field];
-            }, []);
-          return {
-            ...getDataTypeProps(field["x-dmn-type"]),
-            insideProperties,
-            name: joinedName,
-            width: insideProperties.reduce((acc, insideProperty) => acc + insideProperty.width, 0),
-          } as InputWithInsideProperties;
-        }
-        return {
-          ...getDataTypeProps(field["x-dmn-type"]),
-          name: removeInputName(joinedName),
-          cellDelegate: (formId: string) => <AutoField key={joinedName} name={joinedName} form={formId} />,
-        } as InputField;
-      }
-    },
-    [getDataTypeProps, removeInputName]
-  );
-
-  const generateInputFields = useCallback(
-    (jsonSchemaBridge: DmnTableJsonSchemaBridge) => {
-      const subfields = jsonSchemaBridge?.getSubfields();
-      return (
-        subfields?.reduce((acc: Array<InputFields>, fieldName: string) => {
-          const generateInputFields = deepGenerateInputFields(jsonSchemaBridge, fieldName);
-          if (generateInputFields) {
-            return [...acc, generateInputFields];
-          }
-        }, [] as Array<InputFields>) ?? []
-      );
-    },
-    [deepGenerateInputFields]
-  );
-
-  // when update schema, re-create the json schema and generate the new inputs using the saved columns properties
   const jsonSchemaBridge = useMemo(() => {
-    return new DmnValidator().getBridge(jsonSchema ?? {});
-  }, [jsonSchema]);
+    return new DmnValidator(i18n).getBridge(jsonSchema ?? {});
+  }, [i18n, jsonSchema]);
   const previousBridge = usePrevious(jsonSchemaBridge);
 
+  // uses input caches to determine if is necessary to update an input
   const inputs = useMemo(() => {
-    const newInputs = generateInputFields(jsonSchemaBridge);
+    const newInputs = jsonSchemaBridge.getBoxedInputs();
     inputColumnsCache.current?.map((column) => {
       if (column.groupType === "input") {
         const inputToUpdate = newInputs.find((e) => e.name === column.label);
@@ -217,7 +111,7 @@ export function useGrid(
       }
     });
     return newInputs;
-  }, [inputColumnsCache, generateInputFields, jsonSchemaBridge]);
+  }, [inputColumnsCache, jsonSchemaBridge]);
 
   useEffect(() => {
     if (previousBridge === undefined) {
@@ -257,7 +151,7 @@ export function useGrid(
     (output: any[]) => {
       inputColumnsCache.current?.forEach((column) => {
         if (column.groupType === "input") {
-          const inputToUpdate = inputs.find((i) => i.name === column.label);
+          const inputToUpdate = inputs?.find((i) => i.name === column.label);
           if (inputToUpdate && isInputWithInsideProperties(inputToUpdate) && column?.columns) {
             inputToUpdate.insideProperties.forEach((insideProperty) => {
               const columnFound = column.columns?.find((nestedColumn) => nestedColumn.label === insideProperty.name);
@@ -305,7 +199,7 @@ export function useGrid(
   );
 
   const onModelUpdate = useCallback(
-    (model: object, index) => {
+    (model: InputRow, index) => {
       setInputRows?.((previousData) => {
         const newData = [...previousData];
         newData[index] = model;
@@ -319,7 +213,7 @@ export function useGrid(
     if (jsonSchemaBridge === undefined || !formsDivRendered) {
       return [] as Partial<DmnRunnerRule>[];
     }
-    const inputEntriesLength = inputs.reduce(
+    const inputEntriesLength = inputs?.reduce(
       (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
       0
     );
@@ -337,7 +231,7 @@ export function useGrid(
               rowIndex={rowIndex}
               model={defaultModel.current[rowIndex]}
               jsonSchemaBridge={jsonSchemaBridge}
-              onModelUpdate={(model) => onModelUpdate(model, rowIndex)}
+              onModelUpdate={(model: InputRow) => onModelUpdate(model, rowIndex)}
             >
               {children}
             </DmnAutoRow>
@@ -365,7 +259,7 @@ export function useGrid(
     ) => {
       return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
         if (property["x-dmn-type"]) {
-          const dataType = getDataTypeProps(property["x-dmn-type"]).dataType;
+          const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
           outputTypeMap.set(name, { type: property.type, dataType, name });
           return { name, type: property.type, width: CELL_MINIMUM_WIDTH, dataType };
         }
@@ -374,7 +268,7 @@ export function useGrid(
           (acc: { [x: string]: object }, property: string) => acc[property],
           jsonSchemaBridge.schema
         );
-        const dataType = getDataTypeProps(data["x-dmn-type"]).dataType;
+        const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
         if (data.properties) {
           const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
           outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
@@ -384,7 +278,7 @@ export function useGrid(
         return { name, dataType: data.type, width: CELL_MINIMUM_WIDTH } as OutputTypesField;
       });
     },
-    [getDataTypeProps]
+    []
   );
 
   const { outputs, outputRules } = useMemo(() => {
@@ -398,12 +292,12 @@ export function useGrid(
       (jsonSchemaBridge as any).schema?.definitions?.OutputSet?.properties ?? []
     ).reduce((outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
       if (properties["x-dmn-type"]) {
-        const dataType = getDataTypeProps(properties["x-dmn-type"]).dataType;
+        const dataType = jsonSchemaBridge.getBoxedDataType(properties).dataType;
         outputTypeMap.set(name, { type: properties.type, dataType, name });
       } else {
         const path = properties.$ref.split("/").slice(1); // remove #
         const data = path.reduce((acc: any, property: string) => acc[property], (jsonSchemaBridge as any).schema);
-        const dataType = getDataTypeProps(data["x-dmn-type"]).dataType;
+        const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
         if (data.properties) {
           const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
           outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
@@ -488,15 +382,7 @@ export function useGrid(
     const outputs = Array.from(outputMap.values());
     updateWidth(outputs);
     return { outputs, outputRules };
-  }, [
-    deepFlattenOutput,
-    deepGenerateOutputTypesMapFields,
-    getDataTypeProps,
-    jsonSchemaBridge,
-    results,
-    rowCount,
-    updateWidth,
-  ]);
+  }, [deepFlattenOutput, deepGenerateOutputTypesMapFields, jsonSchemaBridge, results, rowCount, updateWidth]);
 
   return useMemo(() => {
     return {

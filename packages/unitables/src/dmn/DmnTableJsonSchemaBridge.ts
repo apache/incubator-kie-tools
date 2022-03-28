@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/src/uniforms";
-import { FEEL_CONTEXT } from "@kie-tools/form-dmn/dist/uniforms";
+import {
+  FEEL_CONTEXT,
+  DAYS_AND_TIME_DURATION_FORMAT,
+  YEARS_AND_MONTHS_DURATION_FORMAT,
+} from "@kie-tools/form-dmn/dist/uniforms";
 import { UnitablesJsonSchemaBridge } from "../core/UnitablesJsonSchemaBridge";
 
 export class DmnTableJsonSchemaBridge extends UnitablesJsonSchemaBridge {
@@ -31,5 +34,13 @@ export class DmnTableJsonSchemaBridge extends UnitablesJsonSchemaBridge {
       field.placeholder = `{ "x": <value> }`;
     }
     return field;
+  }
+
+  public getBoxedFieldType(field: Record<string, any>): string {
+    let extractedType = (field["x-dmn-type"] ?? "").split("FEEL:").pop();
+    if ((extractedType?.length ?? 0) > 1) {
+      extractedType = (field["x-dmn-type"] ?? "").split(":").pop()?.split("}").join("").trim();
+    }
+    return extractedType;
   }
 }
