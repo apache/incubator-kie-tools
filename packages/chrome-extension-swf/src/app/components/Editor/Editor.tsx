@@ -151,19 +151,6 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
     alerts?.closeAll();
   }, [alerts]);
 
-  useEffect(() => {
-    if (!editor?.isReady || !workspaceFilePromise.data) {
-      return;
-    }
-
-    workspaceFilePromise.data.getFileContentsAsString().then((content) => {
-      if (content !== "") {
-        return;
-      }
-      saveContent();
-    });
-  }, [editor, saveContent, workspaceFilePromise]);
-
   // const setContentErrorAlert = useAlert(
   //   alerts,
   //   useCallback(() => {
