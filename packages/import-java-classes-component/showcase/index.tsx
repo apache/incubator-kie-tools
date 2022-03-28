@@ -22,9 +22,9 @@ import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from ".
 
 const Showcase: React.FunctionComponent = () => {
   const getJavaCodeCompletionClassesMock = async (value: string) => {
-    const booClassesList = [{ query: "org.kie.test.kogito.Book" }, { query: "org.kie.test.kogito.Boom" }];
-    const bookClassesList = [{ query: "org.kie.test.kogito.Book" }];
-    const boomClassesList = [{ query: "org.kie.test.kogito.Boom" }];
+    const booClassesList = [{ fqcn: "org.kie.test.kogito.Book" }, { fqcn: "org.kie.test.kogito.Boom" }];
+    const bookClassesList = [{ fqcn: "org.kie.test.kogito.Book" }];
+    const boomClassesList = [{ fqcn: "org.kie.test.kogito.Boom" }];
 
     await delay();
 

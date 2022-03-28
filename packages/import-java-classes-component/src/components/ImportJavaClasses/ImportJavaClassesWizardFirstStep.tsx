@@ -66,7 +66,7 @@ export const ImportJavaClassesWizardFirstStep = ({
       javaCodeCompletionService
         .getClasses(value)
         .then((javaCodeCompletionClasses) => {
-          const retrievedClasses = javaCodeCompletionClasses.map((item) => item.query);
+          const retrievedClasses = javaCodeCompletionClasses.map((item) => item.fqcn);
           setRetrievedJavaClassesNames(retrievedClasses);
           setRequestLoading(false);
         })

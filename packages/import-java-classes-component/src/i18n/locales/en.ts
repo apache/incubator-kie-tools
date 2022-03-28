@@ -22,7 +22,7 @@ export const en: ImportJavaClassesWizardI18n = {
   modalButton: {
     text: "Import Java classes",
     disabledMessage:
-      "Not available, please check if 'Language Support for Java by Red Hat' extension is correctly installed",
+      "Not available, please check if 'Language Support for Java by Red Hat' extension is correctly installed and the KieActivator class is present",
     errorMessage: "An error occurred. Please check your WebView Developer Tools",
   },
   modalWizard: {

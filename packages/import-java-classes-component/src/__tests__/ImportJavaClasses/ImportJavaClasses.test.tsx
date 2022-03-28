@@ -67,7 +67,7 @@ describe("ImportJavaClasses component tests", () => {
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }])
+          jest.fn((value) => [{ fqcn: "com.Book" }, { fqcn: "com.Author" }])
         )}
       />
     );
@@ -101,7 +101,7 @@ describe("ImportJavaClasses component tests", () => {
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
+          jest.fn((value) => [{ fqcn: "com.Book" }, { fqcn: "com.Author" }, { fqcn: "com.Test" }])
         )}
       />
     );
@@ -117,7 +117,7 @@ describe("ImportJavaClasses component tests", () => {
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
+          jest.fn((value) => [{ fqcn: "com.Book" }, { fqcn: "com.Author" }, { fqcn: "com.Test" }])
         )}
       />
     );
@@ -140,7 +140,7 @@ describe("ImportJavaClasses component tests", () => {
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
+          jest.fn((value) => [{ fqcn: "com.Book" }, { fqcn: "com.Author" }, { fqcn: "com.Test" }])
         )}
       />
     );
@@ -169,7 +169,7 @@ describe("ImportJavaClasses component tests", () => {
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
+          jest.fn((value) => [{ fqcn: "com.Book" }, { fqcn: "com.Author" }, { fqcn: "com.Test" }])
         )}
       />
     );
