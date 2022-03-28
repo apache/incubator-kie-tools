@@ -161,7 +161,8 @@ export class OpenShiftService {
     );
 
     if (!args.kafkaConfig) {
-      throw new Error("No Kafka config");
+      // Conclude the flow (do not create kafka resources)
+      return resourceName;
     }
 
     const kafkaClientIdKey = "kafka-client-id";
