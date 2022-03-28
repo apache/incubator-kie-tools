@@ -171,8 +171,8 @@ export class OpenShiftService {
       args.openShiftConfig.proxy,
       new CreateSecret({
         ...commonArgs,
-        id: { key: kafkaClientIdKey, value: args.kafkaConfig.clientId },
-        secret: { key: kafkaClientSecretKey, value: args.kafkaConfig.clientSecret },
+        id: { key: kafkaClientIdKey, value: args.serviceAccountConfig.clientId },
+        secret: { key: kafkaClientSecretKey, value: args.serviceAccountConfig.clientSecret },
       }),
       rollbacks.slice(--rollbacksCount)
     );

@@ -26,35 +26,35 @@ import { useCallback } from "react";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { saveBootstrapServerCookie, saveTopicCookie } from "./KafkaSettingsConfig";
+import { saveClientIdCookie, saveClientSecretCookie } from "./ServiceAccountConfig";
 
-export function ApacheKafkaSettingsTab() {
+export function ServiceAccountSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
-  const onClearBootstraServer = useCallback(
-    () => settingsDispatch.apacheKafka.setConfig({ ...settings.apacheKafka.config, bootstrapServer: "" }),
-    [settings.apacheKafka.config, settingsDispatch.apacheKafka]
+  const onClearClientId = useCallback(
+    () => settingsDispatch.serviceAccount.setConfig({ ...settings.serviceAccount.config, clientId: "" }),
+    [settings.serviceAccount.config, settingsDispatch.serviceAccount]
   );
-  const onClearTopic = useCallback(
-    () => settingsDispatch.apacheKafka.setConfig({ ...settings.apacheKafka.config, topic: "" }),
-    [settings.apacheKafka.config, settingsDispatch.apacheKafka]
-  );
-
-  const onBootstrapServerChanged = useCallback(
-    (newValue: string) => {
-      settingsDispatch.apacheKafka.setConfig({ ...settings.apacheKafka.config, bootstrapServer: newValue });
-      saveBootstrapServerCookie(newValue);
-    },
-    [settings.apacheKafka.config, settingsDispatch.apacheKafka]
+  const onClearClientSecret = useCallback(
+    () => settingsDispatch.serviceAccount.setConfig({ ...settings.serviceAccount.config, clientSecret: "" }),
+    [settings.serviceAccount.config, settingsDispatch.serviceAccount]
   );
 
-  const onTopicChanged = useCallback(
+  const onClientIdChanged = useCallback(
     (newValue: string) => {
-      settingsDispatch.apacheKafka.setConfig({ ...settings.apacheKafka.config, topic: newValue });
-      saveTopicCookie(newValue);
+      settingsDispatch.serviceAccount.setConfig({ ...settings.serviceAccount.config, clientId: newValue });
+      saveClientIdCookie(newValue);
     },
-    [settings.apacheKafka.config, settingsDispatch.apacheKafka]
+    [settings.serviceAccount.config, settingsDispatch.serviceAccount]
+  );
+
+  const onClientSecretChanged = useCallback(
+    (newValue: string) => {
+      settingsDispatch.serviceAccount.setConfig({ ...settings.serviceAccount.config, clientSecret: newValue });
+      saveClientSecretCookie(newValue);
+    },
+    [settings.serviceAccount.config, settingsDispatch.serviceAccount]
   );
 
   return (
@@ -62,17 +62,17 @@ export function ApacheKafkaSettingsTab() {
       <PageSection>
         <Form>
           <TextContent>
-            <Text component={TextVariants.h3}>Apache Kafka</Text>
+            <Text component={TextVariants.h3}>Service Account</Text>
           </TextContent>
           <FormGroup
-            label={"Bootstrap Server"}
+            label={"Client ID"}
             labelIcon={
-              <Popover bodyContent={"Bootstrap Server"}>
+              <Popover bodyContent={"Client ID"}>
                 <button
                   type="button"
-                  aria-label="More info for bootstrap server field"
+                  aria-label="More info for client id field"
                   onClick={(e) => e.preventDefault()}
-                  aria-describedby="bootstrap-server-field"
+                  aria-describedby="client-id-field"
                   className="pf-c-form__group-label-help"
                 >
                   <HelpIcon noVerticalAlign />
@@ -80,7 +80,7 @@ export function ApacheKafkaSettingsTab() {
               </Popover>
             }
             isRequired
-            fieldId="bootstrap-server-field"
+            fieldId="client-id-field"
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
@@ -88,36 +88,31 @@ export function ApacheKafkaSettingsTab() {
                 autoComplete={"off"}
                 isRequired
                 type="text"
-                id="bootstrap-server-field"
-                name="bootstrap-server-field"
-                aria-label="Bootstrap server field"
-                aria-describedby="bootstrap-server-field-helper"
-                value={settings.apacheKafka.config.bootstrapServer}
-                onChange={onBootstrapServerChanged}
-                tabIndex={5}
-                data-testid="bootstrap-server-text-field"
+                id="client-id-field"
+                name="client-id-field"
+                aria-label="Client ID field"
+                aria-describedby="client-id-field-helper"
+                value={settings.serviceAccount.config.clientId}
+                onChange={onClientIdChanged}
+                tabIndex={6}
+                data-testid="client-id-text-field"
               />
               <InputGroupText>
-                <Button
-                  isSmall
-                  variant="plain"
-                  aria-label="Clear bootstrap server button"
-                  onClick={onClearBootstraServer}
-                >
+                <Button isSmall variant="plain" aria-label="Clear client id button" onClick={onClearClientId}>
                   <TimesIcon />
                 </Button>
               </InputGroupText>
             </InputGroup>
           </FormGroup>
           <FormGroup
-            label={"Topic"}
+            label={"Client Secret"}
             labelIcon={
-              <Popover bodyContent={"Topic"}>
+              <Popover bodyContent={"Client Secret"}>
                 <button
                   type="button"
-                  aria-label="More info for topic field"
+                  aria-label="More info for client secret field"
                   onClick={(e) => e.preventDefault()}
-                  aria-describedby="topic-field"
+                  aria-describedby="client-secret-field"
                   className="pf-c-form__group-label-help"
                 >
                   <HelpIcon noVerticalAlign />
@@ -125,24 +120,24 @@ export function ApacheKafkaSettingsTab() {
               </Popover>
             }
             isRequired
-            fieldId="topic-field"
+            fieldId="client-secret-field"
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
                 autoComplete={"off"}
                 isRequired
                 type="text"
-                id="topic-field"
-                name="topic-field"
-                aria-label="Topic field"
-                aria-describedby="topic-field-helper"
-                value={settings.apacheKafka.config.topic}
-                onChange={onTopicChanged}
-                tabIndex={8}
-                data-testid="topic-text-field"
+                id="client-secret-field"
+                name="client-secret-field"
+                aria-label="Client secret field"
+                aria-describedby="client-secret-field-helper"
+                value={settings.serviceAccount.config.clientSecret}
+                onChange={onClientSecretChanged}
+                tabIndex={7}
+                data-testid="client-secret-text-field"
               />
               <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear topic button" onClick={onClearTopic}>
+                <Button isSmall variant="plain" aria-label="Clear client secret button" onClick={onClearClientSecret}>
                   <TimesIcon />
                 </Button>
               </InputGroupText>

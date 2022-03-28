@@ -18,6 +18,7 @@ import * as React from "react";
 import { useContext } from "react";
 import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
+import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
 import { Deployments } from "./resources/Deployment";
 import { KNativeServices } from "./resources/KNativeService";
 
@@ -27,6 +28,7 @@ export interface DeployArgs {
   workflow: DeploymentWorkflow;
   openShiftConfig: OpenShiftSettingsConfig;
   kafkaConfig?: KafkaSettingsConfig;
+  serviceAccountConfig?: ServiceAccountSettingsConfig;
   resourceName?: string;
 }
 

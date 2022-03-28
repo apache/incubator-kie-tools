@@ -14,19 +14,23 @@
  * limitations under the License.
  */
 
-import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import * as React from "react";
+import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { GitHubSettingsTab } from "./github/GitHubSettingsTab";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
+import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
+
 export enum SettingsTabs {
   GITHUB = "github",
   OPENSHIFT = "openshift",
+  SERVICE_ACCOUNT = "serviceAccount",
+  SERVICE_REGISTRY = "serviceRegistry",
   KAFKA = "kafka",
 }
 
-export function SettingsModalBody() {
+export function SettingsDrawerBody() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 
@@ -53,9 +57,19 @@ export function SettingsModalBody() {
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.KAFKA}
-        title={<TabTitleText>Apache Kafka</TabTitleText>}
+        eventKey={SettingsTabs.SERVICE_ACCOUNT}
+        title={<TabTitleText>Account</TabTitleText>}
       >
+        <ServiceAccountSettingsTab />
+      </Tab>
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.SERVICE_REGISTRY}
+        title={<TabTitleText>Registry</TabTitleText>}
+      >
+        <ServiceAccountSettingsTab />
+      </Tab>
+      <Tab className="kie-tools--settings-tab" eventKey={SettingsTabs.KAFKA} title={<TabTitleText>Kafka</TabTitleText>}>
         <ApacheKafkaSettingsTab />
       </Tab>
     </Tabs>

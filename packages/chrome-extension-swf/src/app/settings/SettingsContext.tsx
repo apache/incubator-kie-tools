@@ -19,15 +19,29 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "./cookies";
 import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
+import { SettingsDrawerBody, SettingsTabs } from "./SettingsDrawerBody";
 import { OpenShiftSettingsConfig, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "../openshift/OpenShiftService";
 import { useHistory } from "react-router";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { QueryParams } from "../navigation/Routes";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
 import { KafkaSettingsConfig, readKafkaConfigCookie } from "./kafka/KafkaSettingsConfig";
+import {
+  Drawer,
+  DrawerPanelContent,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerPanelBody,
+} from "@patternfly/react-core/dist/js/components/Drawer";
+import { readServiceAccountConfigCookie, ServiceAccountSettingsConfig } from "./serviceAccount/ServiceAccountConfig";
+import {
+  readServiceRegistryConfigCookie,
+  ServiceRegistrySettingsConfig,
+} from "./serviceRegistry/ServiceRegistryConfig";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -63,6 +77,12 @@ export interface SettingsContextType {
   apacheKafka: {
     config: KafkaSettingsConfig;
   };
+  serviceAccount: {
+    config: ServiceAccountSettingsConfig;
+  };
+  serviceRegistry: {
+    config: ServiceRegistrySettingsConfig;
+  };
 }
 
 export interface SettingsDispatchContextType {
@@ -79,6 +99,12 @@ export interface SettingsDispatchContextType {
   };
   apacheKafka: {
     setConfig: React.Dispatch<React.SetStateAction<KafkaSettingsConfig>>;
+  };
+  serviceAccount: {
+    setConfig: React.Dispatch<React.SetStateAction<ServiceAccountSettingsConfig>>;
+  };
+  serviceRegistry: {
+    setConfig: React.Dispatch<React.SetStateAction<ServiceRegistrySettingsConfig>>;
   };
 }
 
@@ -183,6 +209,16 @@ export function SettingsContextProvider(props: any) {
   // apache kafka
   const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
 
+  // service account
+  const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
+    readServiceAccountConfigCookie()
+  );
+
+  // service account
+  const [serviceRegistryConfig, setServiceRegistryConfig] = useState<ServiceRegistrySettingsConfig>(
+    readServiceRegistryConfigCookie()
+  );
+
   const dispatch = useMemo(() => {
     return {
       open,
@@ -198,6 +234,12 @@ export function SettingsContextProvider(props: any) {
       },
       apacheKafka: {
         setConfig: setKafkaConfig,
+      },
+      serviceAccount: {
+        setConfig: setServiceAccountConfig,
+      },
+      serviceRegistry: {
+        setConfig: setServiceRegistryConfig,
       },
     };
   }, [close, githubAuthService, githubOctokit, open, openshiftService]);
@@ -219,28 +261,56 @@ export function SettingsContextProvider(props: any) {
       apacheKafka: {
         config: kafkaConfig,
       },
+      serviceAccount: {
+        config: serviceAccountConfig,
+      },
+      serviceRegistry: {
+        config: serviceRegistryConfig,
+      },
     };
   }, [
+    isOpen,
     activeTab,
+    openshiftStatus,
+    openshiftConfig,
     githubAuthStatus,
-    githubScopes,
     githubToken,
     githubUser,
+    githubScopes,
     kafkaConfig,
-    isOpen,
-    openshiftConfig,
-    openshiftStatus,
+    serviceAccountConfig,
+    serviceRegistryConfig,
   ]);
+
+  const panelContent = useMemo(
+    () => (
+      <DrawerPanelContent widths={{ default: "width_66" }}>
+        <DrawerHead>
+          Settings
+          <DrawerActions>
+            <DrawerCloseButton onClick={close} />
+          </DrawerActions>
+        </DrawerHead>
+        <DrawerPanelBody>
+          <SettingsDrawerBody />
+        </DrawerPanelBody>
+      </DrawerPanelContent>
+    ),
+    [close]
+  );
 
   return (
     <SettingsContext.Provider value={value}>
       <SettingsDispatchContext.Provider value={dispatch}>
-        {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
-        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
-          <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--setings-modal-content"}>
-            <SettingsModalBody />
-          </div>
-        </Modal>
+        {githubAuthStatus !== AuthStatus.LOADING && (
+          <>
+            <Drawer title="Settings" isExpanded={isOpen}>
+              <DrawerContent panelContent={panelContent}>
+                <DrawerContentBody>{props.children}</DrawerContentBody>
+              </DrawerContent>
+            </Drawer>
+          </>
+        )}
       </SettingsDispatchContext.Provider>
     </SettingsContext.Provider>
   );
@@ -252,10 +322,6 @@ export function useSettings() {
 
 export function useSettingsDispatch() {
   return useContext(SettingsDispatchContext);
-}
-
-function getBooleanCookieInitialValue<T>(name: string, defaultValue: boolean) {
-  return !getCookie(name) ? defaultValue : getCookie(name) === "true";
 }
 
 function delay(ms: number) {

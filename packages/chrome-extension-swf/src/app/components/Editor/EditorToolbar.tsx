@@ -79,7 +79,7 @@ import {
   GIT_ORIGIN_REMOTE_NAME,
 } from "../../workspace/services/GitService";
 import { FileLabel } from "../../workspace/components/FileLabel";
-import { SettingsTabs } from "../../settings/SettingsModalBody";
+import { SettingsTabs } from "../../settings/SettingsDrawerBody";
 import { PromiseStateWrapper } from "../../workspace/hooks/PromiseState";
 import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
 import { WorkspaceStatusIndicator } from "../../workspace/components/WorkspaceStatusIndicator";
