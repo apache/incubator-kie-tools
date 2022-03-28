@@ -20,10 +20,10 @@ const packageJson = require("./package.json");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-// const serverlessEditors = require("@kie-tools/serverless-workflow-editor");
 const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kie-tools/build-env");
 const path = require("path");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 function getRouterArgs() {
   const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
@@ -74,8 +74,21 @@ module.exports = async (env) => {
         ],
       }),
       new ZipPlugin({
-        filename: "chrome_extension_kogito_kie_editors_" + packageJson.version + ".zip",
+        filename: "chrome_extension_serverless_workflow_editor_" + packageJson.version + ".zip",
         include: ["manifest.json", "background.js", "content_scripts", "resources"],
+      }),
+      new MonacoWebpackPlugin({
+        languages: ["json"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/lib/esm/yaml.worker",
+            },
+          },
+        ],
       }),
     ],
     module: {
