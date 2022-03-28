@@ -42,8 +42,8 @@ export const ImportJavaClassesWizardSecondStep = ({
   selectedJavaClasses,
 }: ImportJavaClassesWizardSecondStepProps) => {
   const generateJavaClassField = useCallback((name: string, type: string, javaClasses: JavaClass[]) => {
-    let dmnTypeRef: string = JAVA_TO_DMN_MAP.get(getJavaClassSimpleName(type)) || DMNSimpleType.ANY;
-    if (dmnTypeRef === DMNSimpleType.ANY && javaClasses.some((javaClass) => javaClass.name === type)) {
+    let dmnTypeRef: string = JAVA_TO_DMN_MAP.get(getJavaClassSimpleName(type)) || DMNSimpleType.UNDEFINED;
+    if (dmnTypeRef === DMNSimpleType.UNDEFINED && javaClasses.some((javaClass) => javaClass.name === type)) {
       dmnTypeRef = getJavaClassSimpleName(type);
     }
     return new JavaField(name, type, dmnTypeRef);
