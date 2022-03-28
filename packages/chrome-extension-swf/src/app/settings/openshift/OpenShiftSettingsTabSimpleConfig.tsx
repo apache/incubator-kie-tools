@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useChromeExtensionI18n } from "../../i18n";
@@ -203,7 +202,6 @@ export function OpenShiftSettingsTabSimpleConfig() {
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
-                autoFocus={true}
                 autoComplete={"off"}
                 isRequired
                 type="text"

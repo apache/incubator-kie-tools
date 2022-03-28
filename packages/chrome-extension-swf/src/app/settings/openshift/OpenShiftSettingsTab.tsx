@@ -37,7 +37,7 @@ export function OpenShiftSettingsTab() {
       namespace: settings.openshift.config.namespace,
       host: settings.openshift.config.host,
       token: "",
-      proxy: "",
+      proxy: settings.openshift.config.proxy,
     };
     settingsDispatch.openshift.setConfig(newConfig);
     saveConfigCookie(newConfig);

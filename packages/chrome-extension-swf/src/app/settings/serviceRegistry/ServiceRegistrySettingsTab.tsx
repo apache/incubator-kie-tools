@@ -71,7 +71,6 @@ export function ServiceRegistrySettingsTab() {
           >
             <InputGroup className="pf-u-mt-sm">
               <TextInput
-                autoFocus={true}
                 autoComplete={"off"}
                 isRequired
                 type="text"
