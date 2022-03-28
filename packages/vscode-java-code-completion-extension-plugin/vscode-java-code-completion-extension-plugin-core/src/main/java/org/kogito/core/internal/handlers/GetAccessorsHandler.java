@@ -17,7 +17,6 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -40,7 +39,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     }
 
     @Override
-    public CompletableFuture<List<GetPublicResult>> handle(List<Object> arguments, IProgressMonitor progress) {
+    public List<GetPublicResult> handle(List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo("Handle Accessors");
         GetPublicParameters parameters = checkParameters(arguments);
         BuildInformation buildInformation = javaEngine.buildPublicContent(this.autocompleteHandler.getUri(),
@@ -48,8 +47,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                                                                           parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());
         List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", buildInformation);
-        List<GetPublicResult> completedClasses = this.transformCompletionItemsToResult(parameters.getFqcn(), items);
-        return CompletableFuture.supplyAsync(() -> completedClasses);
+        return this.transformCompletionItemsToResult(parameters.getFqcn(), items);
     }
 
     private GetPublicParameters checkParameters(List<Object> arguments) {

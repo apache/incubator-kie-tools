@@ -53,9 +53,9 @@
   </properties>
   <repositories>
     <repository>
-      <id>2021-12</id>
+      <id>2022-03</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/2021-12/</url>
+      <url>http://download.eclipse.org/releases/2022-03/</url>
     </repository>
     <repository>
       <id>jdt.ls.p2</id>
@@ -80,7 +80,6 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <resolver>p2</resolver>
           <target>
             <artifact>
               <groupId>org.eclipse.jdt.ls</groupId>
