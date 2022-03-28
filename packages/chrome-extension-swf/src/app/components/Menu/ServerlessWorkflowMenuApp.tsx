@@ -64,7 +64,7 @@ export function ServerlessWorkflowMenuApp(props: CreateServerlessWorkflowAppProp
       "https://console.redhat.com/application-services/swf/#/"
     );
 
-    document.title = "Serverless Workflow";
+    document.title = "Serverless Workflow | Red Hat OpenShift Application Services";
 
     const page = dependencies.applicationServices.page();
     const mainContainer = dependencies.applicationServices.mainContainer();
