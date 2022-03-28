@@ -235,7 +235,7 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <Page>
-            <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+            <EditorToolbar workspaceFile={file} editor={editor} />
             <PageSection variant={PageSectionVariants.default}>
               <div style={{ height: "100%" }}>
                 {!isEditorReady && <LoadingSpinner />}

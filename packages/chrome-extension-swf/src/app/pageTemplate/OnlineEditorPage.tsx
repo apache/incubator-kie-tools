@@ -22,16 +22,20 @@ import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/di
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { Alerts, AlertsController } from "../alerts/Alerts";
+import { useAlertsController } from "../alerts/AlertsProvider";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
+  const [alerts, alertsRef] = useAlertsController();
 
   return (
     <Page
       header={
         <Masthead aria-label={"Page header"} display={{ default: "stack" }} backgroundColor="light">
           <MastheadMain style={{ justifyContent: "space-between" }}>
+            <Alerts ref={alertsRef} width={"500px"} />
             <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand
                 onClick={() => history.replace({ pathname: routes.home.path({}) })}

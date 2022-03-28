@@ -91,8 +91,8 @@
 }
 
 .kogito--alert-container {
-  margin-top: 1em; /* FIXME: This is causing a weird horizontal scroll on the HomePage drawer after uploading a file. */
-  position: fixed;
+  margin-top: 2.5rem;
+  position: absolute;
   display: flex;
   width: 100%;
   justify-content: center;
@@ -647,11 +647,4 @@ section.kie-tools--settings-tab {
   to {
     opacity: 0;
   }
-}
-
-.pf-c-alert {
-  position: fixed !important;
-  overflow: visible;
-  top: 10rem;
-  right: 0.5rem;
 }

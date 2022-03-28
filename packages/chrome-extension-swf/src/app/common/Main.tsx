@@ -20,16 +20,19 @@ import { SettingsContextProvider } from "../settings/SettingsContext";
 import { MemoryRouter } from "react-router-dom";
 import { NavigationContextProvider } from "../navigation/NavigationContextProvider";
 import { WorkspacesContextProvider } from "../workspace/WorkspacesContextProvider";
+import { AlertsProvider } from "../alerts/AlertsProvider";
 
 export const Main: React.FunctionComponent = (props) => {
   return (
     <MemoryRouter>
       <NavigationContextProvider>
-        <SettingsContextProvider>
-          <OpenShiftProvider>
-            <WorkspacesContextProvider>{props.children}</WorkspacesContextProvider>
-          </OpenShiftProvider>
-        </SettingsContextProvider>
+        <AlertsProvider>
+          <SettingsContextProvider>
+            <OpenShiftProvider>
+              <WorkspacesContextProvider>{props.children}</WorkspacesContextProvider>
+            </OpenShiftProvider>
+          </SettingsContextProvider>
+        </AlertsProvider>
       </NavigationContextProvider>
     </MemoryRouter>
   );

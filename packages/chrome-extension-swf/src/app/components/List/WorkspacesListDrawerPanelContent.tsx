@@ -68,7 +68,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   );
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);
-  const [alerts, alertsRef] = useController<AlertsController>();
 
   return (
     <DrawerPanelContent isResizable={true} minSize={"40%"} maxSize={"80%"}>
@@ -83,7 +82,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
         }
         resolved={(workspace) => (
           <>
-            <Alerts width={"100%"} ref={alertsRef} />
             <DrawerHead>
               <Flex>
                 <FlexItem>

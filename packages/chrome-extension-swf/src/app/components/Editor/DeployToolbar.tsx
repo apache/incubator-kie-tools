@@ -10,6 +10,9 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
+import { useController } from "../../reactExt/Hooks";
+import { AlertsController, useAlert } from "../../alerts/Alerts";
+import { useAlertsController } from "../../alerts/AlertsProvider";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -27,6 +30,37 @@ export function DeployToolbar(props: DeployToolbarProps) {
   const workspaces = useWorkspaces();
   const [deployStatus, setDeployStatus] = useState(FormValiationOptions.INITIAL);
   const [isLoading, setLoading] = useState(false);
+  const [alerts, alertsRef] = useAlertsController();
+
+  const setDeployError = useAlert(
+    alerts,
+    useCallback(() => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="danger"
+          title={"Something went wrong while deploying. Check your OpenShift connection and try again."}
+          aria-live="polite"
+          data-testid="alert-deploy-error"
+        />
+      );
+    }, [])
+  );
+
+  const setDeploySuccess = useAlert(
+    alerts,
+    useCallback(() => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="info"
+          title={"The deployment has been started successfully"}
+          aria-live="polite"
+          data-testid="alert-deploy-success"
+        />
+      );
+    }, [])
+  );
 
   const onDeploy = useCallback(async () => {
     setDeployStatus(FormValiationOptions.INITIAL);
@@ -35,6 +69,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
 
     if (!content) {
       setDeployStatus(FormValiationOptions.ERROR);
+      setDeployError.show();
       return;
     }
 
@@ -46,20 +81,32 @@ export function DeployToolbar(props: DeployToolbarProps) {
         content: content,
       },
       kafkaConfig: settings.apacheKafka.config,
+      serviceAccountConfig: settings.serviceAccount.config,
       resourceName: props.workspace.descriptor.deploymentResourceName,
     });
     setLoading(false);
 
-    setDeployStatus(resourceName ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR);
+    const deployStatus = resourceName ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR;
+    setDeployStatus(deployStatus);
+    if (deployStatus === FormValiationOptions.SUCCESS) {
+      setDeploySuccess.show();
+    } else {
+      setDeployError.show();
+    }
     if (resourceName) {
       workspaces.descriptorService.setDeploymentResourceName(props.workspace.descriptor.workspaceId, resourceName);
     }
   }, [
     props.editor,
-    props.workspace.descriptor,
+    props.workspace.descriptor.name,
+    props.workspace.descriptor.deploymentResourceName,
+    props.workspace.descriptor.workspaceId,
     openshift,
     settings.openshift.config,
     settings.apacheKafka.config,
+    settings.serviceAccount.config,
+    setDeployError,
+    setDeploySuccess,
     workspaces.descriptorService,
   ]);
 
@@ -83,7 +130,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
               </Button>
             </ToolbarItem>
           </ToolbarContent>
-          {deployStatus === FormValiationOptions.ERROR && (
+          {/* {deployStatus === FormValiationOptions.ERROR && (
             <Alert
               className="pf-u-mb-md"
               variant="danger"
@@ -100,7 +147,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
               aria-live="polite"
               data-testid="alert-deploy-success"
             />
-          )}
+          )} */}
         </Toolbar>
       </FlexItem>
     </Flex>
