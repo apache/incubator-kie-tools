@@ -24,7 +24,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
-import static org.appformer.client.context.Channel.VSCODE;
+import static org.appformer.client.context.Channel.VSCODE_DESKTOP;
+import static org.appformer.client.context.Channel.VSCODE_WEB;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
@@ -44,9 +45,19 @@ public class DMNDocumentationViewButtonsVisibilitySupplierTest {
     }
 
     @Test
-    public void testIsButtonsVisibleWhenIsVSCode() {
+    public void testIsButtonsVisibleWhenIsVSCodeDesktop() {
 
-        when(contextProvider.getChannel()).thenReturn(VSCODE);
+        when(contextProvider.getChannel()).thenReturn(VSCODE_DESKTOP);
+
+        final boolean isButtonsVisible = supplier.isButtonsVisible();
+
+        assertFalse(isButtonsVisible);
+    }
+
+    @Test
+    public void testIsButtonsVisibleWhenIsVSCodeWeb() {
+
+        when(contextProvider.getChannel()).thenReturn(VSCODE_WEB);
 
         final boolean isButtonsVisible = supplier.isButtonsVisible();
 
