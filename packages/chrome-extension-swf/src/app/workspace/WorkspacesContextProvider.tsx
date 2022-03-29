@@ -41,7 +41,7 @@ export const EDITOR_SUPPORTED_FILE_EXTENSIONS = [SW_JSON_EXTENSION];
 export const DEFAULT_CORS_PROXY_URL = "https://cors.isomorphic-git.org";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
-const NEW_FILE_DEFAULT_NAME = "workflow";
+export const NEW_FILE_DEFAULT_NAME = "workflow";
 
 interface Props {
   children: React.ReactNode;

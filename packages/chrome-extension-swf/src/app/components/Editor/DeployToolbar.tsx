@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -10,8 +10,7 @@ import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/co
 import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
-import { useController } from "../../reactExt/Hooks";
-import { AlertsController, useAlert } from "../../alerts/Alerts";
+import { useAlert } from "../../alerts/Alerts";
 import { useAlertsController } from "../../alerts/AlertsProvider";
 
 enum FormValiationOptions {
@@ -30,7 +29,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
   const workspaces = useWorkspaces();
   const [deployStatus, setDeployStatus] = useState(FormValiationOptions.INITIAL);
   const [isLoading, setLoading] = useState(false);
-  const [alerts, alertsRef] = useAlertsController();
+  const [alerts] = useAlertsController();
 
   const setDeployError = useAlert(
     alerts,
@@ -112,6 +111,39 @@ export function DeployToolbar(props: DeployToolbarProps) {
     workspaces.descriptorService,
   ]);
 
+  useEffect(() => {
+    if (props.workspace.files.find((file) => file.name.includes("openapi"))) {
+      return;
+    }
+    const fetchOpenApiSpec = async () => {
+      if (!props.workspace.descriptor.deploymentResourceName) {
+        return;
+      }
+      const openApiContents = await openshift.fetchOpenApiFile(
+        settings.openshift.config,
+        props.workspace.descriptor.deploymentResourceName
+      );
+      if (openApiContents) {
+        await workspaces.addFile({
+          fs: await workspaces.fsService.getWorkspaceFs(props.workspace.descriptor.workspaceId),
+          workspaceId: props.workspace.descriptor.workspaceId,
+          name: "openapi",
+          destinationDirRelativePath: ".",
+          content: openApiContents,
+          extension: "yml",
+        });
+      }
+    };
+    fetchOpenApiSpec();
+  }, [
+    openshift,
+    props.workspace.descriptor.deploymentResourceName,
+    props.workspace.descriptor.workspaceId,
+    props.workspace.files,
+    settings.openshift.config,
+    workspaces,
+  ]);
+
   return (
     <Flex>
       <FlexItem>
@@ -132,24 +164,6 @@ export function DeployToolbar(props: DeployToolbarProps) {
               </Button>
             </ToolbarItem>
           </ToolbarContent>
-          {/* {deployStatus === FormValiationOptions.ERROR && (
-            <Alert
-              className="pf-u-mb-md"
-              variant="danger"
-              title={"Something went wrong while deploying. Check your OpenShift connection and try again."}
-              aria-live="polite"
-              data-testid="alert-deploy-error"
-            />
-          )}
-          {deployStatus === FormValiationOptions.SUCCESS && (
-            <Alert
-              className="pf-u-mb-md"
-              variant="info"
-              title={"The deployment has been started successfully"}
-              aria-live="polite"
-              data-testid="alert-deploy-success"
-            />
-          )} */}
         </Toolbar>
       </FlexItem>
     </Flex>

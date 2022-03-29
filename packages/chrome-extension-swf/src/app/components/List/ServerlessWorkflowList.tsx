@@ -17,50 +17,59 @@
 import * as React from "react";
 import { useMemo, useCallback, useEffect, useState, useRef } from "react";
 import { useHistory } from "react-router";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { PlusCircleIcon } from "@patternfly/react-icons/dist/js/icons/plus-circle-icon";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerSection,
-} from "@patternfly/react-core/dist/js/components/Drawer";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Table, TableHeader, TableBody, TableProps } from "@patternfly/react-table";
 import { useRoutes } from "../../navigation/Hooks";
 import { PromiseStateWrapper } from "../../workspace/hooks/PromiseState";
-import { useQueryParam, useQueryParams } from "../../queryParams/QueryParamsContext";
-import { QueryParams } from "../../navigation/Routes";
 import { useWorkspaceDescriptorsPromise } from "../../workspace/hooks/WorkspacesHooks";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
-import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
-import { WorkspacesListDrawerPanelContent } from "./WorkspacesListDrawerPanelContent";
-import { DeploymentDetails, WorkspaceCard, WorkspaceCardError } from "./WorkspaceCard";
-import { useOpenShift } from "../../openshift/OpenShiftContext";
+import { SW_JSON_EXTENSION, useOpenShift } from "../../openshift/OpenShiftContext";
 import { useSettings } from "../../settings/SettingsContext";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { useWorkspaces } from "../../workspace/WorkspacesContext";
+import { NEW_FILE_DEFAULT_NAME } from "../../workspace/WorkspacesContextProvider";
 
 const DEPLOYMENTS_DETAILS_POLLING_INTERVAL = 5000;
+
+const cells = ["Name", "Last updated", "Resource Name", "Deployed", "Pods"];
+
+export interface DeploymentDetails {
+  workspaceId: string;
+  url?: string;
+  pods?: number;
+  resourceName?: string;
+  namespace?: string;
+  creationTimestamp?: Date;
+}
+
+interface ServerlessWorkflowProps {
+  cells: TableProps["cells"];
+  rows: TableProps["rows"];
+  actions?: TableProps["actions"];
+}
 
 export function ServerlessWorkflowList() {
   const routes = useRoutes();
   const history = useHistory();
-  const queryParams = useQueryParams();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
-  const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
+  const workspaces = useWorkspaces();
   const openshiftService = useOpenShift();
   const { openshift } = useSettings();
   const [deploymentDetailsMap, setDeploymentDetailsMap] = useState(new Map<string, DeploymentDetails>());
   const deploymentsDetailsPolling = useRef<number>();
+  const [tableData, setTableData] = useState<ServerlessWorkflowProps>({
+    cells,
+    rows: [],
+  });
 
   useEffect(() => {
     const mapDeployments = async () => {
-      if (!workspaceDescriptorsPromise.data) {
+      if (!workspaceDescriptorsPromise.data || openshift.status !== OpenShiftInstanceStatus.CONNECTED) {
         return;
       }
       const deployments = await openshiftService.listDeployments(openshift.config);
@@ -93,7 +102,9 @@ export function ServerlessWorkflowList() {
         if (resourceName) {
           const details = map.get(resourceName);
           if (details) {
-            details.creationTimestamp = service.metadata.creationTimestamp;
+            details.creationTimestamp = service.metadata.creationTimestamp
+              ? new Date(service.metadata.creationTimestamp)
+              : undefined;
             details.namespace = service.metadata.namespace;
             details.url = service.status.url;
             map.set(resourceName, details);
@@ -112,7 +123,60 @@ export function ServerlessWorkflowList() {
     return () => {
       window.clearInterval(deploymentsDetailsPolling.current);
     };
-  }, [openshift.config, openshiftService, workspaceDescriptorsPromise.data]);
+  }, [openshift.config, openshift.status, openshiftService, workspaceDescriptorsPromise.data]);
+
+  const onClickTableItem = useCallback(
+    (workspaceId: string) => {
+      history.replace({
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: workspaceId,
+          fileRelativePath: `./${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`,
+        }),
+      });
+    },
+    [history, routes]
+  );
+
+  useEffect(() => {
+    const rows: ServerlessWorkflowProps["rows"] = [];
+    const actions: ServerlessWorkflowProps["actions"] = [];
+    workspaceDescriptorsPromise.data?.forEach((descriptor) => {
+      const details = descriptor.deploymentResourceName && deploymentDetailsMap.get(descriptor.deploymentResourceName);
+      const rowDetails = details
+        ? [
+            details.url ? details.resourceName : "-",
+            details.creationTimestamp ? details.creationTimestamp.toLocaleString() : "-",
+            details.pods ?? "-",
+          ]
+        : ["-", "-", "-"];
+      rows.push({
+        cells: [
+          {
+            title: (
+              <Button
+                key={descriptor.workspaceId}
+                isInline={true}
+                variant={ButtonVariant.link}
+                onClick={() => onClickTableItem(descriptor.workspaceId)}
+              >
+                {descriptor.name}
+              </Button>
+            ),
+          },
+          new Date(descriptor.lastUpdatedDateISO).toLocaleString(),
+          ...rowDetails,
+        ],
+        props: { workspaceId: descriptor.workspaceId },
+      });
+    });
+    actions.push({
+      title: "Delete",
+      onClick: async (_event, _rowId, rowData) => {
+        await workspaces.deleteWorkspace({ workspaceId: rowData.props.workspaceId });
+      },
+    });
+    setTableData({ cells, rows, actions });
+  }, [deploymentDetailsMap, onClickTableItem, workspaceDescriptorsPromise.data, workspaces]);
 
   const emptyState = useMemo(
     () => (
@@ -132,116 +196,41 @@ export function ServerlessWorkflowList() {
     [routes, history]
   );
 
-  const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: routes.home.path({}),
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, routes, queryParams]);
-
-  const expandWorkspace = useCallback(
-    (workspaceId: string) => {
-      const expand = workspaceId !== expandedWorkspaceId && workspaceId;
-      if (!expand) {
-        closeExpandedWorkspace();
-        return;
-      }
-
-      history.replace({
-        pathname: routes.home.path({}),
-        search: routes.home.queryString({ expand }),
-      });
-    },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
-  );
-
-  useEffect(() => {
-    if (
-      workspaceDescriptorsPromise.data &&
-      !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)
-    ) {
-      closeExpandedWorkspace();
-    }
-  }, [workspaceDescriptorsPromise, closeExpandedWorkspace, expandedWorkspaceId]);
-
   return (
     <OnlineEditorPage>
       <Page style={{ position: "relative" }}>
         <PageSection>
-          <PromiseStateWrapper
-            promise={workspaceDescriptorsPromise}
-            rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
-            resolved={(workspaceDescriptors) => {
-              if (workspaceDescriptors.length === 0) {
-                return emptyState;
-              }
-              return (
-                <Flex direction={{ default: "column" }} fullWidth={{ default: "fullWidth" }} style={{ height: "100%" }}>
-                  <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
-                    <Button
-                      variant="primary"
-                      onClick={() => history.replace({ pathname: routes.newWorskapce.path({}) })}
-                    >
-                      Create Serverless Workflow
-                    </Button>
-                  </FlexItem>
-                  <FlexItem grow={{ default: "grow" }}>
-                    <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
-                      <DrawerSection style={{ backgroundColor: "transparent" }}>
-                        <TextContent>
-                          <Text component={TextVariants.h1}>Workflows</Text>
-                        </TextContent>
-                        <br />
-                      </DrawerSection>
-                      <DrawerContent
-                        style={{ backgroundColor: "transparent" }}
-                        panelContent={
-                          <WorkspacesListDrawerPanelContent
-                            workspaceId={expandedWorkspaceId}
-                            onClose={closeExpandedWorkspace}
-                          />
-                        }
-                      >
-                        <DrawerContentBody>
-                          {workspaceDescriptors.length > 0 && (
-                            <Stack hasGutter={true} style={{ padding: "10px" }}>
-                              {workspaceDescriptors
-                                .sort((a, b) =>
-                                  new Date(a.lastUpdatedDateISO) < new Date(b.lastUpdatedDateISO) ? 1 : -1
-                                )
-                                .map((workspace) => (
-                                  <StackItem key={workspace.workspaceId}>
-                                    <ErrorBoundary error={<WorkspaceCardError workspace={workspace} />}>
-                                      <WorkspaceCard
-                                        workspaceId={workspace.workspaceId}
-                                        onSelect={() => expandWorkspace(workspace.workspaceId)}
-                                        isSelected={workspace.workspaceId === expandedWorkspaceId}
-                                        deploymentDetailsMap={deploymentDetailsMap}
-                                      />
-                                    </ErrorBoundary>
-                                  </StackItem>
-                                ))}
-                            </Stack>
-                          )}
-                          {workspaceDescriptors.length === 0 && (
-                            <Bullseye>
-                              <EmptyState>
-                                <EmptyStateIcon icon={CubesIcon} />
-                                <Title headingLevel="h4" size="lg">
-                                  {`Nothing here`}
-                                </Title>
-                                <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
-                              </EmptyState>
-                            </Bullseye>
-                          )}
-                        </DrawerContentBody>
-                      </DrawerContent>
-                    </Drawer>
-                  </FlexItem>
-                </Flex>
-              );
-            }}
-          />
+          <Flex direction={{ default: "column" }} fullWidth={{ default: "fullWidth" }} style={{ height: "100%" }}>
+            <PromiseStateWrapper
+              promise={workspaceDescriptorsPromise}
+              rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
+              resolved={(workspaceDescriptors) => {
+                if (workspaceDescriptors.length === 0) {
+                  return emptyState;
+                }
+                return (
+                  <Table
+                    caption={
+                      <FlexItem>
+                        <Button
+                          variant="primary"
+                          onClick={() => history.replace({ pathname: routes.newWorskapce.path({}) })}
+                        >
+                          Create Serverless Workflow
+                        </Button>
+                      </FlexItem>
+                    }
+                    cells={tableData.cells}
+                    rows={tableData.rows}
+                    actions={tableData.actions}
+                  >
+                    <TableHeader />
+                    <TableBody />
+                  </Table>
+                );
+              }}
+            />
+          </Flex>
         </PageSection>
       </Page>
     </OnlineEditorPage>
