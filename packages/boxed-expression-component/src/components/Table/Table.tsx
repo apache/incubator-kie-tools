@@ -41,6 +41,7 @@ import {
   focusUpperCell,
   getParentCell,
   pasteOnTable,
+  NavigationKeysUtils,
   PASTE_OPERATION,
 } from "./common";
 import { EditableCell } from "./EditableCell";
@@ -395,7 +396,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
     (rowSpan = 1) =>
       (e: React.KeyboardEvent<HTMLElement>) => {
         const key = e.key;
-        const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
+        const isModKey = e.altKey || e.ctrlKey || e.shiftKey || NavigationKeysUtils.isAltGraph(key);
 
         if (!enableKeyboarNavigation) {
           return;
@@ -408,7 +409,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
         if (boxedExpression.isContextMenuOpen) {
           e.preventDefault();
-          if (key === "Escape") {
+          if (NavigationKeysUtils.isEscape(key)) {
             //close Select child components if any
             focusCurrentCell(e.currentTarget);
           }
@@ -417,22 +418,27 @@ export const Table: React.FunctionComponent<TableProps> = ({
 
         const isFiredFromThis = e.currentTarget === e.target;
 
-        if (key === "Tab") {
+        if (NavigationKeysUtils.isTab(key)) {
           e.preventDefault();
         }
 
-        if (key === "ArrowLeft" || (key === "Tab" && e.shiftKey)) {
-          focusPrevCell(e.currentTarget, rowSpan, key === "ArrowLeft");
-        } else if (key === "ArrowRight" || (key === "Tab" && !e.shiftKey)) {
-          focusNextCell(e.currentTarget, rowSpan, key === "ArrowRight");
-        } else if (key === "ArrowUp") {
+        if (NavigationKeysUtils.isArrowLeft(key) || (NavigationKeysUtils.isTab(key) && e.shiftKey)) {
+          focusPrevCell(e.currentTarget, rowSpan, NavigationKeysUtils.isArrowLeft(key));
+        } else if (NavigationKeysUtils.isArrowRight(key) || (NavigationKeysUtils.isTab(key) && !e.shiftKey)) {
+          focusNextCell(e.currentTarget, rowSpan, NavigationKeysUtils.isArrowRight(key));
+        } else if (NavigationKeysUtils.isArrowUp(key)) {
           focusUpperCell(e.currentTarget);
-        } else if (key === "ArrowDown") {
+        } else if (NavigationKeysUtils.isArrowDown(key)) {
           focusLowerCell(e.currentTarget);
-        } else if (key === "Escape") {
+        } else if (NavigationKeysUtils.isEscape(key)) {
           focusParentCell(e.currentTarget);
-        } else if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey && !/^F\w+$/.test(e.key)) {
-          return focusInsideCell(e.currentTarget, key !== "Enter");
+        } else if (
+          !boxedExpression.isContextMenuOpen &&
+          isFiredFromThis &&
+          !isModKey &&
+          !NavigationKeysUtils.isFX(key)
+        ) {
+          return focusInsideCell(e.currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
     [boxedExpression.isContextMenuOpen, enableKeyboarNavigation]
