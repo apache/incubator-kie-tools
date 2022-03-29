@@ -27,6 +27,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { saveBootstrapServerCookie, saveTopicCookie } from "./KafkaSettingsConfig";
+import { SettingsTabs } from "../SettingsDrawerBody";
 
 export function ApacheKafkaSettingsTab() {
   const settings = useSettings();
@@ -147,6 +148,13 @@ export function ApacheKafkaSettingsTab() {
               </InputGroupText>
             </InputGroup>
           </FormGroup>
+          <TextContent>
+            <Text component={TextVariants.p}>
+              <b>Note</b>: You must also provide{" "}
+              <a onClick={() => settingsDispatch.open(SettingsTabs.SERVICE_ACCOUNT)}>Service Account</a> information so
+              the connection with your Streams for Apache Kafka instance can be properly established.
+            </Text>
+          </TextContent>
         </Form>
       </PageSection>
     </Page>
