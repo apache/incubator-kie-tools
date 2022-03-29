@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-import { DeployArgs } from "./OpenShiftContext";
 import { isConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
+import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
+import { DeployArgs } from "./OpenShiftContext";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
+import { Deployments, ListDeployments } from "./resources/Deployment";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
 import { CreateKafkaSource, DeleteKafkaSource } from "./resources/KafkaSource";
 import {
@@ -30,9 +32,18 @@ import {
 import { GetProject } from "./resources/Project";
 import { KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resource";
 import { CreateSecret, DeleteSecret } from "./resources/Secret";
-import { Deployments, ListDeployments } from "./resources/Deployment";
 
 export const DEFAULT_CREATED_BY = "kie-tools-chrome-extension";
+
+const OPENSHIFT_IDENTITY_API_URL = "https://identity.api.openshift.com/auth/realms/rhoas/protocol/openid-connect/token";
+
+interface AccessToken {
+  access_token: string;
+  expires_in: number;
+  refresh_expires_in: number;
+  token_type: string;
+  scope: string;
+}
 
 export class OpenShiftService {
   public async getWorkflowFileName(args: {
@@ -250,5 +261,25 @@ export class OpenShiftService {
 
   public async onCheckConfig(config: OpenShiftSettingsConfig) {
     return isConfigValid(config) && (await this.isConnectionEstablished(config));
+  }
+
+  public async getServiceRegistryAccessToken(proxyUrl: string, config: ServiceAccountSettingsConfig): Promise<string> {
+    const response = await fetch(proxyUrl + "/devsandbox", {
+      method: "POST",
+      headers: {
+        "Target-Url": OPENSHIFT_IDENTITY_API_URL,
+      },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: `${config.clientId}`,
+        client_secret: `${config.clientSecret}`,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Error fetching access token");
+    }
+
+    return ((await response.json()) as AccessToken).access_token;
   }
 }
