@@ -77,7 +77,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
-        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
@@ -87,6 +86,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   );
 
   const triggerEditMode = useCallback(() => {
+    boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
     setPreviousValue(value);
     blurActiveElement();
     setMode(EDIT_MODE);
@@ -127,8 +127,8 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         return;
       }
 
-      onCellUpdate(rowIndex, columnId, newValue ?? value);
       triggerEditMode();
+      onCellUpdate(rowIndex, columnId, newValue ?? value);
     },
     [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
