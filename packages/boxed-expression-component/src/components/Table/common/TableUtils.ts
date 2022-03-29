@@ -92,20 +92,6 @@ export const getCellTableId: (cell: Element | undefined | null) => string = (cel
 };
 
 /**
- * Get the table header's rows henght.
- *
- * @param tableInstance the tableInstance
- * @param skipLastHeaderGroup true to skip last header group
- * @return the number of rows, 0 otherwise
- */
-export const getHeaderRowsLenght = (tableInstance: TableInstance, skipLastHeaderGroup: boolean): number => {
-  if (!tableInstance || typeof skipLastHeaderGroup === "undefined" || !tableInstance.headerGroups) {
-    return 0;
-  }
-  return skipLastHeaderGroup ? tableInstance.headerGroups.length - 1 : tableInstance.headerGroups.length;
-};
-
-/**
  * Get a cell by coordinates counting the colspans too
  *
  * @param table the table
