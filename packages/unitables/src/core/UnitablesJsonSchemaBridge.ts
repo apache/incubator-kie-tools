@@ -85,12 +85,12 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     return field;
   }
 
-  public getBoxedFieldType(field: Record<string, any>): string {
-    return field.type ?? "string";
-  }
-
   private static removeInputName(fullName: string) {
     return fullName.match(/\./) ? fullName.split(".").slice(1).join("-") : fullName;
+  }
+
+  public getBoxedFieldType(field: Record<string, any>): string {
+    return field.type ?? "string";
   }
 
   public getBoxedDataType(field: Record<string, any>) {
@@ -153,7 +153,7 @@ export class UnitablesJsonSchemaBridge extends JSONSchemaBridge {
     } as InputField;
   }
 
-  public getBoxedInputs(): Array<InputFields> {
+  public getBoxedHeaderInputs(): Array<InputFields> {
     return (
       super.getSubfields().reduce((inputs: Array<InputFields>, fieldName: string) => {
         const generateInputFields = this.deepTransformToBoxedInputs(fieldName);

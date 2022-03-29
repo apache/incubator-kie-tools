@@ -21,7 +21,7 @@ import { ErrorBoundary } from "../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { DmnRunnerClause, DmnRunnerRule, DmnRunnerTable } from "../boxed";
+import { DmnRunnerTable } from "../boxed";
 import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import { dmnUnitablesDictionaries, dmnUnitablesI18n, DmnUnitablesI18nContext, dmnUnitablesI18nDefaults } from "../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
@@ -33,11 +33,12 @@ import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { Button } from "@patternfly/react-core";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import "./style.css";
-import { DmnAutoRowApi } from "./DmnAutoRow";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useGrid } from "../core/Grid";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
+import { UnitablesRowApi } from "../core/UnitablesRow";
+import { UnitablesClause, UnitablesRule } from "../core/UnitablesBoxedTypes";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -92,7 +93,7 @@ export function DmnAutoTable(props: Props) {
   const [outputError, setOutputError] = useState<boolean>(false);
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const rowsRef = useMemo(() => new Map<number, React.RefObject<DmnAutoRowApi> | null>(), []);
+  const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
   const i18n = useMemo(() => {
     dmnUnitablesI18n.setLocale(dmnUnitablesI18nDefaults.locale ?? navigator.language);
     return dmnUnitablesI18n.getCurrent();
@@ -135,20 +136,21 @@ export function DmnAutoTable(props: Props) {
     defaultModel.current = props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow }));
   }, [defaultValues, props.inputRows]);
 
-  const { jsonSchemaBridge, inputs, inputRules, outputs, outputRules, updateWidth } = useGrid(
-    props.jsonSchema,
-    props.results,
-    props.inputRows,
-    props.setInputRows,
-    rowCount,
-    formsDivRendered,
-    rowsRef,
-    inputColumnsCache,
-    outputColumnsCache,
-    defaultModel,
-    defaultValues,
-    i18n
-  );
+  const { jsonSchemaBridge, inputs, inputRules, outputs, outputRules, updateInputCellsWidth, updateOutputCellsWidth } =
+    useGrid(
+      props.jsonSchema,
+      props.results,
+      props.inputRows,
+      props.setInputRows,
+      rowCount,
+      formsDivRendered,
+      rowsRef,
+      inputColumnsCache,
+      outputColumnsCache,
+      defaultModel,
+      defaultValues,
+      i18n
+    );
 
   const shouldRender = useMemo(() => {
     return (inputs?.length ?? 0) > 0;
@@ -224,17 +226,17 @@ export function DmnAutoTable(props: Props) {
   const onInputColumnsUpdate = useCallback(
     (columns: ColumnInstance[]) => {
       inputColumnsCache.current = columns;
-      updateWidth(outputs);
+      updateInputCellsWidth(inputs);
     },
-    [outputs, updateWidth]
+    [inputs, updateInputCellsWidth]
   );
 
   const onOutputColumnsUpdate = useCallback(
     (columns: ColumnInstance[]) => {
       outputColumnsCache.current = columns;
-      updateWidth(outputs);
+      updateOutputCellsWidth(outputs);
     },
-    [outputs, updateWidth]
+    [outputs, updateOutputCellsWidth]
   );
 
   const inputUid = useMemo(() => nextId(), []);
@@ -324,8 +326,8 @@ export function DmnAutoTable(props: Props) {
                                   name={"DMN Runner Output"}
                                   onRowNumberUpdated={onRowNumberUpdated}
                                   onColumnsUpdate={onOutputColumnsUpdate}
-                                  output={outputs as DmnRunnerClause[]}
-                                  rules={outputRules as DmnRunnerRule[]}
+                                  output={outputs as UnitablesClause[]}
+                                  rules={outputRules as UnitablesRule[]}
                                   id={outputUid}
                                 />
                               </BoxedExpressionProvider>
@@ -388,7 +390,7 @@ export function DmnAutoTable(props: Props) {
                           onRowNumberUpdated={onRowNumberUpdated}
                           onColumnsUpdate={onInputColumnsUpdate}
                           input={inputs}
-                          rules={inputRules as DmnRunnerRule[]}
+                          rules={inputRules as UnitablesRule[]}
                           id={inputUid}
                         />
                       </div>

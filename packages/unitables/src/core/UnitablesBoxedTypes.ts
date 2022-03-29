@@ -16,7 +16,7 @@
 
 import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 
-export interface DmnRunnerClause {
+export interface UnitablesClause {
   /** Clause name */
   name: string;
   /** Clause data type */
@@ -29,7 +29,7 @@ export interface DmnRunnerClause {
   insideProperties?: any[];
 }
 
-export interface DmnRunnerRule {
+export interface UnitablesRule {
   /** Values for the input columns */
   inputEntries: string[];
   /** Values for the output columns */

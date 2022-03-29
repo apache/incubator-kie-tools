@@ -28,8 +28,8 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
 import "./DmnRunnerTable.css";
-import { DmnRunnerClause, DmnRunnerRule } from "./DmnRunnerTableTypes";
 import { useDmnUnitablesI18n } from "../i18n";
+import { UnitablesClause, UnitablesRule } from "../core/UnitablesBoxedTypes";
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -44,11 +44,11 @@ type DataRecord = Record<string, unknown>;
 
 export interface DmnRunnerTableProps extends ExpressionProps {
   /** Input columns definition */
-  input?: DmnRunnerClause[];
+  input?: UnitablesClause[];
   /** Output columns definition */
-  output?: DmnRunnerClause[];
+  output?: UnitablesClause[];
   /** Rules represent rows values */
-  rules?: DmnRunnerRule[];
+  rules?: UnitablesRule[];
   /** Callback to be called when row number is updated */
   onRowNumberUpdated: (rowNumber: number, operation?: TableOperation, updatedRowIndex?: number) => void;
   onColumnsUpdate: (columns: Column[]) => void;

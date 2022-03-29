@@ -179,11 +179,11 @@ export function useForm({
   const onFormValidate = useCallback(
     (model, error: any) => {
       onValidate?.(model, error);
-      setFormModel((previousModel: any) => {
-        if (Object.keys(diff(model, previousModel)).length > 0) {
+      setFormModel((previousModel) => {
+        if (Object.keys(diff(model, previousModel ?? {})).length > 0) {
           return model;
         }
-        return previousModel;
+        return previousModel ?? {};
       });
       if (!error) {
         return;

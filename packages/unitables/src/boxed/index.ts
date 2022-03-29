@@ -15,4 +15,3 @@
  */
 
 export * from "./DmnRunnerTable";
-export * from "./DmnRunnerTableTypes";
