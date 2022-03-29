@@ -134,9 +134,9 @@
         "command": "extension.kogito.swf.removeServiceRegistryUrl",
         "title": "Serverless Workflow: Remove Service Registry URL"
       }
-    ],
-    "extensionDependencies": [
-      "redhat.vscode-redhat-account"
     ]
-  }
+  },
+  "extensionDependencies": [
+    "redhat.vscode-redhat-account"
+  ]
 }

@@ -72,8 +72,15 @@ public class KogitoDecisionNavigatorDockTest extends BaseKogitoDockTest<KogitoDe
     }
 
     @Test
-    public void testVSCodeChannelPosition() {
-        when(context.getChannel()).thenReturn(Channel.VSCODE);
+    public void testVSCodeDesktopChannelPosition() {
+        when(context.getChannel()).thenReturn(Channel.VSCODE_DESKTOP);
+
+        assertEquals(UberfireDockPosition.EAST, dock.position());
+    }
+
+    @Test
+    public void testVSCodeWebChannelPosition() {
+        when(context.getChannel()).thenReturn(Channel.VSCODE_WEB);
 
         assertEquals(UberfireDockPosition.EAST, dock.position());
     }

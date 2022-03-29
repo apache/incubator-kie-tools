@@ -125,7 +125,7 @@ public class DataTypeList {
     }
 
     public void activateReactComponents() {
-        if (kogitoChannelHelper.isCurrentChannelEnabled(Channel.VSCODE)) {
+        if (kogitoChannelHelper.isCurrentChannelEnabled(Channel.VSCODE_DESKTOP) || kogitoChannelHelper.isCurrentChannelEnabled(Channel.VSCODE_WEB)) {
             view.renderImportJavaClasses();
         }
     }
@@ -462,7 +462,6 @@ public class DataTypeList {
                 insertFields(newDataType, javaClass);
             }
         }
-
     }
 
     void renameJavaClassToDMNName(final List<JavaClass> javaClasses) {
@@ -490,9 +489,7 @@ public class DataTypeList {
                     field.setDmnTypeRef(renamedFieldType);
                 }
             }
-
         }
-
     }
 
     String buildName(final String nameCandidate, final Map<String, Integer> namesCount) {

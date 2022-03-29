@@ -28,7 +28,8 @@ import static java.util.Arrays.asList;
 import static org.appformer.client.context.Channel.DEFAULT;
 import static org.appformer.client.context.Channel.EMBEDDED;
 import static org.appformer.client.context.Channel.ONLINE_MULTI_FILE;
-import static org.appformer.client.context.Channel.VSCODE;
+import static org.appformer.client.context.Channel.VSCODE_DESKTOP;
+import static org.appformer.client.context.Channel.VSCODE_WEB;
 
 /**
  * Scope of this Helper class is to retrieve and check the current Channel where the editor lives.
@@ -55,11 +56,10 @@ public class KogitoChannelHelper {
     }
 
     public boolean isIncludedModelEnabled() {
-        return isCurrentChannelEnabled(asList(DEFAULT, EMBEDDED, ONLINE_MULTI_FILE, VSCODE));
+        return isCurrentChannelEnabled(asList(DEFAULT, EMBEDDED, ONLINE_MULTI_FILE, VSCODE_DESKTOP, VSCODE_WEB));
     }
 
     public boolean isIncludedModelLinkEnabled() {
-        return isCurrentChannelEnabled(asList(ONLINE_MULTI_FILE, VSCODE));
+        return isCurrentChannelEnabled(asList(ONLINE_MULTI_FILE, VSCODE_DESKTOP, VSCODE_WEB));
     }
-
 }
