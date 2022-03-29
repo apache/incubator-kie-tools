@@ -361,7 +361,9 @@ describe("Decision Table Keyboard Navigation Tests", () => {
       // from the annotation cell, edit the text then press esc to cancel editing
       cy.get("@annotationInput").type("not to save text{esc}");
 
-      cy.get("@annotationCell").should("not.contain.text", "not to save text");
+      cy.get("@annotationCell")
+        .should("have.text", "annotation-1 edited")
+        .should("not.contain.text", "not to save text");
 
       cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
     });
