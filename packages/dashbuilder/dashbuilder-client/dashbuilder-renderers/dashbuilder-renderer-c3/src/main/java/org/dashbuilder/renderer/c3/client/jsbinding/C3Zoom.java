@@ -24,13 +24,12 @@ import jsinterop.annotations.JsType;
 public class C3Zoom {
     
     @JsOverlay
-    static C3Zoom create(C3ZoomConf zoom) {
-        C3Zoom instance = new C3Zoom();
-        instance.setEnabled(zoom);
+    static C3Zoom create(boolean enabled) {
+        var instance = new C3Zoom();
+        instance.setEnabled(enabled);
         return instance;
     }
-
+    
     @JsProperty
-    public native void setEnabled(C3ZoomConf zoom);
-
+    public native void setEnabled(boolean enabled);
 }

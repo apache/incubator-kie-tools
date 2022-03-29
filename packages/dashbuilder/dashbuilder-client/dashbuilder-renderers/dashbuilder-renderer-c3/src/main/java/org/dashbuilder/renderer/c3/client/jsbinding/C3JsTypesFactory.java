@@ -39,7 +39,7 @@ public class C3JsTypesFactory {
     }
 
     public C3Zoom c3Zoom(boolean enabled) {
-        return C3Zoom.create(C3ZoomConf.create(enabled));
+        return C3Zoom.create(enabled);
     }
 
     public C3Padding c3Padding(int top, int right, 
