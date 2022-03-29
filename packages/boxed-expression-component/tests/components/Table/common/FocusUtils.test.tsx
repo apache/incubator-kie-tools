@@ -158,7 +158,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("getParentCell tests", () => {
-    it("should fail", () => {
+    it("should return null with wrong inputs", () => {
       // @ts-ignore
       expect(getParentCell()).toBeNull();
       expect(getParentCell(null)).toBeNull();
@@ -179,7 +179,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("cellFocus tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => cellFocus()).not.toThrowError();
       expect(() => cellFocus(null)).not.toThrowError();
@@ -193,7 +193,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusCurrentCell tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusCurrentCell(undefined)).not.toThrowError();
       expect(() => focusCurrentCell(null)).not.toThrowError();
@@ -215,7 +215,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusParentCell tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusParentCell(undefined)).not.toThrowError();
       expect(() => focusParentCell(null)).not.toThrowError();
@@ -246,7 +246,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusCellByCoordinates tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusCellByCoordinates()).not.toThrowError();
       expect(() => focusCellByCoordinates(null, { y: 0, x: 0 })).not.toThrowError();
@@ -286,7 +286,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusNextCell tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusNextCell()).not.toThrowError();
       expect(() => focusNextCell(null)).not.toThrowError();
@@ -328,7 +328,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusPrevCell tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusPrevCell()).not.toThrowError();
       expect(() => focusPrevCell(null)).not.toThrowError();
@@ -384,7 +384,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusUpperCell tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusUpperCell(undefined)).not.toThrowError();
       expect(() => focusUpperCell(null)).not.toThrowError();
@@ -416,7 +416,7 @@ describe("FocusUtils tests", () => {
   });
 
   describe("focusLowerCell tests", () => {
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusLowerCell(undefined)).not.toThrowError();
       expect(() => focusLowerCell(null)).not.toThrowError();
@@ -453,7 +453,7 @@ describe("FocusUtils tests", () => {
       parentCell = mockTable?.rows[2].cells[1];
     });
 
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusInsideCell(undefined)).not.toThrowError();
       expect(() => focusInsideCell(null)).not.toThrowError();
@@ -529,7 +529,7 @@ describe("FocusUtils tests", () => {
         .children[0] as HTMLTextAreaElement;
     });
 
-    it("should fail", () => {
+    it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
       expect(() => focusTextInput()).not.toThrowError();
       expect(() => focusTextInput(null)).not.toThrowError();
