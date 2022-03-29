@@ -22,7 +22,9 @@ import * as React from "react";
 import { joinName } from "uniforms";
 import { AutoField } from "./AutoField";
 
-const CELL_MINIMUM_WIDTH = 150;
+export const FORMS_ID = "unitables-forms";
+
+export const CELL_MINIMUM_WIDTH = 150;
 const DEFAULT_DATE_TIME_CELL_WDITH = 296;
 const DEFAULT_DATE_CELL_WIDTH = 180;
 

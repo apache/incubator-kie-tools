@@ -15,17 +15,13 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useMemo } from "react";
 import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DecisionResult, DmnSchemaProperties, DmnValidator, FORMS_ID, Result } from "../dmn";
+import { DecisionResult, DmnSchemaProperties, Result } from "../dmn";
 import { ColumnInstance } from "react-table";
 import { DmnTableJsonSchemaBridge } from "../dmn/DmnTableJsonSchemaBridge";
-import { diff } from "deep-object-diff";
-import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
-import { UnitablesI18n } from "../i18n";
-import { InputFields, isInputWithInsideProperties } from "./UnitablesJsonSchemaBridge";
-import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
 import { UnitablesRule } from "./UnitablesBoxedTypes";
+import { CELL_MINIMUM_WIDTH, UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
 
 interface OutputField {
   dataType: DataType;
@@ -51,158 +47,12 @@ export function isOutputWithInsideProperties(
   return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
 }
 
-const CELL_MINIMUM_WIDTH = 150;
-
-export function usePrevious<T>(value: T) {
-  const ref = useRef<T>();
-
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-
-  return ref.current;
-}
-
-export function useGrid(
-  jsonSchema: DmnSchema,
+export function useGenerateBoxedOutputs(
+  jsonSchemaBridge: UnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined,
-  inputRows: Array<InputRow>,
-  setInputRows: React.Dispatch<React.SetStateAction<Array<InputRow>>>,
   rowCount: number,
-  formsDivRendered: boolean,
-  rowsRef: Map<number, React.RefObject<UnitablesRowApi> | null>,
-  inputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
-  outputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
-  defaultModel: React.MutableRefObject<Array<object>>,
-  defaultValues: object,
-  i18n: UnitablesI18n
+  outputColumnsCache: React.MutableRefObject<ColumnInstance[]>
 ) {
-  const jsonSchemaBridge = useMemo(() => {
-    return new DmnValidator(i18n).getBridge(jsonSchema ?? {});
-  }, [i18n, jsonSchema]);
-  const previousBridge = usePrevious(jsonSchemaBridge);
-
-  // Check differences on schema and delete inputs from cells that were deleted.
-  useEffect(() => {
-    if (previousBridge === undefined) {
-      return;
-    }
-    setInputRows((previousData) => {
-      const newData = [...previousData];
-      const propertiesDifference = diff(
-        (previousBridge.schema ?? {}).definitions?.InputSet?.properties ?? {},
-        jsonSchemaBridge.schema?.definitions?.InputSet?.properties ?? {}
-      );
-
-      const updatedData = newData.map((data) => {
-        return Object.entries(propertiesDifference).reduce(
-          (row, [property, value]) => {
-            if (Object.keys(row).length === 0) {
-              return row;
-            }
-            if (!value || value.type || value.$ref) {
-              delete (row as any)[property];
-            }
-            // if (value?.["x-dmn-type"]) {
-            //   (row as any)[property] = undefined;
-            // }
-            return row;
-          },
-          { ...defaultValues, ...data }
-        );
-      });
-
-      defaultModel.current = updatedData;
-      return updatedData;
-    });
-  }, [defaultModel, defaultValues, jsonSchemaBridge, previousBridge, setInputRows]);
-
-  const updateInputCellsWidth = useCallback(
-    (inputs: InputFields[]) => {
-      inputColumnsCache.current?.map((inputColumn) => {
-        if (inputColumn.groupType === "input") {
-          const inputToUpdate = inputs.find((e) => e.name === inputColumn.label);
-          if (inputToUpdate && isInputWithInsideProperties(inputToUpdate)) {
-            if (inputColumn?.columns) {
-              inputToUpdate.insideProperties.forEach((insideProperty) => {
-                const columnFound = inputColumn.columns?.find(
-                  (nestedColumn) => nestedColumn.label === insideProperty.name
-                );
-                if (columnFound && columnFound.width) {
-                  insideProperty.width = columnFound.width as number;
-                }
-              });
-            } else if (inputColumn.width) {
-              inputToUpdate.insideProperties.forEach((insideProperty) => {
-                const width = (inputColumn.width as number) / inputToUpdate.insideProperties.length;
-                if (width < CELL_MINIMUM_WIDTH) {
-                  insideProperty.width = CELL_MINIMUM_WIDTH;
-                } else {
-                  insideProperty.width = width;
-                }
-              });
-            }
-          }
-          if (inputToUpdate && inputColumn.width && inputColumn.width > inputToUpdate.width) {
-            inputToUpdate.width = inputColumn.width as number;
-          }
-        }
-      });
-    },
-    [inputColumnsCache]
-  );
-
-  // Generate inputs header. Uses the input cache to update the input header cell width.
-  const inputs = useMemo(() => {
-    const newInputs = jsonSchemaBridge.getBoxedHeaderInputs();
-    updateInputCellsWidth(newInputs);
-    return newInputs;
-  }, [jsonSchemaBridge, updateInputCellsWidth]);
-
-  const onModelUpdate = useCallback(
-    (model: InputRow, index) => {
-      setInputRows?.((previousData) => {
-        const newData = [...previousData];
-        newData[index] = model;
-        return newData;
-      });
-    },
-    [setInputRows]
-  );
-
-  // Inputs form
-  const inputRules: Partial<UnitablesRule>[] = useMemo(() => {
-    if (jsonSchemaBridge === undefined || !formsDivRendered) {
-      return [] as Partial<UnitablesRule>[];
-    }
-    const inputEntriesLength = inputs?.reduce(
-      (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
-      0
-    );
-    const inputEntries = Array.from(Array(inputEntriesLength));
-    return Array.from(Array(rowCount)).map((e, rowIndex) => {
-      return {
-        inputEntries,
-        rowDelegate: ({ children }: PropsWithChildren<any>) => {
-          const unitablesRowRef = React.createRef<UnitablesRowApi>();
-          rowsRef.set(rowIndex, unitablesRowRef);
-          return (
-            <UnitablesRow
-              ref={unitablesRowRef}
-              formId={FORMS_ID}
-              rowIndex={rowIndex}
-              model={defaultModel.current[rowIndex]}
-              jsonSchemaBridge={jsonSchemaBridge}
-              onModelUpdate={(model: InputRow) => onModelUpdate(model, rowIndex)}
-            >
-              {children}
-            </UnitablesRow>
-          );
-        },
-      } as Partial<UnitablesRule>;
-    });
-  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, defaultModel, onModelUpdate]);
-
   const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
     return Object.entries(value).map(([deepEntry, deepValue]) => {
       if (typeof deepValue === "object" && deepValue !== null) {
@@ -393,13 +243,9 @@ export function useGrid(
 
   return useMemo(() => {
     return {
-      jsonSchemaBridge,
-      inputs,
-      inputRules,
       outputs,
       outputRules,
-      updateInputCellsWidth,
       updateOutputCellsWidth,
     };
-  }, [inputRules, inputs, jsonSchemaBridge, outputRules, outputs, updateInputCellsWidth, updateOutputCellsWidth]);
+  }, [outputRules, outputs, updateOutputCellsWidth]);
 }

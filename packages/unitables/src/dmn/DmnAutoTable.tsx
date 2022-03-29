@@ -35,10 +35,13 @@ import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import "./style.css";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useGrid } from "../core/Grid";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { UnitablesRowApi } from "../core/UnitablesRow";
 import { UnitablesClause, UnitablesRule } from "../core/UnitablesBoxedTypes";
+import { DmnValidator } from "./DmnValidator";
+import { FORMS_ID } from "../core/UnitablesJsonSchemaBridge";
+import { useUnitablesInputs } from "../core/UnitablesInputs";
+import { useGenerateBoxedOutputs } from "../core/BoxedOutputs";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -83,8 +86,6 @@ interface Props {
   openRow: (rowIndex: number) => void;
 }
 
-export const FORMS_ID = "unitables-forms";
-
 export function DmnAutoTable(props: Props) {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -101,6 +102,10 @@ export function DmnAutoTable(props: Props) {
 
   const inputColumnsCache = useRef<ColumnInstance[]>([]);
   const outputColumnsCache = useRef<ColumnInstance[]>([]);
+
+  const jsonSchemaBridge = useMemo(() => {
+    return new DmnValidator(i18n).getBridge(props.jsonSchema ?? {});
+  }, [i18n, props.jsonSchema]);
 
   const getDefaultValueByType = useCallback((type, defaultValues: { [x: string]: any }, property: string) => {
     if (type === "object") {
@@ -136,21 +141,24 @@ export function DmnAutoTable(props: Props) {
     defaultModel.current = props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow }));
   }, [defaultValues, props.inputRows]);
 
-  const { jsonSchemaBridge, inputs, inputRules, outputs, outputRules, updateInputCellsWidth, updateOutputCellsWidth } =
-    useGrid(
-      props.jsonSchema,
-      props.results,
-      props.inputRows,
-      props.setInputRows,
-      rowCount,
-      formsDivRendered,
-      rowsRef,
-      inputColumnsCache,
-      outputColumnsCache,
-      defaultModel,
-      defaultValues,
-      i18n
-    );
+  const { inputs, inputRules, updateInputCellsWidth } = useUnitablesInputs(
+    jsonSchemaBridge,
+    props.inputRows,
+    props.setInputRows,
+    rowCount,
+    formsDivRendered,
+    rowsRef,
+    inputColumnsCache,
+    defaultModel,
+    defaultValues
+  );
+
+  const { outputs, outputRules, updateOutputCellsWidth } = useGenerateBoxedOutputs(
+    jsonSchemaBridge,
+    props.results,
+    rowCount,
+    outputColumnsCache
+  );
 
   const shouldRender = useMemo(() => {
     return (inputs?.length ?? 0) > 0;
