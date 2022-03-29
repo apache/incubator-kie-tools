@@ -49,13 +49,15 @@ public class DisplayerAttributeGroupDef extends DisplayerAttributeDef {
     
     public static final DisplayerAttributeGroupDef EXTERNAL_COMPONENT_GROUP = new DisplayerAttributeGroupDef( "external" );
 
-
     // SUBGROUPS
     public static final DisplayerAttributeGroupDef CHART_MARGIN_GROUP =
             new DisplayerAttributeGroupDef( "margin", DisplayerAttributeGroupDef.CHART_GROUP);
 
     public static final DisplayerAttributeGroupDef CHART_LEGEND_GROUP =
             new DisplayerAttributeGroupDef( "legend", DisplayerAttributeGroupDef.CHART_GROUP );
+
+    public static final DisplayerAttributeGroupDef CHART_GRID_GROUP =
+            new DisplayerAttributeGroupDef( "grid", DisplayerAttributeGroupDef.CHART_GROUP );
 
     public static final DisplayerAttributeGroupDef TABLE_SORT_GROUP =
             new DisplayerAttributeGroupDef( "sort", DisplayerAttributeGroupDef.TABLE_GROUP );

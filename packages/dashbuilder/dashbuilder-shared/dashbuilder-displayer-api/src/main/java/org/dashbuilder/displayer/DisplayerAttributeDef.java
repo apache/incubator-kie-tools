@@ -63,12 +63,15 @@ public class DisplayerAttributeDef {
     
     public static final DisplayerAttributeDef CHART_BGCOLOR = new DisplayerAttributeDef("bgColor", DisplayerAttributeGroupDef.CHART_GROUP);
     public static final DisplayerAttributeDef CHART_3D = new DisplayerAttributeDef("3d", DisplayerAttributeGroupDef.CHART_GROUP);
+    public static final DisplayerAttributeDef ZOOM_ENABLED = new DisplayerAttributeDef("enabled", DisplayerAttributeGroupDef.CHART_GROUP);
     public static final DisplayerAttributeDef CHART_MARGIN_TOP = new DisplayerAttributeDef("top", DisplayerAttributeGroupDef.CHART_MARGIN_GROUP);
     public static final DisplayerAttributeDef CHART_MARGIN_BOTTOM = new DisplayerAttributeDef("bottom", DisplayerAttributeGroupDef.CHART_MARGIN_GROUP);
     public static final DisplayerAttributeDef CHART_MARGIN_LEFT = new DisplayerAttributeDef("left", DisplayerAttributeGroupDef.CHART_MARGIN_GROUP);
     public static final DisplayerAttributeDef CHART_MARGIN_RIGHT = new DisplayerAttributeDef("right", DisplayerAttributeGroupDef.CHART_MARGIN_GROUP);
     public static final DisplayerAttributeDef CHART_SHOWLEGEND = new DisplayerAttributeDef("show", DisplayerAttributeGroupDef.CHART_LEGEND_GROUP);
     public static final DisplayerAttributeDef CHART_LEGENDPOSITION = new DisplayerAttributeDef("position", DisplayerAttributeGroupDef.CHART_LEGEND_GROUP);
+    public static final DisplayerAttributeDef CHART_GRIDX = new DisplayerAttributeDef("x", DisplayerAttributeGroupDef.CHART_GRID_GROUP);
+    public static final DisplayerAttributeDef CHART_GRIDY = new DisplayerAttributeDef("y", DisplayerAttributeGroupDef.CHART_GRID_GROUP);
 
     public static final DisplayerAttributeDef TABLE_PAGESIZE = new DisplayerAttributeDef("pageSize", DisplayerAttributeGroupDef.TABLE_GROUP);
     public static final DisplayerAttributeDef TABLE_WIDTH = new DisplayerAttributeDef("width", DisplayerAttributeGroupDef.TABLE_GROUP);
@@ -99,7 +102,7 @@ public class DisplayerAttributeDef {
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_PARTITION = new DisplayerAttributeDef("external_component_partition");
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_WIDTH = new DisplayerAttributeDef("external_component_width", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_HEIGHT = new DisplayerAttributeDef("external_component_height", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
-    
+
     protected String id;
     protected DisplayerAttributeGroupDef parent;
 

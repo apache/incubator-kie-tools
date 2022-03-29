@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,34 +21,15 @@ import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
 @JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "Object")
-public class C3AxisX {
+public class C3ZoomConf {
     
     @JsOverlay
-    static C3AxisX create(String type, String[] categories, C3Tick tick, boolean show) {
-        C3AxisX instance = new C3AxisX();
-        instance.setType(type);
-        instance.setCategories(categories);
-        instance.setTick(tick);
+    static C3ZoomConf create(boolean show) {
+        C3ZoomConf instance = new C3ZoomConf();
         instance.setShow(show);
         return instance;
     }
-
-    @JsProperty
-    public native void setType(String type);
-    
-    @JsProperty
-    public native void setCategories(String categories[]);
-    
-    @JsProperty
-    public native void setTick(C3Tick tick);
-    
-    @JsProperty
-    public native C3Tick getTick();
     
     @JsProperty
     public native void setShow(boolean show);
-    
-    @JsProperty
-    public native void setLabel(C3AxisLabel label);
-    
 }
