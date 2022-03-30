@@ -139,6 +139,24 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String Language();
 
+    String No_Correlations();
+
+    String Correlation();
+
+    String Correlations();
+
+    String Correlations_Title();
+
+    String Duplicate_Correlation(String id);
+
+    String Id();
+
+    String PropertyId();
+
+    String PropertyName();
+
+    String PropertyType();
+
     // Notifications
     String replyToOptional();
 

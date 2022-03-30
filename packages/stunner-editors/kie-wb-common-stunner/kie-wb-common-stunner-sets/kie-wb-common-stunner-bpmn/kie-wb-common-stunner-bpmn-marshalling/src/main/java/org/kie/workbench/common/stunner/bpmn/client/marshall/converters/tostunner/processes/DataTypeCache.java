@@ -26,6 +26,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.custompr
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.customproperties.ParsedAssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.diagram.BaseCollaborationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AbstractDataTypeCache;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
@@ -85,6 +86,10 @@ public class DataTypeCache extends AbstractDataTypeCache {
     }
 
     public void initCache(BpmnNode diagramRoot) {
-        this.initCache(diagramRoot, (Node<View<? extends BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseRootProcessAdvancedData>>, Edge>) diagramRoot.value());
+        this.initCache(diagramRoot,
+                       (Node<View<? extends BPMNDiagram<? extends BaseDiagramSet,
+                               ? extends BaseProcessData,
+                               ? extends BaseRootProcessAdvancedData,
+                               ? extends BaseCollaborationSet>>, Edge>) diagramRoot.value());
     }
 }
