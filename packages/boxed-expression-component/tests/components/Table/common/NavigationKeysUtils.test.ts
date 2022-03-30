@@ -110,6 +110,23 @@ describe("NavigationKeysUtils", () => {
     });
   });
 
+  describe("isAnyArrow", () => {
+    test.each([
+      [undefined, false],
+      ["", false],
+      [notAKey, false],
+      ["enter", false],
+      ["arrowupx", false],
+      ["arrowup", true],
+      ["arrowleft", true],
+      ["ArrowUp", true],
+      ["ARROWRIGHT", true],
+    ])(testDescription, (key, expected) => {
+      // @ts-ignore
+      expect(NavigationKeysUtils.isAnyArrow(key)).toBe(expected);
+    });
+  });
+
   describe("isEnter", () => {
     test.each([
       [undefined, false],

@@ -43,6 +43,10 @@ export class NavigationKeysUtils {
     return /^arrowup$/i.test(key);
   }
 
+  static isAnyArrow(key: string) {
+    return /^arrow(up|right|down|left)$/i.test(key);
+  }
+
   static isEnter(key: string) {
     return /^enter$/i.test(key);
   }

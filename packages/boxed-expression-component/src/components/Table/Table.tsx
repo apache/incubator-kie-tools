@@ -78,6 +78,48 @@ export const getColumnSearchPredicate: (column: ColumnInstance) => (columnToComp
   };
 };
 
+/**
+ * Callback fired during arrow navigation.
+ *
+ * @param e the event object
+ * @param rowSpan the cell rowSpan, default is 1
+ * @returns
+ */
+const onCellTabNavigation = (e: KeyboardEvent, rowSpan = 1) => {
+  const currentTarget = e.currentTarget as HTMLElement;
+  e.preventDefault();
+
+  if (e.shiftKey) {
+    return focusPrevCellByTabKey(currentTarget, rowSpan);
+  } else {
+    return focusNextCellByTabKey(currentTarget, rowSpan);
+  }
+};
+
+/**
+ * Callback fired during arrow navigation.
+ *
+ * @param e the event object
+ * @param rowSpan the cell rowSpan, default is 1
+ * @returns
+ */
+const onCellArrowNavigation = (e: KeyboardEvent, rowSpan = 1): void => {
+  const key = e.key;
+  const currentTarget = e.currentTarget as HTMLElement;
+
+  if (NavigationKeysUtils.isArrowLeft(key)) {
+    return focusPrevCellByArrowKey(currentTarget, rowSpan);
+  }
+  if (NavigationKeysUtils.isArrowRight(key)) {
+    return focusNextCellByArrowKey(currentTarget, rowSpan);
+  }
+  if (NavigationKeysUtils.isArrowUp(key)) {
+    return focusUpperCell(currentTarget);
+  }
+
+  return focusLowerCell(currentTarget);
+};
+
 export const Table: React.FunctionComponent<TableProps> = ({
   tableId,
   children,
@@ -400,6 +442,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
         const key = e.key;
         const isModKey = e.altKey || e.ctrlKey || e.shiftKey || NavigationKeysUtils.isAltGraph(key);
         const currentTarget = e.currentTarget as HTMLElement;
+        const isFiredFromThis = e.currentTarget === e.target;
 
         if (!enableKeyboarNavigation) {
           return;
@@ -419,32 +462,19 @@ export const Table: React.FunctionComponent<TableProps> = ({
           return;
         }
 
-        const isFiredFromThis = e.currentTarget === e.target;
-
         if (NavigationKeysUtils.isTab(key)) {
-          e.preventDefault();
+          return onCellTabNavigation(e, rowSpan);
         }
 
-        if (NavigationKeysUtils.isArrowLeft(key)) {
-          focusPrevCellByArrowKey(currentTarget, rowSpan);
-        } else if (NavigationKeysUtils.isTab(key) && e.shiftKey) {
-          focusPrevCellByTabKey(currentTarget, rowSpan);
-        } else if (NavigationKeysUtils.isArrowRight(key)) {
-          focusNextCellByArrowKey(currentTarget, rowSpan);
-        } else if (NavigationKeysUtils.isTab(key) && !e.shiftKey) {
-          focusNextCellByTabKey(currentTarget, rowSpan);
-        } else if (NavigationKeysUtils.isArrowUp(key)) {
-          focusUpperCell(currentTarget);
-        } else if (NavigationKeysUtils.isArrowDown(key)) {
-          focusLowerCell(currentTarget);
-        } else if (NavigationKeysUtils.isEscape(key)) {
-          focusParentCell(currentTarget);
-        } else if (
-          !boxedExpression.isContextMenuOpen &&
-          isFiredFromThis &&
-          !isModKey &&
-          !NavigationKeysUtils.isFX(key)
-        ) {
+        if (NavigationKeysUtils.isAnyArrow(key)) {
+          return onCellArrowNavigation(e, rowSpan);
+        }
+
+        if (NavigationKeysUtils.isEscape(key)) {
+          return focusParentCell(currentTarget);
+        }
+
+        if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey && !NavigationKeysUtils.isFX(key)) {
           return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
