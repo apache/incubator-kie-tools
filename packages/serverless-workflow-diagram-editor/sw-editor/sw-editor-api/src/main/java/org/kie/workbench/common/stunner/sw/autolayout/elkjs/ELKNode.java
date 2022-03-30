@@ -34,9 +34,9 @@ public class ELKNode {
     @JsProperty
     double height;
     @JsProperty
-    double x = 0d;
+    double x;
     @JsProperty
-    double y = 0d;
+    double y;
     @JsProperty
     JsArray<ELKNode> children;
     @JsProperty
@@ -48,6 +48,8 @@ public class ELKNode {
                    double height) {
         this(id,
              Global.JSON.parse("{}"),
+             0d,
+             0d,
              width,
              height,
              new JsArray<>(),
@@ -61,6 +63,8 @@ public class ELKNode {
              layoutOptions,
              0d,
              0d,
+             0d,
+             0d,
              new JsArray<>(),
              new JsArray<>());
     }
@@ -74,6 +78,8 @@ public class ELKNode {
              layoutOptions,
              0d,
              0d,
+             0d,
+             0d,
              children,
              edges);
     }
@@ -81,12 +87,16 @@ public class ELKNode {
     @JsIgnore
     public ELKNode(String id,
                    Object layoutOptions,
+                   double x,
+                   double y,
                    double width,
                    double height,
                    JsArray<ELKNode> children,
                    JsArray<ELKEdge> edges) {
         this.id = id;
         this.layoutOptions = layoutOptions;
+        this.x = x;
+        this.y = y;
         this.width = width;
         this.height = height;
         this.children = children;
