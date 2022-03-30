@@ -103,8 +103,10 @@ export const getCellByCoordinates = (
   cellCoordinates: TableCellCoordinates
 ): HTMLTableCellElement | null => {
   const { x, y } = cellCoordinates || {};
+  const xOutOfIndex = x === undefined || x < -1;
+  const yOutOfIndex = y === undefined || y < -1;
 
-  if (!table || x === undefined || x < -1 || y === undefined || y < -1 || table.rows.length <= y) {
+  if (!table || xOutOfIndex || yOutOfIndex || table.rows.length <= y) {
     return null;
   }
 
