@@ -16,6 +16,7 @@
 
 import { isConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
+import { ServiceRegistrySettingsConfig } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { DeployArgs } from "./OpenShiftContext";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
@@ -263,23 +264,51 @@ export class OpenShiftService {
     return isConfigValid(config) && (await this.isConnectionEstablished(config));
   }
 
-  public async getServiceRegistryAccessToken(proxyUrl: string, config: ServiceAccountSettingsConfig): Promise<string> {
-    const response = await fetch(proxyUrl + "/devsandbox", {
+  public async getServiceRegistryAccessToken(args: {
+    proxyUrl: string;
+    serviceAccountConfig: ServiceAccountSettingsConfig;
+  }): Promise<string> {
+    const response = await fetch(args.proxyUrl + "/devsandbox", {
       method: "POST",
       headers: {
         "Target-Url": OPENSHIFT_IDENTITY_API_URL,
       },
       body: new URLSearchParams({
         grant_type: "client_credentials",
-        client_id: `${config.clientId}`,
-        client_secret: `${config.clientSecret}`,
+        client_id: `${args.serviceAccountConfig.clientId}`,
+        client_secret: `${args.serviceAccountConfig.clientSecret}`,
       }),
     });
 
     if (!response.ok) {
-      throw new Error("Error fetching access token");
+      throw new Error(`Could not fetch access token: Error ${response.status}`);
     }
 
     return ((await response.json()) as AccessToken).access_token;
+  }
+
+  public async uploadOpenApiToServiceRegistry(args: {
+    accessToken: string;
+    groupId: string;
+    artifactId: string;
+    openApiJsonContent: string;
+    serviceRegistryConfig: ServiceRegistrySettingsConfig;
+  }): Promise<void> {
+    const response = await fetch(
+      `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(args.groupId)}/artifacts`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${args.accessToken}`,
+          "Content-Type": "application/json; artifactType=OpenAPI",
+          "X-Registry-ArtifactId": args.artifactId,
+        },
+        body: args.openApiJsonContent,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Could not upload OpenAPI to Service Registry: Error ${response.status}`);
+    }
   }
 }

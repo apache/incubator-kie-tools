@@ -19,12 +19,14 @@ import { useCallback, useMemo } from "react";
 import { DeployArgs, DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftService } from "./OpenShiftService";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
+import { useSettings } from "../settings/SettingsContext";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export function OpenShiftProvider(props: Props) {
+  const settings = useSettings();
   const service = useMemo(() => new OpenShiftService(), []);
 
   const deploy = useCallback(
@@ -54,7 +56,7 @@ export function OpenShiftProvider(props: Props) {
           return;
         }
 
-        const response = await fetch(`${routeUrl}/q/openapi`);
+        const response = await fetch(`${routeUrl}/q/openapi?format=json`);
         if (!response.ok) {
           return;
         }
@@ -158,9 +160,34 @@ export function OpenShiftProvider(props: Props) {
     [service]
   );
 
+  const uploadOpenApiToServiceRegistry = useCallback(async () => {
+    const accessToken = await service.getServiceRegistryAccessToken({
+      proxyUrl: settings.openshift.config.proxy,
+      serviceAccountConfig: settings.serviceAccount.config,
+    });
+
+    // TODO: Replace fixed value
+    const openApiContent = (await fetchOpenApiFile(settings.openshift.config, "swf-e3y8lsulb772"))!;
+
+    await service.uploadOpenApiToServiceRegistry({
+      accessToken: accessToken,
+      groupId: "org.kie", // TODO: maybe keep this one
+      artifactId: "My Artifact ID", // TODO: Replace fixed value
+      serviceRegistryConfig: settings.serviceRegistry.config,
+      openApiJsonContent: openApiContent,
+    });
+  }, [
+    fetchOpenApiFile,
+    service,
+    settings.openshift.config,
+    settings.serviceAccount.config,
+    settings.serviceRegistry.config,
+  ]);
+
   const value = useMemo(
     () => ({
       deploy,
+      uploadOpenApiToServiceRegistry,
       fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,
@@ -171,6 +198,7 @@ export function OpenShiftProvider(props: Props) {
     }),
     [
       deploy,
+      uploadOpenApiToServiceRegistry,
       fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,

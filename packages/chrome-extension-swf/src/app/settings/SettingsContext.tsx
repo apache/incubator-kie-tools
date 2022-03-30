@@ -302,7 +302,7 @@ export function SettingsContextProvider(props: any) {
   return (
     <SettingsContext.Provider value={value}>
       <SettingsDispatchContext.Provider value={dispatch}>
-        <Drawer title="Settings" isExpanded={isOpen}>
+        <Drawer isExpanded={isOpen}>
           <DrawerContent panelContent={panelContent}>
             <DrawerContentBody>{props.children}</DrawerContentBody>
           </DrawerContent>
