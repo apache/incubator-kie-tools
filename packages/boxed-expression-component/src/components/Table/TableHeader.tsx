@@ -17,14 +17,15 @@
 import { Th, Thead, Tr } from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo, useEffect, useRef, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
-import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
-import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
 import { focusCurrentCell, getParentCell } from "./common";
+import { ThCell } from "./ThCell";
+import { ResizableHeaderCell } from "./ResizableHeaderCell";
+import { EditTextInline } from "../EditExpressionMenu";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -203,7 +204,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       column.isCountColumn ? (
         renderCountColumn(column, rowIndex)
       ) : (
-        <RenderResizableHeaderCell
+        <ResizableHeaderCell
           key={`${rowIndex}_${columnIndex}`}
           editableHeader={editableHeader}
           getColumnKey={getColumnKey}
@@ -289,174 +290,3 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 
   return <>{header}</>;
 };
-
-interface RenderResizableHeaderCellProps extends TableHeaderProps {
-  column: any;
-  rowIndex: number;
-  columnIndex: number;
-  onColumnNameOrDataTypeUpdate: (column: ColumnInstance, columnIndex: number) => any;
-  getColumnLabel: (groupType: string) => string | undefined;
-  onHeaderClick: (columnKey: string) => () => void;
-  onHorizontalResizeStop: (column: Column, columnWidth: number) => void;
-  renderHeaderCellInfo: (
-    column: Column,
-    columnIndex: number,
-    onAnnotationCellToggle?: (isReadMode: boolean) => void
-  ) => React.ReactElement;
-}
-
-const RenderResizableHeaderCell = ({
-  editableHeader,
-  getColumnKey,
-  getColumnLabel,
-  onCellKeyDown,
-  onColumnNameOrDataTypeUpdate,
-  onHeaderClick,
-  onHorizontalResizeStop,
-  renderHeaderCellInfo,
-  thProps,
-  tableInstance,
-  column,
-  rowIndex,
-  columnIndex,
-}: RenderResizableHeaderCellProps) => {
-  const headerProps = {
-    ...column.getHeaderProps(),
-    style: {},
-  };
-  const width = column.width || DEFAULT_MIN_WIDTH;
-  const isColspan = (column.columns?.length ?? 0) > 0 || false;
-  const columnKey = getColumnKey(column);
-  const isFocusable = /^(_\w{8}-(\w{4}-){3}\w{12}|parameters|functionDefinition)$/.test(columnKey);
-  const [isAnnotationCellEditMode, setIsAnnotationCellEditMode] = useState(false);
-
-  const getCssClass = useCallback(() => {
-    const cssClasses = [columnKey, "data-header-cell"];
-    if (!column.dataType) {
-      cssClasses.push("no-clickable-cell");
-    }
-    if (isColspan) {
-      cssClasses.push("colspan-header");
-    }
-    if (column.placeholderOf) {
-      cssClasses.push("colspan-header");
-      cssClasses.push(column.placeholderOf.cssClasses);
-      cssClasses.push(column.placeholderOf.groupType);
-    }
-    cssClasses.push(column.groupType || "");
-    cssClasses.push(column.cssClasses || "");
-    cssClasses.push(isAnnotationCellEditMode ? "focused" : "");
-    return cssClasses.join(" ");
-  }, [column, columnKey, isAnnotationCellEditMode, isColspan]);
-
-  /**
-   * Get the rowspan value.
-   *
-   * @param cssClasses the classes of the cell
-   * @returns the value, default is 1
-   */
-  const getRowSpan = useCallback(
-    (cssClasses: string): number => {
-      if (
-        rowIndex === tableInstance.headerGroups.length - 1 &&
-        (cssClasses.includes("decision-table--input") || cssClasses.includes("decision-table--annotation"))
-      ) {
-        return 2;
-      }
-
-      return 1;
-    },
-    [tableInstance, rowIndex]
-  );
-
-  /**
-   * Callback called when the annotation cell toggle edit/read mode.
-   *
-   * @param isReadMode true if is read mode, false otherwise
-   */
-  const onAnnotationCellToggle = useCallback((isReadMode: boolean) => {
-    setIsAnnotationCellEditMode(!isReadMode);
-  }, []);
-
-  const cssClasses = getCssClass();
-
-  return (
-    <ThCell
-      className={cssClasses}
-      headerProps={headerProps}
-      isFocusable={isFocusable}
-      key={columnKey}
-      onClick={onHeaderClick(columnKey)}
-      onKeyDown={onCellKeyDown}
-      rowIndex={rowIndex}
-      rowSpan={getRowSpan(cssClasses)}
-      thProps={thProps(column)}
-    >
-      <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
-        <div className="header-cell" data-ouia-component-type="expression-column-header">
-          {column.dataType && editableHeader ? (
-            <EditExpressionMenu
-              title={getColumnLabel(column.groupType)}
-              selectedExpressionName={column.label}
-              selectedDataType={column.dataType}
-              onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
-              key={columnKey}
-            >
-              {renderHeaderCellInfo(column, columnIndex)}
-            </EditExpressionMenu>
-          ) : (
-            renderHeaderCellInfo(column, columnIndex, onAnnotationCellToggle)
-          )}
-        </div>
-      </Resizer>
-    </ThCell>
-  );
-};
-
-interface ThCellProps {
-  children?: React.ReactElement;
-  className: string;
-  headerProps: any;
-  isFocusable: boolean;
-  onKeyDown: (rowSpan: number) => (e: KeyboardEvent) => void;
-  onClick?: () => void;
-  rowIndex: number;
-  thProps?: any;
-  rowSpan: number;
-}
-
-function ThCell({
-  children,
-  className,
-  headerProps,
-  isFocusable = true,
-  onKeyDown,
-  onClick,
-  rowIndex,
-  thProps,
-  rowSpan = 1,
-}: ThCellProps) {
-  const thRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    const onKeyDownForIndex = onKeyDown(rowSpan);
-    const cell = thRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
-    return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
-    };
-  }, [onKeyDown, rowIndex, rowSpan]);
-
-  return (
-    <Th
-      {...headerProps}
-      {...thProps}
-      ref={thRef}
-      onClick={onClick}
-      className={className}
-      tabIndex={isFocusable ? "-1" : undefined}
-    >
-      {children}
-    </Th>
-  );
-}
