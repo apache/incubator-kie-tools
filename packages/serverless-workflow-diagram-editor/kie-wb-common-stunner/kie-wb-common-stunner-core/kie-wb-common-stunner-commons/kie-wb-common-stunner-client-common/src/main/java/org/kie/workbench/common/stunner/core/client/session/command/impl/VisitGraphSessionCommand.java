@@ -15,14 +15,14 @@
  */
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.Objects;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasHighlightVisitor;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Default
@@ -34,7 +34,8 @@ public class VisitGraphSessionCommand extends AbstractClientSessionCommand<Clien
 
     @Override
     public <V> void execute(final Callback<V> callback) {
-        Objects.requireNonNull(callback, "Parameter named 'callback' should be not null!");
+        checkNotNull("callback",
+                     callback);
 
         createCanvasHighlightVisitor().run(getSession().getCanvasHandler(),
                                            callback::onSuccess);

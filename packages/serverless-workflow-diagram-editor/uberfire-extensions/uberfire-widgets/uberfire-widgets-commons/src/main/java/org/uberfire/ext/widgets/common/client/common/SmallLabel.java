@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.client.ui.HTML;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.safehtml.client.SafeHtmlTemplates;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.user.client.ui.HTML;
 
 public class SmallLabel extends HTML {
 

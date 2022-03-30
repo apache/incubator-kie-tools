@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.IContainer;
 import com.ait.lienzo.client.core.shape.IDrawable;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
-import com.google.gwt.user.client.ui.AbsolutePanel;
+import org.gwtproject.user.client.ui.AbsolutePanel;
 import org.uberfire.ext.wires.core.grids.client.model.Bounds;
 import org.uberfire.ext.wires.core.grids.client.widget.dnd.GridWidgetDnDHandlersState;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;

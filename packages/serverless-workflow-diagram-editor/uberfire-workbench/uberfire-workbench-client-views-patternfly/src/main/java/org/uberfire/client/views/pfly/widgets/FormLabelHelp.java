@@ -16,11 +16,10 @@
 
 package org.uberfire.client.views.pfly.widgets;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasText;
 import org.gwtbootstrap3.client.ui.FormLabel;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.HasText;
 
 public class FormLabelHelp extends Composite implements HasText {
 
@@ -63,7 +62,7 @@ public class FormLabelHelp extends Composite implements HasText {
 
     private HelpIcon getHelpIcon() {
         if (helpIcon == null) {
-            helpIcon = GWT.create(HelpIcon.class);
+            helpIcon = new HelpIcon();
             panel.add(helpIcon);
         }
         return helpIcon;

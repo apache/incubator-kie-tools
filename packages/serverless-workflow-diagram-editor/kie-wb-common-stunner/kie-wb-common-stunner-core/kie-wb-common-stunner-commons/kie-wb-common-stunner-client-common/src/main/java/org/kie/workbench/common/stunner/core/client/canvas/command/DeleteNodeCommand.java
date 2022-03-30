@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
@@ -80,13 +79,8 @@ public class DeleteNodeCommand extends AbstractCanvasGraphCommand {
         return deleteProcessor.getCommand();
     }
 
-    public CompositeCommand<AbstractCanvasHandler, CanvasViolation> getCompositedCommand() {
+    CompositeCommand<AbstractCanvasHandler, CanvasViolation> getCommand() {
         return deleteProcessor.getCommand();
-    }
-
-    public List<Command<GraphCommandExecutionContext, RuleViolation>> getGraphCommands() {
-        SafeDeleteNodeCommand command = (SafeDeleteNodeCommand) this.graphCommand;
-        return command.getCommands();
     }
 
     @Override

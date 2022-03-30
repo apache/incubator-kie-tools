@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.shape.view.event;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.gwt.event.shared.HandlerRegistration;
+import org.gwtproject.event.shared.HandlerRegistration;
 
 public class GWTHandlerRegistration implements HandlerRegistration {
 

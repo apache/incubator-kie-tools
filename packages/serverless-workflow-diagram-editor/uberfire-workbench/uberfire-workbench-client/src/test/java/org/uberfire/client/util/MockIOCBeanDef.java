@@ -18,12 +18,15 @@ package org.uberfire.client.util;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
-import org.jboss.errai.ioc.client.QualifierUtil;
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
+import io.crysknife.client.SyncBeanDef;
+import io.crysknife.client.internal.BeanFactory;
+import io.crysknife.client.internal.QualifierUtil;
 
 public class MockIOCBeanDef<T, B extends T>
         implements
@@ -80,12 +83,22 @@ public class MockIOCBeanDef<T, B extends T>
     }
 
     @Override
+    public Optional<BeanFactory<T>> getFactory() {
+        return Optional.empty();
+    }
+
+    @Override
     public Set<Annotation> getQualifiers() {
         if (qualifiers == null) {
             return Collections.emptySet();
         } else {
             return qualifiers;
         }
+    }
+
+    @Override
+    public Collection<Annotation> getActualQualifiers() {
+        return null;
     }
 
     @Override
@@ -97,11 +110,6 @@ public class MockIOCBeanDef<T, B extends T>
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public boolean isActivated() {
-        return activated;
     }
 
     @Override

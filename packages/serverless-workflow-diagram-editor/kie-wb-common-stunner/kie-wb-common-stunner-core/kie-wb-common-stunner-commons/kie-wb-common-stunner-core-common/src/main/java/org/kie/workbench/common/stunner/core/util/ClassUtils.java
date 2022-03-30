@@ -33,7 +33,7 @@ public class ClassUtils {
     }
 
     @PostConstruct
-    private void init() {
+    void init() {
         if (initialized) {
             return;
         }

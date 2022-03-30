@@ -26,7 +26,7 @@ import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.shared.core.types.ColorName;
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 
 public class Decorator extends Group {
 

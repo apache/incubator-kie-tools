@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.registry.rule.RuleHandlerRegistry;
 import org.kie.workbench.common.stunner.core.rule.CachedRuleManager;
 import org.kie.workbench.common.stunner.core.rule.RuleEvaluationContext;
@@ -38,7 +38,7 @@ public class ClientRuleManager implements RuleManager {
 
     protected ClientRuleManager() {
         this(null,
-             null);
+                null);
     }
 
     @Inject
@@ -62,6 +62,6 @@ public class ClientRuleManager implements RuleManager {
     public RuleViolations evaluate(final RuleSet ruleSet,
                                    final RuleEvaluationContext context) {
         return ruleManager.evaluate(ruleSet,
-                                    context);
+                context);
     }
 }

@@ -23,30 +23,36 @@
     <script>
       function loadDiagram(diagram) {
         var path = "somePath";
-        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().setContent(path, diagram);
+
+        var iframe = document.getElementById("editorFrame");
+        var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+
+        iframeWindow.setContent(path, diagram);
         document.getElementById("download_btn").disabled = false;
         document.getElementById("download_svg_btn").disabled = false;
       }
 
       function callPreview() {
-        window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().getPreview();
+        var iframe = document.getElementById("editorFrame");
+        var iframeWindow = iframe.contentWindow || iframe.contentDocument;
+
+        iframeWindow.getPreview();
       }
 
       function download() {
-        window.frames.editorFrame.contentWindow.gwtEditorBeans
-          .get("SWDiagramEditor")
-          .get()
-          .getContent()
-          .then(function (process) {
-            var d = document.createElement("a");
-            d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(process));
-            d.setAttribute("download", "process.sw");
-            d.style.display = "none";
+        var iframe = document.getElementById("editorFrame");
+        var iframeWindow = iframe.contentWindow || iframe.contentDocument;
 
-            document.body.appendChild(d);
-            d.click();
-            document.body.removeChild(d);
-          });
+        iframeWindow.getContent().then(function (process) {
+          var d = document.createElement("a");
+          d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(process));
+          d.setAttribute("download", "process.sw");
+          d.style.display = "none";
+
+          document.body.appendChild(d);
+          d.click();
+          document.body.removeChild(d);
+        });
       }
 
       function downloadSvg() {

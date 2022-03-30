@@ -24,7 +24,7 @@ import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

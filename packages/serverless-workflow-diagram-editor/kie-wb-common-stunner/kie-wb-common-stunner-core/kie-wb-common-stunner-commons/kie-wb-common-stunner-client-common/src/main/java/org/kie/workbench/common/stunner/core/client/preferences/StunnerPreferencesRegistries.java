@@ -19,10 +19,9 @@ package org.kie.workbench.common.stunner.core.client.preferences;
 import java.lang.annotation.Annotation;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
@@ -34,7 +33,7 @@ public class StunnerPreferencesRegistries {
 
     @Inject
     public StunnerPreferencesRegistries(final DefinitionUtils definitionUtils,
-                                        final @Any ManagedInstance<StunnerPreferencesRegistry> preferencesRegistries) {
+                                        final ManagedInstance<StunnerPreferencesRegistry> preferencesRegistries) {
         this.definitionUtils = definitionUtils;
         this.preferencesRegistries = preferencesRegistries;
     }

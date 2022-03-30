@@ -22,14 +22,14 @@ import java.util.function.BiPredicate;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.uberfire.ext.widgets.core.client.tree.Tree;
 import org.uberfire.ext.widgets.core.client.tree.TreeItem;
@@ -37,7 +37,7 @@ import org.uberfire.ext.widgets.core.client.tree.TreeItem;
 @Dependent
 public class TreeExplorerView extends Composite implements TreeExplorer.View {
 
-    static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    static ViewBinder uiBinder = new TreeExplorerView_ViewBinderImpl();
 
     @UiField
     Tree<TreeItem> tree;
@@ -70,15 +70,15 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         initWidget(uiBinder.createAndBindUi(this));
 
         handlerRegistration = tree.addSelectionHandler(selectionEvent ->
-                                                       {
-                                                           final TreeItem item = selectionEvent.getSelectedItem();
-                                                           final String uuid = item.getUuid();
-                                                           final Shape shape = presenter.getCanvasHandler().getCanvas().getShape(uuid);
+        {
+            final TreeItem item = selectionEvent.getSelectedItem();
+            final String uuid = item.getUuid();
+            final Shape shape = presenter.getCanvasHandler().getCanvas().getShape(uuid);
 
-                                                           if (shape != null) {
-                                                               presenter.onSelect(uuid);
-                                                           }
-                                                       });
+            if (shape != null) {
+                presenter.onSelect(uuid);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -90,9 +90,9 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         checkNotExist(uuid);
         final TreeItem.Type itemType = isContainer ? TreeItem.Type.CONTAINER : TreeItem.Type.ITEM;
         final TreeItem item = buildItem(uuid,
-                                        name,
-                                        icon,
-                                        itemType);
+                name,
+                icon,
+                itemType);
         tree.addItem(item);
 
         item.setState(getState(state));
@@ -110,9 +110,9 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         checkNotExist(uuid);
         final TreeItem.Type itemType = isContainer ? TreeItem.Type.CONTAINER : TreeItem.Type.ITEM;
         final TreeItem item = buildItem(uuid,
-                                        name,
-                                        icon,
-                                        itemType);
+                name,
+                icon,
+                itemType);
         final TreeItem parent = tree.getItemByUuid(parentsUuid);
         if (index.isPresent() && index.getAsInt() <= parent.getChildCount()) {
             parent.insertItem(item, index.getAsInt());
@@ -133,7 +133,7 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         final TreeItem oldItem = tree.getItemByUuid(uuid);
         if (oldItem != null) {
             if (isNameChanged().test(oldItem,
-                                     name)) {
+                    name)) {
                 return true;
             }
             final TreeItem oldItemParent = oldItem.getParentItem();
@@ -173,7 +173,7 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
     public TreeExplorer.View setSelectedItem(final String uuid) {
         final TreeItem selectedItem = tree.getItemByUuid(uuid);
         tree.setSelectedItem(selectedItem,
-                             false);
+                false);
         return this;
     }
 
@@ -190,9 +190,9 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
                                final IsWidget icon,
                                final TreeItem.Type itemType) {
         final TreeItem item = new TreeItem(itemType,
-                                           uuid,
-                                           name,
-                                           icon);
+                uuid,
+                name,
+                icon);
         item.setUserObject(uuid);
         item.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         return item;
@@ -226,6 +226,7 @@ public class TreeExplorerView extends Composite implements TreeExplorer.View {
         };
     }
 
+    @UiTemplate
     interface ViewBinder extends UiBinder<Widget, TreeExplorerView> {
 
     }

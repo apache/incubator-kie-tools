@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.layout.editor.client.api;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 /**
  * This interface defines the main contract between the Layout Editor's module and components implementations.

@@ -24,11 +24,11 @@ import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.Direction;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
-import com.google.gwt.dom.client.Style;
 import elemental2.core.JsArray;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLButtonElement;
 import elemental2.dom.HTMLDivElement;
+import org.gwtproject.dom.client.Style;
 
 public class ToolboxExample extends BaseExample implements Example {
 

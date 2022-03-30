@@ -16,9 +16,14 @@
 
 package org.kie.workbench.common.stunner.svg.gen.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,6 +31,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import javax.annotation.processing.Filer;
+import javax.tools.FileObject;
+import javax.tools.JavaFileManager;
+import javax.tools.StandardLocation;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -48,12 +57,14 @@ public class SVGGeneratorImpl implements SVGGenerator {
 
     private final SVGDocumentTranslator translator;
     private final SVGViewFactoryGenerator viewFactoryGenerator;
+    private final Filer filer;
     private final DocumentBuilder documentBuilder;
 
     public SVGGeneratorImpl(final SVGDocumentTranslator translator,
-                            final SVGViewFactoryGenerator viewFactoryGenerator) throws ParserConfigurationException {
+                            final SVGViewFactoryGenerator viewFactoryGenerator, Filer filer) throws ParserConfigurationException {
         this.translator = translator;
         this.viewFactoryGenerator = viewFactoryGenerator;
+        this.filer = filer;
         this.documentBuilder = newBuilder();
     }
 
@@ -67,22 +78,23 @@ public class SVGGeneratorImpl implements SVGGenerator {
         final String viewBuilderType = request.getViewBuilderType();
         final Map<String, String> viewSources = request.getViewSources();
         final ViewFactoryImpl viewFactory = new ViewFactoryImpl(name,
-                                                                pkg,
-                                                                typeOf,
-                                                                viewBuilderType);
+                pkg,
+                typeOf,
+                viewBuilderType);
 
         // Process the global CSS declaration specified in the factory, if any.
         final StyleSheetDefinition[] styleSheetDefinition = new StyleSheetDefinition[1];
         if (null != cssPath && cssPath.trim().length() > 0) {
-            final InputStream cssStream = loadResource(cssPath);
-            if (null != cssStream) {
+            try (InputStream cssStream = loadResource(cssPath)) {
                 try {
                     styleSheetDefinition[0] = SVGStyleTranslator.parseStyleSheetDefinition(cssPath, cssStream);
                     viewFactory.setStyleSheetDefinition(styleSheetDefinition[0]);
                 } catch (Exception e) {
                     throw new RuntimeException("Error while processing the glocal CSS file [" + cssPath + "] ",
-                                               e);
+                            e);
                 }
+            } catch (IOException ioException) {
+                throw new RuntimeException("Failed to read css", ioException);
             }
         }
 
@@ -90,13 +102,13 @@ public class SVGGeneratorImpl implements SVGGenerator {
         final Set<String> processedSvgIds = new LinkedHashSet<>(); // TODO: Hmmm
         viewSources.forEach((fMethodName, svgPath) -> {
             parseSVGViewSource(fMethodName,
-                               svgPath,
-                               styleSheetDefinition[0],
-                               result -> {
-                                   result.setId(fMethodName);
-                                   result.setFactoryMethodName(fMethodName);
-                                   viewFactory.getViewDefinitions().add(result);
-                               });
+                    svgPath,
+                    styleSheetDefinition[0],
+                    result -> {
+                        result.setId(fMethodName);
+                        result.setFactoryMethodName(fMethodName);
+                        viewFactory.getViewDefinitions().add(result);
+                    });
             processedSvgIds.add(fMethodName);
         });
 
@@ -106,14 +118,14 @@ public class SVGGeneratorImpl implements SVGGenerator {
                 .flatMap(v -> v.getSVGViewRefs().stream())
                 .filter(vd -> !processedSvgIds.contains(vd.getViewRefId()))
                 .forEach(vd -> parseSVGViewSource(vd.getViewRefId(),
-                                                  vd.getFilePath(),
-                                                  styleSheetDefinition[0],
-                                                  result -> {
-                                                      final String id = SVGGeneratorFormatUtils.getValidInstanceId(result);
-                                                      result.setFactoryMethodName(id);
-                                                      referencedViewDefinitions.add(result);
-                                                      processedSvgIds.add(id);
-                                                  }));
+                        vd.getFilePath(),
+                        styleSheetDefinition[0],
+                        result -> {
+                            final String id = SVGGeneratorFormatUtils.getValidInstanceId(result);
+                            result.setFactoryMethodName(id);
+                            referencedViewDefinitions.add(result);
+                            processedSvgIds.add(id);
+                        }));
         viewFactory.getViewDefinitions().addAll(referencedViewDefinitions);
 
         return viewFactoryGenerator.generate(viewFactory);
@@ -123,25 +135,42 @@ public class SVGGeneratorImpl implements SVGGenerator {
                                     final String svgPath,
                                     final StyleSheetDefinition styleSheetDefinition,
                                     final Consumer<ViewDefinitionImpl> viewDefinitionConsumer) {
-        final InputStream svgStream = loadResource(svgPath);
-        if (null != svgStream) {
+        try (InputStream svgStream = loadResource(svgPath)) {
             try {
                 final ViewDefinitionImpl viewDefinition = parseSVGView(viewId,
-                                                                       svgPath,
-                                                                       svgStream,
-                                                                       styleSheetDefinition);
+                        svgPath,
+                        svgStream,
+                        styleSheetDefinition);
                 viewDefinitionConsumer.accept(viewDefinition);
             } catch (Exception e) {
                 throw new RuntimeException("Error while processing the SVG file [" + svgPath + "]",
-                                           e);
+                        e);
             }
-        } else {
+        } catch (IOException ioException) {
             throw new RuntimeException("No SVG file found at [" + svgPath + "]");
         }
     }
 
-    private InputStream loadResource(final String path) {
-        return getClass().getClassLoader().getResourceAsStream(path);
+    private InputStream loadResource(final String path) throws IOException {
+        InputStream resourceAsStream = getClass().getClassLoader().getResourceAsStream(path);
+        if (resourceAsStream != null) {
+            return resourceAsStream;
+        }
+        for (JavaFileManager.Location o : Arrays.asList(
+                StandardLocation.SOURCE_PATH,
+                StandardLocation.SOURCE_OUTPUT,
+                StandardLocation.CLASS_PATH,
+                StandardLocation.CLASS_OUTPUT,
+                StandardLocation.ANNOTATION_PROCESSOR_PATH
+        )) {
+            String pkg = path.substring(0, path.lastIndexOf("/") + 1);
+            String filename = path.substring(path.lastIndexOf("/") + 1);
+            FileObject resource = filer.getResource(o, "", pkg + filename);
+            if (new File(resource.getName()).exists()) {
+                return new FileInputStream(resource.getName());
+            }
+        }
+        throw new FileNotFoundException(path);
     }
 
     private ViewDefinitionImpl parseSVGView(final String viewId,
@@ -152,9 +181,9 @@ public class SVGGeneratorImpl implements SVGGenerator {
         try {
             Document root = parse(svgStream);
             svgShapeViewSource = translate(viewId,
-                                           svgPath,
-                                           root,
-                                           styleSheetDefinition);
+                    svgPath,
+                    root,
+                    styleSheetDefinition);
         } catch (final Exception e) {
             throw new GeneratorException(e);
         }
@@ -176,8 +205,8 @@ public class SVGGeneratorImpl implements SVGGenerator {
                 path.subpath(0, path.getNameCount() - 1).toString() :
                 "";
         final SVGTranslatorContext context = new SVGTranslatorContext(document,
-                                                                      relativePath,
-                                                                      styleSheetDefinition);
+                relativePath,
+                styleSheetDefinition);
         if (null != viewId) {
             context.setViewId(viewId);
         }
@@ -190,8 +219,6 @@ public class SVGGeneratorImpl implements SVGGenerator {
     private DocumentBuilder newBuilder() throws ParserConfigurationException {
         DocumentBuilderFactory documentFactory = DocumentBuilderFactory
                 .newInstance();
-        // to be compliant, completely disable DOCTYPE declaration:
-        documentFactory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
         documentFactory.setNamespaceAware(true);
         return documentFactory.newDocumentBuilder();
     }

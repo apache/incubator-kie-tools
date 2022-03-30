@@ -18,7 +18,7 @@ package org.uberfire.client.views.pfly.sys;
 
 import java.util.Optional;
 
-import com.google.gwt.i18n.client.LocaleInfo;
+import org.gwtproject.i18n.client.LocaleInfo;
 
 public class MomentUtils {
 
@@ -42,7 +42,10 @@ public class MomentUtils {
         }
     }
 
-    public static native void setMomentLocale(final String locale) /*-{
+    public static void setMomentLocale(final String locale) {
+        throw new Error(MomentUtils.class.getClass().getCanonicalName()+".setMomentLocale");
+
+    }/*-{
         $wnd.moment.locale(locale);
     }-*/;
 

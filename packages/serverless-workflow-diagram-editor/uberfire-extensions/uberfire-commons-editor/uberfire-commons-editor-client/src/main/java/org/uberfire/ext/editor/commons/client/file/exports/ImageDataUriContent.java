@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
-import java.util.Objects;
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public final class ImageDataUriContent {
 
@@ -25,7 +25,8 @@ public final class ImageDataUriContent {
     private final String data;
 
     public static ImageDataUriContent create(final String uri) {
-        Objects.requireNonNull(uri, "Parameter named 'uri' should be not null!");
+        checkNotNull("uri",
+                     uri);
         final String[] uriParts = uri.split(",");
         return new ImageDataUriContent(uri,
                                        parseMimeType(uriParts[0]),

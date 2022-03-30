@@ -28,7 +28,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -100,20 +100,20 @@ public class FlowActionsToolboxFactory
         final CommonDomainLookups lookup = toolboxDomainLookups.get(defSetId);
         final Set<String> targetConnectors = lookup.lookupTargetConnectors(node);
         return Stream.concat(targetConnectors.stream()
-                                     .map(connectorDefId -> newCreateConnectorToolboxAction(qualifier).setEdgeId(connectorDefId)),
-                             targetConnectors.stream()
-                                     .flatMap(defaultConnectorId -> {
-                                         final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
-                                         Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
-                                                                                        node,
-                                                                                        defaultConnectorId,
-                                                                                        definitionsAllowedFilter);
-                                         // TODO: Disabled for SW PoC
-                                         // targets = lookup.lookupMorphBaseDefinitions(targets);
-                                         return targets.stream().map(defId -> newCreateNodeToolboxAction(qualifier)
-                                                 .setEdgeId(defaultConnectorId)
-                                                 .setNodeId(defId));
-                                     }))
+                                .map(connectorDefId -> newCreateConnectorToolboxAction(qualifier).setEdgeId(connectorDefId)),
+                        targetConnectors.stream()
+                                .flatMap(defaultConnectorId -> {
+                                    final Predicate<String> definitionsAllowedFilter = profileManager.isDefinitionIdAllowed(metadata);
+                                    Set<String> targets = lookup.lookupTargetNodes(diagram.getGraph(),
+                                            node,
+                                            defaultConnectorId,
+                                            definitionsAllowedFilter);
+                                    // TODO: Disabled for SW PoC
+                                    // targets = lookup.lookupMorphBaseDefinitions(targets);
+                                    return targets.stream().map(defId -> newCreateNodeToolboxAction(qualifier)
+                                            .setEdgeId(defaultConnectorId)
+                                            .setNodeId(defId));
+                                }))
                 .collect(Collectors.toList());
     }
 

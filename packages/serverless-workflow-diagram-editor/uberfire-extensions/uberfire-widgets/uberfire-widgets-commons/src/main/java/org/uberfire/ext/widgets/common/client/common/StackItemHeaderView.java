@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface StackItemHeaderView extends IsWidget {
 

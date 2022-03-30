@@ -61,20 +61,20 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
                                             RoundEnvironment roundEnv) throws Exception {
         if (roundEnv.processingOver()) {
             return processLastRound(set,
-                                    roundEnv);
+                    roundEnv);
         }
         //If prior processing threw an error exit
         if (roundEnv.errorRaised()) {
             return false;
         }
         //Initialize the generator
-        generator = SVGGeneratorFactory.newGenerator();
+        generator = SVGGeneratorFactory.newGenerator(processingEnv.getFiler());
         // Process SVG Shape View Factories for the annotated types.
         final Elements elementUtils = processingEnv.getElementUtils();
         for (Element e : roundEnv.getElementsAnnotatedWith(elementUtils.getTypeElement(ANNOTATION_SVGSHAPE_VIEW_FACTORY))) {
             processSvgShapeViewFactory(set,
-                                       e,
-                                       roundEnv);
+                    e,
+                    roundEnv);
         }
         return true;
     }
@@ -91,17 +91,17 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
             String packageName = packageElement.getQualifiedName().toString();
             String fqcn = packageName + "." + name;
             String absPkgPath = packageName.replaceAll("\\.",
-                                                       "/");
+                    "/");
             note("Discovered @SVGViewFactory for type [" + fqcn + "]");
             final SVGViewFactory svgViewFactoryAnn = classElement.getAnnotation(SVGViewFactory.class);
             final String viewBuilderTypeName = parseAnnotationFieldTypeName(svgViewFactoryAnn::builder,
-                                                                            "No builder class specified for the @SVGViewFactory.");
+                    "No builder class specified for the @SVGViewFactory.");
             final SVGGeneratorRequest request = new SVGGeneratorRequest(name + GENERATED_TYPE_SUFFIX,
-                                                                        packageName,
-                                                                        fqcn,
-                                                                        absPkgPath + "/" + svgViewFactoryAnn.cssPath(),
-                                                                        viewBuilderTypeName,
-                                                                        processingEnv.getMessager());
+                    packageName,
+                    fqcn,
+                    absPkgPath + "/" + svgViewFactoryAnn.cssPath(),
+                    viewBuilderTypeName,
+                    processingEnv.getMessager());
 
             final SVGShapeProcessorContext context = new SVGShapeProcessorContext();
             context.setGeneratorRequest(request);
@@ -115,7 +115,7 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
                     final String fieldName = methodElement.getSimpleName().toString();
                     note("Discovered @SVGSource to be processed at path [" + absPath + "]");
                     context.getGeneratorRequest().getViewSources().put(fieldName,
-                                                                       absPath);
+                            absPath);
                 }
             });
 
@@ -132,15 +132,15 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
                 final SVGGeneratorRequest request = context.getGeneratorRequest();
                 final String classFQName = request.getPkg() + "." + request.getName();
                 messager.printMessage(Diagnostic.Kind.NOTE,
-                                      "Starting generation for SVGShapeViewFactory named [" + classFQName + "]");
+                        "Starting generation for SVGShapeViewFactory named [" + classFQName + "]");
                 final StringBuffer result = generator.generate(request);
                 writeCode(request.getPkg(),
-                          request.getName(),
-                          result);
+                        request.getName(),
+                        result);
             } catch (org.kie.workbench.common.stunner.svg.gen.exception.GeneratorException ge) {
                 final String msg = ge.getMessage();
                 processingEnv.getMessager().printMessage(Diagnostic.Kind.ERROR,
-                                                         msg);
+                        msg);
             }
         }
         return true;
@@ -148,24 +148,24 @@ public class SVGShapeProcessor extends AbstractErrorAbsorbingProcessor {
 
     private void note(String message) {
         log(Diagnostic.Kind.NOTE,
-            message);
+                message);
     }
 
     private void warn(String message) {
         log(Diagnostic.Kind.WARNING,
-            message);
+                message);
     }
 
     private void error(String message) {
         log(Diagnostic.Kind.ERROR,
-            message);
+                message);
     }
 
     private void log(Diagnostic.Kind kind,
                      String message) {
         final Messager messager = processingEnv.getMessager();
         messager.printMessage(kind,
-                              message);
+                message);
     }
 
     private static String parseAnnotationFieldTypeName(final Supplier<Class<?>> theTypeSupplier,

@@ -18,15 +18,16 @@ package org.kie.workbench.common.stunner.core.definition.clone;
 
 import java.util.Objects;
 
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 
 public abstract class AbstractCloneProcess implements CloneProcess {
 
-    private final FactoryManager factoryManager;
-    final AdapterManager adapterManager;
+    private final ManagedInstance<FactoryManager> factoryManager;
+    final ManagedInstance<AdapterManager> adapterManager;
 
-    public AbstractCloneProcess(FactoryManager factoryManager, AdapterManager adapterManager) {
+    public AbstractCloneProcess(ManagedInstance<FactoryManager> factoryManager, ManagedInstance<AdapterManager> adapterManager) {
         this.factoryManager = factoryManager;
         this.adapterManager = adapterManager;
     }
@@ -39,6 +40,6 @@ public abstract class AbstractCloneProcess implements CloneProcess {
     @SuppressWarnings("unchecked")
     private <T> T createEmptyClone(T source) {
         Objects.requireNonNull(source, "Source cannot be null");
-        return (T) factoryManager.newDefinition(adapterManager.forDefinition().getId(source).value());
+        return (T) factoryManager.get().newDefinition(adapterManager.get().forDefinition().getId(source).value());
     }
 }

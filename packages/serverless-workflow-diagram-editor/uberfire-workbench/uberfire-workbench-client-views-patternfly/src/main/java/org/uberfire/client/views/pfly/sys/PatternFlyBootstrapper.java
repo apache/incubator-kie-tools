@@ -16,8 +16,9 @@
 
 package org.uberfire.client.views.pfly.sys;
 
-import com.google.gwt.core.client.ScriptInjector;
+import jsinterop.base.Js;
 import org.gwtbootstrap3.client.GwtBootstrap3ClientBundle;
+import org.gwtproject.core.client.ScriptInjector;
 
 import static org.uberfire.client.views.pfly.sys.MomentUtils.setMomentLocale;
 
@@ -33,6 +34,8 @@ public class PatternFlyBootstrapper {
     private static boolean isMomentTimeZoneLoaded = false;
 
     private static boolean isPatternFlyLoaded = false;
+
+    private static boolean isMonacoEditorLoaded = false;
 
     /**
      * Uses GWT's ScriptInjector to put jQuery in the page if it isn't already. All Errai IOC beans that rely on
@@ -85,12 +88,23 @@ public class PatternFlyBootstrapper {
         }
     }
 
+    public static void ensureMonacoEditorLoaderIsAvailable() {
+        if (!isMonacoEditorLoaded) {
+            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.monacoEditor().getText())
+                    .setWindow(ScriptInjector.TOP_WINDOW)
+                    .inject();
+            isMonacoEditorLoaded = true;
+        }
+    }
+
     /**
      * Checks to see if jQuery is already present.
      *
      * @return true is jQuery is loaded, false otherwise.
      */
-    private static native boolean isjQueryLoaded() /*-{
+    private static boolean isjQueryLoaded() {
+        return Js.global().has("jQuery");
+    }/*-{
         return (typeof $wnd['jQuery'] !== 'undefined');
     }-*/;
 }

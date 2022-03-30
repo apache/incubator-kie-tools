@@ -15,31 +15,31 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
-import java.util.Objects;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.Widget;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A Modal Footer with a single OK button
  */
 public class ModalFooterOKButton extends ModalFooter {
 
-    private static ModalFooterOKButtonBinder uiBinder = GWT.create(ModalFooterOKButtonBinder.class);
+    private static ModalFooterOKButtonBinder uiBinder = new ModalFooterOKButton_ModalFooterOKButtonBinderImpl();
 
     private final Command okCommand;
     @UiField
     Button okButton;
 
     public ModalFooterOKButton(final Command okCommand) {
-        this.okCommand = Objects.requireNonNull(okCommand, "Parameter named 'okCommand' should be not null!");
+        this.okCommand = PortablePreconditions.checkNotNull("okCommand",
+                                                            okCommand);
         add(uiBinder.createAndBindUi(this));
     }
 
@@ -52,6 +52,7 @@ public class ModalFooterOKButton extends ModalFooter {
         okCommand.execute();
     }
 
+    @UiTemplate
     interface ModalFooterOKButtonBinder
             extends
             UiBinder<Widget, ModalFooterOKButton> {

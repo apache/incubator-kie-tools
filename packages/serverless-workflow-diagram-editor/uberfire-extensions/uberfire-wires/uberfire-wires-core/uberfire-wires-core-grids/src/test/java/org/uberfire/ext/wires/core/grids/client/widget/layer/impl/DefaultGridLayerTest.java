@@ -25,7 +25,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.impl.LienzoFixedPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.user.client.Command;
+import org.gwtproject.user.client.Command;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

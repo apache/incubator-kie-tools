@@ -19,7 +19,7 @@ package org.uberfire.client.views.pfly.widgets;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name= "Object")
 public class MomentDurationObject {
 
     public native int days();

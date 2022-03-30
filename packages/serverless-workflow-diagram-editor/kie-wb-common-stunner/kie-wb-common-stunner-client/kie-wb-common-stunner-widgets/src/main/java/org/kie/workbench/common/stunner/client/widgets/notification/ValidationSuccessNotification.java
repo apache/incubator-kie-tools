@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.client.widgets.notification;
 
 import java.util.Optional;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 
@@ -27,8 +27,8 @@ public final class ValidationSuccessNotification extends AbstractNotification<Vo
     ValidationSuccessNotification(final String message,
                                   final NotificationContext context) {
         super(context,
-              Type.INFO,
-              message);
+                Type.INFO,
+                message);
     }
 
     @Override
@@ -43,10 +43,10 @@ public final class ValidationSuccessNotification extends AbstractNotification<Vo
             final String message =
                     new SafeHtmlBuilder()
                             .appendEscaped(translationService
-                                                   .getValue(CoreTranslationMessages.VALIDATION_SUCCESS))
+                                    .getValue(CoreTranslationMessages.VALIDATION_SUCCESS))
                             .toSafeHtml().asString();
             return new ValidationSuccessNotification(message,
-                                                     context);
+                    context);
         }
     }
 }

@@ -18,10 +18,10 @@ package org.uberfire.client.views.pfly;
 
 import javax.annotation.PostConstruct;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.gwtproject.resources.client.GWT3Resources;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 
-@EntryPoint
+@GWT3Resources
 public class PatternFlyEntryPoint {
 
     @PostConstruct
@@ -29,11 +29,17 @@ public class PatternFlyEntryPoint {
         PatternFlyBootstrapper.ensurePatternFlyIsAvailable();
     }
 
-    public native String getPatternFlyVersion()/*-{
+    public String getPatternFlyVersion() {
+        throw new Error(getClass().getCanonicalName()+".getPatternFlyVersion");
+
+    }/*-{
         return $wnd.patternfly.version;
     }-*/;
 
-    public native String getMomentLocale()/*-{
+    public String getMomentLocale() {
+        throw new Error(getClass().getCanonicalName()+".getMomentLocale");
+
+    }/*-{
         return $wnd.moment.locale();
     }-*/;
 }

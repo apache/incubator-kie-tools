@@ -98,7 +98,7 @@ public class WiresLayoutContainer implements LayoutContainer {
         return add(child, null);
     }
 
-    public WiresLayoutContainer add(final IPrimitive<?> child, final LayoutContainer.Layout layout) {
+    public WiresLayoutContainer add(final IPrimitive<?> child, final Layout layout) {
         if (null == child) {
             throw new NullPointerException("Child cannot be null.");
         }
@@ -201,7 +201,7 @@ public class WiresLayoutContainer implements LayoutContainer {
 
             LayoutBuilder builder = null;
 
-            final LayoutContainer.Layout childLayout = entry.layout;
+            final Layout childLayout = entry.layout;
             switch (childLayout) {
                 case CENTER:
                     builder = CENTER_LAYOUT;
@@ -342,7 +342,7 @@ public class WiresLayoutContainer implements LayoutContainer {
 
         private final String uuid;
 
-        private final LayoutContainer.Layout layout;
+        private final Layout layout;
 
         private Point2D initial_coords;
 

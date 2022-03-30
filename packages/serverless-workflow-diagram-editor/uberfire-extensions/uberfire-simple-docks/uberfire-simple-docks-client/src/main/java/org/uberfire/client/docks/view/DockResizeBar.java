@@ -18,22 +18,22 @@ package org.uberfire.client.docks.view;
 
 import java.util.function.Consumer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseMoveHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.dom.client.MouseUpHandler;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.FlowPanel;
+import org.gwtproject.dom.client.Document;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.MouseDownEvent;
+import org.gwtproject.event.dom.client.MouseDownHandler;
+import org.gwtproject.event.dom.client.MouseMoveEvent;
+import org.gwtproject.event.dom.client.MouseMoveHandler;
+import org.gwtproject.event.dom.client.MouseOverEvent;
+import org.gwtproject.event.dom.client.MouseOverHandler;
+import org.gwtproject.event.dom.client.MouseUpEvent;
+import org.gwtproject.event.dom.client.MouseUpHandler;
+import org.gwtproject.user.client.Event;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.window.client.Window;
 import org.uberfire.client.resources.WebAppResource;
+import org.uberfire.client.resources.WebAppResourceImpl;
 import org.uberfire.client.workbench.docks.UberfireDockPosition;
 import org.uberfire.client.workbench.ouia.OuiaAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponent;
@@ -45,7 +45,7 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
 
     private static final String OUIA_COMPONENT_TYPE = "resize-docks-bar";
 
-    private static WebAppResource CSS = GWT.create(WebAppResource.class);
+    private static WebAppResource CSS = new WebAppResourceImpl();
 
     private Element glassElem = null;
 
@@ -74,7 +74,7 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
     @Override
     public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
         return ouiaAttribute -> getElement().setAttribute(ouiaAttribute.getName(),
-                                                          ouiaAttribute.getValue());
+                ouiaAttribute.getValue());
     }
 
     @Override
@@ -94,12 +94,12 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
                               if (mouseDown) {
                                   setupMoveIcon();
                                   resizeCommand.execute(calculateDockSize(event,
-                                                                          docksBar));
+                                          docksBar));
                                   event.preventDefault();
                               }
                           }
                       },
-                      MouseMoveEvent.getType());
+                MouseMoveEvent.getType());
 
         addDomHandler(new MouseOverHandler() {
                           @Override
@@ -107,7 +107,7 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
                               setupMoveIcon();
                           }
                       },
-                      MouseOverEvent.getType());
+                MouseOverEvent.getType());
 
         addDomHandler(new MouseDownHandler() {
                           @Override
@@ -116,13 +116,13 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
 
                               mouseDown = true;
                               int width = Math.max(Window.getClientWidth(),
-                                                   Document.get().getScrollWidth());
+                                      Document.get().getScrollWidth());
                               int height = Math.max(Window.getClientHeight(),
-                                                    Document.get().getScrollHeight());
+                                      Document.get().getScrollHeight());
                               glassElem.getStyle().setHeight(height,
-                                                             Style.Unit.PX);
+                                      Style.Unit.PX);
                               glassElem.getStyle().setWidth(width,
-                                                            Style.Unit.PX);
+                                      Style.Unit.PX);
                               Document.get().getBody().appendChild(glassElem);
 
                               buildOffset(event);
@@ -130,13 +130,13 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
                               event.preventDefault();
                           }
                       },
-                      MouseDownEvent.getType());
+                MouseDownEvent.getType());
 
         addDomHandler(new MouseUpHandler() {
                           @Override
                           public void onMouseUp(MouseUpEvent event) {
                               getElement().getStyle().setProperty("cursor",
-                                                                  "default");
+                                      "default");
                               mouseDown = false;
 
                               glassElem.removeFromParent();
@@ -144,7 +144,7 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
                               Event.releaseCapture(getElement());
                           }
                       },
-                      MouseUpEvent.getType());
+                MouseUpEvent.getType());
     }
 
     private void setupGlassElement() {
@@ -152,19 +152,19 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
         glassElem = Document.get().createDivElement();
         glassElem.getStyle().setPosition(Style.Position.ABSOLUTE);
         glassElem.getStyle().setTop(0,
-                                    Style.Unit.PX);
+                Style.Unit.PX);
         glassElem.getStyle().setLeft(0,
-                                     Style.Unit.PX);
+                Style.Unit.PX);
         glassElem.getStyle().setMargin(0,
-                                       Style.Unit.PX);
+                Style.Unit.PX);
         glassElem.getStyle().setPadding(0,
-                                        Style.Unit.PX);
+                Style.Unit.PX);
         glassElem.getStyle().setBorderWidth(0,
-                                            Style.Unit.PX);
+                Style.Unit.PX);
         glassElem.getStyle().setProperty("background",
-                                         "white");
+                "white");
         glassElem.getStyle().setProperty("backgroundColor",
-                                         "red");
+                "red");
         glassElem.getStyle().setOpacity(0.0);
     }
 
@@ -172,10 +172,10 @@ public class DockResizeBar extends FlowPanel implements OuiaComponent {
         UberfireDockPosition position = docksBar.getPosition();
         if (position == UberfireDockPosition.SOUTH) {
             getElement().getStyle().setProperty("cursor",
-                                                "ns-resize");
+                    "ns-resize");
         } else {
             getElement().getStyle().setProperty("cursor",
-                                                "ew-resize");
+                    "ew-resize");
         }
     }
 

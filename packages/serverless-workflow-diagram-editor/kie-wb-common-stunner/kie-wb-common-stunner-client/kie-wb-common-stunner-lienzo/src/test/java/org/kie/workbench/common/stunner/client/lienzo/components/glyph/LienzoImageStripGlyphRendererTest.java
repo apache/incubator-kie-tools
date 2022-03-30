@@ -21,7 +21,7 @@ import java.util.function.BiFunction;
 import com.ait.lienzo.client.core.image.Image;
 import com.ait.lienzo.client.core.shape.Node;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ImageResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

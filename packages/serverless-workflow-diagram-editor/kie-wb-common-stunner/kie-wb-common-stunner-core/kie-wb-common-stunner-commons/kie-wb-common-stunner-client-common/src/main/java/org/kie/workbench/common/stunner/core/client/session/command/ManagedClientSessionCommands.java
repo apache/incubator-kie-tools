@@ -27,7 +27,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
@@ -46,8 +46,8 @@ public class ManagedClientSessionCommands {
     public ManagedClientSessionCommands(final DefinitionUtils definitionUtils,
                                         final @Any ManagedInstance<ClientSessionCommand> sessionCommands) {
         this(definitionUtils,
-             sessionCommands,
-             EXPECTED_COMMANDS_SIZE);
+                sessionCommands,
+                EXPECTED_COMMANDS_SIZE);
     }
 
     public ManagedClientSessionCommands(final DefinitionUtils definitionUtils,
@@ -73,8 +73,8 @@ public class ManagedClientSessionCommands {
         final List<ClientSessionCommand> instances =
                 types.stream()
                         .map(type -> InstanceUtils.lookup(sessionCommands,
-                                                          type,
-                                                          qualifier))
+                                type,
+                                qualifier))
                         .collect(Collectors.toList());
         commands.addAll(instances);
         commands.forEach(c -> safeBind(c, session));

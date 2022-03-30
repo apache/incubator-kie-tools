@@ -88,10 +88,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.gwt</groupId>
-			<artifactId>gwt-user</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>com.google.jsinterop</groupId>
 			<artifactId>base</artifactId>
 		</dependency>
@@ -106,6 +102,14 @@
 		<dependency>
 			<groupId>com.google.elemental2</groupId>
 			<artifactId>elemental2-promise</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.treblereel.gwt.gwtproject.resources</groupId>
+			<artifactId>gwt-resources-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.treblereel.gwt.gwtproject.timer</groupId>
+			<artifactId>gwt-timer</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

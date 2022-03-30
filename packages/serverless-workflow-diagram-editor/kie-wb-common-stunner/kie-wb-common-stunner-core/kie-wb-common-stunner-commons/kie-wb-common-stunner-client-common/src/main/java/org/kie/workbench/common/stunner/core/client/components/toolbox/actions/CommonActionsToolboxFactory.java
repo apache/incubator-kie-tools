@@ -27,7 +27,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -58,11 +58,11 @@ public class CommonActionsToolboxFactory
                                        final @Default ManagedInstance<DeleteNodeToolboxAction> deleteNodeActions,
                                        final @Any @CommonActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(commandManager,
-             commandFactory,
-             deleteNodeActions::get,
-             deleteNodeActions::destroyAll,
-             views::get,
-             views::destroyAll);
+                commandFactory,
+                deleteNodeActions::get,
+                deleteNodeActions::destroyAll,
+                views::get,
+                views::destroyAll);
     }
 
     CommonActionsToolboxFactory(final CanvasCommandManager<AbstractCanvasHandler> commandManager,
@@ -90,7 +90,7 @@ public class CommonActionsToolboxFactory
                                                                        final Element<?> e) {
         final Set<ToolboxAction<AbstractCanvasHandler>> actions = new LinkedHashSet<>();
         if (isSupported(canvasHandler,
-                        e)) {
+                e)) {
             actions.add(deleteNodeActions.get());
         }
         return actions;
@@ -105,12 +105,12 @@ public class CommonActionsToolboxFactory
     private boolean isSupported(final AbstractCanvasHandler canvasHandler,
                                 final Element<?> element) {
         return null != element.asNode() && isAllowed(canvasHandler,
-                                                     (Node) element);
+                (Node) element);
     }
 
     protected boolean isAllowed(final AbstractCanvasHandler canvasHandler,
                                 final Node node) {
         return !CommandUtils.isError(commandManager.allow(canvasHandler,
-                                                          commandFactory.deleteNode(node)));
+                commandFactory.deleteNode(node)));
     }
 }

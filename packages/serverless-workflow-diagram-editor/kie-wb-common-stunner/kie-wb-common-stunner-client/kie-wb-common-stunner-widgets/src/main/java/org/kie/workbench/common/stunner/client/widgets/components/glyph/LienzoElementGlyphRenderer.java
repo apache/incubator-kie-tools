@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Layer;
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGlyphRenderer;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
@@ -44,8 +44,8 @@ public abstract class LienzoElementGlyphRenderer<G extends Glyph> implements DOM
         final WidgetElementRendererView view = viewInstances.get();
 
         final LienzoPanelWidget panel = newPanel(glyph,
-                                                 (int) width,
-                                                 (int) height);
+                (int) width,
+                (int) height);
         return view.setWidget(panel);
     }
 
@@ -53,10 +53,10 @@ public abstract class LienzoElementGlyphRenderer<G extends Glyph> implements DOM
                                        final int width,
                                        final int height) {
         final Group glyphGroup = getLienzoGlyphRenderer().render(glyph,
-                                                                 width,
-                                                                 height);
+                width,
+                height);
         final LienzoPanelWidget panel = LienzoPanelWidget.create(width,
-                                                                 height);
+                height);
         final Layer layer = new Layer();
         panel.add(layer.setTransformable(true));
         layer.add(glyphGroup);

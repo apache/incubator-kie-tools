@@ -16,17 +16,17 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.components.mediators;
 
-import java.util.Objects;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 public class ZoomLevelSelector implements IsWidget {
@@ -82,10 +82,6 @@ public class ZoomLevelSelector implements IsWidget {
         checkNotNull("onScaleToFit", onScaleToFit);
         this.onScaleToFit = onScaleToFit;
         return this;
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public ZoomLevelSelector setText(final String text) {

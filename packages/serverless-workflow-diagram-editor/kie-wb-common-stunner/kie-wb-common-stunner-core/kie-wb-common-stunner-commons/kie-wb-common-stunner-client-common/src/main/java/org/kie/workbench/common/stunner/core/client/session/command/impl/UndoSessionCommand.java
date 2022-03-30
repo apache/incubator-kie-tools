@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 
 @Dependent
@@ -89,7 +90,8 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
 
-        checkNotNull("callback", callback);
+        checkNotNull("callback",
+                     callback);
         final Registry<Command<AbstractCanvasHandler, CanvasViolation>> registry = getSession().getCommandRegistry();
         if (!registry.isEmpty()) {
             final CommandResult<CanvasViolation> result = sessionCommandManager.undo(getSession().getCanvasHandler());
@@ -105,19 +107,16 @@ public class UndoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         }
     }
 
-    void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
-        checkNotNull("registerChangedEvent", registerChangedEvent);
+    public void onCommandAdded(final @Observes RegisterChangedEvent registerChangedEvent) {
+        checkNotNull("registerChangedEvent",
+                     registerChangedEvent);
         if (!Objects.isNull(getSession())
                 && Objects.equals(registerChangedEvent.getCanvasHandler(), getCanvasHandler())) {
             checkState();
         }
     }
 
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
-    }
-
-    void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
+    public void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
         checkState();
     }
 

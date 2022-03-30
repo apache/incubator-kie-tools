@@ -15,17 +15,18 @@
  */
 package org.kie.workbench.common.widgets.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.resources.client.ImageResource.ImageOptions;
+import org.gwtproject.resources.client.ImageResource.RepeatStyle;
+import org.gwtproject.resources.client.Resource;
 
+@Resource
 public interface RoundedCornersResource
     extends
     ClientBundle {
 
-    public RoundedCornersResource INSTANCE = GWT.create( RoundedCornersResource.class );
+    RoundedCornersResource INSTANCE = new RoundedCornersResourceImpl();
 
     @Source("images/corners/whiteTopLeft.gif")
     ImageResource whiteTopLeftCorner();

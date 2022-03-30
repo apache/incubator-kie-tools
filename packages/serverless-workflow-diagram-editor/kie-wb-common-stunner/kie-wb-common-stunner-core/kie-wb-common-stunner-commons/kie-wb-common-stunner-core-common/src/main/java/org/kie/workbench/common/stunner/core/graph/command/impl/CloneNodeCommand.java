@@ -26,9 +26,10 @@ import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import io.crysknife.client.ManagedInstance;
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
@@ -71,19 +72,15 @@ public class CloneNodeCommand extends AbstractGraphCompositeCommand {
     private transient ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessor;
     private transient List<Command<GraphCommandExecutionContext, RuleViolation>> childrenCommands;
 
-    private static final Logger LOGGER = Logger.getLogger(CloneNodeCommand.class.getName());
+    private static Logger LOGGER = Logger.getLogger(CloneNodeCommand.class.getName());
 
     protected CloneNodeCommand() {
         this(null, null, null, null, null);
     }
 
     public CloneNodeCommand(final @MapsTo("candidate") Node candidate, final @MapsTo("parentUuid") String parentUuid) {
-        this(checkNotNull("candidate", candidate),
-             checkNotNull("parentUuid", parentUuid), null, null, null);
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+        this(PortablePreconditions.checkNotNull("candidate", candidate),
+             PortablePreconditions.checkNotNull("parentUuid", parentUuid), null, null, null);
     }
 
     public CloneNodeCommand(final Node candidate, final String parentUuid, final Point2D position, final Consumer<Node> callback, final ManagedInstance<ChildrenTraverseProcessor> childrenTraverseProcessor) {

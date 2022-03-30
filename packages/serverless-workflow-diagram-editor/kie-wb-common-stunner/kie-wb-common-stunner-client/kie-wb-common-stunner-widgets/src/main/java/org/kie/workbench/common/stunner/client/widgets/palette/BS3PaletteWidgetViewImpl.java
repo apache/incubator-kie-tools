@@ -16,35 +16,34 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette;
 
-import java.util.Objects;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLUListElement;
+import elemental2.dom.Node;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Node;
-import org.jboss.errai.common.client.dom.UnorderedList;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 @Templated
 @Dependent
 public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
-                                                 IsElement {
+        IsElement {
 
     private ShapeGlyphDragHandler shapeGlyphDragHandler;
 
     @Inject
     @DataField("kie-palette")
-    private Div palette;
+    private HTMLDivElement palette;
 
     @Inject
     @DataField("list-group")
-    private UnorderedList ul;
+    private HTMLUListElement ul;
 
     private BS3PaletteWidget presenter;
 
@@ -82,38 +81,39 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
                                            return (int) height;
                                        }
                                    },
-                                   (int) x,
-                                   (int) y,
-                                   new ShapeGlyphDragHandler.Callback() {
-                                       @Override
-                                       public void onStart(int x,
-                                                           int y) {
-                                           presenter.onDragStart(itemId,
-                                                                 x,
-                                                                 y);
-                                       }
+                (int) x,
+                (int) y,
+                new ShapeGlyphDragHandler.Callback() {
+                    @Override
+                    public void onStart(int x,
+                                        int y) {
+                        presenter.onDragStart(itemId,
+                                x,
+                                y);
+                    }
 
-                                       @Override
-                                       public void onMove(int x,
-                                                          int y) {
-                                           presenter.onDragProxyMove(itemId,
-                                                                     (double) x,
-                                                                     (double) y);
-                                       }
+                    @Override
+                    public void onMove(int x,
+                                       int y) {
+                        presenter.onDragProxyMove(itemId,
+                                (double) x,
+                                (double) y);
+                    }
 
-                                       @Override
-                                       public void onComplete(int x,
-                                                              int y) {
-                                           presenter.onDragProxyComplete(itemId,
-                                                                         (double) x,
-                                                                         (double) y);
-                                       }
-                                   });
+                    @Override
+                    public void onComplete(int x,
+                                           int y) {
+                        presenter.onDragProxyComplete(itemId,
+                                (double) x,
+                                (double) y);
+                    }
+                });
     }
 
     @Override
     public void add(BS3PaletteWidgetPresenter widget) {
-        Objects.requireNonNull(widget, "Parameter named 'widget' should be not null!");
+        PortablePreconditions.checkNotNull("widget",
+                widget);
         addElement(widget.getElement());
     }
 
@@ -137,13 +137,13 @@ public class BS3PaletteWidgetViewImpl implements BS3PaletteWidgetView,
 
     @Override
     public void setBackgroundColor(String backgroundColor) {
-        palette.getStyle().setProperty("background-color",
-                                       backgroundColor);
+        palette.style.setProperty("background-color",
+                backgroundColor);
     }
 
     @Override
     public void showEmptyView(boolean showEmptyView) {
-        palette.setHidden(showEmptyView);
-        ul.setHidden(showEmptyView);
+        palette.hidden = (showEmptyView);
+        ul.hidden = (showEmptyView);
     }
 }

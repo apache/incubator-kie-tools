@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.user.client.ui.RequiresResize;
 import org.gwtbootstrap3.client.ui.TextArea;
+import org.gwtproject.user.client.ui.RequiresResize;
 
 public class ResizableTextArea extends TextArea
         implements

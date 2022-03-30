@@ -16,24 +16,26 @@
 
 package org.uberfire.client.views.pfly.sys;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.TextResource;
 
+//@Resource
 public interface PatternFlyClientBundle extends ClientBundle {
 
-    PatternFlyClientBundle INSTANCE = GWT.create(PatternFlyClientBundle.class);
+    PatternFlyClientBundle INSTANCE = new PatternFlyClientBundle_default_InlineClientBundleGenerator();
 
-    @Source("org/uberfire/client/views/static/bootstrap-select/js/bootstrap-select.min.js")
+    @Source("src/main/webapp/static/bootstrap-select/js/bootstrap-select.min.js")
     TextResource bootstrapSelect();
 
-    @Source("org/uberfire/client/views/static/js/patternfly.min.js")
+    @Source("src/main/webapp/static/js/patternfly.min.js")
     TextResource patternFly();
 
-    @Source("org/uberfire/client/views/static/moment/moment-with-locales.min.js")
+    @Source("src/main/webapp/static/moment/moment-with-locales.min.js")
     TextResource moment();
 
-    @Source("org/uberfire/client/views/static/moment-timezone/moment-timezone-with-data-2012-2022.min.js")
+    @Source("src/main/webapp/static/moment-timezone/moment-timezone-with-data-2012-2022.min.js")
     TextResource momentTimeZone();
 
+    @Source("src/main/webapp/static/appformer-js-monaco/monaco.min.js.txt")
+    TextResource monacoEditor();
 }

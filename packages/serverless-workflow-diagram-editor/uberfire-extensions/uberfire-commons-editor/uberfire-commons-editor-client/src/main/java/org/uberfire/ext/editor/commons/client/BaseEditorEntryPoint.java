@@ -18,11 +18,10 @@ package org.uberfire.ext.editor.commons.client;
 
 import javax.annotation.PostConstruct;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
-import org.jboss.errai.ui.shared.api.annotations.Bundle;
+import io.crysknife.ui.translation.api.annotations.Bundle;
 
 @Bundle("resources/i18n/Constants.properties")
-@EntryPoint
+//@EntryPoint
 public class BaseEditorEntryPoint {
 
     @PostConstruct

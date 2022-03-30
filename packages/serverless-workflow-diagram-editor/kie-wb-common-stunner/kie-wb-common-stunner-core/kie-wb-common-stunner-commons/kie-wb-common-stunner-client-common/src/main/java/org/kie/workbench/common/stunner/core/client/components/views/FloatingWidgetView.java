@@ -16,19 +16,19 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
-import java.util.Objects;
-
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.RootPanel;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.MouseOutEvent;
+import org.gwtproject.event.dom.client.MouseOverEvent;
+import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
 import org.uberfire.mvp.Command;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Floating view implementation for generic GWT Widgets.
@@ -104,7 +104,8 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     @Override
     public FloatingView<IsWidget> setHideCallback(final Command hideCallback) {
-        Objects.requireNonNull(hideCallback, "Parameter named 'hideCallback' should be not null!");
+        checkNotNull("hideCallback",
+                hideCallback);
         this.hideCallback = hideCallback;
         return this;
     }
@@ -174,9 +175,9 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
 
     private void reposition() {
         panel.getElement().getStyle().setLeft(ox + x,
-                                              Style.Unit.PX);
+                Style.Unit.PX);
         panel.getElement().getStyle().setTop(oy + y,
-                                             Style.Unit.PX);
+                Style.Unit.PX);
     }
 
     private boolean isVisible() {
@@ -209,11 +210,11 @@ public class FloatingWidgetView implements FloatingView<IsWidget> {
     private void registerHoverEventHandlers() {
         handlerRegistrationManager.register(
                 panel.addDomHandler(mouseOverEvent -> stopTimeout(),
-                                    MouseOverEvent.getType())
+                        MouseOverEvent.getType())
         );
         handlerRegistrationManager.register(
                 panel.addDomHandler(mouseOutEvent -> startTimeout(),
-                                    MouseOutEvent.getType())
+                        MouseOutEvent.getType())
         );
     }
 }

@@ -25,16 +25,16 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import com.ait.lienzo.client.core.shape.Layer;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.MouseMoveEvent;
-import com.google.gwt.event.dom.client.MouseUpEvent;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.RootPanel;
 import elemental2.dom.CSSProperties;
 import elemental2.dom.HTMLDivElement;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.MouseMoveEvent;
+import org.gwtproject.event.dom.client.MouseUpEvent;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.ui.AbsolutePanel;
+import org.gwtproject.user.client.ui.RootPanel;
 import org.kie.workbench.common.stunner.client.lienzo.components.views.LienzoPanelWidget;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.GWTHandlerRegistration;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -67,7 +67,7 @@ public class ShapeGlyphDragHandler {
     private final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer;
     private final GWTHandlerRegistration handlerRegistrations;
     private final Supplier<AbsolutePanel> rootPanelSupplier;
-    private final Function<ShapeGlyphDragHandler.Item, LienzoPanelWidget> lienzoPanelBuilder;
+    private final Function<Item, LienzoPanelWidget> lienzoPanelBuilder;
     private final BiConsumer<Command, Integer> timer;
     private LienzoPanelWidget dragProxyPanel;
 
@@ -89,7 +89,7 @@ public class ShapeGlyphDragHandler {
     ShapeGlyphDragHandler(final LienzoGlyphRenderer<Glyph> glyphLienzoGlyphRenderer,
                           final GWTHandlerRegistration handlerRegistrations,
                           final Supplier<AbsolutePanel> rootPanelSupplier,
-                          final Function<ShapeGlyphDragHandler.Item, LienzoPanelWidget> lienzoPanelBuilder,
+                          final Function<Item, LienzoPanelWidget> lienzoPanelBuilder,
                           final BiConsumer<Command, Integer> timer) {
         this.glyphLienzoGlyphRenderer = glyphLienzoGlyphRenderer;
         this.handlerRegistrations = handlerRegistrations;
@@ -98,10 +98,10 @@ public class ShapeGlyphDragHandler {
         this.timer = timer;
     }
 
-    public ShapeGlyphDragHandler show(final ShapeGlyphDragHandler.Item item,
+    public ShapeGlyphDragHandler show(final Item item,
                                       final int x,
                                       final int y,
-                                      final ShapeGlyphDragHandler.Callback Callback) {
+                                      final Callback Callback) {
         // Create the lienzo "proxy" panel instance.
         final Layer dragProxyLayer = new Layer();
         this.dragProxyPanel = lienzoPanelBuilder.apply(item);
@@ -141,7 +141,7 @@ public class ShapeGlyphDragHandler {
         element.style.zIndex = CSSProperties.ZIndexUnionType.of(Integer.MAX_VALUE);
     }
 
-    private void attachHandlers(final ShapeGlyphDragHandler.Callback callback) {
+    private void attachHandlers(final Callback callback) {
         final AbsolutePanel root = rootPanelSupplier.get();
         register(
                 root.addDomHandler(event -> onMouseMove(event, callback),
@@ -159,7 +159,7 @@ public class ShapeGlyphDragHandler {
     }
 
     void onMouseMove(final MouseMoveEvent event,
-                     final ShapeGlyphDragHandler.Callback callback) {
+                     final Callback callback) {
         HTMLDivElement element = dragProxyPanel.getElement();
         element.style.left = event.getX() + Style.Unit.PX.getType();
         element.style.top = event.getY() + Style.Unit.PX.getType();
@@ -167,7 +167,7 @@ public class ShapeGlyphDragHandler {
     }
 
     void onMouseUp(final MouseUpEvent event,
-                   final ShapeGlyphDragHandler.Callback callback) {
+                   final Callback callback) {
         clearHandlers();
         rootPanelSupplier.get().remove(dragProxyPanel);
         callback.onComplete(event.getClientX(),

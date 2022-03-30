@@ -24,7 +24,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistryLoader;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
@@ -57,14 +57,14 @@ public class SessionLoader {
         final String definitionSetId = metadata.getDefinitionSetId();
         final Annotation qualifier = definitionUtils.getQualifier(definitionSetId);
         preferencesRegistryLoader.load(metadata,
-                                       prefs -> {
-                                           loadInitializers(metadata,
-                                                            qualifier,
-                                                            () -> {
-                                                                completeCallback.execute(prefs);
-                                                            });
-                                       },
-                                       errorCallback);
+                prefs -> {
+                    loadInitializers(metadata,
+                            qualifier,
+                            () -> {
+                                completeCallback.execute(prefs);
+                            });
+                },
+                errorCallback);
     }
 
     public void destroy() {
@@ -79,8 +79,8 @@ public class SessionLoader {
         initializerInstances.select(DefinitionManager.DEFAULT_QUALIFIER).forEach(initializers::add);
         initializerInstances.select(qualifier).forEach(initializers::add);
         loadInitializer(metadata,
-                        0,
-                        callback);
+                0,
+                callback);
     }
 
     private void loadInitializer(final Metadata metadata,
@@ -89,11 +89,11 @@ public class SessionLoader {
         if (index < initializers.size()) {
             final SessionInitializer bean = initializers.get(index);
             bean.init(metadata,
-                      () -> {
-                          loadInitializer(metadata,
-                                          index + 1,
-                                          callback);
-                      });
+                    () -> {
+                        loadInitializer(metadata,
+                                index + 1,
+                                callback);
+                    });
         } else {
             callback.execute();
         }

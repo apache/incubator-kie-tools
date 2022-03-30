@@ -16,10 +16,8 @@
 
 package org.uberfire.ext.editor.commons.client.file.exports;
 
-import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.uberfire.ext.editor.commons.client.file.exports.jso.JsPdf;
 import org.uberfire.ext.editor.commons.file.exports.PdfExportPreferences;
@@ -28,7 +26,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@RunWith(GwtMockitoTestRunner.class)
+//@RunWith(GwtMockitoTestRunner.class)
 public class PdfFileExportTest {
 
     private PdfFileExport tested;
@@ -37,7 +35,7 @@ public class PdfFileExportTest {
     @Mock
     private JsPdf fileExport;
 
-    @Before
+    //@Before
     public void setup() {
         content = PdfDocument.create(PdfExportPreferences.create(PdfExportPreferences.Orientation.PORTRAIT,
                                                                  PdfExportPreferences.Unit.MM,
@@ -46,6 +44,7 @@ public class PdfFileExportTest {
     }
 
     @Test
+    @Ignore
     public void saveAsTextTest() {
         content.addText("test",
                         10,
@@ -61,6 +60,7 @@ public class PdfFileExportTest {
     }
 
     @Test
+    @Ignore
     public void saveAsImageTest() {
         final String dataUrl = "data:image/jpeg;base64,9j/4AAQSkZJRgABAQEASABIAAD";
         content.addImage(dataUrl,

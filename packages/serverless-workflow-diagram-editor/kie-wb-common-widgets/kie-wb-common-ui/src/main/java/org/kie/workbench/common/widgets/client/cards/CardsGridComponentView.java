@@ -16,14 +16,16 @@
 
 package org.kie.workbench.common.widgets.client.cards;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
 
 @Templated
+@Dependent
 public class CardsGridComponentView implements CardsGridComponent.View {
 
     private CardsGridComponent presenter;

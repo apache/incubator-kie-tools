@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Alternative;
+import javax.enterprise.inject.Specializes;
 
 import org.appformer.client.context.Channel;
 import org.appformer.client.context.EditorContextProvider;
@@ -29,6 +30,7 @@ import org.appformer.kogito.bridge.client.interop.WindowRef;
 
 @Alternative
 @ApplicationScoped
+@Specializes
 public class KogitoEditorContextProviderImpl implements EditorContextProvider {
 
     @Override

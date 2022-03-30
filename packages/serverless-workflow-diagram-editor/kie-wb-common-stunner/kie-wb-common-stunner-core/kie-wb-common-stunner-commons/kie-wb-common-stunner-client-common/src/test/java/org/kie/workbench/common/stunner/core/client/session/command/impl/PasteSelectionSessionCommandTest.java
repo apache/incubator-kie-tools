@@ -26,8 +26,8 @@ import java.util.function.Consumer;
 
 import javax.enterprise.event.Event;
 
+import io.crysknife.client.ManagedInstance;
 import org.appformer.client.stateControl.registry.Registry;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

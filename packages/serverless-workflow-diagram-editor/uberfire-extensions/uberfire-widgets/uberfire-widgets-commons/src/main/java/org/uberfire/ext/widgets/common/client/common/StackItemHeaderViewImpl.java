@@ -16,18 +16,17 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Image;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.Widget;
 
 public class StackItemHeaderViewImpl extends Composite implements StackItemHeaderView {
 
-    private static HeaderHTMLBinder uiBinder = GWT.create(HeaderHTMLBinder.class);
+    private static HeaderHTMLBinder uiBinder = null;
     @UiField
     Label textLabel;
     @UiField
@@ -45,6 +44,7 @@ public class StackItemHeaderViewImpl extends Composite implements StackItemHeade
         this.imageResource.setResource(imageResource);
     }
 
+    //@UiTemplate
     interface HeaderHTMLBinder
             extends
             UiBinder<Widget, StackItemHeaderViewImpl> {

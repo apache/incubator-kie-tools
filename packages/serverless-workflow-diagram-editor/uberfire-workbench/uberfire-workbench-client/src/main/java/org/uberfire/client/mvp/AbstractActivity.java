@@ -15,9 +15,9 @@
  */
 package org.uberfire.client.mvp;
 
-import java.util.Objects;
-
 import org.uberfire.mvp.PlaceRequest;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public abstract class AbstractActivity implements Activity {
 
@@ -27,7 +27,8 @@ public abstract class AbstractActivity implements Activity {
 
     @Override
     public void onStartup(PlaceRequest place) {
-        this.place = Objects.requireNonNull(place, "Parameter named 'place' should be not null!");
+        this.place = checkNotNull("place",
+                                  place);
     }
 
     @Override

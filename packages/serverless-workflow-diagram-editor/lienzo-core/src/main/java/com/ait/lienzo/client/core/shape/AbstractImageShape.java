@@ -23,10 +23,10 @@ import com.ait.lienzo.client.core.types.BoundingBox;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
 import com.ait.lienzo.shared.core.types.ImageSerializationMode;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.UriUtils;
 import elemental2.dom.ImageData;
 import jsinterop.annotations.JsProperty;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.safehtml.shared.UriUtils;
 
 public abstract class AbstractImageShape<T extends AbstractImageShape<T>> extends Shape<T> {
 

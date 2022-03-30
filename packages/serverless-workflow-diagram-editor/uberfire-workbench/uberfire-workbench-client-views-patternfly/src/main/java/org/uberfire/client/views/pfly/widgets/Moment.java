@@ -23,10 +23,12 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 
+import static jsinterop.annotations.JsPackage.GLOBAL;
+
 /**
  * Wrapper class for <a href="http://momentjs.com">Moment.js</a> library
  */
-@JsType(isNative = true)
+@JsType(isNative = true, namespace = GLOBAL, name = "Moment")
 public interface Moment {
 
     Moment hours(int hours);
@@ -83,10 +85,6 @@ public interface Moment {
 
         @JsMethod(namespace = JsPackage.GLOBAL)
         public static native Moment moment();
-
-        public static Moment moment(Long time) {
-            return moment(new Double(time));
-        }
 
         @JsMethod(namespace = JsPackage.GLOBAL)
         public static native Moment moment(String time, String format);

@@ -32,13 +32,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>io.crysknife</groupId>
+      <artifactId>crysknife-annotations</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>jsinterop-annotations</artifactId>
     </dependency>
 
     <dependency>

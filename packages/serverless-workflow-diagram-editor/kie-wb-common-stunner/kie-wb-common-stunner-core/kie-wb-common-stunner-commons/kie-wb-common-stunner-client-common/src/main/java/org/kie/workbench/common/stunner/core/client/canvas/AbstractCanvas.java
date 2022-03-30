@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasClearEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasDrawnEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.CanvasFocusedEvent;
@@ -41,8 +41,8 @@ import org.kie.workbench.common.stunner.core.util.UUID;
 
 public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
         implements Canvas<Shape>,
-                   HasEventHandlers<AbstractCanvas<V>, Shape<?>>,
-                   HasCanvasListeners<CanvasShapeListener> {
+        HasEventHandlers<AbstractCanvas<V>, Shape<?>>,
+        HasCanvasListeners<CanvasShapeListener> {
 
     public enum Cursors {
         DEFAULT,
@@ -150,7 +150,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     public Canvas addChild(final Shape parent,
                            final Shape child) {
         getView().addChild(parent.getShapeView(),
-                           child.getShapeView());
+                child.getShapeView());
         return this;
     }
 
@@ -160,7 +160,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     public Canvas deleteChild(final Shape parent,
                               final Shape child) {
         getView().deleteChild(parent.getShapeView(),
-                              child.getShapeView());
+                child.getShapeView());
         return this;
     }
 
@@ -168,7 +168,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     public Canvas dock(final Shape parent,
                        final Shape child) {
         getView().dock(parent.getShapeView(),
-                       child.getShapeView());
+                child.getShapeView());
         return this;
     }
 
@@ -176,7 +176,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
     public Canvas undock(final Shape target,
                          final Shape child) {
         getView().undock(target.getShapeView(),
-                         child.getShapeView());
+                child.getShapeView());
         return this;
     }
 
@@ -197,7 +197,7 @@ public abstract class AbstractCanvas<V extends AbstractCanvas.CanvasView>
         fireCanvasShapeRemoved(shape);
         shapes.remove(shape.getUUID());
         canvasShapeRemovedEvent.fire(new CanvasShapeRemovedEvent(this,
-                                                                 shape));
+                shape));
         return this;
     }
 

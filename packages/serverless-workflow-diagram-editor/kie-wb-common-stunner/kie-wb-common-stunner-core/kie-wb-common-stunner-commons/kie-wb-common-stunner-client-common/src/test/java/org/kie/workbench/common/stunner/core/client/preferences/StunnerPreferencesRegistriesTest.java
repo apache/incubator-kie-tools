@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.preferences;
 
 import java.lang.annotation.Annotation;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

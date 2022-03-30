@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -62,8 +62,8 @@ public abstract class AbstractDiagramValidator
                                        final ManagedInstance<DomainValidator> validators) {
 
         this.graphValidator = new GraphValidatorImpl(definitionManager,
-                                                     ruleManager,
-                                                     treeWalkTraverseProcessor);
+                ruleManager,
+                treeWalkTraverseProcessor);
         this.modelValidator = modelValidator;
         this.validators = validators;
     }
@@ -98,13 +98,13 @@ public abstract class AbstractDiagramValidator
         violations.addAll(diagramElementViolations);
 
         graphValidator.validate(graph,
-                                Optional.empty(),
-                                Optional.of((g, v) -> consumeBeanAndViolations(() -> violations).accept(g, v)),
-                                Optional.of((n, v) -> consumeBeanAndViolations(() -> violations).accept(n, v)),
-                                Optional.of((e, v) -> consumeBeanAndViolations(() -> violations).accept(e, v)),
-                                // At this point all violations have been already consumed, so no need
-                                // to use the resulting ones here.
-                                vs -> resultConsumer.accept(violations)
+                Optional.empty(),
+                Optional.of((g, v) -> consumeBeanAndViolations(() -> violations).accept(g, v)),
+                Optional.of((n, v) -> consumeBeanAndViolations(() -> violations).accept(n, v)),
+                Optional.of((e, v) -> consumeBeanAndViolations(() -> violations).accept(e, v)),
+                // At this point all violations have been already consumed, so no need
+                // to use the resulting ones here.
+                vs -> resultConsumer.accept(violations)
         );
     }
 
@@ -113,25 +113,25 @@ public abstract class AbstractDiagramValidator
             if (Optional.ofNullable(element.getContent()).isPresent()) {
                 // If the underlying bean is a Definition, it accomplishes JSR303 validations.
                 modelValidator.validate(element,
-                                        modelViolations -> {
+                        modelViolations -> {
 
-                                            if ((Objects.nonNull(ruleViolations) && !ruleViolations.isEmpty()) || (Objects.nonNull(modelViolations) && !modelViolations.isEmpty())) {
-                                                //Don't add a ElementViolation if there are no rule or model violations
-                                                violations.get().add(new ElementViolationImpl.Builder()
-                                                                             .setUuid(element.getUUID())
-                                                                             .setGraphViolations(ruleViolations)
-                                                                             .setModelViolations(modelViolations)
-                                                                             .build());
-                                            }
-                                        });
+                            if ((Objects.nonNull(ruleViolations) && !ruleViolations.isEmpty()) || (Objects.nonNull(modelViolations) && !modelViolations.isEmpty())) {
+                                //Don't add a ElementViolation if there are no rule or model violations
+                                violations.get().add(new ElementViolationImpl.Builder()
+                                        .setUuid(element.getUUID())
+                                        .setGraphViolations(ruleViolations)
+                                        .setModelViolations(modelViolations)
+                                        .build());
+                            }
+                        });
             } else {
                 // Otherwise, no need not perform bean validation.
                 if (Objects.nonNull(ruleViolations) && !ruleViolations.isEmpty()) {
                     //Don't add a ElementViolation if there are no rule or model violations
                     violations.get().add(new ElementViolationImpl.Builder()
-                                                 .setUuid(element.getUUID())
-                                                 .setGraphViolations(ruleViolations)
-                                                 .build());
+                            .setUuid(element.getUUID())
+                            .setGraphViolations(ruleViolations)
+                            .build());
                 }
             }
         };

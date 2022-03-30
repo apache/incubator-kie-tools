@@ -20,7 +20,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +48,7 @@ import static org.mockito.Mockito.when;
 public class SVGShapeFactoryTest {
 
     @Mock
-    private SyncBeanManager beanManager;
+    private BeanManager beanManager;
 
     @Mock
     private Object definition;
@@ -85,7 +85,7 @@ public class SVGShapeFactoryTest {
     public void setup() throws Exception {
         this.functionalFactory = new ShapeDefFunctionalFactory();
         this.tested = spy(new SVGShapeFactory(beanManager,
-                                              functionalFactory));
+                functionalFactory));
         this.tested.init();
         when(svgShapeDef.getViewFactoryType()).thenReturn(Object.class);
         when(svgMutableShapeDef.getViewFactoryType()).thenReturn(Object.class);
@@ -98,30 +98,30 @@ public class SVGShapeFactoryTest {
         doAnswer(invocationOnMock -> SVGShapeDef.class).when(svgShapeDef).getType();
         doAnswer(invocationOnMock -> SVGShapeViewDef.class).when(svgMutableShapeDef).getType();
         doAnswer(invocationOnMock -> shapeView).when(svgShapeDef).newViewInstance(eq(viewFactory),
-                                                                                  any(Object.class));
+                any(Object.class));
         doAnswer(invocationOnMock -> shapeViewImpl).when(svgMutableShapeDef).newViewInstance(eq(viewFactory),
-                                                                                             any(Object.class));
+                any(Object.class));
     }
 
     @Test
     public void testSVGShapeDefBuilder() {
         doAnswer(invocationOnMock -> viewFactory).when(tested).getViewFactory(eq(svgShapeDef));
         final SVGShape shape = tested.newShape(definition,
-                                               svgShapeDef);
+                svgShapeDef);
         assertNotNull(shape);
         assertTrue(shape instanceof SVGShapeImpl);
         assertEquals(shapeView,
-                     shape.getShapeView());
+                shape.getShapeView());
     }
 
     @Test
     public void testSVGMutableShapeDefBuilder() {
         doAnswer(invocationOnMock -> viewFactory).when(tested).getViewFactory(eq(svgMutableShapeDef));
         final SVGShape shape = tested.newShape(definition,
-                                               svgMutableShapeDef);
+                svgMutableShapeDef);
         assertNotNull(shape);
         assertTrue(shape instanceof SVGMutableShapeImpl);
         assertEquals(shapeViewImpl,
-                     shape.getShapeView());
+                shape.getShapeView());
     }
 }

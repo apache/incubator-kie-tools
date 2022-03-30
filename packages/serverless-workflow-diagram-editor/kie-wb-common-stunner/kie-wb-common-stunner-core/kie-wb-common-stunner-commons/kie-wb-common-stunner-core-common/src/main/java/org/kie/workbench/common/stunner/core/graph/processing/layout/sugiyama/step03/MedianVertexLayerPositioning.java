@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 
 import org.kie.workbench.common.stunner.core.graph.processing.layout.Vertex;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.Or
  * Positions a vertex inside a layer using the median calc.
  */
 @Default
+@Dependent
 public class MedianVertexLayerPositioning implements VertexLayerPositioning {
 
     /**

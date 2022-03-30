@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.components.glyph;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**

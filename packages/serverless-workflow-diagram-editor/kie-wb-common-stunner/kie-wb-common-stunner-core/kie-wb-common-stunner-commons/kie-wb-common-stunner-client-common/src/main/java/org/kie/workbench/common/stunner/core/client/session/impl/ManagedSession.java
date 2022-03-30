@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
@@ -29,8 +28,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import elemental2.dom.DomGlobal;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
@@ -110,28 +109,28 @@ public class ManagedSession
     @SuppressWarnings("unchecked")
     public ManagedSession registerCanvasControl(final Class<? extends CanvasControl> type) {
         return registerCanvasControl(type,
-                                     null);
+                null);
     }
 
     @SuppressWarnings("unchecked")
     public ManagedSession registerCanvasControl(final Class<? extends CanvasControl> type,
                                                 final Class<? extends Annotation> qualifier) {
         canvasControlRegistrationEntries.add(new ControlRegistrationEntry<>((Class<? extends CanvasControl<AbstractCanvas>>) type,
-                                                                            null != qualifier ? buildQualifier(qualifier) : null));
+                null != qualifier ? buildQualifier(qualifier) : null));
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public ManagedSession registerCanvasHandlerControl(final Class<? extends CanvasControl> type) {
         return registerCanvasHandlerControl(type,
-                                            null);
+                null);
     }
 
     @SuppressWarnings("unchecked")
     public ManagedSession registerCanvasHandlerControl(final Class<? extends CanvasControl> type,
                                                        final Class<? extends Annotation> qualifier) {
         canvasHandlerControlRegistrationEntries.add(new ControlRegistrationEntry<>((Class<? extends CanvasControl<AbstractCanvasHandler>>) type,
-                                                                                   null != qualifier ? buildQualifier(qualifier) : null));
+                null != qualifier ? buildQualifier(qualifier) : null));
         return this;
     }
 
@@ -167,27 +166,29 @@ public class ManagedSession
             throw new IllegalStateException("Session is already loaded!");
         }
         sessionLoader.load(metadata,
-                           prefs -> {
-                               // Obtain the right qualified types.
-                               final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
-                               canvas = lookup(canvasInstances, qualifier);
-                               canvasHandler = lookup(canvasHandlerInstances, qualifier);
-                               canvasControlRegistrationEntries
-                                       .forEach(entry -> registerCanvasControlEntry(entry,
-                                                                                    qualifier));
-                               canvasHandlerControlRegistrationEntries
-                                       .forEach(entry -> registerCanvasHandlerControlEntry(entry,
-                                                                                           qualifier));
-                               callback.execute();
-                           },
-                           throwable -> {
-                               if (LogConfiguration.loggingIsEnabled()) {
+                prefs -> {
+                    // Obtain the right qualified types.
+                    final Annotation qualifier = definitionUtils.getQualifier(metadata.getDefinitionSetId());
+                    canvas = lookup(canvasInstances, qualifier);
+                    canvasHandler = lookup(canvasHandlerInstances, qualifier);
+                    canvasControlRegistrationEntries
+                            .forEach(entry -> registerCanvasControlEntry(entry,
+                                    qualifier));
+                    canvasHandlerControlRegistrationEntries
+                            .forEach(entry -> registerCanvasHandlerControlEntry(entry,
+                                    qualifier));
+                    callback.execute();
+                },
+                throwable -> {
+
+                    DomGlobal.console.log(throwable);
+/*                               if (LogConfiguration.loggingIsEnabled()) {
                                    LOGGER.log(Level.SEVERE,
                                               "An error was produced during StunnerPreferences initialization.",
                                               throwable);
-                               }
-                               throw new RuntimeException(throwable);
-                           });
+                               }*/
+                    throw new RuntimeException(throwable);
+                });
     }
 
     @Override
@@ -289,9 +290,9 @@ public class ManagedSession
                                             final Annotation qualifier) {
         if (isControlActive(entry.type)) {
             registerCanvasControl(entry,
-                                  lookupCanvasControl(canvasControlInstances,
-                                                      entry,
-                                                      qualifier));
+                    lookupCanvasControl(canvasControlInstances,
+                            entry,
+                            qualifier));
         }
     }
 
@@ -306,9 +307,9 @@ public class ManagedSession
                                                    final Annotation qualifier) {
         if (isControlActive(entry.type)) {
             registerCanvasHandlerControl(entry,
-                                         lookupCanvasHandlerControl(canvasHandlerControlInstances,
-                                                                    entry,
-                                                                    qualifier));
+                    lookupCanvasHandlerControl(canvasHandlerControlInstances,
+                            entry,
+                            qualifier));
         }
     }
 
@@ -334,8 +335,8 @@ public class ManagedSession
                                                                                    final ControlRegistrationEntry<AbstractCanvasHandler> entry,
                                                                                    final Annotation qualifier) {
         return (CanvasControl<AbstractCanvasHandler>) doLookup(instance,
-                                                               entry,
-                                                               qualifier);
+                entry,
+                qualifier);
     }
 
     @SuppressWarnings("unchecked")
@@ -343,8 +344,8 @@ public class ManagedSession
                                                                      final ControlRegistrationEntry<AbstractCanvas> entry,
                                                                      final Annotation qualifier) {
         return (CanvasControl<AbstractCanvas>) doLookup(instance,
-                                                        entry,
-                                                        qualifier);
+                entry,
+                qualifier);
     }
 
     @SuppressWarnings("unchecked")
@@ -353,17 +354,17 @@ public class ManagedSession
                                    final Annotation qualifier) {
         final ManagedInstance i = null != entry.qualifier ?
                 instance.select(entry.type,
-                                entry.qualifier,
-                                qualifier) :
+                        entry.qualifier,
+                        qualifier) :
                 instance.select(entry.type,
-                                qualifier);
+                        qualifier);
         return i.isUnsatisfied() ?
                 (null != entry.qualifier ?
                         instance.select(entry.type,
-                                        entry.qualifier,
-                                        DefinitionManager.DEFAULT_QUALIFIER).get() :
+                                entry.qualifier,
+                                DefinitionManager.DEFAULT_QUALIFIER).get() :
                         instance.select(entry.type,
-                                        DefinitionManager.DEFAULT_QUALIFIER).get()) :
+                                DefinitionManager.DEFAULT_QUALIFIER).get()) :
                 i.get();
     }
 

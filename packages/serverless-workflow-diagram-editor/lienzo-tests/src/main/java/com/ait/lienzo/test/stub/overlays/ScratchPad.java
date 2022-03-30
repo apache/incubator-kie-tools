@@ -24,7 +24,7 @@ public final class ScratchPad {
     }
 
     public final void clear() {
-        com.ait.lienzo.client.core.Context2D context = getContext();
+        Context2D context = getContext();
 
         if (null != context) {
             context.clearRect(0, 0, m_wide, m_high);
@@ -37,7 +37,7 @@ public final class ScratchPad {
         m_high = high;
     }
 
-    public final elemental2.dom.HTMLCanvasElement getElement() {
+    public final HTMLCanvasElement getElement() {
 
         return null;
     }
@@ -85,7 +85,7 @@ public final class ScratchPad {
         return canvas.toDataURL();
     }
 
-    private static final String toDataURL(final elemental2.dom.HTMLCanvasElement element) {
+    private static final String toDataURL(final HTMLCanvasElement element) {
         return element.toDataURL(null);
     }
 

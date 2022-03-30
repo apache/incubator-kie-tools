@@ -19,10 +19,10 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
@@ -49,13 +49,11 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
     public AddChildNodeCommand(final @MapsTo("parentUUID") String parentUUID,
                                final @MapsTo("candidate") Node candidate,
                                final @MapsTo("location") Point2D location) {
-        this.parentUUID = checkNotNull("parentUUID", parentUUID);
-        this.candidate = checkNotNull("candidate", candidate);
+        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
+                                                             parentUUID);
+        this.candidate = PortablePreconditions.checkNotNull("candidate",
+                                                            candidate);
         this.location = location;
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     public AddChildNodeCommand(final Node<?, Edge> parent,
@@ -113,7 +111,7 @@ public class AddChildNodeCommand extends AbstractGraphCompositeCommand {
                 evaluate(context,
                          contextBuilder -> contextBuilder.cardinality(Collections.singleton(candidate),
                                                                       CardinalityContext.Operation.ADD));
-        final Collection<RuleViolation> violations = new LinkedList<>();
+        final Collection<RuleViolation> violations = new LinkedList<RuleViolation>();
         violations.addAll(containmentRuleViolations);
         violations.addAll(cardinalityRuleViolations);
         return new GraphCommandResultBuilder(violations).build();

@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.api;
 
 import java.lang.annotation.Annotation;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -26,7 +25,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.event.OnSessionErrorEvent;
@@ -38,6 +37,8 @@ import org.kie.workbench.common.stunner.core.command.exception.CommandException;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Manages a single session by Window
@@ -55,10 +56,10 @@ public class GlobalSessionManager implements SessionManager {
 
     protected GlobalSessionManager() {
         this(null,
-             null,
-             null,
-             null,
-             null);
+                null,
+                null,
+                null,
+                null);
     }
 
     @Inject
@@ -79,15 +80,16 @@ public class GlobalSessionManager implements SessionManager {
                                                      final Class<S> sessionType,
                                                      final Consumer<S> sessionConsumer) {
         final S session = InstanceUtils.lookup(sessionInstances,
-                                               sessionType,
-                                               qualifierProvider.apply(metadata));
+                sessionType,
+                qualifierProvider.apply(metadata));
         ((AbstractSession) session).init(metadata,
-                                         () -> sessionConsumer.accept(session));
+                () -> sessionConsumer.accept(session));
     }
 
     @Override
     public <S extends ClientSession> void open(final S session) {
-        Objects.requireNonNull(session, "Parameter named 'session' should be not null!");
+        checkNotNull("session",
+                session);
         if (!session.equals(current)) {
             current = (AbstractSession) session;
             current.open();
@@ -109,9 +111,9 @@ public class GlobalSessionManager implements SessionManager {
             current = null;
         }
         sessionDestroyedEvent.fire(new SessionDestroyedEvent(uuid,
-                                                             name,
-                                                             graphUuid,
-                                                             metadata));
+                name,
+                graphUuid,
+                metadata));
     }
 
     @Override
@@ -123,13 +125,13 @@ public class GlobalSessionManager implements SessionManager {
     @Override
     public void handleCommandError(final CommandException ce) {
         sessionErrorEvent.fire(new OnSessionErrorEvent(current,
-                                                       new ClientRuntimeError("Error while executing command.",
-                                                                              ce)));
+                new ClientRuntimeError("Error while executing command.",
+                        ce)));
     }
 
     @Override
     public void handleClientError(final ClientRuntimeError error) {
         sessionErrorEvent.fire(new OnSessionErrorEvent(current,
-                                                       error));
+                error));
     }
 }

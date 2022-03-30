@@ -17,24 +17,25 @@
 package org.uberfire.ext.widgets.core.client.tree;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.SimplePanel;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.user.client.ui.Anchor;
+import org.gwtproject.user.client.ui.ComplexPanel;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.SimplePanel;
 import org.uberfire.client.workbench.ouia.OuiaAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponent;
 import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponentTypeAttribute;
 import org.uberfire.ext.widgets.core.client.resources.TreeNavigatorResources;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 public class TreeItem<I extends TreeItem> extends Composite implements OuiaComponent {
 
@@ -72,7 +73,8 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
     ) {
         this.label = label;
         this.uuid = value;
-        this.type = Objects.requireNonNull(type, "Parameter named 'type' should be not null!");
+        this.type = checkNotNull("type",
+                                 type);
 
         if (type.equals(Type.CONTAINER) || type.equals(Type.ROOT)) {
             final FlowPanel folder = contentProvider.get();
@@ -80,7 +82,7 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
             folder.getElement().getStyle().setDisplay(Style.Display.BLOCK);
             {
                 this.state = State.CLOSE;
-                this.header = GWT.create(FlowPanel.class);
+                this.header = new FlowPanel();
                 this.icon = icon;
                 this.content = contentProvider.get();
                 final Anchor name = new Anchor();
@@ -100,18 +102,21 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
                             folderName.add(name);
                         }
                     }
-                    header.addDomHandler(event -> {
-                        if (!isSelected) {
-                            updateSelected();
-                        }
-                        if (state.equals(State.CLOSE)) {
-                            setState(State.OPEN,
-                                     true);
-                        } else {
-                            setState(State.CLOSE,
-                                     true);
-                        }
-                    },
+                    header.addDomHandler(new ClickHandler() {
+                                             @Override
+                                             public void onClick(ClickEvent event) {
+                                                 if (!isSelected) {
+                                                     updateSelected();
+                                                 }
+                                                 if (state.equals(State.CLOSE)) {
+                                                     setState(State.OPEN,
+                                                              true);
+                                                 } else {
+                                                     setState(State.CLOSE,
+                                                              true);
+                                                 }
+                                             }
+                                         },
                                          ClickEvent.getType());
                 }
                 {
@@ -142,8 +147,13 @@ public class TreeItem<I extends TreeItem> extends Composite implements OuiaCompo
                         itemName.add(name);
                     }
                 }
-                item.addDomHandler(event -> tree.onSelection((I) TreeItem.this,
-                                  true),
+                item.addDomHandler(new ClickHandler() {
+                                       @Override
+                                       public void onClick(ClickEvent event) {
+                                           tree.onSelection((I) TreeItem.this,
+                                                            true);
+                                       }
+                                   },
                                    ClickEvent.getType());
             }
             initWidget(item);

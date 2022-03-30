@@ -24,7 +24,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.event.BuildCanvasShapeEvent;
@@ -66,7 +66,7 @@ public class DefaultPaletteFactory<H extends AbstractCanvasHandler>
         final DefaultPaletteWidget palette = getPaletteWidget(canvasHandler);
         getPaletteDefinitionBuilder(canvasHandler)
                 .build(canvasHandler,
-                       palette::bind);
+                        palette::bind);
         return palette;
     }
 
@@ -89,21 +89,22 @@ public class DefaultPaletteFactory<H extends AbstractCanvasHandler>
 
     private DefaultPaletteWidget getPaletteWidget(final H canvasHandler) {
         final DefaultPaletteWidget palette = palettes.get();
-        palette.onItemDrop(event -> buildCanvasShapeEvent.fire(new BuildCanvasShapeEvent(canvasHandler,
-                                                                                         event.getDefinition(),
-                                                                                         event.getFactory(),
-                                                                                         event.getX(),
-                                                                                         event.getY())));
+        palette.onItemDrop(event -> {
+            buildCanvasShapeEvent.fire(new BuildCanvasShapeEvent(canvasHandler,
+                    event.getDefinition(),
+                    event.getFactory(),
+                    event.getX(),
+                    event.getY()));});
         palette.onItemDragStart(event -> canvasShapeDragStartEvent.fire(new CanvasShapeDragStartEvent(canvasHandler,
-                                                                                                      event.getDefinition(),
-                                                                                                      event.getFactory(),
-                                                                                                      event.getX(),
-                                                                                                      event.getY())));
+                event.getDefinition(),
+                event.getFactory(),
+                event.getX(),
+                event.getY())));
         palette.onItemDragUpdate(event -> canvasShapeDragUpdateEvent.fire(new CanvasShapeDragUpdateEvent(canvasHandler,
-                                                                                                         event.getDefinition(),
-                                                                                                         event.getFactory(),
-                                                                                                         event.getX(),
-                                                                                                         event.getY())));
+                event.getDefinition(),
+                event.getFactory(),
+                event.getX(),
+                event.getY())));
         return palette;
     }
 }

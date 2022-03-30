@@ -15,14 +15,6 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Focusable;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.ModalShowEvent;
 import org.gwtbootstrap3.client.shared.event.ModalShowHandler;
 import org.gwtbootstrap3.client.shared.event.ModalShownEvent;
@@ -36,6 +28,14 @@ import org.gwtbootstrap3.client.ui.base.modal.ModalContent;
 import org.gwtbootstrap3.client.ui.base.modal.ModalDialog;
 import org.gwtbootstrap3.client.ui.constants.ButtonType;
 import org.gwtbootstrap3.client.ui.constants.ModalBackdrop;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.KeyDownHandler;
+import org.gwtproject.user.client.ui.ComplexPanel;
+import org.gwtproject.user.client.ui.Focusable;
+import org.gwtproject.user.client.ui.HasWidgets;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * Base class for modal popup implementations. Setting the following properties by default:

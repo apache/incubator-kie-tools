@@ -40,11 +40,14 @@
     <!-- GWT. -->
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
+      <groupId>org.treblereel.gwt.gwtproject.event</groupId>
+      <artifactId>gwt-event-dom</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.treblereel.gwt.gwtproject.widgets</groupId>
+      <artifactId>gwt-widgets</artifactId>
+    </dependency>
     <!-- Lienzo. -->
 
     <dependency>
@@ -70,28 +73,14 @@
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-annotations</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-common</artifactId>
+      <groupId>org.kie.kogito.stunner.serverless.editor.legacy</groupId>
+      <artifactId>compat</artifactId>
     </dependency>
-
   </dependencies>
 
 </project>

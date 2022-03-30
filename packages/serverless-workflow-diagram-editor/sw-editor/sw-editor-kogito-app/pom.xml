@@ -35,87 +35,34 @@
   <!-- CNCF SW Repos. -->
   <repositories>
     <repository>
-    <id>oss.sonatype.org-snapshot</id>
-    <url>http://oss.sonatype.org/content/repositories/snapshots</url>
-    <releases>
-      <enabled>false</enabled>
-    </releases>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-  </repository>
+      <id>oss.sonatype.org-snapshot</id>
+      <url>http://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
-  <properties>
-    <skipITs>false</skipITs>
-    <org.kie.sw.editor.browser.headless>true</org.kie.sw.editor.browser.headless>
-    <!-- We do not want to run selenium tests in default profile -->
-    <sw.editor.it.tests.excludes>**/*IT.java</sw.editor.it.tests.excludes>
-  </properties>
-
   <dependencies>
-    <!--Logs-->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-ext</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>log4j-over-slf4j</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Errai -->
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-cdi-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.google.inject</groupId>
-      <artifactId>guice</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Stunner -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-core-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-backend-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -126,23 +73,14 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-client-common</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-lienzo</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-          <artifactId>uberfire-all</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-svg-client</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -152,18 +90,10 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-lienzo-extensions</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-widgets</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-          <artifactId>uberfire-all</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
 
@@ -171,7 +101,6 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>lienzo-core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- SW. -->
@@ -180,37 +109,11 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>sw-editor-api</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>sw-editor-client</artifactId>
       <version>${project.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Needed by forms for JSR303 validation -->
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.validation</groupId>
-      <artifactId>validation-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire Commons Editor -->
@@ -218,145 +121,157 @@
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-commons-editor-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-commons-editor-client</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Core UberFire dependencies -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-simple-docks-client</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>uberfire-workbench-processors</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-workbench-client-views-patternfly</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- UberFire Kogito dependencies -->
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-promise</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Generic ui components -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-widgets-table</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-ui</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- GWT and extensions -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.servlet</groupId>
-          <artifactId>javax.servlet-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
+      <groupId>org.treblereel.gwt.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
+      <groupId>org.treblereel.gwt.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3-extras</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
-      <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.mortbay.jasper</groupId>
-          <artifactId>apache-el</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>provided</scope>
-    </dependency>
-
     <!--  Appformer Kogito -->
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>appformer-client-api</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>appformer-kogito-bridge</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.j2cl.processors</groupId>
+      <artifactId>processors</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui.templates</groupId>
+      <artifactId>api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui.templates</groupId>
+      <artifactId>generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.legacy.ui</groupId>
+      <artifactId>gwt-dom-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui</groupId>
+      <artifactId>elemental2-generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.legacy.ui.databinding</groupId>
+      <artifactId>api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.legacy.ui.databinding</groupId>
+      <artifactId>generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui.translation</groupId>
+      <artifactId>api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife.ui.translation</groupId>
+      <artifactId>generator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.crysknife</groupId>
+      <artifactId>crysknife-processor</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.gwt.gwtproject.validation</groupId>
+      <artifactId>gwt-validation-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.gwt.gwtproject.validation</groupId>
+      <artifactId>gwt-validation-processor</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.treblereel.gwt.gwtproject.resources</groupId>
+      <artifactId>gwt-resources-processor</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <!-- Test dependencies -->
-    <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>kie-wb-common-stunner-client-common</artifactId>
-      <scope>test</scope>
-      <classifier>
-        tests
-      </classifier>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
@@ -368,41 +283,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>lienzo-tests</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.bonigarcia</groupId>
-      <artifactId>webdrivermanager</artifactId>
-      <scope>test</scope>
-    </dependency>   
-    <dependency>
-      <groupId>org.assertj</groupId>
-      <artifactId>assertj-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit-fluent</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.javacrumbs.json-unit</groupId>
-      <artifactId>json-unit-assertj</artifactId>
-      <scope>test</scope>
-    </dependency>
 
   </dependencies>
 
@@ -412,76 +292,6 @@
 
     <plugins>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <configuration>
-          <extraJvmArgs>-Xmx4G -Xms1G -Xss1M -XX:CompileThreshold=7000 -Derrai.dynamic_validation.enabled=true</extraJvmArgs>
-          <module>org.kie.workbench.common.stunner.sw.KogitoSWEditor</module>
-          <localWorkers>8</localWorkers>
-          <noServer>false</noServer>
-          <logLevel>WARN</logLevel>
-          <disableCastChecking>true</disableCastChecking>
-          <optimizationLevel>9</optimizationLevel>
-          <draftCompile>false</draftCompile>
-          <strict>true</strict>
-          <style>OBFUSCATED</style>
-          <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
-          <hostedWebapp>src/main/webapp</hostedWebapp>
-          <runTarget>test.html</runTarget>
-          <generateJsInteropExports>true</generateJsInteropExports>
-
-          <compileSourcesArtifacts>
-            <!-- UberFire -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-simple-docks-client</compileSourcesArtifact>
-            <!-- Errai, Drools etc -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:errai-data-binding</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-ui</compileSourcesArtifact>
-            <!-- UF-ext -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-commons-editor-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-commons</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-table</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:uberfire-widgets-core-client</compileSourcesArtifact>
-            <!-- Appformer -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:appformer-kogito-bridge</compileSourcesArtifact>
-            <!-- Stunner -->
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-backend-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-core-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-client-common</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-svg-client</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-lienzo-extensions</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:kie-wb-common-stunner-widgets</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:sw-editor-api</compileSourcesArtifact>
-            <compileSourcesArtifact>org.kie.kogito.stunner.serverless.editor:sw-editor-client</compileSourcesArtifact>
-          </compileSourcesArtifacts>
-        </configuration>
-        <executions>
-          <execution>
-            <id>gwt-clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>gwt-compile</id>
-            <goals>
-              <goal>resources</goal>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <packagingExcludes>**/javax/**/*.*,**/*.class,**/*.symbolMap,WEB-INF/classes/**</packagingExcludes>
@@ -490,7 +300,24 @@
           </archive>
         </configuration>
       </plugin>
-
+      <plugin>
+        <groupId>com.vertispan.j2cl</groupId>
+        <artifactId>j2cl-maven-plugin</artifactId>
+        <version>0.19</version>
+        <executions>
+          <execution>
+            <id>build-js</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
+          <compilationLevel>ADVANCED</compilationLevel>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
@@ -514,92 +341,50 @@
           </filesets>
         </configuration>
       </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>${sw.editor.it.tests.excludes}</exclude>
-          </excludes>
-          <systemPropertyVariables>
-            <org.kie.sw.editor.browser.headless>${org.kie.sw.editor.browser.headless}</org.kie.sw.editor.browser.headless>
-            <org.kie.sw.editor.screenshots.dir>${project.build.directory}/screenshots</org.kie.sw.editor.screenshots.dir>
-          </systemPropertyVariables>
-        </configuration>
-      </plugin>
-
     </plugins>
 
   </build>
 
   <profiles>
     <profile>
-      <id>sources</id>
-      <activation>
-        <property>
-          <name>sources</name>
-        </property>
-      </activation>
+      <id>j2cl-build</id>
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
+            <groupId>com.vertispan.j2cl</groupId>
+            <artifactId>j2cl-maven-plugin</artifactId>
+            <version>0.19</version>
+            <executions>
+              <execution>
+                <id>build-js</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
             <configuration>
-              <module>org.kie.workbench.common.stunner.sw.KogitoSWEditorWithSourceMaps</module>
-              <saveSource>true</saveSource>
-              <logLevel>INFO</logLevel>
-              <optimizationLevel>0</optimizationLevel>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-              <generateJsInteropExports>true</generateJsInteropExports>
+              <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
+              <compilationLevel>ADVANCED</compilationLevel>
             </configuration>
           </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-war-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>add-source-maps</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>war</goal>
-                </goals>
-                <configuration>
-                  <webResources>
-                    <resource>
-                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/src</directory>
-                      <targetPath>sourcemaps</targetPath>
-                    </resource>
-                    <resource>
-                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/symbolMaps</directory>
-                      <includes>
-                        <include>*.json</include>
-                      </includes>
-                      <targetPath>sourcemaps</targetPath>
-                    </resource>
-                  </webResources>
-                </configuration>
-              </execution>
-            </executions>
+            <version>3.3.2</version>
+            <configuration>
+              <webResources>
+                <resource>
+                  <!-- this is relative to the pom.xml directory -->
+                  <directory>target/gwt/launcherDir/sw-editor-kogito-app/</directory>
+                </resource>
+              </webResources>
+            </configuration>
           </plugin>
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>sw-editor-it-tests</id>
-      <activation>
-        <property>
-          <name>integration-tests</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <properties>
-        <!-- We want to run selenium tests in sw-editor-it-tests profile -->
-        <sw.editor.it.tests.excludes></sw.editor.it.tests.excludes>
-      </properties>
-    </profile>
+
   </profiles>
 
 </project>

@@ -16,19 +16,19 @@
 
 package org.uberfire.ext.widgets.table.client;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.user.cellview.client.AbstractPager;
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.view.client.HasRows;
-import com.google.gwt.view.client.Range;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.i18n.client.NumberFormat;
+import org.gwtproject.resources.client.CssResource;
+import org.gwtproject.user.cellview.client.AbstractPager;
+import org.gwtproject.user.cellview.client.SimplePager;
+import org.gwtproject.user.client.ui.HTML;
+import org.gwtproject.user.client.ui.HasVerticalAlignment;
+import org.gwtproject.user.client.ui.HorizontalPanel;
+import org.gwtproject.view.client.HasRows;
+import org.gwtproject.view.client.Range;
 import org.uberfire.ext.widgets.table.client.resources.UberfireSimplePagerResources;
 import org.uberfire.ext.widgets.table.client.resources.i18n.CommonConstants;
 
@@ -77,19 +77,19 @@ public class UberfireSimplePager extends AbstractPager {
      */
     public UberfireSimplePager(TextLocation location) {
         this(location,
-             getDefaultResources(),
-             true,
-             DEFAULT_FAST_FORWARD_ROWS,
-             true);
+                getDefaultResources(),
+                true,
+                DEFAULT_FAST_FORWARD_ROWS,
+                true);
     }
 
     public UberfireSimplePager(boolean showFastForwardButton,
                                boolean showLastPageButton) {
         this(TextLocation.CENTER,
-             getDefaultResources(),
-             showFastForwardButton,
-             DEFAULT_FAST_FORWARD_ROWS,
-             showLastPageButton);
+                getDefaultResources(),
+                showFastForwardButton,
+                DEFAULT_FAST_FORWARD_ROWS,
+                showLastPageButton);
     }
 
     /**
@@ -219,7 +219,7 @@ public class UberfireSimplePager extends AbstractPager {
         if (getDisplay() != null) {
             Range range = getDisplay().getVisibleRange();
             setPageStart(range.getStart()
-                                 + getPageSize());
+                    + getPageSize());
         }
     }
 
@@ -230,7 +230,7 @@ public class UberfireSimplePager extends AbstractPager {
         if (getDisplay() != null) {
             Range range = getDisplay().getVisibleRange();
             setPageStart(range.getStart()
-                                 - getPageSize());
+                    - getPageSize());
         }
     }
 
@@ -260,13 +260,13 @@ public class UberfireSimplePager extends AbstractPager {
             int displayPageSize = range.getLength();
             if (!isRangeLimited() && getDisplay().isRowCountExact()) {
                 index = Math.min(index,
-                                 getDisplay().getRowCount() - displayPageSize);
+                        getDisplay().getRowCount() - displayPageSize);
             }
             index = Math.max(0,
-                             index);
+                    index);
             if (index != range.getStart()) {
                 getDisplay().setVisibleRange(index,
-                                             displayPageSize);
+                        displayPageSize);
             }
         }
     }
@@ -278,7 +278,7 @@ public class UberfireSimplePager extends AbstractPager {
      */
     public void startLoading() {
         getDisplay().setRowCount(0,
-                                 true);
+                true);
         label.setHTML("");
     }
 
@@ -336,11 +336,11 @@ public class UberfireSimplePager extends AbstractPager {
         int pageSize = range.getLength();
         int dataSize = display.getRowCount();
         int endIndex = Math.min(dataSize,
-                                pageStart
-                                        + pageSize
-                                        - 1);
+                pageStart
+                        + pageSize
+                        - 1);
         endIndex = Math.max(pageStart,
-                            endIndex);
+                endIndex);
         boolean exact = display.isRowCountExact();
         if (dataSize == 0) {
             return "0 " + of() + " 0";

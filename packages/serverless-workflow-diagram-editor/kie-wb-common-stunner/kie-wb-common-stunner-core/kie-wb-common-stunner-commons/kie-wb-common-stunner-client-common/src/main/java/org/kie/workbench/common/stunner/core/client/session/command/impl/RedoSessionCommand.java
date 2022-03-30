@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.Objects;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
@@ -39,6 +37,7 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeysMatcher.doKeysMatch;
 
 @Dependent
@@ -95,7 +94,8 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
-        checkNotNull("callback", callback);
+        checkNotNull("callback",
+                     callback);
         if (!redoCommandHandler.isEnabled()) {
             callback.onSuccess();
         }
@@ -111,8 +111,9 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     @SuppressWarnings("unchecked")
-    void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
-        checkNotNull("commandExecutedEvent", commandExecutedEvent);
+    public void onCommandExecuted(final @Observes CanvasCommandExecutedEvent commandExecutedEvent) {
+        checkNotNull("commandExecutedEvent",
+                     commandExecutedEvent);
         if (null != getSession() && getSession().getCanvasHandler().equals(commandExecutedEvent.getCanvasHandler())) {
             if (null != commandExecutedEvent.getCommand()) {
                 redoCommandHandler.onCommandExecuted(commandExecutedEvent.getCommand());
@@ -122,8 +123,9 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
     }
 
     @SuppressWarnings("unchecked")
-    void onCommandUndoExecuted(final @Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
-        checkNotNull("commandUndoExecutedEvent", commandUndoExecutedEvent);
+    public void onCommandUndoExecuted(final @Observes CanvasCommandUndoneEvent commandUndoExecutedEvent) {
+        checkNotNull("commandUndoExecutedEvent",
+                     commandUndoExecutedEvent);
         CanvasHandler canvasHandler = commandUndoExecutedEvent.getCanvasHandler();
         if (null != getSession() && getSession().getCanvasHandler().equals(canvasHandler)) {
             if (null != commandUndoExecutedEvent.getCommand()) {
@@ -133,11 +135,7 @@ public class RedoSessionCommand extends AbstractClientSessionCommand<EditorSessi
         }
     }
 
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
-    }
-
-    void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
+    public void onCurrentRegistryChanged(final @Observes CurrentRegistryChangedEvent currentRegistryChangedEvent) {
         checkState();
     }
 

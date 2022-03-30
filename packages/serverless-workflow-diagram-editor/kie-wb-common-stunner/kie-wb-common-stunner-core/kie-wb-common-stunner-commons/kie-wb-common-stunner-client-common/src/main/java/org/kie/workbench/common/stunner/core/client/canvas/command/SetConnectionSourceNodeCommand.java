@@ -63,18 +63,6 @@ public class SetConnectionSourceNodeCommand extends AbstractCanvasGraphCommand {
         return connection;
     }
 
-    public Connection getLastConnection() {
-        return getGraphCommand().getLastConnection();
-    }
-
-    public String getLastSourceNodeUUID() {
-        return getGraphCommand().getLastSourceNodeUUID();
-    }
-
-    private org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand getGraphCommand() {
-        return (org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionSourceNodeCommand) graphCommand;
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() +

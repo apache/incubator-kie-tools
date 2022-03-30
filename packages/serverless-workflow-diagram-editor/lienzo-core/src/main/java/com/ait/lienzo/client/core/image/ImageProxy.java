@@ -30,10 +30,10 @@ import com.ait.lienzo.client.core.util.ScratchPad;
 import com.ait.lienzo.client.widget.RootPanel;
 import com.ait.lienzo.shared.core.types.ImageFilterType;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import com.google.gwt.resources.client.ImageResource;
 import elemental2.dom.HTMLImageElement;
 import elemental2.dom.Image;
 import elemental2.dom.ImageData;
+import org.gwtproject.resources.client.ImageResource;
 
 /**
  * ImageProxy is used by {@link AbstractImageShape} to load and draw the image.

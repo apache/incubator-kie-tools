@@ -18,11 +18,10 @@ package org.uberfire.ext.widgets.common.client.tables;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.ButtonSize;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
+import org.gwtproject.user.client.ui.VerticalPanel;
 import org.uberfire.ext.widgets.common.client.resources.i18n.CommonConstants;
 import org.uberfire.ext.widgets.table.client.ColumnMeta;
 import org.uberfire.ext.widgets.table.client.UberfireColumnPicker;
@@ -53,7 +52,7 @@ public class ColumnPicker<T> extends UberfireColumnPicker<T> {
     protected void addResetButtom(final int left,
                                   final int top,
                                   VerticalPanel popupContent) {
-            Button resetButton = GWT.create(Button.class);
+            Button resetButton = new Button();
             resetButton.setText(CommonConstants.INSTANCE.Reset());
             resetButton.setSize(ButtonSize.EXTRA_SMALL);
             resetButton.addClickHandler(event -> resetTableColumns(left,

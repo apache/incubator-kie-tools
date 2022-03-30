@@ -71,16 +71,6 @@
     </dependency>
     
     <!-- GWT dependencies -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-    </dependency>
-
     <!-- Other dependencies -->
     <dependency>
       <groupId>junit</groupId>
@@ -95,6 +85,12 @@
     <dependency>
         <groupId>com.google.gwt.gwtmockito</groupId>
         <artifactId>gwtmockito</artifactId>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
     <dependency>

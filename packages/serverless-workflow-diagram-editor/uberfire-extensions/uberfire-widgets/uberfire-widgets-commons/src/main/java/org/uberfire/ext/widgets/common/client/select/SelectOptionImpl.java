@@ -17,6 +17,8 @@
 
 package org.uberfire.ext.widgets.common.client.select;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotEmpty;
+
 public class SelectOptionImpl implements SelectOption {
 
     private final String selector;
@@ -24,10 +26,9 @@ public class SelectOptionImpl implements SelectOption {
 
     public SelectOptionImpl(String selector,
                             String name) {
-        if (selector == null || selector.trim().length() == 0) {
-            throw new IllegalArgumentException("Parameter named 'selector' should be filled!");
-        }
-        this.selector = selector;
+
+        this.selector = checkNotEmpty("selector",
+                                      selector).toUpperCase();
         this.name = name;
     }
 

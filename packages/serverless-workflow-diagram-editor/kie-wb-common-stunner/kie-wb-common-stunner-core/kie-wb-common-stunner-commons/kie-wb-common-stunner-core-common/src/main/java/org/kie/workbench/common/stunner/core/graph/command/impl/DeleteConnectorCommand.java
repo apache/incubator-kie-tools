@@ -15,11 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -39,7 +37,8 @@ public class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
     private transient Edge<? extends View, Node> edge;
 
     public DeleteConnectorCommand(final @MapsTo("edge") String edgeUUID) {
-        this.edgeUUID = Objects.requireNonNull(edgeUUID, "Parameter named 'edgeUUID' should be not null!");
+        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID",
+                                                           edgeUUID);
     }
 
     public DeleteConnectorCommand(final Edge<? extends View, Node> edge) {
@@ -55,12 +54,22 @@ public class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
         final Node<View<?>, Edge> targetNode = edge.getTargetNode();
         final Node<View<?>, Edge> sourceNode = edge.getSourceNode();
         if (null != sourceNode) {
-            commands.add(buildSetConnectionSourceCommand(edge));
+            commands.add(getSetConnectionSourceCommand(edge));
         }
         if (null != targetNode) {
-            commands.add(buildSetConnectionTargetCommand(edge));
+            commands.add(getSetConnectionTargetCommand(edge));
         }
         return this;
+    }
+
+    protected SetConnectionTargetNodeCommand getSetConnectionTargetCommand(final Edge<? extends ViewConnector, Node> edge) {
+        return new SetConnectionTargetNodeCommand(null,
+                                                  edge);
+    }
+
+    protected SetConnectionSourceNodeCommand getSetConnectionSourceCommand(final Edge<? extends ViewConnector, Node> edge) {
+        return new SetConnectionSourceNodeCommand(null,
+                                                  edge);
     }
 
     @Override
@@ -96,14 +105,6 @@ public class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
         return edge;
     }
 
-    public String getLastSourceNodeUUID() {
-        return getSetConnectionSourceNodeCommand().map(c -> ((SetConnectionSourceNodeCommand) c).getLastSourceNodeUUID()).orElse(null);
-    }
-
-    public String getLastTargetNodeUUID() {
-        return getSetConnectionTargetNodeCommand().map(c -> ((SetConnectionTargetNodeCommand) c).getLastTargetNodeUUID()).orElse(null);
-    }
-
     @Override
     public String toString() {
         return getClass().getName() + "[edge=" + edgeUUID + "]";
@@ -112,23 +113,5 @@ public class DeleteConnectorCommand extends AbstractGraphCompositeCommand {
     @Override
     protected boolean delegateRulesContextToChildren() {
         return true;
-    }
-
-    protected SetConnectionTargetNodeCommand buildSetConnectionTargetCommand(final Edge<? extends ViewConnector, Node> edge) {
-        return new SetConnectionTargetNodeCommand(null,
-                                                  edge);
-    }
-
-    protected SetConnectionSourceNodeCommand buildSetConnectionSourceCommand(final Edge<? extends ViewConnector, Node> edge) {
-        return new SetConnectionSourceNodeCommand(null,
-                                                  edge);
-    }
-
-    private Optional<? super SetConnectionTargetNodeCommand> getSetConnectionTargetNodeCommand() {
-        return commands.stream().filter(c -> c instanceof SetConnectionTargetNodeCommand).findAny();
-    }
-
-    private Optional<? super SetConnectionSourceNodeCommand> getSetConnectionSourceNodeCommand() {
-        return commands.stream().filter(c -> c instanceof SetConnectionSourceNodeCommand).findAny();
     }
 }

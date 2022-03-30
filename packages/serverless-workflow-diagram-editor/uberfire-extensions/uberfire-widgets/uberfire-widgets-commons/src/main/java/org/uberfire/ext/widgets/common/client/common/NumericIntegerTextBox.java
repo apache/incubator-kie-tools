@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.regexp.shared.RegExp;
+import org.gwtproject.regexp.shared.RegExp;
 
 /**
  * A TextBox to handle integer values

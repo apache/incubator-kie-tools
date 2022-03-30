@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.gwt.dom.client.Style;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.style.shared.Cursor;
 import org.uberfire.ext.wires.core.grids.client.model.GridColumn;
 import org.uberfire.ext.wires.core.grids.client.model.GridRow;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
@@ -35,7 +36,7 @@ public class GridWidgetDnDHandlersState {
     private List<GridRow> activeGridRows = new ArrayList<GridRow>();
 
     private GridWidgetHandlersOperation operation = GridWidgetHandlersOperation.NONE;
-    private Style.Cursor cursor = Style.Cursor.DEFAULT;
+    private org.gwtproject.dom.style.shared.Cursor cursor = Style.Cursor.DEFAULT;
 
     private double eventInitialX = 0;
     private double eventInitialColumnWidth = 0;
@@ -142,7 +143,7 @@ public class GridWidgetDnDHandlersState {
      * browser changes the pointer to that defined by CSS replacing that set by the MouseMove handler.
      * @return
      */
-    public Style.Cursor getCursor() {
+    public Cursor getCursor() {
         return cursor;
     }
 
@@ -150,7 +151,7 @@ public class GridWidgetDnDHandlersState {
      * Sets the Cursor type to be shown for the current operation.
      * @param cursor
      */
-    public void setCursor(Style.Cursor cursor) {
+    public void setCursor(Cursor cursor) {
         this.cursor = cursor;
     }
 

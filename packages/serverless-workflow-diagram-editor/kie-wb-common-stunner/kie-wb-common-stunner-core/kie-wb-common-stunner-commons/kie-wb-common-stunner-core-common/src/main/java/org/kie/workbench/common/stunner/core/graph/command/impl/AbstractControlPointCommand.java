@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
-
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.content.HasControlPoints;
@@ -26,8 +25,8 @@ public abstract class AbstractControlPointCommand extends AbstractGraphCommand {
 
     private final String edgeUUID;
 
-    protected AbstractControlPointCommand(final String edgeUUID) {
-        this.edgeUUID = Objects.requireNonNull(edgeUUID, "Parameter named 'edgeUUID' should be not null!");
+    public AbstractControlPointCommand(final String edgeUUID) {
+        this.edgeUUID = PortablePreconditions.checkNotNull("edgeUUID", edgeUUID);
     }
 
     protected HasControlPoints getEdgeControlPoints(final GraphCommandExecutionContext context) {

@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.popups.about;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;

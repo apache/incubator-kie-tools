@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.validation;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import javax.validation.Validator;
 
 import org.kie.workbench.common.stunner.core.validation.impl.AbstractModelBeanValidator;
@@ -31,7 +30,7 @@ public class ClientModelValidator extends AbstractModelBeanValidator {
         this(null);
     }
 
-    @Inject
+    //@Inject
     public ClientModelValidator(final Validator beanValidator) {
         this.beanValidator = beanValidator;
     }

@@ -17,36 +17,38 @@
 package org.kie.workbench.common.stunner.client.widgets.inlineeditor;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.client.Event;
+import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.KeyboardEvent;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.EventConstants;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.SinkNative;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import io.crysknife.ui.translation.api.spi.TranslationService;
 import jsinterop.base.Js;
-import org.jboss.errai.common.client.dom.CSSStyleDeclaration;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.client.local.spi.TranslationService;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.SinkNative;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.core.client.Scheduler;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditorBox;
 import org.uberfire.mvp.Command;
 
 @Templated(value = "InlineTextEditorBox.html", stylesheet = "InlineTextEditorBox.css")
 @InlineTextEditorBox
+@Dependent
 public class InlineTextEditorBoxViewImpl
         extends AbstractInlineTextEditorBoxView
         implements InlineEditorBoxView,
-                   IsElement {
+        IsElement {
 
     @Inject
     @DataField
-    private Div nameField;
+    private HTMLDivElement nameField;
 
     public static final String CARET_RETURN = "<br>";
     public static final String TEXT_ALIGN_CENTER = "text-align: center;";
@@ -67,6 +69,10 @@ public class InlineTextEditorBoxViewImpl
     public static final String DEFAULT_FONT_FAMILY = "Open Sans";
     public static final double DEFAULT_FONT_SIZE = 16d;
 
+    private static final String DISPLAY = "display";
+    private static final String DISPLAY_NONE = "none";
+    private static final String DISPLAY_BLOCK = "block";
+
     private String textBoxAlignment;
     private String placeholder;
     private String fontFamily;
@@ -80,8 +86,8 @@ public class InlineTextEditorBoxViewImpl
     }
 
     public InlineTextEditorBoxViewImpl(final TranslationService translationService,
-                                       final Div editNameBox,
-                                       final Div nameField,
+                                       final HTMLDivElement editNameBox,
+                                       final HTMLDivElement nameField,
                                        final Command showCommand,
                                        final Command hideCommand) {
         super(showCommand, hideCommand);
@@ -98,6 +104,11 @@ public class InlineTextEditorBoxViewImpl
         placeholder = translationService.getTranslation(StunnerWidgetsConstants.NameEditBoxWidgetViewImp_name);
         fontSize = DEFAULT_FONT_SIZE;
         fontFamily = DEFAULT_FONT_FAMILY;
+
+        showCommand = () -> getElement().style.setProperty(DISPLAY,
+                DISPLAY_BLOCK);
+        hideCommand = () -> getElement().style.setProperty(DISPLAY,
+                DISPLAY_NONE);
     }
 
     @Override
@@ -132,18 +143,18 @@ public class InlineTextEditorBoxViewImpl
 
     @Override
     public void show(final String name, final double width, final double height) {
-        editNameBox.getStyle().setCssText("width: " + width + "px;" +
-                                                  "height: " + height + "px;");
+        editNameBox.style.cssText = ("width: " + width + "px;" +
+                "height: " + height + "px;");
         nameField.setAttribute("style", buildStyle(width, height));
         presenter.onChangeName(name);
-        final CSSStyleDeclaration style = ((HTMLElement) editNameBox.getParentElement()).getStyle();
+        final CSSStyleDeclaration style = ((HTMLElement) editNameBox.parentElement).style;
 
         Scheduler.get().scheduleDeferred(() -> {
             style.removeProperty("z-index");
             style.setProperty("z-index", "0");
         });
         presenter.flush();
-        nameField.setTextContent(name);
+        nameField.textContent = (name);
         nameField.setAttribute("data-text", placeholder);
 
         setVisible();
@@ -153,7 +164,7 @@ public class InlineTextEditorBoxViewImpl
         });
     }
 
-    public void selectText(Div node) {
+    public void selectText(HTMLDivElement node) {
         DomGlobal.window.getSelection().selectAllChildren(Js.cast(node));
     }
 
@@ -169,29 +180,29 @@ public class InlineTextEditorBoxViewImpl
         }
 
         style.append("max-width: " + width + "px;" +
-                             "max-height: " + height + "px;" +
-                             "width: " + width + "px;");
+                "max-height: " + height + "px;" +
+                "width: " + width + "px;");
         style.append("font-family: \"" + fontFamily + "\";" +
-                             "font-size: " + fontSize + "px;");
+                "font-size: " + fontSize + "px;");
 
         return style.toString();
     }
 
     @EventHandler("nameField")
-    @SinkNative(Event.ONKEYDOWN | Event.ONKEYUP | Event.ONKEYPRESS | Event.ONBLUR)
-    void onChangeName(Event e) {
+    @SinkNative(EventConstants.ONKEYDOWN | EventConstants.ONKEYUP | EventConstants.ONKEYPRESS | EventConstants.ONBLUR)
+    void onChangeName(KeyboardEvent e) {
         if (isVisible()) {
             e.stopPropagation();
-            if (e.getTypeInt() == Event.ONBLUR) {
+            if (e.type.equals("blur")) {
                 saveChanges();
-            } else if (e.getTypeInt() == Event.ONKEYDOWN) {
-                if (e.getKeyCode() == KeyCodes.KEY_ENTER && !e.getShiftKey()) {
+            } else if (e.type.equals("keydown")) {
+                if ("Enter".equals(e.code) && !e.shiftKey) {
                     e.preventDefault();
                     saveChanges();
-                } else if ((!isMultiline && e.getKeyCode() == KeyCodes.KEY_ENTER && e.getShiftKey()) ||
-                        e.getKeyCode() == KeyCodes.KEY_TAB) {
+                } else if ((!isMultiline && "Enter".equals(e.code) && e.shiftKey) ||
+                        "Tab".equals(e.code)) {
                     e.preventDefault();
-                } else if (e.getKeyCode() == KeyCodes.KEY_ESCAPE) {
+                } else if ("Escape".equals(e.code)) {
                     rollback();
                 }
             }
@@ -204,7 +215,7 @@ public class InlineTextEditorBoxViewImpl
     }
 
     private String getTextContent() {
-        String text = nameField.getInnerHTML();
+        String text = nameField.innerHTML;
 
         // Handle specific browser caret return <br> (e.g. Firefox)
         if (text.contains(CARET_RETURN)) {
@@ -213,7 +224,7 @@ public class InlineTextEditorBoxViewImpl
             }
             return text.replace(CARET_RETURN, "\n");
         }
-        return nameField.getTextContent();
+        return nameField.textContent;
     }
 
     @Override

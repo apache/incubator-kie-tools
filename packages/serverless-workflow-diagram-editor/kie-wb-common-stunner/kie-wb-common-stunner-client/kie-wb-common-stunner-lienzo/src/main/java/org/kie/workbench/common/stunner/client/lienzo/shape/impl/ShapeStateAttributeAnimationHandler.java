@@ -105,7 +105,7 @@ public class ShapeStateAttributeAnimationHandler<V extends LienzoShapeView>
         setAnimationHandle(new MultipleAnimationHandle(handles));
     }
 
-    private IAnimationHandle animate(final com.ait.lienzo.client.core.shape.Shape<?> shape,
+    private IAnimationHandle animate(final Shape<?> shape,
                                      final ShapeStateAttributes attributes,
                                      final long duration) {
         final AnimationProperties properties = new AnimationProperties();

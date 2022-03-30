@@ -29,7 +29,7 @@ public class CanvasRenderingContext2D extends BaseRenderingContext2D {
 
     public interface FillStyleUnionType {
 
-        static elemental2.dom.CanvasRenderingContext2D.FillStyleUnionType of(Object o) {
+        static FillStyleUnionType of(Object o) {
             return null;
         }
     }

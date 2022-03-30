@@ -15,14 +15,15 @@
  */
 package org.uberfire.ext.widgets.table.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundle;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.Resource;
 
+@Resource
 public interface UFTableResources
         extends
         ClientBundle {
 
-    UFTableResources INSTANCE = GWT.create(UFTableResources.class);
+    UFTableResources INSTANCE = new UFTableResourcesImpl();
 
     @Source("css/uftable.css")
     UFTableCss CSS();

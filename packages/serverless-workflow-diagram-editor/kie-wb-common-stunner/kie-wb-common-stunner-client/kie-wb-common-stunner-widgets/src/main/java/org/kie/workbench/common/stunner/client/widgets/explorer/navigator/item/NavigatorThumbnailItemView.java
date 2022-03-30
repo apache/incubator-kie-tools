@@ -18,15 +18,6 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.navigator.item;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.Image;
 import org.gwtbootstrap3.client.ui.Panel;
@@ -34,6 +25,14 @@ import org.gwtbootstrap3.client.ui.PanelBody;
 import org.gwtbootstrap3.client.ui.PanelFooter;
 import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.ThumbnailLink;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.safehtml.shared.SafeUri;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItemView;
 
@@ -45,7 +44,7 @@ public class NavigatorThumbnailItemView
 
     }
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private static ViewBinder uiBinder = null;
 
     @UiField
     FlowPanel mainPanel;
@@ -80,7 +79,7 @@ public class NavigatorThumbnailItemView
         initWidget(uiBinder.createAndBindUi(this));
         item.addClickHandler(clickEvent -> presenter.onItemSelected());
         footer.addDomHandler(event -> presenter.onItemSelected(),
-                             ClickEvent.getType());
+                ClickEvent.getType());
         footer.getElement().getStyle().setCursor(Style.Cursor.POINTER);
         popover.addShowHandler(showEvent -> onGotFocus());
         popover.addHideHandler(hideEvent -> onLostFocus());
@@ -140,9 +139,9 @@ public class NavigatorThumbnailItemView
                 h = (int) Math.ceil(imgHeight / factor);
             }
             thumbImage.setPixelSize(w,
-                                    h);
+                    h);
             body.setPixelSize(width,
-                              height);
+                    height);
         });
         return this;
     }

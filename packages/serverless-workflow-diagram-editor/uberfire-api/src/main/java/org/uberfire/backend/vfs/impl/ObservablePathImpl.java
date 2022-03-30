@@ -19,7 +19,6 @@ package org.uberfire.backend.vfs.impl;
 import javax.enterprise.context.Dependent;
 
 import org.jboss.errai.common.client.api.annotations.Portable;
-import org.jboss.errai.ioc.client.container.IOC;
 import org.uberfire.backend.vfs.IsVersioned;
 import org.uberfire.backend.vfs.ObservablePath;
 import org.uberfire.backend.vfs.Path;
@@ -27,7 +26,7 @@ import org.uberfire.backend.vfs.Path;
 @Portable
 @Dependent
 public class ObservablePathImpl implements ObservablePath,
-                                           IsVersioned {
+        IsVersioned {
 
     private Path path;
     private transient Path original;
@@ -80,9 +79,11 @@ public class ObservablePathImpl implements ObservablePath,
 
     @Override
     public void dispose() {
-        if (IOC.getBeanManager() != null) {
+/*        if (IOC.getBeanManager() != null) {
             IOC.getBeanManager().destroyBean(this);
-        }
+        }*/
+
+        throw new Error(getClass().getCanonicalName() + ".dispose");
     }
 
     @Override

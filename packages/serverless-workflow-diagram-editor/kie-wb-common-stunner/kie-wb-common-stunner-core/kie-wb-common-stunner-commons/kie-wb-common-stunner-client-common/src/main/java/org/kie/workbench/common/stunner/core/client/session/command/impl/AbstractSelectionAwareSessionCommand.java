@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
-import java.util.Objects;
-
 import javax.enterprise.event.Observes;
 
 import org.kie.workbench.common.stunner.core.client.canvas.event.registration.CanvasElementsClearEvent;
@@ -26,6 +24,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.command.AbstractClientSessionCommand;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 public abstract class AbstractSelectionAwareSessionCommand<S extends ClientSession> extends AbstractClientSessionCommand<S> {
 
     public AbstractSelectionAwareSessionCommand(final boolean enabled) {
@@ -33,28 +33,27 @@ public abstract class AbstractSelectionAwareSessionCommand<S extends ClientSessi
     }
 
     protected void onCanvasSelectionEvent(final @Observes CanvasSelectionEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         if (checkEventContext(event)) {
             handleCanvasSelectionEvent(event);
         }
     }
 
     protected void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         if (checkEventContext(event)) {
             handleCanvasClearSelectionEvent(event);
         }
     }
 
     protected void onCanvasElementsClearEvent(final @Observes CanvasElementsClearEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         if (checkEventContext(event)) {
             handleCanvasElementsClearEvent(event);
         }
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     protected abstract void handleCanvasSelectionEvent(final CanvasSelectionEvent event);

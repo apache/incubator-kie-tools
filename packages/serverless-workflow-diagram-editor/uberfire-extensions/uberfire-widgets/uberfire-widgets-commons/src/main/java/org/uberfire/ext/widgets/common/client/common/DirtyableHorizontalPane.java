@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.HorizontalPanel;
+import org.gwtproject.user.client.ui.Widget;
 
 public class DirtyableHorizontalPane extends HorizontalPanel implements DirtyableContainer {
 

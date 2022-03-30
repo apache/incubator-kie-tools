@@ -16,133 +16,125 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.InputElement;
-import com.google.gwt.event.dom.client.ChangeEvent;
-import com.google.gwt.event.dom.client.ChangeHandler;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Input;
 import org.gwtbootstrap3.client.ui.InputGroupAddon;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.dom.client.InputElement;
+import org.gwtproject.event.dom.client.ChangeEvent;
+import org.gwtproject.event.dom.client.ChangeHandler;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.mvp.Command;
 
-public class FileUpload
-        extends Composite {
+public class FileUpload extends Composite {
 
-    private static final String FAKEPATH = "c:\\fakepath\\";
-    private static FileUploadBinder uiBinder = GWT.create(FileUploadBinder.class);
-    private final Command command;
-    @UiField
-    InputGroupAddon uploadButton;
+  private static final String FAKEPATH = "c:\\fakepath\\";
+  private static FileUploadBinder uiBinder = GWT.create(FileUploadBinder.class);
+  private final Command command;
+  @UiField InputGroupAddon uploadButton;
 
-    @UiField
-    InputGroupAddon chooseButton;
+  @UiField InputGroupAddon chooseButton;
 
-    @UiField
-    Input file;
+  @UiField Input file;
 
-    @UiField
-    Input fileText;
+  @UiField Input fileText;
 
-    private boolean isDisabled = false;
+  private boolean isDisabled = false;
 
-    public FileUpload() {
-        this(null,
-             false);
-    }
+  public FileUpload() {
+    this(null, false);
+  }
 
-    public FileUpload(final Command command) {
-        this(command,
-             true);
-    }
+  public FileUpload(final Command command) {
+    this(command, true);
+  }
 
-    public FileUpload(final Command command,
-                      boolean displayUploadButton) {
-        initWidget(uiBinder.createAndBindUi(this));
-        this.command = command;
-        fileText.setReadOnly(true);
+  public FileUpload(final Command command, boolean displayUploadButton) {
+    initWidget(uiBinder.createAndBindUi(this));
+    this.command = command;
+    fileText.setReadOnly(true);
 
-        file.addChangeHandler(getFileChangeHandler());
+    file.addChangeHandler(getFileChangeHandler());
 
-        chooseButton.addDomHandler(new ClickHandler() {
-                                       @Override
-                                       public void onClick(ClickEvent event) {
-                                           ((InputElement) file.getElement().cast()).click();
-                                       }
-                                   },
-                                   ClickEvent.getType());
+    chooseButton.addDomHandler(
+        new ClickHandler() {
+          @Override
+          public void onClick(ClickEvent event) {
+            ((InputElement) file.getElement().cast()).click();
+          }
+        },
+        ClickEvent.getType());
 
-        if (displayUploadButton) {
-            uploadButton.addDomHandler(new ClickHandler() {
-                                           @Override
-                                           public void onClick(ClickEvent event) {
-                                               if (isDisabled) {
-                                                   return;
-                                               }
-                                               if (command != null) {
-                                                   command.execute();
-                                               }
-                                           }
-                                       },
-                                       ClickEvent.getType());
-        } else {
-            uploadButton.removeFromParent();
-            uploadButton = null;
-        }
-    }
-
-    public void setName(final String name) {
-        file.setName(name);
-    }
-
-    public void upload() {
-        command.execute();
-    }
-
-    public String getFilename() {
-        return file.getValue();
-    }
-
-    public void setAccept(String type) {
-        file.getElement().setAttribute("accept", type);
-    }
-
-    public void clear() {
-        file.setValue("");
-        fileText.setText("");
-    }
-
-    public void setEnabled(boolean b) {
-        if (uploadButton == null) {
-            return;
-        }
-        if (!b) {
-            isDisabled = true;
-            uploadButton.addStyleName("disabled");
-        } else {
-            isDisabled = false;
-            uploadButton.removeStyleName("disabled");
-        }
-    }
-
-    protected ChangeHandler getFileChangeHandler() {
-        return new ChangeHandler() {
+    if (displayUploadButton) {
+      uploadButton.addDomHandler(
+          new ClickHandler() {
             @Override
-            public void onChange(ChangeEvent event) {
-                String fileName = file.getValue();
-                if (fileName != null && fileName.toLowerCase().startsWith(FAKEPATH)) {
-                    fileName = fileName.substring(FAKEPATH.length());
-                }
-                fileText.setValue(fileName);
+            public void onClick(ClickEvent event) {
+              if (isDisabled) {
+                return;
+              }
+              if (command != null) {
+                command.execute();
+              }
             }
-        };
+          },
+          ClickEvent.getType());
+    } else {
+      uploadButton.removeFromParent();
+      uploadButton = null;
     }
+  }
 
-    interface FileUploadBinder extends UiBinder<Widget, FileUpload> {
+  public void setName(final String name) {
+    file.setName(name);
+  }
 
+  public void upload() {
+    command.execute();
+  }
+
+  public String getFilename() {
+    return file.getValue();
+  }
+
+  public void setAccept(String type) {
+    file.getElement().setAttribute("accept", type);
+  }
+
+  public void clear() {
+    file.setValue("");
+    fileText.setText("");
+  }
+
+  public void setEnabled(boolean b) {
+    if (uploadButton == null) {
+      return;
     }
+    if (!b) {
+      isDisabled = true;
+      uploadButton.addStyleName("disabled");
+    } else {
+      isDisabled = false;
+      uploadButton.removeStyleName("disabled");
+    }
+  }
+
+  protected ChangeHandler getFileChangeHandler() {
+    return new ChangeHandler() {
+      @Override
+      public void onChange(ChangeEvent event) {
+        String fileName = file.getValue();
+        if (fileName != null && fileName.toLowerCase().startsWith(FAKEPATH)) {
+          fileName = fileName.substring(FAKEPATH.length());
+        }
+        fileText.setValue(fileName);
+      }
+    };
+  }
+
+  interface FileUploadBinder extends UiBinder<Widget, FileUpload> {}
 }

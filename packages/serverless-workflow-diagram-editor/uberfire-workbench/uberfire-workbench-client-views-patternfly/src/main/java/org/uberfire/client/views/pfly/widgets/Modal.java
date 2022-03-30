@@ -19,20 +19,20 @@ package org.uberfire.client.views.pfly.widgets;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Document;
-import org.jboss.errai.common.client.dom.Element;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.Document;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.Element;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
 
 @Dependent
 public class Modal implements IsElement {
 
-    @Inject
-    private Document document;
+    private Document document = DomGlobal.document;
 
     @Inject
-    private Div div;
+    private HTMLDivElement div;
 
     @Override
     public HTMLElement getElement() {
@@ -40,20 +40,25 @@ public class Modal implements IsElement {
     }
 
     public void show() {
-        document.getBody().appendChild(div);
+        DomGlobal.document.body.appendChild(div);
         show(div);
     }
 
     public void hide() {
         hide(div);
-        document.getBody().removeChild(div);
+        DomGlobal.document.body.removeChild(div);
     }
 
-    protected native void show(final Element e) /*-{
+    protected void show(final Element e) {
+        throw new Error(getClass().getCanonicalName()+".show");
+    }/*-{
         $wnd.jQuery(e).modal('show')
     }-*/;
 
-    protected native void hide(final Element e) /*-{
+    protected void hide(final Element e) {
+        throw new Error(getClass().getCanonicalName()+".show");
+
+    }/*-{
         $wnd.jQuery(e).modal('hide')
     }-*/;
 }

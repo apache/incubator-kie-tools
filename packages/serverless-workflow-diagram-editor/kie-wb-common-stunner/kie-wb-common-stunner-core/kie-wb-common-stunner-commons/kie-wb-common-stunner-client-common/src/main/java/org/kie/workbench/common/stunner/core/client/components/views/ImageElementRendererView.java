@@ -16,8 +16,8 @@
 
 package org.kie.workbench.common.stunner.core.client.components.views;
 
-import com.google.gwt.safehtml.shared.SafeUri;
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
+import org.gwtproject.safehtml.shared.SafeUri;
 
 public interface ImageElementRendererView extends IsElement {
 

@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import org.gwtproject.resources.client.CssResource;
 
 /**
  * Commons UI CSS.

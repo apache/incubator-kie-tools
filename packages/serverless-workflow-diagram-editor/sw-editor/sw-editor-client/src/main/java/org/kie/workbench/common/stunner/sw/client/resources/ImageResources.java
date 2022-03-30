@@ -16,13 +16,14 @@
 
 package org.kie.workbench.common.stunner.sw.client.resources;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.resources.client.ClientBundleWithLookup;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.ClientBundleWithLookup;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.resources.client.Resource;
 
+@Resource
 public interface ImageResources extends ClientBundleWithLookup {
 
-    ImageResources INSTANCE = GWT.create(ImageResources.class);
+    ImageResources INSTANCE = new ImageResourcesImpl();
 
     @Source("images/icons/start.png")
     ImageResource start();

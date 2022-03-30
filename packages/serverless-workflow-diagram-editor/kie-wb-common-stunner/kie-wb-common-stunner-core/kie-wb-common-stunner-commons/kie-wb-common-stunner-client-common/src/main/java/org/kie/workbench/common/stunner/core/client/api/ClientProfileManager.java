@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.profile.AbstractProfileManager;
 import org.kie.workbench.common.stunner.core.profile.Profile;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;

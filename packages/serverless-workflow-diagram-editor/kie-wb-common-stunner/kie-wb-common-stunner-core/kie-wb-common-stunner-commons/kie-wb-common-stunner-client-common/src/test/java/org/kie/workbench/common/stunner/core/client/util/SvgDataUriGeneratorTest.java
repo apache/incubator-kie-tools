@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.core.client.util;
 import java.util.Arrays;
 import java.util.List;
 
-import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.jboss.errai.common.client.util.Base64Util;
 import org.junit.Before;
 import org.junit.Test;

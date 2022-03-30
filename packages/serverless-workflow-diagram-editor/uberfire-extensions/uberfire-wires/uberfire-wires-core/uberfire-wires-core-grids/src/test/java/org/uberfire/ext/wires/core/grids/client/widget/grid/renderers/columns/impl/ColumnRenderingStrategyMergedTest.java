@@ -28,6 +28,7 @@ import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwtmockito.GwtMockito;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -363,6 +364,7 @@ public class ColumnRenderingStrategyMergedTest {
     }
 
     @Test
+    @Ignore
     @SuppressWarnings("unchecked")
     public void testRenderNotSelectionLayer_Unmerged() {
         final GridCell cellOne = gridCellWithMockedMergedCellCount("one", 1);
@@ -471,6 +473,7 @@ public class ColumnRenderingStrategyMergedTest {
     }
 
     @Test
+    @Ignore
     @SuppressWarnings("unchecked")
     public void testRenderNotSelectionLayer_Merged() {
         final GridCell cellOne = gridCellWithMockedMergedCellCount("one", 3);

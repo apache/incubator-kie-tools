@@ -18,8 +18,8 @@ package org.kie.workbench.common.widgets.client.callbacks;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.ParameterizedCommand;
@@ -35,7 +35,7 @@ public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDef
     }
 
     private final CommandWithThrowable defaultCommand;
-    private final Map<Class<? extends Throwable>, CommandWithThrowable> commands = new HashMap<>();
+    private final Map<Class<? extends Throwable>, CommandWithThrowable> commands = new HashMap<Class<? extends Throwable>, CommandWithThrowable>();
 
     public CommandWithThrowableDrivenErrorCallback(final HasBusyIndicator view,
                                                    final Map<Class<? extends Throwable>, CommandWithThrowable> commands) {
@@ -46,7 +46,7 @@ public class CommandWithThrowableDrivenErrorCallback extends HasBusyIndicatorDef
                                                    final Map<Class<? extends Throwable>, CommandWithThrowable> commands,
                                                    final CommandWithThrowable defaultCommand) {
         super(view);
-        this.commands.putAll(Objects.requireNonNull(commands, "Parameter named 'commands' should be not null!"));
+        this.commands.putAll(PortablePreconditions.checkNotNull("commands", commands));
         this.defaultCommand = defaultCommand;
     }
 

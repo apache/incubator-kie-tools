@@ -73,23 +73,23 @@ public abstract class AbstractRegistryFactory implements RegistryFactory {
 
     public <T> MapRegistry<T> newMapRegistry(final KeyProvider<T> keyProvider) {
         return new MapRegistry<T>(keyProvider,
-                                  new HashMap<String, T>());
+                new HashMap<String, T>());
     }
 
     public <T> MapRegistry<T> newMapRegistry(final KeyProvider<T> keyProvider,
                                              final java.util.Map<String, T> map) {
         return new MapRegistry<T>(keyProvider,
-                                  map);
+                map);
     }
 
     public <T> ListRegistry<T> newListRegistry(final KeyProvider<T> keyProvider) {
         return new ListRegistry<T>(keyProvider,
-                                   new ArrayList<T>());
+                new ArrayList<T>());
     }
 
     public <T> ListRegistry<T> newListRegistry(final KeyProvider<T> keyProvider,
                                                final java.util.List<T> list) {
         return new ListRegistry<T>(keyProvider,
-                                   list);
+                list);
     }
 }

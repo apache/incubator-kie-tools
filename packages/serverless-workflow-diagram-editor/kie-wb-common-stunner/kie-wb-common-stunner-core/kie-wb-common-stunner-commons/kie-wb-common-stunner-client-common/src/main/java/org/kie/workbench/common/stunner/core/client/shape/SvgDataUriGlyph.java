@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
 
 /**
@@ -63,7 +63,7 @@ public final class SvgDataUriGlyph implements Glyph {
                               final SafeUri uri) {
             if (null != uri) {
                 useRefIds.put(useRefId,
-                              uri);
+                        uri);
             }
             return this;
         }
@@ -73,22 +73,22 @@ public final class SvgDataUriGlyph implements Glyph {
             final SafeUri safeUri = useRefIds.get(refId);
             return null != safeUri ?
                     new SvgDataUriGlyph(mainUri,
-                                        Optional.of(Arrays.asList(safeUri)),
-                                        Optional.of(Arrays.asList(refId))) :
+                            Optional.of(Arrays.asList(safeUri)),
+                            Optional.of(Arrays.asList(refId))) :
                     new SvgDataUriGlyph(mainUri,
-                                        Optional.empty(),
-                                        Optional.empty());
+                            Optional.empty(),
+                            Optional.empty());
         }
 
         public SvgDataUriGlyph build() {
             assert null != mainUri;
             return new SvgDataUriGlyph(mainUri,
-                                       useRefIds.isEmpty() ?
-                                               Optional.empty() :
-                                               Optional.of(useRefIds.values()),
-                                       useRefIds.isEmpty() ?
-                                               Optional.empty() :
-                                               Optional.of(useRefIds.keySet()));
+                    useRefIds.isEmpty() ?
+                            Optional.empty() :
+                            Optional.of(useRefIds.values()),
+                    useRefIds.isEmpty() ?
+                            Optional.empty() :
+                            Optional.of(useRefIds.keySet()));
         }
 
         public static SvgDataUriGlyph build(final SafeUri uri) {

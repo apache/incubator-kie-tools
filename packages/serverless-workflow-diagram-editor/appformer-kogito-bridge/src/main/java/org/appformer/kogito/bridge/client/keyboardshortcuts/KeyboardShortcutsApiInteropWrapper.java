@@ -16,6 +16,7 @@
 
 package org.appformer.kogito.bridge.client.keyboardshortcuts;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts;
@@ -23,7 +24,7 @@ import org.appformer.client.keyboardShortcuts.KeyboardShortcutsApiOpts;
 /**
  * Javascript bridge to access actual KeyboardShortcutsApi available in the envelope namespace
  */
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class KeyboardShortcutsApiInteropWrapper {
 
     public native int registerKeyPress(final String combination,

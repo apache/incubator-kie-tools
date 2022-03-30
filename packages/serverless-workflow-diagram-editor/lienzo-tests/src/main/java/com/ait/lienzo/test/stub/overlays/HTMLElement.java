@@ -5,7 +5,7 @@ import elemental2.dom.CSSStyleDeclaration;
 import elemental2.dom.Element;
 
 @StubClass("elemental2.dom.HTMLElement")
-public class HTMLElement extends elemental2.dom.Element {
+public class HTMLElement extends Element {
 
     public static String[] observedAttributes;
     public String className;

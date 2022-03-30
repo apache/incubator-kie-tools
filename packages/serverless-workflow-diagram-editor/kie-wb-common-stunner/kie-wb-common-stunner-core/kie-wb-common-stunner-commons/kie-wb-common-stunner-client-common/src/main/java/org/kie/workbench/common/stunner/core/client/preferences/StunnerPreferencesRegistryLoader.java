@@ -23,7 +23,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
@@ -55,7 +55,7 @@ public class StunnerPreferencesRegistryLoader {
         final String definitionSetId = metadata.getDefinitionSetId();
         final Annotation qualifier = definitionUtils.getQualifier(definitionSetId);
         final StunnerPreferencesRegistryHolder holder = InstanceUtils.lookup(preferencesHolders,
-                                                                             qualifier);
+                qualifier);
         holder.set(preferences, StunnerPreferences.class);
         holder.set(textPreferences, StunnerTextPreferences.class);
         loadCompleteCallback.execute(preferences);

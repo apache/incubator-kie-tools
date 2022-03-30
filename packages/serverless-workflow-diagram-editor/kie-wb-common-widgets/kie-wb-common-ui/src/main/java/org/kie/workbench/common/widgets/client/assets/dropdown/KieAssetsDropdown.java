@@ -19,7 +19,7 @@ package org.kie.workbench.common.widgets.client.assets.dropdown;
 import java.util.Optional;
 
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.mvp.Command;
 

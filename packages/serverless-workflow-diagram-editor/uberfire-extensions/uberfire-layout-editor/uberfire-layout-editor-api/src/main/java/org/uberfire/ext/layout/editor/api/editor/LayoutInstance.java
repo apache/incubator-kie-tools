@@ -15,8 +15,8 @@
  */
 package org.uberfire.ext.layout.editor.api.editor;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
 
 public class LayoutInstance implements IsElement {
 

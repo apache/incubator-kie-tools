@@ -21,9 +21,9 @@ import java.util.Optional;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.shared.event.TabShownHandler;
 import org.gwtbootstrap3.client.ui.TabListItem;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.client.views.pfly.tab.ResizeTabPanel;
 import org.uberfire.client.views.pfly.tab.TabPanelEntry;
 import org.uberfire.client.workbench.widgets.multipage.MultiPageEditorView;

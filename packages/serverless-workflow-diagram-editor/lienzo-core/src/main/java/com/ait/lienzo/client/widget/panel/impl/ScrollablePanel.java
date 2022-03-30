@@ -336,8 +336,8 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         final BoundingBox primitiveBoundingBox =
                 BoundingBox.fromDoubles(primitiveLocation.getX(),
                                         primitiveLocation.getY(),
-                                        primitiveLocation.getX() + primitive.getBoundingBox().getWidth(),
-                                        primitiveLocation.getY() + primitive.getBoundingBox().getHeight());
+                                  primitiveLocation.getX() + primitive.getBoundingBox().getWidth(),
+                                  primitiveLocation.getY() + primitive.getBoundingBox().getHeight());
 
         final BoundingBox visibleBoundingBox = new BoundingBox();
         final Bounds visibleBounds = getVisibleBounds();

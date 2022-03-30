@@ -23,8 +23,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.ImageElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.SvgDataUriGlyph;
@@ -75,12 +75,12 @@ public class SvgElementGlyphRenderer implements DOMGlyphRenderer<SvgDataUriGlyph
                             final double height) {
         final String content = svgDataUriUtil
                 .generate(glyph.getSvg(),
-                          glyph.getDefs(),
-                          glyph.getValidUseRefIds());
+                        glyph.getDefs(),
+                        glyph.getValidUseRefIds());
         final ImageElementRendererView view = viewInstanceSupplier.get();
         return view.setDOMContent(content,
-                                  (int) width,
-                                  (int) height);
+                (int) width,
+                (int) height);
     }
 
     @PreDestroy

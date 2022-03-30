@@ -17,6 +17,7 @@
 package org.appformer.kogito.bridge.client.resource.interop;
 
 import elemental2.promise.Promise;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -24,7 +25,7 @@ import jsinterop.annotations.JsType;
  * Javascript bridge to access actual ResourceContentService available in the envelope namespace
  *
  */
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class ResourceContentEditorServiceWrapper {
 
     public native Promise<String> get(String uri);

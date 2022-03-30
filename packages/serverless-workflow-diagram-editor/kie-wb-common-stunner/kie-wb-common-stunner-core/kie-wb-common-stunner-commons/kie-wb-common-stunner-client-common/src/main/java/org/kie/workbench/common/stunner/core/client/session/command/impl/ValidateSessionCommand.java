@@ -17,7 +17,6 @@
 package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.util.Collection;
-import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
@@ -31,6 +30,8 @@ import org.kie.workbench.common.stunner.core.client.validation.canvas.CanvasDiag
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 import org.kie.workbench.common.stunner.core.validation.DiagramElementViolation;
 import org.kie.workbench.common.stunner.core.validation.Violation;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @Dependent
 @Default
@@ -51,7 +52,8 @@ public class ValidateSessionCommand extends AbstractClientSessionCommand<EditorS
     @Override
     @SuppressWarnings("unchecked")
     public <V> void execute(final Callback<V> callback) {
-        Objects.requireNonNull(callback, "Parameter named 'callback' should be not null!");
+        checkNotNull("callback",
+                     callback);
         final AbstractCanvasHandler canvasHandler = getSession().getCanvasHandler();
         validator.validate(canvasHandler,
                            elementViolations -> fireCallback(elementViolations,

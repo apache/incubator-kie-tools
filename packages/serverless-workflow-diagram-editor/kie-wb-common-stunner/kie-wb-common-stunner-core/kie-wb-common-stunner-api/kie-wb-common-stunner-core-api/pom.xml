@@ -36,42 +36,21 @@
 
   <dependencies>
 
-    <!-- GWT. -->
-
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Uberfire & Errai. -->
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-data-binding</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-javax-enterprise</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-api</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>io.crysknife</groupId>
+      <artifactId>crysknife-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.crysknife.legacy.ui.databinding</groupId>
+      <artifactId>api</artifactId>
+    </dependency>
+
   </dependencies>
 
 </project>

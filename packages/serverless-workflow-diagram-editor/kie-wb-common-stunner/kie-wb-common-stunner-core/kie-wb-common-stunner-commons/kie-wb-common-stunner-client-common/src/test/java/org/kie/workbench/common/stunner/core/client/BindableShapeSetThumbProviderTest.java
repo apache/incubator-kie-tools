@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;

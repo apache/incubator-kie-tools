@@ -15,10 +15,11 @@
  */
 package org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor;
 
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.core.client.Scheduler;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
@@ -27,7 +28,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.Transform;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.KeyboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
-import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
+import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
 import org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -53,6 +54,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
@@ -61,6 +63,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
@@ -94,7 +97,7 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
     private static final String ORIENTATION_HORIZONTAL = "HORIZONTAL";
 
     @Mock
-    protected FloatingView<IsWidget> floatingView;
+    protected FloatingWidgetView floatingView;
 
     @Mock
     protected TextEditorBox<AbstractCanvasHandler, Element> textEditorBox;
@@ -484,13 +487,13 @@ public abstract class AbstractCanvasInlineTextEditorControlTest<C extends Abstra
         assertTrue(actual);
     }*/
 
-    // TODO @Test
-//    @Test
-//    public void testAllowOnlyVisualChangesDefaultValue() {
-//        final Element element = mock(Element.class);
-//        final boolean actual = control.allowOnlyVisualChanges(element);
-//        assertFalse(actual);
-//    }
+    @Test
+    @Ignore
+    public void testAllowOnlyVisualChangesDefaultValue() {
+        final Element element = mock(Element.class);
+        final boolean actual = control.allowOnlyVisualChanges(element);
+        assertFalse(actual);
+    }
 
     private void assertShow(final boolean multiline, final String textBoxAlignment, final String position) {
         final HasTitle hasTitle = (HasTitle) testShapeView;

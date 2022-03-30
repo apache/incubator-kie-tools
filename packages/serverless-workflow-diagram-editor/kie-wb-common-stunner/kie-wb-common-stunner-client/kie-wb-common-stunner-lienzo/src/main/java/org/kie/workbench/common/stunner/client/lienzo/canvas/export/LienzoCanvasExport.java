@@ -112,7 +112,7 @@ public class LienzoCanvasExport implements CanvasExport<AbstractCanvasHandler> {
         }
     }
 
-    private static DataURLType getDataType(final CanvasExport.URLDataType type) {
+    private static DataURLType getDataType(final URLDataType type) {
         switch (type) {
             case JPG:
                 return DataURLType.JPG;

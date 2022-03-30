@@ -24,8 +24,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.logging.client.LogConfiguration;
+import org.gwtproject.core.client.GWT;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
@@ -84,8 +83,8 @@ public class StunnerClientLogger {
                 .map(Optional::get)
                 .filter(prop -> !propertiesVisited.contains(prop))
                 .forEach(prop -> logProperty(definitionManager,
-                                             prop,
-                                             new HashSet<>()));
+                        prop,
+                        new HashSet<>()));
         GWT.log("********************************************************");
         GWT.log("");
     }
@@ -111,14 +110,14 @@ public class StunnerClientLogger {
         final Bound ul = bounds.getUpperLeft();
         final Bound lr = bounds.getLowerRight();
         LOGGER.log(Level.FINE,
-                   "Bounds for [" + item.getUUID() + "] ARE " +
-                           "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
-                           "LR=[ " + lr.getX() + ", " + lr.getY() + "] }");
+                "Bounds for [" + item.getUUID() + "] ARE " +
+                        "{ UL=[" + ul.getX() + ", " + ul.getY() + "] " +
+                        "LR=[ " + lr.getX() + ", " + lr.getY() + "] }");
         LOGGER.log(Level.FINE,
-                   "Bound attributes for [" + item.getUUID() + "] ARE " +
-                           "[X=" + ul.getX() + ", Y=" + ul.getY() + "] " +
-                           "[W=[ " + (lr.getX() - ul.getX()) +
-                           ", H=" + (lr.getY() - ul.getY()) + "] }");
+                "Bound attributes for [" + item.getUUID() + "] ARE " +
+                        "[X=" + ul.getX() + ", Y=" + ul.getY() + "] " +
+                        "[W=[ " + (lr.getX() - ul.getX()) +
+                        ", H=" + (lr.getY() - ul.getY()) + "] }");
     }
 
     public static void logSessionInfo(final AbstractSession session) {
@@ -182,7 +181,7 @@ public class StunnerClientLogger {
             final int[] x = {0};
             history.stream().forEach(command -> {
                 logCommand(x[0],
-                           command);
+                        command);
                 x[0]++;
             });
             log(" ( FOUND " + x[0] + " ENTRIES )");
@@ -247,17 +246,13 @@ public class StunnerClientLogger {
     }
 
     public static void log(final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(Level.INFO,
                        message);
-        }
     }
 
     public static void log(final Level level,
                            final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
     }
 }

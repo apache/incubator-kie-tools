@@ -19,9 +19,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
+import io.crysknife.client.ManagedInstance;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconType;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.session.command.impl.RedoSessionCommand;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;

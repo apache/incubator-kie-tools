@@ -21,14 +21,21 @@
 <module>
 
   <!-- Inherit the core Web Toolkit stuff. -->
-  <inherits name="com.google.gwt.i18n.I18N"/>
-  <inherits name="com.google.gwt.http.HTTP"/>
-  <inherits name="com.google.gwt.user.User"/>
+  <inherits name="org.gwtproject.i18n.I18N"/>
+  <inherits name="org.gwtproject.http.HTTP"/>
+  <inherits name="org.gwtproject.user.User"/>
 
+  <inherits name="org.jboss.errai.validation.Validation"/>
   <inherits name="org.hibernate.validator.HibernateValidator"/>
 
   <inherits name="org.gwtbootstrap3.extras.select.SelectNoResources"/>
 
+  <inherits name="org.kie.soup.project.datamodel.ProjectDataModelAPI"/>
+  <inherits name="org.kie.soup.project.datamodel.commons.ProjectDataModelCommons"/>
+
+  <inherits name="org.drools.workbench.models.datamodel.DroolsWorkbenchDataModelAPI"/>
+
+  <inherits name='org.uberfire.ext.editor.commons.UberfireCommonsEditorClient'/>
   <inherits name="org.uberfire.UberfireAPI"/>
 
 </module>

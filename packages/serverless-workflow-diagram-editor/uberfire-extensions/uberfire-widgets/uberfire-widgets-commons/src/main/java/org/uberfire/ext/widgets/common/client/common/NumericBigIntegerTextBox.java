@@ -17,7 +17,7 @@ package org.uberfire.ext.widgets.common.client.common;
 
 import java.math.BigInteger;
 
-import com.google.gwt.regexp.shared.RegExp;
+import org.gwtproject.regexp.shared.RegExp;
 
 /**
  * A TextBox to handle numeric BigInteger values

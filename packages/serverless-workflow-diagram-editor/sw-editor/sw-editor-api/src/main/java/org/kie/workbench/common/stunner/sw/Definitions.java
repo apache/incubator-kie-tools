@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.sw;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import org.jboss.errai.databinding.client.api.Bindable;
+import io.crysknife.ui.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.DefinitionSet;
 import org.kie.workbench.common.stunner.core.definition.builder.Builder;
 import org.kie.workbench.common.stunner.core.factory.graph.GraphFactory;

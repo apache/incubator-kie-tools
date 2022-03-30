@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import org.gwtbootstrap3.client.ui.CheckBox;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.CheckBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;

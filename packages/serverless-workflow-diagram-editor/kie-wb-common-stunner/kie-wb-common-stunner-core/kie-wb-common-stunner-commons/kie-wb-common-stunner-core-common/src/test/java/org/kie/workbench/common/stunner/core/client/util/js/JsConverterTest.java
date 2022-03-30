@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.stunner.core.client.util.js;
 
-import java.util.AbstractMap;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.junit.Test;
+import org.kie.soup.commons.util.Maps;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,23 +27,16 @@ public class JsConverterTest {
 
     @Test
     public void fromMap() {
-        final Map<String, String> map = Stream.of(
-                        new AbstractMap.SimpleEntry<>("name", "Tiago"),
-                        new AbstractMap.SimpleEntry<>("age", "34"))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        final Map<?, ?> map = new Maps.Builder<String, String>()
+                .put("name", "tiago")
+                .put("age", "34")
+                .build();
 
         final KeyValue[] keyValues = JsConverter.fromMap(map);
         assertEquals(keyValues.length, 2);
-        if (keyValues[0].getKey().equals("age")) {
-            assertEquals("age", keyValues[0].getKey());
-            assertEquals("34", keyValues[0].getValue());
-            assertEquals("name", keyValues[1].getKey());
-            assertEquals("Tiago", keyValues[1].getValue());
-        } else {
-            assertEquals("name", keyValues[0].getKey());
-            assertEquals("Tiago", keyValues[0].getValue());
-            assertEquals("age", keyValues[1].getKey());
-            assertEquals("34", keyValues[1].getValue());
-        }
+        assertEquals(keyValues[0].getKey(), "name");
+        assertEquals(keyValues[0].getValue(), "tiago");
+        assertEquals(keyValues[1].getKey(), "age");
+        assertEquals(keyValues[1].getValue(), "34");
     }
 }

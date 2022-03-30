@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.i18n;
 
 import java.util.Collections;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

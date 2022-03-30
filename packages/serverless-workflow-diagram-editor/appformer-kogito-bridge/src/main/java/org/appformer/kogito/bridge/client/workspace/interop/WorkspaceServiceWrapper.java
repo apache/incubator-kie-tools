@@ -17,6 +17,7 @@
 package org.appformer.kogito.bridge.client.workspace.interop;
 
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.appformer.kogito.bridge.client.workspace.WorkspaceService;
@@ -24,7 +25,7 @@ import org.appformer.kogito.bridge.client.workspace.WorkspaceService;
 /**
  * Javascript bridge to access the {@link WorkspaceService} available in the envelope namespace.
  */
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class WorkspaceServiceWrapper {
 
     @JsMethod

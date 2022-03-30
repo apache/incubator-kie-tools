@@ -18,29 +18,29 @@ package org.uberfire.ext.widgets.table.client;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell.Context;
-import com.google.gwt.dom.client.DivElement;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.SpanElement;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.dom.client.Style.Cursor;
-import com.google.gwt.dom.client.Style.Position;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Event.NativePreviewEvent;
-import com.google.gwt.user.client.Event.NativePreviewHandler;
 import org.gwtbootstrap3.client.ui.gwt.DataGrid;
+import org.gwtproject.cell.client.AbstractCell;
+import org.gwtproject.cell.client.Cell.Context;
+import org.gwtproject.dom.client.DivElement;
+import org.gwtproject.dom.client.Document;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.NativeEvent;
+import org.gwtproject.dom.client.SpanElement;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.dom.client.Style.Cursor;
+import org.gwtproject.dom.client.Style.Position;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.safehtml.shared.SafeHtmlUtils;
+import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.cellview.client.Header;
+import org.gwtproject.user.client.Event;
+import org.gwtproject.user.client.Event.NativePreviewEvent;
+import org.gwtproject.user.client.Event.NativePreviewHandler;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
-import static com.google.gwt.dom.client.Style.Unit.PX;
+import static org.gwtproject.dom.style.shared.Unit.PX;
 
 /**
  * A column header that supports resizing and moving
@@ -50,11 +50,11 @@ import static com.google.gwt.dom.client.Style.Unit.PX;
  */
 public abstract class ResizableMovableHeader<T> extends Header<String> {
 
-    private static final Cursor MOVE_CURSOR = Cursor.MOVE;
+    private static final org.gwtproject.dom.style.shared.Cursor MOVE_CURSOR = Cursor.MOVE;
     private static final String MOVE_COLOR = "gray";
     private static final int MOVE_HANDLE_WIDTH = 32;
 
-    private static final Cursor RESIZE_CURSOR = Cursor.COL_RESIZE;
+    private static final org.gwtproject.dom.style.shared.Cursor RESIZE_CURSOR = Cursor.COL_RESIZE;
     private static final String RESIZE_COLOR = "gray";
     private static final int RESIZE_HANDLE_WIDTH = 8;
 
@@ -71,17 +71,21 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
     private final Element tableElement;
     private HeaderHelper current;
-    private List<ColumnChangedHandler> columnChangedHandlers = new ArrayList<>();
+    private List<ColumnChangedHandler> columnChangedHandlers = new ArrayList<ColumnChangedHandler>();
 
     public ResizableMovableHeader(final String title,
                                   final DataGrid<T> table,
                                   final UberfireColumnPicker columnPicker,
                                   final Column<T, ?> column) {
         super(new HeaderCell());
-        this.title = checkNotNull("title", title);
-        this.table = checkNotNull("table", table);
-        this.columnPicker = checkNotNull("columnPicker", columnPicker);
-        this.column = checkNotNull("column", column);
+        this.title = PortablePreconditions.checkNotNull("title",
+                title);
+        this.table = PortablePreconditions.checkNotNull("table",
+                table);
+        this.columnPicker = PortablePreconditions.checkNotNull("columnPicker",
+                columnPicker);
+        this.column = PortablePreconditions.checkNotNull("column",
+                column);
         this.tableElement = table.getElement();
     }
 
@@ -99,11 +103,11 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                                 final String color) {
         style.setPosition(Position.ABSOLUTE);
         style.setTop(top,
-                     PX);
+                PX);
         style.setHeight(height,
-                        PX);
+                PX);
         style.setWidth(width,
-                       PX);
+                PX);
         style.setBackgroundColor(color);
         style.setZIndex(Integer.MAX_VALUE);
     }
@@ -119,13 +123,13 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                                final NativeEvent event) {
         if (current == null) {
             current = new HeaderHelper(target,
-                                       event);
+                    event);
         }
     }
 
     protected void columnResized(final int newWidth) {
         table.setColumnWidth(column,
-                             newWidth + "px");
+                newWidth + "px");
         columnPicker.adjustColumnWidths();
         for (ColumnChangedHandler handler : columnChangedHandlers) {
             handler.afterColumnChanged();
@@ -135,11 +139,11 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
     protected void columnMoved(final int fromIndex,
                                final int beforeIndex) {
         columnPicker.columnMoved(fromIndex,
-                                 beforeIndex);
+                beforeIndex);
         table.removeColumn(fromIndex);
         table.insertColumn(beforeIndex,
-                           column,
-                           this);
+                column,
+                this);
         for (ColumnChangedHandler handler : columnChangedHandlers) {
             handler.afterColumnChanged();
         }
@@ -173,7 +177,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
     }
 
     private class HeaderHelper implements NativePreviewHandler,
-                                          IDragCallback {
+            IDragCallback {
 
         private final HandlerRegistration handler = Event.addNativePreviewHandler(this);
         private final Element source;
@@ -191,35 +195,35 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
 
             final int leftBound = target.getOffsetLeft() + target.getOffsetWidth();
             this.moveHandle = createSpanElement(MOVE_CURSOR,
-                                                leftBound - RESIZE_HANDLE_WIDTH - MOVE_HANDLE_WIDTH,
-                                                MOVE_HANDLE_WIDTH);
+                    leftBound - RESIZE_HANDLE_WIDTH - MOVE_HANDLE_WIDTH,
+                    MOVE_HANDLE_WIDTH);
             this.resizeHandle = createSpanElement(RESIZE_CURSOR,
-                                                  leftBound - RESIZE_HANDLE_WIDTH,
-                                                  RESIZE_HANDLE_WIDTH);
+                    leftBound - RESIZE_HANDLE_WIDTH,
+                    RESIZE_HANDLE_WIDTH);
             handles.appendChild(moveHandle);
             handles.appendChild(resizeHandle);
             source.appendChild(handles);
         }
 
-        private SpanElement createSpanElement(final Cursor cursor,
+        private SpanElement createSpanElement(final org.gwtproject.dom.style.shared.Cursor cursor,
                                               final double left,
                                               final double width) {
             final SpanElement span = document.createSpanElement();
             span.setAttribute("title",
-                              title);
+                    title);
             final Style style = span.getStyle();
             style.setCursor(cursor);
             style.setPosition(Position.ABSOLUTE);
             style.setBottom(0,
-                            PX);
+                    PX);
             style.setHeight(source.getOffsetHeight(),
-                            PX);
+                    PX);
             style.setTop(source.getOffsetTop(),
-                         PX);
+                    PX);
             style.setWidth(width,
-                           PX);
+                    PX);
             style.setLeft(left,
-                          PX);
+                    PX);
             return span;
         }
 
@@ -241,12 +245,12 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                 if (element == resizeHandle) {
                     moveHandle.removeFromParent();
                     new ColumnResizeHelper(this,
-                                           source,
-                                           nativeEvent);
+                            source,
+                            nativeEvent);
                 } else {
                     new ColumnMoverHelper(this,
-                                          source,
-                                          nativeEvent);
+                            source,
+                            nativeEvent);
                 }
                 dragging = true;
             }
@@ -262,10 +266,6 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
             dragging = false;
             cleanUp();
         }
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private class ColumnResizeHelper implements NativePreviewHandler {
@@ -302,14 +302,14 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                 resizeLine.removeFromParent();
                 dragCallback.dragFinished();
                 columnResized(Math.max(clientX - header.getAbsoluteLeft(),
-                                       MINIMUM_COLUMN_WIDTH));
+                        MINIMUM_COLUMN_WIDTH));
             }
         }
 
         private void moveLine(final int clientX) {
             final int xPos = clientX - table.getAbsoluteLeft();
             resizeLineStyle.setLeft(xPos,
-                                    PX);
+                    PX);
         }
     }
 
@@ -386,7 +386,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                 ghostLine.removeFromParent();
                 if (fromIndex != toIndex) {
                     columnMoved(fromIndex,
-                                toIndex);
+                            toIndex);
                 }
                 dragCallback.dragFinished();
             }
@@ -395,7 +395,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
         private void moveColumn(final int clientX) {
             final int pointer = clientX - columnWidth / 2;
             ghostColumnStyle.setLeft(pointer - table.getAbsoluteLeft(),
-                                     PX);
+                    PX);
             for (int i = 0; i < columnXPositions.length - 1; ++i) {
                 if (clientX < columnXPositions[i + 1]) {
                     final int adjustedIndex = i > fromIndex ? i + 1 : i;
@@ -406,7 +406,7 @@ public abstract class ResizableMovableHeader<T> extends Header<String> {
                         lineXPos -= ghostLineWidth / 2;
                     }
                     ghostLineStyle.setLeft(lineXPos,
-                                           PX);
+                            PX);
                     toIndex = i;
                     break;
                 }

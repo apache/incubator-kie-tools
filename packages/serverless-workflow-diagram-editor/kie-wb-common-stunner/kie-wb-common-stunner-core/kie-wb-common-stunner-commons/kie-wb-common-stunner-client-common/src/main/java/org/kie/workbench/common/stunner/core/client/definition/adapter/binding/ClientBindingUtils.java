@@ -21,10 +21,10 @@ import java.util.LinkedHashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import org.jboss.errai.databinding.client.BindableProxy;
-import org.jboss.errai.databinding.client.HasProperties;
-import org.jboss.errai.databinding.client.PropertyType;
-import org.jboss.errai.databinding.client.api.DataBinder;
+import io.crysknife.ui.databinding.client.BindableProxy;
+import io.crysknife.ui.databinding.client.HasProperties;
+import io.crysknife.ui.databinding.client.PropertyType;
+import io.crysknife.ui.databinding.client.api.DataBinder;
 
 import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
 

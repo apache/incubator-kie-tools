@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.core.Global;
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
@@ -179,7 +181,12 @@ public class Parser {
     }
 
     private OnEvent parseOnEvent(OnEvent jso) {
+
+
         OnEvent onEvent = parse(OnEvent.class, jso);
+
+        DomGlobal.console.log("parseOnEvent " + Global.JSON.stringify(onEvent));
+
         ActionNode[] actions = Js.uncheckedCast(Js.asPropertyMap(jso).get("actions"));
         if (null != actions) {
             onEvent.actions = new ActionNode[actions.length];

@@ -26,7 +26,7 @@ import jsinterop.annotations.JsType;
  * Provided by the webjar <code>org.webjars.bower.jspdf</code>.
  * @see <a href="https://github.com/MrRio/jsPDF">jsPDF.js</a>
  */
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "jsPDF")
 public class JsPdf {
 
     /**

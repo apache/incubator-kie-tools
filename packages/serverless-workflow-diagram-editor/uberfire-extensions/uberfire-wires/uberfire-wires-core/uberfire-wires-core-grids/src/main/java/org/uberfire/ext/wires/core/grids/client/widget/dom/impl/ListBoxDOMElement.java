@@ -15,8 +15,8 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom.impl;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.ListBox;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.user.client.ui.ListBox;
 import org.uberfire.ext.wires.core.grids.client.model.impl.BaseGridCellValue;
 import org.uberfire.ext.wires.core.grids.client.widget.context.GridBodyCellRenderContext;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;

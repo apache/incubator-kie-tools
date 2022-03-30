@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.Widget;
 
 public interface LoadContentCommand {
 

@@ -20,13 +20,13 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.ProvidesResize;
+import org.gwtproject.user.client.ui.RequiresResize;
 import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 @Dependent
@@ -34,8 +34,8 @@ import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 public class StunnerEditorView
         extends Composite
         implements RequiresResize,
-                   ProvidesResize,
-                   IsWidget {
+        ProvidesResize,
+        IsWidget {
 
     @DataField
     private ResizeFlowPanel editorPanel;

@@ -15,24 +15,23 @@
  */
 package org.uberfire.ext.widgets.common.client.common.popups.footers;
 
-import java.util.Objects;
-
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.uibinder.client.UiHandler;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.ModalFooter;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiHandler;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.Widget;
+import org.kie.soup.commons.validation.PortablePreconditions;
 
 /**
  * A Modal Footer with OK and Cancel buttons
  */
 public class ModalFooterOKCancelButtons extends ModalFooter {
 
-    private static ModalFooterOKCancelButtonsBinder uiBinder = GWT.create(ModalFooterOKCancelButtonsBinder.class);
+    private static ModalFooterOKCancelButtonsBinder uiBinder = new ModalFooterOKCancelButtons_ModalFooterOKCancelButtonsBinderImpl();
 
     private final Command okCommand;
     private final Command cancelCommand;
@@ -43,8 +42,10 @@ public class ModalFooterOKCancelButtons extends ModalFooter {
 
     public ModalFooterOKCancelButtons(final Command okCommand,
                                       final Command cancelCommand) {
-        this.okCommand = checkNotNull("okCommand", okCommand);
-        this.cancelCommand = checkNotNull("cancelCommand", cancelCommand);
+        this.okCommand = PortablePreconditions.checkNotNull("okCommand",
+                                                            okCommand);
+        this.cancelCommand = PortablePreconditions.checkNotNull("cancelCommand",
+                                                                cancelCommand);
         add(uiBinder.createAndBindUi(this));
     }
 
@@ -66,10 +67,7 @@ public class ModalFooterOKCancelButtons extends ModalFooter {
         cancelCommand.execute();
     }
 
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
-    }
-
+    @UiTemplate
     interface ModalFooterOKCancelButtonsBinder
             extends
             UiBinder<Widget, ModalFooterOKCancelButtons> {

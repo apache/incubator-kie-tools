@@ -25,10 +25,10 @@ import elemental2.dom.Event;
 import elemental2.dom.HTMLDocument;
 import elemental2.dom.HTMLElement;
 import elemental2.dom.NamedNodeMap;
+import io.crysknife.client.ioc.Disposer;
 import org.appformer.kogito.bridge.client.guided.tour.GuidedTourBridge;
 import org.appformer.kogito.bridge.client.guided.tour.service.GuidedTourService;
 import org.appformer.kogito.bridge.client.guided.tour.service.api.UserInteraction;
-import org.jboss.errai.ioc.client.api.Disposer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,8 +36,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 
-import static com.google.gwt.dom.client.BrowserEvents.CLICK;
 import static java.util.Arrays.asList;
+import static org.gwtproject.dom.client.BrowserEvents.CLICK;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -70,7 +70,7 @@ public class GlobalHTMLObserverTest {
     @Before
     public void setup() {
         bridge = spy(new GuidedTourBridge(service, observer));
-        htmlObserver = spy(new GlobalHTMLObserver(selfDisposer));
+        htmlObserver = spy(new GlobalHTMLObserver());
 
         doReturn(document).when(htmlObserver).document();
 

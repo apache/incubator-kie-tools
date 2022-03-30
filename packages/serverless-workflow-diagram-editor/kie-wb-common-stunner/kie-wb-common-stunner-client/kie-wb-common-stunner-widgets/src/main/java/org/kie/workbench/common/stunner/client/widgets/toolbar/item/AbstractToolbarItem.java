@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.item;
 
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.command.AbstractToolbarCommand;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -74,7 +74,7 @@ public abstract class AbstractToolbarItem<S extends ClientSession> implements Is
                      final Command clickHandler) {
         // Initialize the command with the current session.
         command.initialize(toolbar,
-                           session);
+                session);
         final IconType icon = command.getIcon();
         final String caption = command.getCaption();
         if (icon != null) {

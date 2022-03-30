@@ -17,14 +17,19 @@ package org.uberfire.ext.widgets.common.client;
 
 import javax.annotation.PostConstruct;
 
-import org.jboss.errai.ioc.client.api.EntryPoint;
+import org.gwtproject.resources.client.GWT3Resources;
 import org.uberfire.client.views.pfly.sys.PatternFlyBootstrapper;
 import org.uberfire.ext.widgets.common.client.resources.CommonResources;
 
 /**
  * Bootstrap widgets-commons
  */
-@EntryPoint
+//@EntryPoint
+@GWT3Resources(
+        cssResource = @GWT3Resources.CssResource(
+                conversionMode = "strict"
+        )
+)
 public class CommonsEntryPoint {
 
     @PostConstruct
@@ -33,5 +38,6 @@ public class CommonsEntryPoint {
         CommonResources.INSTANCE.CSS().ensureInjected();
         PatternFlyBootstrapper.ensurejQueryIsAvailable();
         PatternFlyBootstrapper.ensureBootstrapSelectIsAvailable();
+        PatternFlyBootstrapper.ensurePatternFlyIsAvailable();
     }
 }

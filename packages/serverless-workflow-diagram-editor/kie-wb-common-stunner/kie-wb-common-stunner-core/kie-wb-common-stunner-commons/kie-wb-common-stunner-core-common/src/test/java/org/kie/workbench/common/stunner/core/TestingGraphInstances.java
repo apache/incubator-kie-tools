@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.core;
 
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.kie.soup.commons.util.Lists;
+import org.kie.soup.commons.util.Sets;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -231,21 +231,22 @@ public class TestingGraphInstances {
     public static RuleManager configureDomain(TestingGraphMockHandler graphTestHandler) {
         CanConnect connectionRule1 = new CanConnect("allowConnectionsForEdge1",
                                                     "edgeId",
-                                                    Stream.of(new CanConnect.PermittedConnection("all",
-                                                                                               "all"))
-                                                            .collect(Collectors.toList())
+                                                    new Lists.Builder<CanConnect.PermittedConnection>()
+                                                            .add(new CanConnect.PermittedConnection("all",
+                                                                                                    "all"))
+                                                            .build()
         );
         CanContain parentNodeContainment = new CanContain("parentCanContainAll",
                                                           getDefinitionId(ParentNodeBean.class),
-                                                          Stream.of("all").collect(Collectors.toSet())
+                                                          new Sets.Builder<String>().add("all").build()
         );
         CanContain containerNodeContainment = new CanContain("containerNodeCanContainAll",
                                                              getDefinitionId(ContainerNodeBean.class),
-                                                             Stream.of("all").collect(Collectors.toSet())
+                                                             new Sets.Builder<String>().add("all").build()
         );
         CanContain subProcessNodeContainment = new CanContain("subProcessNodeCanContainAll",
                                                               getDefinitionId(SubProcessNodeBean.class),
-                                                              Stream.of("all").collect(Collectors.toSet())
+                                                              new Sets.Builder<String>().add("all").build()
         );
 
         graphTestHandler.ruleSet.getRules().add(connectionRule1);

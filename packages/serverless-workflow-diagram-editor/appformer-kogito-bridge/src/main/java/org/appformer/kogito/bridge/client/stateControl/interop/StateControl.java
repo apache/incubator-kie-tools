@@ -17,6 +17,7 @@
 package org.appformer.kogito.bridge.client.stateControl.interop;
 
 import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import org.appformer.kogito.bridge.client.stateControl.registry.interop.KogitoJSCommandRegistry;
@@ -24,7 +25,7 @@ import org.appformer.kogito.bridge.client.stateControl.registry.interop.KogitoJS
 /**
  * Represents the TypeScript StateControl engine present on the Envelope
  */
-@JsType(isNative = true, namespace = "window", name = "gwt")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "gwt")
 public class StateControl {
 
     /**

@@ -35,8 +35,6 @@ import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.ToolboxTextTooltip
 import com.ait.lienzo.client.core.shape.toolbox.items.tooltip.TooltipFactory;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.BoundingBox;
-import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEvent;
-import org.junit.Test;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresLayer;
@@ -44,12 +42,10 @@ import org.kie.workbench.common.stunner.client.lienzo.components.glyph.LienzoGly
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolbox;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyDouble;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -137,8 +133,8 @@ public abstract class AbstractActionsToolboxViewTest {
         when(toolbox.size()).thenReturn(0);
         when(toolbox.iterator()).thenReturn(Collections.emptyIterator());
         when(glyphRenderers.render(any(),
-                                   anyDouble(),
-                                   anyDouble()))
+                anyDouble(),
+                anyDouble()))
                 .thenReturn(glyphView);
     }
 
@@ -146,50 +142,28 @@ public abstract class AbstractActionsToolboxViewTest {
     protected void testAddButton(final String title) {
         // Verify tootlip.
         verify(toolboxTooltip,
-               times(1)).createItem(eq(title));
+                times(1)).createItem(eq(title));
         verify(buttonItem,
-               times(1)).tooltip(any());
+                times(1)).tooltip(any());
         // Verify mouse enter.
         final ArgumentCaptor<NodeMouseEnterHandler> enterHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(NodeMouseEnterHandler.class);
         verify(buttonItem,
-               times(1)).onMouseEnter(enterHandlerArgumentCaptor.capture());
+                times(1)).onMouseEnter(enterHandlerArgumentCaptor.capture());
         final NodeMouseEnterHandler enterHandler = enterHandlerArgumentCaptor.getValue();
         final NodeMouseEnterEvent mouseEnterEvent = mock(NodeMouseEnterEvent.class);
         enterHandler.onNodeMouseEnter(mouseEnterEvent);
         verify(canvasView,
-               times(1)).setCursor(eq(AbstractCanvas.Cursors.POINTER));
+                times(1)).setCursor(eq(AbstractCanvas.Cursors.POINTER));
         // Verify mouse exit.
         final ArgumentCaptor<NodeMouseExitHandler> exitHandlerArgumentCaptor =
                 ArgumentCaptor.forClass(NodeMouseExitHandler.class);
         verify(buttonItem,
-               times(1)).onMouseExit(exitHandlerArgumentCaptor.capture());
+                times(1)).onMouseExit(exitHandlerArgumentCaptor.capture());
         final NodeMouseExitHandler exitHandler = exitHandlerArgumentCaptor.getValue();
         final NodeMouseExitEvent mouseExitEvent = mock(NodeMouseExitEvent.class);
         exitHandler.onNodeMouseExit(mouseExitEvent);
         verify(canvasView,
-               times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
+                times(1)).setCursor(eq(AbstractCanvas.Cursors.DEFAULT));
     }
-
-
-    @Mock
-    AbstractActionsToolboxView toolboxView2;
-
-    @Test
-    public void testDestroyTopLayerRepaint() {
-        doCallRealMethod().when(toolboxView2).destroy();
-
-        toolboxView2.destroy();
-        verify(toolboxView2,
-               times(1)).drawTopLayer();
-    }
-
-    @Test
-    public void testOnScroll() {
-        doCallRealMethod().when(toolboxView2).onScrollEvent(any());
-        toolboxView2.onScrollEvent(new LienzoPanelScrollEvent());
-        verify(toolboxView2,
-               times(1)).drawTopLayer();
-    }
-
 }

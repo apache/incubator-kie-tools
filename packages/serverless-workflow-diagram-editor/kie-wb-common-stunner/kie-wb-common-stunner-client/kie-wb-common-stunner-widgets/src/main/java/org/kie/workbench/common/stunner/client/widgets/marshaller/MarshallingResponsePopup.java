@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import com.google.gwt.view.client.ListDataProvider;
+import org.gwtproject.view.client.ListDataProvider;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.marshaller.MarshallingMessage;

@@ -18,11 +18,11 @@ package org.kie.workbench.common.stunner.client.widgets.views.session;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Heading;
 import org.gwtbootstrap3.client.ui.constants.HeadingSize;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 
 @Dependent
 public class NoCanvasView implements IsWidget {
@@ -31,7 +31,7 @@ public class NoCanvasView implements IsWidget {
 
     public void show() {
         mainPanel.add(new Heading(HeadingSize.H6,
-                                  "No diagram in use"));
+                "No diagram in use"));
     }
 
     public void clear() {

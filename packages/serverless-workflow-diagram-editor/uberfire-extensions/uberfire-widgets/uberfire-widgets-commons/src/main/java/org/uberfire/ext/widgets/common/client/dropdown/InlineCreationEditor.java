@@ -16,9 +16,10 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown;
 
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
 
-public interface InlineCreationEditor<TYPE> extends EntryCreationEditor<TYPE>, IsElement{
+public interface InlineCreationEditor<TYPE> extends EntryCreationEditor<TYPE>,
+                                                    IsElement {
 
     void clear();
 }

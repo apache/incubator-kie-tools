@@ -21,11 +21,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.OptionalInt;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.common.client.api.IsElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

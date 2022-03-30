@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.client.widgets.canvas;
 import java.util.function.Supplier;
 
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
-import com.ait.lienzo.client.widget.panel.impl.LienzoPanelScrollEvent;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
@@ -44,12 +43,9 @@ public class ScrollableLienzoPanelTest {
 
     private ScrollableLienzoPanel tested;
 
-    @Mock
-    private EventSourceMock<LienzoPanelScrollEvent> scrollEvent;
-
     @Before
     public void init() {
-        tested = new ScrollableLienzoPanel(panel, scrollEvent);
+        tested = new ScrollableLienzoPanel(panel, new EventSourceMock<>());
     }
 
     @Test

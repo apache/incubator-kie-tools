@@ -386,7 +386,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     }
 
     /**
-     * Gets this node's {@link com.ait.lienzo.shared.core.types.DragConstraint}
+     * Gets this node's {@link DragConstraint}
      *
      * @return DragConstraint
      */
@@ -428,7 +428,7 @@ public abstract class Node<T extends Node<T>> implements IDrawable<T> {
     }
 
     /**
-     * Gets the {@link com.ait.lienzo.shared.core.types.DragMode} for this node.
+     * Gets the {@link DragMode} for this node.
      *
      * @return DragMode
      */

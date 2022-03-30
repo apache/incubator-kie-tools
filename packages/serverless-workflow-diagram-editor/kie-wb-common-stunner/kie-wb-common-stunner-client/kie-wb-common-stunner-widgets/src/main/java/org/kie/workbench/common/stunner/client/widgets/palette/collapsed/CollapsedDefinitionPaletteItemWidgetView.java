@@ -31,9 +31,9 @@ public interface CollapsedDefinitionPaletteItemWidgetView extends UberElement<Co
 
         CollapsedDefaultPaletteItem getItem();
 
-        void onMouseDown(final int clientX,
-                         final int clientY,
-                         final int x,
-                         final int y);
+        void onMouseDown(final double clientX,
+                         final double clientY,
+                         final double x,
+                         final double y);
     }
 }

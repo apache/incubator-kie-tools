@@ -72,10 +72,21 @@
 
   <properties>
     <sonar.skip>true</sonar.skip>
+    <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
+    <version.gwtproject>202203291</version.gwtproject>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+
+      <dependency>
+        <groupId>org.treblereel.gwt.gwtproject</groupId>
+        <artifactId>gwt-bom</artifactId>
+        <version>${version.gwtproject}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <!-- appformer internal modules -->
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -240,84 +251,13 @@
         <version>${project.version}</version>
       </dependency>
 
-      <!-- 3rd-party dependencies -->
       <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>errai-cdi-client</artifactId>
+        <groupId>org.kie.kogito.stunner.serverless.editor.legacy</groupId>
+        <artifactId>compat</artifactId>
         <version>${project.version}</version>
       </dependency>
 
-      <dependency>
-        <groupId>javax.enterprise</groupId>
-        <artifactId>cdi-api</artifactId>
-        <version>${version.javax.enterprise}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.interceptor</groupId>
-            <artifactId>javax.interceptor-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit.http.server</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
       <!-- GWT and GWT Extensions -->
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>${version.com.google.gwt}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-dev</artifactId>
-        <version>${version.com.google.gwt}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
       <dependency>
         <groupId>com.google.jsinterop</groupId>
         <artifactId>base</artifactId>
@@ -325,41 +265,14 @@
       </dependency>
 
       <dependency>
-        <groupId>com.allen-sauer.gwt.dnd</groupId>
-        <artifactId>gwt-dnd</artifactId>
-        <version>${version.com.allen-sauer.gwt.dnd}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${org.treblereel.j2cl.processors.version}</version>
       </dependency>
-
       <dependency>
-        <groupId>org.scannotation</groupId>
-        <artifactId>scannotation</artifactId>
-        <version>${version.org.scannotation}</version>
-        <exclusions>
-          <!-- Uses old javassist groupId so Maven is not able to exclude this itself. All UF modules have to use
-               org.javassist:javassist instead of this one. -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>com.google.gwt.gwtmockito</groupId>
-        <artifactId>gwtmockito</artifactId>
-        <version>${version.com.google.gwt.gwtmockito}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.mortbay.jasper</groupId>
-            <artifactId>apache-el</artifactId>
-          </exclusion>
-        </exclusions>
+        <groupId>org.treblereel.j2cl.processors</groupId>
+        <artifactId>processors</artifactId>
+        <version>${org.treblereel.j2cl.processors.version}</version>
       </dependency>
 
       <!-- Byteman -->
@@ -468,6 +381,18 @@
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt.gwtmockito</groupId>
+        <artifactId>gwtmockito</artifactId>
+        <version>${version.com.google.gwt.gwtmockito}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.mortbay.jasper</groupId>
+            <artifactId>apache-el</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>

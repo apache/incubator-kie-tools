@@ -36,6 +36,7 @@ import javax.lang.model.util.Elements;
 import javax.tools.JavaFileObject;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.svg.annotation.SVGViewFactory;
@@ -103,6 +104,7 @@ public class SVGShapeProcessorTest {
     }
 
     @Test
+    @Ignore
     @SuppressWarnings("unchecked")
     public void testMultipleSVGViewFactories() throws Exception {
         types.add(makeTypeElement("Factory1"));

@@ -188,11 +188,11 @@ public abstract class AbstractMultiPointShape<T extends AbstractMultiPointShape<
                 if (type == ControlHandleStandardType.HANDLE) {
                     IControlHandleList chList = getPointHandles();
 
-                    map.put(IControlHandle.ControlHandleStandardType.HANDLE, chList);
+                    map.put(ControlHandleStandardType.HANDLE, chList);
                 } else if (type == ControlHandleStandardType.POINT) {
                     IControlHandleList chList = getPointHandles();
 
-                    map.put(IControlHandle.ControlHandleStandardType.POINT, chList);
+                    map.put(ControlHandleStandardType.POINT, chList);
                 }
             }
             return map;

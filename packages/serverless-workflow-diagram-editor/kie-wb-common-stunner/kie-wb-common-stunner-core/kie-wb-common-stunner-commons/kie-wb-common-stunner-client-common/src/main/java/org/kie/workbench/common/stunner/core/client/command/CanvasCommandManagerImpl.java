@@ -165,8 +165,8 @@ public class CanvasCommandManagerImpl<H extends AbstractCanvasHandler>
                                                     final CommandResult<CanvasViolation> result) {
         if (null != canvasUndoCommandExecutedEvent) {
             canvasUndoCommandExecutedEvent.fire(new CanvasCommandUndoneEvent(context,
-                                                                             command,
-                                                                             result));
+                    command,
+                    result));
         }
         return result;
     }

@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.wires.core.grids.client.widget.dom.multiple.impl;
 
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import org.gwtbootstrap3.client.ui.TextBox;
+import org.gwtproject.event.dom.client.BlurEvent;
+import org.gwtproject.event.dom.client.BlurHandler;
 import org.uberfire.ext.wires.core.grids.client.widget.dom.impl.TextBoxDOMElement;
 import org.uberfire.ext.wires.core.grids.client.widget.grid.GridWidget;
 import org.uberfire.ext.wires.core.grids.client.widget.layer.GridLayer;

@@ -18,10 +18,10 @@ package org.kie.workbench.common.stunner.core.graph.command.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -49,12 +49,10 @@ public class SetChildrenCommand extends AbstractGraphCommand {
 
     public SetChildrenCommand(final @MapsTo("parentUUID") String parentUUID,
                               final @MapsTo("candidateUUIDs") String[] candidateUUIDs) {
-        this.parentUUID = checkNotNull("parentUUID", parentUUID);
-        this.candidateUUIDs = checkNotNull("candidateUUIDs", candidateUUIDs);
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+        this.parentUUID = PortablePreconditions.checkNotNull("parentUUID",
+                                                             parentUUID);
+        this.candidateUUIDs = PortablePreconditions.checkNotNull("candidateUUIDs",
+                                                                 candidateUUIDs);
     }
 
     public SetChildrenCommand(final Node<?, Edge> parent,

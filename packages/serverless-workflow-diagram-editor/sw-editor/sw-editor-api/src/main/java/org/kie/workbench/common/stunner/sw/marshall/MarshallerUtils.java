@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import jsinterop.annotations.JsMethod;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -69,29 +70,7 @@ public class MarshallerUtils {
         return Js.uncheckedCast(instance);
     }
 
-    public static native <T> T nativeMerge(Object o1, Object o2) /*-{
-        if (typeof Object.assign != 'function') {
-            Object.assign = function (target) {
-                'use strict';
-                if (target == null) {
-                    throw new TypeError('Cannot convert undefined or null to object');
-                }
 
-                target = Object(target);
-                for (var index = 1; index < arguments.length; index++) {
-                    var source = arguments[index];
-                    if (source != null) {
-                        for (var key in source) {
-                            if (Object.prototype.hasOwnProperty.call(source, key)) {
-                                target[key] = source[key];
-                            }
-                        }
-                    }
-                }
-                return target;
-            };
-        }
-        // return Object.assign({}, o1, o2);
-        return Object.assign(o1, o2);
-    }-*/;
+    @JsMethod
+    public static native <T> T nativeMerge(Object o1, Object o2);
 }

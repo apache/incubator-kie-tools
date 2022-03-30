@@ -16,12 +16,12 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import com.google.gwt.user.client.ui.HTML;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.safehtml.shared.SafeHtml;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.user.client.ui.AbstractImagePrototype;
+import org.gwtproject.user.client.ui.HTML;
+import org.gwtproject.user.window.client.Window;
 
 public class Util {
 

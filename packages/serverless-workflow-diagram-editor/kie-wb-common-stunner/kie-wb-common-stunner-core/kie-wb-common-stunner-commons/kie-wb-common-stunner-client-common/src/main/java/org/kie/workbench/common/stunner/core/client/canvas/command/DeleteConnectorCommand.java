@@ -44,22 +44,6 @@ public class DeleteConnectorCommand extends AbstractCanvasGraphCommand {
         return new DeleteCanvasConnectorCommand(candidate);
     }
 
-    public Edge getCandidate() {
-        return candidate;
-    }
-
-    public String getLastSourceNodeUUID() {
-        return getGraphCommand().getLastSourceNodeUUID();
-    }
-
-    public String getLastTargetNodeUUID() {
-        return getGraphCommand().getLastTargetNodeUUID();
-    }
-
-    private org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand getGraphCommand() {
-        return (org.kie.workbench.common.stunner.core.graph.command.impl.DeleteConnectorCommand) graphCommand;
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() +

@@ -17,9 +17,9 @@ package org.uberfire.ext.layout.editor.client.generator;
 
 import java.util.List;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.HTMLElement;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
@@ -34,9 +34,9 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
     @Override
     public LayoutInstance build(LayoutTemplate layoutTemplate, LayoutGeneratorDriver driver) {
         HTMLElement container = driver.createContainer();
-        container.setId(CONTAINER_ID);
-        container.getClassList().add("uf-perspective-container");
-        container.getClassList().add("uf-perspective-rendered-container");
+        container.id = (CONTAINER_ID);
+        container.classList.add("uf-perspective-container");
+        container.classList.add("uf-perspective-rendered-container");
 
         LayoutInstance layoutInstance = new LayoutInstance(container);
         List<LayoutRow> rows = layoutTemplate.getRows();
@@ -45,54 +45,54 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
     }
 
     protected void generateRows(LayoutTemplate layoutTemplate,
-                              LayoutInstance layoutInstance,
-                              LayoutGeneratorDriver driver,
-                              List<LayoutRow> rows,
-                              HTMLElement parentWidget) {
+                                LayoutInstance layoutInstance,
+                                LayoutGeneratorDriver driver,
+                                List<LayoutRow> rows,
+                                HTMLElement parentWidget) {
         for (LayoutRow layoutRow : rows) {
             HTMLElement row = driver.createRow(layoutRow);
 
             if (layoutTemplate.isPageStyle()) {
-                row.getClassList().add(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
-                row.getClassList().add("uf-le-overflow");
+                row.classList.add(RowSizeBuilder.buildRowSize(layoutRow.getHeight()));
+                row.classList.add("uf-le-overflow");
             }
             for (LayoutColumn layoutColumn : layoutRow.getLayoutColumns()) {
                 HTMLElement column = driver.createColumn(layoutColumn);
 
                 if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                    column.getClassList().add("uf-perspective-col");
+                    column.classList.add("uf-perspective-col");
                 }
                 if (columnHasNestedRows(layoutColumn)) {
                     if (layoutTemplate.isPageStyle() && layoutColumn.getHeight().isEmpty()) {
-                        column.getClassList().add("uf-perspective-col");
+                        column.classList.add("uf-perspective-col");
                     } else if (!layoutColumn.getHeight().isEmpty()) {
-                        column.getClassList().add("uf-perspective-row-" + layoutColumn.getHeight());
+                        column.classList.add("uf-perspective-row-" + layoutColumn.getHeight());
                     }
                     generateRows(layoutTemplate,
-                                 layoutInstance,
-                                 driver,
-                                 layoutColumn.getRows(),
-                                 column);
+                            layoutInstance,
+                            driver,
+                            layoutColumn.getRows(),
+                            column);
                 } else {
                     generateComponents(layoutTemplate,
-                                       layoutInstance,
-                                       driver,
-                                       layoutColumn,
-                                       column);
+                            layoutInstance,
+                            driver,
+                            layoutColumn,
+                            column);
                 }
-                column.getClassList().add("uf-perspective-rendered-col");
+                column.classList.add("uf-perspective-rendered-col");
                 row.appendChild(column);
             }
-            row.getClassList().add("uf-perspective-rendered-row");
+            row.classList.add("uf-perspective-rendered-row");
             parentWidget.appendChild(row);
         }
     }
 
     protected void generateComponents(LayoutTemplate layoutTemplate,
-                                    final LayoutInstance layoutInstance,
-                                    final LayoutGeneratorDriver driver,
-                                    final LayoutColumn layoutColumn,
-                                    final HTMLElement column) {
+                                      final LayoutInstance layoutInstance,
+                                      final LayoutGeneratorDriver driver,
+                                      final LayoutColumn layoutColumn,
+                                      final HTMLElement column) {
         for (final LayoutComponent layoutComponent : layoutColumn.getLayoutComponents()) {
             final IsWidget componentWidget = driver.createComponent(column, layoutComponent);
             if (componentWidget != null) {
@@ -100,7 +100,7 @@ public abstract class AbstractLayoutGenerator implements LayoutGenerator {
                     componentWidget.asWidget().getElement().addClassName("uf-perspective-col");
                 }
                 else if (!layoutColumn.getHeight().isEmpty()) {
-                    column.getClassList().add("uf-perspective-row-" + layoutColumn.getHeight());
+                    column.classList.add("uf-perspective-row-" + layoutColumn.getHeight());
                 }
                 DOMUtil.appendWidgetToElement(column, componentWidget);
             }

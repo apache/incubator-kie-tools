@@ -20,22 +20,20 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.KeyDownEvent;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Button;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLUListElement;
+import io.crysknife.client.ManagedInstance;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Composite;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.common.client.dom.UnorderedList;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 import org.uberfire.mvp.Command;
@@ -50,35 +48,36 @@ public class ZoomLevelSelectorView
 
     @Inject
     @DataField
-    Button decreaseButton;
+    HTMLButtonElement decreaseButton;
 
     @Inject
     @DataField
-    Button increaseButton;
+    HTMLButtonElement increaseButton;
 
     @Inject
     @DataField
-    Button resetButton;
+    HTMLButtonElement resetButton;
 
     @Inject
     @DataField
-    Div dropDownPanelGroup;
+    HTMLDivElement dropDownPanelGroup;
 
     @Inject
     @DataField
-    Div dropDownPanel;
+    HTMLDivElement dropDownPanel;
 
     @Inject
     @DataField
-    Button dropDownButton;
+    HTMLButtonElement dropDownButton;
 
     @Inject
     @DataField
-    Span dropDownText;
+    @Named("span")
+    HTMLElement dropDownText;
 
     @Inject
     @DataField
-    UnorderedList dropDownMenu;
+    HTMLUListElement dropDownMenu;
 
     @Inject
     @Any
@@ -112,55 +111,55 @@ public class ZoomLevelSelectorView
     }
 
     public void setSelectedValue(String selectedItem) {
-        dropDownText.setTextContent(selectedItem);
+        dropDownText.textContent = (selectedItem);
     }
 
     @Override
     public void setText(String text) {
-        dropDownText.setTextContent(text);
+        dropDownText.textContent = (text);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        dropDownButton.setDisabled(!enabled);
+        dropDownButton.disabled = (!enabled);
     }
 
     @Override
     public void dropUp() {
-        dropDownPanelGroup.setClassName(dropDownPanelGroup.getClassName() + " " + CSS_DROP_UP);
+        dropDownPanelGroup.className = (dropDownPanelGroup.className + " " + CSS_DROP_UP);
     }
 
     @EventHandler("increaseButton")
-    void onIncreaseLevel(ClickEvent event) {
+    void onIncreaseLevel(@ForEvent("click") Event event) {
         presenter.onIncreaseLevel();
     }
 
     @EventHandler("decreaseButton")
-    void onDecreaseLevel(ClickEvent event) {
+    void onDecreaseLevel(@ForEvent("click") Event event) {
         presenter.onDecreaseLevel();
     }
 
     @EventHandler("resetButton")
-    void onReset(ClickEvent event) {
-        presenter.onScaleToFitSize();
+    void onReset(@ForEvent("click") Event event) {
+        presenter.onReset();
     }
 
     @EventHandler("dropDownButton")
-    void onDropDownKeyDown(KeyDownEvent event) {
+    void onDropDownKeyDown(@ForEvent("keydown") Event event) {
         onDropDownKeyEvent(event);
     }
 
     @EventHandler("dropDownButton")
-    void onDropDownKeyUp(KeyUpEvent event) {
+    void onDropDownKeyUp(@ForEvent("keyup") Event event) {
         onDropDownKeyEvent(event);
     }
 
     @EventHandler("dropDownButton")
-    void onDropDownKeyPress(KeyPressEvent event) {
+    void onDropDownKeyPress(@ForEvent("keypress") Event event) {
         onDropDownKeyEvent(event);
     }
 
-    private void onDropDownKeyEvent(DomEvent event) {
+    private void onDropDownKeyEvent(Event event) {
         event.preventDefault();
         event.stopPropagation();
     }
@@ -172,9 +171,9 @@ public class ZoomLevelSelectorView
         presenter = null;
     }
 
-    private static void setTooltip(final Button button,
+    private static void setTooltip(final HTMLButtonElement button,
                                    final String text) {
         button.setAttribute("data-placement", "top");
-        button.setTitle(text);
+        button.title = (text);
     }
 }

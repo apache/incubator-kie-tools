@@ -20,15 +20,18 @@
 <module>
   <!-- Inherit the core Web Toolkit stuff. -->
 
-  <inherits name="com.google.gwt.http.HTTP"/>
-  <inherits name="com.google.gwt.user.User"/>
-  <inherits name="com.google.gwt.resources.Resources"/>
+  <inherits name="org.gwtproject.http.HTTP"/>
+  <inherits name="org.gwtproject.user.User"/>
+  <inherits name="org.gwtproject.resources.Resources"/>
 
   <!-- Errai modules -->
   <inherits name="org.jboss.errai.enterprise.CDI"/>
 
   <!-- Prevent compilation warning -->
   <set-configuration-property name="UiBinder.useSafeHtmlTemplates" value="true"/>
+
+  <!-- GuvnorNG API common interfaces -->
+  <inherits name="org.uberfire.UberfireClientAPI"/>
 
   <!-- Specify the paths for translatable code -->
   <source path='client'/>

@@ -16,11 +16,11 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.scrollbars;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.Element;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.user.client.ui.AbsolutePanel;
+import org.gwtproject.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

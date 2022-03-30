@@ -15,10 +15,10 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.screens;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwtmockito.GwtMockitoTestRunner;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

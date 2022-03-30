@@ -22,9 +22,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.FlowPanel;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
@@ -42,10 +42,10 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
     public ImageStripDOMGlyphRenderer(final ImageStripRegistry stripRegistry,
                                       final ManagedInstance<WidgetElementRendererView> views) {
         this(stripRegistry,
-             views,
-             (className, clip) -> buildPanel(className,
-                                             clip[0],
-                                             clip[1]));
+                views,
+                (className, clip) -> buildPanel(className,
+                        clip[0],
+                        clip[1]));
     }
 
     ImageStripDOMGlyphRenderer(final ImageStripRegistry stripRegistry,
@@ -73,7 +73,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
         final WidgetElementRendererView view = views.get();
         strip.getCss().getCssResource().ensureInjected();
         view.setWidget(panelBuilder.apply(strip.getCss().getClassName(),
-                                          new Integer[]{clipX, clipY * -1}));
+                new Integer[]{clipX, clipY * -1}));
         return view;
     }
 

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.controls.builder.impl;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,13 +42,15 @@ import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
 import org.kie.workbench.common.stunner.core.graph.processing.index.bounds.GraphBoundsIndexer;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 @Default
 @Observer
 @Dependent
 public class ObserverBuilderControl extends AbstractElementBuilderControl
         implements ElementBuilderControl<AbstractCanvasHandler> {
 
-    private static final Logger LOGGER = Logger.getLogger(ObserverBuilderControl.class.getName());
+    private static Logger LOGGER = Logger.getLogger(ObserverBuilderControl.class.getName());
 
     private final Event<CanvasSelectionEvent> canvasSelectionEvent;
 
@@ -65,11 +66,11 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                                   final Event<CanvasSelectionEvent> canvasSelectionEvent,
                                   final Event<InlineTextEditEvent> inlineTextEditEventEvent) {
         super(clientDefinitionManager,
-              clientFactoryServices,
-              ruleManager,
-              canvasCommandFactory,
-              translationMessages,
-              graphBoundsIndexer);
+                clientFactoryServices,
+                ruleManager,
+                canvasCommandFactory,
+                translationMessages,
+                graphBoundsIndexer);
         this.canvasSelectionEvent = canvasSelectionEvent;
         this.inlineTextEditEventEvent = inlineTextEditEventEvent;
     }
@@ -79,35 +80,36 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                              final double y) {
         final ElementBuildRequest<AbstractCanvasHandler> request =
                 new ElementBuildRequestImpl(x,
-                                            y,
-                                            definition);
+                        y,
+                        definition);
         ObserverBuilderControl.this.build(request,
-                                          new BuildCallback() {
-                                              @Override
-                                              public void onSuccess(final String uuid) {
-                                                  canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
-                                                                                                     uuid));
-                                                  inlineTextEditEventEvent.fire(new InlineTextEditEvent(uuid));
-                                              }
+                new BuildCallback() {
+                    @Override
+                    public void onSuccess(final String uuid) {
+                        canvasSelectionEvent.fire(new CanvasSelectionEvent(canvasHandler,
+                                uuid));
+                        inlineTextEditEventEvent.fire(new InlineTextEditEvent(uuid));
+                    }
 
-                                              @Override
-                                              public void onError(final ClientRuntimeError error) {
-                                                  LOGGER.log(Level.WARNING,
-                                                             error.toString());
-                                              }
-                                          });
+                    @Override
+                    public void onError(final ClientRuntimeError error) {
+                        LOGGER.log(Level.WARNING,
+                                error.toString());
+                    }
+                });
     }
 
     @SuppressWarnings("unchecked")
-    void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent event) {
-        Objects.requireNonNull(event, "Parameter named 'event' should be not null!");
+    public void onBuildCanvasShape(final @Observes BuildCanvasShapeEvent event) {
+        checkNotNull("event",
+                event);
         if (null != canvasHandler) {
             final CanvasHandler context = event.getCanvasHandler();
             if (null != context && context.equals(canvasHandler)) {
                 final Point2D transformed = getTransformedLocation(event.getClientX(), event.getClientY());
                 buildShapeAt(event.getDefinition(),
-                             transformed.getX(),
-                             transformed.getY());
+                        transformed.getX(),
+                        transformed.getY());
             }
         }
     }
@@ -145,7 +147,7 @@ public class ObserverBuilderControl extends AbstractElementBuilderControl
                 getCanvasElement().getOwnerDocument().getScrollTop();
     }
 
-    private com.google.gwt.user.client.Element getCanvasElement() {
+    private org.gwtproject.dom.client.Element getCanvasElement() {
         return canvasHandler.getAbstractCanvas().getView().asWidget().getElement();
     }
 }

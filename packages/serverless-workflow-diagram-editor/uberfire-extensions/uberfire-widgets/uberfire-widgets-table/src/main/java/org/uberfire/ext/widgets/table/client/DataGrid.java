@@ -16,8 +16,12 @@
 
 package org.uberfire.ext.widgets.table.client;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.view.client.ProvidesKey;
+import elemental2.dom.CSSProperties;
+import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLTableElement;
+import jsinterop.base.Js;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.view.client.ProvidesKey;
 
 public class DataGrid<T> extends org.gwtbootstrap3.client.ui.gwt.DataGrid<T> {
 
@@ -38,9 +42,14 @@ public class DataGrid<T> extends org.gwtbootstrap3.client.ui.gwt.DataGrid<T> {
         addRedrawHandler(() -> fixTableStyle(this.getElement()));
     }
 
-    public native void fixTableStyle(final Element e) /*-{
-        var table = $wnd.jQuery(e).find("table").first();
-        table.addClass("table");
-        table.css("margin-bottom", "0px");
-    }-*/;
+    public void fixTableStyle(final Element e) {
+        HTMLElement element = Js.uncheckedCast(e);
+        elemental2.dom.NodeList<elemental2.dom.Element> tables = element.getElementsByTagName("table");
+        if(tables != null && tables.getLength() > 0) {
+            HTMLTableElement table = (HTMLTableElement) tables.getAt(0);
+            table.classList.add("table");
+            table.id = "fixed";
+            table.style.marginBottom = CSSProperties.MarginBottomUnionType.of("0px");
+        }
+    }
 }

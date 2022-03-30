@@ -22,8 +22,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.BeanManager;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
@@ -54,6 +55,9 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private Consumer<Integer> onResetContentHashProcessor;
+
+    @Inject
+    private BeanManager beanManager;
 
     // CDI proxy.
     public StunnerEditor() {
@@ -150,35 +154,34 @@ public class StunnerEditor {
 
     public void handleError(final ClientRuntimeError error) {
         final Throwable e = error.getThrowable();
-        final String message;
         if (e instanceof DiagramParsingException) {
             final DiagramParsingException dpe = (DiagramParsingException) e;
+            close();
             parsingExceptionProcessor.accept(dpe);
-            message = e.toString();
-        } else if (e instanceof DefinitionNotFoundException) {
-            final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) e;
-            message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
-                                                  dnfe.getDefinitionId());
-        } else {
-            exceptionProcessor.accept(error.getThrowable());
-            message = error.getThrowable() != null ? error.getThrowable().getMessage() : error.getMessage();
-        }
-
-        if ((diagramPresenter != null) &&
-                (diagramPresenter.getView() != null)) {
-            showError(message);
-        } else {
             view.setWidget(errorPage);
+        } else {
+            String message = null;
+            if (e instanceof DefinitionNotFoundException) {
+                final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) e;
+                message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
+                        dnfe.getDefinitionId());
+            } else {
+                message = error.getThrowable() != null ?
+                        error.getThrowable().getMessage() : error.getMessage();
+            }
+            showError(message);
+            exceptionProcessor.accept(error.getThrowable());
         }
     }
 
     public StunnerEditor close() {
         if (!isClosed()) {
             diagramPresenter.destroy();
-            diagramPresenter = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
             view.clear();
+            beanManager.destroyBean(diagramPresenter);
+            diagramPresenter = null;
         }
         return this;
     }
@@ -213,21 +216,10 @@ public class StunnerEditor {
     }
 
     public void showMessage(String message) {
-        if (!isClosed()) {
-            diagramPresenter.getView().showMessage(message);
-        }
-    }
-
-    public void showWarning(String message) {
-        if (!isClosed()) {
-            diagramPresenter.getView().showWarning(message);
-        }
+        diagramPresenter.getView().showMessage(message);
     }
 
     public void showError(String message) {
-        if (!isClosed()) {
-            diagramPresenter.getView().showError(message);
-        }
     }
 
     public IsWidget getView() {

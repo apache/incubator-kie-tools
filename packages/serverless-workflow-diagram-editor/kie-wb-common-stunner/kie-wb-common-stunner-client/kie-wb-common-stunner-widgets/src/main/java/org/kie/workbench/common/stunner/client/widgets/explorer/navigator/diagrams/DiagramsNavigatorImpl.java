@@ -27,9 +27,8 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.event.LoadDiagramEvent;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.Navigator;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
@@ -97,24 +96,24 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         clear();
         final DiagramLookupRequest request = new DiagramLookupRequest.Builder().build();
         clientDiagramServices.lookup(request,
-                                     new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
-                                         @Override
-                                         public void onSuccess(final LookupManager.LookupResponse<DiagramRepresentation> response) {
-                                             final List<DiagramRepresentation> items = response.getResults();
-                                             if (null != items && !items.isEmpty()) {
-                                                 for (final DiagramRepresentation diagram : items) {
-                                                     addEntry(diagram);
-                                                 }
-                                             }
-                                             // Notify some processing ends.
-                                             fireProcessingCompleted();
-                                         }
+                new ServiceCallback<LookupManager.LookupResponse<DiagramRepresentation>>() {
+                    @Override
+                    public void onSuccess(final LookupManager.LookupResponse<DiagramRepresentation> response) {
+                        final List<DiagramRepresentation> items = response.getResults();
+                        if (null != items && !items.isEmpty()) {
+                            for (final DiagramRepresentation diagram : items) {
+                                addEntry(diagram);
+                            }
+                        }
+                        // Notify some processing ends.
+                        fireProcessingCompleted();
+                    }
 
-                                         @Override
-                                         public void onError(final ClientRuntimeError error) {
-                                             showError(error);
-                                         }
-                                     });
+                    @Override
+                    public void onError(final ClientRuntimeError error) {
+                        showError(error);
+                    }
+                });
         return this;
     }
 
@@ -145,9 +144,9 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         view.add(item.getView());
         items.add(item);
         item.show(diagramRepresentation,
-                  width,
-                  height,
-                  () -> onItemSelected(item, diagramRepresentation)
+                width,
+                height,
+                () -> onItemSelected(item, diagramRepresentation)
         );
     }
 
@@ -168,7 +167,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
         final String name = diagramRepresentation.getName();
         final Path path = diagramRepresentation.getPath();
         loadDiagramEventEvent.fire(new LoadDiagramEvent(path,
-                                                        name));
+                name));
     }
 
     private void fireProcessingStarted() {
@@ -189,9 +188,7 @@ public class DiagramsNavigatorImpl implements DiagramsNavigator {
 
     private void log(final Level level,
                      final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
     }
 }

@@ -10,7 +10,7 @@ import elemental2.dom.Window;
 public class DomGlobal {
 
     public static final elemental2.dom.HTMLDocument document = new elemental2.dom.HTMLDocument();
-    public static Window window = new elemental2.dom.Window();
+    public static Window window = new Window();
 
     public static int requestAnimationFrame(
             elemental2.dom.FrameRequestCallback callback, Element element) {

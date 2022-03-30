@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Label;
+import org.gwtproject.user.client.ui.Widget;
 
 public class EditorTitle
         implements IsWidget {

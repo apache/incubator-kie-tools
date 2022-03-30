@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.user.client.ui.Composite;
 import org.gwtbootstrap3.client.ui.constants.Styles;
 import org.gwtbootstrap3.client.ui.html.Span;
+import org.gwtproject.user.client.ui.Composite;
 
 public class FileInputGroupButton extends Composite {
 

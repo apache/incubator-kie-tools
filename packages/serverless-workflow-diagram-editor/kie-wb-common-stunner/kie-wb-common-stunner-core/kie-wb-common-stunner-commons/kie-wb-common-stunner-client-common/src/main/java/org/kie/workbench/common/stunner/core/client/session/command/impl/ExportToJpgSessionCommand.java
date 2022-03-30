@@ -22,6 +22,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 
+
 @Dependent
 @Default
 public class ExportToJpgSessionCommand extends AbstractExportSessionCommand {

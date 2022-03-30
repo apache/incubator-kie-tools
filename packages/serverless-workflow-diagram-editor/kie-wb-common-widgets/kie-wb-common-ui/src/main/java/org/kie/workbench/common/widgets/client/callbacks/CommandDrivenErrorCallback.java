@@ -17,8 +17,8 @@ package org.kie.workbench.common.widgets.client.callbacks;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.uberfire.ext.widgets.common.client.callbacks.HasBusyIndicatorDefaultErrorCallback;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 import org.uberfire.mvp.Command;
@@ -28,12 +28,13 @@ import org.uberfire.mvp.Command;
  */
 public class CommandDrivenErrorCallback extends HasBusyIndicatorDefaultErrorCallback {
 
-    private final Map<Class<? extends Throwable>, Command> commands = new HashMap<>();
+    private final Map<Class<? extends Throwable>, Command> commands = new HashMap<Class<? extends Throwable>, Command>();
 
     public CommandDrivenErrorCallback(final HasBusyIndicator view,
                                       final Map<Class<? extends Throwable>, Command> commands) {
         super(view);
-        this.commands.putAll(Objects.requireNonNull(commands, "Parameter named 'commands' should be not null!"));
+        this.commands.putAll(PortablePreconditions.checkNotNull("commands",
+                                                                commands));
     }
 
     @Override

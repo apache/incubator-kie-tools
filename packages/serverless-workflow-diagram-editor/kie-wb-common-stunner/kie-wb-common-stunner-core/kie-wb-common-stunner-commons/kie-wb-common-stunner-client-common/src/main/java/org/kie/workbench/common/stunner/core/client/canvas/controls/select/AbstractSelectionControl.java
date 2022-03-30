@@ -18,7 +18,6 @@ package org.kie.workbench.common.stunner.core.client.canvas.controls.select;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,12 +40,13 @@ import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 import static org.kie.workbench.common.stunner.core.client.event.keyboard.KeyboardEvent.Key.ESC;
 
 public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         implements SelectionControl<H, Element>,
-                   CanvasRegistrationControl<H, Element>,
-                   CanvasControl.SessionAware<ClientSession> {
+        CanvasRegistrationControl<H, Element>,
+        CanvasControl.SessionAware<ClientSession> {
 
     protected final Event<CanvasSelectionEvent> canvasSelectionEvent;
     protected Event<CanvasClearSelectionEvent> canvasClearSelectionEvent;
@@ -58,7 +58,7 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         this.canvasSelectionEvent = canvasSelectionEvent;
         this.canvasClearSelectionEvent = clearSelectionEvent;
         this.selectionControl = MapSelectionControl.build(this::fireSelectionEvent,
-                                                          this::fireClearSelectionEvent);
+                this::fireClearSelectionEvent);
     }
 
     protected AbstractSelectionControl(final MapSelectionControl<H> selectionControl,
@@ -155,23 +155,22 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     protected void onDestroy() {
     }
 
-    void onShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent shapeRemovedEvent) {
-        checkNotNull("event", shapeRemovedEvent);
+    public void onShapeRemovedEvent(final @Observes CanvasShapeRemovedEvent shapeRemovedEvent) {
+        checkNotNull("event",
+                shapeRemovedEvent);
         handleShapeRemovedEvent(shapeRemovedEvent);
     }
 
-    void onCanvasElementSelectedEvent(final @Observes CanvasSelectionEvent event) {
-        checkNotNull("event", event);
+    public void onCanvasElementSelectedEvent(final @Observes CanvasSelectionEvent event) {
+        checkNotNull("event",
+                event);
         handleCanvasElementSelectedEvent(event);
     }
 
-    void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
-        checkNotNull("event", event);
+    public void onCanvasClearSelectionEvent(final @Observes CanvasClearSelectionEvent event) {
+        checkNotNull("event",
+                event);
         handleCanvasClearSelectionEvent(event);
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     protected void handleShapeRemovedEvent(final CanvasShapeRemovedEvent shapeRemovedEvent) {

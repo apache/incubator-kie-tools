@@ -29,7 +29,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.definition.adapter.MorphAdapter;
@@ -63,11 +63,11 @@ public class MorphActionsToolboxFactory
                                       final @Any ManagedInstance<MorphNodeToolboxAction> morphNodeActions,
                                       final @Any @MorphActionsToolbox ManagedInstance<ActionsToolboxView> views) {
         this(definitionUtils,
-             profileManager,
-             morphNodeActions::get,
-             morphNodeActions::destroyAll,
-             views::get,
-             views::destroyAll);
+                profileManager,
+                morphNodeActions::get,
+                morphNodeActions::destroyAll,
+                views::get,
+                views::destroyAll);
     }
 
     MorphActionsToolboxFactory(final DefinitionUtils definitionUtils,
@@ -112,21 +112,21 @@ public class MorphActionsToolboxFactory
                     for (final MorphDefinition morphDefinition : morphDefinitions) {
 
                         final Iterable<String> morphTargets = morphAdapter.getTargets(definition,
-                                                                                      morphDefinition);
+                                morphDefinition);
                         if (null != morphTargets && morphTargets.iterator().hasNext()) {
                             for (final String morphTarget : morphTargets) {
                                 if (!id.equals(morphTarget)
                                         && definitionsAllowedFilter.test(morphTarget)) {
                                     definitionMap.put(morphTarget,
-                                                      morphDefinition);
+                                            morphDefinition);
                                 }
                             }
                         }
                     }
                     // Create a morph toolbox action for each target morph candidate.
                     definitionMap.forEach((targetMorphId, morphDefinition) -> actions.add(morphNodeActions.get()
-                                                                                                  .setMorphDefinition(morphDefinition)
-                                                                                                  .setTargetDefinitionId(targetMorphId)));
+                            .setMorphDefinition(morphDefinition)
+                            .setTargetDefinitionId(targetMorphId)));
                 }
             }
         }

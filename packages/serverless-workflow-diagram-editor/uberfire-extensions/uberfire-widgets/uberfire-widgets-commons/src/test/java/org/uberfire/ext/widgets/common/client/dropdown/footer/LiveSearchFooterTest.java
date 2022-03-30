@@ -16,12 +16,12 @@
 
 package org.uberfire.ext.widgets.common.client.dropdown.footer;
 
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.HTMLElement;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.uberfire.ext.widgets.common.client.dropdown.InlineCreationEditor;
 import org.uberfire.mvp.Command;
 

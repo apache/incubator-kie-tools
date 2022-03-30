@@ -1,8 +1,8 @@
 package org.uberfire.client.workbench.docks;
 
-import com.google.gwt.resources.client.ImageResource;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import junit.framework.TestCase;
+import org.gwtproject.resources.client.ImageResource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,16 +38,16 @@ public class UberfireDockTest extends TestCase {
     @Before
     public void setUp() {
         tested = new UberfireDock(DOCK_POSITION,
-                                  ICON_TYPE,
-                                  new DefaultPlaceRequest(SCREEN_ID))
+                ICON_TYPE,
+                new DefaultPlaceRequest(SCREEN_ID))
                 .withLabel(LABEL)
                 .withTooltip(TOOLTIP)
                 .withSize(SIZE);
 
         testedWithImages = new UberfireDock(DOCK_POSITION,
-                                            imageIcon1,
-                                            imageIconFocused1,
-                                            new DefaultPlaceRequest(SCREEN_ID));
+                imageIcon1,
+                imageIconFocused1,
+                new DefaultPlaceRequest(SCREEN_ID));
     }
 
     @Test
@@ -60,8 +60,8 @@ public class UberfireDockTest extends TestCase {
         assertEquals(0, tested.getTooltip().compareTo(TOOLTIP));
 
         final UberfireDock tested2 = new UberfireDock(UberfireDockPosition.EAST,
-                                                      ICON_TYPE,
-                                                      new DefaultPlaceRequest(SCREEN_ID));
+                ICON_TYPE,
+                new DefaultPlaceRequest(SCREEN_ID));
         assertNull(tested2.getTooltip());
     }
 
@@ -74,8 +74,8 @@ public class UberfireDockTest extends TestCase {
     public void testSetUberfireDockPosition() {
 
         UberfireDock uberfireDock = tested = new UberfireDock(UberfireDockPosition.EAST,
-                                                              ICON_TYPE,
-                                                              new DefaultPlaceRequest(SCREEN_ID));
+                ICON_TYPE,
+                new DefaultPlaceRequest(SCREEN_ID));
         uberfireDock.setUberfireDockPosition(UberfireDockPosition.WEST);
         assertEquals(UberfireDockPosition.WEST, tested.getDockPosition());
     }
@@ -128,40 +128,40 @@ public class UberfireDockTest extends TestCase {
     @Test
     public void testEquals() {
         UberfireDock compareDock1 = new UberfireDock(DOCK_POSITION,
-                                                     ICON_TYPE,
-                                                     new DefaultPlaceRequest(SCREEN_ID))
+                ICON_TYPE,
+                new DefaultPlaceRequest(SCREEN_ID))
                 .withSize(SIZE)
                 .withLabel(LABEL)
                 .withTooltip(TOOLTIP);
 
         UberfireDock compareDock2 = new UberfireDock(DOCK_POSITION,
-                                                     imageIcon1,
-                                                     imageIconFocused1,
-                                                     new DefaultPlaceRequest(SCREEN_ID))
+                imageIcon1,
+                imageIconFocused1,
+                new DefaultPlaceRequest(SCREEN_ID))
                 .withSize(SIZE)
                 .withLabel(LABEL)
                 .withTooltip(TOOLTIP);
 
         UberfireDock compareDock3 = new UberfireDock(null,
-                                                     null,
-                                                     new DefaultPlaceRequest(SCREEN_ID));
+                null,
+                new DefaultPlaceRequest(SCREEN_ID));
 
         UberfireDock compareDock4 = new UberfireDock(null,
-                                                     null,
-                                                     null,
-                                                     new DefaultPlaceRequest(SCREEN_ID));
+                null,
+                null,
+                new DefaultPlaceRequest(SCREEN_ID));
 
         UberfireDock compareDock5 = new UberfireDock(UberfireDockPosition.WEST,
-                                                     ICON_TYPE + "EXTRA",
-                                                     new DefaultPlaceRequest(SCREEN_ID + "EXTRA"))
+                ICON_TYPE + "EXTRA",
+                new DefaultPlaceRequest(SCREEN_ID + "EXTRA"))
                 .withSize(SIZE + 20)
                 .withLabel(LABEL + "EXTRA")
                 .withTooltip(TOOLTIP + "EXTRA");
 
         UberfireDock compareDock6 = new UberfireDock(UberfireDockPosition.WEST,
-                                                     imageIcon2,
-                                                     imageIconFocused2,
-                                                     new DefaultPlaceRequest(SCREEN_ID + "EXTRA"))
+                imageIcon2,
+                imageIconFocused2,
+                new DefaultPlaceRequest(SCREEN_ID + "EXTRA"))
                 .withSize(SIZE + 20)
                 .withLabel(LABEL + "EXTRA")
                 .withTooltip(TOOLTIP + "EXTRA");
@@ -195,32 +195,32 @@ public class UberfireDockTest extends TestCase {
     @Test
     public void testTestHashCode() {
         UberfireDock compareDock1 = new UberfireDock(DOCK_POSITION,
-                                                     ICON_TYPE,
-                                                     new DefaultPlaceRequest(SCREEN_ID))
+                ICON_TYPE,
+                new DefaultPlaceRequest(SCREEN_ID))
                 .withSize(SIZE)
                 .withLabel(LABEL)
                 .withTooltip(TOOLTIP);
 
         UberfireDock compareDock2 = new UberfireDock(DOCK_POSITION,
-                                                     imageIcon1,
-                                                     imageIconFocused1,
-                                                     new DefaultPlaceRequest(SCREEN_ID))
+                imageIcon1,
+                imageIconFocused1,
+                new DefaultPlaceRequest(SCREEN_ID))
                 .withSize(SIZE)
                 .withLabel(LABEL)
                 .withTooltip(TOOLTIP);
 
         UberfireDock compareDock3 = new UberfireDock(null,
-                                                     null,
-                                                     new DefaultPlaceRequest(SCREEN_ID));
+                null,
+                new DefaultPlaceRequest(SCREEN_ID));
 
         UberfireDock compareDock4 = new UberfireDock(null,
-                                                     null,
-                                                     null,
-                                                     new DefaultPlaceRequest(SCREEN_ID));
+                null,
+                null,
+                new DefaultPlaceRequest(SCREEN_ID));
 
         UberfireDock compareDock5 = new UberfireDock(DOCK_POSITION,
-                                                     ICON_TYPE,
-                                                     new DefaultPlaceRequest(SCREEN_ID))
+                ICON_TYPE,
+                new DefaultPlaceRequest(SCREEN_ID))
                 .withLabel(null);
 
         assertEquals(tested.hashCode(), compareDock1.hashCode());

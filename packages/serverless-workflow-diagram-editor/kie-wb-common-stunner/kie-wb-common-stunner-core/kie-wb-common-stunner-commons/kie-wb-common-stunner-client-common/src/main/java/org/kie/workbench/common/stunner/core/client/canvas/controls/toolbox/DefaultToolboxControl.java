@@ -25,7 +25,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.ActionsToolboxFactory;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.CommonActionsToolbox;
 import org.kie.workbench.common.stunner.core.client.components.toolbox.actions.FlowActionsToolbox;
@@ -62,8 +62,8 @@ public class DefaultToolboxControl extends AbstractToolboxControl {
     @Override
     protected List<ActionsToolboxFactory> getFactories() {
         return Arrays.asList(flowActionsToolboxFactories.get(),
-                             morphActionsToolboxFactories.get(),
-                             commonActionsToolboxFactories.get());
+                morphActionsToolboxFactories.get(),
+                commonActionsToolboxFactories.get());
     }
 
     @PreDestroy

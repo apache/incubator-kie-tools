@@ -494,13 +494,13 @@ public class DelegateContext2D extends Context2D {
                                   final int y,
                                   final int width,
                                   final int height) {
-        elemental2.dom.ImageData nativeImageData = context.getImageData(x, y, width, height);
+        ImageData nativeImageData = context.getImageData(x, y, width, height);
         return nativeClassConverter.convert(nativeImageData, ImageData.class);
     }
 
     @Override
     public void putImageData(final ImageData imageData, final int x, final int y) {
-        context.putImageData(nativeClassConverter.convert(imageData, elemental2.dom.ImageData.class), x, y);
+        context.putImageData(nativeClassConverter.convert(imageData, ImageData.class), x, y);
     }
 
     @Override
@@ -511,7 +511,7 @@ public class DelegateContext2D extends Context2D {
                              final int dirtyY,
                              final int dirtyWidth,
                              final int dirtyHeight) {
-        context.putImageData(nativeClassConverter.convert(imageData, elemental2.dom.ImageData.class),
+        context.putImageData(nativeClassConverter.convert(imageData, ImageData.class),
                              x,
                              y,
                              dirtyX,
@@ -528,7 +528,7 @@ public class DelegateContext2D extends Context2D {
     @Override
     public ImageData createImageData(final ImageData data) {
         return nativeClassConverter.convert(
-                context.createImageData(nativeClassConverter.convert(data, elemental2.dom.ImageData.class)),
+                context.createImageData(nativeClassConverter.convert(data, ImageData.class)),
                 ImageData.class);
     }
 

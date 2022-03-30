@@ -24,7 +24,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.ClientFactoryManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasLayoutUtils;
@@ -71,7 +71,7 @@ public class CreateNodeToolboxAction
                                    final ClientFactoryManager clientFactoryManager,
                                    final NodeProxy nodeProxy) {
         super(definitionUtils,
-              translationService);
+                translationService);
         this.createNodeActions = createNodeActions;
         this.clientFactoryManager = clientFactoryManager;
         this.nodeProxy = nodeProxy;
@@ -104,19 +104,6 @@ public class CreateNodeToolboxAction
     }
 
     @Override
-    public String getTitle(final AbstractCanvasHandler canvasHandler,
-                           final String uuid) {
-        final String titleKey = getTitleKey(canvasHandler,
-                                            uuid);
-        final String titleDefinitionId = getTitleDefinitionId(canvasHandler,
-                                                              uuid);
-        // TODO: SW Editor - Customize title.
-        String nodeTitle = definitionUtils.getTitle(titleDefinitionId);
-        String edgeTitle = definitionUtils.getTitle(edgeId);
-        return translationService.getValue(titleKey) + " " + edgeTitle + " to " + nodeTitle;
-    }
-
-    @Override
     protected String getGlyphId(final AbstractCanvasHandler canvasHandler,
                                 final String uuid) {
         return nodeId;
@@ -129,9 +116,9 @@ public class CreateNodeToolboxAction
                                                              final MouseClickEvent event) {
         final GeneralCreateNodeAction action = lookupAction(canvasHandler, uuid);
         action.executeAction(canvasHandler,
-                             uuid,
-                             nodeId,
-                             edgeId);
+                uuid,
+                nodeId,
+                edgeId);
         return this;
     }
 
@@ -172,7 +159,7 @@ public class CreateNodeToolboxAction
     private Node<View<?>, Edge> getSourceNode(final AbstractCanvasHandler canvasHandler,
                                               final String uuid) {
         final Element<View<?>> sourceElement = (Element<View<?>>) CanvasLayoutUtils.getElement(canvasHandler,
-                                                                                               uuid);
+                uuid);
         return sourceElement.asNode();
     }
 
@@ -180,7 +167,7 @@ public class CreateNodeToolboxAction
     private Edge<ViewConnector<?>, Node> buildEdge() {
         return (Edge<ViewConnector<?>, Node>) clientFactoryManager
                 .newElement(UUID.uuid(),
-                            edgeId)
+                        edgeId)
                 .asEdge();
     }
 
@@ -188,14 +175,14 @@ public class CreateNodeToolboxAction
     private Node<View<?>, Edge> buildTargetNode() {
         return (Node<View<?>, Edge>) clientFactoryManager
                 .newElement(UUID.uuid(),
-                            nodeId)
+                        nodeId)
                 .asNode();
     }
 
     @Override
     public int hashCode() {
         return HashUtil.combineHashCodes(edgeId.hashCode(),
-                                         nodeId.hashCode());
+                nodeId.hashCode());
     }
 
     @Override

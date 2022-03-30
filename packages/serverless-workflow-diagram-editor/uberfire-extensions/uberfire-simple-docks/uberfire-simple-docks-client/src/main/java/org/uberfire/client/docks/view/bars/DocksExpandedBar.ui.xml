@@ -15,8 +15,8 @@
   -->
 
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
-<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+<ui:UiBinder xmlns:ui="urn:ui:org.gwtproject.uibinder"
+             xmlns:g="urn:import:org.gwtproject.user.client.ui">
 
   <ui:with field='res' type='org.uberfire.client.resources.WebAppResource'/>
 

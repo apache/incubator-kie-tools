@@ -19,7 +19,7 @@ import java.lang.annotation.Annotation;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.event.AbstractCanvasHandlerEvent;
@@ -75,7 +75,7 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
             @Override
             public void onError(final Object error) {
                 LOGGER.log(Level.SEVERE,
-                           error.toString());
+                        error.toString());
             }
         });
     }
@@ -134,7 +134,7 @@ public abstract class AbstractClientSessionCommand<S extends ClientSession> impl
             @Override
             public void onError(final Throwable error) {
                 LOGGER.log(Level.SEVERE,
-                           errorMessage + " Details: " + error.toString());
+                        errorMessage + " Details: " + error.toString());
             }
         };
     }

@@ -16,8 +16,7 @@
 
 package org.kie.workbench.common.widgets.client.popups.alert;
 
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 /**
  * A simple popup that alerts Users to a message. Equivalent to {@link Window#alert(String)}.

@@ -25,9 +25,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import elemental2.dom.HTMLElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.lienzo.components.glyph.ShapeGlyphDragHandler;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.DefinitionPaletteCategoryWidget;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
@@ -53,7 +54,7 @@ import org.kie.workbench.common.stunner.core.preferences.StunnerPreferences;
 public class BS3PaletteWidgetImpl
         extends AbstractPalette<DefaultPaletteDefinition>
         implements BS3PaletteWidget,
-                   IsElement {
+        IsElement {
 
     private static final int GLYPH_ICON_SIZE = 30;
     private static final int PADDING = 10;
@@ -130,10 +131,10 @@ public class BS3PaletteWidgetImpl
             final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape drag starts.
             itemDragStartCallback.accept(new PaletteIDefinitionItemEvent(definitionId,
-                                                                         definition,
-                                                                         factory,
-                                                                         x,
-                                                                         y));
+                    definition,
+                    factory,
+                    x,
+                    y));
         }
     }
 
@@ -146,10 +147,10 @@ public class BS3PaletteWidgetImpl
             final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dragged over the target canvas.
             itemDragUpdateCallback.accept(new PaletteIDefinitionItemEvent(definitionId,
-                                                                          definition,
-                                                                          factory,
-                                                                          x,
-                                                                          y));
+                    definition,
+                    factory,
+                    x,
+                    y));
         }
     }
 
@@ -204,7 +205,7 @@ public class BS3PaletteWidgetImpl
                     categoryWidget.setOnCloseCallback(category -> onCloseCategory(category.getId()));
                     categoryWidget.setAutoHidePanel(autoHidePanel);
                     categoryWidgets.put(item.getId(),
-                                        categoryWidget);
+                            categoryWidget);
                     widget = categoryWidget;
                 } else if (item instanceof CollapsedDefaultPaletteItem) {
                     widget = newCollapsedDefinitionPaletteItemWidget();
@@ -213,10 +214,10 @@ public class BS3PaletteWidgetImpl
                 }
                 final Consumer<PaletteItemMouseEvent> itemMouseEventHandler =
                         event -> handleMouseDownEvent(item,
-                                                      event);
+                                event);
                 widget.initialize(item,
-                                  getShapeFactory(),
-                                  itemMouseEventHandler);
+                        getShapeFactory(),
+                        itemMouseEventHandler);
                 view.add(widget);
             });
         }
@@ -238,38 +239,39 @@ public class BS3PaletteWidgetImpl
             final ShapeFactory<?, ? extends Shape> factory = getShapeFactory();
             // Fire the callback as shape dropped onto the target canvas.
             itemDropCallback.accept(new PaletteIDefinitionItemEvent(definitionId,
-                                                                    definition,
-                                                                    factory,
-                                                                    x,
-                                                                    y));
+                    definition,
+                    factory,
+                    x,
+                    y));
         }
     }
 
     @Override
     public Glyph getShapeGlyph(final String definitionId) {
         return getShapeFactory().getGlyph(definitionId,
-                                          AbstractPalette.PaletteGlyphConsumer.class);
+                AbstractPalette.PaletteGlyphConsumer.class);
     }
 
     @Override
     public Glyph getShapeDragProxyGlyph(final String definitionId) {
         return getShapeFactory().getGlyph(definitionId,
-                                          AbstractPalette.PaletteDragProxyGlyphConsumer.class);
+                AbstractPalette.PaletteDragProxyGlyphConsumer.class);
     }
 
     private void handleMouseDownEvent(final DefaultPaletteItem item,
                                       final PaletteItemMouseEvent event) {
-        Objects.requireNonNull(event, "Parameter named 'event' should be not null!");
+        PortablePreconditions.checkNotNull("event",
+                event);
         if (event.getId().equals(item.getId())) {
             final String catDefId = item.getDefinitionId();
             BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(catDefId,
-                                                             event.getMouseX(),
-                                                             event.getMouseY());
+                    event.getMouseX(),
+                    event.getMouseY());
         } else {
             final String defId = getItemDefinitionId(event.getId());
             BS3PaletteWidgetImpl.this.onPaletteItemMouseDown(defId,
-                                                             event.getMouseX(),
-                                                             event.getMouseY());
+                    event.getMouseX(),
+                    event.getMouseY());
         }
         lastX = event.getMouseX();
         lastY = event.getMouseY();
@@ -277,7 +279,7 @@ public class BS3PaletteWidgetImpl
 
     private String getItemDefinitionId(final String itemId) {
         return DefaultPaletteUtils.getPaletteItemDefinitionId(paletteDefinition,
-                                                              itemId);
+                itemId);
     }
 
     private void onPaletteItemMouseDown(final String id,
@@ -285,10 +287,10 @@ public class BS3PaletteWidgetImpl
                                         final double y) {
         // Show the drag proxy for the element at x, y.
         view.showDragProxy(id,
-                           x,
-                           y,
-                           getIconSize(),
-                           getIconSize());
+                x,
+                y,
+                getIconSize(),
+                getIconSize());
     }
 
     private void onOpenCategory(String categoryId) {

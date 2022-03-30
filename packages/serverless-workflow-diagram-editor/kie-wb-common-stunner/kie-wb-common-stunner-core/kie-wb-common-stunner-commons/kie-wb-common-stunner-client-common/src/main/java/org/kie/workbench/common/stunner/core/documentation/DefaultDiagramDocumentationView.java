@@ -21,8 +21,7 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.gwtproject.user.client.ui.Composite;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 
 /**
@@ -31,7 +30,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
  * {@link @BPMN} or {@link @DMNEditor} etc.
  */
 @Dependent
-@Templated
+//@Templated
 public class DefaultDiagramDocumentationView extends Composite implements DocumentationView<Diagram> {
 
     private Optional<Diagram> diagram;

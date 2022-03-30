@@ -17,16 +17,14 @@
 package org.kie.workbench.common.stunner.core.util;
 
 import java.lang.annotation.Annotation;
-import java.util.AbstractMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import io.crysknife.annotation.CircularDependency;
+import org.kie.soup.commons.util.Maps;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.HasInheritance;
@@ -48,7 +46,10 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.DefinitionsCacheRegistry;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 @ApplicationScoped
+@CircularDependency
 public class DefinitionUtils {
 
     private final DefinitionManager definitionManager;
@@ -56,7 +57,7 @@ public class DefinitionUtils {
 
     protected DefinitionUtils() {
         this(null,
-             null);
+                null);
     }
 
     @Inject
@@ -144,7 +145,7 @@ public class DefinitionUtils {
         if (null != morphDefinitions && morphDefinitions.iterator().hasNext()) {
             for (final MorphDefinition morphDefinition : morphDefinitions) {
                 final Iterable<String> morphTargets = morphAdapter.getTargets(definition,
-                                                                              morphDefinition);
+                        morphDefinition);
                 if (null != morphTargets && morphTargets.iterator().hasNext()) {
                     return true;
                 }
@@ -158,8 +159,8 @@ public class DefinitionUtils {
                 .adapters()
                 .forDefinitionSet()
                 .getId(definitionManager
-                               .definitionSets()
-                               .getDefinitionSetByType(type));
+                        .definitionSets()
+                        .getDefinitionSetByType(type));
     }
 
     /**
@@ -189,7 +190,8 @@ public class DefinitionUtils {
     }
 
     public Annotation getQualifier(final String defSetId) {
-        Objects.requireNonNull(defSetId, "Parameter named 'defSetId' should be not null!");
+        checkNotNull("defSetId",
+                defSetId);
         final Object ds = definitionManager.definitionSets().getDefinitionSetById(defSetId);
         return getQualifier(ds);
     }
@@ -220,12 +222,16 @@ public class DefinitionUtils {
         return definitionManager;
     }
 
-    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES =
-            Stream.of(new AbstractMap.SimpleEntry<>(String.class, StringType.class),
-                      new AbstractMap.SimpleEntry<>(Double.class, DoubleType.class),
-                      new AbstractMap.SimpleEntry<>(Integer.class, IntegerType.class),
-                      new AbstractMap.SimpleEntry<>(Boolean.class, BooleanType.class))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    private static final Map<Class<?>, Class<? extends PropertyType>> DEFAULT_PROPERTY_TYPES = new Maps.Builder<Class<?>, Class<? extends PropertyType>>()
+            .put(String.class,
+                    StringType.class)
+            .put(Double.class,
+                    DoubleType.class)
+            .put(Integer.class,
+                    IntegerType.class)
+            .put(Boolean.class,
+                    BooleanType.class)
+            .build();
 
     public static Class<? extends PropertyType> getDefaultPropertyType(final Class<?> clazz) {
         return DEFAULT_PROPERTY_TYPES.get(clazz);

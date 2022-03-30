@@ -21,7 +21,7 @@ import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.shapes.client.factory.PictureProvidersManager;
 import org.kie.workbench.common.stunner.shapes.def.ConnectorShapeDef;
 

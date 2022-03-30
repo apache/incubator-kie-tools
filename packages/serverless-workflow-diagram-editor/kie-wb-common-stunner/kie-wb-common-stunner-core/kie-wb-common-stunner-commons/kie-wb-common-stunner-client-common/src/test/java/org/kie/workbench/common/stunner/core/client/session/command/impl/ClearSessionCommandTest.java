@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.core.client.session.command.impl;
 
 import java.lang.annotation.Annotation;
 
+import io.crysknife.client.ManagedInstance;
 import org.appformer.client.stateControl.registry.Registry;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

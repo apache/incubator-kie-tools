@@ -34,7 +34,9 @@ public class Clipboard {
         return copy();
     }
 
-    public native boolean copy() /*-{
+    public boolean copy() {
+        throw new Error(getClass().getCanonicalName() + ".copy");
+    }/*-{
         return $doc.execCommand("Copy");
     }-*/;
 }

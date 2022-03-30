@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.svg.gen.impl;
 
+import javax.annotation.processing.Filer;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kie.workbench.common.stunner.svg.gen.SVGGenerator;
@@ -23,8 +24,9 @@ import org.kie.workbench.common.stunner.svg.gen.codegen.impl.ViewGenerators;
 
 public class SVGGeneratorFactory {
 
-    public static SVGGenerator newGenerator() throws ParserConfigurationException {
+    public static SVGGenerator newGenerator(Filer filer) throws ParserConfigurationException {
         return new SVGGeneratorImpl(ViewGenerators.newTranslator(),
-                                    ViewGenerators.newViewFactoryGenerator());
+                ViewGenerators.newViewFactoryGenerator(),
+                filer);
     }
 }

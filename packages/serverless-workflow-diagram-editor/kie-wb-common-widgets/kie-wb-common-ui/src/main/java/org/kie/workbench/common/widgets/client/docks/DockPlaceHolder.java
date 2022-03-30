@@ -19,7 +19,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.uberfire.client.mvp.AbstractActivity;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;

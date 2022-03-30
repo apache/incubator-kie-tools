@@ -21,9 +21,9 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.safehtml.shared.SafeUri;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.core.client.api.ShapeManager;
@@ -32,7 +32,7 @@ import org.uberfire.mvp.Command;
 
 @Dependent
 public class DiagramNavigatorItemImpl implements IsWidget,
-                                                 DiagramNavigatorItem {
+        DiagramNavigatorItem {
 
     private final ShapeManager shapeManager;
     private final NavigatorItemView<NavigatorItem> view;
@@ -68,7 +68,7 @@ public class DiagramNavigatorItemImpl implements IsWidget,
 
         //Set size before Uri/data as we cannot scale until the image is loaded and it's real size known
         view.setItemPxSize(widthInPx,
-                           heightInPx);
+                heightInPx);
 
         //Set Uri/data. Image's LoadHandler will set size requested above after image is loaded from Uri/data
         final String thumbData = diagramRepresentation.getThumbImageData();

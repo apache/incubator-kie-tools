@@ -22,7 +22,7 @@ import java.util.function.Consumer;
 import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.Picture;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,26 +61,26 @@ public class LienzoSvgDataUriGlyphRendererTest {
         when(uri.asString()).thenReturn(URI_B64);
         this.glyph = SvgDataUriGlyph.Builder.build(uri);
         this.tested = new LienzoSvgDataUriGlyphRenderer(DATA_URI_UTIL,
-                                                        pictureBuilder);
+                pictureBuilder);
     }
 
     @Test
     public void testType() {
         assertEquals(SvgDataUriGlyph.class,
-                     tested.getGlyphType());
+                tested.getGlyphType());
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void testRender() {
         tested.render(glyph,
-                      100,
-                      200);
+                100,
+                200);
         final ArgumentCaptor<String> imageGlyphCaptor = ArgumentCaptor.forClass(String.class);
         verify(pictureBuilder,
-               times(1)).accept(imageGlyphCaptor.capture(),
-                                any(Consumer.class));
+                times(1)).accept(imageGlyphCaptor.capture(),
+                any(Consumer.class));
         assertEquals(URI_B64,
-                     imageGlyphCaptor.getValue());
+                imageGlyphCaptor.getValue());
     }
 }

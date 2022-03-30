@@ -15,10 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
@@ -44,13 +43,11 @@ public final class UpdateDomainObjectPropertyValueCommand extends AbstractGraphC
     public UpdateDomainObjectPropertyValueCommand(final @MapsTo("domainObject") DomainObject domainObject,
                                                   final @MapsTo("field") String field,
                                                   final @MapsTo("value") Object value) {
-        this.domainObject = checkNotNull("domainObject", domainObject);
-        this.field = checkNotNull("field", field);
+        this.domainObject = PortablePreconditions.checkNotNull("domainObject",
+                                                               domainObject);
+        this.field = PortablePreconditions.checkNotNull("field",
+                                                        field);
         this.value = value;
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     @Override

@@ -15,7 +15,7 @@
  */
 package org.kie.workbench.common.widgets.client.docks;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface DockPlaceHolderBaseView
         extends IsWidget {

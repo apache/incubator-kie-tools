@@ -17,9 +17,10 @@ package org.uberfire.client.mvp;
 
 import java.util.List;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
+
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.uberfire.workbench.model.bridge.Notification;
 
 public interface EditorActivity extends Activity {
@@ -43,9 +44,5 @@ public interface EditorActivity extends Activity {
 
     default Promise<Void> redo() {
         throw new UnsupportedOperationException("The editor does not support redo.");
-    }
-
-    default Promise<Void> searchDomainObject(final String uuid) {
-        throw new UnsupportedOperationException("The editor does not support search domain object.");
     }
 }

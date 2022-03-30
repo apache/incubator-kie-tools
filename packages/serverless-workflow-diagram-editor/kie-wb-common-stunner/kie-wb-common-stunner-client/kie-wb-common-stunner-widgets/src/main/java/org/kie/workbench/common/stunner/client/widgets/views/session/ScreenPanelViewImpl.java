@@ -18,8 +18,8 @@ package org.kie.workbench.common.stunner.client.widgets.views.session;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.client.workbench.widgets.ResizeFlowPanel;
 
 @Dependent

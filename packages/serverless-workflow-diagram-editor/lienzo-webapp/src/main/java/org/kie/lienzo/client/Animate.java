@@ -26,8 +26,7 @@ import com.ait.lienzo.shared.core.types.ColorName;
 import com.ait.lienzo.shared.core.types.IColor;
 import com.ait.lienzo.shared.core.types.LineCap;
 import com.ait.lienzo.shared.core.types.LineJoin;
-import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.core.client.Scheduler.RepeatingCommand;
+import org.gwtproject.core.client.Scheduler;
 
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.ALPHA;
 import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.DASH_OFFSET;
@@ -241,45 +240,39 @@ public class Animate extends BaseExample implements Example {
         }
         layer.add(m_shadey);
 
-        final RepeatingCommand command = new RepeatingCommand() {
-            @Override
-            public boolean execute() {
-                forward(0, r);
+        final Scheduler.RepeatingCommand command = () -> {
+            forward(0, r);
 
-                return false;
-            }
+            return false;
         };
         Scheduler.get().scheduleFixedDelay(command, 100);
     }
 
     public void forward(final int i, final Rectangle[] r) {
         if (i < 5) {
-            final RepeatingCommand command = new RepeatingCommand() {
-                @Override
-                public boolean execute() {
-                    forward(i + 1, r);
+            final Scheduler.RepeatingCommand command = () -> {
+                forward(i + 1, r);
 
-                    r[i].addNodeMouseClickHandler(new NodeMouseClickHandler() {
-                        @Override
-                        public void onNodeMouseClick(final NodeMouseClickEvent event) {
-                            r[i].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.X(r[i].getX() + 900)), 300, new AnimationCallback() {
-                                @Override
-                                public void onClose(final IAnimation animation, final IAnimationHandle handle) {
-                                    r[i].setVisible(false);
+                r[i].addNodeMouseClickHandler(new NodeMouseClickHandler() {
+                    @Override
+                    public void onNodeMouseClick(final NodeMouseClickEvent event) {
+                        r[i].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.X(r[i].getX() + 900)), 300, new AnimationCallback() {
+                            @Override
+                            public void onClose(final IAnimation animation, final IAnimationHandle handle) {
+                                r[i].setVisible(false);
 
-                                    r[i].getLayer().draw();
+                                r[i].getLayer().draw();
 
-                                    for (int j = i + 1; j < 5; j++) {
-                                        if (r[j].isVisible()) {
-                                            r[j].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.Y(r[j].getY() - 50)), 300);
-                                        }
+                                for (int j = i + 1; j < 5; j++) {
+                                    if (r[j].isVisible()) {
+                                        r[j].animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(AnimationProperty.Properties.Y(r[j].getY() - 50)), 300);
                                     }
                                 }
-                            });
-                        }
-                    });
-                    return false;
-                }
+                            }
+                        });
+                    }
+                });
+                return false;
             };
             Scheduler.get().scheduleFixedDelay(command, 100);
 

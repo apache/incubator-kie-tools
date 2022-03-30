@@ -16,15 +16,14 @@
 
 package org.uberfire.client.resources.i18n;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.i18n.client.Messages;
+import org.gwtproject.i18n.client.Messages;
 
 /**
  *
  */
 public interface UberfireConstants extends Messages {
 
-    public static final UberfireConstants INSTANCE = GWT.create(UberfireConstants.class);
+    public static final UberfireConstants INSTANCE = null;
 
     public String anyResourceTypeDescription();
 

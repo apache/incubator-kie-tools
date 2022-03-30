@@ -2,13 +2,7 @@
 
 ## Building
 
-- Before building this webapp, you should build the whole of the Stunner project before
-  - change to the `kogito-tooling/packages/stunner-editors/kie-wb-common-stunner` root folder
-  - run `mvn clean install -DskipTests -Dgwt.compiler.skip=true`
-- Build the webapp:
-  - Production: `mvn -T 8C clean install -DskipTests=true`
-  - Dev: `mvn -T 8C clean install -DskipTests=true -Ddev`
-  - Dev+SourceMaps: `mvn -T 8C clean install -DskipTests=true -Dsources`
+- run `mvn clean package -Pj2cl-build` on the root of the `serverless-workflow-diagram-editor`
 
 ## Running in Wildfly
 
@@ -19,35 +13,18 @@
 
 ## Running in SDM
 
-Start GWT super dev mode by: `mvn gwt:run`
+Start J2CL dev mode by: `mvn clean package -Pj2cl-build` on the root of the `serverless-workflow-diagram-editor`
+Once `----- Build Complete: ready for browser refresh -----` appears, open one more terminal window and run
+`http-server -p 8000` or any other light local web servers at
+`serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/target/gwt/launcherDir/sw-editor-kogito-app`
 
-## Running in IntelliJ
+Open web browser at 'http://127.0.0.1:8000/test.html'
 
-Create a new Run/Debug GWT configuration as:
+J2CL-maven-plugin is able to track changes across reactor, so it ll recompile changes in any sub modules.
 
-Module: `sw-editor-kogito-app`
+for detils see: https://blog.kie.org/2022/04/rise-of-j2cl-java-web-development-after-gwt.html
 
-GWT Module: `org.kie.workbench.common.stunner.sw.KogitoSWEditor`
-
-User Super Dev Mode: `true`
-
-VM Options:
-
-        -Xmx8G
-        -Xms1024m
-        -Xss1M
-        -Derrai.dynamic_validation.enabled=true
-        -Derrai.ioc.jsinterop.support=true
-
-[OPTIONAL] Dev Mode Parameters:
-
-        -style PRETTY
-        -generateJsInteropExports
-        -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL]
-
-Start page: `test.html`
-
-## Kogito Editor API
+## Kogito Editor API //TODO
 
     // For creating a process
     window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().setContent("", "")
@@ -61,7 +38,7 @@ Start page: `test.html`
     // Get preview SVG
     window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().getPreview()
 
-## Low level JsInterop API
+## Low level JsInterop API //TODO
 
     // Lienzo JS API
     var jsl = window.frames.editorFrame.contentWindow.canvas

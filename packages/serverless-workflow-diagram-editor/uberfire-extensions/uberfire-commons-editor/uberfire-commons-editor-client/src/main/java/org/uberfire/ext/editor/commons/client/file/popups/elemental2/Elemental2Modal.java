@@ -17,8 +17,7 @@
 package org.uberfire.ext.editor.commons.client.file.popups.elemental2;
 
 import elemental2.dom.HTMLElement;
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
-import org.jboss.errai.ui.shared.TemplateUtil;
+import io.crysknife.client.IsElement;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.ext.editor.commons.client.file.popups.CommonModalBuilder;
 import org.uberfire.ext.widgets.common.client.common.popups.BaseModal;
@@ -66,12 +65,12 @@ public abstract class Elemental2Modal<V extends Elemental2Modal.View> {
         return view.getHeader();
     }
 
-    private org.jboss.errai.common.client.dom.HTMLElement getFooter() {
-        return TemplateUtil.asErraiElement(view.getFooter());
+    private HTMLElement getFooter() {
+        return view.getFooter();
     }
 
-    private org.jboss.errai.common.client.dom.HTMLElement getBody() {
-        return TemplateUtil.asErraiElement(view.getBody());
+    private HTMLElement getBody() {
+        return view.getBody();
     }
 
     public void show() {

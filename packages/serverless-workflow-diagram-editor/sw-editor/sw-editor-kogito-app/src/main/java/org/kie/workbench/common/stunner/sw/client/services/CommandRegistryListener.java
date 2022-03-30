@@ -55,7 +55,7 @@ public class CommandRegistryListener {
 
     // Being called for every new command being executed.
     @SuppressWarnings("all")
-    void onRegistryChangedEvent(@Observes RegisterChangedEvent changedEvent) {
+    public void onRegistryChangedEvent(@Observes RegisterChangedEvent changedEvent) {
         ClientSession currentSession = getSession();
         if (currentSession instanceof EditorSession) {
             EditorSession session = (EditorSession) currentSession;

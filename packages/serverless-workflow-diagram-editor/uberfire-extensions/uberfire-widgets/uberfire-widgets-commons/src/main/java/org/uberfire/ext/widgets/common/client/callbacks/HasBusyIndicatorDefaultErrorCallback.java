@@ -15,9 +15,9 @@
  */
 package org.uberfire.ext.widgets.common.client.callbacks;
 
-import java.util.Objects;
-
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default Error handler for all views that support HasBusyIndicator
@@ -27,7 +27,8 @@ public class HasBusyIndicatorDefaultErrorCallback extends DefaultErrorCallback {
     protected HasBusyIndicator view;
 
     public HasBusyIndicatorDefaultErrorCallback(final HasBusyIndicator view) {
-        this.view = Objects.requireNonNull(view, "Parameter named 'view' should be not null!");
+        this.view = checkNotNull("view",
+                                 view);
     }
 
     @Override

@@ -16,9 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -39,6 +37,7 @@ import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.tools.client.event.HandlerRegistration;
 import elemental2.dom.MouseEvent;
+import org.kie.soup.commons.util.Lists;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresConnectorView;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.WiresShapeView;
@@ -54,6 +53,8 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
 import org.kie.workbench.common.stunner.core.graph.Element;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 /**
  * Default implementation of a {@link SelectionControl} that supports selection of multiple {@link Element}.
@@ -105,12 +106,12 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
             final int added = selectedItems.getChanged().addedSize();
             final int removed = selectedItems.getChanged().removedSize();
             if (added > 0 || removed > 0) {
-                List<String> deselectList = new ArrayList<>(shapesToIdentifiers(changedItems.getRemovedShapes().toList()));
-                deselectList.addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList()));
-                getSelectionControl().deselect(deselectList);
-                List<String> selectList = new ArrayList<>(shapesToIdentifiers(changedItems.getAddedShapes().toList()));
-                selectList.addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList()));
-                getSelectionControl().select(selectList);
+                getSelectionControl().deselect(new Lists.Builder<String>()
+                                                       .addAll(shapesToIdentifiers(changedItems.getRemovedShapes().toList()))
+                                                       .addAll(shapesToIdentifiers(changedItems.getRemovedConnectors().toList())).build());
+                getSelectionControl().select(new Lists.Builder<String>()
+                                                     .addAll(shapesToIdentifiers(changedItems.getAddedShapes().toList()))
+                                                     .addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList())).build());
                 defaultSelectionListener.onChanged(selectedItems);
 
                 if (getSelectionControl().getSelectedItems().isEmpty()) {
@@ -193,7 +194,8 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
     }
 
     void onCanvasSelection(final @Observes CanvasSelectionEvent event) {
-        Objects.requireNonNull(event, "Parameter named 'event' should be not null!");
+        checkNotNull("event",
+                     event);
         if (Objects.equals(getCanvasHandler(), event.getCanvasHandler())) {
             selectionShapeProvider.moveShapeToTop();
         }

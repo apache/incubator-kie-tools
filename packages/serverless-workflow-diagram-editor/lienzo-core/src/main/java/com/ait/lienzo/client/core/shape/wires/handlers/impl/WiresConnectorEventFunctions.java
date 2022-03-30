@@ -36,9 +36,9 @@ public class WiresConnectorEventFunctions {
 
     public static Consumer<Event> select(final WiresManager wiresManager,
                                          final WiresConnector connector) {
-        return new Consumer<WiresConnectorHandlerImpl.Event>() {
+        return new Consumer<Event>() {
             @Override
-            public void accept(WiresConnectorHandlerImpl.Event event) {
+            public void accept(Event event) {
                 if (null != wiresManager.getSelectionManager()) {
                     wiresManager.getSelectionManager().selected(connector, false);
                 }
@@ -47,7 +47,7 @@ public class WiresConnectorEventFunctions {
         };
     }
 
-    public static Consumer<WiresConnectorHandlerImpl.Event> addControlPoint(final WiresConnector connector) {
+    public static Consumer<Event> addControlPoint(final WiresConnector connector) {
         return event -> connector.getControl().addControlPoint(event.x, event.y);
     }
 }

@@ -22,7 +22,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 import org.kie.workbench.common.widgets.client.search.common.EditorSearchIndex;
 import org.kie.workbench.common.widgets.client.search.common.Searchable;
 import org.uberfire.client.mvp.UberElemental;

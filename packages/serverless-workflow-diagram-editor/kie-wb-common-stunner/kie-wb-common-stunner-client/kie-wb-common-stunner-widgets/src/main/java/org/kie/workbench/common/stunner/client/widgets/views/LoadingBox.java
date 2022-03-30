@@ -22,8 +22,7 @@ import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.google.gwt.logging.client.LogConfiguration;
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 
 @ApplicationScoped
 public class LoadingBox {
@@ -70,7 +69,7 @@ public class LoadingBox {
             @Override
             public void run() {
                 log(Level.WARNING,
-                    "Loading box - Timeout exceeded!");
+                        "Loading box - Timeout exceeded!");
                 hide();
             }
         };
@@ -85,32 +84,9 @@ public class LoadingBox {
             this.timer = null;
         }
     }
-
-    /*public void onCanvasProcessingStarted(@Observes CanvasProcessingStartedEvent canvasProcessingStartedEvent) {
-        checkNotNull("canvasProcessingStartedEvent", canvasProcessingStartedEvent);
-        show();
-    }
-
-    public void onCanvasProcessingCompleted(@Observes CanvasProcessingCompletedEvent canvasProcessingCompletedEvent) {
-        checkNotNull("canvasProcessingCompletedEvent", canvasProcessingCompletedEvent);
-        hide();
-    }
-
-    public void onWidgetProcessingStarted(@Observes WidgetProcessingStartedEvent widgetProcessingStartedEvent) {
-        checkNotNull("widgetProcessingStartedEvent", widgetProcessingStartedEvent);
-        show();
-    }
-
-    public void onWidgetProcessingCompleted(@Observes WidgetProcessingCompletedEvent widgetProcessingCompletedEvent) {
-        checkNotNull("widgetProcessingCompletedEvent", widgetProcessingCompletedEvent);
-        hide();
-    }*/
-
     private void log(final Level level,
                      final String message) {
-        if (LogConfiguration.loggingIsEnabled()) {
             LOGGER.log(level,
                        message);
-        }
     }
 }

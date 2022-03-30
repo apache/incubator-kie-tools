@@ -94,8 +94,8 @@ public class DeleteNodeCommandTest {
     @Test
     public void startNodeTestGraphCommand() {
         this.tested = new DeleteNodeCommand(graphHolder.startNode);
-        final org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand graphCommand =
-                (org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
+        final SafeDeleteNodeCommand graphCommand =
+                (SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
         assertNotNull(graphCommand);
         assertEquals(graphHolder.startNode,
                      graphCommand.getNode());
@@ -105,7 +105,7 @@ public class DeleteNodeCommandTest {
     public void startNodeTestCanvasCommands() {
         this.tested = new DeleteNodeCommand(graphHolder.startNode);
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCompositedCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
         assertNotNull(compositeCommand);
         assertTrue(3 == compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
@@ -131,8 +131,8 @@ public class DeleteNodeCommandTest {
     @Test
     public void intermediateNodeTestGraphCommand() {
         this.tested = new DeleteNodeCommand(graphHolder.intermNode);
-        final org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand graphCommand =
-                (org.kie.workbench.common.stunner.core.graph.command.impl.SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
+        final SafeDeleteNodeCommand graphCommand =
+                (SafeDeleteNodeCommand) tested.newGraphCommand(canvasHandler);
         assertNotNull(graphCommand);
         assertEquals(graphHolder.intermNode,
                      graphCommand.getNode());
@@ -144,7 +144,7 @@ public class DeleteNodeCommandTest {
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
         assertEquals(CommandResult.Type.INFO, result.getType());
 
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCompositedCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
         assertNotNull(compositeCommand);
         assertEquals(7, compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();
@@ -178,7 +178,7 @@ public class DeleteNodeCommandTest {
                                             options);
         final CommandResult<CanvasViolation> result = tested.allow(canvasHandler);
         assertEquals(CommandResult.Type.INFO, result.getType());
-        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCompositedCommand();
+        final AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> compositeCommand = tested.getCommand();
         assertNotNull(compositeCommand);
         assertEquals(6, compositeCommand.size());
         final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = compositeCommand.getCommands();

@@ -25,7 +25,7 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionFocusedEvent;
 import org.kie.workbench.common.stunner.client.widgets.event.SessionLostFocusEvent;
 import org.kie.workbench.common.stunner.client.widgets.notification.NotificationsObserver;
@@ -85,13 +85,13 @@ public class SessionEditorPresenter<S extends EditorSession>
                                   final Event<CanvasLostFocusEvent> canvasLostFocusEventEvent,
                                   final View view) {
         super(definitionUtils,
-              sessionManager,
-              view,
-              paletteWidgetFactory,
-              notificationsObserver,
-              sessionFocusedEvent,
-              sessionLostFocusEvent,
-              canvasLostFocusEventEvent);
+                sessionManager,
+                view,
+                paletteWidgetFactory,
+                notificationsObserver,
+                sessionFocusedEvent,
+                sessionLostFocusEvent,
+                canvasLostFocusEventEvent);
         this.sessionDiagramOpenedEvent = sessionDiagramOpenedEvent;
         this.editor = editor;
         this.cardinalityStateHandler = cardinalityStateHandler;
@@ -150,7 +150,7 @@ public class SessionEditorPresenter<S extends EditorSession>
     @SuppressWarnings("unchecked")
     protected Toolbar<S> newToolbar(final Annotation qualifier) {
         return (Toolbar<S>) InstanceUtils.lookup(toolbars,
-                                                 qualifier);
+                qualifier);
     }
 
     @Override
@@ -179,5 +179,11 @@ public class SessionEditorPresenter<S extends EditorSession>
         if (null != session.getSelectionControl()) {
             session.getSelectionControl().clearSelection();
         }
+    }
+
+    @Override
+    public void destroy() {
+
+        super.destroy();
     }
 }

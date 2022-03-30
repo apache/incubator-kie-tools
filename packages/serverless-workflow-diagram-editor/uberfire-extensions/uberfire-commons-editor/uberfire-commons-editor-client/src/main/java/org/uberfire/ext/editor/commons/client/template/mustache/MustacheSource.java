@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.editor.commons.client.template.mustache;
 
-import com.google.gwt.resources.client.ClientBundle;
-import com.google.gwt.resources.client.TextResource;
+import org.gwtproject.resources.client.ClientBundle;
+import org.gwtproject.resources.client.TextResource;
 
 /**
  * Holds the source for the unpacked MustacheJS.

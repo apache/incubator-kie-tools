@@ -15,10 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -42,13 +41,12 @@ public final class AddConnectorCommand extends AbstractGraphCompositeCommand {
     public AddConnectorCommand(final @MapsTo("nodeUUID") String nodeUUID,
                                final @MapsTo("edge") Edge edge,
                                final @MapsTo("magnet") Connection connection) {
-        this.nodeUUID = checkNotNull("nodeUUID", nodeUUID);
-        this.edge = checkNotNull("edge", edge);
-        this.connection = checkNotNull("magnet", connection);
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+        this.nodeUUID = PortablePreconditions.checkNotNull("nodeUUID",
+                                                           nodeUUID);
+        this.edge = PortablePreconditions.checkNotNull("edge",
+                                                       edge);
+        this.connection = PortablePreconditions.checkNotNull("magnet",
+                                                             connection);
     }
 
     public AddConnectorCommand(final Node<?, Edge> sourceNode,

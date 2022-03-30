@@ -17,18 +17,18 @@ package org.uberfire.ext.widgets.common.client.common;
 
 import java.util.Iterator;
 
-import com.google.gwt.event.logical.shared.CloseEvent;
-import com.google.gwt.event.logical.shared.CloseHandler;
-import com.google.gwt.event.logical.shared.HasCloseHandlers;
-import com.google.gwt.event.logical.shared.HasOpenHandlers;
-import com.google.gwt.event.logical.shared.OpenEvent;
-import com.google.gwt.event.logical.shared.OpenHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.event.logical.shared.CloseEvent;
+import org.gwtproject.event.logical.shared.CloseHandler;
+import org.gwtproject.event.logical.shared.HasCloseHandlers;
+import org.gwtproject.event.logical.shared.HasOpenHandlers;
+import org.gwtproject.event.logical.shared.OpenEvent;
+import org.gwtproject.event.logical.shared.OpenHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.resources.client.ImageResource;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.DisclosurePanel;
+import org.gwtproject.user.client.ui.HasWidgets;
+import org.gwtproject.user.client.ui.Widget;
 
 /**
  * Disclosure panel with rounded corners in header.

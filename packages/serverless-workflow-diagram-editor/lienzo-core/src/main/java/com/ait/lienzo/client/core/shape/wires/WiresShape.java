@@ -121,7 +121,7 @@ public class WiresShape extends WiresContainer {
         return m_ctrls;
     }
 
-    public IControlHandleList loadControls(final IControlHandle.ControlHandleType type) {
+    public IControlHandleList loadControls(final ControlHandleType type) {
         _loadControls(type);
         return getControls();
     }
@@ -225,7 +225,7 @@ public class WiresShape extends WiresContainer {
         m_innerLayoutContainer.setOffset(new Point2D(box.getX(), box.getY())).setSize(box.getWidth(), box.getHeight()).execute();
     }
 
-    private void _loadControls(final IControlHandle.ControlHandleType type) {
+    private void _loadControls(final ControlHandleType type) {
         final Map<ControlHandleType, IControlHandleList> handles = getPath().getControlHandles(type);
 
         if (null != handles) {
@@ -239,7 +239,7 @@ public class WiresShape extends WiresContainer {
         }
     }
 
-    protected WiresShapeControlHandleList createControlHandles(IControlHandle.ControlHandleType type, ControlHandleList controls) {
+    protected WiresShapeControlHandleList createControlHandles(ControlHandleType type, ControlHandleList controls) {
         return new WiresShapeControlHandleList(this, type, controls);
     }
 

@@ -25,7 +25,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarView;
@@ -79,7 +79,7 @@ public class ManagedToolbar<S extends ClientSession> implements Toolbar<S> {
         // Initialize the command and view instances.
         commandTypes.stream()
                 .map(type -> loadCommand(type,
-                                         qualifier))
+                        qualifier))
                 .forEach(this::registerCommand);
         // Show the toolbar.
         show(session);
@@ -127,9 +127,9 @@ public class ManagedToolbar<S extends ClientSession> implements Toolbar<S> {
             final AbstractToolbarItem<S> item = items.get(i);
             getView().addItem(item.asWidget());
             item.show(this,
-                      session,
-                      command,
-                      command::execute);
+                    session,
+                    command,
+                    command::execute);
         }
         getView().show();
     }
@@ -143,8 +143,8 @@ public class ManagedToolbar<S extends ClientSession> implements Toolbar<S> {
     private ToolbarCommand loadCommand(final Class<? extends ToolbarCommand> type,
                                        final Annotation qualifier) {
         return InstanceUtils.lookup(commandInstances,
-                                    type,
-                                    qualifier);
+                type,
+                qualifier);
     }
 
     private AbstractToolbarItem<S> getItem(final ToolbarCommand command) {

@@ -16,7 +16,7 @@
 
 package org.uberfire.ext.editor.commons.client;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.uberfire.ext.widgets.common.client.common.HasBusyIndicator;
 
 public interface BaseEditorView

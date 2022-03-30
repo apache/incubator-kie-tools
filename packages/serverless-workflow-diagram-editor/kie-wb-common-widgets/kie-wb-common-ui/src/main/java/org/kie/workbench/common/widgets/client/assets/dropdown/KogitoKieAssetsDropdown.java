@@ -16,18 +16,18 @@
 
 package org.kie.workbench.common.widgets.client.assets.dropdown;
 
-import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 
 public abstract class KogitoKieAssetsDropdown extends AbstractKieAssetsDropdown {
 
-    public KogitoKieAssetsDropdown(final KogitoKieAssetsDropdown.View view,
+    public KogitoKieAssetsDropdown(final View view,
                                    final KieAssetsDropdownItemsProvider dataProvider) {
         super(view, dataProvider);
     }
 
     @Override
     public void initializeDropdown() {
-        ((KogitoKieAssetsDropdown.View) view).enableDropdownMode();
+        ((View) view).enableDropdownMode();
         super.initializeDropdown();
     }
 

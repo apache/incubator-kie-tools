@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.api.AbstractFactoryManager;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
@@ -42,12 +42,12 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
 
     protected ClientFactoryManager() {
         this(null,
-             null,
-             null,
-             null,
-             null,
-             null,
-             null);
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
     }
 
     @Inject
@@ -58,8 +58,7 @@ public class ClientFactoryManager extends AbstractFactoryManager implements Fact
                                 final ManagedInstance<GraphFactory> graphFactoryInstances,
                                 final ManagedInstance<NodeFactory> nodeFactoryInstances,
                                 final ManagedInstance<EdgeFactory> edgeFactoryInstances) {
-        super(registryFactory,
-              definitionManager);
+        super(registryFactory, definitionManager);
         this.definitionFactoryInstances = definitionFactoryInstances;
         this.diagramFactoryInstances = diagramFactoryInstances;
         this.graphFactoryInstances = graphFactoryInstances;

@@ -16,25 +16,27 @@
 
 package org.kie.workbench.common.stunner.client.widgets.toolbar.item;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Widget;
+import javax.enterprise.context.Dependent;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
 import org.gwtbootstrap3.client.ui.constants.IconSize;
 import org.gwtbootstrap3.client.ui.constants.IconType;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.mvp.Command;
 
+@Dependent
 public class ToolbarItemView extends Composite implements ToolbarItem.View {
 
     interface ViewBinder extends UiBinder<Widget, ToolbarItemView> {
 
     }
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private static ViewBinder uiBinder = null;
 
     @UiField
     Button button;
@@ -46,7 +48,7 @@ public class ToolbarItemView extends Composite implements ToolbarItem.View {
         this.presenter = presenter;
         initWidget(uiBinder.createAndBindUi(this));
         button.getElement().getStyle().setMargin(5,
-                                                 Style.Unit.PX);
+                Style.Unit.PX);
     }
 
     @Override

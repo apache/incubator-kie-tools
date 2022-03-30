@@ -19,7 +19,7 @@ package org.kie.workbench.common.stunner.core.client.shape;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

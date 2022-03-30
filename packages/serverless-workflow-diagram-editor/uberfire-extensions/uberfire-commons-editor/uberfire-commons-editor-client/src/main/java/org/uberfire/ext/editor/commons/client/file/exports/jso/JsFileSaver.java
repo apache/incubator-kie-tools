@@ -26,7 +26,7 @@ import jsinterop.annotations.JsType;
  * Provided by the webjar <code>org.webjars.bower.filesaver</code>.
  * @see <a href="https://github.com/eligrey/FileSaver.js">FileSaver.js</a>
  */
-@JsType(isNative = true, namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "FileSaver")
 public class JsFileSaver {
 
     /**

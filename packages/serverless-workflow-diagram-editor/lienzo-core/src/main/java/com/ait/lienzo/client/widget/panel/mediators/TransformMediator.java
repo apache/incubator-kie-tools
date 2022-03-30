@@ -19,16 +19,16 @@ import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 
 /**
- * Defines a mediator that can mediate {@link com.ait.lienzo.client.core.types.Transform} applied to a {@link
+ * Defines a mediator that can mediate {@link Transform} applied to a {@link
  * com.ait.lienzo.client.core.shape.Viewport}.
  */
 public interface TransformMediator {
 
     /**
-     * Adjusts a {@link com.ait.lienzo.client.core.types.Transform} to mediate transformations.
+     * Adjusts a {@link Transform} to mediate transformations.
      *
      * @param transform     The proposed Transform to be applied to the Viewport.
-     * @param visibleBounds {@link com.ait.lienzo.client.widget.panel.Bounds} of the visible portion of the Viewport.
+     * @param visibleBounds {@link Bounds} of the visible portion of the Viewport.
      * @return A new Transform.
      */
     Transform adjust(final Transform transform,

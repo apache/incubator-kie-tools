@@ -16,10 +16,10 @@
 
 package org.uberfire.ext.widgets.common.client.tables;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ProvidesKey;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.client.ui.Widget;
+import org.gwtproject.view.client.ProvidesKey;
 import org.uberfire.ext.widgets.table.client.ColumnChangedHandler;
 import org.uberfire.ext.widgets.table.client.UberfireSimpleTable;
 
@@ -32,7 +32,7 @@ import org.uberfire.ext.widgets.table.client.UberfireSimpleTable;
 public class SimpleTable<T>
         extends UberfireSimpleTable<T> {
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = new SimpleTable_BinderImpl();
     private boolean persistPreferencesOnChange = true;
 
     public SimpleTable() {
@@ -79,6 +79,7 @@ public class SimpleTable<T>
         return (ColumnPicker) columnPicker;
     }
 
+    @UiTemplate
     interface Binder
             extends
             UiBinder<Widget, SimpleTable> {

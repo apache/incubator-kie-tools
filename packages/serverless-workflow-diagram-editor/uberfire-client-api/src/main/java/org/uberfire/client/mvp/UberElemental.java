@@ -11,11 +11,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ */
 
 package org.uberfire.client.mvp;
 
-import org.jboss.errai.common.client.api.elemental2.IsElement;
+import io.crysknife.client.IsElement;
 
 /**
  * Interface to inject a Presenter into a View for MVP-based Element

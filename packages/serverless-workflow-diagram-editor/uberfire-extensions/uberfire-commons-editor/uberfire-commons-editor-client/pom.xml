@@ -32,40 +32,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-ioc</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-ui</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.3_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-core</artifactId>
     </dependency>
@@ -76,6 +42,14 @@
     <dependency>
       <groupId>com.google.jsinterop</groupId>
       <artifactId>jsinterop-annotations</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.treblereel.gwt.gwtproject.typedarrays</groupId>
+      <artifactId>gwt-typedarrays</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.crysknife.ui.translation</groupId>
+      <artifactId>api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -90,24 +64,17 @@
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
+      <groupId>org.treblereel.gwt.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-widgets-commons</artifactId>
     </dependency>
-
     <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-annotations</artifactId>
-        </exclusion>
-      </exclusions>
+      <groupId>org.treblereel.gwt.gwtproject.i18n</groupId>
+      <artifactId>gwt-i18n-processor</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -125,6 +92,17 @@
       <groupId>org.powermock</groupId>
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt.gwtmockito</groupId>
+      <artifactId>gwtmockito</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
 

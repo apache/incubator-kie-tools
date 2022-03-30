@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.dom.client.FormElement;
-import com.google.gwt.user.client.ui.Hidden;
 import org.gwtbootstrap3.client.ui.Form;
+import org.gwtproject.dom.client.FormElement;
+import org.gwtproject.user.client.ui.Hidden;
 
 public class FileUploadFormEncoder {
 

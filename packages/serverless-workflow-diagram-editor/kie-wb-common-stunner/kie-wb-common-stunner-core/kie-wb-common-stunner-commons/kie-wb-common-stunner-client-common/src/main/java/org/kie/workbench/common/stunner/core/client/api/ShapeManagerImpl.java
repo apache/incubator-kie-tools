@@ -19,17 +19,18 @@ package org.kie.workbench.common.stunner.core.client.api;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import com.google.gwt.safehtml.shared.SafeUri;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 import org.kie.workbench.common.stunner.core.client.ShapeSetThumbProvider;
+
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
 
 @ApplicationScoped
 public class ShapeManagerImpl implements ShapeManager {
@@ -42,7 +43,7 @@ public class ShapeManagerImpl implements ShapeManager {
 
     protected ShapeManagerImpl() {
         this(null,
-             null);
+                null);
     }
 
     @Inject
@@ -65,7 +66,8 @@ public class ShapeManagerImpl implements ShapeManager {
 
     @Override
     public ShapeSet<?> getShapeSet(final String id) {
-        checkNotNull("id", id);
+        checkNotNull("id",
+                id);
         return shapeSets.stream()
                 .filter(s -> id.equals(s.getId()))
                 .findFirst()
@@ -74,7 +76,8 @@ public class ShapeManagerImpl implements ShapeManager {
 
     @Override
     public ShapeSet<?> getDefaultShapeSet(final String defSetId) {
-        checkNotNull("defSetId", defSetId);
+        checkNotNull("defSetId",
+                defSetId);
         return shapeSets.stream()
                 .filter(s -> defSetId.equals(s.getDefinitionSetId()))
                 .findFirst()
@@ -83,15 +86,12 @@ public class ShapeManagerImpl implements ShapeManager {
 
     @Override
     public SafeUri getThumbnail(final String definitionSetId) {
-        checkNotNull("definitionSetId", definitionSetId);
+        checkNotNull("definitionSetId",
+                definitionSetId);
         final ShapeSetThumbProvider p = thumbProviders.stream()
                 .filter(t -> t.thumbFor(definitionSetId))
                 .findFirst()
                 .orElse(null);
         return null != p ? p.getThumbnailUri() : null;
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 }

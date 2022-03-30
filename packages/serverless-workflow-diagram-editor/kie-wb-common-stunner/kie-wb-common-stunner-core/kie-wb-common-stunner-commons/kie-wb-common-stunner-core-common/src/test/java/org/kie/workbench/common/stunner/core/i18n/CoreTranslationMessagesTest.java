@@ -22,7 +22,7 @@ import java.util.Optional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
 
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

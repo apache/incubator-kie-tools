@@ -19,8 +19,8 @@ package org.kie.workbench.common.stunner.core.client.resources;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 
-import com.google.gwt.resources.client.CssResource;
-import com.google.gwt.resources.client.ImageResource;
+import org.gwtproject.resources.client.CssResource;
+import org.gwtproject.resources.client.ImageResource;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
 
 @Default

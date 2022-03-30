@@ -17,8 +17,8 @@ package org.kie.workbench.common.stunner.client.widgets.toolbar.command;
 
 import java.lang.annotation.Annotation;
 
+import io.crysknife.client.ManagedInstance;
 import org.gwtbootstrap3.client.ui.constants.IconRotate;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWidgetsConstants;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.Toolbar;
 import org.kie.workbench.common.stunner.client.widgets.toolbar.ToolbarCommand;

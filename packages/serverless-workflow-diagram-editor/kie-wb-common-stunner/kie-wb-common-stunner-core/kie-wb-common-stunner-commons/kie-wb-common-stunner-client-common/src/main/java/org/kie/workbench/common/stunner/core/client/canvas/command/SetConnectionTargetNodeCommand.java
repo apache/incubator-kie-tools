@@ -63,18 +63,6 @@ public class SetConnectionTargetNodeCommand extends AbstractCanvasGraphCommand {
         return connection;
     }
 
-    public Connection getLastConnection() {
-        return getGraphCommand().getLastConnection();
-    }
-
-    public String getLastTargetNodeUUID() {
-        return getGraphCommand().getLastTargetNodeUUID();
-    }
-
-    private org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand getGraphCommand() {
-        return (org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand) graphCommand;
-    }
-
     @Override
     public String toString() {
         return getClass().getSimpleName() +

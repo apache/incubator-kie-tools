@@ -72,6 +72,7 @@
 
   <properties>
     <sonar.skip>true</sonar.skip>
+    <version.org.powermock>2.0.7</version.org.powermock>
   </properties>
 
   <dependencyManagement>
@@ -164,6 +165,12 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-stunner-client-common</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -220,12 +227,6 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-        <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-widgets</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -241,6 +242,11 @@
         <groupId>org.powermock</groupId>
         <artifactId>powermock-api-mockito2</artifactId>
         <version>${version.powermock.api.mockito2}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>${version.org.powermock}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

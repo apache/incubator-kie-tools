@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client.util;
 
-import com.google.gwt.user.client.Timer;
+import org.gwtproject.timer.client.Timer;
 
 public class TimerUtils {
 

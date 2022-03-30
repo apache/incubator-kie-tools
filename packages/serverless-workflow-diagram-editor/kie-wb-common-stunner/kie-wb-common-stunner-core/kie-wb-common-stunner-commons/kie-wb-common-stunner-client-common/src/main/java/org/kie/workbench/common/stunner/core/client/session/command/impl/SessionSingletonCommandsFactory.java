@@ -21,7 +21,7 @@ import java.util.HashMap;
 import javax.enterprise.event.Event;
 import javax.inject.Singleton;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.api.SessionManager;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DeleteNodeConfirmation;

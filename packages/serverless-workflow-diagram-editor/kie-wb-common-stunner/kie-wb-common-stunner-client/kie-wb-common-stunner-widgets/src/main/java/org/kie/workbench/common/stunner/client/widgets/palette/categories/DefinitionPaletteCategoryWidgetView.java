@@ -43,10 +43,10 @@ public interface DefinitionPaletteCategoryWidgetView extends UberElement<Definit
 
         DefaultPaletteCategory getCategory();
 
-        void onMouseDown(int clientX,
-                         int clientY,
-                         int x,
-                         int y);
+        void onMouseDown(double clientX,
+                         double clientY,
+                         double x,
+                         double y);
 
         void onClose();
 

@@ -18,16 +18,16 @@ package org.uberfire.client.views.pfly.tab;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.user.client.ui.ProvidesResize;
-import com.google.gwt.user.client.ui.RequiresResize;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TabPane;
+import org.gwtproject.user.client.ui.ProvidesResize;
+import org.gwtproject.user.client.ui.RequiresResize;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.client.util.Layouts;
 
 @Dependent
 @Resize
 public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresResize,
-                                                                     ProvidesResize {
+        ProvidesResize {
 
     @Override
     public void onResize() {
@@ -49,7 +49,7 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
         // We do it in onResize() to get to the TabPanes no matter how they were added.
         for (Widget child : tabContent) {
             child.setPixelSize(width,
-                               height);
+                    height);
             Layouts.setToFillParent(child);
             if (child instanceof TabPane) {
                 final TabPane tabPane = (TabPane) child;
@@ -57,7 +57,7 @@ public class ResizeTabPanel extends TabPanelWithDropdowns implements RequiresRes
                     for (int i = 0; i < tabPane.getWidgetCount(); i++) {
                         final Widget tabChild = tabPane.getWidget(i);
                         tabChild.setPixelSize(width,
-                                              height);
+                                height);
                         Layouts.setToFillParent(tabChild);
                         if (tabChild instanceof RequiresResize) {
                             ((RequiresResize) tabChild).onResize();

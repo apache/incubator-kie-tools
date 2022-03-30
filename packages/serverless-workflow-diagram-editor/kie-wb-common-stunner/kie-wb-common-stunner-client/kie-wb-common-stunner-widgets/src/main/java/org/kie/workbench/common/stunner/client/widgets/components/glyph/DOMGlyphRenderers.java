@@ -25,8 +25,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
-import org.jboss.errai.common.client.api.IsElement;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.IsElement;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.glyph.GlyphRenderer;
 import org.kie.workbench.common.stunner.core.definition.shape.Glyph;
@@ -71,7 +71,7 @@ public class DOMGlyphRenderers implements DOMGlyphRenderer<Glyph> {
 
     private DOMGlyphRenderer getRenderer(final Class<?> type) {
         return GlyphRenderer.getRenderer(renderers::spliterator,
-                                         type);
+                type);
     }
 
     @PreDestroy

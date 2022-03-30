@@ -16,9 +16,9 @@
 
 package org.uberfire.client.workbench.type;
 
-import com.google.gwt.user.client.ui.IsWidget;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
 /**

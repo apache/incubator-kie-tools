@@ -46,7 +46,7 @@ public class AddDockedNodeCommand extends AbstractCanvasGraphCommand {
     }
 
     @Override
-    protected org.kie.workbench.common.stunner.core.client.canvas.command.AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
+    protected AbstractCanvasCommand newCanvasCommand(final AbstractCanvasHandler context) {
         return new AddCanvasDockedNodeCommand(parent,
                                               candidate,
                                               ssid);

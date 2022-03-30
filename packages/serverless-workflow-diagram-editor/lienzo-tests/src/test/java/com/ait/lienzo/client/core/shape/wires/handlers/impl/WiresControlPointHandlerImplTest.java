@@ -64,7 +64,7 @@ public class WiresControlPointHandlerImplTest {
     @Test
     public void testOnNodeDragMove() {
 
-        elemental2.dom.HTMLElement element = mock(HTMLElement.class);
+        HTMLElement element = mock(HTMLElement.class);
 
         NodeDragMoveEvent event = spy(new NodeDragMoveEvent(element));
         when(event.getX()).thenReturn(2);

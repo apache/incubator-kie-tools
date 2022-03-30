@@ -18,7 +18,7 @@ package org.kie.workbench.common.stunner.core.client.api;
 
 import java.util.Collection;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 import org.kie.workbench.common.stunner.core.client.ShapeSet;
 
 public interface ShapeManager {

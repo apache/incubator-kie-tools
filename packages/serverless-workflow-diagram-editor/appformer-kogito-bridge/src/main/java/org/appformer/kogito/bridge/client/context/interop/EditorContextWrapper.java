@@ -16,6 +16,7 @@
 
 package org.appformer.kogito.bridge.client.context.interop;
 
+import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 
@@ -24,7 +25,7 @@ import jsinterop.annotations.JsType;
  * Provide access to the editorContext object 
  * 
  */
-@JsType(isNative = true, namespace = "window", name = "envelope")
+@JsType(isNative = true, namespace = JsPackage.GLOBAL, name = "envelope")
 public class EditorContextWrapper {
 
     @JsProperty

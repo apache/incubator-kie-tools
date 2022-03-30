@@ -25,8 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.SyncBeanDef;
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.workbench.type.ClientResourceType;
 import org.uberfire.client.workbench.type.ClientTypeRegistry;
@@ -37,36 +36,35 @@ import static java.util.Collections.unmodifiableList;
 @ApplicationScoped
 public class ClientTypeRegistryImpl implements ClientTypeRegistry {
 
-    protected final SyncBeanManager iocManager;
-    private List<ClientResourceType> localResourceTypes = new ArrayList<ClientResourceType>();
+    protected final BeanManager iocManager;
+    private List<ClientResourceType> localResourceTypes = new ArrayList<>();
 
     @Inject
-    public ClientTypeRegistryImpl(final SyncBeanManager iocManager) {
+    public ClientTypeRegistryImpl(final BeanManager iocManager) {
         this.iocManager = iocManager;
     }
 
     @PostConstruct
     public void init() {
-        final Collection<SyncBeanDef<ClientResourceType>> availableTypes = iocManager.lookupBeans(ClientResourceType.class);
 
-        for (final SyncBeanDef<ClientResourceType> availableType : availableTypes) {
+        iocManager.<ClientResourceType>lookupBeans(ClientResourceType.class).forEach(availableType -> {
             localResourceTypes.add(availableType.getInstance());
-        }
+        });
 
         sort(localResourceTypes,
-             new Comparator<ClientResourceType>() {
-                 @Override
-                 public int compare(final ClientResourceType o1,
-                                    final ClientResourceType o2) {
-                     if (o1.getPriority() < o2.getPriority()) {
-                         return 1;
-                     } else if (o1.getPriority() > o2.getPriority()) {
-                         return -1;
-                     } else {
-                         return 0;
-                     }
-                 }
-             });
+                new Comparator<ClientResourceType>() {
+                    @Override
+                    public int compare(final ClientResourceType o1,
+                                       final ClientResourceType o2) {
+                        if (o1.getPriority() < o2.getPriority()) {
+                            return 1;
+                        } else if (o1.getPriority() > o2.getPriority()) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
     }
 
     @Override

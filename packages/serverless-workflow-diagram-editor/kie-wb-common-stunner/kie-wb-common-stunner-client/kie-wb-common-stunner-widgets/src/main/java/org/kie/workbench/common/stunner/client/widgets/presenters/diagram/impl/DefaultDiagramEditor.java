@@ -23,8 +23,9 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.DiagramViewer;
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
@@ -90,7 +91,7 @@ public class DefaultDiagramEditor
 
     @Inject
     public DefaultDiagramEditor(final DefinitionUtils definitionUtils,
-                                final DiagramViewer<Diagram, AbstractCanvasHandler> viewer,
+                                final @Named("DefaultDiagramViewer") DiagramViewer<Diagram, AbstractCanvasHandler> viewer,
                                 final @Any ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> commandManagers,
                                 final @Any ManagedInstance<LocationControl<AbstractCanvasHandler, Element>> locationControls,
                                 final @Any ManagedInstance<ResizeControl<AbstractCanvasHandler, Element>> resizeControls,
@@ -121,14 +122,14 @@ public class DefaultDiagramEditor
     public void open(final Diagram item,
                      final DiagramViewerCallback<Diagram> callback) {
         viewer.open(item,
-                    new ViewCallback(callback));
+                new ViewCallback(callback));
     }
 
     @Override
     public void scale(final int width,
                       final int height) {
         viewer.scale(width,
-                     height);
+                height);
     }
 
     @Override
@@ -335,15 +336,15 @@ public class DefaultDiagramEditor
         lineSpliceAcceptorControl = InstanceUtils.lookup(lineSpliceAcceptorControls, qualifier);
         lineSpliceAcceptorControl.setCommandManagerProvider(() -> commandManager);
         elementListener = new DefaultCanvasElementListener(Arrays.asList(locationControl,
-                                                                         resizeControl,
-                                                                         elementBuilderControl,
-                                                                         nodeBuilderControl,
-                                                                         edgeBuilderControl,
-                                                                         controlPointControl,
-                                                                         containmentAcceptorControl,
-                                                                         connectionAcceptorControl,
-                                                                         dockingAcceptorControl,
-                                                                         lineSpliceAcceptorControl));
+                resizeControl,
+                elementBuilderControl,
+                nodeBuilderControl,
+                edgeBuilderControl,
+                controlPointControl,
+                containmentAcceptorControl,
+                connectionAcceptorControl,
+                dockingAcceptorControl,
+                lineSpliceAcceptorControl));
         viewer.getHandler().addRegistrationListener(elementListener);
     }
 }

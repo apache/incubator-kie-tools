@@ -20,15 +20,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
 
 /**
  * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
@@ -40,6 +41,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 @CanContain(roles = {Workflow.LABEL_ROOT_NODE})
 @JsType
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
+@JSONMapper
 public class Workflow {
 
     public static final String LABEL_WORKFLOW = "workflow";

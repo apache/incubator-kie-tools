@@ -15,12 +15,15 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.dom.client.Element;
+import jsinterop.base.JsPropertyMap;
+import org.gwtbootstrap3.client.shared.js.JQuery;
 import org.gwtbootstrap3.client.ui.Icon;
 import org.gwtbootstrap3.client.ui.Popover;
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.client.ui.constants.Placement;
 import org.gwtbootstrap3.client.ui.constants.Trigger;
+
+import org.gwtproject.dom.client.Element;
 
 /**
  * This is handy for in-place context help.
@@ -52,9 +55,9 @@ public class InfoPopup extends Popover {
         getWidget().getElement().getStyle().setZIndex(Integer.MAX_VALUE);
     }
 
-    private native void configurePopoverContainer(Element e) /*-{
-                                                             $wnd.jQuery(e).popover({
-                                                             container: 'body'
-                                                             });
-                                                             }-*/;
+    private void configurePopoverContainer(Element e) {
+        JsPropertyMap value = JsPropertyMap.of();
+        value.set("container","body");
+        JQuery.$(e).popover(value);
+    }
 }

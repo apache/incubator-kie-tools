@@ -16,9 +16,9 @@
 
 package org.uberfire.ext.layout.editor.client.generator;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.common.client.dom.DOMTokenList;
-import org.jboss.errai.common.client.dom.HTMLElement;
+import elemental2.dom.DOMTokenList;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,8 +30,7 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutInstance;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LayoutGeneratorTest {
@@ -109,16 +108,15 @@ public class LayoutGeneratorTest {
         row1.add(column1);
         template.addRow(row1);
 
-        when(containerElement.getClassList()).thenReturn(containerClassList);
-        when(rowElement.getClassList()).thenReturn(rowClassList);
-        when(columnElement.getClassList()).thenReturn(columnClassList);
+        containerElement.classList = containerClassList;
+        rowElement.classList = rowClassList;
+        columnElement.classList = columnClassList;
     }
 
     @Test
     public void testContainerGeneration() {
         generator.build(template);
 
-        verify(containerElement).setId(AbstractLayoutGenerator.CONTAINER_ID);
-        
+        assertEquals(AbstractLayoutGenerator.CONTAINER_ID, containerElement.id);
     }
 }

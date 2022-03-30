@@ -16,10 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views;
 
+import javax.enterprise.context.Dependent;
+
 import org.gwtbootstrap3.client.ui.constants.IconType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
 
+@Dependent
 public class LoadingBoxView implements LoadingBox.View {
 
     @Override

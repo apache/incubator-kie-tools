@@ -15,10 +15,9 @@
  */
 package org.kie.workbench.common.stunner.core.graph.command.impl;
 
-import java.util.Objects;
-
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
@@ -47,9 +46,9 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
     public MorphNodeCommand(final @MapsTo("uuid") String uuid,
                             final @MapsTo("morphDefinition") MorphDefinition morphDefinition,
                             final @MapsTo("morphTarget") String morphTarget) {
-        this.uuid = checkNotNull("uuid", uuid);
-        this.morphDefinition = checkNotNull("morphDefinition", morphDefinition);
-        this.morphTarget = checkNotNull("morphTarget", morphTarget);
+        this.uuid = PortablePreconditions.checkNotNull("uuid", uuid);
+        this.morphDefinition = PortablePreconditions.checkNotNull("morphDefinition", morphDefinition);
+        this.morphTarget = PortablePreconditions.checkNotNull("morphTarget", morphTarget);
         this.oldMorphTarget = null;
         this.candidate = null;
     }
@@ -60,11 +59,7 @@ public final class MorphNodeCommand extends AbstractGraphCommand {
         this(candidate.getUUID(),
              morphDefinition,
              morphTarget);
-        this.candidate = checkNotNull("candidate", candidate);
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
+        this.candidate = PortablePreconditions.checkNotNull("candidate", candidate);
     }
 
     @Override

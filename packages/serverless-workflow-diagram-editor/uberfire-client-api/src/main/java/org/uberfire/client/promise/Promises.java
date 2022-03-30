@@ -27,9 +27,9 @@ import java.util.function.Supplier;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
 import elemental2.promise.Promise;
+import org.gwtproject.core.client.GWT;
+import org.gwtproject.core.client.JavaScriptObject;
 import org.jboss.errai.common.client.api.Caller;
 import org.jboss.errai.common.client.api.ErrorCallback;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -76,7 +76,7 @@ public class Promises {
                         map(o -> () -> f.apply(o))
                 .<Supplier<Promise<O>>>
                         reduce(this::resolve,
-                               (p1, p2) -> () -> p1.get().then(ignore -> p2.get())
+                        (p1, p2) -> () -> p1.get().then(ignore -> p2.get())
                 )
                 .get();
     }
@@ -93,11 +93,11 @@ public class Promises {
                         map(o -> next -> () -> f.apply(next, o))
                 .<Function<Supplier<Promise<O>>, Supplier<Promise<O>>>>
                         reduce(next -> this::resolve,
-                               (p1, p2) -> uberNext -> () -> {
-                                   final Supplier<Promise<O>> next = p2.apply(uberNext);
-                                   final Supplier<Promise<O>> chain = () -> next.get().then(ignore -> uberNext.get());
-                                   return p1.apply(chain).get().then(ignore -> next.get());
-                               }
+                        (p1, p2) -> uberNext -> () -> {
+                            final Supplier<Promise<O>> next = p2.apply(uberNext);
+                            final Supplier<Promise<O>> chain = () -> next.get().then(ignore -> uberNext.get());
+                            return p1.apply(chain).get().then(ignore -> next.get());
+                        }
                 )
                 .apply(this::resolve).get();
     }

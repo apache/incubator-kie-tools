@@ -18,17 +18,16 @@ package org.kie.workbench.common.stunner.client.widgets.explorer.navigator.view;
 
 import javax.enterprise.context.Dependent;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.Column;
 import org.gwtbootstrap3.client.ui.Container;
 import org.gwtbootstrap3.client.ui.Row;
 import org.gwtbootstrap3.client.ui.constants.ColumnSize;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItem;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorItemView;
 import org.kie.workbench.common.stunner.client.widgets.explorer.navigator.NavigatorView;
@@ -43,7 +42,7 @@ public class BootstrapNavigatorView
 
     }
 
-    private static ViewBinder uiBinder = GWT.create(ViewBinder.class);
+    private static ViewBinder uiBinder = null;
 
     @UiField
     ResizeFlowPanel mainPanel;

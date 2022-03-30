@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.views.session;
 
-import com.google.gwt.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.IsWidget;
 
 public interface ScreenPanelView extends IsWidget {
 

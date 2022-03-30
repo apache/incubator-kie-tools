@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.core.client;
 
-import com.google.gwt.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.SafeUri;
 
 public interface ShapeSetThumbProvider extends ThumbProvider<String> {
 

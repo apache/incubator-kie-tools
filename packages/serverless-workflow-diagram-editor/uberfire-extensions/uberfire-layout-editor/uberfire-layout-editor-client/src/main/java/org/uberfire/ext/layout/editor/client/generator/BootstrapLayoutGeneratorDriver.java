@@ -19,11 +19,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
-import org.jboss.errai.common.client.dom.Div;
-import org.jboss.errai.common.client.dom.HTMLElement;
-import org.jboss.errai.common.client.dom.Window;
+import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLDivElement;
+import elemental2.dom.HTMLElement;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
@@ -45,22 +45,22 @@ public class BootstrapLayoutGeneratorDriver implements LayoutGeneratorDriver {
 
     @Override
     public HTMLElement createContainer() {
-        Div div = (Div) Window.getDocument().createElement("div");
+        HTMLDivElement div = (HTMLDivElement) DomGlobal.document.createElement("div");
         return div;
     }
 
     @Override
     public HTMLElement createRow(LayoutRow layoutRow) {
-        Div div = (Div) Window.getDocument().createElement("div");
-        div.setClassName("row");
+        HTMLDivElement div = (HTMLDivElement) DomGlobal.document.createElement("div");
+        div.className = ("row");
         return div;
     }
 
     @Override
     public HTMLElement createColumn(LayoutColumn layoutColumn) {
-        Div div = (Div) Window.getDocument().createElement("div");
+        HTMLDivElement div = (HTMLDivElement) DomGlobal.document.createElement("div");
         String colSize = ColumnSizeBuilder.buildColumnSize(new Integer(layoutColumn.getSpan()));
-        div.setClassName(colSize);
+        div.className = (colSize);
         return div;
     }
 

@@ -17,9 +17,9 @@
 package org.kie.workbench.common.stunner.sw.client;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import io.crysknife.client.ManagedInstance;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.AbstractCanvasShortcutsControlImpl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.keyboard.shortcut.KeyboardShortcut;
 import org.kie.workbench.common.stunner.sw.SWEditor;
@@ -32,7 +32,7 @@ import org.kie.workbench.common.stunner.sw.SWEditor;
 public class CanvasShortcutsControlImpl extends AbstractCanvasShortcutsControlImpl {
 
     @Inject
-    public CanvasShortcutsControlImpl(final @SWEditor Instance<KeyboardShortcut> implementedActions) {
+    public CanvasShortcutsControlImpl(final @SWEditor ManagedInstance<KeyboardShortcut> implementedActions) {
         super(implementedActions);
     }
 }

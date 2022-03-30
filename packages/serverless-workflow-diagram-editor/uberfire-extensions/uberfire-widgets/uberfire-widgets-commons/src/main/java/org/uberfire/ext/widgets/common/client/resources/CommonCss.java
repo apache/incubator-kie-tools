@@ -15,7 +15,7 @@
  */
 package org.uberfire.ext.widgets.common.client.resources;
 
-import com.google.gwt.resources.client.CssResource;
+import org.gwtproject.resources.client.CssResource;
 
 public interface CommonCss
         extends

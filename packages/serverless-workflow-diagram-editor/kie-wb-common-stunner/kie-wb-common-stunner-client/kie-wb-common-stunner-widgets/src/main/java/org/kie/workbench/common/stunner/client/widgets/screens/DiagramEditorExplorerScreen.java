@@ -15,7 +15,6 @@
  */
 package org.kie.workbench.common.stunner.client.widgets.screens;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,8 +26,9 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import org.jboss.errai.ioc.client.api.ManagedInstance;
+import io.crysknife.client.ManagedInstance;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
@@ -46,6 +46,8 @@ import org.uberfire.mvp.PlaceRequest;
 import org.uberfire.security.ResourceType;
 import org.uberfire.workbench.model.ActivityResourceType;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 /**
  * The screen for the project context (includes the kie workbenches) which is included in a docked area
  * and displays a preview and and a diagram element's explorer (using a tree visual hierarchy) for the one being edited.
@@ -55,7 +57,7 @@ import org.uberfire.workbench.model.ActivityResourceType;
 @Named(DiagramEditorExplorerScreen.SCREEN_ID)
 public class DiagramEditorExplorerScreen extends AbstractActivity {
 
-    private static final Logger LOGGER = Logger.getLogger(DiagramEditorExplorerScreen.class.getName());
+    private static Logger LOGGER = Logger.getLogger(DiagramEditorExplorerScreen.class.getName());
 
     public static final String SCREEN_ID = "ProjectDiagramExplorerScreen";
     public static final String TITLE = "Explore";
@@ -69,15 +71,16 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
     private final View view;
 
     private PlaceRequest placeRequest;
+    private String title = TITLE;
     private TreeExplorer explorerWidget;
     private SessionDiagramPreview<AbstractSession> previewWidget;
 
     protected DiagramEditorExplorerScreen() {
         this(null,
-             null,
-             null,
-             null,
-             null);
+                null,
+                null,
+                null,
+                null);
     }
 
     @Inject
@@ -164,22 +167,21 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
 
     @SuppressWarnings("unchecked")
     void onCanvasSessionOpened(@Observes SessionOpenedEvent sessionOpenedEvent) {
-        checkNotNull("sessionOpenedEvent", sessionOpenedEvent);
+        checkNotNull("sessionOpenedEvent",
+                sessionOpenedEvent);
         show(sessionOpenedEvent.getSession());
     }
 
     void onCanvasSessionDestroyed(@Observes SessionDestroyedEvent sessionDestroyedEvent) {
-        checkNotNull("sessionDestroyedEvent", sessionDestroyedEvent);
+        checkNotNull("sessionDestroyedEvent",
+                sessionDestroyedEvent);
         close();
     }
 
     void onSessionDiagramOpenedEvent(@Observes SessionDiagramOpenedEvent sessionDiagramOpenedEvent) {
-        checkNotNull("sessionDiagramOpenedEvent", sessionDiagramOpenedEvent);
+        checkNotNull("sessionDiagramOpenedEvent",
+                sessionDiagramOpenedEvent);
         show(sessionDiagramOpenedEvent.getSession());
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private void showExplorer(final ClientSession session) {
@@ -192,36 +194,36 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
     }
 
     private void showPreview(final ClientSession session) {
-        if (session instanceof AbstractSession) {
+        if (null != session && session instanceof AbstractSession) {
             if (null != previewWidget) {
                 closePreview();
             }
             previewWidget = sessionPreviews.get();
             previewWidget.open((AbstractSession) session,
-                               new SessionViewer.SessionViewerCallback<Diagram>() {
-                                   @Override
-                                   public void afterCanvasInitialized() {
+                    new SessionViewer.SessionViewerCallback<Diagram>() {
+                        @Override
+                        public void afterCanvasInitialized() {
 
-                                   }
+                        }
 
-                                   @Override
-                                   public void onSuccess() {
-                                       previewWidget.scale(PREVIEW_WIDTH, PREVIEW_HEIGHT);
-                                       view.setPreviewWidget(previewWidget.getView());
-                                   }
+                        @Override
+                        public void onSuccess() {
+                            previewWidget.scale(PREVIEW_WIDTH, PREVIEW_HEIGHT);
+                            view.setPreviewWidget(previewWidget.getView());
+                        }
 
-                                   @Override
-                                   public void onError(final ClientRuntimeError error) {
-                                       showError(error);
-                                   }
-                               });
+                        @Override
+                        public void onError(final ClientRuntimeError error) {
+                            showError(error);
+                        }
+                    });
         }
     }
 
     private void showError(final ClientRuntimeError error) {
         final String s = error.toString();
         LOGGER.log(Level.SEVERE,
-                   s);
+                s);
     }
 
     public interface View extends IsWidget {

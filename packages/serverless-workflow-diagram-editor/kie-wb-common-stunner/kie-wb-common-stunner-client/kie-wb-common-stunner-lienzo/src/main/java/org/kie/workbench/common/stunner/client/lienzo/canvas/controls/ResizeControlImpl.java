@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.client.lienzo.canvas.controls;
 
-import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +34,6 @@ import org.kie.workbench.common.stunner.core.client.canvas.event.selection.Canva
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.CanvasViolation;
-import org.kie.workbench.common.stunner.core.client.command.RequiresCommandManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.BoundingBox;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasControlPoints;
@@ -49,14 +47,16 @@ import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
+import static org.kie.soup.commons.validation.PortablePreconditions.checkNotNull;
+
 @Dependent
 @Default
 public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<AbstractCanvasHandler> implements ResizeControl<AbstractCanvasHandler, Element> {
 
-    private static final Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
+    private static Logger LOGGER = Logger.getLogger(ResizeControlImpl.class.getName());
 
     private final CanvasCommandFactory<AbstractCanvasHandler> canvasCommandFactory;
-    private RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
+    private CommandManagerProvider<AbstractCanvasHandler> commandManagerProvider;
 
     protected ResizeControlImpl() {
         this(null);
@@ -91,7 +91,7 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
     }
 
     @Override
-    public void setCommandManagerProvider(final RequiresCommandManager.CommandManagerProvider<AbstractCanvasHandler> provider) {
+    public void setCommandManagerProvider(final CommandManagerProvider<AbstractCanvasHandler> provider) {
         this.commandManagerProvider = provider;
     }
 
@@ -117,7 +117,8 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
 
     @SuppressWarnings("unchecked")
     protected void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
-        checkNotNull("event", event);
+        checkNotNull("event",
+                     event);
         if (event.getIdentifiers().size() == 1) {
             final String uuid = event.getIdentifiers().iterator().next();
             if (isSameCanvas(event) && isRegistered(uuid)) {
@@ -132,15 +133,12 @@ public class ResizeControlImpl extends AbstractCanvasHandlerRegistrationControl<
         }
     }
 
-    private void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
-        checkNotNull("clearSelectionEvent", clearSelectionEvent);
+    protected void CanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent clearSelectionEvent) {
+        checkNotNull("clearSelectionEvent",
+                     clearSelectionEvent);
         if (isSameCanvas(clearSelectionEvent)) {
             hideALLCPs();
         }
-    }
-
-    private static <T> T checkNotNull(String objName, T obj) {
-        return Objects.requireNonNull(obj, "Parameter named '" + objName + "' should be not null!");
     }
 
     private void showCPs(final HasControlPoints<?> hasControlPoints) {

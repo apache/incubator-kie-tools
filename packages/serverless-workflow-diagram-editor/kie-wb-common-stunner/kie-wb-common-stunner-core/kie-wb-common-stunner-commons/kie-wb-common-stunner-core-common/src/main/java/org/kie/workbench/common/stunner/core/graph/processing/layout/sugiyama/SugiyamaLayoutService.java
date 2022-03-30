@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.enterprise.inject.Default;
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
@@ -54,6 +55,7 @@ import org.kie.workbench.common.stunner.core.graph.processing.layout.sugiyama.st
  * with a better node disposition and less edges crossing.
  */
 @Default
+@Singleton
 public class SugiyamaLayoutService extends AbstractLayoutService {
 
     private final CycleBreaker cycleBreaker;
@@ -102,7 +104,7 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
         this.vertexLayerer.createLayers(layeredGraph);
         this.vertexOrdering.orderVertices(layeredGraph);
         this.vertexPositioning.calculateVerticesPositions(layeredGraph,
-                                                          DEFAULT_LAYER_ARRANGEMENT);
+                DEFAULT_LAYER_ARRANGEMENT);
 
         final List<GraphLayer> orderedLayers = layeredGraph.getLayers();
         return buildLayout(indexByUuid, orderedLayers);
@@ -207,8 +209,8 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
                 }
 
                 final VertexPosition position = new VertexPositionImpl(v.getId(),
-                                                                       new Point2D(x, y),
-                                                                       new Point2D(x2, y2));
+                        new Point2D(x, y),
+                        new Point2D(x2, y2));
 
                 layout.getNodePositions().add(position);
             }

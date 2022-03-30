@@ -17,32 +17,36 @@ package org.uberfire.ext.widgets.table.client;
 
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
-import com.google.gwt.user.cellview.client.ColumnSortList;
-import com.google.gwt.user.cellview.client.RowStyles;
-import com.google.gwt.user.client.ui.ComplexPanel;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasWidgets;
-import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.CellPreviewEvent;
-import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.ProvidesKey;
-import com.google.gwt.view.client.Range;
-import com.google.gwt.view.client.RangeChangeEvent;
-import com.google.gwt.view.client.RowCountChangeEvent;
-import com.google.gwt.view.client.SelectionModel;
+import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
+
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.Label;
+import org.gwtproject.core.client.JavaScriptObject;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.uibinder.client.UiBinder;
+import org.gwtproject.uibinder.client.UiField;
+import org.gwtproject.uibinder.client.UiTemplate;
+import org.gwtproject.user.cellview.client.Column;
+import org.gwtproject.user.cellview.client.ColumnSortEvent;
+import org.gwtproject.user.cellview.client.ColumnSortList;
+import org.gwtproject.user.cellview.client.RowStyles;
+import org.gwtproject.user.client.ui.ComplexPanel;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.FlowPanel;
+import org.gwtproject.user.client.ui.HTML;
+import org.gwtproject.user.client.ui.HasWidgets;
+import org.gwtproject.user.client.ui.Widget;
+import org.gwtproject.view.client.CellPreviewEvent;
+import org.gwtproject.view.client.HasData;
+import org.gwtproject.view.client.ProvidesKey;
+import org.gwtproject.view.client.Range;
+import org.gwtproject.view.client.RangeChangeEvent;
+import org.gwtproject.view.client.RowCountChangeEvent;
+import org.gwtproject.view.client.SelectionModel;
 import org.uberfire.ext.widgets.table.client.resources.UFTableResources;
+
+import static jsinterop.annotations.JsPackage.GLOBAL;
 
 /**
  * A composite Widget that shows rows of data (not-paged) and a "column picker"
@@ -52,7 +56,7 @@ public class UberfireSimpleTable<T>
         extends Composite
         implements HasData<T> {
 
-    private static Binder uiBinder = GWT.create(Binder.class);
+    private static Binder uiBinder = new UberfireSimpleTable_BinderImpl();
     @UiField(provided = true)
     public Button columnPickerButton;
     @UiField(provided = true)
@@ -80,9 +84,13 @@ public class UberfireSimpleTable<T>
         setupGridTable();
     }
 
-    protected static native void addDataGridStyles(final JavaScriptObject grid,
-                                                   final String header,
-                                                   final String content)/*-{
+    protected static void addDataGridStyles(final JavaScriptObject grid,
+                                            final String header,
+                                            final String content) {
+        JQuery.$(grid).find("table:first").addClass(header);
+        JQuery.$(grid).find("table:last").addClass(content);
+    }
+    /*-{
         $wnd.jQuery(grid).find('table:first').addClass(header);
         $wnd.jQuery(grid).find('table:last').addClass(content);
     }-*/;
@@ -90,8 +98,8 @@ public class UberfireSimpleTable<T>
     public void addDataGridStyles(final String header,
                                   final String content) {
         addDataGridStyles(dataGrid.getElement(),
-                          header,
-                          content);
+                header,
+                content);
     }
 
     protected void setupGridTable() {
@@ -137,7 +145,7 @@ public class UberfireSimpleTable<T>
         dataGrid.addStyleName(UFTableResources.INSTANCE.CSS().dataGrid());
         dataGrid.setRowStyles((row, rowIndex) -> UFTableResources.INSTANCE.CSS().dataGridRow());
         addDataGridStyles(UFTableResources.INSTANCE.CSS().dataGridHeader(),
-                          UFTableResources.INSTANCE.CSS().dataGridContent());
+                UFTableResources.INSTANCE.CSS().dataGridContent());
     }
 
     protected void setEmptyTableWidget() {
@@ -163,7 +171,7 @@ public class UberfireSimpleTable<T>
 
     public void refresh() {
         dataGrid.setVisibleRangeAndClearData(dataGrid.getVisibleRange(),
-                                             true);
+                true);
     }
 
     @Override
@@ -218,14 +226,14 @@ public class UberfireSimpleTable<T>
     public void setRowCount(final int count,
                             final boolean isExact) {
         dataGrid.setRowCount(count,
-                             isExact);
+                isExact);
     }
 
     @Override
     public void setVisibleRange(final int start,
                                 final int length) {
         dataGrid.setVisibleRange(start,
-                                 length);
+                length);
     }
 
     @Override
@@ -257,7 +265,7 @@ public class UberfireSimpleTable<T>
     public void setRowData(final int start,
                            final List<? extends T> values) {
         dataGrid.setRowData(start,
-                            values);
+                values);
         redraw();
     }
 
@@ -269,14 +277,14 @@ public class UberfireSimpleTable<T>
     public void setSelectionModel(final SelectionModel<? super T> selectionModel,
                                   final CellPreviewEvent.Handler<T> selectionEventManager) {
         dataGrid.setSelectionModel(selectionModel,
-                                   selectionEventManager);
+                selectionEventManager);
     }
 
     @Override
     public void setVisibleRangeAndClearData(final Range range,
                                             final boolean forceRangeChangeEvent) {
         dataGrid.setVisibleRangeAndClearData(range,
-                                             forceRangeChangeEvent);
+                forceRangeChangeEvent);
     }
 
     @Override
@@ -288,14 +296,14 @@ public class UberfireSimpleTable<T>
     public void setPixelSize(final int width,
                              final int height) {
         dataGrid.setPixelSize(width,
-                              height);
+                height);
     }
 
     @Override
     public void setSize(final String width,
                         final String height) {
         dataGrid.setSize(width,
-                         height);
+                height);
     }
 
     @Override
@@ -305,10 +313,10 @@ public class UberfireSimpleTable<T>
 
     public void setColumnWidth(final Column<T, ?> column,
                                final double width,
-                               final Style.Unit unit) {
+                               final org.gwtproject.dom.style.shared.Unit unit) {
         dataGrid.setColumnWidth(column,
-                                width,
-                                unit);
+                width,
+                unit);
         getColumnPicker().adjustColumnWidths();
     }
 
@@ -355,16 +363,16 @@ public class UberfireSimpleTable<T>
     public void addColumn(final Column<T, ?> column,
                           final String caption) {
         addColumn(column,
-                  caption,
-                  true);
+                caption,
+                true);
     }
 
     public void addColumn(final Column<T, ?> column,
                           final String caption,
                           final boolean visible) {
         ColumnMeta<T> columnMeta = new ColumnMeta<T>(column,
-                                                     caption,
-                                                     visible);
+                caption,
+                visible);
         addColumn(columnMeta);
     }
 
@@ -372,7 +380,7 @@ public class UberfireSimpleTable<T>
         for (ColumnMeta columnMeta : columnMetas) {
             if (columnMeta.getHeader() == null) {
                 columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(),
-                                                     columnMeta.getColumn()));
+                        columnMeta.getColumn()));
             }
         }
         getColumnPicker().addColumns(columnMetas);
@@ -381,7 +389,7 @@ public class UberfireSimpleTable<T>
     protected void addColumn(final ColumnMeta<T> columnMeta) {
         if (columnMeta.getHeader() == null) {
             columnMeta.setHeader(getColumnHeader(columnMeta.getCaption(),
-                                                 columnMeta.getColumn()));
+                    columnMeta.getColumn()));
         }
         getColumnPicker().addColumn(columnMeta);
     }
@@ -389,9 +397,9 @@ public class UberfireSimpleTable<T>
     protected ResizableMovableHeader<T> getColumnHeader(final String caption,
                                                         final Column column) {
         final ResizableMovableHeader header = new ResizableMovableHeader<T>(caption,
-                                                                            dataGrid,
-                                                                            columnPicker,
-                                                                            column) {
+                dataGrid,
+                columnPicker,
+                column) {
             @Override
             protected int getTableBodyHeight() {
                 return dataGrid.getOffsetHeight();
@@ -419,9 +427,23 @@ public class UberfireSimpleTable<T>
 
     }
 
+    @UiTemplate
     interface Binder
             extends
             UiBinder<Widget, UberfireSimpleTable> {
 
+    }
+
+    @JsType(isNative = true, namespace = GLOBAL, name = "jQuery")
+    public static abstract class JQuery {
+
+        @JsMethod(namespace = GLOBAL, name = "jQuery")
+        public native static JQuery $(final JavaScriptObject selector);
+
+        @JsMethod(namespace = GLOBAL, name = "jQuery")
+        public native static JQuery find(String s);
+
+        @JsMethod(namespace = GLOBAL, name = "jQuery")
+        public native static void addClass(String clazz);
     }
 }

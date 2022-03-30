@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyDownEvent;
+import org.gwtproject.event.dom.client.KeyCodes;
+import org.gwtproject.event.dom.client.KeyDownEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

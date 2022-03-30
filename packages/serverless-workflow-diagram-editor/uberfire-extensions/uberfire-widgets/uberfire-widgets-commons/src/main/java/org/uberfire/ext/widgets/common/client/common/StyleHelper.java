@@ -16,8 +16,8 @@
 
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.Style;
+import org.gwtproject.dom.client.Element;
+import org.gwtproject.dom.client.Style;
 
 /**
  * Borrow from GWTBootstrap3 (https://github.com/gwtbootstrap3/gwtbootstrap3)

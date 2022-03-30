@@ -116,7 +116,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Adds a layer to the {@link LienzoFixedPanel}. It should be noted that this
-     * action will cause a {@link com.ait.lienzo.client.core.shape.Layer} draw operation, painting all children in the
+     * action will cause a {@link Layer} draw operation, painting all children in the
      * Layer.
      *
      * @param layer
@@ -131,7 +131,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Adds a layer to the {@link LienzoFixedPanel}. It should be noted that this
-     * action will cause a {@link com.ait.lienzo.client.core.shape.Layer} draw operation, painting all children in the
+     * action will cause a {@link Layer} draw operation, painting all children in the
      * Layer.
      *
      * @param layer
@@ -148,7 +148,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
 
     /**
      * Removes a layer from the {@link LienzoFixedPanel}. It should be noted that
-     * this action will cause a {@link com.ait.lienzo.client.core.shape.Layer} draw operation, painting all children in
+     * this action will cause a {@link Layer} draw operation, painting all children in
      * the Layer.
      *
      * @param layer
@@ -192,7 +192,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     }
 
     /**
-     * Returns the {@link com.ait.lienzo.client.core.shape.Viewport} main {@link com.ait.lienzo.client.core.shape.Scene}
+     * Returns the {@link Viewport} main {@link Scene}
      *
      * @return
      */
@@ -201,7 +201,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     }
 
     /**
-     * Returns the automatically create {@link com.ait.lienzo.client.core.shape.Viewport} instance.
+     * Returns the automatically create {@link Viewport} instance.
      *
      * @return
      */
@@ -219,8 +219,8 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     }
 
     /**
-     * Sets the {@link com.ait.lienzo.client.core.shape.Viewport} background {@link
-     * com.ait.lienzo.client.core.shape.Layer}
+     * Sets the {@link Viewport} background {@link
+     * Layer}
      *
      * @param layer
      */
@@ -232,7 +232,7 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     }
 
     /**
-     * Returns the {@link com.ait.lienzo.client.core.shape.Viewport} Drag {@link com.ait.lienzo.client.core.shape.Layer}
+     * Returns the {@link Viewport} Drag {@link Layer}
      *
      * @return
      */
@@ -281,8 +281,8 @@ public class LienzoFixedPanel extends LienzoPanel<LienzoFixedPanel> {
     }
 
     /**
-     * Returns the {@link com.ait.lienzo.client.core.mediator.Mediators} for this panels {@link
-     * com.ait.lienzo.client.core.shape.Viewport}. Mediators can be used to e.g. to add zoom operations.
+     * Returns the {@link Mediators} for this panels {@link
+     * Viewport}. Mediators can be used to e.g. to add zoom operations.
      *
      * @return Mediators
      */

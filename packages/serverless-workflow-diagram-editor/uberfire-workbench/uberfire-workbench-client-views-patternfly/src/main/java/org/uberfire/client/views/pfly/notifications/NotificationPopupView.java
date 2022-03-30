@@ -16,10 +16,10 @@
 
 package org.uberfire.client.views.pfly.notifications;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.DecoratedPopupPanel;
 import org.gwtbootstrap3.client.ui.Alert;
 import org.gwtbootstrap3.client.ui.constants.AlertType;
+import org.gwtproject.user.client.Command;
+import org.gwtproject.user.client.ui.DecoratedPopupPanel;
 import org.uberfire.client.resources.WorkbenchResources;
 import org.uberfire.client.views.pfly.notifications.animations.LinearFadeInAnimation;
 import org.uberfire.client.views.pfly.notifications.animations.Pause;
@@ -77,7 +77,7 @@ public class NotificationPopupView extends DecoratedPopupPanel {
 
     public void show(final Command onCompleteCommand) {
         show(onCompleteCommand,
-             true);
+                true);
     }
 
     /**

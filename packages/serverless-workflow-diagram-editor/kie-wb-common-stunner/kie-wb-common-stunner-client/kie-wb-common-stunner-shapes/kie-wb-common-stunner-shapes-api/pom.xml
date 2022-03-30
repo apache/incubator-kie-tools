@@ -37,11 +37,19 @@
   <dependencies>
 
     <!-- Stunner. -->
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-core-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-client-api</artifactId>
-      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
 
     <dependency>
@@ -52,21 +60,18 @@
     <!-- GWT and GWT Extensions -->
 
     <dependency>
-      <groupId>org.gwtbootstrap3</groupId>
+      <groupId>org.treblereel.gwt.gwtbootstrap3</groupId>
       <artifactId>gwtbootstrap3</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>uberfire-api</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>uberfire-client-api</artifactId>
     </dependency>
 
   </dependencies>

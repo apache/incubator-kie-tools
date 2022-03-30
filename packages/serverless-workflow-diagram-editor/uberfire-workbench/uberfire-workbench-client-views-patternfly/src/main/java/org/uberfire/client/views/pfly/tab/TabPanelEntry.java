@@ -18,18 +18,17 @@ package org.uberfire.client.views.pfly.tab;
 
 import java.util.function.Consumer;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasMouseDownHandlers;
-import com.google.gwt.event.dom.client.MouseDownEvent;
-import com.google.gwt.event.dom.client.MouseDownHandler;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Widget;
 import org.gwtbootstrap3.client.ui.TabListItem;
 import org.gwtbootstrap3.client.ui.TabPane;
 import org.gwtbootstrap3.client.ui.base.HasActive;
+import org.gwtproject.event.dom.client.ClickEvent;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.event.dom.client.HasClickHandlers;
+import org.gwtproject.event.dom.client.HasMouseDownHandlers;
+import org.gwtproject.event.dom.client.MouseDownEvent;
+import org.gwtproject.event.dom.client.MouseDownHandler;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.Widget;
 import org.uberfire.client.workbench.ouia.OuiaAttribute;
 import org.uberfire.client.workbench.ouia.OuiaComponent;
 import org.uberfire.client.workbench.ouia.OuiaComponentIdAttribute;
@@ -56,12 +55,12 @@ public class TabPanelEntry implements HasActive {
     public TabPanelEntry(String title,
                          Widget contents) {
         this.title = title;
-        this.tab = GWT.create(DropDownTabListItem.class);
+        this.tab = new DropDownTabListItem();
         this.tab.setText(title);
         this.tab.initOuiaComponentAttributes();
         this.contents = contents;
 
-        contentPane = GWT.create(TabPane.class);
+        contentPane = new TabPane();
         contentPane.add(contents);
 
         tab.setDataTargetWidget(contentPane);
@@ -128,8 +127,8 @@ public class TabPanelEntry implements HasActive {
      * Represents the tab widget that lives in the tab bar or under a dropdown tab.
      */
     public static class DropDownTabListItem extends TabListItem implements HasClickHandlers,
-                                                                           HasMouseDownHandlers,
-                                                                           OuiaComponent {
+            HasMouseDownHandlers,
+            OuiaComponent {
 
         public DropDownTabListItem() {
             this(null);
@@ -157,13 +156,13 @@ public class TabPanelEntry implements HasActive {
         @Override
         public HandlerRegistration addClickHandler(ClickHandler handler) {
             return addDomHandler(handler,
-                                 ClickEvent.getType());
+                    ClickEvent.getType());
         }
 
         @Override
         public HandlerRegistration addMouseDownHandler(MouseDownHandler handler) {
             return addDomHandler(handler,
-                                 MouseDownEvent.getType());
+                    MouseDownEvent.getType());
         }
 
         @Override
@@ -179,7 +178,7 @@ public class TabPanelEntry implements HasActive {
         @Override
         public Consumer<OuiaAttribute> ouiaAttributeRenderer() {
             return ouiaAttribute -> getElement().setAttribute(ouiaAttribute.getName(),
-                                                              ouiaAttribute.getValue());
+                    ouiaAttribute.getValue());
         }
     }
 }

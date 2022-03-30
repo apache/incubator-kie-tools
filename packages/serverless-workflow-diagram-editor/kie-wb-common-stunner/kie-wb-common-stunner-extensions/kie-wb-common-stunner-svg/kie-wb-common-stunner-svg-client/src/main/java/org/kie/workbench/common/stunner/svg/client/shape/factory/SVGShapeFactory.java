@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.jboss.errai.ioc.client.container.SyncBeanManager;
+import io.crysknife.client.BeanManager;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFactory;
 import org.kie.workbench.common.stunner.core.client.shape.factory.ShapeDefFunctionalFactory;
@@ -39,16 +39,16 @@ import org.kie.workbench.common.stunner.svg.client.shape.view.impl.SVGShapeViewI
 public class SVGShapeFactory
         implements ShapeDefFactory<Object, SVGShapeDef, SVGShape<?>> {
 
-    private final SyncBeanManager beanManager;
+    private final BeanManager beanManager;
     private final ShapeDefFunctionalFactory<Object, SVGShapeDef, Shape> functionalFactory;
 
     protected SVGShapeFactory() {
         this(null,
-             null);
+                null);
     }
 
     @Inject
-    public SVGShapeFactory(final SyncBeanManager beanManager,
+    public SVGShapeFactory(final BeanManager beanManager,
                            final ShapeDefFunctionalFactory<Object, SVGShapeDef, Shape> functionalFactory) {
         this.beanManager = beanManager;
         this.functionalFactory = functionalFactory;
@@ -60,9 +60,9 @@ public class SVGShapeFactory
         // Set the shape instance builders for each supported svg shape definition..
         functionalFactory
                 .set(SVGShapeDef.class,
-                     this::newSVGShape)
+                        this::newSVGShape)
                 .set(SVGShapeViewDef.class,
-                     this::newSVGMutableShape);
+                        this::newSVGMutableShape);
     }
 
     @Override
@@ -70,13 +70,13 @@ public class SVGShapeFactory
     public SVGShape<?> newShape(final Object instance,
                                 final SVGShapeDef shapeDef) {
         return (SVGShape<?>) functionalFactory.newShape(instance,
-                                                        shapeDef);
+                shapeDef);
     }
 
     private SVGShape<?> newSVGShape(final Object instance,
                                     final SVGShapeDef shapeDef) {
         return new SVGShapeImpl(newSVGShapeView(instance,
-                                                shapeDef));
+                shapeDef));
     }
 
     @SuppressWarnings("unchecked")
@@ -84,9 +84,9 @@ public class SVGShapeFactory
                                            final SVGShapeDef shapeDef) {
         final SVGShapeViewDef mutableShapeDef = (SVGShapeViewDef) shapeDef;
         final SVGShapeView view = newSVGShapeView(instance,
-                                                  mutableShapeDef);
+                mutableShapeDef);
         return new SVGMutableShapeImpl<Object, SVGShapeViewDef<Object, Object>>(mutableShapeDef,
-                                                                                (SVGShapeViewImpl) view);
+                (SVGShapeViewImpl) view);
     }
 
     @SuppressWarnings("unchecked")
@@ -94,7 +94,7 @@ public class SVGShapeFactory
                                              final SVGShapeDef shapeDef) {
         final Object factory = getViewFactory(shapeDef);
         return (SVGShapeViewImpl) shapeDef.newViewInstance(factory,
-                                                           instance);
+                instance);
     }
 
     Object getViewFactory(final SVGShapeDef def) {

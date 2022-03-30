@@ -1,0 +1,5 @@
+/**
+ * @externs
+ */
+
+var Mustache = function () {};

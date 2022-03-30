@@ -16,33 +16,33 @@
 
 package org.kie.workbench.common.stunner.client.widgets.palette.categories.group;
 
-import java.util.Objects;
-
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.event.dom.client.ClickEvent;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLLIElement;
+import io.crysknife.client.IsElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
 import org.jboss.errai.common.client.dom.DOMUtil;
-import org.jboss.errai.common.client.dom.ListItem;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import org.kie.soup.commons.validation.PortablePreconditions;
 import org.kie.workbench.common.stunner.client.widgets.palette.categories.items.DefinitionPaletteItemWidget;
 
 @Templated
 @Dependent
 public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGroupWidgetView,
-                                                             IsElement {
+        IsElement {
 
     @Inject
     @DataField
-    private ListItem moreAnchor;
+    private HTMLLIElement moreAnchor;
 
     @Inject
     @DataField
-    private ListItem lessAnchor;
+    private HTMLLIElement lessAnchor;
 
     private Presenter presenter;
 
@@ -58,43 +58,45 @@ public class DefinitionPaletteGroupWidgetViewImpl implements DefinitionPaletteGr
 
     @Override
     public void addItem(DefinitionPaletteItemWidget categoryItem) {
-        Objects.requireNonNull(categoryItem, "Parameter named 'categoryItem' should be not null!");
+
+        PortablePreconditions.checkNotNull("categoryItem",
+                categoryItem);
         this.getElement().appendChild(categoryItem.getElement());
     }
 
     @Override
     public void addAnchors() {
-        moreAnchor.getStyle().setProperty("display",
-                                          "none");
-        lessAnchor.getStyle().setProperty("display",
-                                          "none");
+        moreAnchor.style.setProperty("display",
+                "none");
+        lessAnchor.style.setProperty("display",
+                "none");
         this.getElement().appendChild(moreAnchor);
         this.getElement().appendChild(lessAnchor);
     }
 
     @Override
     public void showMoreAnchor() {
-        moreAnchor.getStyle().setProperty("display",
-                                          "block");
-        lessAnchor.getStyle().setProperty("display",
-                                          "none");
+        moreAnchor.style.setProperty("display",
+                "block");
+        lessAnchor.style.setProperty("display",
+                "none");
     }
 
     @Override
     public void showLessAnchor() {
-        moreAnchor.getStyle().setProperty("display",
-                                          "none");
-        lessAnchor.getStyle().setProperty("display",
-                                          "block");
+        moreAnchor.style.setProperty("display",
+                "none");
+        lessAnchor.style.setProperty("display",
+                "block");
     }
 
     @EventHandler("moreAnchor")
-    public void showMore(ClickEvent clickEvent) {
+    public void showMore(@ForEvent("click") Event clickEvent) {
         presenter.showMore();
     }
 
     @EventHandler("lessAnchor")
-    public void showLess(ClickEvent clickEvent) {
+    public void showLess(@ForEvent("click") Event  clickEvent) {
         presenter.showLess();
     }
 

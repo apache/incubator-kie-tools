@@ -26,22 +26,18 @@ import com.ait.lienzo.client.core.types.DashArray;
 import com.ait.lienzo.client.core.types.Point2D;
 import com.ait.lienzo.client.core.types.Point2DArray;
 import com.ait.lienzo.shared.core.types.ShapeType;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 
 /**
  * Line is a line segment between two points.
  * The class can be used to draw regular lines as well as dashed lines.
  * To create a dashed line, use one of the setDashArray() methods.
  */
-@JsType
 public class Line extends AbstractOffsetMultiPointShape<Line> {
 
     /**
      * Constructor.  Creates an instance of a line of 0-pixel length, at the 0,0
      * coordinates.
      */
-    @JsIgnore
     public Line() {
         this(0, 0, 0, 0);
     }
@@ -54,7 +50,6 @@ public class Line extends AbstractOffsetMultiPointShape<Line> {
      * @param x2 second point X coordinate
      * @param y2 second point Y coordinate
      */
-    @JsIgnore
     public Line(final double x1, final double y1, final double x2, final double y2) {
         this(new Point2D(x1, y1), new Point2D(x2, y2));
     }

@@ -53,7 +53,7 @@ public class UberfireDocksImpl implements UberfireDocks {
         this.dockReadyEvent = dockReadyEvent;
     }
 
-    protected void setup(@Observes UberfireDockContainerReadyEvent event) {
+    public void setup(@Observes UberfireDockContainerReadyEvent event) {
         docksBars.setup();
 
         updateAllDocks();
@@ -86,7 +86,7 @@ public class UberfireDocksImpl implements UberfireDocks {
     @Override
     public void open(UberfireDock dock) {
         executeOnDocks(dock.getDockPosition(),
-                       () -> docksBars.open(dock));
+                () -> docksBars.open(dock));
     }
 
     private void executeOnDocks(UberfireDockPosition position,
@@ -105,14 +105,14 @@ public class UberfireDocksImpl implements UberfireDocks {
     @Override
     public void close(UberfireDock dock) {
         executeOnDocks(dock.getDockPosition(),
-                       () -> docksBars.close(dock));
+                () -> docksBars.close(dock));
     }
 
     @Override
     public void show(UberfireDockPosition position) {
         disableDocks.remove(position);
         executeOnDocks(position,
-                       () -> showDock(position));
+                () -> showDock(position));
     }
 
     private void showDock(UberfireDockPosition position) {

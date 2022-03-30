@@ -16,9 +16,10 @@
 
 package org.uberfire.ext.wires.core.grids.client.widget.scrollbars;
 
-import com.google.gwt.dom.client.Style;
-import com.google.gwt.user.client.ui.AbsolutePanel;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.dom.client.Style;
+import org.gwtproject.user.client.ui.AbsolutePanel;
+import org.gwtproject.user.client.ui.Panel;
+import org.gwtproject.user.client.ui.Widget;
 
 /*
  * Applies the scrollbar style in the Grid Lienzo panels.
@@ -52,7 +53,7 @@ class GridLienzoScrollUI {
         style(getDomElementContainer()).setZIndex(1);
     }
 
-    private AbsolutePanel getScrollPanel() {
+    private Panel getScrollPanel() {
         return gridLienzoScrollHandler.getScrollPanel();
     }
 

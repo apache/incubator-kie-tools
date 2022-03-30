@@ -23,10 +23,10 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import com.google.gwt.regexp.shared.MatchResult;
-import com.google.gwt.regexp.shared.RegExp;
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.safehtml.shared.UriUtils;
+import org.gwtproject.regexp.shared.MatchResult;
+import org.gwtproject.regexp.shared.RegExp;
+import org.gwtproject.safehtml.shared.SafeUri;
+import org.gwtproject.safehtml.shared.UriUtils;
 import org.jboss.errai.common.client.util.Base64Util;
 
 /**
@@ -55,7 +55,7 @@ public class SvgDataUriGenerator {
      */
     public static String encodeUtf8(final String dataUriDecoded) {
         return SVG_DATA_URI_UTF8 + UriUtils.encode(dataUriDecoded).replace("#",
-                                                                           "%23");
+                "%23");
     }
 
     /**
@@ -63,8 +63,8 @@ public class SvgDataUriGenerator {
      */
     public static String encodeBase64(final String dataUriDecoded) {
         return SVG_DATA_URI_BASE64 + Base64Util.encode(dataUriDecoded.getBytes(),
-                                                       0,
-                                                       dataUriDecoded.length());
+                0,
+                dataUriDecoded.length());
     }
 
     /**
@@ -76,8 +76,8 @@ public class SvgDataUriGenerator {
     @SuppressWarnings("unchecked")
     public String generate(final SafeUri svgUri) {
         return generate(svgUri,
-                        Collections.EMPTY_LIST,
-                        Collections.EMPTY_LIST);
+                Collections.EMPTY_LIST,
+                Collections.EMPTY_LIST);
     }
 
     /**
@@ -113,19 +113,19 @@ public class SvgDataUriGenerator {
                            final Collection<String> validUseRefIds) {
         final String mainContent =
                 getSVGContent(svgUri.asString(),
-                              new SVGGeneratorOptions(true,
-                                                      validUseRefIds.isEmpty(),
-                                                      viewName -> !validUseRefIds.contains(viewName),
-                                                      true));
+                        new SVGGeneratorOptions(true,
+                                validUseRefIds.isEmpty(),
+                                viewName -> !validUseRefIds.contains(viewName),
+                                true));
 
         if (!svgDefs.isEmpty()) {
             final String childrenContent = getChildrenSVGContent(svgDefs,
-                                                                 new SVGGeneratorOptions(true,
-                                                                                         true,
-                                                                                         false));
+                    new SVGGeneratorOptions(true,
+                            true,
+                            false));
             final String defs = DEFS_OPEN_TAG + childrenContent + DEFS_CLOSE_TAG;
             final String svgOpenTag = SVG_OPEN_TAG.replaceAll("\\%1s",
-                                                              generateSVGSizeAttributesToAppend(mainContent));
+                    generateSVGSizeAttributesToAppend(mainContent));
             return svgOpenTag +
                     mainContent +
                     defs
@@ -138,7 +138,7 @@ public class SvgDataUriGenerator {
                                                 final SVGGeneratorOptions options) {
         return uris.stream()
                 .map(uriStream -> getSVGContent(uriStream.asString(),
-                                                options))
+                        options))
                 .collect(Collectors.joining(" "));
     }
 
@@ -156,7 +156,7 @@ public class SvgDataUriGenerator {
             s = removeAllUseTags(s);
         } else {
             s = removeUseTagsById(s,
-                                  options.isRemoveUseForView);
+                    options.isRemoveUseForView);
         }
         if (options.removeHrefFileNames) {
             s = removeAllHrefFileName(s);
@@ -166,20 +166,20 @@ public class SvgDataUriGenerator {
 
     private static String removeXmlTag(final String content) {
         return removeAll(XML_TAG_PATTERN,
-                         0,
-                         content);
+                0,
+                content);
     }
 
     private static String removeAllUseTags(final String content) {
         return removeAll(USE_TAG_PATTERN,
-                         0,
-                         content);
+                0,
+                content);
     }
 
     private static String removeAllHrefFileName(final String content) {
         return removeAll(HREF_FILENAME_PATTERN,
-                         1,
-                         content);
+                1,
+                content);
     }
 
     private static String removeAll(final RegExp exp,
@@ -191,7 +191,7 @@ public class SvgDataUriGenerator {
             if (matchResult != null) {
                 String toReplace = matchResult.getGroup(group);
                 result = result.replace(toReplace,
-                                        "");
+                        "");
             }
         }
         return result;
@@ -207,7 +207,7 @@ public class SvgDataUriGenerator {
                 String id = matchResult.getGroup(1);
                 if (isRemove.test(id)) {
                     result = result.replace(matchResult.getGroup(0),
-                                            "");
+                            "");
                 }
                 temp = temp.substring(matchResult.getIndex() + id.length());
             }
@@ -242,7 +242,7 @@ public class SvgDataUriGenerator {
             return SVGContentType.XML_UTF8;
         }
         throw new IllegalArgumentException("The image data-uri specified is not a valid SVG data " +
-                                                   "for being embedded into the DOM.");
+                "for being embedded into the DOM.");
     }
 
     private enum SVGContentType {

@@ -165,7 +165,7 @@ public class NativeContext2D extends CanvasRenderingContext2D {
 
         grad.addColorStop(1, color);
 
-        this.fillStyle = CanvasRenderingContext2D.FillStyleUnionType.of(grad);
+        this.fillStyle = FillStyleUnionType.of(grad);
 
         this.fillText(text, x, y);
     }

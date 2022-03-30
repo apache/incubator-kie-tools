@@ -15,13 +15,13 @@
  */
 package org.uberfire.ext.widgets.common.client.common;
 
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
+import org.gwtproject.event.dom.client.ClickHandler;
+import org.gwtproject.event.dom.client.HasClickHandlers;
+import org.gwtproject.event.shared.HandlerRegistration;
+import org.gwtproject.user.client.ui.Composite;
+import org.gwtproject.user.client.ui.HorizontalPanel;
+import org.gwtproject.user.client.ui.Image;
+import org.gwtproject.user.client.ui.Label;
 import org.uberfire.ext.widgets.common.client.resources.CommonImages;
 
 public class AddButton extends Composite

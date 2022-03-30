@@ -33,50 +33,38 @@
   <description>Uberfire Widgets Core Client</description>
 
   <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor.legacy</groupId>
+      <artifactId>compat</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.treblereel.gwt.gwtbootstrap3</groupId>
+      <artifactId>gwtbootstrap3</artifactId>
+    </dependency>
 
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>uberfire-widgets-commons</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>uberfire-api</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
-
-    <!-- CDI Integration Modules -->
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>org.treblereel.gwt.gwtproject.resources</groupId>
+      <artifactId>gwt-resources-processor</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <!-- Errai Core -->
     <dependency>
-      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-      <artifactId>errai-ioc</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>org.jboss.spec.javax.annotation</groupId>
-          <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <!-- GWT and GWT Extensions -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
+      <groupId>org.treblereel.gwt.gwtproject.i18n</groupId>
+      <artifactId>gwt-i18n-processor</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt.gwtmockito</groupId>
-      <artifactId>gwtmockito</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.eclipse.jetty</groupId>
-          <artifactId>jetty-annotations</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
   </dependencies>
 
 </project>
