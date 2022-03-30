@@ -14,7 +14,12 @@
  * limitations under the License.
  */
 
-import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
+import {
+  Page,
+  PageHeaderToolsItem,
+  PageSection,
+  PageSectionVariants,
+} from "@patternfly/react-core/dist/js/components/Page";
 import * as React from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
@@ -32,25 +37,26 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const [alerts, alertsRef] = useAlertsController();
 
   return (
-    <Page
-      header={
-        <Masthead aria-label={"Page header"} display={{ default: "stack" }} backgroundColor="light">
-          <MastheadMain style={{ justifyContent: "space-between" }}>
-            <Alerts ref={alertsRef} width={"500px"} />
-            <PageHeaderToolsItem className={"pf-l-flex"}>
+    <Page>
+      <PageSection variant={PageSectionVariants.light}>
+        <Alerts ref={alertsRef} width={"500px"} />
+        <Flex>
+          <FlexItem>
+            <PageHeaderToolsItem>
               <MastheadBrand
                 onClick={() => history.replace({ pathname: routes.home.path({}) })}
                 style={{ textDecoration: "none" }}
               >
-                <Flex alignItems={{ default: "alignItemsCenter" }}>
-                  <FlexItem style={{ display: "flex", alignItems: "center" }}>
-                    <TextContent>
-                      <Text component={TextVariants.h1}>Serverless Workflow</Text>
-                    </TextContent>
-                  </FlexItem>
-                </Flex>
+                <TextContent>
+                  <Text component={TextVariants.h1}>Serverless Workflow</Text>
+                  <Text component={TextVariants.p}>
+                    Manage and deploy your Serverless Workflows to the Openshift cloud.
+                  </Text>
+                </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>
+          </FlexItem>
+          <FlexItem grow={{ default: "grow" }} alignSelf={{ default: "alignSelfCenter" }}>
             <Flex justifyContent={{ default: "justifyContentFlexEnd" }} spaceItems={{ default: "spaceItemsNone" }}>
               <FlexItem>
                 <PageHeaderToolsItem>
@@ -63,10 +69,9 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 </PageHeaderToolsItem>
               </FlexItem>
             </Flex>
-          </MastheadMain>
-        </Masthead>
-      }
-    >
+          </FlexItem>
+        </Flex>
+      </PageSection>
       {props.children}
     </Page>
   );

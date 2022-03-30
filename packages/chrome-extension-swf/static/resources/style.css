@@ -648,3 +648,7 @@ section.kie-tools--settings-tab {
     opacity: 0;
   }
 }
+
+.pf-c-masthead__main::before {
+  display: none;
+}
