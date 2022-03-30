@@ -133,25 +133,15 @@ export const ImportJavaClassesWizardFirstStep = ({
   return (
     <>
       <div className="fs-search-input">
-        {searchValue.length < 3 ? (
-          <Tooltip content={i18n.modalWizard.firstStep.input.tooltip}>
-            <SearchInput
-              autoFocus
-              onChange={handleSearchValueChange}
-              onClear={handleClearSearch}
-              placeholder={i18n.modalWizard.firstStep.input.placeholder}
-              value={searchValue}
-            />
-          </Tooltip>
-        ) : (
+        <Tooltip content={i18n.modalWizard.firstStep.input.tooltip} isVisible={searchValue.length < 3}>
           <SearchInput
-            autoFocus
+            autoFocus={true}
             onChange={handleSearchValueChange}
             onClear={handleClearSearch}
             placeholder={i18n.modalWizard.firstStep.input.placeholder}
             value={searchValue}
           />
-        )}
+        </Tooltip>
       </div>
       {isRequestLoading ? (
         <Bullseye>
