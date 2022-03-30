@@ -135,7 +135,7 @@ export const ImportJavaClassesWizardFirstStep = ({
       <div className="fs-search-input">
         <Tooltip content={i18n.modalWizard.firstStep.input.tooltip} isVisible={searchValue.length < 3}>
           <SearchInput
-            autoFocus={true}
+            autoFocus
             onChange={handleSearchValueChange}
             onClear={handleClearSearch}
             placeholder={i18n.modalWizard.firstStep.input.placeholder}
