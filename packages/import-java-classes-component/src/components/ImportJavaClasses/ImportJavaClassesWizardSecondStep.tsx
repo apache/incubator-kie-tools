@@ -41,9 +41,10 @@ export const ImportJavaClassesWizardSecondStep = ({
   onSelectedJavaClassedFieldsLoaded,
   selectedJavaClasses,
 }: ImportJavaClassesWizardSecondStepProps) => {
+  const getPrefix = "get";
   const generateJavaClassField = useCallback((name: string, type: string, javaClasses: JavaClass[]) => {
-    let dmnTypeRef: string = JAVA_TO_DMN_MAP.get(getJavaClassSimpleName(type)) || DMNSimpleType.UNDEFINED;
-    if (dmnTypeRef === DMNSimpleType.UNDEFINED && javaClasses.some((javaClass) => javaClass.name === type)) {
+    let dmnTypeRef: string = JAVA_TO_DMN_MAP.get(getJavaClassSimpleName(type)) || DMNSimpleType.ANY;
+    if (dmnTypeRef === DMNSimpleType.ANY && javaClasses.some((javaClass) => javaClass.name === type)) {
       dmnTypeRef = getJavaClassSimpleName(type);
     }
     return new JavaField(name, type, dmnTypeRef);
@@ -56,10 +57,13 @@ export const ImportJavaClassesWizardSecondStep = ({
           .getFields(className)
           .then((javaCodeCompletionFields) => {
             const retrievedFields = javaCodeCompletionFields
-              .filter((javaCodeCompletionField) => javaCodeCompletionField.type !== "void")
+              .filter(
+                (javaCodeCompletionField) =>
+                  !isMethod(javaCodeCompletionField.accessor) || isGetterMethod(javaCodeCompletionField.accessor)
+              )
               .map((javaCodeCompletionField) =>
                 generateJavaClassField(
-                  javaCodeCompletionField.accessor,
+                  renameAccessorName(javaCodeCompletionField.accessor),
                   javaCodeCompletionField.type,
                   selectedJavaClasses
                 )
@@ -84,6 +88,23 @@ export const ImportJavaClassesWizardSecondStep = ({
         .forEach((javaClass) => loadJavaFields(javaClass.name)),
     [selectedJavaClasses, loadJavaFields]
   );
+
+  const isGetterMethod = useCallback((accessorName: string) => {
+    return accessorName.includes("()") && accessorName.startsWith(getPrefix);
+  }, []);
+
+  const isMethod = useCallback((accessorName: string) => {
+    return accessorName.includes("(") && accessorName.includes(")");
+  }, []);
+
+  const renameAccessorName = useCallback((originalName: string) => {
+    if (isGetterMethod(originalName)) {
+      const name = originalName.substring(originalName.indexOf(getPrefix) + 3, originalName.lastIndexOf("("));
+      return name.charAt(0).toLowerCase() + name.slice(1);
+    } else {
+      return originalName;
+    }
+  }, []);
 
   return (
     <>
