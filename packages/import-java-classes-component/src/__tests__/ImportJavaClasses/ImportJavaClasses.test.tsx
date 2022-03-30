@@ -62,7 +62,7 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).not.toBeInTheDocument();
   });
 
-  test.skip("Should search box with results works", async () => {
+  test("Should search box with results works", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
@@ -80,13 +80,14 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should close Modal after opening it and clicking on the Cancel button", () => {
+  test("Should close Modal after opening it and clicking on the Cancel button", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
         javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     modalWizardButton.click();
     const cancelButton = getByText("Cancel") as HTMLButtonElement;
@@ -203,7 +204,7 @@ describe("ImportJavaClasses component tests", () => {
 
   async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
     await waitFor(() => {
-      expect(baseElement.querySelector('[aria-label="class-data-list"]')).toBeInTheDocument();
+      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
     });
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
@@ -276,14 +277,10 @@ describe("ImportJavaClasses component tests", () => {
 
   function getJavaCodeCompletionServiceMock(classMocks: JavaCodeCompletionClass[]) {
     const javaCodeCompletionServiceMock: JavaCodeCompletionService = {
-      getClasses: jest.fn(() => new Promise(() => classMocks)),
-      getFields: jest.fn(() => new Promise(() => [])),
-      isLanguageServerAvailable: isLanguageServerAvailableMock,
+      getClasses: (value) => Promise.resolve(classMocks),
+      getFields: (value) => Promise.resolve([]),
+      isLanguageServerAvailable: () => Promise.resolve(true),
     };
     return javaCodeCompletionServiceMock;
   }
-
-  const isLanguageServerAvailableMock = async () => {
-    return true;
-  };
 });

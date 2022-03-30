@@ -9,7 +9,7 @@ exports[`ImportJavaClasses component tests Should close Modal after opening it a
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary"
+      class="pf-c-button pf-m-secondary pf-m-progress"
       data-ouia-component-id="OUIA-Generated-Button-secondary-5"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
@@ -1532,7 +1532,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary"
+      class="pf-c-button pf-m-secondary pf-m-progress"
       data-ouia-component-id="OUIA-Generated-Button-secondary-4"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
@@ -1601,7 +1601,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
               class="pf-c-modal-box__description"
               id="pf-modal-part-4"
             >
-              It converts your Java assets to DMN types. This is a one-time import action: if the Java class get updated, you will need to reimport it
+              It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
@@ -1702,55 +1702,22 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                       class="pf-c-wizard__main-body"
                     >
                       <div
-                        class="pf-c-search-input"
+                        class="fs-search-input"
                       >
                         <div
-                          class="pf-c-input-group"
+                          class="pf-c-search-input"
                         >
                           <div
-                            class="pf-c-search-input__bar"
+                            class="pf-c-input-group"
                           >
-                            <span
-                              class="pf-c-search-input__text"
+                            <div
+                              class="pf-c-search-input__bar"
                             >
                               <span
-                                class="pf-c-search-input__icon"
+                                class="pf-c-search-input__text"
                               >
-                                <svg
-                                  aria-hidden="true"
-                                  fill="currentColor"
-                                  height="1em"
-                                  role="img"
-                                  style="vertical-align: -0.125em;"
-                                  viewBox="0 0 512 512"
-                                  width="1em"
-                                >
-                                  <path
-                                    d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
-                                  />
-                                </svg>
-                              </span>
-                              <input
-                                aria-label="Search input"
-                                class="pf-c-search-input__text-input"
-                                placeholder="Search a class name ..."
-                                value="test"
-                              />
-                            </span>
-                            <span
-                              class="pf-c-search-input__utilities"
-                            >
-                              <span
-                                class="pf-c-search-input__clear"
-                              >
-                                <button
-                                  aria-disabled="false"
-                                  aria-label="Reset"
-                                  class="pf-c-button pf-m-plain"
-                                  data-ouia-component-id="OUIA-Generated-Button-plain-5"
-                                  data-ouia-component-type="PF4/Button"
-                                  data-ouia-safe="true"
-                                  type="button"
+                                <span
+                                  class="pf-c-search-input__icon"
                                 >
                                   <svg
                                     aria-hidden="true"
@@ -1758,16 +1725,53 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                                     height="1em"
                                     role="img"
                                     style="vertical-align: -0.125em;"
-                                    viewBox="0 0 352 512"
+                                    viewBox="0 0 512 512"
                                     width="1em"
                                   >
                                     <path
-                                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                      d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"
                                     />
                                   </svg>
-                                </button>
+                                </span>
+                                <input
+                                  aria-label="Search input"
+                                  class="pf-c-search-input__text-input"
+                                  placeholder="Type the class name here"
+                                  value="test"
+                                />
                               </span>
-                            </span>
+                              <span
+                                class="pf-c-search-input__utilities"
+                              >
+                                <span
+                                  class="pf-c-search-input__clear"
+                                >
+                                  <button
+                                    aria-disabled="false"
+                                    aria-label="Reset"
+                                    class="pf-c-button pf-m-plain"
+                                    data-ouia-component-id="OUIA-Generated-Button-plain-5"
+                                    data-ouia-component-type="PF4/Button"
+                                    data-ouia-safe="true"
+                                    type="button"
+                                  >
+                                    <svg
+                                      aria-hidden="true"
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style="vertical-align: -0.125em;"
+                                      viewBox="0 0 352 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                      />
+                                    </svg>
+                                  </button>
+                                </span>
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
