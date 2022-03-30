@@ -19,7 +19,14 @@ import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { CellProps } from "../../api";
-import { blurActiveElement, focusCurrentCell, focusNextCell, focusPrevCell, focusTextInput, paste } from "./common";
+import {
+  blurActiveElement,
+  focusCurrentCell,
+  focusNextCellByTabKey,
+  focusPrevCellByTabKey,
+  focusTextInput,
+  paste,
+} from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
 
@@ -179,10 +186,10 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       if (isTab) {
         if (!event.shiftKey) {
           //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusNextCell(textarea.current, 1, false), 0);
+          setTimeout(() => focusNextCellByTabKey(textarea.current, 1), 0);
         } else {
           //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusPrevCell(textarea.current, 1, false), 0);
+          setTimeout(() => focusPrevCellByTabKey(textarea.current, 1), 0);
         }
       }
     },

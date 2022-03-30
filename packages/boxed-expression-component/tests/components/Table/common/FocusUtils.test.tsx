@@ -23,9 +23,11 @@ import {
   focusCurrentCell,
   focusInsideCell,
   focusLowerCell,
-  focusNextCell,
+  focusNextCellByArrowKey,
+  focusNextCellByTabKey,
   focusParentCell,
-  focusPrevCell,
+  focusPrevCellByArrowKey,
+  focusPrevCellByTabKey,
   focusTextInput,
   focusUpperCell,
   getParentCell,
@@ -285,101 +287,178 @@ describe("FocusUtils tests", () => {
     });
   });
 
-  describe("focusNextCell tests", () => {
+  describe("focusNextCellByArrowKey tests", () => {
     it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
-      expect(() => focusNextCell()).not.toThrowError();
-      expect(() => focusNextCell(null)).not.toThrowError();
+      expect(() => focusNextCellByArrowKey()).not.toThrowError();
+      expect(() => focusNextCellByArrowKey(null)).not.toThrowError();
     });
 
     it("should focus the next data cell", () => {
-      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[2], focusNextCell);
+      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[2], focusNextCellByArrowKey);
     });
 
     it("should focus the next header cell", () => {
-      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[2], focusNextCell);
-    });
-
-    it("should focus the first cell of the next line", () => {
-      testFocus(mockTable.rows[2].cells[5], mockTable.rows[3].cells[1], (element) => focusNextCell(element, 1, false));
+      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[2], focusNextCellByArrowKey);
     });
 
     it.each([
-      { from: { rowIndex: 0, cellIndex: 0 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 2, cellIndex: 1 }, rowspan: 2, stopAtEndOfRow: false },
+      { from: { rowIndex: 0, cellIndex: 0 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1 },
     ])(
       "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
-      ({ from, to, rowspan, stopAtEndOfRow }) => {
+      ({ from, to, rowspan }) => {
         testFocus(
           mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
           mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
-          (element) => focusNextCell(element, rowspan, stopAtEndOfRow)
+          (element) => focusNextCellByArrowKey(element, rowspan)
         );
       }
     );
 
     it("should not change the focus", () => {
-      shouldNotChangeFocus(mockTable.rows[4].cells[5], focusNextCell);
-      shouldNotChangeFocus(mockTableColRowspan.rows[1].cells[5], focusNextCell);
+      shouldKeepFocus(mockTable.rows[4].cells[5], focusNextCellByArrowKey);
+      shouldKeepFocus(mockTableColRowspan.rows[1].cells[5], focusNextCellByArrowKey);
     });
   });
 
-  describe("focusPrevCell tests", () => {
+  describe("focusNextCellByTabKey tests", () => {
     it("should not throw errors with wrong inputs", () => {
       // @ts-ignore
-      expect(() => focusPrevCell()).not.toThrowError();
-      expect(() => focusPrevCell(null)).not.toThrowError();
+      expect(() => focusNextCellByTabKey()).not.toThrowError();
+      expect(() => focusNextCellByTabKey(null)).not.toThrowError();
     });
 
-    it("should focus the previous cell", () => {
-      testFocus(mockTable.rows[2].cells[2], mockTable.rows[2].cells[1], (element) => focusPrevCell(element, 1, false));
+    it("should focus the next data cell", () => {
+      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[2], focusNextCellByTabKey);
     });
 
-    it("should focus the last cell of the previous line", () => {
-      testFocus(mockTable.rows[3].cells[1], mockTable.rows[2].cells[5], (element) => focusPrevCell(element, 1, false));
+    it("should focus the next header cell", () => {
+      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[2], focusNextCellByTabKey);
     });
 
-    it("should focus the last cell of the header", () => {
-      testFocus(mockTable.rows[2].cells[1], mockTable.rows[1].cells[5], (element) => focusPrevCell(element, 1, false));
-    });
-
-    it("should focus the previous data cell", () => {
-      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[0], focusPrevCell);
-    });
-
-    it("should focus the previous header cell", () => {
-      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[0], focusPrevCell);
+    it("should focus the first cell of the next line", () => {
+      testFocus(mockTable.rows[2].cells[5], mockTable.rows[3].cells[1], (element) => focusNextCellByTabKey(element, 1));
     });
 
     it.each([
-      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: true },
-      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 1, stopAtEndOfRow: true },
-      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1, stopAtEndOfRow: true },
-      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2, stopAtEndOfRow: true },
-      { from: { rowIndex: 2, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 1, stopAtEndOfRow: false },
-      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 2, stopAtEndOfRow: false },
-      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2, stopAtEndOfRow: true },
+      { from: { rowIndex: 0, cellIndex: 0 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 2, cellIndex: 1 }, rowspan: 2 },
     ])(
       "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
-      ({ from, to, rowspan, stopAtEndOfRow }) => {
+      ({ from, to, rowspan }) => {
         testFocus(
           mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
           mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
-          (element) => focusPrevCell(element, rowspan, stopAtEndOfRow)
+          (element) => focusNextCellByTabKey(element, rowspan)
+        );
+      }
+    );
+
+    it("should not change the focus", () => {
+      shouldKeepFocus(mockTable.rows[4].cells[5], focusNextCellByTabKey);
+    });
+  });
+
+  describe("focusPrevCellByArrowKey tests", () => {
+    it("should not throw errors with wrong inputs", () => {
+      // @ts-ignore
+      expect(() => focusPrevCellByArrowKey()).not.toThrowError();
+      expect(() => focusPrevCellByArrowKey(null)).not.toThrowError();
+    });
+
+    it("should focus the previous cell", () => {
+      testFocus(mockTable.rows[2].cells[2], mockTable.rows[2].cells[1], (element) =>
+        focusPrevCellByArrowKey(element, 1)
+      );
+    });
+
+    it("should focus the last cell of the previous line", () => {
+      testFocus(mockTable.rows[3].cells[1], mockTable.rows[3].cells[0], (element) =>
+        focusPrevCellByArrowKey(element, 1)
+      );
+    });
+
+    it("should focus the previous data cell", () => {
+      testFocus(mockTable.rows[2].cells[1], mockTable.rows[2].cells[0], focusPrevCellByArrowKey);
+    });
+
+    it("should focus the previous header cell", () => {
+      testFocus(mockTable.rows[0].cells[1], mockTable.rows[0].cells[0], focusPrevCellByArrowKey);
+    });
+
+    it.each([
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2 },
+      { from: { rowIndex: 2, cellIndex: 1 }, to: { rowIndex: 2, cellIndex: 0 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 2 },
+      { from: { rowIndex: 1, cellIndex: 1 }, to: { rowIndex: 0, cellIndex: 0 }, rowspan: 2 },
+    ])(
+      "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
+      ({ from, to, rowspan }) => {
+        testFocus(
+          mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+          mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+          (element) => focusPrevCellByArrowKey(element, rowspan)
         );
       }
     );
 
     it("should keep the focus to the current cell", () => {
-      shouldKeepFocus(mockTable.rows[2].cells[0], focusPrevCell);
-      shouldKeepFocus(mockTableColRowspan.rows[0].cells[0], focusPrevCell);
-      shouldKeepFocus(mockTable.rows[0].cells[1], (element) => focusPrevCell(element, 1, false));
-      shouldKeepFocus(mockTableColRowspan.rows[1].cells[1], (element) => focusPrevCell(element, 2, false));
+      shouldKeepFocus(mockTable.rows[2].cells[0], focusPrevCellByArrowKey);
+      shouldKeepFocus(mockTableColRowspan.rows[0].cells[0], focusPrevCellByArrowKey);
+      shouldKeepFocus(mockTable.rows[0].cells[0], (element) => focusPrevCellByArrowKey(element, 1));
+    });
+  });
+
+  describe("focusPrevCellByTabKey tests", () => {
+    it("should not throw errors with wrong inputs", () => {
+      // @ts-ignore
+      expect(() => focusPrevCellByTabKey()).not.toThrowError();
+      expect(() => focusPrevCellByTabKey(null)).not.toThrowError();
+    });
+
+    it("should focus the previous cell", () => {
+      testFocus(mockTable.rows[2].cells[2], mockTable.rows[2].cells[1], (element) => focusPrevCellByTabKey(element, 1));
+    });
+
+    it("should focus the last cell of the previous line", () => {
+      testFocus(mockTable.rows[3].cells[1], mockTable.rows[2].cells[5], (element) => focusPrevCellByTabKey(element, 1));
+    });
+
+    it.each([
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 0, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 2 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 1 },
+      { from: { rowIndex: 2, cellIndex: 1 }, to: { rowIndex: 1, cellIndex: 5 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 5 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 2 },
+      { from: { rowIndex: 0, cellIndex: 3 }, to: { rowIndex: 0, cellIndex: 2 }, rowspan: 1 },
+      { from: { rowIndex: 1, cellIndex: 2 }, to: { rowIndex: 1, cellIndex: 1 }, rowspan: 2 },
+    ])(
+      "should focus the correct cell on a table with headers with rowspan and colspan. Test index: %#",
+      ({ from, to, rowspan }) => {
+        testFocus(
+          mockTableColRowspan.rows[from.rowIndex].cells[from.cellIndex],
+          mockTableColRowspan.rows[to.rowIndex].cells[to.cellIndex],
+          (element) => focusPrevCellByTabKey(element, rowspan)
+        );
+      }
+    );
+
+    it("should keep the focus to the current cell", () => {
+      shouldKeepFocus(mockTableColRowspan.rows[0].cells[0], focusPrevCellByTabKey);
+      shouldKeepFocus(mockTable.rows[0].cells[0], (element) => focusPrevCellByTabKey(element, 1));
+      shouldKeepFocus(mockTable.rows[0].cells[1], (element) => focusPrevCellByTabKey(element, 1));
+      shouldKeepFocus(mockTableColRowspan.rows[1].cells[1], (element) => focusPrevCellByTabKey(element, 2));
     });
   });
 

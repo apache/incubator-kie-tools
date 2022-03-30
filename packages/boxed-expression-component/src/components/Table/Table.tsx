@@ -35,9 +35,11 @@ import {
   focusCurrentCell,
   focusInsideCell,
   focusLowerCell,
-  focusNextCell,
+  focusNextCellByArrowKey,
+  focusNextCellByTabKey,
   focusParentCell,
-  focusPrevCell,
+  focusPrevCellByArrowKey,
+  focusPrevCellByTabKey,
   focusUpperCell,
   getParentCell,
   pasteOnTable,
@@ -423,10 +425,14 @@ export const Table: React.FunctionComponent<TableProps> = ({
           e.preventDefault();
         }
 
-        if (NavigationKeysUtils.isArrowLeft(key) || (NavigationKeysUtils.isTab(key) && e.shiftKey)) {
-          focusPrevCell(currentTarget, rowSpan, NavigationKeysUtils.isArrowLeft(key));
-        } else if (NavigationKeysUtils.isArrowRight(key) || (NavigationKeysUtils.isTab(key) && !e.shiftKey)) {
-          focusNextCell(currentTarget, rowSpan, NavigationKeysUtils.isArrowRight(key));
+        if (NavigationKeysUtils.isArrowLeft(key)) {
+          focusPrevCellByArrowKey(currentTarget, rowSpan);
+        } else if (NavigationKeysUtils.isTab(key) && e.shiftKey) {
+          focusPrevCellByTabKey(currentTarget, rowSpan);
+        } else if (NavigationKeysUtils.isArrowRight(key)) {
+          focusNextCellByArrowKey(currentTarget, rowSpan);
+        } else if (NavigationKeysUtils.isTab(key) && !e.shiftKey) {
+          focusNextCellByTabKey(currentTarget, rowSpan);
         } else if (NavigationKeysUtils.isArrowUp(key)) {
           focusUpperCell(currentTarget);
         } else if (NavigationKeysUtils.isArrowDown(key)) {

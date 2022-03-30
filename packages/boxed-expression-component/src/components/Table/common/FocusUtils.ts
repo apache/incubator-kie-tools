@@ -110,7 +110,7 @@ export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
  * @param stopAtLastDataCell true to stop stop at end of row
  * @returns
  */
-export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtLastDataCell = true): void => {
+const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtLastDataCell = true): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -125,7 +125,7 @@ export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
       return focusCellByCoordinates(currentCell, { y: y + 1, x: 1 });
     }
 
-    return;
+    return cellFocus(currentCell);
   }
 
   if (rowSpan > 1) {
@@ -136,14 +136,38 @@ export const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
 };
 
 /**
- * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
+ * Focus Next Cell of a react-table, navigating with the arrow key.
+ * Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @returns
+ */
+export const focusNextCellByArrowKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusNextCell(currentEl, rowSpan, true);
+};
+
+/**
+ * Focus Next Cell of a react-table, navigating with the tab key.
+ * Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @returns
+ */
+export const focusNextCellByTabKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusNextCell(currentEl, rowSpan, false);
+};
+
+/**
+ * Focus the previous cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
  * @param rowSpan the rowSpan of the current cell
  * @param stopAtFirstDataCell true to stop at first data cell
  * @returns
  */
-export const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtFirstDataCell = true): void => {
+const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtFirstDataCell = true): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -165,6 +189,30 @@ export const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAt
   }
 
   focusCellByCoordinates(currentCell, { y: rowSpan > 1 ? y - 1 : y, x: x - 1 });
+};
+
+/**
+ * Focus the previous cell of a react-table, navigating with the arrow key.
+ * Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @returns
+ */
+export const focusPrevCellByArrowKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusPrevCell(currentEl, rowSpan, true);
+};
+
+/**
+ * Focus the previous cell of a react-table, navigating with tab key.
+ * Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @returns
+ */
+export const focusPrevCellByTabKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusPrevCell(currentEl, rowSpan, false);
 };
 
 /**
