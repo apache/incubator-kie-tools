@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import {
   Page,
   PageHeaderToolsItem,
   PageSection,
   PageSectionVariants,
 } from "@patternfly/react-core/dist/js/components/Page";
-import * as React from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
-import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
+import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../settings/SettingsButton";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -34,7 +34,7 @@ import { OpenshiftStatusButton } from "../openshift/OpenShiftStatusButton";
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
-  const [alerts, alertsRef] = useAlertsController();
+  const [, alertsRef] = useAlertsController();
 
   return (
     <Page>
