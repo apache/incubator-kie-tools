@@ -130,7 +130,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
           name: "openapi",
           destinationDirRelativePath: ".",
           content: openApiContents,
-          extension: "yml",
+          extension: "json",
         });
       }
     };

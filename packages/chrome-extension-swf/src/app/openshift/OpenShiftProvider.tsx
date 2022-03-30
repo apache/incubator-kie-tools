@@ -20,10 +20,15 @@ import { DeployArgs, DeploymentWorkflow, OpenShiftContext } from "./OpenShiftCon
 import { OpenShiftService } from "./OpenShiftService";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { useSettings } from "../settings/SettingsContext";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
+import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 
 interface Props {
   children: React.ReactNode;
 }
+
+const DEFAULT_GROUP_ID = "org.kie";
 
 export function OpenShiftProvider(props: Props) {
   const settings = useSettings();
@@ -160,29 +165,33 @@ export function OpenShiftProvider(props: Props) {
     [service]
   );
 
-  const uploadOpenApiToServiceRegistry = useCallback(async () => {
-    const accessToken = await service.getServiceRegistryAccessToken({
-      proxyUrl: settings.openshift.config.proxy,
-      serviceAccountConfig: settings.serviceAccount.config,
-    });
+  const uploadOpenApiToServiceRegistry = useCallback(
+    async (openApiFile: WorkspaceFile, artifactId: string) => {
+      if (!isServiceAccountConfigValid(settings.serviceAccount.config)) {
+        throw new Error("Invalid service account config");
+      }
 
-    // TODO: Replace fixed value
-    const openApiContent = (await fetchOpenApiFile(settings.openshift.config, "swf-e3y8lsulb772"))!;
+      if (!isServiceRegistryConfigValid(settings.serviceRegistry.config)) {
+        throw new Error("Invalid service registry config");
+      }
 
-    await service.uploadOpenApiToServiceRegistry({
-      accessToken: accessToken,
-      groupId: "org.kie", // TODO: maybe keep this one
-      artifactId: "My Artifact ID", // TODO: Replace fixed value
-      serviceRegistryConfig: settings.serviceRegistry.config,
-      openApiJsonContent: openApiContent,
-    });
-  }, [
-    fetchOpenApiFile,
-    service,
-    settings.openshift.config,
-    settings.serviceAccount.config,
-    settings.serviceRegistry.config,
-  ]);
+      const accessToken = await service.getServiceRegistryAccessToken({
+        proxyUrl: settings.openshift.config.proxy,
+        serviceAccountConfig: settings.serviceAccount.config,
+      });
+
+      const openApiJsonContent = await openApiFile.getFileContentsAsString();
+
+      await service.uploadOpenApiToServiceRegistry({
+        accessToken: accessToken,
+        groupId: DEFAULT_GROUP_ID,
+        artifactId: artifactId,
+        serviceRegistryConfig: settings.serviceRegistry.config,
+        openApiJsonContent: openApiJsonContent,
+      });
+    },
+    [service, settings.openshift.config, settings.serviceAccount.config, settings.serviceRegistry.config]
+  );
 
   const value = useMemo(
     () => ({

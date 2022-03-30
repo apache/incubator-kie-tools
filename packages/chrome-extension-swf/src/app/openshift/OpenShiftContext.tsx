@@ -19,6 +19,7 @@ import { useContext } from "react";
 import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { Deployments } from "./resources/Deployment";
 import { KNativeServices } from "./resources/KNativeService";
 
@@ -39,7 +40,7 @@ export interface DeploymentWorkflow {
 
 export interface OpenShiftContextType {
   deploy(args: DeployArgs): Promise<string>;
-  uploadOpenApiToServiceRegistry(): Promise<void>;
+  uploadOpenApiToServiceRegistry(openApiFile: WorkspaceFile, artifactId: string): Promise<void>;
 
   fetchOpenApiFile(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflowRoute(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;

@@ -294,6 +294,7 @@ export class OpenShiftService {
     openApiJsonContent: string;
     serviceRegistryConfig: ServiceRegistrySettingsConfig;
   }): Promise<void> {
+    // TODO: Investigate the reason we are getting a 401 error here
     const response = await fetch(
       `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(args.groupId)}/artifacts`,
       {

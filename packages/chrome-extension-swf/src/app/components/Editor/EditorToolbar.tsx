@@ -87,6 +87,7 @@ import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHook
 import { SwaggerEditorModal } from "./SwaggerEditor/SwaggerEditorModal";
 import { LoadingSpinner } from "../../common/LoadingSpinner";
 import { useAlertsController } from "../../alerts/AlertsProvider";
+import { useOpenShift } from "../../openshift/OpenShiftContext";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;
@@ -120,6 +121,7 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 export function EditorToolbar(props: Props) {
   const routes = useRoutes();
   const settings = useSettings();
+  const openshift = useOpenShift();
   const settingsDispatch = useSettingsDispatch();
   const history = useHistory();
   const workspaces = useWorkspaces();
@@ -140,7 +142,7 @@ export function EditorToolbar(props: Props) {
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
-  const workspaceOpenApiFilePromise = useWorkspaceFilePromise(props.workspaceFile.workspaceId, "./openapi.yml");
+  const workspaceOpenApiFilePromise = useWorkspaceFilePromise(props.workspaceFile.workspaceId, "./openapi.json");
   const [swaggerModalOpen, setSwaggerModalOpen] = useState(false);
 
   const githubAuthInfo = useGitHubAuthInfo();
@@ -1411,6 +1413,15 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     <FlexItem>
                       <Button isInline={true} variant={ButtonVariant.link} onClick={() => setSwaggerModalOpen(true)}>
                         OpenAPI spec
+                      </Button>
+                      {/*TODO: Remove the button below, it is there only to make test easy*/}
+                      <Button
+                        className="pf-u-ml-sm"
+                        isInline={true}
+                        variant={ButtonVariant.link}
+                        onClick={() => openshift.uploadOpenApiToServiceRegistry(file, workspace.descriptor.name)}
+                      >
+                        Upload OpenAPI
                       </Button>
                       <SwaggerEditorModal
                         workspaceFile={file}
