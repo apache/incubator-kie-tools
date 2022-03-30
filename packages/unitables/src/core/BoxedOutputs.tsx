@@ -19,8 +19,8 @@ import { useCallback, useMemo } from "react";
 import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DecisionResult, DmnSchemaProperties, Result } from "../dmn";
 import { ColumnInstance } from "react-table";
-import { DmnTableJsonSchemaBridge } from "../dmn/DmnTableJsonSchemaBridge";
-import { UnitablesRule } from "./UnitablesBoxedTypes";
+import { DmnUnitablesJsonSchemaBridge } from "../dmn/DmnUnitablesJsonSchemaBridge";
+import { BoxedExpressionOutputRule } from "./UnitablesBoxedTypes";
 import { CELL_MINIMUM_WIDTH, UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
 
 interface OutputField {
@@ -53,46 +53,6 @@ export function useGenerateBoxedOutputs(
   rowCount: number,
   outputColumnsCache: React.MutableRefObject<ColumnInstance[]>
 ) {
-  const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
-    return Object.entries(value).map(([deepEntry, deepValue]) => {
-      if (typeof deepValue === "object" && deepValue !== null) {
-        deepFlattenOutput(acc, deepEntry, deepValue);
-      }
-      acc[`${entry}-${deepEntry}`] = deepValue;
-      return acc;
-    });
-  }, []);
-
-  const deepGenerateOutputTypesMapFields = useCallback(
-    (
-      outputTypeMap: Map<string, OutputTypesFields>,
-      properties: DmnSchemaProperties[],
-      jsonSchemaBridge: DmnTableJsonSchemaBridge
-    ) => {
-      return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
-        if (property["x-dmn-type"]) {
-          const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
-          outputTypeMap.set(name, { type: property.type, dataType, name });
-          return { name, type: property.type, width: CELL_MINIMUM_WIDTH, dataType };
-        }
-        const path: string[] = property.$ref.split("/").slice(1); // remove #
-        const data = path.reduce(
-          (acc: { [x: string]: object }, property: string) => acc[property],
-          jsonSchemaBridge.schema
-        );
-        const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
-        if (data.properties) {
-          const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
-          outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
-        } else {
-          outputTypeMap.set(name, { type: data.type, dataType, name });
-        }
-        return { name, dataType: data.type, width: CELL_MINIMUM_WIDTH } as OutputTypesField;
-      });
-    },
-    []
-  );
-
   const updateOutputCellsWidth = useCallback(
     (outputs: OutputFields[]) => {
       outputColumnsCache.current?.forEach((cachedColumn) => {
@@ -131,22 +91,33 @@ export function useGenerateBoxedOutputs(
     [outputColumnsCache]
   );
 
-  const { outputs, outputRules } = useMemo(() => {
-    const decisionResults = results?.filter((result) => result !== undefined);
-    if (jsonSchemaBridge === undefined || decisionResults === undefined) {
-      return { outputs: [] as OutputFields[], outputRules: [] as Partial<UnitablesRule>[] };
-    }
+  const deepFlattenOutput = useCallback((acc: any, entry: string, value: object) => {
+    return Object.entries(value).map(([deepEntry, deepValue]) => {
+      if (typeof deepValue === "object" && deepValue !== null) {
+        deepFlattenOutput(acc, deepEntry, deepValue);
+      }
+      acc[`${entry}-${deepEntry}`] = deepValue;
+      return acc;
+    });
+  }, []);
 
-    // generate a map that contains output types
-    const outputTypeMap = Object.entries(
-      (jsonSchemaBridge as any).schema?.definitions?.OutputSet?.properties ?? []
-    ).reduce((outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
-      if (properties["x-dmn-type"]) {
-        const dataType = jsonSchemaBridge.getBoxedDataType(properties).dataType;
-        outputTypeMap.set(name, { type: properties.type, dataType, name });
-      } else {
-        const path = properties.$ref.split("/").slice(1); // remove #
-        const data = path.reduce((acc: any, property: string) => acc[property], (jsonSchemaBridge as any).schema);
+  const deepGenerateOutputTypesMapFields = useCallback(
+    (
+      outputTypeMap: Map<string, OutputTypesFields>,
+      properties: DmnSchemaProperties[],
+      jsonSchemaBridge: DmnUnitablesJsonSchemaBridge
+    ) => {
+      return Object.entries(properties).map(([name, property]: [string, DmnSchemaProperties]) => {
+        if (property["x-dmn-type"]) {
+          const dataType = jsonSchemaBridge.getBoxedDataType(property).dataType;
+          outputTypeMap.set(name, { type: property.type, dataType, name });
+          return { name, type: property.type, width: CELL_MINIMUM_WIDTH, dataType };
+        }
+        const path: string[] = property.$ref.split("/").slice(1); // remove #
+        const data = path.reduce(
+          (acc: { [x: string]: object }, property: string) => acc[property],
+          jsonSchemaBridge.schema
+        );
         const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
         if (data.properties) {
           const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
@@ -154,10 +125,40 @@ export function useGenerateBoxedOutputs(
         } else {
           outputTypeMap.set(name, { type: data.type, dataType, name });
         }
-      }
+        return { name, dataType: data.type, width: CELL_MINIMUM_WIDTH } as OutputTypesField;
+      });
+    },
+    []
+  );
 
-      return outputTypeMap;
-    }, new Map<string, OutputFields>());
+  const { outputs, outputRules } = useMemo(() => {
+    const decisionResults = results?.filter((result) => result !== undefined);
+    if (jsonSchemaBridge === undefined || decisionResults === undefined) {
+      return { outputs: [] as OutputFields[], outputRules: [] as BoxedExpressionOutputRule[] };
+    }
+
+    // generate a map that contains output types
+    const outputTypeMap = Object.entries(jsonSchemaBridge.schema?.definitions?.OutputSet?.properties ?? []).reduce(
+      (outputTypeMap: Map<string, OutputTypesFields>, [name, properties]: [string, DmnSchemaProperties]) => {
+        if (properties["x-dmn-type"]) {
+          const dataType = jsonSchemaBridge.getBoxedDataType(properties).dataType;
+          outputTypeMap.set(name, { type: properties.type, dataType, name });
+        } else {
+          const path = properties.$ref.split("/").slice(1); // remove #
+          const data = path.reduce((acc: any, property: string) => acc[property], jsonSchemaBridge.schema);
+          const dataType = jsonSchemaBridge.getBoxedDataType(data).dataType;
+          if (data.properties) {
+            const insideProperties = deepGenerateOutputTypesMapFields(outputTypeMap, data.properties, jsonSchemaBridge);
+            outputTypeMap.set(name, { type: data.type, insideProperties, dataType, name });
+          } else {
+            outputTypeMap.set(name, { type: data.type, dataType, name });
+          }
+        }
+
+        return outputTypeMap;
+      },
+      new Map<string, OutputFields>()
+    );
 
     // generate outputs
     const outputMap = decisionResults.reduce(
@@ -196,7 +197,7 @@ export function useGenerateBoxedOutputs(
               return dmnRunnerClause.insideProperties.reduce((acc, insideProperty) => {
                 acc[insideProperty.name] = "null";
                 return acc;
-              }, {} as { [x: string]: any });
+              }, {} as Record<string, any>);
             }
           }
           if (result === null) {
@@ -209,13 +210,13 @@ export function useGenerateBoxedOutputs(
             return "false";
           }
           if (typeof result === "object") {
-            return Object.entries(result).reduce((acc: any, [entry, value]) => {
+            return Object.entries(result).reduce((flattenObject: Record<string, string>, [entry, value]) => {
               if (typeof value === "object" && value !== null) {
-                deepFlattenOutput(acc, entry, value);
+                deepFlattenOutput(flattenObject, entry, value);
               } else {
-                acc[entry] = value;
+                flattenObject[entry] = value;
               }
-              return acc;
+              return flattenObject;
             }, {});
           }
           return result;
@@ -225,7 +226,7 @@ export function useGenerateBoxedOutputs(
       return acc;
     }, []);
 
-    const outputRules: Partial<UnitablesRule>[] = Array.from(Array(rowCount)).map((e, i) => ({
+    const outputRules: BoxedExpressionOutputRule[] = Array.from(Array(rowCount)).map((e, i) => ({
       outputEntries: (outputEntries?.[i] as string[]) ?? [],
     }));
 

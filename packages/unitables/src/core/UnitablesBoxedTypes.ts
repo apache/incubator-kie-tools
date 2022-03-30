@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export interface UnitablesClause {
@@ -29,11 +30,14 @@ export interface UnitablesClause {
   insideProperties?: any[];
 }
 
-export interface UnitablesRule {
+export interface UnitablesInputRule {
   /** Values for the input columns */
   inputEntries: string[];
+  /** Responsible to control a row */
+  rowDelegate?: React.FunctionComponent;
+}
+
+export interface BoxedExpressionOutputRule {
   /** Values for the output columns */
   outputEntries: string[];
-
-  rowDelegate?: any;
 }

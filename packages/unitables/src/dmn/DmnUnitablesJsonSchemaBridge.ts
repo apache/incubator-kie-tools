@@ -21,7 +21,7 @@ import {
 } from "@kie-tools/form-dmn/dist/uniforms";
 import { UnitablesJsonSchemaBridge } from "../core/UnitablesJsonSchemaBridge";
 
-export class DmnTableJsonSchemaBridge extends UnitablesJsonSchemaBridge {
+export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
   public getField(name: string) {
     const field = super.getField(name);
     if (field.format === DAYS_AND_TIME_DURATION_FORMAT) {

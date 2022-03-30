@@ -26,7 +26,7 @@ import {
   UnitablesJsonSchemaBridge,
 } from "./UnitablesJsonSchemaBridge";
 import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
-import { UnitablesRule } from "./UnitablesBoxedTypes";
+import { UnitablesInputRule } from "./UnitablesBoxedTypes";
 
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -140,9 +140,9 @@ export function useUnitablesInputs(
   );
 
   // Inputs form
-  const inputRules: Partial<UnitablesRule>[] = useMemo(() => {
+  const inputRules: UnitablesInputRule[] = useMemo(() => {
     if (jsonSchemaBridge === undefined || !formsDivRendered) {
-      return [] as Partial<UnitablesRule>[];
+      return [] as UnitablesInputRule[];
     }
     const inputEntriesLength = inputs?.reduce(
       (length, input) => (isInputWithInsideProperties(input) ? length + input.insideProperties.length : length + 1),
@@ -168,7 +168,7 @@ export function useUnitablesInputs(
             </UnitablesRow>
           );
         },
-      } as Partial<UnitablesRule>;
+      } as UnitablesInputRule;
     });
   }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, defaultModel, onModelUpdate]);
 

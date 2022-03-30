@@ -1,22 +1,22 @@
-.unitables--dmn-runner-drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical {
+.unitables--drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical {
   z-index: 999;
 }
 
-.unitables--dmn-runner-drawer .pf-c-drawer__panel .pf-c-drawer__panel-main {
+.unitables--drawer .pf-c-drawer__panel .pf-c-drawer__panel-main {
   margin-left: -69px;
   overflow: scroll;
 }
 
-.unitables--dmn-runner-drawer .pf-c-drawer__content {
+.unitables--drawer .pf-c-drawer__content {
   overflow: scroll !important;
   /*direction: rtl;*/
 }
 
-.unitables--dmn-runner-drawer .pf-c-drawer__content .boxed-expression-provider {
+.unitables--drawer .pf-c-drawer__content .boxed-expression-provider {
   /*direction: ltr;*/
 }
 
-.unitables--dmn-runner-drawer .pf-c-drawer__content .decision-table-expression {
+.unitables--drawer .pf-c-drawer__content .decision-table-expression {
   margin-right: -9px;
 }
 

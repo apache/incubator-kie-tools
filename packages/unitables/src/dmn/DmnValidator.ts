@@ -16,7 +16,7 @@
 
 import Ajv from "ajv";
 import metaSchemaDraft04 from "ajv/lib/refs/json-schema-draft-04.json";
-import { DmnTableJsonSchemaBridge } from "./DmnTableJsonSchemaBridge";
+import { DmnUnitablesJsonSchemaBridge } from "./DmnUnitablesJsonSchemaBridge";
 import { DmnUnitablesI18n } from "../i18n";
 import { DAYS_AND_TIME_DURATION_FORMAT, YEARS_AND_MONTHS_DURATION_FORMAT } from "@kie-tools/form-dmn/dist/uniforms";
 import { Validator } from "../core/Validator";
@@ -73,9 +73,9 @@ export class DmnValidator extends Validator {
     };
   }
 
-  public getBridge(formSchema: DmnSchema): DmnTableJsonSchemaBridge {
+  public getBridge(formSchema: DmnSchema): DmnUnitablesJsonSchemaBridge {
     const formDraft4 = { ...formSchema, $schema: this.SCHEMA_DRAFT4 };
     const validator = this.createValidator(formDraft4);
-    return new DmnTableJsonSchemaBridge(formDraft4, validator, this.i18n);
+    return new DmnUnitablesJsonSchemaBridge(formDraft4, validator, this.i18n);
   }
 }
