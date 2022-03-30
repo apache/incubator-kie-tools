@@ -37,7 +37,7 @@ export interface TableBodyProps {
   /** Function to be executed when columns are modified */
   onColumnsUpdate?: (columns: Column[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
-  onCellKeyDown: () => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => any;
 }
@@ -167,7 +167,7 @@ interface TdCellProps {
   cell: Cell;
   rowIndex: number;
   inAForm: boolean;
-  onKeyDown: (rowSpan?: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
   tableInstance: TableInstance;
   getColumnKey: (column: Column) => string;
   onColumnsUpdate: (columns: Column[]) => void;
@@ -191,8 +191,7 @@ function TdCell({
   const tdRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown();
+    const onKeyDownForIndex = onKeyDown();
     const cell = tdRef.current;
     cell?.addEventListener("keydown", onKeyDownForIndex);
     return () => {
@@ -241,7 +240,7 @@ interface TdAdditiveCellProps {
   children?: React.ReactElement;
   cellIndex?: number;
   isEmptyCell?: boolean;
-  onKeyDown: (rowSpan?: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
   rowIndex: number;
 }
 
@@ -249,8 +248,7 @@ function TdAdditiveCell({ children, cellIndex, isEmptyCell = false, onKeyDown, r
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown();
+    const onKeyDownForIndex = onKeyDown();
     const cell = tdRef.current;
     cell?.addEventListener("keydown", onKeyDownForIndex);
     return () => {

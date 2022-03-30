@@ -394,9 +394,10 @@ export const Table: React.FunctionComponent<TableProps> = ({
    */
   const onCellKeyDown = useCallback(
     (rowSpan = 1) =>
-      (e: React.KeyboardEvent<HTMLElement>) => {
+      (e: KeyboardEvent) => {
         const key = e.key;
         const isModKey = e.altKey || e.ctrlKey || e.shiftKey || NavigationKeysUtils.isAltGraph(key);
+        const currentTarget = e.currentTarget as HTMLElement;
 
         if (!enableKeyboarNavigation) {
           return;
@@ -411,7 +412,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           e.preventDefault();
           if (NavigationKeysUtils.isEscape(key)) {
             //close Select child components if any
-            focusCurrentCell(e.currentTarget);
+            focusCurrentCell(currentTarget);
           }
           return;
         }
@@ -423,22 +424,22 @@ export const Table: React.FunctionComponent<TableProps> = ({
         }
 
         if (NavigationKeysUtils.isArrowLeft(key) || (NavigationKeysUtils.isTab(key) && e.shiftKey)) {
-          focusPrevCell(e.currentTarget, rowSpan, NavigationKeysUtils.isArrowLeft(key));
+          focusPrevCell(currentTarget, rowSpan, NavigationKeysUtils.isArrowLeft(key));
         } else if (NavigationKeysUtils.isArrowRight(key) || (NavigationKeysUtils.isTab(key) && !e.shiftKey)) {
-          focusNextCell(e.currentTarget, rowSpan, NavigationKeysUtils.isArrowRight(key));
+          focusNextCell(currentTarget, rowSpan, NavigationKeysUtils.isArrowRight(key));
         } else if (NavigationKeysUtils.isArrowUp(key)) {
-          focusUpperCell(e.currentTarget);
+          focusUpperCell(currentTarget);
         } else if (NavigationKeysUtils.isArrowDown(key)) {
-          focusLowerCell(e.currentTarget);
+          focusLowerCell(currentTarget);
         } else if (NavigationKeysUtils.isEscape(key)) {
-          focusParentCell(e.currentTarget);
+          focusParentCell(currentTarget);
         } else if (
           !boxedExpression.isContextMenuOpen &&
           isFiredFromThis &&
           !isModKey &&
           !NavigationKeysUtils.isFX(key)
         ) {
-          return focusInsideCell(e.currentTarget, !NavigationKeysUtils.isEnter(key));
+          return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
     [boxedExpression.isContextMenuOpen, enableKeyboarNavigation]

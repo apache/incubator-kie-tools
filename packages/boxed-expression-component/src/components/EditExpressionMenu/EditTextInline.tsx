@@ -25,11 +25,11 @@ export interface EditTextInlineProps {
   /** Callback executed when text changes */
   onTextChange: (updatedValue: string, event?: ChangeEvent<HTMLInputElement>) => void;
   /** Callback executed when user cancel by pressing escape */
-  onCancel?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onCancel?: (event: KeyboardEvent) => void;
   /** Callback executed when user toggle the state to edit/read mode */
   onToggle?: (isReadMode: boolean) => void;
   /** Callback executed when user press a key */
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (event: KeyboardEvent) => void;
 }
 
 export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
@@ -55,14 +55,14 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
   );
 
   const onInputKeyDown = useMemo(
-    () => (event: React.KeyboardEvent<HTMLInputElement>) => {
+    () => (event: KeyboardEvent) => {
       const pressedEnter = _.lowerCase(event.key) === "enter";
       const pressedEscape = _.lowerCase(event.key) === "escape";
 
       onKeyDown(event);
 
       if (pressedEnter) {
-        event.currentTarget.blur();
+        (event.currentTarget as HTMLElement)?.blur();
       }
       if (pressedEscape) {
         onCancel(event);
@@ -74,8 +74,7 @@ export const EditTextInline: React.FunctionComponent<EditTextInlineProps> = ({
   );
 
   useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForInput: any = onInputKeyDown;
+    const onKeyDownForInput = onInputKeyDown;
     const input = inputRef.current;
     input?.addEventListener("keydown", onKeyDownForInput);
     return () => {

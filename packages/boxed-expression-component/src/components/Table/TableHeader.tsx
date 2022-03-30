@@ -17,14 +17,14 @@
 import { Th, Thead, Tr } from "@patternfly/react-table";
 import * as _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo, useEffect, useRef, useState, ChangeEvent } from "react";
+import { useCallback, useMemo, useEffect, useRef, useState } from "react";
 import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
 import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
-import { focusCurrentCell, focusNextCell, getParentCell } from "./common";
+import { focusCurrentCell, getParentCell } from "./common";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -42,7 +42,7 @@ export interface TableHeaderProps {
   /** Function to be executed when columns are modified */
   onColumnsUpdate: (columns: Column[]) => void;
   /** Function to be executed when a key has been pressed on a cell */
-  onCellKeyDown: () => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
   thProps: (column: ColumnInstance) => any;
   /** Option to enable or disable header edits */
@@ -128,10 +128,10 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
         return (
           <EditTextInline
             value={column.label as string}
-            onTextChange={(value, event: ChangeEvent<HTMLInputElement>) => {
+            onTextChange={(value) => {
               onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value });
             }}
-            onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            onKeyDown={(event) => {
               const parentCell = getParentCell(event.target as HTMLElement);
               //this timeout prevent the cell focus to call the input's blur and the onValueBlur
               setTimeout(() => {
@@ -140,7 +140,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
                 }
               }, 0);
             }}
-            onCancel={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            onCancel={(event) => {
               const parentCell = getParentCell(event.target as HTMLElement);
               //this timeout prevent the cell focus to call the input's blur and the onValueBlur
               setTimeout(() => {
@@ -418,7 +418,7 @@ interface ThCellProps {
   className: string;
   headerProps: any;
   isFocusable: boolean;
-  onKeyDown: (rowSpan: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (rowSpan: number) => (e: KeyboardEvent) => void;
   onClick?: () => void;
   rowIndex: number;
   thProps?: any;
@@ -439,8 +439,7 @@ function ThCell({
   const thRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown(rowSpan);
+    const onKeyDownForIndex = onKeyDown(rowSpan);
     const cell = thRef.current;
     cell?.addEventListener("keydown", onKeyDownForIndex);
     return () => {
