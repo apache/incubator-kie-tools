@@ -43,7 +43,7 @@ const EMPTY_SYMBOL = "";
 
 type DataRecord = Record<string, unknown>;
 
-export interface DmnRunnerTableProps extends ExpressionProps {
+export interface CustomTableProps extends ExpressionProps {
   /** Input columns definition */
   input?: UnitablesClause[];
   /** Output columns definition */
@@ -55,7 +55,7 @@ export interface DmnRunnerTableProps extends ExpressionProps {
   onColumnsUpdate: (columns: Column[]) => void;
 }
 
-export function DmnRunnerTable(props: DmnRunnerTableProps) {
+export function CustomTable(props: CustomTableProps) {
   const { i18n } = useDmnUnitablesI18n();
 
   const getColumnPrefix = useCallback((groupType?: string) => {

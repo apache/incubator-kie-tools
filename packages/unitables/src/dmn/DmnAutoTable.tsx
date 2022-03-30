@@ -21,7 +21,7 @@ import { ErrorBoundary } from "../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { DmnRunnerTable } from "../boxed";
+import { CustomTable } from "../boxed";
 import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import { dmnUnitablesDictionaries, dmnUnitablesI18n, DmnUnitablesI18nContext, dmnUnitablesI18nDefaults } from "../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
@@ -30,19 +30,14 @@ import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/d
 import { ColumnInstance } from "react-table";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
-import { Button } from "@patternfly/react-core";
-import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
 import "./style.css";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { UnitablesRowApi } from "../core/UnitablesRow";
-import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../core/UnitablesBoxedTypes";
+import { BoxedExpressionOutputRule, UnitablesClause } from "../core/UnitablesBoxedTypes";
 import { DmnValidator } from "./DmnValidator";
-import { FORMS_ID } from "../core/UnitablesJsonSchemaBridge";
-import { useUnitablesInputs } from "../core/UnitablesInputs";
 import { useGenerateBoxedOutputs } from "../core/BoxedOutputs";
 import { useAnchoredUnitablesDrawerPanel } from "../core/DmnRunnerDrawerHooks";
+import { Unitables } from "../core/Unitables";
 
 export enum EvaluationStatus {
   SUCCEEDED = "SUCCEEDED",
@@ -88,25 +83,26 @@ interface Props {
 }
 
 export function DmnAutoTable(props: Props) {
-  const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const dmnAutoTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [rowCount, setRowCount] = useState<number>(props.inputRows?.length ?? 1);
   const [outputError, setOutputError] = useState<boolean>(false);
   const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
-  const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
   const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
   const i18n = useMemo(() => {
     dmnUnitablesI18n.setLocale(dmnUnitablesI18nDefaults.locale ?? navigator.language);
     return dmnUnitablesI18n.getCurrent();
   }, []);
 
-  const inputColumnsCache = useRef<ColumnInstance[]>([]);
   const outputColumnsCache = useRef<ColumnInstance[]>([]);
 
+  const validator = useMemo(() => {
+    return new DmnValidator(i18n);
+  }, [i18n]);
+
   const jsonSchemaBridge = useMemo(() => {
-    return new DmnValidator(i18n).getBridge(props.jsonSchema ?? {});
-  }, [i18n, props.jsonSchema]);
+    return validator.getBridge(props.jsonSchema ?? {});
+  }, [props.jsonSchema, validator]);
 
   const getDefaultValueByType = useCallback((type, defaultValues: { [x: string]: any }, property: string) => {
     if (type === "object") {
@@ -142,28 +138,12 @@ export function DmnAutoTable(props: Props) {
     defaultModel.current = props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow }));
   }, [defaultValues, props.inputRows]);
 
-  const { inputs, inputRules, updateInputCellsWidth } = useUnitablesInputs(
-    jsonSchemaBridge,
-    props.inputRows,
-    props.setInputRows,
-    rowCount,
-    formsDivRendered,
-    rowsRef,
-    inputColumnsCache,
-    defaultModel,
-    defaultValues
-  );
-
   const { outputs, outputRules, updateOutputCellsWidth } = useGenerateBoxedOutputs(
     jsonSchemaBridge,
     props.results,
     rowCount,
     outputColumnsCache
   );
-
-  const shouldRender = useMemo(() => {
-    return (inputs?.length ?? 0) > 0;
-  }, [inputs]);
 
   const handleOperation = useCallback(
     (tableOperation: TableOperation, rowIndex: number) => {
@@ -231,15 +211,6 @@ export function DmnAutoTable(props: Props) {
     [handleOperation]
   );
 
-  // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
-  const onInputColumnsUpdate = useCallback(
-    (columns: ColumnInstance[]) => {
-      inputColumnsCache.current = columns;
-      updateInputCellsWidth(inputs);
-    },
-    [inputs, updateInputCellsWidth]
-  );
-
   const onOutputColumnsUpdate = useCallback(
     (columns: ColumnInstance[]) => {
       outputColumnsCache.current = columns;
@@ -248,13 +219,7 @@ export function DmnAutoTable(props: Props) {
     [outputs, updateOutputCellsWidth]
   );
 
-  const inputUid = useMemo(() => nextId(), []);
   const outputUid = useMemo(() => nextId(), []);
-
-  // Resets the ErrorBoundary everytime the FormSchema is updated
-  useEffect(() => {
-    inputErrorBoundaryRef.current?.reset();
-  }, [jsonSchemaBridge]);
 
   useEffect(() => {
     outputErrorBoundaryRef.current?.reset();
@@ -277,20 +242,13 @@ export function DmnAutoTable(props: Props) {
       outputsContainerRef,
     });
 
-  useEffect(() => {
-    forceDrawerPanelRefresh();
-  }, [forceDrawerPanelRefresh, inputRules, outputRules]);
-
-  const updateDataWithModel = useCallback(
-    (rowIndex: number) => {
-      props.openRow(rowIndex);
-    },
-    [props.openRow]
-  );
+  // useEffect(() => {
+  //   forceDrawerPanelRefresh();
+  // }, [forceDrawerPanelRefresh, inputRules, outputRules]);
 
   return (
     <>
-      {shouldRender && jsonSchemaBridge && inputRules && outputRules && (
+      {jsonSchemaBridge && outputRules && (
         <I18nDictionariesProvider
           defaults={dmnUnitablesI18nDefaults}
           dictionaries={dmnUnitablesDictionaries}
@@ -330,7 +288,7 @@ export function DmnAutoTable(props: Props) {
                                 decisionNodeId={outputUid}
                                 dataTypes={[]}
                               >
-                                <DmnRunnerTable
+                                <CustomTable
                                   name={"DMN Runner Output"}
                                   onRowNumberUpdated={onRowNumberUpdated}
                                   onColumnsUpdate={onOutputColumnsUpdate}
@@ -356,78 +314,25 @@ export function DmnAutoTable(props: Props) {
                     </>
                   }
                 >
-                  <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
-                    <BoxedExpressionProvider
-                      expressionDefinition={{}}
-                      isRunnerTable={true}
-                      decisionNodeId={inputUid}
-                      dataTypes={[]}
-                    >
-                      <div style={{ display: "flex" }} ref={inputsContainerRef}>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                          <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>
-                            {" # "}
-                          </div>
-                          <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>
-                            {" # "}
-                          </div>
-                          {Array.from(Array(rowCount)).map((e, i) => (
-                            <Tooltip key={i} content={`Open row ${i + 1} in the form view`}>
-                              <div
-                                style={{
-                                  width: "50px",
-                                  height: "62px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  paddingTop: "8px",
-                                }}
-                              >
-                                <Button
-                                  className={"kie-tools--masthead-hoverable"}
-                                  variant={ButtonVariant.plain}
-                                  onClick={() => updateDataWithModel(i)}
-                                >
-                                  <ListIcon />
-                                </Button>
-                              </div>
-                            </Tooltip>
-                          ))}
-                        </div>
-                        <DmnRunnerTable
-                          name={"DMN Runner Input"}
-                          onRowNumberUpdated={onRowNumberUpdated}
-                          onColumnsUpdate={onInputColumnsUpdate}
-                          input={inputs}
-                          rules={inputRules as UnitablesInputRule[]}
-                          id={inputUid}
-                        />
-                      </div>
-                    </BoxedExpressionProvider>
-                  </ErrorBoundary>
+                  <Unitables
+                    i18n={i18n}
+                    openRow={props.openRow}
+                    error={props.error}
+                    inputRows={props.inputRows}
+                    inputsContainerRef={inputsContainerRef}
+                    jsonSchema={props.jsonSchema}
+                    setError={props.setError}
+                    setInputRows={props.setInputRows}
+                    validator={validator}
+                    name={"DMN Runner Table"}
+                  />
                 </DrawerContent>
               </Drawer>
             </ErrorBoundary>
           )}
         </I18nDictionariesProvider>
       )}
-      <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
-  );
-}
-
-function InputError() {
-  return (
-    <div>
-      <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
-        <TextContent>
-          <Text component={"h2"}>Error</Text>
-        </TextContent>
-        <EmptyStateBody>
-          <p>An error has happened while trying to show your inputs</p>
-        </EmptyStateBody>
-      </EmptyState>
-    </div>
   );
 }
 
