@@ -58,4 +58,13 @@ export class NavigationKeysUtils {
   static isFX(key: string) {
     return /^F\d{1,2}$/i.test(key);
   }
+
+  /**
+   * Check if key is a typing key like a character, space or enter
+   *
+   * @param key the key to evaluate
+   */
+  static isTypingKey(key: string) {
+    return /^(enter|space|.)$/i.test(key);
+  }
 }

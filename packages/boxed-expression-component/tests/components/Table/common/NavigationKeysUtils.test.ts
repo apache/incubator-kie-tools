@@ -172,4 +172,26 @@ describe("NavigationKeysUtils", () => {
       expect(NavigationKeysUtils.isFX(key)).toBe(expected);
     });
   });
+
+  describe("isTypingKey", () => {
+    test.each([
+      [undefined, false],
+      ["", false],
+      [notAKey, false],
+      ["as", false],
+      ["F1", false],
+      ["f1", false],
+      ["tab", false],
+      ["capslock", false],
+      ["enter", true],
+      ["space", true],
+      ["a", true],
+      ["D", true],
+      ["1", true],
+      ["!", true],
+    ])(testDescription, (key, expected) => {
+      // @ts-ignore
+      expect(NavigationKeysUtils.isTypingKey(key)).toBe(expected);
+    });
+  });
 });

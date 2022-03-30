@@ -474,7 +474,12 @@ export const Table: React.FunctionComponent<TableProps> = ({
           return focusParentCell(currentTarget);
         }
 
-        if (!boxedExpression.isContextMenuOpen && isFiredFromThis && !isModKey && !NavigationKeysUtils.isFX(key)) {
+        if (
+          !boxedExpression.isContextMenuOpen &&
+          isFiredFromThis &&
+          !isModKey &&
+          NavigationKeysUtils.isTypingKey(key)
+        ) {
           return focusInsideCell(currentTarget, !NavigationKeysUtils.isEnter(key));
         }
       },
