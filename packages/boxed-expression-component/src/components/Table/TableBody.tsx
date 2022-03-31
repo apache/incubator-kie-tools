@@ -18,7 +18,7 @@ import * as React from "react";
 import { BaseSyntheticEvent, useCallback, useMemo } from "react";
 import { Tbody, Tr } from "@patternfly/react-table";
 import { TableHeaderVisibility } from "../../api";
-import { Cell, Column, Row, TableInstance } from "react-table";
+import { Cell, Column, HeaderGroup, Row, TableInstance } from "react-table";
 import { useBoxedExpression } from "../../context";
 import { LOGIC_TYPE_SELECTOR_CLASS } from "../LogicTypeSelector";
 import { TdAdditiveCell } from "./TdAdditiveCell";
@@ -29,6 +29,8 @@ export interface TableBodyProps {
   tableInstance: TableInstance;
   /** The way in which the header will be rendered */
   headerVisibility?: TableHeaderVisibility;
+  /** True, for skipping the creation in the DOM of the last defined header group */
+  skipLastHeaderGroup: boolean;
   /** Optional children element to be appended below the table content */
   children?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
@@ -46,7 +48,8 @@ export interface TableBodyProps {
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   tableInstance,
   children,
-  headerVisibility,
+  headerVisibility = TableHeaderVisibility.Full,
+  skipLastHeaderGroup,
   getRowKey,
   getColumnKey,
   onColumnsUpdate,
@@ -56,6 +59,20 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const { boxedExpressionEditorGWTService } = useBoxedExpression();
 
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
+
+  const headerRowsLength = useMemo(() => {
+    const headerGroupsLength = tableInstance.headerGroups.length - (skipLastHeaderGroup ? 1 : 0);
+    switch (headerVisibility) {
+      case TableHeaderVisibility.Full:
+        return headerGroupsLength;
+      case TableHeaderVisibility.LastLevel:
+        return headerGroupsLength - 1;
+      case TableHeaderVisibility.SecondToLastLevel:
+        return headerGroupsLength - 1;
+      default:
+        return 0;
+    }
+  }, [headerVisibility, tableInstance]);
 
   const renderCell = useCallback(
     (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
@@ -71,10 +88,11 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           getColumnKey={getColumnKey}
           onColumnsUpdate={onColumnsUpdate!}
           tdProps={tdProps}
+          yPosition={headerRowsLength + rowIndex}
         />
       );
     },
-    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, onCellKeyDown]
+    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, onCellKeyDown, headerRowsLength]
   );
 
   const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
@@ -133,7 +151,14 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <TdAdditiveCell isEmptyCell={true} rowIndex={rowIndex} onKeyDown={onCellKeyDown} />
+        <TdAdditiveCell
+          isEmptyCell={true}
+          rowIndex={rowIndex}
+          cellIndex={0}
+          onKeyDown={onCellKeyDown}
+          xPosition={0}
+          yPosition={headerRowsLength + rowIndex}
+        />
         {children?.map((child, childIndex) => {
           return (
             <TdAdditiveCell
@@ -142,6 +167,8 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
               isEmptyCell={false}
               rowIndex={rowIndex}
               onKeyDown={onCellKeyDown}
+              xPosition={childIndex + 1}
+              yPosition={headerRowsLength + rowIndex}
             >
               {child}
             </TdAdditiveCell>

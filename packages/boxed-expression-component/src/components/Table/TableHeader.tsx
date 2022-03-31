@@ -107,12 +107,15 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       return (
         <ThCell
           rowIndex={rowIndex}
+          cellIndex={0}
           rowSpan={1}
           headerProps={column.getHeaderProps()}
           className={classNames}
           key={columnKey}
           isFocusable={true}
           onKeyDown={onCellKeyDown}
+          xPosition={0}
+          yPosition={rowIndex}
         >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
@@ -200,7 +203,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderColumn = useCallback(
-    (column: ColumnInstance, rowIndex: number, columnIndex: number) =>
+    (column: ColumnInstance, rowIndex: number, columnIndex: number, xPosition?: number) =>
       column.isCountColumn ? (
         renderCountColumn(column, rowIndex)
       ) : (
@@ -219,9 +222,8 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           column={column}
           rowIndex={rowIndex}
           columnIndex={columnIndex}
-          skipLastHeaderGroup={skipLastHeaderGroup}
-          tableColumns={tableColumns}
-          onColumnsUpdate={onColumnsUpdate}
+          xPosition={xPosition ?? columnIndex}
+          yPosition={rowIndex}
         />
       ),
     [
@@ -231,12 +233,9 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
       getColumnLabel,
       onCellKeyDown,
       onColumnNameOrDataTypeUpdate,
-      onColumnsUpdate,
       onHeaderClick,
       onHorizontalResizeStop,
       renderHeaderCellInfo,
-      skipLastHeaderGroup,
-      tableColumns,
       tableInstance,
       thProps,
     ]
@@ -253,11 +252,14 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     () =>
       getHeaderGroups(tableInstance).map((headerGroup: HeaderGroup, rowIndex: number) => {
         const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
+        let xPosition = 0;
         return (
           <Tr key={key} {...props}>
-            {headerGroup.headers.map((column: ColumnInstance, columnIndex: number) =>
-              renderColumn(column, rowIndex, columnIndex)
-            )}
+            {headerGroup.headers.map((column: ColumnInstance, columnIndex: number) => {
+              const currentXPosition = xPosition;
+              xPosition += column.columns?.length ?? 1;
+              return renderColumn(column, rowIndex, columnIndex, currentXPosition);
+            })}
           </Tr>
         );
       }),

@@ -512,6 +512,7 @@ export const Table: React.FunctionComponent<TableProps> = ({
           headerVisibility={headerVisibility}
           onCellKeyDown={onCellKeyDown}
           onColumnsUpdate={onColumnsUpdateCallback}
+          skipLastHeaderGroup={skipLastHeaderGroup}
           tableInstance={tableInstance}
           tdProps={tdProps}
         >

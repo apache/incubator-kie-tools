@@ -17,19 +17,27 @@
 import * as React from "react";
 import { useState, useCallback } from "react";
 import { TableHeaderProps } from "./TableHeader";
-import { Column, ColumnInstance } from "react-table";
+import { Column, ColumnInstance, TableInstance } from "react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { ThCell } from "./ThCell";
 import { EditExpressionMenu } from "../EditExpressionMenu";
 
-export interface ResizableHeaderCellProps extends TableHeaderProps {
+export interface ResizableHeaderCellProps {
   column: any;
-  rowIndex: number;
   columnIndex: number;
-  onColumnNameOrDataTypeUpdate: (column: ColumnInstance, columnIndex: number) => any;
+  editColumnLabel?: string | { [groupType: string]: string };
+  editableHeader: boolean;
+  getColumnKey: (column: Column) => string;
   getColumnLabel: (groupType: string) => string | undefined;
+  onCellKeyDown: () => (e: KeyboardEvent) => void;
+  onColumnNameOrDataTypeUpdate: (column: ColumnInstance, columnIndex: number) => any;
   onHeaderClick: (columnKey: string) => () => void;
   onHorizontalResizeStop: (column: Column, columnWidth: number) => void;
+  rowIndex: number;
+  tableInstance: TableInstance;
+  thProps: (column: ColumnInstance) => any;
+  xPosition: number;
+  yPosition: number;
   renderHeaderCellInfo: (
     column: Column,
     columnIndex: number,
@@ -38,6 +46,8 @@ export interface ResizableHeaderCellProps extends TableHeaderProps {
 }
 
 export const ResizableHeaderCell = ({
+  column,
+  columnIndex,
   editableHeader,
   getColumnKey,
   getColumnLabel,
@@ -46,11 +56,11 @@ export const ResizableHeaderCell = ({
   onHeaderClick,
   onHorizontalResizeStop,
   renderHeaderCellInfo,
-  thProps,
-  tableInstance,
-  column,
   rowIndex,
-  columnIndex,
+  tableInstance,
+  thProps,
+  xPosition,
+  yPosition,
 }: ResizableHeaderCellProps) => {
   const headerProps = {
     ...column.getHeaderProps(),
@@ -121,8 +131,11 @@ export const ResizableHeaderCell = ({
       onClick={onHeaderClick(columnKey)}
       onKeyDown={onCellKeyDown}
       rowIndex={rowIndex}
+      cellIndex={columnIndex}
       rowSpan={getRowSpan(cssClasses)}
       thProps={thProps(column)}
+      xPosition={xPosition}
+      yPosition={yPosition}
     >
       <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
         <div className="header-cell" data-ouia-component-type="expression-column-header">

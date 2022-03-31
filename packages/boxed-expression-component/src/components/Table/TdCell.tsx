@@ -19,16 +19,13 @@ import { useEffect, useRef } from "react";
 import { Td } from "@patternfly/react-table";
 import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { Cell, Column, TableInstance } from "react-table";
-import { Column as IColumn } from "../../api";
+import { Column as IColumn, TableCellComponentProps } from "../../api";
 
-export interface TdCellProps {
+export interface TdCellProps extends TableCellComponentProps {
   cell: Cell;
-  cellIndex: number;
   getColumnKey: (column: Column) => string;
   inAForm: boolean;
   onColumnsUpdate: (columns: Column[]) => void;
-  onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
-  rowIndex: number;
   tableInstance: TableInstance;
   tdProps: (cellIndex: number, rowIndex: number) => any;
 }
@@ -43,6 +40,7 @@ export function TdCell({
   getColumnKey,
   onColumnsUpdate,
   tdProps,
+  yPosition,
 }: TdCellProps) {
   let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
   const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
@@ -90,6 +88,8 @@ export function TdCell({
       key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
       data-ouia-component-id={"expression-column-" + cellIndex}
       className={`${cellType}`}
+      data-xposition={cellIndex}
+      data-yposition={yPosition ?? rowIndex}
     >
       {cellTemplate}
     </Td>

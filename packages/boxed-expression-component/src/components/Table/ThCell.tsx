@@ -17,15 +17,14 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Th } from "@patternfly/react-table";
+import { TableCellComponentProps } from "../../api";
 
-export interface ThCellProps {
+export interface ThCellProps extends TableCellComponentProps {
   children?: React.ReactElement;
   className: string;
   headerProps: any;
   isFocusable: boolean;
   onClick?: () => void;
-  onKeyDown: (rowSpan: number) => (e: KeyboardEvent) => void;
-  rowIndex: number;
   rowSpan: number;
   thProps?: any;
 }
@@ -40,6 +39,8 @@ export function ThCell({
   rowIndex,
   thProps,
   rowSpan = 1,
+  xPosition,
+  yPosition,
 }: ThCellProps) {
   const thRef = useRef<HTMLElement>(null);
 
@@ -60,6 +61,8 @@ export function ThCell({
       onClick={onClick}
       className={className}
       tabIndex={isFocusable ? "-1" : undefined}
+      data-xposition={xPosition}
+      data-yposition={yPosition}
     >
       {children}
     </Th>

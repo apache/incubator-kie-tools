@@ -17,16 +17,22 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Td } from "@patternfly/react-table";
+import { TableCellComponentProps } from "../../api";
 
-export interface TdAdditiveCellProps {
+export interface TdAdditiveCellProps extends TableCellComponentProps {
   children?: React.ReactElement;
-  cellIndex?: number;
   isEmptyCell?: boolean;
-  onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
-  rowIndex: number;
 }
 
-export function TdAdditiveCell({ children, cellIndex, isEmptyCell = false, onKeyDown, rowIndex }: TdAdditiveCellProps) {
+export function TdAdditiveCell({
+  children,
+  cellIndex,
+  isEmptyCell = false,
+  onKeyDown,
+  rowIndex,
+  xPosition,
+  yPosition,
+}: TdAdditiveCellProps) {
   const tdRef = useRef<HTMLTableCellElement>(null);
 
   useEffect(() => {
@@ -39,11 +45,26 @@ export function TdAdditiveCell({ children, cellIndex, isEmptyCell = false, onKey
   }, [onKeyDown, rowIndex]);
 
   return isEmptyCell ? (
-    <Td ref={tdRef} role="cell" className="empty-cell" tabIndex={-1}>
+    <Td
+      ref={tdRef}
+      role="cell"
+      className="empty-cell"
+      tabIndex={-1}
+      data-xposition={xPosition}
+      data-yposition={yPosition}
+    >
       <br />
     </Td>
   ) : (
-    <Td ref={tdRef} role="cell" key={cellIndex} className="row-remainder-content" tabIndex={-1}>
+    <Td
+      ref={tdRef}
+      role="cell"
+      key={cellIndex}
+      className="row-remainder-content"
+      tabIndex={-1}
+      data-xposition={xPosition}
+      data-yposition={yPosition}
+    >
       {children}
     </Td>
   );
