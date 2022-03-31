@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { ErrorBoundary } from "../common/ErrorBoundary";
 import { UnitablesRowApi } from "./UnitablesRow";
 import { UnitablesI18n } from "../i18n";
@@ -31,9 +31,12 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
-import { FORMS_ID } from "./UnitablesJsonSchemaBridge";
+import { FORMS_ID, UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
-import { Validator } from "./Validator";
+
+export interface UnitablesApi {
+  operationHandler: (tableOperation: TableOperation, rowIndex: number) => void;
+}
 
 interface Props {
   jsonSchema: any;
@@ -43,136 +46,30 @@ interface Props {
   setError: React.Dispatch<React.SetStateAction<boolean>>;
   openRow: (rowIndex: number) => void;
   i18n: UnitablesI18n;
-  inputsContainerRef: React.RefObject<HTMLDivElement>;
-  validator: Validator;
   name?: string;
+  rowCount: number;
+  jsonSchemaBridge: UnitablesJsonSchemaBridge;
+  propertiesEntryPath: string;
+  onRowNumberUpdate: any;
 }
 
-export function Unitables(props: Props) {
+export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRef) => {
   const inputErrorBoundaryRef = useRef<ErrorBoundary>(null);
-  const [rowCount, setRowCount] = useState<number>(props.inputRows?.length ?? 1);
   const [formsDivRendered, setFormsDivRendered] = useState<boolean>(false);
-  const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
   const inputColumnsCache = useRef<ColumnInstance[]>([]);
 
-  const jsonSchemaBridge = useMemo(
-    () => (props?.validator ?? new Validator(props.i18n)).getBridge(props.jsonSchema ?? {}),
-    [props.i18n, props.jsonSchema, props.validator]
-  );
-
-  // TODO: bridge
-  const getDefaultValueByType = useCallback((type, defaultValues: { [x: string]: any }, property: string) => {
-    if (type === "object") {
-      defaultValues[`${property}`] = {};
-    }
-    if (type === "array") {
-      defaultValues[`${property}`] = [];
-    }
-    if (type === "boolean") {
-      defaultValues[`${property}`] = false;
-    }
-    return defaultValues;
-  }, []);
-
-  // TODO: bridge
-  const defaultValues = useMemo(
-    () =>
-      Object.keys(props.jsonSchema?.definitions?.InputSet?.properties ?? {}).reduce((defaultValues, property) => {
-        if (Object.hasOwnProperty.call(props.jsonSchema?.definitions?.InputSet?.properties?.[property], "$ref")) {
-          const refPath = props.jsonSchema?.definitions?.InputSet?.properties?.[property]?.$ref!.split("/").pop() ?? "";
-          return getDefaultValueByType(props.jsonSchema?.definitions?.[refPath]?.type, defaultValues, property);
-        }
-        return getDefaultValueByType(
-          props.jsonSchema?.definitions?.InputSet?.properties?.[property]?.type,
-          defaultValues,
-          property
-        );
-      }, {} as { [x: string]: any }),
-    [getDefaultValueByType, props.jsonSchema?.definitions]
-  );
-
-  const defaultModel = useRef<Array<object>>(props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow })));
-  useEffect(() => {
-    defaultModel.current = props.inputRows.map((inputRow) => ({ ...defaultValues, ...inputRow }));
-  }, [defaultValues, props.inputRows]);
-
-  const { inputs, inputRules, updateInputCellsWidth } = useUnitablesInputs(
-    jsonSchemaBridge,
+  const { inputs, inputRules, updateInputCellsWidth, operationHandler } = useUnitablesInputs(
+    props.jsonSchemaBridge,
     props.inputRows,
     props.setInputRows,
-    rowCount,
+    props.rowCount,
     formsDivRendered,
-    rowsRef,
     inputColumnsCache,
-    defaultModel,
-    defaultValues
+    props.propertiesEntryPath
   );
 
-  const handleOperation = useCallback(
-    (tableOperation: TableOperation, rowIndex: number) => {
-      switch (tableOperation) {
-        case TableOperation.RowInsertAbove:
-          props.setInputRows?.((previousData: any) => {
-            const updatedData = [
-              ...previousData.slice(0, rowIndex),
-              { ...defaultValues },
-              ...previousData.slice(rowIndex),
-            ];
-            defaultModel.current = updatedData;
-            return updatedData;
-          });
-          break;
-        case TableOperation.RowInsertBelow:
-          props.setInputRows?.((previousData: any) => {
-            const updatedData = [
-              ...previousData.slice(0, rowIndex + 1),
-              { ...defaultValues },
-              ...previousData.slice(rowIndex + 1),
-            ];
-            defaultModel.current = updatedData;
-            return updatedData;
-          });
-          break;
-        case TableOperation.RowDelete:
-          props.setInputRows?.((previousData: any) => {
-            const updatedData = [...previousData.slice(0, rowIndex), ...previousData.slice(rowIndex + 1)];
-            defaultModel.current = updatedData;
-            return updatedData;
-          });
-          break;
-        case TableOperation.RowClear:
-          props.setInputRows?.((previousData: any) => {
-            const updatedData = [...previousData];
-            updatedData[rowIndex] = { ...defaultValues };
-            defaultModel.current = updatedData;
-            return updatedData;
-          });
-          rowsRef.get(rowIndex)?.current?.reset(defaultValues);
-          break;
-        case TableOperation.RowDuplicate:
-          props.setInputRows?.((previousData: any) => {
-            const updatedData = [
-              ...previousData.slice(0, rowIndex + 1),
-              previousData[rowIndex],
-              ...previousData.slice(rowIndex + 1),
-            ];
-            defaultModel.current = updatedData;
-            return updatedData;
-          });
-      }
-    },
-    [props.setInputRows, defaultValues]
-  );
-
-  const onRowNumberUpdated = useCallback(
-    (rowQtt: number, operation?: TableOperation, rowIndex?: number) => {
-      setRowCount(rowQtt);
-      if (operation !== undefined && rowIndex !== undefined) {
-        handleOperation(operation, rowIndex);
-      }
-    },
-    [handleOperation]
-  );
+  const inputUid = useMemo(() => nextId(), []);
+  const shouldRender = useMemo(() => (inputs?.length ?? 0) > 0, [inputs]);
 
   // columns are saved in the grid instance, so some values can be used to improve re-renders (e.g. cell width)
   const onInputColumnsUpdate = useCallback(
@@ -183,14 +80,12 @@ export function Unitables(props: Props) {
     [inputs, updateInputCellsWidth]
   );
 
-  const inputUid = useMemo(() => nextId(), []);
-
-  const shouldRender = useMemo(() => (inputs?.length ?? 0) > 0, [inputs]);
-
   // Resets the ErrorBoundary everytime the FormSchema is updated
   useEffect(() => {
     inputErrorBoundaryRef.current?.reset();
-  }, [jsonSchemaBridge]);
+  }, [props.jsonSchemaBridge]);
+
+  useImperativeHandle(forwardRef, () => ({ operationHandler }), [operationHandler]);
 
   return (
     <>
@@ -202,11 +97,11 @@ export function Unitables(props: Props) {
             decisionNodeId={inputUid}
             dataTypes={[]}
           >
-            <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
+            <div style={{ display: "flex" }}>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
                 <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
-                {Array.from(Array(rowCount)).map((e, rowIndex) => (
+                {Array.from(Array(props.rowCount)).map((e, rowIndex) => (
                   <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
                     <div
                       style={{
@@ -230,7 +125,7 @@ export function Unitables(props: Props) {
               </div>
               <CustomTable
                 name={props?.name ?? ""}
-                onRowNumberUpdated={onRowNumberUpdated}
+                onRowNumberUpdate={props.onRowNumberUpdate}
                 onColumnsUpdate={onInputColumnsUpdate}
                 input={inputs}
                 rules={inputRules as UnitablesInputRule[]}
@@ -244,7 +139,7 @@ export function Unitables(props: Props) {
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
   );
-}
+});
 
 function InputError() {
   return (

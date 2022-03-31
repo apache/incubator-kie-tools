@@ -27,6 +27,7 @@ import {
 } from "./UnitablesJsonSchemaBridge";
 import { UnitablesRow, UnitablesRowApi } from "./UnitablesRow";
 import { UnitablesInputRule } from "./UnitablesBoxedTypes";
+import { useTableOperationHandler } from "../boxed/TableOperationHandler";
 
 export function usePrevious<T>(value: T) {
   const ref = useRef<T>();
@@ -38,53 +39,74 @@ export function usePrevious<T>(value: T) {
   return ref.current;
 }
 
+const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
+  path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc[key], obj);
+
 export function useUnitablesInputs(
   jsonSchemaBridge: UnitablesJsonSchemaBridge,
   inputRows: Array<object>,
   setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>,
   rowCount: number,
   formsDivRendered: boolean,
-  rowsRef: Map<number, React.RefObject<UnitablesRowApi> | null>,
   inputColumnsCache: React.MutableRefObject<ColumnInstance[]>,
-  defaultModel: React.MutableRefObject<Array<object>>,
-  defaultValues: object
+  propertiesEntryPath = "definitions"
 ) {
+  const rowsRef = useMemo(() => new Map<number, React.RefObject<UnitablesRowApi> | null>(), []);
   const previousBridge = usePrevious(jsonSchemaBridge);
+
+  const defaultInputValues = useMemo(
+    () =>
+      Object.keys(jsonSchemaBridge?.schema?.properties ?? {}).reduce((acc, property) => {
+        const field = jsonSchemaBridge.getField(property);
+        if (field.default) {
+          acc[`${property}`] = field.default;
+        }
+        return acc;
+      }, {} as Record<string, any>),
+    [jsonSchemaBridge]
+  );
+
+  const { inputRowsCache, operationHandler } = useTableOperationHandler(
+    inputRows,
+    setInputRows,
+    defaultInputValues,
+    rowsRef
+  );
 
   // Check differences on schema and delete inputs from cells that were deleted.
   useEffect(() => {
     if (previousBridge === undefined) {
       return;
     }
-    setInputRows((previousData) => {
-      const newData = [...previousData];
+    setInputRows((inputRows) => {
+      const newInputRows = [...inputRows];
       const propertiesDifference = diff(
-        (previousBridge.schema ?? {}).definitions?.InputSet?.properties ?? {},
-        jsonSchemaBridge.schema?.definitions?.InputSet?.properties ?? {}
+        getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
+        getObjectByPath(jsonSchemaBridge?.schema ?? {}, propertiesEntryPath) ?? {}
       );
 
-      const updatedData = newData.map((data) => {
+      const updatedData = newInputRows.map((inputRow) => {
         return Object.entries(propertiesDifference).reduce(
           (row, [property, value]) => {
             if (Object.keys(row).length === 0) {
               return row;
             }
             if (!value || value.type || value.$ref) {
-              delete (row as any)[property];
+              delete row[property];
             }
-            // if (value?.["x-dmn-type"]) {
-            //   (row as any)[property] = undefined;
-            // }
+            if (value?.format) {
+              row[property] = undefined;
+            }
             return row;
           },
-          { ...defaultValues, ...data }
+          { ...defaultInputValues, ...inputRow }
         );
       });
 
-      defaultModel.current = updatedData;
+      inputRowsCache.current = updatedData;
       return updatedData;
     });
-  }, [defaultModel, defaultValues, jsonSchemaBridge, previousBridge, setInputRows]);
+  }, [inputRowsCache, defaultInputValues, jsonSchemaBridge, previousBridge, setInputRows, propertiesEntryPath]);
 
   const updateInputCellsWidth = useCallback(
     (inputs: InputFields[]) => {
@@ -160,7 +182,7 @@ export function useUnitablesInputs(
               ref={unitablesRowRef}
               formId={FORMS_ID}
               rowIndex={rowIndex}
-              model={defaultModel.current[rowIndex]}
+              model={inputRowsCache.current[rowIndex]}
               jsonSchemaBridge={jsonSchemaBridge}
               onModelUpdate={(model: object) => onModelUpdate(model, rowIndex)}
             >
@@ -170,7 +192,7 @@ export function useUnitablesInputs(
         },
       } as UnitablesInputRule;
     });
-  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, defaultModel, onModelUpdate]);
+  }, [jsonSchemaBridge, formsDivRendered, inputs, rowCount, rowsRef, inputRowsCache, onModelUpdate]);
 
   return useMemo(() => {
     return {
@@ -178,6 +200,7 @@ export function useUnitablesInputs(
       inputs,
       inputRules,
       updateInputCellsWidth,
+      operationHandler,
     };
-  }, [inputRules, inputs, jsonSchemaBridge, updateInputCellsWidth]);
+  }, [inputRules, inputs, jsonSchemaBridge, updateInputCellsWidth, operationHandler]);
 }

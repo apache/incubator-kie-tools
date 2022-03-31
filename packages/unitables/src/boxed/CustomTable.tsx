@@ -27,7 +27,7 @@ import {
   TableOperation,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
-import "./DmnRunnerTable.css";
+import "./CustomTable.css";
 import { useDmnUnitablesI18n } from "../i18n";
 import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../core/UnitablesBoxedTypes";
 import { CELL_MINIMUM_WIDTH } from "../core/UnitablesJsonSchemaBridge";
@@ -50,9 +50,10 @@ export interface CustomTableProps extends ExpressionProps {
   output?: UnitablesClause[];
   /** Rules represent rows values */
   rules?: UnitablesInputRule[] | BoxedExpressionOutputRule[];
-  /** Callback to be called when row number is updated */
-  onRowNumberUpdated: (rowNumber: number, operation?: TableOperation, updatedRowIndex?: number) => void;
+  /** Callback to be called when columns is updated */
   onColumnsUpdate: (columns: Column[]) => void;
+  /** Callback to be called when row number is updated */
+  onRowNumberUpdate?: (rowQtt: number, operation?: TableOperation, updatedRowIndex?: number) => void;
 }
 
 export function CustomTable(props: CustomTableProps) {
@@ -260,9 +261,9 @@ export function CustomTable(props: CustomTableProps) {
           return filledRow;
         }, {})
       );
-      props.onRowNumberUpdated?.(newRows.length, operation, rowIndex);
+      props.onRowNumberUpdate?.(newRows.length, operation, rowIndex);
     },
-    [props.onRowNumberUpdated, columns]
+    [props.onRowNumberUpdate, columns]
   );
 
   const onRowAdding = useCallback(() => {

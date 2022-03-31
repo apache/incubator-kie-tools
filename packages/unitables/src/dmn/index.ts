@@ -15,4 +15,4 @@
  */
 
 export * from "./DmnValidator";
-export * from "./DmnAutoTable";
+export * from "./DmnRunnerTable";
