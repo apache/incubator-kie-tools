@@ -292,16 +292,20 @@ export class OpenShiftService {
     groupId: string;
     artifactId: string;
     openApiJsonContent: string;
+    serviceAccountConfig: ServiceAccountSettingsConfig;
     serviceRegistryConfig: ServiceRegistrySettingsConfig;
   }): Promise<void> {
-    // TODO: Investigate the reason we are getting a 401 error here
     const response = await fetch(
       `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(args.groupId)}/artifacts`,
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${args.accessToken}`,
-          "Content-Type": "application/json; artifactType=OpenAPI",
+          // We are facing a 401 Error when using oauth, let's use Basic auth for now.
+          // Authorization: `Bearer ${args.accessToken}`,
+          Authorization: `Basic ${btoa(
+            `${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`
+          )}`,
+          "Content-Type": "application/json",
           "X-Registry-ArtifactId": args.artifactId,
         },
         body: args.openApiJsonContent,

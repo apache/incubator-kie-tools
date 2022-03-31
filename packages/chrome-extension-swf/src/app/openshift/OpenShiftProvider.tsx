@@ -186,6 +186,7 @@ export function OpenShiftProvider(props: Props) {
         accessToken: accessToken,
         groupId: DEFAULT_GROUP_ID,
         artifactId: artifactId,
+        serviceAccountConfig: settings.serviceAccount.config,
         serviceRegistryConfig: settings.serviceRegistry.config,
         openApiJsonContent: openApiJsonContent,
       });
