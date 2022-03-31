@@ -176,7 +176,7 @@ describe("ImportJavaClasses component tests", () => {
     expect(fetchButton).toBeInTheDocument();
   });
 
-  test.skip("Should move to third step", async () => {
+  test("Should move to third step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
@@ -187,6 +187,7 @@ describe("ImportJavaClasses component tests", () => {
         ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
     await testJavaClassSelection(baseElement, true);
     /* Second Step */
