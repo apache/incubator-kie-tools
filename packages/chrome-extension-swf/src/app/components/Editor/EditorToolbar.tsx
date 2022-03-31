@@ -1414,15 +1414,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       <Button isInline={true} variant={ButtonVariant.link} onClick={() => setSwaggerModalOpen(true)}>
                         OpenAPI spec
                       </Button>
-                      {/*TODO: Remove the button below, it is there only to make test easy*/}
-                      <Button
-                        className="pf-u-ml-sm"
-                        isInline={true}
-                        variant={ButtonVariant.link}
-                        onClick={() => openshift.uploadOpenApiToServiceRegistry(file, workspace.descriptor.name)}
-                      >
-                        Upload OpenAPI
-                      </Button>
                       <SwaggerEditorModal
                         workspaceFile={file}
                         isOpen={swaggerModalOpen}
