@@ -54,8 +54,32 @@ export const getCellCoordinates: (cell: Element | undefined | null) => TableCell
 };
 
 /**
+ * Fetch cell coordinates reading the data-xposition and data-yposition cell attributes for better perfomrmance. It counts all cells from the table header.
+ * Note: supports the colspan.
+ * @param cell the node of the cell
+ * @return the coordinates of the cell, null if not set.
+ *
+ */
+export const getFullCellCoordinatesByDataAttributes: (cell: Element | undefined | null) => TableCellCoordinates | null =
+  (cell) => {
+    if (!cell || !(cell instanceof HTMLTableCellElement)) {
+      return null;
+    }
+
+    const xPosition = parseInt(cell.getAttribute("data-xposition") + "");
+    const yPosition = parseInt(cell.getAttribute("data-xposition") + "");
+
+    return {
+      x: xPosition,
+      y: yPosition,
+    };
+  };
+
+/**
  * Fetch cell coordinates, counting all cells from the table header.
  * Note: supports the colspan.
+ * @param cell the node of the cell
+ * @return the coordinates of the cell
  *
  */
 export const getFullCellCoordinates: (cell: Element | undefined | null) => TableCellCoordinates = (cell) => {

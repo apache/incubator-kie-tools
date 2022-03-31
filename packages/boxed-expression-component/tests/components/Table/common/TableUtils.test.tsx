@@ -22,8 +22,8 @@ import {
   getCellByCoordinates,
   hasCellTabindex,
   getFullCellCoordinates,
+  getFullCellCoordinatesByDataAttributes,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
-import { TableInstance } from "react-table";
 
 describe("TableUtils", () => {
   describe("getCellCoordinates", () => {
@@ -87,6 +87,72 @@ describe("TableUtils", () => {
     });
   });
 
+  describe("getFullCellCoordinatesByDataAttributes", () => {
+    let container: Element;
+    let cells: NodeListOf<Element>;
+    beforeEach(() => {
+      document.dispatchEvent = jest.fn();
+
+      container = render(
+        <>
+          <table>
+            <thead>
+              <tr>
+                <th colSpan={2} data-xposition="0" data-yposition="0">
+                  H1
+                </th>
+                <th data-xposition="2" data-yposition="0">
+                  H2
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-xposition="0" data-yposition="1">
+                  A
+                </td>
+                <td data-xposition="1" data-yposition="1">
+                  B
+                </td>
+                <td data-xposition="2" data-yposition="1">
+                  C
+                </td>
+              </tr>
+              <tr>
+                <td data-xposition="0" data-yposition="2">
+                  D
+                </td>
+                <td data-xposition="1" data-yposition="2">
+                  E
+                </td>
+                <td data-xposition="2" data-yposition="2">
+                  F
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </>
+      ).container;
+
+      cells = container.querySelectorAll("th, td");
+    });
+
+    test.each([
+      [null, null],
+      [0, { x: 0, y: 0 }],
+      [1, { x: 2, y: 0 }],
+      [2, { x: 0, y: 1 }],
+      [3, { x: 1, y: 1 }],
+      [4, { x: 2, y: 1 }],
+      [5, null],
+      [6, { x: 1, y: 2 }],
+      [7, { x: 2, y: 2 }],
+    ])("checking coordinates of cell #%i, expecting: %s", (cellIndex, coordinates) => {
+      // @ts-ignore
+      expect(getFullCellCoordinatesByDataAttributes(cells[cellIndex])).toEqual(coordinates);
+    });
+  });
+
   describe("getFullCellCoordinates", () => {
     let container: Element;
     let cells: NodeListOf<Element>;
@@ -121,44 +187,19 @@ describe("TableUtils", () => {
       cells = container.querySelectorAll("th, td");
     });
 
-    test("valid coordinates", () => {
-      expect(getFullCellCoordinates(cells[2])).toEqual({
-        x: 0,
-        y: 1,
-      });
-      expect(getFullCellCoordinates(cells[3])).toEqual({
-        x: 1,
-        y: 1,
-      });
-      expect(getFullCellCoordinates(cells[4])).toEqual({
-        x: 2,
-        y: 1,
-      });
-
-      expect(getFullCellCoordinates(cells[5])).toEqual({
-        x: 0,
-        y: 2,
-      });
-      expect(getFullCellCoordinates(cells[6])).toEqual({
-        x: 1,
-        y: 2,
-      });
-      expect(getFullCellCoordinates(cells[7])).toEqual({
-        x: 2,
-        y: 2,
-      });
-      expect(getFullCellCoordinates(cells[0])).toEqual({
-        x: 0,
-        y: 0,
-      });
-      expect(getFullCellCoordinates(cells[1])).toEqual({
-        x: 2,
-        y: 0,
-      });
-      expect(getFullCellCoordinates(null)).toEqual({
-        x: 0,
-        y: 0,
-      });
+    test.each([
+      [null, { x: 0, y: 0 }],
+      [0, { x: 0, y: 0 }],
+      [1, { x: 2, y: 0 }],
+      [2, { x: 0, y: 1 }],
+      [3, { x: 1, y: 1 }],
+      [4, { x: 2, y: 1 }],
+      [5, { x: 0, y: 2 }],
+      [6, { x: 1, y: 2 }],
+      [7, { x: 2, y: 2 }],
+    ])("checking coordinates of cell #%i, expecting: %s", (cellIndex, coordinates) => {
+      // @ts-ignore
+      expect(getFullCellCoordinates(cells[cellIndex])).toEqual(coordinates);
     });
   });
 
