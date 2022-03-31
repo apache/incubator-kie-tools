@@ -17,7 +17,10 @@
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../../components";
-import { JavaCodeCompletionClass } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import {
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", async () => {
@@ -96,7 +99,7 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should move to second step", async () => {
+  test("Should move to second step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
@@ -107,6 +110,7 @@ describe("ImportJavaClasses component tests", () => {
         ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
     await testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
@@ -114,7 +118,7 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should move to second step and fetch a Java Class", async () => {
+  test("Should move to second step and fetch a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
@@ -125,6 +129,7 @@ describe("ImportJavaClasses component tests", () => {
         ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
     await testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
@@ -139,7 +144,7 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should move to second step and fetch, remove a Java Class", async () => {
+  test("Should move to second step and fetch, remove a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
@@ -150,6 +155,7 @@ describe("ImportJavaClasses component tests", () => {
         ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
     await testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
@@ -278,9 +284,28 @@ describe("ImportJavaClasses component tests", () => {
   function getJavaCodeCompletionServiceMock(classMocks: JavaCodeCompletionClass[]) {
     const javaCodeCompletionServiceMock: JavaCodeCompletionService = {
       getClasses: (value) => Promise.resolve(classMocks),
-      getFields: (value) => Promise.resolve([]),
+      getFields: getFieldsMocks,
       isLanguageServerAvailable: () => Promise.resolve(true),
     };
     return javaCodeCompletionServiceMock;
+  }
+
+  async function getFieldsMocks(className: string) {
+    const bookClassFields = [
+      { fqcn: "com.Book", accessor: "title", type: "java.lang.String" },
+      { fqcn: "com.Book", accessor: "year", type: "java.lang.Integer" },
+      { fqcn: "com.Book", accessor: "test", type: "com.Test" },
+    ];
+    const authorClassFields = [
+      { fqcn: "com.Author", accessor: "name", type: "java.lang.String" },
+      { fqcn: "com.Author", accessor: "isAlive", type: "java.lang.Boolean" },
+    ];
+    if (className === "com.Book") {
+      return bookClassFields;
+    } else if (className === "com.Author") {
+      return authorClassFields;
+    } else {
+      return [];
+    }
   }
 });

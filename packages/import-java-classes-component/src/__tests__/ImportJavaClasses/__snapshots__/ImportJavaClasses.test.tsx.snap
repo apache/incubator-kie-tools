@@ -31,7 +31,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary"
+      class="pf-c-button pf-m-secondary pf-m-progress"
       data-ouia-component-id="OUIA-Generated-Button-secondary-6"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
@@ -100,7 +100,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
               class="pf-c-modal-box__description"
               id="pf-modal-part-6"
             >
-              It converts your Java assets to DMN types. This is a one-time import action: if the Java class get updated, you will need to reimport it
+              It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
@@ -527,7 +527,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
   >
     <button
       aria-disabled="false"
-      class="pf-c-button pf-m-secondary"
+      class="pf-c-button pf-m-secondary pf-m-progress"
       data-ouia-component-id="OUIA-Generated-Button-secondary-8"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
@@ -596,7 +596,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
               class="pf-c-modal-box__description"
               id="pf-modal-part-7"
             >
-              It converts your Java assets to DMN types. This is a one-time import action: if the Java class get updated, you will need to reimport it
+              It converts your Java assets to DMN types. This is a one-time import action: if the Java class gets updated, you will need to reimport it.
             </div>
           </header>
           <div
