@@ -15,14 +15,21 @@
  */
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.processes;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.Process;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BaseConverterFactory;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.DefinitionResolver;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CollaborationPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.DefinitionsPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.ProcessPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.Correlation;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.diagram.CollaborationSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.diagram.Correlations;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.diagram.CorrelationsValue;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.AdHoc;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.DiagramSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Executable;
@@ -45,7 +52,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
-public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramImpl, DiagramSet, ProcessData, RootProcessAdvancedData> {
+public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramImpl, DiagramSet, ProcessData, RootProcessAdvancedData, CollaborationSet> {
 
     public RootProcessConverter(TypedFactoryManager typedFactoryManager,
                                 PropertyReaderFactory propertyReaderFactory,
@@ -82,5 +89,13 @@ public class RootProcessConverter extends BaseRootProcessConverter<BPMNDiagramIm
     @Override
     public RootProcessAdvancedData createAdvancedData(String globalVariables, String metaDataAttributes) {
         return new RootProcessAdvancedData(new GlobalVariables(globalVariables), new MetaDataAttributes(metaDataAttributes));
+    }
+
+    @Override
+    protected CollaborationSet createCollaborations(CollaborationPropertyReader collaborationPropertyReader) {
+        List<Correlation> correlationList = collaborationPropertyReader.getCorrelations();
+        CorrelationsValue correlationsValue = new CorrelationsValue(correlationList);
+        Correlations correlations = new Correlations(correlationsValue);
+        return new CollaborationSet(correlations);
     }
 }

@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.MarshallingRequest;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.TypedFactoryManager;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CatchEventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CorrelationPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateCompensationEvent;
@@ -47,6 +48,8 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEvent
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationModel;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dimensions.CircleDimensionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
@@ -55,6 +58,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.Can
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.font.FontSet;
@@ -83,6 +87,7 @@ public class IntermediateCatchEventConverterTest {
     private PropertyReaderFactory propertyReaderFactory;
 
     private CatchEventPropertyReader propertyReader;
+    private CorrelationPropertyReader correlationPropertyReader;
     private View view;
     private List<EventDefinition> eventDefinitions;
 
@@ -93,9 +98,12 @@ public class IntermediateCatchEventConverterTest {
         factoryManager = mock(TypedFactoryManager.class);
         propertyReaderFactory = mock(PropertyReaderFactory.class);
         propertyReader = mock(CatchEventPropertyReader.class);
+        correlationPropertyReader = mock(CorrelationPropertyReader.class);
         eventDefinitions = new ArrayList<>();
         when(propertyReader.getEventDefinitions()).thenReturn(eventDefinitions);
+        when(correlationPropertyReader.getCorrelationSet(any(MessageRef.class))).thenReturn(new CorrelationSet());
         when(propertyReaderFactory.of(Mockito.<CatchEvent>any())).thenReturn(propertyReader);
+        when(propertyReaderFactory.of(Mockito.<CorrelationModel>any())).thenReturn(correlationPropertyReader);
 
         view = mock(View.class);
 

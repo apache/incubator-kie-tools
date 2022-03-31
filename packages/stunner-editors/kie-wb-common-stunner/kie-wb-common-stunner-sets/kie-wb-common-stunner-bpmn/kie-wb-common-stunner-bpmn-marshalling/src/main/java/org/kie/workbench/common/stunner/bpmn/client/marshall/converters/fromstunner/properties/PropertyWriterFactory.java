@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.bpmn2.Activity;
@@ -41,12 +43,15 @@ import org.eclipse.bpmn2.Task;
 import org.eclipse.bpmn2.TextAnnotation;
 import org.eclipse.bpmn2.ThrowEvent;
 import org.eclipse.bpmn2.UserTask;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.util.CorrelationWriterData;
 
 public class PropertyWriterFactory {
 
     protected final VariableScope variableScope = new FlatVariableScope();
 
     protected final Set<DataObject> dataObjects = new HashSet<>();
+
+    protected final List<CorrelationWriterData> correlationWriterDataList = new ArrayList<>();
 
     public UserTaskPropertyWriter of(UserTask e) {
         return new UserTaskPropertyWriter(e, variableScope, dataObjects);
@@ -134,5 +139,13 @@ public class PropertyWriterFactory {
 
     public DataObjectPropertyWriter of(DataObjectReference e) {
         return new DataObjectPropertyWriter(e, variableScope, dataObjects);
+    }
+
+    public CollaborationPropertyWriter of(Definitions definitions, Process process) {
+        return new CollaborationPropertyWriter(definitions, process, correlationWriterDataList);
+    }
+
+    public CorrelationPropertyWriter of(BasePropertyWriter basePropertyWriter) {
+        return new CorrelationPropertyWriter(basePropertyWriter, correlationWriterDataList);
     }
 }
