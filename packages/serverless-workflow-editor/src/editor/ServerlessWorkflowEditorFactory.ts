@@ -23,7 +23,10 @@ import {
 import { ServerlessWorkflowEditorChannelApi } from "./ServerlessWorkflowEditorChannelApi";
 
 export class ServerlessWorkflowEditorFactory implements EditorFactory<Editor, ServerlessWorkflowEditorChannelApi> {
-  public async createEditor(ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>, initArgs: EditorInitArgs) {
+  public async createEditor(
+    ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
+    initArgs: EditorInitArgs
+  ) {
     return new ServerlessWorkflowEditorView(ctx, initArgs);
   }
 }
