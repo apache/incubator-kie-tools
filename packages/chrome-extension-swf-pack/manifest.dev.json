@@ -14,7 +14,7 @@
   "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },
   "web_accessible_resources": [
     {
-      "resources": ["resources/*", "images/*", "injected.js"],
+      "resources": ["resources/*", "images/*", "envelope/*"],
       "matches": ["https://console.redhat.com/*"]
     }
   ],

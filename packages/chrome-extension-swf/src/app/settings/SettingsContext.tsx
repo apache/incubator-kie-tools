@@ -200,11 +200,28 @@ export function SettingsContextProvider(props: any) {
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
   const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
 
+  // Initial check for openshift status
   useEffect(() => {
     openshiftService.isConnectionEstablished(openshiftConfig).then((status) => {
       setOpenshiftStatus(status ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.DISCONNECTED);
     });
-  });
+  }, [openshiftConfig, openshiftService]);
+
+  // Poll openshift status
+  useEffect(() => {
+    if (openshiftStatus === OpenShiftInstanceStatus.CONNECTED) {
+      const checkOpenshiftStatus = () => {
+        openshiftService.isConnectionEstablished(openshiftConfig).then((status) => {
+          setOpenshiftStatus(status ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.DISCONNECTED);
+        });
+      };
+      checkOpenshiftStatus();
+      const pollingOpenshiftStatus = window.setInterval(checkOpenshiftStatus, 30000);
+      return () => {
+        window.clearInterval(pollingOpenshiftStatus);
+      };
+    }
+  }, [openshiftConfig, openshiftService, openshiftStatus]);
 
   // apache kafka
   const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
