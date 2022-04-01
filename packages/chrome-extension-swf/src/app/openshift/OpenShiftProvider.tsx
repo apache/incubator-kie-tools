@@ -186,10 +186,26 @@ export function OpenShiftProvider(props: Props) {
     [service, settings.serviceAccount.config, settings.serviceRegistry.config]
   );
 
+  const fetchServiceRegistryArtifacts = useCallback(async () => {
+    if (!isServiceAccountConfigValid(settings.serviceAccount.config)) {
+      throw new Error("Invalid service account config");
+    }
+
+    if (!isServiceRegistryConfigValid(settings.serviceRegistry.config)) {
+      throw new Error("Invalid service registry config");
+    }
+
+    return await service.fetchServiceRegistryArtifacts({
+      serviceAccountConfig: settings.serviceAccount.config,
+      serviceRegistryConfig: settings.serviceRegistry.config,
+    });
+  }, [service, settings.serviceAccount.config, settings.serviceRegistry.config]);
+
   const value = useMemo(
     () => ({
       deploy,
       uploadOpenApiToServiceRegistry,
+      fetchServiceRegistryArtifacts,
       fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,
@@ -201,6 +217,7 @@ export function OpenShiftProvider(props: Props) {
     [
       deploy,
       uploadOpenApiToServiceRegistry,
+      fetchServiceRegistryArtifacts,
       fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,

@@ -26,7 +26,7 @@ import { Page, PageSection, PageSectionVariants } from "@patternfly/react-core/d
 import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
 import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { PromiseStateWrapper, usePromiseState } from "../../workspace/hooks/PromiseState";
+import { PromiseStateWrapper } from "../../workspace/hooks/PromiseState";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { useCancelableEffect, useController, usePrevious } from "../../reactExt/Hooks";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";

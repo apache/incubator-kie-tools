@@ -313,4 +313,25 @@ export class OpenShiftService {
       throw new Error(`Could not upload OpenAPI to Service Registry: Error ${response.status}`);
     }
   }
+
+  public async fetchServiceRegistryArtifacts(args: {
+    serviceAccountConfig: ServiceAccountSettingsConfig;
+    serviceRegistryConfig: ServiceRegistrySettingsConfig;
+  }): Promise<any> {
+    const response = await fetch(`${args.serviceRegistryConfig.coreRegistryApi}/search/artifacts`, {
+      method: "GET",
+      headers: {
+        // We are facing a 401 Error when using oauth, let's use Basic auth for now.
+        Authorization:
+          "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Could not fetch OpenAPI list from Service Registry: Error ${response.status}`);
+    }
+
+    return response;
+  }
 }

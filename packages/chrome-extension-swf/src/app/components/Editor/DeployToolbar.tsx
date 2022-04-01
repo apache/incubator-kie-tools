@@ -172,6 +172,11 @@ export function DeployToolbar(props: DeployToolbarProps) {
     fetchOpenApiSpec(props.workspace.descriptor.deploymentResourceName);
   }, [fetchOpenApiSpec, props.workspace.descriptor.deploymentResourceName]);
 
+  const onFetchArtifacts = useCallback(async () => {
+    const artifacts = await openshift.fetchServiceRegistryArtifacts();
+    console.log(artifacts);
+  }, [openshift]);
+
   return (
     <Flex>
       <FlexItem>
@@ -189,6 +194,10 @@ export function DeployToolbar(props: DeployToolbarProps) {
                 spinnerAriaValueText={isLoading ? "Loading" : undefined}
               >
                 {isLoading ? "Deploying" : "Deploy"}
+              </Button>
+              {/* Temporary Button to check fetching artifacts */}
+              <Button key="fetch-artifacts" variant="primary" onClick={onFetchArtifacts}>
+                {"Fetch artifacts"}
               </Button>
             </ToolbarItem>
           </ToolbarContent>
