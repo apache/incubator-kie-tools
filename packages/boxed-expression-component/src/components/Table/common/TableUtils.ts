@@ -15,7 +15,6 @@
  */
 
 import * as _ from "lodash";
-import { TableInstance } from "react-table";
 
 /**
  * TableCellCoordinates.
@@ -57,7 +56,7 @@ export const getCellCoordinates: (cell: Element | undefined | null) => TableCell
  * Fetch cell coordinates reading the data-xposition and data-yposition cell attributes for better perfomrmance. It counts all cells from the table header.
  * Note: supports the colspan.
  * @param cell the node of the cell
- * @return the coordinates of the cell, null if not set.
+ * @return the coordinates of the cell, null if the attributes are not found.
  *
  */
 export const getFullCellCoordinatesByDataAttributes: (cell: Element | undefined | null) => TableCellCoordinates | null =
@@ -67,7 +66,11 @@ export const getFullCellCoordinatesByDataAttributes: (cell: Element | undefined 
     }
 
     const xPosition = parseInt(cell.getAttribute("data-xposition") + "");
-    const yPosition = parseInt(cell.getAttribute("data-xposition") + "");
+    const yPosition = parseInt(cell.getAttribute("data-yposition") + "");
+
+    if (isNaN(xPosition) || isNaN(yPosition)) {
+      return null;
+    }
 
     return {
       x: xPosition,
@@ -76,16 +79,18 @@ export const getFullCellCoordinatesByDataAttributes: (cell: Element | undefined 
   };
 
 /**
- * Fetch cell coordinates, counting all cells from the table header.
+ * Fetch cell coordinates, counting the position cell by cell from the table header.
  * Note: supports the colspan.
  * @param cell the node of the cell
- * @return the coordinates of the cell
+ * @return the coordinates of the cell, null otherwise
  *
  */
-export const getFullCellCoordinates: (cell: Element | undefined | null) => TableCellCoordinates = (cell) => {
+export const getFullCellCoordinatesByHTMLPosition: (cell: Element | undefined | null) => TableCellCoordinates | null = (
+  cell
+) => {
   const table = cell?.closest("table");
   if (!table) {
-    return DEFAULT;
+    return null;
   }
 
   const rows = table.rows;
@@ -104,7 +109,18 @@ export const getFullCellCoordinates: (cell: Element | undefined | null) => Table
     }
   }
 
-  return DEFAULT;
+  return null;
+};
+
+/**
+ * Fetch cell coordinates, counting all cells from the table header. It reads data-xposition and data-yposition first for better perfomrmance.
+ * Note: supports the colspan.
+ * @param cell the node of the cell
+ * @return the coordinates of the cell
+ *
+ */
+export const getFullCellCoordinates: (cell: Element | undefined | null) => TableCellCoordinates = (cell) => {
+  return getFullCellCoordinatesByDataAttributes(cell) || getFullCellCoordinatesByHTMLPosition(cell) || DEFAULT;
 };
 
 /**
@@ -116,13 +132,41 @@ export const getCellTableId: (cell: Element | undefined | null) => string = (cel
 };
 
 /**
- * Get a cell by coordinates counting the colspans too
+ * Get a cell by coordinates counting the colspans too reading the data-xposition and data-yposition attributes.
  *
  * @param table the table
  * @param cellCoordinates the cell coordinates. set x or y = -1 to get the last element.
  * @returns the table cell, null otherwise
  */
-export const getCellByCoordinates = (
+export const getCellByCoordinatesFromDataAttributes = (
+  table: HTMLTableElement,
+  cellCoordinates: TableCellCoordinates
+): HTMLTableCellElement | null => {
+  if (!table || !cellCoordinates) {
+    return null;
+  }
+
+  const node = table.querySelector(`
+    thead > tr > th[data-xposition='${cellCoordinates.x}'][data-yposition='${cellCoordinates.y}'], 
+    tbody > tr > td[data-xposition='${cellCoordinates.x}'][data-yposition='${cellCoordinates.y}']
+  `);
+
+  // verify that node is really child of table. ":scope" selector cannot be used in jest: "SyntaxError: unknown pseudo-class selector"
+  if (!node || node.closest("table") !== table) {
+    return null;
+  }
+
+  return node as HTMLTableCellElement;
+};
+
+/**
+ * Get a cell by coordinates counting the colspans too. Counting the node position in the HTML
+ *
+ * @param table the table
+ * @param cellCoordinates the cell coordinates. set x or y = -1 to get the last element.
+ * @returns the table cell, null otherwise
+ */
+export const getCellByCoordinatesFromHTMLPosition = (
   table: HTMLTableElement,
   cellCoordinates: TableCellCoordinates
 ): HTMLTableCellElement | null => {
@@ -159,6 +203,23 @@ export const getCellByCoordinates = (
   }
 
   return currentCell;
+};
+
+/**
+ * Get a cell by coordinates counting the colspans too
+ *
+ * @param table the table
+ * @param cellCoordinates the cell coordinates. set x or y = -1 to get the last element.
+ * @returns the table cell, null otherwise
+ */
+export const getCellByCoordinates = (
+  table: HTMLTableElement,
+  cellCoordinates: TableCellCoordinates
+): HTMLTableCellElement | null => {
+  return (
+    getCellByCoordinatesFromDataAttributes(table, cellCoordinates) ||
+    getCellByCoordinatesFromHTMLPosition(table, cellCoordinates)
+  );
 };
 
 /**

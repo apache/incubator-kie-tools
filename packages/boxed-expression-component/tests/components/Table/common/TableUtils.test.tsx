@@ -20,9 +20,12 @@ import {
   getCellCoordinates,
   getCellTableId,
   getCellByCoordinates,
+  getCellByCoordinatesFromDataAttributes,
+  getCellByCoordinatesFromHTMLPosition,
   hasCellTabindex,
   getFullCellCoordinates,
   getFullCellCoordinatesByDataAttributes,
+  getFullCellCoordinatesByHTMLPosition,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 
 describe("TableUtils", () => {
@@ -87,46 +90,84 @@ describe("TableUtils", () => {
     });
   });
 
-  describe("getFullCellCoordinatesByDataAttributes", () => {
+  describe("working with coordinates", () => {
     let container: Element;
+    let parentTable: HTMLTableElement;
+    let childTable: HTMLTableElement;
     let cells: NodeListOf<Element>;
     beforeEach(() => {
       document.dispatchEvent = jest.fn();
 
       container = render(
         <>
-          <table>
+          <div id="notACell" data-xposition="4" data-yposition="6">
+            Not a cell
+          </div>
+          <table id="parentTable">
             <thead>
               <tr>
                 <th colSpan={2} data-xposition="0" data-yposition="0">
-                  H1
+                  Cell 0
                 </th>
                 <th data-xposition="2" data-yposition="0">
-                  H2
+                  Cell 1
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td data-xposition="0" data-yposition="1">
-                  A
+                  Cell 2
                 </td>
                 <td data-xposition="1" data-yposition="1">
-                  B
+                  Cell 3
                 </td>
                 <td data-xposition="2" data-yposition="1">
-                  C
+                  Cell 4
                 </td>
               </tr>
               <tr>
-                <td data-xposition="0" data-yposition="2">
-                  D
-                </td>
+                <td>Cell 5</td>
                 <td data-xposition="1" data-yposition="2">
-                  E
+                  Cell 6
                 </td>
                 <td data-xposition="2" data-yposition="2">
-                  F
+                  Cell 7
+                </td>
+              </tr>
+              <tr>
+                <td data-xposition="0" data-yposition="3">
+                  Cell 8
+                </td>
+                <td data-xposition="1" data-yposition="3">
+                  Cell 9
+                </td>
+                <td data-xposition="2" data-yposition="3">
+                  <table id="childTable">
+                    <thead>
+                      <tr>
+                        <th colSpan={2} data-xposition="0" data-yposition="0">
+                          Childcell 11
+                        </th>
+                        <th data-xposition="2" data-yposition="0">
+                          Childcell 12
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td data-xposition="0" data-yposition="1">
+                          Childcell 13
+                        </td>
+                        <td data-xposition="1" data-yposition="1">
+                          Childcell 14
+                        </td>
+                        <td data-xposition="2" data-yposition="1">
+                          Childcell 15
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </td>
               </tr>
             </tbody>
@@ -134,72 +175,168 @@ describe("TableUtils", () => {
         </>
       ).container;
 
+      parentTable = container.querySelector("#parentTable") || document.createElement("table");
+      childTable = container.querySelector("#childTable") || document.createElement("table");
       cells = container.querySelectorAll("th, td");
     });
 
-    test.each([
-      [null, null],
-      [0, { x: 0, y: 0 }],
-      [1, { x: 2, y: 0 }],
-      [2, { x: 0, y: 1 }],
-      [3, { x: 1, y: 1 }],
-      [4, { x: 2, y: 1 }],
-      [5, null],
-      [6, { x: 1, y: 2 }],
-      [7, { x: 2, y: 2 }],
-    ])("checking coordinates of cell #%i, expecting: %s", (cellIndex, coordinates) => {
-      // @ts-ignore
-      expect(getFullCellCoordinatesByDataAttributes(cells[cellIndex])).toEqual(coordinates);
-    });
-  });
+    describe("getFullCellCoordinatesByDataAttributes", () => {
+      it("should return null with a wront input", () => {
+        expect(getFullCellCoordinatesByDataAttributes(document.getElementById("#notACell"))).toBe(null);
+        expect(getFullCellCoordinatesByDataAttributes(null)).toBe(null);
+      });
 
-  describe("getFullCellCoordinates", () => {
-    let container: Element;
-    let cells: NodeListOf<Element>;
-    beforeEach(() => {
-      document.dispatchEvent = jest.fn();
-
-      container = render(
-        <>
-          <table>
-            <thead>
-              <tr>
-                <th colSpan={2}>H1</th>
-                <th>H2</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-              </tr>
-              <tr>
-                <td>D</td>
-                <td>E</td>
-                <td>F</td>
-              </tr>
-            </tbody>
-          </table>
-        </>
-      ).container;
-
-      cells = container.querySelectorAll("th, td");
+      test.each([
+        [0, { x: 0, y: 0 }],
+        [1, { x: 2, y: 0 }],
+        [2, { x: 0, y: 1 }],
+        [3, { x: 1, y: 1 }],
+        [5, null],
+        [4, { x: 2, y: 1 }],
+        [6, { x: 1, y: 2 }],
+        [7, { x: 2, y: 2 }],
+        [12, { x: 2, y: 0 }],
+      ])("checking coordinates of cell #%s, expecting: %s", (cellIndex, coordinates) => {
+        // @ts-ignore
+        expect(getFullCellCoordinatesByDataAttributes(cells[cellIndex])).toEqual(coordinates);
+      });
     });
 
-    test.each([
-      [null, { x: 0, y: 0 }],
-      [0, { x: 0, y: 0 }],
-      [1, { x: 2, y: 0 }],
-      [2, { x: 0, y: 1 }],
-      [3, { x: 1, y: 1 }],
-      [4, { x: 2, y: 1 }],
-      [5, { x: 0, y: 2 }],
-      [6, { x: 1, y: 2 }],
-      [7, { x: 2, y: 2 }],
-    ])("checking coordinates of cell #%i, expecting: %s", (cellIndex, coordinates) => {
-      // @ts-ignore
-      expect(getFullCellCoordinates(cells[cellIndex])).toEqual(coordinates);
+    describe("getFullCellCoordinatesByHTMLPosition", () => {
+      it("should return null with an element that is not a cell", () => {
+        expect(getFullCellCoordinatesByHTMLPosition(document.getElementById("#notACell"))).toBe(null);
+        expect(getFullCellCoordinatesByHTMLPosition(null)).toBe(null);
+      });
+
+      test.each([
+        [0, { x: 0, y: 0 }],
+        [1, { x: 2, y: 0 }],
+        [2, { x: 0, y: 1 }],
+        [3, { x: 1, y: 1 }],
+        [4, { x: 2, y: 1 }],
+        [5, { x: 0, y: 2 }],
+        [6, { x: 1, y: 2 }],
+        [7, { x: 2, y: 2 }],
+        [12, { x: 2, y: 0 }],
+      ])("checking coordinates of cell #%s, expecting: %s", (cellIndex, coordinates) => {
+        // @ts-ignore
+        expect(getFullCellCoordinatesByHTMLPosition(cells[cellIndex])).toEqual(coordinates);
+      });
+    });
+
+    describe("getFullCellCoordinates", () => {
+      const DEFAULT = { x: 0, y: 0 };
+
+      it("should return DEFAULT coordinates with an element that is not a cell", () => {
+        expect(getFullCellCoordinates(document.getElementById("#notACell"))).toEqual(DEFAULT);
+        expect(getFullCellCoordinates(null)).toEqual(DEFAULT);
+      });
+
+      test.each([
+        [0, { x: 0, y: 0 }],
+        [1, { x: 2, y: 0 }],
+        [2, { x: 0, y: 1 }],
+        [3, { x: 1, y: 1 }],
+        [4, { x: 2, y: 1 }],
+        [5, { x: 0, y: 2 }],
+        [6, { x: 1, y: 2 }],
+        [7, { x: 2, y: 2 }],
+        [12, { x: 2, y: 0 }],
+      ])("checking coordinates of cell #%s, expecting: %s", (cellIndex, coordinates) => {
+        // @ts-ignore
+        expect(getFullCellCoordinates(cells[cellIndex])).toEqual(coordinates);
+      });
+    });
+
+    describe("getCellByCoordinatesFromDataAttributes", () => {
+      it("should return null with a invalid inputs", () => {
+        // @ts-ignore
+        expect(getCellByCoordinatesFromDataAttributes(parentTable, undefined)).toBe(null);
+        // @ts-ignore
+        expect(getCellByCoordinatesFromDataAttributes(parentTable, null)).toBe(null);
+        // @ts-ignore
+        expect(getCellByCoordinatesFromDataAttributes(null, { x: 1, y: 1 })).toBe(null);
+      });
+
+      it("should return null if the element is not found", () => {
+        expect(getCellByCoordinatesFromDataAttributes(parentTable, { x: 0, y: 2 })).toEqual(null);
+      });
+
+      test.each([
+        [{ x: 0, y: 0 }, 0],
+        [{ x: 2, y: 0 }, 1],
+        [{ x: 0, y: 1 }, 2],
+        [{ x: 1, y: 1 }, 3],
+        [{ x: 2, y: 1 }, 4],
+        [{ x: 1, y: 2 }, 6],
+        [{ x: 2, y: 2 }, 7],
+      ])("getting cell by coordinates %s, expecting cell %s", (coordinates, cellIndex) => {
+        expect(getCellByCoordinatesFromDataAttributes(parentTable, coordinates)?.innerHTML).toEqual(
+          cells[cellIndex].innerHTML
+        );
+      });
+
+      it("get the second cell of the child table", () => {
+        expect(getCellByCoordinatesFromDataAttributes(childTable, { x: 2, y: 0 })).toEqual(cells[12]);
+      });
+    });
+
+    describe("getCellByCoordinatesFromHTMLPosition", () => {
+      it("should return null with a invalid inputs", () => {
+        // @ts-ignore
+        expect(getCellByCoordinatesFromHTMLPosition(parentTable, undefined)).toBe(null);
+        // @ts-ignore
+        expect(getCellByCoordinatesFromHTMLPosition(parentTable, null)).toBe(null);
+        // @ts-ignore
+        expect(getCellByCoordinatesFromHTMLPosition(null, { x: 1, y: 1 })).toBe(null);
+      });
+
+      test.each([
+        [{ x: 0, y: 0 }, 0],
+        [{ x: 2, y: 0 }, 1],
+        [{ x: 0, y: 1 }, 2],
+        [{ x: 1, y: 1 }, 3],
+        [{ x: 2, y: 1 }, 4],
+        [{ x: 0, y: 2 }, 5],
+        [{ x: 1, y: 2 }, 6],
+        [{ x: 2, y: 2 }, 7],
+      ])("getting cell by coordinates %s, expecting cell %s", (coordinates, cellIndex) => {
+        expect(getCellByCoordinatesFromHTMLPosition(parentTable, coordinates)?.innerHTML).toEqual(
+          cells[cellIndex].innerHTML
+        );
+      });
+
+      it("get the second cell of the child table", () => {
+        expect(getCellByCoordinatesFromHTMLPosition(childTable, { x: 2, y: 0 })).toEqual(cells[12]);
+      });
+    });
+
+    describe("getCellByCoordinates", () => {
+      it("should return null with a invalid inputs", () => {
+        // @ts-ignore
+        expect(getCellByCoordinates(parentTable, undefined)).toBe(null);
+        // @ts-ignore
+        expect(getCellByCoordinates(parentTable, null)).toBe(null);
+        // @ts-ignore
+        expect(getCellByCoordinates(null, { x: 1, y: 1 })).toBe(null);
+      });
+
+      test.each([
+        [{ x: 0, y: 0 }, 0],
+        [{ x: 2, y: 0 }, 1],
+        [{ x: 0, y: 1 }, 2],
+        [{ x: 1, y: 1 }, 3],
+        [{ x: 2, y: 1 }, 4],
+        [{ x: 0, y: 2 }, 5],
+        [{ x: 1, y: 2 }, 6],
+        [{ x: 2, y: 2 }, 7],
+      ])("getting cell by coordinates %s, expecting cell %s", (coordinates, cellIndex) => {
+        expect(getCellByCoordinates(parentTable, coordinates)?.innerHTML).toEqual(cells[cellIndex].innerHTML);
+      });
+
+      it("get the second cell of the child table", () => {
+        expect(getCellByCoordinates(childTable, { x: 2, y: 0 })).toEqual(cells[12]);
+      });
     });
   });
 
@@ -233,74 +370,6 @@ describe("TableUtils", () => {
 
     test("dispatches paste event", () => {
       expect(getCellTableId(cells[0])).toEqual("table-event-0");
-    });
-  });
-
-  describe("getCellByCoordinates", () => {
-    let container: Element;
-    let table: HTMLTableElement;
-
-    beforeEach(() => {
-      container = render(
-        <>
-          <table>
-            <tbody>
-              <tr>
-                <td>A</td>
-                <td>B</td>
-                <td>C</td>
-              </tr>
-              <tr>
-                <td colSpan={2}>D</td>
-                <td>E</td>
-              </tr>
-            </tbody>
-          </table>
-        </>
-      ).container;
-
-      table = container.querySelector("table") || document.createElement("table");
-    });
-
-    test("get cell A", () => {
-      expect(getCellByCoordinates(table, { y: 0, x: 0 })?.innerHTML).toBe("A");
-    });
-
-    test("get cell C", () => {
-      expect(getCellByCoordinates(table, { y: 0, x: 2 })?.innerHTML).toBe("C");
-    });
-
-    test("get cell D", () => {
-      expect(getCellByCoordinates(table, { y: 1, x: 0 })?.innerHTML).toBe("D");
-      expect(getCellByCoordinates(table, { y: 1, x: 1 })?.innerHTML).toBe("D");
-    });
-
-    test("get cell E", () => {
-      expect(getCellByCoordinates(table, { y: 1, x: 2 })?.innerHTML).toBe("E");
-    });
-
-    test("get last cell, first row ", () => {
-      expect(getCellByCoordinates(table, { y: 0, x: -1 })?.innerHTML).toBe("C");
-    });
-
-    test("get first cell, last row ", () => {
-      expect(getCellByCoordinates(table, { y: -1, x: 0 })?.innerHTML).toBe("D");
-    });
-
-    test("get last cell, last row ", () => {
-      expect(getCellByCoordinates(table, { y: -1, x: -1 })?.innerHTML).toBe("E");
-    });
-
-    test("empty table", () => {
-      expect(getCellByCoordinates(document.createElement("table"), { y: 1, x: 2 })).toBeNull();
-    });
-
-    test("row out of range", () => {
-      expect(getCellByCoordinates(table, { y: 100, x: 2 })).toBeNull();
-    });
-
-    test("cell out of range", () => {
-      expect(getCellByCoordinates(table, { y: 1, x: 200 })).toBeNull();
     });
   });
 
