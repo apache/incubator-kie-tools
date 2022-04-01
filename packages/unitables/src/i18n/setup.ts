@@ -15,24 +15,11 @@
  */
 
 import { en } from "./locales";
-import { DmnUnitablesI18n } from "./DmnUnitablesI18n";
 import { I18n, I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 import { UnitablesI18n } from "./UnitablesI18n";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { useContext } from "react";
-
-export const dmnUnitablesI18nDefaults: I18nDefaults<DmnUnitablesI18n> = {
-  locale: "en",
-  dictionary: en,
-};
-export const dmnUnitablesDictionaries: I18nDictionaries<DmnUnitablesI18n> = new Map([["en", en]]);
-export const dmnUnitablesI18n = new I18n(dmnUnitablesI18nDefaults, dmnUnitablesDictionaries);
-export const DmnUnitablesI18nContext = React.createContext<I18nContextType<DmnUnitablesI18n>>({} as never);
-
-export function useDmnUnitablesI18n(): I18nContextType<DmnUnitablesI18n> {
-  return useContext(DmnUnitablesI18nContext);
-}
 
 export const unitablesI18nDefaults: I18nDefaults<UnitablesI18n> = {
   locale: "en",
@@ -40,3 +27,8 @@ export const unitablesI18nDefaults: I18nDefaults<UnitablesI18n> = {
 };
 export const unitablesDictionaries: I18nDictionaries<UnitablesI18n> = new Map([["en", en]]);
 export const unitablesI18n = new I18n(unitablesI18nDefaults, unitablesDictionaries);
+export const UnitablesI18nContext = React.createContext<I18nContextType<UnitablesI18n>>({} as never);
+
+export function useUnitablesI18n(): I18nContextType<UnitablesI18n> {
+  return useContext(UnitablesI18nContext);
+}

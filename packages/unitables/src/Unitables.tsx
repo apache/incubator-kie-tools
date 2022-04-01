@@ -16,13 +16,12 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { ErrorBoundary } from "../common/ErrorBoundary";
-import { UnitablesI18n } from "../i18n";
+import { UnitablesI18n } from "./i18n";
 import { ColumnInstance } from "react-table";
 import { useUnitablesInputs } from "./UnitablesInputs";
 import { BoxedExpressionProvider, TableOperation } from "@kie-tools/boxed-expression-component";
 import nextId from "react-id-generator";
-import { CustomTable } from "../boxed";
+import { CustomTable } from "./boxed";
 import { UnitablesInputRule } from "./UnitablesBoxedTypes";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -30,8 +29,9 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core";
 import { ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { ListIcon } from "@patternfly/react-icons/dist/js/icons/list-icon";
-import { FORMS_ID, UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
+import { FORMS_ID, UnitablesJsonSchemaBridge } from "./uniforms";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
+import { ErrorBoundary } from "@kie-tools/form/dist/ErrorBoundary";
 
 export interface UnitablesApi {
   operationHandler: (tableOperation: TableOperation, rowIndex: number) => void;
@@ -124,6 +124,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
               </div>
               <CustomTable
                 name={props?.name ?? ""}
+                i18n={props.i18n}
                 onRowNumberUpdate={props.onRowNumberUpdate}
                 onColumnsUpdate={onInputColumnsUpdate}
                 input={inputs}

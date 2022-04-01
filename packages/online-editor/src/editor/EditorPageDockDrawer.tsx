@@ -21,7 +21,7 @@ import { DmnRunnerMode } from "./DmnRunner/DmnRunnerStatus";
 import { useDmnRunnerState } from "./DmnRunner/DmnRunnerContext";
 import { useOnlineI18n } from "../i18n";
 import { NotificationsPanel, NotificationsPanelRef } from "./NotificationsPanel/NotificationsPanel";
-import { DmnRunnerTabular } from "./DmnRunner/DmnRunnerTabular";
+import { DmnRunnerTable } from "./DmnRunner/DmnRunnerTable";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DecisionResult } from "@kie-tools/form-dmn";
@@ -167,7 +167,7 @@ export const EditorPageDockDrawer = React.forwardRef<
                       <NotificationsPanel ref={notificationsPanelRef} tabNames={notificationsPanelTabNames} />
                     )}
                     {panel === PanelId.DMN_RUNNER_TABULAR && isDmnTableMode && (
-                      <DmnRunnerTabular
+                      <DmnRunnerTable
                         workspaceFile={props.workspaceFile}
                         setPanelOpen={setPanel}
                         isReady={props.isEditorReady}

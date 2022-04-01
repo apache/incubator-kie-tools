@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import {
   DAYS_AND_TIME_DURATION_FORMAT,
   YEARS_AND_MONTHS_DURATION_FORMAT,
 } from "@kie-tools/form-dmn/dist/uniforms";
-import { UnitablesJsonSchemaBridge } from "../core/UnitablesJsonSchemaBridge";
+import { UnitablesJsonSchemaBridge } from "@kie-tools/unitables/dist/uniforms";
 
 export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
   public getField(name: string) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DecisionResult, DmnSchemaProperties, Result } from "../dmn";
 import { ColumnInstance } from "react-table";
-import { DmnUnitablesJsonSchemaBridge } from "../dmn/DmnUnitablesJsonSchemaBridge";
-import { BoxedExpressionOutputRule } from "./UnitablesBoxedTypes";
-import { CELL_MINIMUM_WIDTH, UnitablesJsonSchemaBridge } from "./UnitablesJsonSchemaBridge";
+import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
+import { BoxedExpressionOutputRule } from "@kie-tools/unitables/dist/UnitablesBoxedTypes";
+import { DecisionResult, DmnSchemaProperties, Result } from "./DmnTypes";
+import { CELL_MINIMUM_WIDTH } from "@kie-tools/unitables/dist/boxed";
 
 interface OutputField {
   dataType: DataType;
@@ -48,7 +48,7 @@ export function isOutputWithInsideProperties(
 }
 
 export function useDmnBoxedOutputs(
-  jsonSchemaBridge: UnitablesJsonSchemaBridge,
+  jsonSchemaBridge: DmnUnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined,
   rowCount: number,
   outputColumnsCache: React.MutableRefObject<ColumnInstance[]>
@@ -214,7 +214,7 @@ export function useDmnBoxedOutputs(
               if (typeof value === "object" && value !== null) {
                 deepFlattenOutput(flattenObject, entry, value);
               } else {
-                flattenObject[entry] = value;
+                flattenObject[entry] = value as string;
               }
               return flattenObject;
             }, {});

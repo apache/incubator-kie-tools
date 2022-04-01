@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { TableOperation } from "@kie-tools/boxed-expression-component";
-import { UnitablesRowApi } from "../core/UnitablesRow";
+import { UnitablesRowApi } from "../UnitablesRow";
 
 export function useTableOperationHandler(
   inputRows: Array<object>,

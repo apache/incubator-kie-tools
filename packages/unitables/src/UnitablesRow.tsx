@@ -15,26 +15,26 @@
  */
 
 import * as React from "react";
-import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { AutoRow } from "../core";
+import { PropsWithChildren, useCallback, useImperativeHandle, useRef, useState } from "react";
+import { AutoRow } from "./uniforms/AutoRow";
 import { createPortal } from "react-dom";
 import { context as UniformsContext } from "uniforms";
-import { DmnTableJsonSchemaBridge } from "./DmnTableJsonSchemaBridge";
+import { UnitablesJsonSchemaBridge } from "./uniforms";
 
 interface Props {
   formId: string;
   rowIndex: number;
-  jsonSchemaBridge: DmnTableJsonSchemaBridge;
+  jsonSchemaBridge: UnitablesJsonSchemaBridge;
   model: object;
   onModelUpdate: (model: object) => void;
 }
 
-export interface DmnAutoRowApi {
+export interface UnitablesRowApi {
   submit: () => void;
   reset: (defaultValues?: object) => void;
 }
 
-export const DmnAutoRow = React.forwardRef<DmnAutoRowApi, PropsWithChildren<Props>>((props, forwardRef) => {
+export const UnitablesRow = React.forwardRef<UnitablesRowApi, PropsWithChildren<Props>>((props, forwardRef) => {
   const [model, setModel] = useState<object>(props.model);
   const autoRowRef = useRef<HTMLFormElement>(null);
 
@@ -43,7 +43,7 @@ export const DmnAutoRow = React.forwardRef<DmnAutoRowApi, PropsWithChildren<Prop
     props.onModelUpdate(model);
   }, []);
 
-  const onValidate = useCallback((model: any, error: any) => {
+  const onValidate = useCallback((model: object, error: object) => {
     setModel(model);
     props.onModelUpdate(model);
   }, []);
@@ -62,14 +62,14 @@ export const DmnAutoRow = React.forwardRef<DmnAutoRowApi, PropsWithChildren<Prop
         autosaveDelay={200}
         model={model}
         onSubmit={(model: object) => onSubmit(model)}
-        onValidate={(model: object, error: any) => onValidate(model, error)}
+        onValidate={(model: object, error: object) => onValidate(model, error)}
         placeholder={true}
       >
         <UniformsContext.Consumer>
           {(ctx: any) => (
             <>
               {createPortal(
-                <form id={`dmn-auto-form-${props.rowIndex}`} onSubmit={(data) => ctx?.onSubmit(data)} />,
+                <form id={`unitables-row-${props.rowIndex}`} onSubmit={(data) => ctx?.onSubmit(data)} />,
                 document.getElementById(props.formId)!
               )}
               {props.children}

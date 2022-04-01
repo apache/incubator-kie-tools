@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./DmnUnitablesI18n";
 export * from "./UnitablesI18n";
 export * from "./setup";

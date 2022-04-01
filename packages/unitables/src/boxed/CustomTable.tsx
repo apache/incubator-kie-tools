@@ -28,9 +28,10 @@ import {
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-component/dist/components";
 import "./CustomTable.css";
-import { useDmnUnitablesI18n } from "../i18n";
-import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../core/UnitablesBoxedTypes";
-import { CELL_MINIMUM_WIDTH } from "../core/UnitablesJsonSchemaBridge";
+import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../UnitablesBoxedTypes";
+import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
+
+export const CELL_MINIMUM_WIDTH = 150;
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -44,6 +45,7 @@ const EMPTY_SYMBOL = "";
 type DataRecord = Record<string, unknown>;
 
 export interface CustomTableProps extends ExpressionProps {
+  i18n: BoxedExpressionEditorI18n;
   /** Input columns definition */
   input?: UnitablesClause[];
   /** Output columns definition */
@@ -57,8 +59,6 @@ export interface CustomTableProps extends ExpressionProps {
 }
 
 export function CustomTable(props: CustomTableProps) {
-  const { i18n } = useDmnUnitablesI18n();
-
   const getColumnPrefix = useCallback((groupType?: string) => {
     switch (groupType) {
       case DecisionTableColumnType.InputClause:
@@ -73,17 +73,17 @@ export function CustomTable(props: CustomTableProps) {
   const generateHandlerConfigurationByColumn = useMemo(
     () => [
       {
-        group: i18n.decisionRule,
+        group: props.i18n.decisionRule,
         items: [
-          { name: i18n.rowOperations.insertAbove, type: TableOperation.RowInsertAbove },
-          { name: i18n.rowOperations.insertBelow, type: TableOperation.RowInsertBelow },
-          { name: i18n.rowOperations.duplicate, type: TableOperation.RowDuplicate },
-          { name: i18n.rowOperations.clear, type: TableOperation.RowClear },
-          { name: i18n.rowOperations.delete, type: TableOperation.RowDelete },
+          { name: props.i18n.rowOperations.insertAbove, type: TableOperation.RowInsertAbove },
+          { name: props.i18n.rowOperations.insertBelow, type: TableOperation.RowInsertBelow },
+          { name: props.i18n.rowOperations.duplicate, type: TableOperation.RowDuplicate },
+          { name: props.i18n.rowOperations.clear, type: TableOperation.RowClear },
+          { name: props.i18n.rowOperations.delete, type: TableOperation.RowDelete },
         ],
       },
     ],
-    [i18n]
+    [props.i18n]
   );
 
   const getHandlerConfiguration = useMemo(() => {
@@ -96,10 +96,10 @@ export function CustomTable(props: CustomTableProps) {
 
   const getEditColumnLabel = useMemo(() => {
     const editColumnLabel: { [columnGroupType: string]: string } = {};
-    editColumnLabel[DecisionTableColumnType.InputClause] = i18n.editClause.input;
-    editColumnLabel[DecisionTableColumnType.OutputClause] = i18n.editClause.output;
+    editColumnLabel[DecisionTableColumnType.InputClause] = props.i18n.editClause.input;
+    editColumnLabel[DecisionTableColumnType.OutputClause] = props.i18n.editClause.output;
     return editColumnLabel;
-  }, [i18n.editClause.input, i18n.editClause.output]);
+  }, [props.i18n.editClause.input, props.i18n.editClause.output]);
 
   const columns = useMemo(() => {
     const inputSection = (props.input ?? []).map((inputClause) => {

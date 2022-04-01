@@ -16,68 +16,12 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 
 interface UnitablesDictionary extends ReferenceDictionary {
-  addParameter: string;
-  builtInAggregator: string;
-  choose: string;
-  columns: string;
-  columnOperations: {
-    delete: string;
-    insertLeft: string;
-    insertRight: string;
-  };
-  class: string;
-  clear: string;
-  context: string;
-  contextEntry: string;
-  dataType: string;
-  decisionRule: string;
-  decisionTable: string;
-  document: string;
-  editClause: {
-    input: string;
-    output: string;
-  };
-  editContextEntry: string;
-  editExpression: string;
-  editHitPolicy: string;
-  editParameter: string;
-  editParameters: string;
-  editRelation: string;
-  enterFunction: string;
-  delete: string;
-  function: string;
-  hitPolicy: string;
-  inputClause: string;
-  invocation: string;
-  list: string;
-  literalExpression: string;
-  methodSignature: string;
-  model: string;
-  name: string;
-  parameters: string;
-  outputClause: string;
-  pmml: {
-    firstSelection: string;
-    secondSelection: string;
-  };
-  relation: string;
-  rows: string;
-  rowOperations: {
-    clear: string;
-    delete: string;
-    duplicate: string;
-    insertAbove: string;
-    insertBelow: string;
-  };
-  ruleAnnotation: string;
-  selectExpression: string;
-  selectFunctionKind: string;
-  selectLogicType: string;
   schema: {
-    selectPlaceholder: "Select...";
+    selectPlaceholder: string;
   };
 }
 
-export interface UnitablesI18n extends UnitablesDictionary, CommonI18n {}
+export interface UnitablesI18n extends UnitablesDictionary, CommonI18n, BoxedExpressionEditorI18n {}

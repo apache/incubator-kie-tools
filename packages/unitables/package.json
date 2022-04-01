@@ -4,7 +4,7 @@
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "module": "./dist/index.d.ts",
   "scripts": {
     "lint": "echo 'Linting....'",
     "test": "run-script-if --env KIE_TOOLS_BUILD_test -c 'jest --silent --verbose'",

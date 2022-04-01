@@ -16,46 +16,24 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { ErrorBoundary } from "../common/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { CustomTable } from "../boxed";
-import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import nextId from "react-id-generator";
 import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
 import { ColumnInstance } from "react-table";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
-import { BoxedExpressionOutputRule, UnitablesClause } from "./UnitablesBoxedTypes";
-import { DmnUnitablesJsonSchemaBridge } from "../dmn/DmnUnitablesJsonSchemaBridge";
 import { TableOperation } from "@kie-tools/boxed-expression-component";
-
-export enum EvaluationStatus {
-  SUCCEEDED = "SUCCEEDED",
-  SKIPPED = "SKIPPED",
-  FAILED = "FAILED",
-}
-
-export interface DecisionResultMessage {
-  severity: NotificationSeverity;
-  message: string;
-  messageType: string;
-  sourceId: string;
-  level: string;
-}
-
-export type Result = boolean | number | null | object | object[] | string;
-
-export interface DecisionResult {
-  decisionId: string;
-  decisionName: string;
-  result: Result;
-  messages: DecisionResultMessage[];
-  evaluationStatus: EvaluationStatus;
-}
+import { DecisionResult } from "./DmnTypes";
+import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
+import { ErrorBoundary } from "@kie-tools/form";
+import { CustomTable } from "@kie-tools/unitables/dist/boxed";
+import { BoxedExpressionOutputRule, UnitablesClause } from "@kie-tools/unitables";
+import { DmnUnitablesI18n } from "./i18n";
 
 interface Props {
+  i18n: DmnUnitablesI18n;
   results?: Array<DecisionResult[] | undefined>;
   rowCount: number;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
@@ -107,6 +85,7 @@ export function DmnTableResults(props: Props) {
           >
             <CustomTable
               name={"DMN Runner Output"}
+              i18n={props.i18n}
               onColumnsUpdate={onOutputColumnsUpdate}
               output={outputs as UnitablesClause[]}
               rules={outputRules as BoxedExpressionOutputRule[]}
