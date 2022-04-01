@@ -132,12 +132,15 @@ export function DeployToolbar(props: DeployToolbarProps) {
           content: openApiContents,
           extension: "json",
         });
+
+        await openshift.uploadOpenApiToServiceRegistry(openApiContents, props.workspace.descriptor.name);
       }
     };
     fetchOpenApiSpec();
   }, [
     openshift,
     props.workspace.descriptor.deploymentResourceName,
+    props.workspace.descriptor.name,
     props.workspace.descriptor.workspaceId,
     props.workspace.files,
     settings.openshift.config,

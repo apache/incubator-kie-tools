@@ -288,10 +288,9 @@ export class OpenShiftService {
   }
 
   public async uploadOpenApiToServiceRegistry(args: {
-    accessToken: string;
     groupId: string;
     artifactId: string;
-    openApiJsonContent: string;
+    openApiContent: string;
     serviceAccountConfig: ServiceAccountSettingsConfig;
     serviceRegistryConfig: ServiceRegistrySettingsConfig;
   }): Promise<void> {
@@ -301,14 +300,12 @@ export class OpenShiftService {
         method: "POST",
         headers: {
           // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-          // Authorization: `Bearer ${args.accessToken}`,
-          Authorization: `Basic ${btoa(
-            `${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`
-          )}`,
+          Authorization:
+            "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
           "Content-Type": "application/json",
           "X-Registry-ArtifactId": args.artifactId,
         },
-        body: args.openApiJsonContent,
+        body: args.openApiContent,
       }
     );
 

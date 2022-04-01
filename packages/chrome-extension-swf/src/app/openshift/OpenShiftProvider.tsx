@@ -166,7 +166,7 @@ export function OpenShiftProvider(props: Props) {
   );
 
   const uploadOpenApiToServiceRegistry = useCallback(
-    async (openApiFile: WorkspaceFile, artifactId: string) => {
+    async (openApiContent: string, artifactId: string) => {
       if (!isServiceAccountConfigValid(settings.serviceAccount.config)) {
         throw new Error("Invalid service account config");
       }
@@ -175,23 +175,15 @@ export function OpenShiftProvider(props: Props) {
         throw new Error("Invalid service registry config");
       }
 
-      const accessToken = await service.getServiceRegistryAccessToken({
-        proxyUrl: settings.openshift.config.proxy,
-        serviceAccountConfig: settings.serviceAccount.config,
-      });
-
-      const openApiJsonContent = await openApiFile.getFileContentsAsString();
-
       await service.uploadOpenApiToServiceRegistry({
-        accessToken: accessToken,
         groupId: DEFAULT_GROUP_ID,
         artifactId: artifactId,
         serviceAccountConfig: settings.serviceAccount.config,
         serviceRegistryConfig: settings.serviceRegistry.config,
-        openApiJsonContent: openApiJsonContent,
+        openApiContent: openApiContent,
       });
     },
-    [service, settings.openshift.config, settings.serviceAccount.config, settings.serviceRegistry.config]
+    [service, settings.serviceAccount.config, settings.serviceRegistry.config]
   );
 
   const value = useMemo(
