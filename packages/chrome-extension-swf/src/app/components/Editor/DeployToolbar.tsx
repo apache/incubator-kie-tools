@@ -54,13 +54,59 @@ export function DeployToolbar(props: DeployToolbarProps) {
         <Alert
           className="pf-u-mb-md"
           variant="info"
-          title={"The deployment has been started successfully"}
+          title={
+            "The deployment has been started successfully. The OpenAPI spec associated with the deployment will be uploaded to Service Registry as soon as the deployment is completed. Please do not close this browser tab."
+          }
           aria-live="polite"
           data-testid="alert-deploy-success"
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
     }, [])
+  );
+
+  const openApiUploadSuccess = useAlert(
+    alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="info"
+          title={"The OpenAPI spec has been uploaded to Service Registry successfully."}
+          aria-live="polite"
+          data-testid="alert-upload-success"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const fetchOpenApiSpec = useCallback(
+    async (deploymentResourceName: string) => {
+      if (props.workspace.files.find((file) => file.name.includes("openapi"))) {
+        return true;
+      }
+
+      const openApiContents = await openshift.fetchOpenApiFile(settings.openshift.config, deploymentResourceName);
+
+      if (!openApiContents) {
+        return false;
+      }
+
+      await workspaces.addFile({
+        fs: await workspaces.fsService.getWorkspaceFs(props.workspace.descriptor.workspaceId),
+        workspaceId: props.workspace.descriptor.workspaceId,
+        name: "openapi",
+        destinationDirRelativePath: ".",
+        content: openApiContents,
+        extension: "json",
+      });
+
+      await openshift.uploadOpenApiToServiceRegistry(openApiContents, props.workspace.descriptor.name);
+
+      return true;
+    },
+    [openshift, props.workspace.descriptor, props.workspace.files, settings.openshift.config, workspaces]
   );
 
   const onDeploy = useCallback(async () => {
@@ -87,65 +133,44 @@ export function DeployToolbar(props: DeployToolbarProps) {
     });
     setLoading(false);
 
-    const deployStatus = resourceName ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR;
-    setDeployStatus(deployStatus);
-    if (deployStatus === FormValiationOptions.SUCCESS) {
+    const status = resourceName ? FormValiationOptions.SUCCESS : FormValiationOptions.ERROR;
+    setDeployStatus(status);
+
+    if (status === FormValiationOptions.SUCCESS) {
+      workspaces.descriptorService.setDeploymentResourceName(props.workspace.descriptor.workspaceId, resourceName);
       setDeploySuccess.show();
+
+      const fetchOpenApiTask = window.setInterval(async () => {
+        const success = await fetchOpenApiSpec(resourceName);
+
+        if (success) {
+          window.clearInterval(fetchOpenApiTask);
+          openApiUploadSuccess.show();
+        }
+      }, 5000);
     } else {
       setDeployError.show();
     }
-    if (resourceName) {
-      workspaces.descriptorService.setDeploymentResourceName(props.workspace.descriptor.workspaceId, resourceName);
-    }
   }, [
-    props.editor,
-    props.workspace.descriptor.name,
-    props.workspace.descriptor.deploymentResourceName,
-    props.workspace.descriptor.workspaceId,
+    fetchOpenApiSpec,
     openshift,
-    settings.openshift.config,
-    settings.apacheKafka.config,
-    settings.serviceAccount.config,
+    props.editor,
+    props.workspace.descriptor,
     setDeployError,
     setDeploySuccess,
+    openApiUploadSuccess,
+    settings.apacheKafka.config,
+    settings.openshift.config,
+    settings.serviceAccount.config,
     workspaces.descriptorService,
   ]);
 
   useEffect(() => {
-    if (props.workspace.files.find((file) => file.name.includes("openapi"))) {
+    if (!props.workspace.descriptor.deploymentResourceName) {
       return;
     }
-    const fetchOpenApiSpec = async () => {
-      if (!props.workspace.descriptor.deploymentResourceName) {
-        return;
-      }
-      const openApiContents = await openshift.fetchOpenApiFile(
-        settings.openshift.config,
-        props.workspace.descriptor.deploymentResourceName
-      );
-      if (openApiContents) {
-        await workspaces.addFile({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspace.descriptor.workspaceId),
-          workspaceId: props.workspace.descriptor.workspaceId,
-          name: "openapi",
-          destinationDirRelativePath: ".",
-          content: openApiContents,
-          extension: "json",
-        });
-
-        await openshift.uploadOpenApiToServiceRegistry(openApiContents, props.workspace.descriptor.name);
-      }
-    };
-    fetchOpenApiSpec();
-  }, [
-    openshift,
-    props.workspace.descriptor.deploymentResourceName,
-    props.workspace.descriptor.name,
-    props.workspace.descriptor.workspaceId,
-    props.workspace.files,
-    settings.openshift.config,
-    workspaces,
-  ]);
+    fetchOpenApiSpec(props.workspace.descriptor.deploymentResourceName);
+  }, [fetchOpenApiSpec, props.workspace.descriptor.deploymentResourceName]);
 
   return (
     <Flex>

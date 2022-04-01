@@ -63,7 +63,7 @@ export function ApacheKafkaSettingsTab() {
       <PageSection>
         <Form>
           <TextContent>
-            <Text component={TextVariants.h3}>Apache Kafka</Text>
+            <Text component={TextVariants.h3}>Streams for Apache Kafka</Text>
           </TextContent>
           <FormGroup
             label={"Bootstrap Server"}

@@ -70,7 +70,11 @@ export function SettingsDrawerBody() {
       >
         <ServiceRegistrySettingsTab />
       </Tab>
-      <Tab className="kie-tools--settings-tab" eventKey={SettingsTabs.KAFKA} title={<TabTitleText>Kafka</TabTitleText>}>
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.KAFKA}
+        title={<TabTitleText>Streams for Apache Kafka</TabTitleText>}
+      >
         <ApacheKafkaSettingsTab />
       </Tab>
     </Tabs>

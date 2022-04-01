@@ -19,6 +19,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "./cookies";
 import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { SettingsDrawerBody, SettingsTabs } from "./SettingsDrawerBody";
 import { OpenShiftSettingsConfig, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
@@ -303,7 +304,9 @@ export function SettingsContextProvider(props: any) {
     () => (
       <DrawerPanelContent widths={{ default: "width_66" }}>
         <DrawerHead>
-          Settings
+          <TextContent>
+            <Text component={TextVariants.h2}>Settings</Text>
+          </TextContent>
           <DrawerActions>
             <DrawerCloseButton onClick={close} />
           </DrawerActions>
