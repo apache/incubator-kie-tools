@@ -16,12 +16,16 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner;
 
+import java.util.List;
+
 import org.eclipse.bpmn2.Definitions;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.processes.RootProcessConverter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.CollaborationPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.DefinitionsPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.ProcessPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.Correlation;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.BaseDiagramSet;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -49,10 +53,10 @@ public class DefinitionsConverter {
 
     public Definitions toDefinitions() {
         Definitions definitions = bpmn2.createDefinitions();
-        DefinitionsPropertyWriter p = propertyWriterFactory.of(definitions);
 
-        ProcessPropertyWriter pp =
-                processConverter.convertProcess();
+        DefinitionsPropertyWriter p = propertyWriterFactory.of(definitions);
+        ProcessPropertyWriter pp = processConverter.convertProcess();
+
         Node<Definition<BPMNDiagram>, ?> node = converterFactory.context.firstNode();
         BPMNDiagram definition = node.getContent().getDefinition();
         BaseDiagramSet diagramSet = definition.getDiagramSet();
@@ -66,6 +70,11 @@ public class DefinitionsConverter {
         p.addAllRootElements(pp.getItemDefinitions());
         p.addAllRootElements(pp.getRootElements());
         p.addAllRootElements(pp.getInterfaces());
+
+        List<Correlation> correlations = definition.getCollaborationSet().getCorrelations().getValue().getCorrelations();
+
+        CollaborationPropertyWriter collaborationPropertyWriter = propertyWriterFactory.of(definitions, pp.getProcess());
+        collaborationPropertyWriter.setCorrelations(correlations);
 
         return definitions;
     }

@@ -103,4 +103,31 @@ public interface StunnerBPMNConstants {
 
     @TranslationKey(defaultValue = "Edit")
     String EDIT = "combobox.edit";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_HIDE_ERRORS = "correlation.hideErrors";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_SHOW_ERRORS = "correlation.showErrors";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_ID_EMPTY_ERROR = "correlation.id.emptyErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_NAME_EMPTY_ERROR = "correlation.name.emptyErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_NAME_DIVERGING_ERROR = "correlation.name.divergingErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_PROPERTY_ID_EMPTY_ERROR = "correlation.propertyId.emptyErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_PROPERTY_ID_DUPLICATE_ERROR = "correlation.propertyId.duplicateErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_PROPERTY_NAME_EMPTY_ERROR = "correlation.propertyName.emptyErrorMessage";
+
+    @TranslationKey(defaultValue = "")
+    String CORRELATION_PROPERTY_TYPE_EMPTY_ERROR = "correlation.propertyType.emptyErrorMessage";
 }
