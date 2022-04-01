@@ -12,6 +12,7 @@ import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { useAlert } from "../../alerts/Alerts";
 import { useAlertsController } from "../../alerts/AlertsProvider";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -55,7 +56,12 @@ export function DeployToolbar(props: DeployToolbarProps) {
           className="pf-u-mb-md"
           variant="info"
           title={
-            "The deployment has been started successfully. The OpenAPI spec associated with the deployment will be uploaded to Service Registry as soon as the deployment is completed. Please do not close this browser tab."
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; The deployment has been started. Its associated OpenAPI spec will be uploaded to Service
+              Registry as soon as the deployment is up and running. Please do not close this browser tab until the
+              operation is completed.
+            </>
           }
           aria-live="polite"
           data-testid="alert-deploy-success"
@@ -71,7 +77,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
       return (
         <Alert
           className="pf-u-mb-md"
-          variant="info"
+          variant="success"
           title={"The OpenAPI spec has been uploaded to Service Registry successfully."}
           aria-live="polite"
           data-testid="alert-upload-success"
@@ -102,7 +108,10 @@ export function DeployToolbar(props: DeployToolbarProps) {
         extension: "json",
       });
 
-      await openshift.uploadOpenApiToServiceRegistry(openApiContents, props.workspace.descriptor.name);
+      await openshift.uploadOpenApiToServiceRegistry(
+        openApiContents,
+        `${props.workspace.descriptor.name} ${deploymentResourceName}`
+      );
 
       return true;
     },
@@ -137,7 +146,10 @@ export function DeployToolbar(props: DeployToolbarProps) {
     setDeployStatus(status);
 
     if (status === FormValiationOptions.SUCCESS) {
-      workspaces.descriptorService.setDeploymentResourceName(props.workspace.descriptor.workspaceId, resourceName);
+      await workspaces.descriptorService.setDeploymentResourceName(
+        props.workspace.descriptor.workspaceId,
+        resourceName
+      );
       setDeploySuccess.show();
 
       const fetchOpenApiTask = window.setInterval(async () => {
@@ -145,6 +157,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
 
         if (success) {
           window.clearInterval(fetchOpenApiTask);
+          setDeploySuccess.close();
           openApiUploadSuccess.show();
         }
       }, 5000);
