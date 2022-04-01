@@ -72,8 +72,8 @@ interface Props {
 
 export function DmnRunnerTable(props: Props) {
   const [rowCount, setRowCount] = useState<number>(props.inputRows?.length ?? 1);
-  const [dmnAutoTableError, setDmnAutoTableError] = useState<boolean>(false);
-  const dmnAutoTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
+  const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
+  const dmnRunnerTableErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const unitablesRef = useRef<UnitablesApi>(null);
   const i18n = useMemo(() => {
     dmnUnitablesI18n.setLocale(dmnUnitablesI18nDefaults.locale ?? navigator.language);
@@ -85,8 +85,8 @@ export function DmnRunnerTable(props: Props) {
   );
 
   useEffect(() => {
-    dmnAutoTableErrorBoundaryRef.current?.reset();
-  }, [jsonSchemaBridge]);
+    dmnRunnerTableErrorBoundaryRef.current?.reset();
+  }, [props.jsonSchema]);
 
   const inputsContainerRef = useRef<HTMLDivElement>(null);
   const outputsContainerRef = useRef<HTMLDivElement>(null);
@@ -109,19 +109,19 @@ export function DmnRunnerTable(props: Props) {
 
   return (
     <>
-      {jsonSchemaBridge && (
+      {props.jsonSchema && (
         <I18nDictionariesProvider
           defaults={dmnUnitablesI18nDefaults}
           dictionaries={dmnUnitablesDictionaries}
           initialLocale={navigator.language}
           ctx={DmnUnitablesI18nContext}
         >
-          {dmnAutoTableError ? (
-            dmnAutoTableError
+          {dmnRunnerTableError ? (
+            dmnRunnerTableError
           ) : (
             <ErrorBoundary
-              ref={dmnAutoTableErrorBoundaryRef}
-              setHasError={setDmnAutoTableError}
+              ref={dmnRunnerTableErrorBoundaryRef}
+              setHasError={setDmnRunnerTableError}
               error={<DmnAutoTableError />}
             >
               <Drawer isInline={true} isExpanded={true} className={"unitables--drawer"}>
@@ -136,12 +136,9 @@ export function DmnRunnerTable(props: Props) {
                       >
                         <div ref={outputsContainerRef}>
                           <DmnTableResults
-                            error={props.error}
-                            setError={props.setError}
-                            jsonSchema={props.jsonSchema}
+                            jsonSchemaBridge={jsonSchemaBridge}
                             rowCount={rowCount}
                             results={props.results}
-                            jsonSchemaBridge={jsonSchemaBridge}
                             onRowNumberUpdate={onRowNumberUpdate}
                           />
                         </div>

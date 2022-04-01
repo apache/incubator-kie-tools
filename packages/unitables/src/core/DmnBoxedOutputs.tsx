@@ -47,7 +47,7 @@ export function isOutputWithInsideProperties(
   return (toBeDetermined as OutputWithInsideProperties).insideProperties !== undefined;
 }
 
-export function useGenerateBoxedOutputs(
+export function useDmnBoxedOutputs(
   jsonSchemaBridge: UnitablesJsonSchemaBridge,
   results: Array<DecisionResult[] | undefined> | undefined,
   rowCount: number,

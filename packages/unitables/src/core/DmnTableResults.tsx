@@ -26,8 +26,7 @@ import nextId from "react-id-generator";
 import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
 import { ColumnInstance } from "react-table";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
-import { DmnSchema } from "@kie-tools/form-dmn";
-import { useGenerateBoxedOutputs } from "./BoxedOutputs";
+import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
 import { BoxedExpressionOutputRule, UnitablesClause } from "./UnitablesBoxedTypes";
 import { DmnUnitablesJsonSchemaBridge } from "../dmn/DmnUnitablesJsonSchemaBridge";
 import { TableOperation } from "@kie-tools/boxed-expression-component";
@@ -57,10 +56,7 @@ export interface DecisionResult {
 }
 
 interface Props {
-  jsonSchema?: DmnSchema;
   results?: Array<DecisionResult[] | undefined>;
-  error: boolean;
-  setError: React.Dispatch<React.SetStateAction<boolean>>;
   rowCount: number;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
   onRowNumberUpdate: (rowQtt: number, tableOperation: TableOperation, rowIndex: number) => void;
@@ -73,7 +69,7 @@ export function DmnTableResults(props: Props) {
 
   const [outputError, setOutputError] = useState<boolean>(false);
 
-  const { outputs, outputRules, updateOutputCellsWidth } = useGenerateBoxedOutputs(
+  const { outputs, outputRules, updateOutputCellsWidth } = useDmnBoxedOutputs(
     props.jsonSchemaBridge,
     props.results,
     props.rowCount,

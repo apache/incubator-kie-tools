@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { ErrorBoundary } from "../common/ErrorBoundary";
-import { UnitablesRowApi } from "./UnitablesRow";
 import { UnitablesI18n } from "../i18n";
 import { ColumnInstance } from "react-table";
 import { useUnitablesInputs } from "./UnitablesInputs";
@@ -39,7 +38,7 @@ export interface UnitablesApi {
 }
 
 interface Props {
-  jsonSchema: any;
+  jsonSchema: object;
   inputRows: Array<object>;
   setInputRows: React.Dispatch<React.SetStateAction<Array<object>>>;
   error: boolean;
