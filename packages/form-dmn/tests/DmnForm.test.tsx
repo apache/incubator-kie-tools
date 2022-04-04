@@ -18,7 +18,7 @@ import * as React from "react";
 import { act, render } from "@testing-library/react";
 import { DmnForm, DmnSchema, InputRow } from "../src/";
 import { dmnFormI18n } from "../src/i18n";
-import { BaseProps } from "@kie-tools/form";
+import { FormComponentProps } from "@kie-tools/form";
 
 const schema: any = {
   $ref: "#/definitions/InputSet",
@@ -35,7 +35,8 @@ const schema: any = {
   },
 };
 
-const props: BaseProps<InputRow, DmnSchema> = {
+const props: FormComponentProps<InputRow, DmnSchema> = {
+  i18n: dmnFormI18n.getCurrent(),
   formInputs: {},
   setFormInputs: jest.fn(),
   formError: false,

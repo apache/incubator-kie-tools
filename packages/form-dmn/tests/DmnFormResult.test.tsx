@@ -16,15 +16,9 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import {
-  DecisionResult,
-  DmnFormResult,
-  DmnFormResultProps,
-  DmnFormResultWithNotificationsPanelProps,
-  EvaluationStatus,
-} from "../src";
+import { DecisionResult, DmnFormResult, DmnFormResultProps, EvaluationStatus } from "../src";
 
-const props: DmnFormResultProps | DmnFormResultWithNotificationsPanelProps = {
+const props: DmnFormResultProps = {
   results: [],
   differences: [{}],
   locale: "en",
