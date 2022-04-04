@@ -39,6 +39,15 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
+
+addMatchImageSnapshotCommand({
+  blackout: [".updated-json"],
+  customDiffConfig: { threshold: 0.1 },
+  capture: "fullPage",
+});
+
 Cypress.Commands.add("ouiaId", { prevSubject: "optional" }, (subject, id: string, options = {}) => {
   const idSelector = id ? `[data-ouia-component-id='${id}']` : "";
   let el;
