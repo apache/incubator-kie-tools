@@ -148,7 +148,7 @@ describe("DmnForm tests", () => {
       <DmnForm {...props} placeholder={true} formSchema={schema} formRef={formRef} formInputs={formData} />
     );
 
-    expect(getByText(dmnFormI18n.getCurrent().form.preProcessing.selectPlaceholder)).toMatchSnapshot();
+    expect(getByText(dmnFormI18n.getCurrent().schema.selectPlaceholder)).toMatchSnapshot();
   });
 
   it("should create a text field and a label", () => {

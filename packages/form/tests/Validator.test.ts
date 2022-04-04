@@ -16,6 +16,7 @@
 
 import { Validator } from "../src";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
+import { formI18n } from "../dist";
 
 const schema = {
   type: "object",
@@ -28,9 +29,11 @@ const schema = {
   required: ["name", "lastName"],
 };
 
+const i18n = formI18n.getCurrent();
+
 describe("Validator Tests", () => {
   it("create instance", () => {
-    const validator = new Validator();
+    const validator = new Validator(i18n);
     expect(validator).toBeInstanceOf(Validator);
   });
 
@@ -43,7 +46,7 @@ describe("Validator Tests", () => {
         contributors: 10,
       };
 
-      const validator = new Validator();
+      const validator = new Validator(i18n);
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors).toBeNull();
@@ -57,7 +60,7 @@ describe("Validator Tests", () => {
         contributors: 0,
       };
 
-      const validator = new Validator();
+      const validator = new Validator(i18n);
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("minimum");
@@ -72,7 +75,7 @@ describe("Validator Tests", () => {
         contributors: 10,
       };
 
-      const validator = new Validator();
+      const validator = new Validator(i18n);
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
@@ -81,7 +84,7 @@ describe("Validator Tests", () => {
   });
 
   it("get bridge", () => {
-    const validator = new Validator();
+    const validator = new Validator(i18n);
     const bridge = validator.getBridge(schema);
     expect(bridge).toBeInstanceOf(JSONSchemaBridge);
   });
