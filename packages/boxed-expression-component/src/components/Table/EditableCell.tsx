@@ -70,14 +70,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     }
   }, [value]);
 
-  const onGWTCellUpdate = useCallback(
-    (rowIndex: number, columnId: string, value: string) => {
-      boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
-      onCellUpdate(rowIndex, columnId, value);
-    },
-    [boxedExpression.boxedExpressionEditorGWTService, onCellUpdate]
-  );
-
   const triggerReadMode = useCallback(
     (newValue?: string) => {
       if (mode !== EDIT_MODE) {
@@ -85,12 +77,13 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
+        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
       focusTextArea(textarea.current);
     },
-    [mode, columnId, onCellUpdate, rowIndex, value]
+    [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
   );
 
   const triggerEditMode = useCallback(() => {
