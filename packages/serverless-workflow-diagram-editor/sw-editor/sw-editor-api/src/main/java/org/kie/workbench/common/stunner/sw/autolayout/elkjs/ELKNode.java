@@ -179,8 +179,9 @@ public class ELKNode {
     }
 
     @JsIgnore
-    public void setLayoutOptions(Object layoutOptions) {
+    public ELKNode setLayoutOptions(Object layoutOptions) {
         this.layoutOptions = layoutOptions;
+        return this;
     }
 
     @JsIgnore
@@ -194,10 +195,25 @@ public class ELKNode {
     }
 
     @JsIgnore
+    public void addEdgeWithFilter(ELKEdge edge) {
+        if (null != getChild(edge.getSources().getAt(0)) &&
+                null != getChild(edge.getTargets().getAt(0))) {
+            getEdges().push(edge);
+        }
+    }
+
+    @JsIgnore
     public ELKNode getChild(String uuid) {
+        return findChild(children, uuid);
+    }
+
+    @JsIgnore
+    private ELKNode findChild(JsArray<ELKNode> children, String uuid) {
         for (int i = 0; i < children.length; i++) {
             if (children.getAt(i).getId().equals(uuid)) {
                 return children.getAt(i);
+            } else if (children.getAt(i).getChildren().length > 0) {
+                findChild(children.getAt(i).getChildren(), uuid);
             }
         }
         return null;

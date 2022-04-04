@@ -22,9 +22,17 @@ import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.AdapterManager;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
+import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionId;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionSetRuleAdapter;
 import org.kie.workbench.common.stunner.core.definition.adapter.PropertyAdapter;
+import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
+import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
+import org.kie.workbench.common.stunner.core.factory.impl.EdgeFactoryImpl;
+import org.kie.workbench.common.stunner.core.factory.impl.NodeFactoryImpl;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.factory.FactoryRegistry;
@@ -58,6 +66,8 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
                                                   new DefaultDefinitionsCacheRegistry(factoryManager,
                                                                                       adapterManager)));
         initAdapters();
+        when(factoryRegistry.getElementFactory(NodeFactory.class)).thenReturn(new NodeFactoryImpl(definitionUtils));
+        when(factoryRegistry.getElementFactory(EdgeFactory.class)).thenReturn(new EdgeFactoryImpl(definitionManager));
     }
 
     protected void initFactory() {
@@ -69,7 +79,63 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
     @SuppressWarnings("unchecked")
     protected void initAdapters() {
         definitionSetAdapter = mock(DefinitionSetAdapter.class);
-        definitionAdapter = mock(DefinitionAdapter.class);
+        definitionAdapter = spy(new DefinitionAdapter() {
+            @Override
+            public DefinitionId getId(Object pojo) {
+                return DefinitionId.build(pojo.getClass().getName());
+            }
+
+            @Override
+            public String getCategory(Object pojo) {
+                return "";
+            }
+
+            @Override
+            public String getTitle(Object pojo) {
+                return "";
+            }
+
+            @Override
+            public String getDescription(Object pojo) {
+                return "";
+            }
+
+            @Override
+            public String[] getLabels(Object pojo) {
+                return new String[0];
+            }
+
+            @Override
+            public String[] getPropertyFields(Object pojo) {
+                return new String[0];
+            }
+
+            @Override
+            public Optional<?> getProperty(Object pojo, String field) {
+                return Optional.empty();
+            }
+
+            @Override
+            public String getMetaPropertyField(Object pojo, PropertyMetaTypes metaType) {
+                return null;
+            }
+
+            @Override
+            public Class<? extends ElementFactory> getGraphFactoryType(Object pojo) {
+                Class<? extends ElementFactory> factoryClass = pojo.getClass().getAnnotation(Definition.class).graphFactory();
+                return factoryClass;
+            }
+
+            @Override
+            public int getPriority() {
+                return 0;
+            }
+
+            @Override
+            public boolean accepts(Class<?> type) {
+                return true;
+            }
+        });
         propertyAdapter = mock(PropertyAdapter.class);
         ruleAdapter = mock(DefinitionSetRuleAdapter.class);
         when(definitionAdapter.getProperty(anyObject(), anyString())).thenReturn(Optional.empty());

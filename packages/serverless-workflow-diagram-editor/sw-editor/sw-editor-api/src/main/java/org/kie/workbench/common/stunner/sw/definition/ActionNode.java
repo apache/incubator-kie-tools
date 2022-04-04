@@ -62,8 +62,9 @@ public class ActionNode {
     public ActionNode() {
     }
 
-    public void setName(String name) {
+    public ActionNode setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getName() {
@@ -74,32 +75,36 @@ public class ActionNode {
         return id;
     }
 
-    public void setId(String id) {
+    public ActionNode setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getFunctionRef() {
         return functionRef;
     }
 
-    public void setFunctionRef(String functionRef) {
+    public ActionNode setFunctionRef(String functionRef) {
         this.functionRef = functionRef;
+        return this;
     }
 
     public String getEventRef() {
         return eventRef;
     }
 
-    public void setEventRef(String eventRef) {
+    public ActionNode setEventRef(String eventRef) {
         this.eventRef = eventRef;
+        return this;
     }
 
     public String getSubFlowRef() {
         return subFlowRef;
     }
 
-    public void setSubFlowRef(String subFlowRef) {
+    public ActionNode setSubFlowRef(String subFlowRef) {
         this.subFlowRef = subFlowRef;
+        return this;
     }
 
     public Set<String> getLabels() {

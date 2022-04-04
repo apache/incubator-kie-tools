@@ -24,28 +24,26 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
-@CanConnect(startRole = State.LABEL_STATE, endRole = OnEvent.LABEL_ONEVENTS)
-@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
-@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.OUTGOING, max = -1)
-@EdgeOccurrences(role = OnEvent.LABEL_ONEVENTS, type = EdgeOccurrences.EdgeType.INCOMING, max = -1)
-@EdgeOccurrences(role = OnEvent.LABEL_ONEVENTS, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
+@CanConnect(startRole = State.LABEL_STATE, endRole = State.LABEL_STATE)
+@CanConnect(startRole = State.LABEL_STATE, endRole = End.LABEL_END)
+@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.INCOMING, max = -1)
+@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @JsType
-public class EventTransition {
+public class DefaultConditionTransition {
 
-    public static final String LABEL_TRANSITION_EVENT = "transition_event";
+    @JsIgnore
+    public static final String LABEL_TRANSITION_DEFAULT_CONDITION = "transition_default_condition";
 
     @Category
     @JsIgnore
@@ -53,20 +51,29 @@ public class EventTransition {
 
     @Labels
     @JsIgnore
-    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT).collect(Collectors.toSet());
+    private final Set<String> labels = Stream.of(LABEL_TRANSITION_DEFAULT_CONDITION).collect(Collectors.toSet());
 
-    @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    public String transition;
 
-    public EventTransition() {
+    public boolean end;
+
+    public DefaultConditionTransition() {
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getTransition() {
+        return transition;
     }
 
-    public String getName() {
-        return name;
+    public void setTransition(String transition) {
+        this.transition = transition;
+    }
+
+    public boolean isEnd() {
+        return end;
+    }
+
+    public void setEnd(boolean end) {
+        this.end = end;
     }
 
     public Set<String> getLabels() {

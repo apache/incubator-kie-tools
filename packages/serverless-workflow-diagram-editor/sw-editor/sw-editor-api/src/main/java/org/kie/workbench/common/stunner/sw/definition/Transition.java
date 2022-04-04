@@ -58,6 +58,7 @@ public class Transition {
     public String name;
 
     @JsIgnore
+    // TODO: Do as DefaultConditionTransition?
     public String to;
 
     public Transition() {

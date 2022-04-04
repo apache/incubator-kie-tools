@@ -69,24 +69,27 @@ public class ErrorTransition {
         return errorRef;
     }
 
-    public void setErrorRef(String errorRef) {
+    public ErrorTransition setErrorRef(String errorRef) {
         this.errorRef = errorRef;
+        return this;
     }
 
     public String getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public ErrorTransition setTransition(String transition) {
         this.transition = transition;
+        return this;
     }
 
     public boolean isEnd() {
         return end;
     }
 
-    public void setEnd(boolean end) {
+    public ErrorTransition setEnd(boolean end) {
         this.end = end;
+        return this;
     }
 
     public Set<String> getLabels() {

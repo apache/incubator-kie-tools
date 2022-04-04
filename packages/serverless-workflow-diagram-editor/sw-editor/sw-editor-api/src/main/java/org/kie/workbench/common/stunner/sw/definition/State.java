@@ -29,9 +29,11 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
 @Bindable
 @Definition
+@CanDock(roles = {Timeout.LABEL_TIMEOUT})
 @MorphBase(defaultType = InjectState.class)
 @JsType
 public class State {
@@ -44,26 +46,33 @@ public class State {
 
     @Labels
     @JsIgnore
-    private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                        LABEL_STATE).collect(Collectors.toSet());
+    public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
+                                                       LABEL_STATE).collect(Collectors.toSet());
 
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
     public String type;
 
+    // TODO: Not all states supports this (eg: switch state)
     public String transition;
 
+    // TODO: Not all states supports this (eg: switch state)
     public boolean end;
 
     public ErrorTransition[] onErrors;
+
+    public String eventTimeout;
+
+    public String compensatedBy;
 
     public State() {
         this.name = "State";
     }
 
-    public void setName(String name) {
+    public State setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getName() {
@@ -74,32 +83,54 @@ public class State {
         return type;
     }
 
-    public void setType(String type) {
+    public State setType(String type) {
         this.type = type;
+        return this;
     }
 
     public String getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public State setTransition(String transition) {
         this.transition = transition;
+        return this;
     }
 
     public boolean isEnd() {
         return end;
     }
 
-    public void setEnd(boolean end) {
+    public State setEnd(boolean end) {
         this.end = end;
+        return this;
     }
 
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
-    public void setOnErrors(ErrorTransition[] onErrors) {
+    public State setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
+        return this;
+    }
+
+    public String getEventTimeout() {
+        return eventTimeout;
+    }
+
+    public State setEventTimeout(String eventTimeout) {
+        this.eventTimeout = eventTimeout;
+        return this;
+    }
+
+    public String getCompensatedBy() {
+        return compensatedBy;
+    }
+
+    public State setCompensatedBy(String compensatedBy) {
+        this.compensatedBy = compensatedBy;
+        return this;
     }
 
     public Set<String> getLabels() {

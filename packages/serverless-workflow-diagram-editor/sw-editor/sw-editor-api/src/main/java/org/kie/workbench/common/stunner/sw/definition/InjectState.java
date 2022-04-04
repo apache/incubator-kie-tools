@@ -20,7 +20,6 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
 @Bindable
@@ -32,11 +31,13 @@ public class InjectState extends State {
     @JsIgnore
     public static final String TYPE_INJECT = "inject";
 
-    @Property
     public String data;
+
+    public boolean usedForCompensation;
 
     public InjectState() {
         this.type = TYPE_INJECT;
+        usedForCompensation = false;
     }
 
     public String getData() {
@@ -45,5 +46,13 @@ public class InjectState extends State {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public boolean isUsedForCompensation() {
+        return usedForCompensation;
+    }
+
+    public void setUsedForCompensation(boolean usedForCompensation) {
+        this.usedForCompensation = usedForCompensation;
     }
 }

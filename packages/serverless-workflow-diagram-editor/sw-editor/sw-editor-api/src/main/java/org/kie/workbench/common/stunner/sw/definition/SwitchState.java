@@ -20,7 +20,6 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
 @Bindable
@@ -32,18 +31,48 @@ public class SwitchState extends State {
     @JsIgnore
     public static final String TYPE_SWITCH = "switch";
 
-    @Property
-    public String defaultCondition;
+    public DefaultConditionTransition defaultCondition;
+
+    public EventConditionTransition[] eventConditions;
+
+    public DataConditionTransition[] dataConditions;
+
+    public boolean usedForCompensation;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
+        this.usedForCompensation = false;
     }
 
-    public String getDefaultCondition() {
+    public DefaultConditionTransition getDefaultCondition() {
         return defaultCondition;
     }
 
-    public void setDefaultCondition(String defaultCondition) {
+    public void setDefaultCondition(DefaultConditionTransition defaultCondition) {
         this.defaultCondition = defaultCondition;
+    }
+
+    public EventConditionTransition[] getEventConditions() {
+        return eventConditions;
+    }
+
+    public void setEventConditions(EventConditionTransition[] eventConditions) {
+        this.eventConditions = eventConditions;
+    }
+
+    public DataConditionTransition[] getDataConditions() {
+        return dataConditions;
+    }
+
+    public void setDataConditions(DataConditionTransition[] dataConditions) {
+        this.dataConditions = dataConditions;
+    }
+
+    public boolean isUsedForCompensation() {
+        return usedForCompensation;
+    }
+
+    public void setUsedForCompensation(boolean usedForCompensation) {
+        this.usedForCompensation = usedForCompensation;
     }
 }

@@ -46,7 +46,7 @@ public class Workflow {
 
     @Labels
     @JsIgnore
-    private static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
+    public static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
 
     @Property
     public String id;
@@ -67,40 +67,45 @@ public class Workflow {
         return id;
     }
 
-    public void setId(String id) {
+    public Workflow setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Workflow setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public Workflow setStart(String start) {
         this.start = start;
+        return this;
     }
 
     public Event[] getEvents() {
         return events;
     }
 
-    public void setEvents(Event[] events) {
+    public Workflow setEvents(Event[] events) {
         this.events = events;
+        return this;
     }
 
     public State[] getStates() {
         return states;
     }
 
-    public void setStates(State[] states) {
+    public Workflow setStates(State[] states) {
         this.states = states;
+        return this;
     }
 
     public Set<String> getLabels() {

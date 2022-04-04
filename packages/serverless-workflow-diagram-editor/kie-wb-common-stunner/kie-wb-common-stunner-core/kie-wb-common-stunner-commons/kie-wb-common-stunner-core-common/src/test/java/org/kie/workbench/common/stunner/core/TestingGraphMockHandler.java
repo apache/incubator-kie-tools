@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
+import org.kie.workbench.common.stunner.core.graph.processing.index.map.MapIndexBuilder;
 import org.kie.workbench.common.stunner.core.registry.definition.AdapterRegistry;
 import org.kie.workbench.common.stunner.core.registry.definition.TypeDefinitionSetRegistry;
 import org.kie.workbench.common.stunner.core.registry.impl.RuleHandlerRegistryImpl;
@@ -90,8 +91,8 @@ public class TestingGraphMockHandler {
     @SuppressWarnings("unchecked")
     private void init() {
         this.graphAPI = new StunnerTestingGraphMockAPI();
-        this.graphIndex = mock(MutableIndex.class);
         this.graph = spy(graphAPI.graphFactory.build(GRAPH_UUID, DEF_SET_ID));
+        this.graphIndex = spy(new MapIndexBuilder().build(graph));
         this.ruleSet = spy(new RuleSetImpl("TestingRuleSet", new ArrayList<>()));
         this.graphCommandExecutionContext = spy(new ContextualGraphCommandExecutionContext(getDefinitionManager(),
                                                                                            getFactoryManager(),
@@ -275,6 +276,14 @@ public class TestingGraphMockHandler {
                                                             edge,
                                                             MagnetConnection.Builder.at(0d,
                                                                                         0d)));
+    }
+
+    @SuppressWarnings("unchecked")
+    public TestingGraphMockHandler addEdgeTo(final Edge edge,
+                                             final Node source,
+                                             final Node target) {
+        addEdge(edge, source);
+        return connectTo(edge, target);
     }
 
     @SuppressWarnings("unchecked")
