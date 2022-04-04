@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+import { isKafkaConfigValid } from "../settings/kafka/KafkaSettingsConfig";
 import { isConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
-import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
+import {
+  isServiceAccountConfigValid,
+  ServiceAccountSettingsConfig,
+} from "../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { DeployArgs } from "./OpenShiftContext";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
@@ -172,7 +176,7 @@ export class OpenShiftService {
       rollbacks.slice(--rollbacksCount)
     );
 
-    if (!args.kafkaConfig || !args.serviceAccountConfig) {
+    if (!isKafkaConfigValid(args.kafkaConfig) || !isServiceAccountConfigValid(args.serviceAccountConfig)) {
       // Conclude the flow (do not create kafka resources)
       return resourceName;
     }

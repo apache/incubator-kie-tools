@@ -28,8 +28,8 @@ export const SW_JSON_EXTENSION = "sw.json";
 export interface DeployArgs {
   workflow: DeploymentWorkflow;
   openShiftConfig: OpenShiftSettingsConfig;
-  kafkaConfig?: KafkaSettingsConfig;
-  serviceAccountConfig?: ServiceAccountSettingsConfig;
+  kafkaConfig: KafkaSettingsConfig;
+  serviceAccountConfig: ServiceAccountSettingsConfig;
   resourceName?: string;
 }
 
