@@ -63,7 +63,7 @@ public abstract class EventPropertyWriter extends PropertyWriter {
 
     public abstract void setAssignmentsInfo(AssignmentsInfo assignmentsInfo);
 
-    public void addMessage(MessageRef messageRef) {
+    public Message addMessage(MessageRef messageRef) {
         if (this.getItemDefinitions().isEmpty()) {
             messageRef.setStructure("");
         } else {
@@ -76,7 +76,7 @@ public abstract class EventPropertyWriter extends PropertyWriter {
 
         String name = messageRef.getValue();
         if (name == null || name.isEmpty()) {
-            return;
+            return null;
         }
 
         ItemDefinition itemDefinition = bpmn2.createItemDefinition();
@@ -91,6 +91,8 @@ public abstract class EventPropertyWriter extends PropertyWriter {
 
         addItemDefinition(itemDefinition);
         addRootElement(message);
+
+        return message;
     }
 
     public void addLink(LinkRef linkRef) {

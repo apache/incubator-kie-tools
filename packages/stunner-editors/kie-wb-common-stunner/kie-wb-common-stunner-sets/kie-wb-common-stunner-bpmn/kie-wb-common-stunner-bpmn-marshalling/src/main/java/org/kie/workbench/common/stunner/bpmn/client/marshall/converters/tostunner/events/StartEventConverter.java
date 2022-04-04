@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunne
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.BpmnNode;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.NodeConverter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CatchEventPropertyReader;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.CorrelationPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.EventDefinitionReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.EventPropertyReader;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.PropertyReaderFactory;
@@ -284,6 +285,7 @@ public class StartEventConverter extends AbstractConverter implements NodeConver
 
         StartMessageEvent definition = node.getContent().getDefinition();
         EventPropertyReader p = propertyReaderFactory.of(event);
+        CorrelationPropertyReader correlationPropertyReader = propertyReaderFactory.of(definition);
 
         definition.setGeneral(new BPMNGeneralSet(new Name(p.getName()), new Documentation(p.getDocumentation())));
         definition.setBackgroundSet(p.getBackgroundSet());
@@ -300,6 +302,8 @@ public class StartEventConverter extends AbstractConverter implements NodeConver
         InterruptingMessageEventExecutionSet executionSet =
                 new InterruptingMessageEventExecutionSet(isInterrupting, slaDueDate, messageRef);
         definition.setExecutionSet(executionSet);
+
+        definition.setCorrelationSet(correlationPropertyReader.getCorrelationSet(messageRef));
 
         node.getContent().setBounds(p.getBounds());
 
