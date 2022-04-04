@@ -273,7 +273,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
     }
 
     const children = Object.values(args.inputsContainerRef.current.childNodes);
-    const newWidth = children.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 0);
+    const newWidth = children.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1);
     const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
 
     setDrawerPanelDefaultSize((prev) => {
