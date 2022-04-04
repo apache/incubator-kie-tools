@@ -58,13 +58,13 @@ digraph G {
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -154,7 +154,7 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
-  "@kie-tools/online-editor" -> "@kie-tools/unitables" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
@@ -177,8 +177,7 @@ digraph G {
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
-  "@kie-tools/unitables-dmn" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
-  "@kie-tools/unitables-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
+  "@kie-tools/unitables-dmn" -> "@kie-tools/unitables" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "@kie-tools-core/vscode-extension" -> "@kie-tools-core/vscode-java-code-completion" [ style = "solid", color = "purple" ];
   "vscode-extension-backend" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "black" ];
