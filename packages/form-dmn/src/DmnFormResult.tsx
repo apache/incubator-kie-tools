@@ -81,15 +81,8 @@ export interface DmnFormResultProps {
   results?: DecisionResult[];
   differences?: Array<DeepPartial<DecisionResult>>;
   locale?: string;
-  notificationsPanel: false;
-}
-
-export interface DmnFormResultWithNotificationsPanelProps {
-  results?: DecisionResult[];
-  differences?: Array<DeepPartial<DecisionResult>>;
-  locale?: string;
-  notificationsPanel: true;
-  openExecutionTab: () => void;
+  notificationsPanel: boolean;
+  openExecutionTab?: () => void;
 }
 
 export interface DmnResult {
@@ -108,7 +101,7 @@ export function extractDifferences(current: DecisionResult[], previous: Decision
     });
 }
 
-export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotificationsPanelProps) {
+export function DmnFormResult(props: DmnFormResultProps) {
   const [formResultStatus, setFormResultStatus] = useState<DmnFormResultStatus>(DmnFormResultStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
   const i18n = useMemo(() => {
@@ -192,7 +185,13 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
           );
       }
     },
-    [i18n]
+    [
+      i18n.result.evaluation.failed,
+      i18n.result.evaluation.skipped,
+      i18n.result.evaluation.success,
+      openExecutionTab,
+      props.notificationsPanel,
+    ]
   );
 
   const result = useCallback(
@@ -286,7 +285,7 @@ export function DmnFormResult(props: DmnFormResultProps | DmnFormResultWithNotif
           </Card>
         </div>
       )),
-    [props.results, resultStatus]
+    [onAnimationEnd, props.results, result, resultStatus]
   );
 
   const formResultErrorMessage = useMemo(

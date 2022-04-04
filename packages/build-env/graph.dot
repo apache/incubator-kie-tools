@@ -35,14 +35,14 @@ digraph G {
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-sandbox-quarkus" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/guided-tour" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/form" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-generation-tool" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -110,7 +110,7 @@ digraph G {
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-quarkus" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
-  "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools/form" [ style = "solid", color = "black" ];
+  "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-quarkus" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/backend" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];

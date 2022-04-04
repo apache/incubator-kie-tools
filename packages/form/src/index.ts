@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-export * from "./BaseForm";
-export * from "./BaseProps";
+export * from "./FormBase";
+export * from "./FormComponent";
 export * from "./ErrorBoundary";
 export * from "./FormHook";
 export * from "./i18n";

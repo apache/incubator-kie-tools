@@ -18,7 +18,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DmnValidator } from "./DmnValidator";
 import { dmnFormI18n } from "./i18n";
-import { BaseForm, BaseProps, useForm } from "@kie-tools/form";
+import { FormComponent, FormComponentProps, FormProps } from "@kie-tools/form";
 import { DmnAutoFieldProvider } from "./uniforms/DmnAutoFieldProvider";
 
 export type InputRow = Record<string, string>;
@@ -63,51 +63,22 @@ interface DmnDeepProperty {
   properties?: DmnDeepProperty;
 }
 
-export function DmnForm(props: BaseProps<InputRow, DmnSchema>) {
+export function DmnForm(props: FormProps<InputRow, DmnSchema>) {
   const i18n = useMemo(() => {
     dmnFormI18n.setLocale(props.locale ?? navigator.language);
     return dmnFormI18n.getCurrent();
   }, [props.locale]);
   const dmnValidator = useMemo(() => new DmnValidator(i18n), [i18n]);
 
-  const { onValidate, onSubmit, formModel, formStatus, jsonSchemaBridge, errorBoundaryRef } = useForm({
-    validator: dmnValidator,
-    name: props.name,
-    formError: props.formError,
-    setFormError: props.setFormError,
-    formInputs: props.formInputs,
-    setFormInputs: props.setFormInputs,
-    formSchema: props.formSchema,
-    onSubmit: props.onSubmit,
-    onValidate: props.onValidate,
-    propertiesEntryPath: "definitions.InputSet",
-    removeRequired: true,
-    i18n,
-  });
-
   return (
-    <BaseForm
+    <FormComponent
+      {...props}
       i18n={i18n}
-      onValidate={onValidate}
-      onSubmit={onSubmit}
-      formModel={formModel}
-      formStatus={formStatus}
-      jsonSchemaBridge={jsonSchemaBridge}
-      errorBoundaryRef={errorBoundaryRef}
-      setFormError={props.setFormError}
-      id={props.id}
-      formRef={props.formRef}
-      showInlineError={props.showInlineError}
-      autoSave={props.autoSave}
-      autoSaveDelay={props.autoSaveDelay}
-      placeholder={props.placeholder}
-      errorsField={props.errorsField}
-      submitField={props.submitField}
-      locale={props.locale}
-      notificationsPanel={props.notificationsPanel}
-      openValidationTab={props.openValidationTab}
+      validator={dmnValidator}
+      removeRequired={true}
+      propertiesEntryPath={"definitions.InputSet"}
     >
       <DmnAutoFieldProvider />
-    </BaseForm>
+    </FormComponent>
   );
 }

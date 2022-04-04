@@ -18,12 +18,13 @@ import { AutoGenerationErrorFormStatus, EmptyFormStatus, FormStatus, ValidatorEr
 import { ErrorBoundary } from "./ErrorBoundary";
 import AutoForm from "uniforms-patternfly/dist/es6/AutoForm";
 import * as React from "react";
-import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 import { FormI18n } from "./i18n";
+import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 
-interface CommonProps {
-  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
+export interface FormBaseProps {
   id?: string;
+  i18n: FormI18n;
+  setFormError: React.Dispatch<React.SetStateAction<boolean>>;
   formRef?: React.RefObject<HTMLFormElement>;
   showInlineError?: boolean;
   autoSave?: boolean;
@@ -33,26 +34,15 @@ interface CommonProps {
   onValidate?: (model: object, error: object) => void;
   errorsField?: () => React.ReactNode;
   submitField?: () => React.ReactNode;
-  locale?: string;
   formStatus: FormStatus;
+  notificationsPanel: boolean;
+  openValidationTab?: () => void;
   errorBoundaryRef: React.RefObject<ErrorBoundary>;
   formModel?: object;
   jsonSchemaBridge?: FormJsonSchemaBridge;
-  i18n: FormI18n;
 }
 
-interface PropsWithNotificationsPanel extends CommonProps {
-  notificationsPanel: true;
-  openValidationTab: () => void;
-}
-
-interface PropsWithoutNotificationsPanel extends CommonProps {
-  notificationsPanel: false;
-}
-
-export type Props = PropsWithNotificationsPanel | PropsWithoutNotificationsPanel;
-
-export function BaseForm(props: React.PropsWithChildren<Props>) {
+export function FormBase(props: React.PropsWithChildren<FormBaseProps>) {
   return (
     <>
       {props.formStatus === FormStatus.VALIDATOR_ERROR && <ValidatorErrorFormStatus i18n={props.i18n} />}
@@ -60,7 +50,7 @@ export function BaseForm(props: React.PropsWithChildren<Props>) {
         <AutoGenerationErrorFormStatus
           notificationsPanel={props.notificationsPanel}
           i18n={props.i18n}
-          openValidationTab={() => (props.notificationsPanel ? props.openValidationTab() : undefined)}
+          openValidationTab={() => props.openValidationTab?.()}
         />
       )}
       {props.formStatus === FormStatus.EMPTY && <EmptyFormStatus i18n={props.i18n} />}
@@ -73,7 +63,7 @@ export function BaseForm(props: React.PropsWithChildren<Props>) {
               <AutoGenerationErrorFormStatus
                 notificationsPanel={props.notificationsPanel}
                 i18n={props.i18n}
-                openValidationTab={() => (props.notificationsPanel ? props.openValidationTab() : undefined)}
+                openValidationTab={() => props.openValidationTab?.()}
               />
             }
           >

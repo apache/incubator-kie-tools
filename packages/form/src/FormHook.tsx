@@ -25,13 +25,13 @@ import { FormJsonSchemaBridge } from "./uniforms/FormJsonSchemaBridge";
 import { Validator } from "./Validator";
 import { FormI18n } from "./i18n";
 
-interface FormHook {
+export interface FormHook<Input extends Record<string, any>, Schema extends Record<string, any>> {
   name?: string;
   formError: boolean;
   setFormError: React.Dispatch<React.SetStateAction<boolean>>;
-  formInputs: object;
-  setFormInputs: React.Dispatch<React.SetStateAction<object>>;
-  formSchema?: object;
+  formInputs: Input;
+  setFormInputs: React.Dispatch<React.SetStateAction<Input>>;
+  formSchema?: Schema;
   onSubmit?: (model: object) => void;
   onValidate?: (model: object, error: object) => void;
   propertiesEntryPath?: string;
@@ -43,7 +43,7 @@ interface FormHook {
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
   path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc[key], obj);
 
-export function useForm({
+export function useForm<Input extends Record<string, any>, Schema extends Record<string, any>>({
   name,
   formError,
   setFormError,
@@ -56,12 +56,12 @@ export function useForm({
   validator,
   removeRequired = false,
   i18n,
-}: FormHook) {
+}: FormHook<Input, Schema>) {
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [jsonSchemaBridge, setJsonSchemaBridge] = useState<FormJsonSchemaBridge>();
   const [formModel, setFormModel] = useState<object>();
   const [formStatus, setFormStatus] = useState<FormStatus>(FormStatus.EMPTY);
-  const formValidator = useMemo(() => (validator ? validator : new Validator(i18n)), [validator]);
+  const formValidator = useMemo(() => (validator ? validator : new Validator(i18n)), [validator, i18n]);
 
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
@@ -161,7 +161,7 @@ export function useForm({
   useEffect(() => {
     setFormError((previousFormError) => {
       if (!previousFormError && formModel && Object.keys(formModel).length > 0) {
-        const newFormInputs = cloneDeep(formModel);
+        const newFormInputs = cloneDeep(formModel) as Input;
         setFormInputs(newFormInputs);
       }
       return false;
