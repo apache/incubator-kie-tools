@@ -144,4 +144,17 @@ describe("Relation Expression Tests", () => {
     // exit edit mode and check 2nd row 4rd cell has the new text
     cy.get("@row1col2").click({ force: true }).should("contain.text", "Newtext");
   });
+
+  it("Regression tests: focus on the first data cell", () => {
+    // Entry point for each new expression
+    cy.ouiaId("expression-container").click();
+
+    defineRelationExpression(3, 2);
+
+    // go to first cell and open contextMenu
+    cy.contains("td", "row 0 column 0").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot();
+  });
 });

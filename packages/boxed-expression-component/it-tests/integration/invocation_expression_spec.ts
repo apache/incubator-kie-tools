@@ -32,6 +32,13 @@ describe("Invocation Expression Tests", () => {
     cy.ouiaId("expression-row-0").should("contain.text", "p-1").should("contain.text", "<Undefined>");
   });
 
+  it("Regression tests: focus on the first function parameter", () => {
+    cy.contains("td", "p-1").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot();
+  });
+
   it("Edit function definition with the keyboard navigation", () => {
     cy.get(".functionDefinition").focus();
 

@@ -19,15 +19,20 @@ import * as buildEnv from "@kie-tools/build-env";
 describe("Literal Expression Tests", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
-  });
 
-  it("Change data type", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 
     // Define new expression as Literal Expression
     cy.ouiaId("expression-popover-menu").contains("Literal expression").click({ force: true });
+  });
 
+  it("Regression tests", () => {
+    // check the snapshot for regression
+    cy.matchImageSnapshot();
+  });
+
+  it("Change data type", () => {
     // Change return type to boolean
     cy.get(".literal-expression-header").click();
 
