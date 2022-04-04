@@ -43,6 +43,7 @@
 import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 
 addMatchImageSnapshotCommand({
+  customSnapshotsDir: "../it-tests/cypress/snapshots",
   blackout: [".updated-json"],
   customDiffConfig: { threshold: 0.1 },
   capture: "fullPage",
