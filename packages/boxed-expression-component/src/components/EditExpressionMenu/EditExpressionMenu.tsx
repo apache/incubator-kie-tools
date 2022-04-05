@@ -16,7 +16,7 @@
 
 import "./EditExpressionMenu.css";
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { PopoverMenu } from "../PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataType, ExpressionProps } from "../../api";
@@ -68,6 +68,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
+  const expressionNameRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setExpressionName(selectedExpressionName);
@@ -106,18 +107,27 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [selectedExpressionName, selectedDataType]
   );
 
+  const onShown = useCallback(() => {
+    expressionNameRef.current?.focus();
+  }, []);
+
+  /* TODO: EditExpressionMenu: (online editor only) cancel editing and close popover on esc key */
+  /* TODO: EditExpressionMenu: save on enter press (activeElement==body && isContextMenuOpen==true) */
+
   return (
     <PopoverMenu
       title={title}
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
-      onHide={onHide}
       onCancel={onCancel}
+      onHide={onHide}
+      onShown={onShown}
       body={
         <div className="edit-expression-menu">
           <div className="expression-name">
             <label>{nameField}</label>
             <input
+              ref={expressionNameRef}
               type="text"
               id="expression-name"
               data-ouia-component-id="edit-expression-name"
