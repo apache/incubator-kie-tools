@@ -29,6 +29,7 @@ digraph G {
   "@kie-tools/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "chrome-extension-pack-serverless-workflow-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -61,7 +62,6 @@ digraph G {
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-backend" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -102,6 +102,7 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "chrome-extension-pack-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
+  "chrome-extension-pack-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "black" ];
   "chrome-extension-pack-serverless-workflow-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
