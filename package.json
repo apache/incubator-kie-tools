@@ -117,7 +117,7 @@
     "sass": "^1.43.4",
     "sass-loader": "^12.3.0",
     "sax": "^1.2.4",
-    "selenium-webdriver": "^4.1.0",
+    "selenium-webdriver": "^4.1.1",
     "semver": "^7.3.5",
     "sinon": "^11.1.1",
     "source-map-loader": "^2.0.2",
