@@ -18,7 +18,7 @@ import * as React from "react";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -154,24 +154,23 @@ export function GitHubSettingsTab() {
       )}
       {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
         <PageSection>
-          <>
-            <p>
-              <span className="pf-u-mr-sm">Disclaimer</span>
-              <a href={GITHUB_TOKENS_HOW_TO_URL} target={"_blank"}>
-                Learn more
+          <Form>
+            <TextContent>
+              <Text component={TextVariants.h3}>GitHub</Text>
+            </TextContent>
+            <TextContent>
+              <Text component={TextVariants.small}>
+                Data you provide here is necessary for creating repositories containing Serverless Workflows you design,
+                and sync'ing changes with GitHub. All information is locally stored in your browser and never shared
+                with anyone.
+              </Text>
+            </TextContent>
+            <h3>
+              <a href={GITHUB_TOKENS_URL} target={"_blank"}>
+                Create a new token
                 <ExternalLinkAltIcon className="pf-u-mx-sm" />
               </a>
-            </p>
-          </>
-          <br />
-          <h3>
-            <a href={GITHUB_TOKENS_URL} target={"_blank"}>
-              Create a new token
-              <ExternalLinkAltIcon className="pf-u-mx-sm" />
-            </a>
-          </h3>
-          <br />
-          <Form>
+            </h3>
             <FormGroup
               isRequired={true}
               helperTextInvalid={githubTokenHelperText}

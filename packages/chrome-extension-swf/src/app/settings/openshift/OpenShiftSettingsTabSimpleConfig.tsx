@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
@@ -136,7 +137,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
 
   return (
     <>
-      <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+      <Form>
         {isConfigValidated === FormValiationOptions.INVALID && (
           <>
             <FormAlert>
@@ -148,7 +149,6 @@ export function OpenShiftSettingsTabSimpleConfig() {
                 data-testid="alert-validation-error"
               />
             </FormAlert>
-            <br />
           </>
         )}
         {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
@@ -163,7 +163,6 @@ export function OpenShiftSettingsTabSimpleConfig() {
                 data-testid="alert-connection-error"
               />
             </FormAlert>
-            <br />
           </>
         )}
         {isConfigValidated === FormValiationOptions.CONFIG_EXPIRED && (
@@ -177,186 +176,191 @@ export function OpenShiftSettingsTabSimpleConfig() {
                 data-testid="alert-config-expired-warning"
               />
             </FormAlert>
-            <br />
           </>
         )}
-
-        <Form>
-          <FormGroup
-            label={i18n.terms.namespace}
-            labelIcon={
-              <Popover bodyContent={i18n.openshift.configModal.namespaceInfo}>
-                <button
-                  type="button"
-                  aria-label="More info for namespace field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="namespace-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="namespace-field"
+        <TextContent>
+          <Text component={TextVariants.h3}>OpenShift</Text>
+        </TextContent>
+        <TextContent>
+          <Text component={TextVariants.small}>
+            Data you provide here is necessary for deploying Serverless Workflows you design to your OpenShift instance.
+            All information is locally stored in your browser and never shared with anyone.
+          </Text>
+        </TextContent>
+        <FormGroup
+          label={i18n.terms.namespace}
+          labelIcon={
+            <Popover bodyContent={i18n.openshift.configModal.namespaceInfo}>
+              <button
+                type="button"
+                aria-label="More info for namespace field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="namespace-field"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign />
+              </button>
+            </Popover>
+          }
+          isRequired
+          fieldId="namespace-field"
+        >
+          <InputGroup className="pf-u-mt-sm">
+            <TextInput
+              autoComplete={"off"}
+              isRequired
+              type="text"
+              id="namespace-field"
+              name="namespace-field"
+              aria-label="Namespace field"
+              aria-describedby="namespace-field-helper"
+              value={config.namespace}
+              onChange={onNamespaceChanged}
+              isDisabled={isConnecting}
+              tabIndex={1}
+              data-testid="namespace-text-field"
+            />
+            <InputGroupText>
+              <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
+                <TimesIcon />
+              </Button>
+            </InputGroupText>
+          </InputGroup>
+        </FormGroup>
+        <FormGroup
+          label={i18n.terms.host}
+          labelIcon={
+            <Popover bodyContent={i18n.openshift.configModal.hostInfo}>
+              <button
+                type="button"
+                aria-label="More info for host field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="host-field"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign />
+              </button>
+            </Popover>
+          }
+          isRequired
+          fieldId="host-field"
+        >
+          <InputGroup className="pf-u-mt-sm">
+            <TextInput
+              autoComplete={"off"}
+              isRequired
+              type="text"
+              id="host-field"
+              name="host-field"
+              aria-label="Host field"
+              aria-describedby="host-field-helper"
+              value={config.host}
+              onChange={onHostChanged}
+              isDisabled={isConnecting}
+              tabIndex={2}
+              data-testid="host-text-field"
+            />
+            <InputGroupText>
+              <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+                <TimesIcon />
+              </Button>
+            </InputGroupText>
+          </InputGroup>
+        </FormGroup>
+        <FormGroup
+          label={"Proxy URL"}
+          labelIcon={
+            <Popover bodyContent={"Proxy URL"}>
+              <button
+                type="button"
+                aria-label="More info for proxy Url field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="proxyurl-field"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign />
+              </button>
+            </Popover>
+          }
+          isRequired
+          fieldId="proxyurl-field"
+        >
+          <InputGroup className="pf-u-mt-sm">
+            <TextInput
+              autoComplete={"off"}
+              isRequired
+              type="text"
+              id="proxyurl-field"
+              name="proxyurl-field"
+              aria-label="ProxyURL field"
+              aria-describedby="proxyurl-field-helper"
+              value={config.proxy}
+              onChange={onProxyChanged}
+              isDisabled={isConnecting}
+              tabIndex={2}
+              data-testid="proxyurl-text-field"
+            />
+            <InputGroupText>
+              <Button isSmall variant="plain" aria-label="Clear Proxy URL button" onClick={onClearProxy}>
+                <TimesIcon />
+              </Button>
+            </InputGroupText>
+          </InputGroup>
+        </FormGroup>
+        <FormGroup
+          label={i18n.terms.token}
+          labelIcon={
+            <Popover bodyContent={i18n.openshift.configModal.tokenInfo}>
+              <button
+                type="button"
+                aria-label="More info for token field"
+                onClick={(e) => e.preventDefault()}
+                aria-describedby="token-field"
+                className="pf-c-form__group-label-help"
+              >
+                <HelpIcon noVerticalAlign />
+              </button>
+            </Popover>
+          }
+          isRequired
+          fieldId="token-field"
+        >
+          <InputGroup className="pf-u-mt-sm">
+            <TextInput
+              autoComplete={"off"}
+              isRequired
+              type="text"
+              id="token-field"
+              name="token-field"
+              aria-label="Token field"
+              aria-describedby="token-field-helper"
+              value={config.token}
+              onChange={onTokenChanged}
+              isDisabled={isConnecting}
+              tabIndex={3}
+              data-testid="token-text-field"
+            />
+            <InputGroupText>
+              <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>
+                <TimesIcon />
+              </Button>
+            </InputGroupText>
+          </InputGroup>
+        </FormGroup>
+        <ActionGroup>
+          <Button
+            id="dmn-dev-sandbox-config-save-button"
+            key="save"
+            variant="primary"
+            onClick={onConnect}
+            data-testid="save-config-button"
+            isLoading={isConnecting}
+            spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="namespace-field"
-                name="namespace-field"
-                aria-label="Namespace field"
-                aria-describedby="namespace-field-helper"
-                value={config.namespace}
-                onChange={onNamespaceChanged}
-                isDisabled={isConnecting}
-                tabIndex={1}
-                data-testid="namespace-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
-            label={i18n.terms.host}
-            labelIcon={
-              <Popover bodyContent={i18n.openshift.configModal.hostInfo}>
-                <button
-                  type="button"
-                  aria-label="More info for host field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="host-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="host-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="host-field"
-                name="host-field"
-                aria-label="Host field"
-                aria-describedby="host-field-helper"
-                value={config.host}
-                onChange={onHostChanged}
-                isDisabled={isConnecting}
-                tabIndex={2}
-                data-testid="host-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
-            label={"Proxy URL"}
-            labelIcon={
-              <Popover bodyContent={"Proxy URL"}>
-                <button
-                  type="button"
-                  aria-label="More info for proxy Url field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="proxyurl-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="proxyurl-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="proxyurl-field"
-                name="proxyurl-field"
-                aria-label="ProxyURL field"
-                aria-describedby="proxyurl-field-helper"
-                value={config.proxy}
-                onChange={onProxyChanged}
-                isDisabled={isConnecting}
-                tabIndex={2}
-                data-testid="proxyurl-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear Proxy URL button" onClick={onClearProxy}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <FormGroup
-            label={i18n.terms.token}
-            labelIcon={
-              <Popover bodyContent={i18n.openshift.configModal.tokenInfo}>
-                <button
-                  type="button"
-                  aria-label="More info for token field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="token-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="token-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
-                isRequired
-                type="text"
-                id="token-field"
-                name="token-field"
-                aria-label="Token field"
-                aria-describedby="token-field-helper"
-                value={config.token}
-                onChange={onTokenChanged}
-                isDisabled={isConnecting}
-                tabIndex={3}
-                data-testid="token-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>
-                  <TimesIcon />
-                </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-          <ActionGroup>
-            <Button
-              id="dmn-dev-sandbox-config-save-button"
-              key="save"
-              variant="primary"
-              onClick={onConnect}
-              data-testid="save-config-button"
-              isLoading={isConnecting}
-              spinnerAriaValueText={isConnecting ? "Loading" : undefined}
-            >
-              {isConnecting ? "Connecting" : "Connect"}
-            </Button>
-          </ActionGroup>
-        </Form>
-      </PageSection>
+            {isConnecting ? "Connecting" : "Connect"}
+          </Button>
+        </ActionGroup>
+      </Form>
     </>
   );
 }

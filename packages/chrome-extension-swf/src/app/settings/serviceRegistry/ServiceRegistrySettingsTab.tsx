@@ -53,8 +53,9 @@ export function ServiceRegistrySettingsTab() {
           </TextContent>
           <TextContent>
             <Text component={TextVariants.small}>
-              The information you provide here is necessary for uploading Open API specs to your Service Registry
-              instance.
+              Data you provide here is necessary for uploading Open API specs associated with Serverless Workflows you
+              design to your Service Registry instance. All information is locally stored in your browser and never
+              shared with anyone.
             </Text>
           </TextContent>
           <FormGroup
