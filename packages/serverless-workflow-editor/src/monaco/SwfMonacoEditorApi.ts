@@ -98,15 +98,18 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
+      this.undo(); // FIXME: workaround for fixing undo/redo on SWF chrome extension
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_Z, () => {
+      this.redo(); // FIXME: workaround for fixing undo/redo on SWF chrome extension
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
     });
 
     if (this.operatingSystem !== OperatingSystem.MACOS) {
       this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Y, () => {
+        this.redo(); // FIXME: workaround for fixing undo/redo on SWF chrome extension
         this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
       });
     }
