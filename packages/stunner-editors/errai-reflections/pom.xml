@@ -78,25 +78,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <reportOutputDirectory>javadoc</reportOutputDirectory>
-          <!-- Disable DocLint, which will cause the compiler to fail for bad JavaDoc syntax.
-          See: http://openjdk.java.net/jeps/172 -->
-          <additionalparam>-Xdoclint:none</additionalparam>
-          <failOnError>false</failOnError>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>jar</goal>
-              <goal>javadoc</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
