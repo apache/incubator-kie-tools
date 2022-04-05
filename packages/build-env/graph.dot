@@ -29,10 +29,9 @@ digraph G {
   "@kie-tools/kie-bc-editors" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/chrome-extension-swf" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "chrome-extension-swf-pack" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -47,7 +46,6 @@ digraph G {
   "@kie-tools-core/envelope-bus" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/extended-services" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/monaco-editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/form-generation-tool" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-bootstrap4-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/uniforms-patternfly-codegen" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -61,6 +59,8 @@ digraph G {
   "@kie-tools/kie-sandbox-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
+  "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/serverless-workflow-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -103,11 +103,10 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
-  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "purple" ];
+  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "purple" ];
   "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "purple" ];
-  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/pmml-editor" [ style = "solid", color = "purple" ];
   "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "purple" ];
-  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools/unitables" [ style = "solid", color = "purple" ];
+  "@kie-tools-core/chrome-extension-swf" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "purple" ];
   "chrome-extension-swf-pack" -> "@kie-tools-core/chrome-extension-swf" [ style = "solid", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
