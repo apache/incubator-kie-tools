@@ -51,6 +51,12 @@ export function ServiceRegistrySettingsTab() {
           <TextContent>
             <Text component={TextVariants.h3}>Service Registry</Text>
           </TextContent>
+          <TextContent>
+            <Text component={TextVariants.small}>
+              The information you provide here is necessary for uploading Open API specs to your Service Registry
+              instance.
+            </Text>
+          </TextContent>
           <FormGroup
             label={"Core Registry Api"}
             labelIcon={

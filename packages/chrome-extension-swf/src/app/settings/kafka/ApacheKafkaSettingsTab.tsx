@@ -65,6 +65,12 @@ export function ApacheKafkaSettingsTab() {
           <TextContent>
             <Text component={TextVariants.h3}>Streams for Apache Kafka</Text>
           </TextContent>
+          <TextContent>
+            <Text component={TextVariants.small}>
+              The information you provide here is necessary for connecting deployments with your Streams for Apache
+              Kafka instance.
+            </Text>
+          </TextContent>
           <FormGroup
             label={"Bootstrap Server"}
             labelIcon={

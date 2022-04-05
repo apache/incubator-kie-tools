@@ -64,6 +64,12 @@ export function ServiceAccountSettingsTab() {
           <TextContent>
             <Text component={TextVariants.h3}>Service Account</Text>
           </TextContent>
+          <TextContent>
+            <Text component={TextVariants.small}>
+              The information you provide here is necessary for uploading Open API specs to your Service Registry
+              instance and also connecting deployments with your Streams for Apache Kafka instance.
+            </Text>
+          </TextContent>
           <FormGroup
             label={"Client ID"}
             labelIcon={
