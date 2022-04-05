@@ -45,6 +45,7 @@ export interface DeploymentDetails {
   resourceName?: string;
   namespace?: string;
   creationTimestamp?: Date;
+  processed: boolean;
 }
 
 interface ServerlessWorkflowProps {
@@ -82,6 +83,7 @@ export function ServerlessWorkflowList() {
           map.set(descriptor.deploymentResourceName, {
             workspaceId: descriptor.workspaceId,
             resourceName: descriptor.deploymentResourceName,
+            processed: false,
           });
         }
       });
@@ -92,6 +94,7 @@ export function ServerlessWorkflowList() {
           const details = map.get(resourceName);
           if (details) {
             details.pods = deployment.status.replicas ?? 0;
+            details.processed = true;
             map.set(resourceName, details);
           }
         }
@@ -107,8 +110,31 @@ export function ServerlessWorkflowList() {
               : undefined;
             details.namespace = service.metadata.namespace;
             details.url = service.status.url;
+            details.processed = true;
             map.set(resourceName, details);
           }
+        }
+      });
+
+      // Clean up outdated items
+      map.forEach(async (details, resourceName) => {
+        if (!details.processed) {
+          await workspaces.descriptorService.setDeploymentResourceName(details.workspaceId, undefined);
+          const fs = await workspaces.fsService.getWorkspaceFs(details.workspaceId);
+          const openApiFile = await workspaces.getFile({
+            fs: fs,
+            workspaceId: details.workspaceId,
+            relativePath: "openapi.json",
+          });
+
+          if (openApiFile) {
+            await workspaces.deleteFile({
+              fs: fs,
+              file: openApiFile,
+            });
+          }
+
+          map.delete(resourceName);
         }
       });
 
@@ -123,7 +149,14 @@ export function ServerlessWorkflowList() {
     return () => {
       window.clearInterval(deploymentsDetailsPolling.current);
     };
-  }, [openshift.config, openshift.status, openshiftService, workspaceDescriptorsPromise.data]);
+  }, [
+    openshift.config,
+    openshift.status,
+    openshiftService,
+    workspaceDescriptorsPromise.data,
+    workspaces,
+    workspaces.descriptorService,
+  ]);
 
   const onClickTableItem = useCallback(
     (workspaceId: string) => {
