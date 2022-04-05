@@ -48,6 +48,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartEscalationEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartMessageEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.diagram.BaseCollaborationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.imports.DefaultImport;
 import org.kie.workbench.common.stunner.bpmn.definition.property.variables.BaseProcessData;
@@ -170,9 +171,17 @@ public abstract class AbstractDataTypeCache {
         }
     }
 
-    public void initCache(Object diagramRoot, Node<View<? extends BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseRootProcessAdvancedData>>, Edge> value) {
+    public void initCache(Object diagramRoot,
+                          Node<View<? extends BPMNDiagram<? extends BaseDiagramSet,
+                                  ? extends BaseProcessData,
+                                  ? extends BaseRootProcessAdvancedData,
+                                  ? extends BaseCollaborationSet>>,
+                                  Edge> value) {
         allDataTypes.clear();
-        final BPMNDiagram<? extends BaseDiagramSet, ? extends BaseProcessData, ? extends BaseRootProcessAdvancedData> definition = value.getContent().getDefinition();
+        final BPMNDiagram<? extends BaseDiagramSet,
+                ? extends BaseProcessData,
+                ? extends BaseRootProcessAdvancedData,
+                ? extends BaseCollaborationSet> definition = value.getContent().getDefinition();
         cacheImports(definition.getDiagramSet().getImports().getValue().getDefaultImports());
         cacheProcessVariables(definition.getProcessData().getProcessVariables().getValue());
         cacheGlobalVariables(definition.getAdvancedData().getGlobalVariables().getValue());

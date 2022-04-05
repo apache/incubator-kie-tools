@@ -43,6 +43,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEvent
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.property.background.BackgroundSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.common.ConditionExpression;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
@@ -104,6 +105,7 @@ public class IntermediateCatchEventConverterTest {
     private BPMNGeneralSet generalSet;
     private AssignmentsInfo assignmentsInfo;
     private DataIOSet dataIOSet;
+    private CorrelationSet correlationSet;
     private AdvancedData advancedData;
     private SLADueDate slaDueDate;
 
@@ -142,6 +144,7 @@ public class IntermediateCatchEventConverterTest {
 
         assignmentsInfo = new AssignmentsInfo(ASSIGNMENTS_INFO);
         dataIOSet = new DataIOSet(assignmentsInfo);
+        correlationSet = new CorrelationSet();
         advancedData = new AdvancedData();
 
         slaDueDate = mock(SLADueDate.class);
@@ -406,6 +409,7 @@ public class IntermediateCatchEventConverterTest {
                                                      mock(CircleDimensionSet.class),
                                                      dataIOSet,
                                                      advancedData,
+                                                     correlationSet,
                                                      executionSet);
         Node dockNode = mockNode();
         Node node = mockDockedNode(dockNode, eventCatching);

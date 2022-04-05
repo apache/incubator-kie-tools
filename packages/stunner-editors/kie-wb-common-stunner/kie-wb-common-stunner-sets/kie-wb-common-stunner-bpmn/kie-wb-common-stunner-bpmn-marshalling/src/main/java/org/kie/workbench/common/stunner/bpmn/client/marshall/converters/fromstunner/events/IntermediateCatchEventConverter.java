@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.events;
 
+import org.eclipse.bpmn2.Message;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.CatchEventPropertyWriter;
+import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.CorrelationPropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriter;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.properties.PropertyWriterFactory;
 import org.kie.workbench.common.stunner.bpmn.client.marshall.converters.util.ConverterUtils;
@@ -29,15 +31,18 @@ import org.kie.workbench.common.stunner.bpmn.definition.IntermediateLinkEventCat
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateMessageEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateSignalEventCatching;
 import org.kie.workbench.common.stunner.bpmn.definition.IntermediateTimerEvent;
+import org.kie.workbench.common.stunner.bpmn.definition.property.collaboration.events.CorrelationSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.BaseCancellingEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.conditional.CancellingConditionalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.error.CancellingErrorEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.escalation.CancellingEscalationEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.link.LinkEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.CancellingMessageEventExecutionSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.event.message.MessageRef;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.signal.CancellingSignalEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.event.timer.CancellingTimerEventExecutionSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptTypeValue;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 
@@ -175,10 +180,13 @@ public class IntermediateCatchEventConverter {
     }
 
     protected PropertyWriter messageEvent(Node<View<IntermediateMessageEventCatching>, ?> n) {
+
         CatchEventPropertyWriter p = createCatchEventPropertyWriter(n);
         p.getFlowElement().setId(n.getUUID());
 
         IntermediateMessageEventCatching definition = n.getContent().getDefinition();
+        CorrelationSet correlationSet = definition.getCorrelationSet();
+        CorrelationPropertyWriter correlationPropertyWriter = propertyWriterFactory.of(p);
 
         p.setAbsoluteBounds(n);
 
@@ -192,7 +200,20 @@ public class IntermediateCatchEventConverter {
         CancellingMessageEventExecutionSet executionSet = definition.getExecutionSet();
         p.setCancelActivity(executionSet.getCancelActivity().getValue());
         p.addSlaDueDate(executionSet.getSlaDueDate());
-        p.addMessage(executionSet.getMessageRef());
+
+        MessageRef messageRef = executionSet.getMessageRef();
+        Message message = p.addMessage(messageRef);
+
+        ScriptTypeValue messageExpression = correlationSet.getMessageExpression().getValue();
+        ScriptTypeValue dataExpression = correlationSet.getDataExpression().getValue();
+        correlationPropertyWriter.setCorrelationData(correlationSet.getCorrelationProperty().getValue(),
+                                                     message,
+                                                     messageExpression.getScript(),
+                                                     messageExpression.getLanguage(),
+                                                     correlationSet.getMessageExpressionType().getValue(),
+                                                     dataExpression.getScript(),
+                                                     dataExpression.getLanguage(),
+                                                     correlationSet.getDataExpressionType().getValue());
 
         return p;
     }
