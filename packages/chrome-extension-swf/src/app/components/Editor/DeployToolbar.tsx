@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -13,6 +13,7 @@ import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { useAlert } from "../../alerts/Alerts";
 import { useAlertsController } from "../../alerts/AlertsProvider";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -31,6 +32,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
   const [deployStatus, setDeployStatus] = useState(FormValiationOptions.INITIAL);
   const [isLoading, setLoading] = useState(false);
   const [alerts] = useAlertsController();
+  const [canDeploy, setCanDeploy] = useState(false);
 
   const setDeployError = useAlert(
     alerts,
@@ -150,6 +152,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
         props.workspace.descriptor.workspaceId,
         resourceName
       );
+      setCanDeploy(false);
       setDeploySuccess.show();
 
       const fetchOpenApiTask = window.setInterval(async () => {
@@ -179,11 +182,24 @@ export function DeployToolbar(props: DeployToolbarProps) {
   ]);
 
   useEffect(() => {
-    if (!props.workspace.descriptor.deploymentResourceName) {
+    if (settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED) {
+      setCanDeploy(false);
       return;
     }
+
+    if (!props.workspace.descriptor.deploymentResourceName) {
+      setCanDeploy(true);
+      return;
+    }
+
+    setCanDeploy(false);
     fetchOpenApiSpec(props.workspace.descriptor.deploymentResourceName);
-  }, [fetchOpenApiSpec, props.workspace.descriptor.deploymentResourceName]);
+  }, [
+    fetchOpenApiSpec,
+    props.workspace.descriptor.deploymentResourceName,
+    settings.openshift.config,
+    settings.openshift.status,
+  ]);
 
   const onFetchArtifacts = useCallback(async () => {
     const artifacts = await openshift.fetchServiceRegistryArtifacts();
@@ -197,9 +213,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
           <ToolbarContent style={{ paddingLeft: 0 }}>
             <ToolbarItem>
               <Button
-                isDisabled={
-                  !isConfigValid(settings.openshift.config) || props.workspace.descriptor.name.trim().length === 0
-                }
+                isDisabled={!canDeploy}
                 key="deploy"
                 variant="primary"
                 onClick={onDeploy}
