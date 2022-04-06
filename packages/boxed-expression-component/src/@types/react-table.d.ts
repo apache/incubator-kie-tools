@@ -66,6 +66,4 @@ declare module "react-table" {
     /** Disabling table handler on the header of this column */
     disableHandlerOnHeader?: boolean;
   }
-
-  export type DataRecord = Record<string, unknonw>;
 }
