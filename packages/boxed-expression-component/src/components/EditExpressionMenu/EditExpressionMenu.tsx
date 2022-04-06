@@ -24,6 +24,8 @@ import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons";
 import { Button } from "@patternfly/react-core";
+/* TODO: EditExpressionMenu: move NavigationKeysUtils somwhere else */
+import { NavigationKeysUtils } from "../Table/common";
 
 export interface EditExpressionMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -69,6 +71,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
   const expressionNameRef = useRef<HTMLInputElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     setExpressionName(selectedExpressionName);
@@ -91,13 +94,20 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [boxedExpression.boxedExpressionEditorGWTService]
   );
 
-  const onHide = useCallback(() => {
+  /**
+   * save the expression data from the PopoverMenu
+   */
+  const saveExpression = useCallback(() => {
     boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
     onExpressionUpdate({
       name: expressionName,
       dataType: dataType,
     });
   }, [boxedExpression.boxedExpressionEditorGWTService, expressionName, onExpressionUpdate, dataType]);
+
+  const onHide = useCallback(() => {
+    saveExpression();
+  }, [saveExpression]);
 
   const onCancel = useCallback(
     (_event: MouseEvent | KeyboardEvent) => {
@@ -109,10 +119,21 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onShown = useCallback(() => {
     expressionNameRef.current?.focus();
+    setIsVisible(true);
   }, []);
 
+  const onExpressionNameKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (NavigationKeysUtils.isEnter(e.key)) {
+        saveExpression();
+        setIsVisible(false);
+      }
+    },
+    [saveExpression]
+  );
+
   /* TODO: EditExpressionMenu: (online editor only) cancel editing and close popover on esc key */
-  /* TODO: EditExpressionMenu: save on enter press (activeElement==body && isContextMenuOpen==true) */
+  /* TODO: EditExpressionMenu: save expression data type on enter press */
 
   return (
     <PopoverMenu
@@ -122,6 +143,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
       onCancel={onCancel}
       onHide={onHide}
       onShown={onShown}
+      isVisible={isVisible}
       body={
         <div className="edit-expression-menu">
           <div className="expression-name">
@@ -136,6 +158,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
               onBlur={onExpressionNameChange}
               className="form-control pf-c-form-control"
               placeholder={EXPRESSION_NAME}
+              onKeyPress={onExpressionNameKeyPress}
             />
           </div>
           <div className="expression-data-type">

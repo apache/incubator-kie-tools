@@ -46,6 +46,10 @@ export interface PopoverMenuProps {
   /** Popover min width */
   minWidth?: string;
   /**
+   * True to show the popover programmatically.
+   */
+  isVisible?: boolean;
+  /**
    * Lifecycle function invoked when the popover has fully transitioned out, called when the user click outside the popover.
    */
   onHide?: () => void;
@@ -68,12 +72,14 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   className,
   hasAutoWidth,
   minWidth,
+  isVisible = false,
   onHide = () => {},
   onCancel = () => {},
   onShown = () => {},
 }: PopoverMenuProps) => {
+  const triggerManually = isVisible !== null;
   const { setIsContextMenuOpen } = useBoxedExpression();
-  const [isVisible] = useState(false);
+  const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
   const onHidden = useCallback(() => {
     setIsContextMenuOpen(false);
@@ -82,6 +88,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   const onPopoverShown = useCallback(() => {
     setIsContextMenuOpen(true);
     onShown();
+    setIsPopoverVisible(true);
   }, [setIsContextMenuOpen, onShown]);
 
   const shouldOpen = useCallback((showFunction?: () => void) => {
@@ -106,6 +113,13 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
     [onCancel, onHide]
   );
 
+  React.useEffect(() => {
+    if (triggerManually) {
+      console.log("isVisible", isVisible);
+      setIsPopoverVisible(isVisible);
+    }
+  }, [isVisible, triggerManually]);
+
   return (
     <Popover
       data-ouia-component-id="expression-popover-menu"
@@ -125,7 +139,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         </div>
       }
       bodyContent={body}
-      isVisible={isVisible}
+      isVisible={isPopoverVisible}
       shouldClose={shouldClose}
       shouldOpen={shouldOpen}
     >
