@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { NavigationKeysUtils } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
+import { NavigationKeysUtils } from "@kie-tools/boxed-expression-component/dist/components/common";
 
 const notAKey = "NotAKey";
 const testDescription = "With input key: '%s', should return '%s'";

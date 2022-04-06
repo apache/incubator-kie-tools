@@ -24,8 +24,7 @@ import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
 import { CogIcon } from "@patternfly/react-icons";
 import { Button } from "@patternfly/react-core";
-/* TODO: EditExpressionMenu: move NavigationKeysUtils somwhere else */
-import { NavigationKeysUtils } from "../Table/common";
+import { NavigationKeysUtils } from "../common";
 
 export interface EditExpressionMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
