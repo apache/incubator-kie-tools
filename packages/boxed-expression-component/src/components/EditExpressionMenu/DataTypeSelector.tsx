@@ -16,7 +16,7 @@
 
 import { Divider, Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as _ from "lodash";
 import { DataType, DataTypeProps } from "../../api";
@@ -42,12 +42,23 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
 
   const [dataTypeSelectOpen, setDataTypeSelectOpen] = useState(false);
 
+  const selectWrapper = useRef<HTMLDivElement>(null);
+
   const onDataTypeSelect = useCallback(
     (event, selection) => {
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
       setTimeout(() => setDataTypeSelectOpen(false), 0);
 
       onDataTypeChange(selection);
+
+      // Because Select leave the focus to the detached btn, give back the focus to the selectWrapper
+      // selectWrapper.current!.focus();
+      // setTimeout(()=>{
+      (selectWrapper.current?.querySelector(".pf-c-select__toggle") as HTMLInputElement)?.focus();
+      console.log("event", event);
+      console.log("selectWrapper.current", selectWrapper.current);
+      console.log("document.activeElement", document.activeElement);
+      // }, 0);
     },
     [onDataTypeChange]
   );
@@ -99,22 +110,24 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   const onDataTypeSelectToggle = useCallback((isOpen) => setDataTypeSelectOpen(isOpen), []);
 
   return (
-    <Select
-      menuAppendTo={menuAppendTo}
-      ouiaId="edit-expression-data-type"
-      variant={SelectVariant.single}
-      typeAheadAriaLabel={i18n.choose}
-      onToggle={onDataTypeSelectToggle}
-      onSelect={onDataTypeSelect}
-      onFilter={onFilteringDataTypes}
-      isOpen={dataTypeSelectOpen}
-      selections={selectedDataType}
-      isGrouped
-      hasInlineFilter
-      inlineFilterPlaceholderText={i18n.choose}
-      maxHeight={500}
-    >
-      {getDataTypes()}
-    </Select>
+    <div ref={selectWrapper} tabIndex={-1}>
+      <Select
+        menuAppendTo={menuAppendTo}
+        ouiaId="edit-expression-data-type"
+        variant={SelectVariant.single}
+        typeAheadAriaLabel={i18n.choose}
+        onToggle={onDataTypeSelectToggle}
+        onSelect={onDataTypeSelect}
+        onFilter={onFilteringDataTypes}
+        isOpen={dataTypeSelectOpen}
+        selections={selectedDataType}
+        isGrouped
+        hasInlineFilter
+        inlineFilterPlaceholderText={i18n.choose}
+        maxHeight={500}
+      >
+        {getDataTypes()}
+      </Select>
+    </div>
   );
 };
