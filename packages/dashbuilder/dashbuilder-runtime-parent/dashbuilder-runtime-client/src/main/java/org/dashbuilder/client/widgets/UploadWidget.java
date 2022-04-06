@@ -81,7 +81,7 @@ public class UploadWidget implements IsElement {
     }
     
     public String getAcceptUpload() {
-        return runtimeClientLoader.isOffline() ? ".json" : ".zip";
+        return runtimeClientLoader.isOffline() ? ".json,.yaml,.yml" : ".zip";
     }
 
     public void submit(String fileName,

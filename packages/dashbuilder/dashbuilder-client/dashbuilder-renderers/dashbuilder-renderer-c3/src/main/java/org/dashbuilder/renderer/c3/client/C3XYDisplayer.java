@@ -21,15 +21,14 @@ import org.dashbuilder.common.client.widgets.FilterLabelSet;
 import org.dashbuilder.dataset.DataColumn;
 import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisInfo;
-import org.dashbuilder.renderer.c3.client.jsbinding.C3AxisLabel;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3ChartConf;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3JsTypesFactory;
 import org.dashbuilder.renderer.c3.client.jsbinding.C3Tick;
 
 public abstract class C3XYDisplayer<V extends C3Displayer.View> extends C3Displayer {
-    
+
     private static final String DEFAULT_LABEL_POS = "outer-center";
-    
+
     private boolean stacked;
 
     public C3XYDisplayer(FilterLabelSet filterLabelSet, C3JsTypesFactory builder) {
@@ -38,11 +37,11 @@ public abstract class C3XYDisplayer<V extends C3Displayer.View> extends C3Displa
 
     @Override
     protected C3ChartConf buildConfiguration() {
-         C3ChartConf conf = super.buildConfiguration();
-         applyPropertiesToAxes(conf.getAxis());
-         return conf;
+        C3ChartConf conf = super.buildConfiguration();
+        applyPropertiesToAxes(conf.getAxis());
+        return conf;
     }
-    
+
     protected C3Tick createTickY() {
         return factory.createC3Tick(f -> {
             List<DataColumn> columns = dataSet.getColumns();
@@ -53,38 +52,38 @@ public abstract class C3XYDisplayer<V extends C3Displayer.View> extends C3Displa
             return f;
         });
     }
-    
+
     private void applyPropertiesToAxes(C3AxisInfo axis) {
         axis.getX().getTick().setRotate(displayerSettings.getXAxisLabelsAngle());
-        if (displayerSettings.isXAxisShowLabels()) {
-            C3AxisLabel xLabel = factory.createC3Label(displayerSettings.getXAxisTitle(), 
-                                                       DEFAULT_LABEL_POS);
+        var xAxisTitle = displayerSettings.getXAxisTitle();
+        var yAxisTitle = displayerSettings.getYAxisTitle();
+        if (xAxisTitle != null) {
+            var xLabel = factory.createC3Label(xAxisTitle, DEFAULT_LABEL_POS);
             axis.getX().setLabel(xLabel);
         }
-        if (displayerSettings.isYAxisShowLabels()) {
-            C3AxisLabel yLabel = factory.createC3Label(displayerSettings.getYAxisTitle(), 
-                                                       DEFAULT_LABEL_POS);
+        if (yAxisTitle != null) {
+            var yLabel = factory.createC3Label(yAxisTitle, DEFAULT_LABEL_POS);
             axis.getY().setLabel(yLabel);
         }
     }
-    
+
     protected String[][] stackedGroups() {
         String[][] groups;
         groups = new String[1][];
         groups[0] = dataSet.getColumns()
-                            .stream().skip(1)
-                            .map(displayerSettings::getColumnSettings)
-                            .map(ColumnSettings::getColumnName)
-                            .toArray(String[]::new);
+                .stream().skip(1)
+                .map(displayerSettings::getColumnSettings)
+                .map(ColumnSettings::getColumnName)
+                .toArray(String[]::new);
         return groups;
     }
-    
+
     @Override
     protected String[][] createGroups() {
         String[][] groups = new String[0][0];
         if (isStacked()) {
             groups = stackedGroups();
-            
+
         }
         return groups;
     }
@@ -92,9 +91,9 @@ public abstract class C3XYDisplayer<V extends C3Displayer.View> extends C3Displa
     public boolean isStacked() {
         return stacked;
     }
-    
+
     public void setStacked(boolean stacked) {
         this.stacked = stacked;
-    }    
+    }
 
 }

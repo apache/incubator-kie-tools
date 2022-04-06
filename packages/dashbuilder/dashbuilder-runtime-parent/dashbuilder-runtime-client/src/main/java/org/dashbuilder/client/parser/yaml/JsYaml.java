@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.client.parser;
+package org.dashbuilder.client.parser.yaml;
 
-import org.dashbuilder.shared.model.RuntimeModel;
+import jsinterop.annotations.JsPackage;
+import jsinterop.annotations.JsProperty;
+import jsinterop.annotations.JsType;
 
-public interface RuntimeModelClientParser {
-    
-    RuntimeModel parse(String content);
-    
-    
-    boolean test(String content);
-    
+@JsType(isNative = true)
+public interface JsYaml {
+
+    Object load(String json);
+
+    class Builder {
+
+        @JsProperty(name = "jsyaml", namespace = JsPackage.GLOBAL)
+        public static native JsYaml get();
+
+    }
+
 }
