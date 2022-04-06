@@ -138,9 +138,6 @@ describe("Context Expression Tests :: Nested Relations", () => {
     // Define new expression as Context
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
 
-    /* TODO: context_expression_spec: remove me */
-    return;
-
     // Invoke Logic type selector for first context entry
     cy.ouiaId("expression-row-0").within(($row) => {
       cy.ouiaId("expression-column-2").click();
@@ -246,7 +243,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     cy.get(".pf-c-popover__content").should("not.exist");
   });
 
-  describe.only("Keyboard interaction with header's contextMenu in nested decision table", () => {
+  describe("Keyboard interaction with header's contextMenu in nested decision table", () => {
     const checkPopoverIsOpen = (isOpen = true) => {
       cy.get(".pf-c-popover__content").should(isOpen ? "be.visible" : "not.to.exist");
     };
@@ -266,6 +263,9 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
       // check the menu is open
       checkPopoverIsOpen(true);
+
+      // check expression name is focused
+      cy.ouiaId("edit-expression-name").should("be.focused");
     });
 
     afterEach(() => {
@@ -274,7 +274,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
     it("Edit expression name field and type esc to cancel", () => {
       // type some text in expression name field
-      cy.ouiaId("edit-expression-name").should("be.focused").type(" cancelled{esc}");
+      cy.ouiaId("edit-expression-name").type(" cancelled{esc}");
 
       // check the expression name field doesn't have the new text
       cy.get("@targetCell").should("not.contain.text", "cancelled").should("contain.text", "Expression Name");
@@ -282,29 +282,44 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
     it("Edit expression name field and type enter to save", () => {
       // type some text in expression name field
-      cy.ouiaId("edit-expression-name").should("be.focused").type(" edited{enter}");
+      cy.ouiaId("edit-expression-name").type(" edited{enter}");
 
       // check the expression name field has the new text
       cy.get("@targetCell").should("contain.text", "Expression Name edited");
     });
 
-    it.skip("Edit expression data type", () => {
+    it("Edit expression data type", () => {
       cy.ouiaId("edit-expression-name").realPress("Tab").realPress("Tab");
 
-      cy.ouiaId("edit-expression-data-type").as("expressionDataType").should("be.focused").type("{enter}");
+      cy.ouiaId("edit-expression-data-type")
+        .as("expressionDataType")
+        .find("button")
+        .should("be.focused")
+        .realPress("Enter");
 
       //check the data type menu is open
-      cy.get("@expressionDataType").get(".pf-c-select__menu").should("be.visible");
+      cy.get("@expressionDataType").find(".pf-c-select__menu").should("be.visible");
 
-      // set data type to "date"
-      cy.focused().type("{downarrow}{downarrow}{downarrow}{downarrow}{downarrow}{enter}");
+      // set data type to "date". Only works with realPress
+      cy.focused()
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("Enter");
 
       //check the data type menu is closed
-      cy.get("@expressionDataType")
-        .get(".pf-c-select__menu")
-        .should("not.be.visible")
-        // check data type is now "date"
-        .should("contain.text", "date");
+      cy.get("@expressionDataType").find(".pf-c-select__menu").should("not.exist");
+
+      // check data type is now "date"
+      cy.get("@expressionDataType").find(".pf-c-select__toggle-text").should("contain.text", "date");
+
+      // press enter from the expression name to save (from the expression data the menu will be opened again if press enter)
+      cy.ouiaId("edit-expression-name").focus().realPress("Enter");
+
+      // check the expression name field has the new text
+      cy.get("@targetCell").should("contain.text", "(date)");
     });
   });
 });

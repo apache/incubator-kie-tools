@@ -132,7 +132,6 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
   );
 
   /* TODO: EditExpressionMenu: (online editor only) cancel editing and close popover on esc key */
-  /* TODO: EditExpressionMenu: save expression data type on enter press */
 
   return (
     <PopoverMenu
