@@ -17,6 +17,7 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,6 +27,8 @@ import org.kogito.core.internal.api.GetPublicParameters;
 import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
+
+import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
@@ -78,7 +81,20 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
             JavaLanguageServerPlugin.logInfo(item.getLabel());
             String[] label = item.getLabel().split(":");
             result.setAccessor(label[0].trim());
-            result.setType(label[1].trim());
+            String type = label[1].trim();
+            Map<String,String> data = (Map<String, String>) item.getData();
+            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
+            if (fqcnType != null && fqcnType.contains(")L")) {
+                type = fqcnType.replace(";", "").split(")L")[1];
+            }
+            result.setType(type);
+            JavaLanguageServerPlugin.logInfo("START === ");
+            JavaLanguageServerPlugin.logInfo("type:" + type);
+            JavaLanguageServerPlugin.logInfo("Data:" + item.getData());
+            JavaLanguageServerPlugin.logInfo("Detail:" + item.getDetail());
+            JavaLanguageServerPlugin.logInfo("Label:" + item.getLabel());
+            JavaLanguageServerPlugin.logInfo("END === ");
+
         } else {
             result.setAccessor("");
             result.setType("");
