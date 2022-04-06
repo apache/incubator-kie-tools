@@ -80,7 +80,8 @@ public class RuntimeServiceResponseJSONMarshallerTest {
         RuntimeModel model = new RuntimeModel(new NavTreeBuilder().item("TestId", "TestItem", "Item Description", false).build(),
                                               templates,
                                               123l,
-                                              Collections.emptyList());
+                                              Collections.emptyList(),
+                                              Collections.emptyMap());
         RuntimeServiceResponse response = new RuntimeServiceResponse(DashbuilderRuntimeMode.STATIC,
                                                                      Optional.of(model),
                                                                      Arrays.asList("rm1", "rm2"),

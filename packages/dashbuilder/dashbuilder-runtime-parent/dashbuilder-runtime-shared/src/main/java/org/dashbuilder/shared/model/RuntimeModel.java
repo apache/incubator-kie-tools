@@ -17,6 +17,7 @@
 package org.dashbuilder.shared.model;
 
 import java.util.List;
+import java.util.Map;
 
 import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.navigation.NavTree;
@@ -32,21 +33,26 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 public class RuntimeModel {
 
     NavTree navTree;
+    
+    Map<String, String> properties;
 
     List<LayoutTemplate> layoutTemplates;
 
     List<ExternalDataSetDef> clientDataSets;
 
     Long lastModified;
-
+    
+    
     public RuntimeModel(@MapsTo("navTree") final NavTree navTree,
                         @MapsTo("layoutTemplates") final List<LayoutTemplate> layoutTemplates,
                         @MapsTo("lastModified") Long lastModified,
-                        @MapsTo("clientDataSets") List<ExternalDataSetDef> clientDataSets) {
+                        @MapsTo("clientDataSets") List<ExternalDataSetDef> clientDataSets,
+                        @MapsTo("properties") Map<String, String> properties) {
         this.navTree = navTree;
         this.layoutTemplates = layoutTemplates;
         this.lastModified = lastModified;
         this.clientDataSets = clientDataSets;
+        this.properties = properties; 
     }
 
     public NavTree getNavTree() {
@@ -63,6 +69,11 @@ public class RuntimeModel {
 
     public List<ExternalDataSetDef> getClientDataSets() {
         return clientDataSets;
+    }
+
+
+    public Map<String, String> getProperties() {
+        return properties;
     }
 
 }

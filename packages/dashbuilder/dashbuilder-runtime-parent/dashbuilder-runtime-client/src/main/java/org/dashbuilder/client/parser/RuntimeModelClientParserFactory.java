@@ -27,9 +27,9 @@ public class RuntimeModelClientParserFactory {
     @Inject
     Instance<RuntimeModelClientParser> parsers;
 
-    public Optional<RuntimeModelClientParser> get(String fileName) {
+    public Optional<RuntimeModelClientParser> get(String content) {
         for (var p : parsers) {
-            if (fileName.toLowerCase().endsWith(p.supportedType().toLowerCase())) {
+            if (p.test(content)) {
                 return Optional.of(p);
             }
         }

@@ -72,16 +72,15 @@ public class RuntimeClientLoaderTest {
 
     @Mock
     RuntimeModelClientParserFactory parserFactory;
-    
+
     @Mock
     Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
-    
+
     @Mock
     RuntimeModelContentListener runtimeModelContentListener;
 
     @InjectMocks
     RuntimeClientLoader runtimeClientLoaderLoader;
-
 
     @Test
     @SuppressWarnings("unchecked")
@@ -90,8 +89,9 @@ public class RuntimeClientLoaderTest {
         var perspective = mock(LayoutTemplate.class);
         List<LayoutTemplate> perspectives = Arrays.asList(perspective);
         var navTree = mock(NavTree.class);
-        var runtimeModel = new RuntimeModel(navTree, perspectives, System.currentTimeMillis(), Collections.emptyList());
-        
+        var runtimeModel = new RuntimeModel(navTree, perspectives, System.currentTimeMillis(), Collections.emptyList(),
+                Collections.emptyMap());
+
         doAnswer(answer -> {
             Consumer<Optional<RuntimeModel>> modelConsumer = (Consumer<Optional<RuntimeModel>>) answer.getArgument(1);
             modelConsumer.accept(Optional.of(runtimeModel));
@@ -121,7 +121,7 @@ public class RuntimeClientLoaderTest {
             modelConsumer.accept(Optional.empty());
             return null;
         }).when(runtimeModelResourceClient).getRuntimeModel(any(), any(Consumer.class), any());
-        
+
         Consumer<RuntimeModel> runtimeModelConsumer = mock(Consumer.class);
         Command empty = mock(Command.class);
         BiConsumer<Object, Throwable> error = mock(BiConsumer.class);

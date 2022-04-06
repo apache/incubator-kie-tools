@@ -21,6 +21,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -147,7 +148,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         var externalDefs = getExternalDefs(datasetContents);
         var navTree = runtimeNavigationBuilder.build(navTreeOp, layoutTemplates);
 
-        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis(), externalDefs);
+        return new RuntimeModel(navTree, layoutTemplates, System.currentTimeMillis(), externalDefs, Collections.emptyMap());
     }
 
     void extractComponentFile(String modelId, InputStream zis, String name) throws IOException {

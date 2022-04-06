@@ -38,6 +38,10 @@ public class C3JsTypesFactory {
                              C3GridConf.create(showY));
     }
 
+    public C3Zoom c3Zoom(boolean enabled) {
+        return C3Zoom.create(enabled);
+    }
+
     public C3Padding c3Padding(int top, int right, 
                                int bottom, int left) {
         return C3Padding.create(top, right, bottom, left);
@@ -55,8 +59,8 @@ public class C3JsTypesFactory {
     public C3AxisY c3AxisY(boolean show, C3Tick tickY) {
         return C3AxisY.create(show, tickY);
     }
-    public C3AxisX c3AxisX(String type, String[] categories, C3Tick tick) {
-        return C3AxisX.create(type, categories, tick);
+    public C3AxisX c3AxisX(String type, String[] categories, C3Tick tick, boolean show) {
+        return C3AxisX.create(type, categories, tick, show);
     }
     
     
@@ -78,8 +82,6 @@ public class C3JsTypesFactory {
         return C3AxisInfo.create(rotated, axisX, axisY);
     }
 
-
-
     public C3ChartConf c3ChartConf(C3ChartSize size, 
                                    C3ChartData data, 
                                    C3AxisInfo axis, 
@@ -88,8 +90,9 @@ public class C3JsTypesFactory {
                                    C3Point point, 
                                    C3Padding padding, 
                                    C3Legend legend,
-                                   C3Color color) {
-        return C3ChartConf.create(size, data, axis, grid, transition, point, padding, legend, color);
+                                   C3Color color,
+                                   C3Zoom zoom) {
+        return C3ChartConf.create(size, data, axis, grid, transition, point, padding, legend, color, zoom);
     }
 
     public C3Transition c3Transition(int duration) {
