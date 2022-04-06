@@ -15,9 +15,13 @@
  */
 
 /**
- * It remove the class package and the generic type (if present)
+ * It removes the class package and the generic type (if present)
  * @param javaClassName
  */
 export const getJavaClassSimpleName = (javaClassName: string) => {
-  return javaClassName.split(".").pop()!.split("<")[0]!;
+  let javaClassSimpleName = javaClassName;
+  if (javaClassName.includes("<")) {
+    javaClassSimpleName = javaClassSimpleName.split("<")[0]!;
+  }
+  return javaClassSimpleName.split(".").pop()!;
 };

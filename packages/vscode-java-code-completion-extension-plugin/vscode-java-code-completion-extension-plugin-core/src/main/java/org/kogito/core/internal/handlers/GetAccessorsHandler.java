@@ -85,16 +85,10 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
             Map<String,String> data = (Map<String, String>) item.getData();
             String fqcnType = data.get(DATA_FIELD_SIGNATURE);
             if (fqcnType != null && fqcnType.contains(")L")) {
-                type = fqcnType.replace(";", "").split(")L")[1];
+                type = fqcnType.split("\\)L")[1];
+                type.replaceAll(";$", "");
             }
             result.setType(type);
-            JavaLanguageServerPlugin.logInfo("START === ");
-            JavaLanguageServerPlugin.logInfo("type:" + type);
-            JavaLanguageServerPlugin.logInfo("Data:" + item.getData());
-            JavaLanguageServerPlugin.logInfo("Detail:" + item.getDetail());
-            JavaLanguageServerPlugin.logInfo("Label:" + item.getLabel());
-            JavaLanguageServerPlugin.logInfo("END === ");
-
         } else {
             result.setAccessor("");
             result.setType("");
