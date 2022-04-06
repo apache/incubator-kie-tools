@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.navbar.AppNavBar;
@@ -101,8 +100,8 @@ public class RouterScreen {
     public void doRoute() {
         clientLoader.load(this::route,
                 (a, t) -> {
-                    runtimeCommunication.showSuccess(i18n.clientMode(), t);
                     appNavBar.setClientOnly(true);
+                    appNavBar.hide(clientLoader.isOffline());
                     placeManager.goTo(EmptyPerspective.ID);
                 });
     }
@@ -125,8 +124,7 @@ public class RouterScreen {
             runtimeScreen.goToIndex(layoutTemplates);
 
             if (clientLoader.isOffline()) {
-                var navBarEl = (HTMLElement) appNavBar.getElement();
-                navBarEl.style.display = layoutTemplates.size() == 1 ? "none" : "block";
+               appNavBar.hide(layoutTemplates.size() == 1);
             }
             return;
         }

@@ -39,7 +39,7 @@ public class RuntimeModelContentListener {
             try {
                 if (!READY.equals(message.data) && !(message.data instanceof ExternalComponentMessage)) {
                     contentConsumer.accept((String) message.data);
-                    runtimeCommunication.showSuccess("Dashboard Updated");
+                    DomGlobal.console.log("Dashboard Updated");
                 }
             } catch (Exception e) {
                 runtimeCommunication.showWarning("Error loading content: " + e.getMessage(), e);

@@ -134,8 +134,7 @@ public class RuntimeClientLoader {
                 modelOp -> handleResponse(modelLoaded, emptyModel, modelOp),
                 errorMessage -> handleError(error,
                         errorMessage,
-                        new RuntimeException("Not able to retrieve Runtime Model"))
-        );
+                        new RuntimeException("Not able to retrieve Runtime Model")));
 
     }
 
@@ -148,12 +147,15 @@ public class RuntimeClientLoader {
     }
 
     public void clientLoad(String fileName, String content) {
-        var parser = parserFactory.get(content)
-                .orElseThrow(() -> new IllegalArgumentException("Content is not supported or could not be parsed."));
-        var runtimeModel = parser.parse(content);
-        registerModel(runtimeModel);
-        runtimeModelResourceClient.setClientModel(runtimeModel);
-        updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(EDITOR_MODEL_ID));
+        if (content != null && !content.trim().isEmpty()) {
+            var parser = parserFactory.get(content)
+                    .orElseThrow(() -> new IllegalArgumentException(
+                            "Content is not supported or could not be parsed."));
+            var runtimeModel = parser.parse(content);
+            registerModel(runtimeModel);
+            runtimeModelResourceClient.setClientModel(runtimeModel);
+            updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(EDITOR_MODEL_ID));
+        }
     }
 
     public boolean isOffline() {
