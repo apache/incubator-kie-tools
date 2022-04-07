@@ -16,8 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
-import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
+import { ChannelType, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { useChromeExtensionI18n } from "../../i18n";
 import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
 import { useGlobals } from "../../common/GlobalContext";
@@ -35,6 +34,11 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { AlertsController } from "../../alerts/Alerts";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { EditorToolbar } from "./EditorToolbar";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { useSettings } from "../../settings/SettingsContext";
+import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
+import { SwfServiceCatalogStore } from "../../serviceCatalog/SwfServiceCatalogStore";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 
 const Loading = () => (
   <Bullseye>
@@ -58,6 +62,7 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
   const globals = useGlobals();
   const { locale } = useChromeExtensionI18n();
   const { editor, editorRef } = useEditorRef();
+  const settings = useSettings();
   const workspaces = useWorkspaces();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
@@ -151,68 +156,38 @@ export function ServerlessWorkflowEditor(props: ServerlessWorkflowEditorProps) {
     alerts?.closeAll();
   }, [alerts]);
 
-  // const setContentErrorAlert = useAlert(
-  //   alerts,
-  //   useCallback(() => {
-  //     return (
-  //       <Alert ouiaId="set-content-error-alert" variant="danger" title={i18n.editorPage.alerts.setContentError.title} />
-  //     );
-  //   }, [i18n])
-  // );
+  const swfServiceCatalogEnvelopeServer = useMemo(
+    () =>
+      editor?.getEnvelopeServer() as unknown as EnvelopeServer<SwfServiceCatalogChannelApi, KogitoEditorEnvelopeApi>,
+    [editor]
+  );
 
-  // const handleResourceContentRequest = useCallback(
-  //   async (request: ResourceContentRequest) => {
-  //     return workspaces.resourceContentGet({
-  //       fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
-  //       workspaceId: props.workspaceId,
-  //       relativePath: request.path,
-  //       opts: request.opts,
-  //     });
-  //   },
-  //   [props.workspaceId, workspaces]
-  // );
+  useEffect(() => {
+    swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
+      settings.serviceRegistry.config.coreRegistryApi
+    );
+  }, [settings.serviceRegistry.config.coreRegistryApi, swfServiceCatalogEnvelopeServer]);
 
-  // const handleResourceListRequest = useCallback(
-  //   async (request: ResourceListRequest) => {
-  //     return workspaces.resourceContentList({
-  //       fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
-  //       workspaceId: props.workspaceId,
-  //       globPattern: request.pattern,
-  //       opts: request.opts,
-  //     });
-  //   },
-  //   [workspaces, props.workspaceId]
-  // );
+  useEffect(() => {
+    swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_user.set({
+      username: settings.serviceAccount.config.clientId,
+    });
+  }, [
+    settings.serviceAccount.config.clientId,
+    settings.serviceRegistry.config.coreRegistryApi,
+    swfServiceCatalogEnvelopeServer,
+  ]);
 
-  // const handleOpenFile = useCallback(
-  //   async (relativePath: string) => {
-  //     if (!workspaceFilePromise.data) {
-  //       return;
-  //     }
-
-  //     const file = await workspaces.getFile({
-  //       fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
-  //       workspaceId: workspaceFilePromise.data.workspaceId,
-  //       relativePath,
-  //     });
-
-  //     if (!file) {
-  //       throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
-  //     }
-
-  //     history.replace({
-  //       pathname: routes.workspaceWithFilePath.path({
-  //         workspaceId: file.workspaceId,
-  //         fileRelativePath: file.relativePath,
-  //       }),
-  //     });
-  //   },
-  //   [workspaceFilePromise, workspaces, history, routes]
-  // );
-
-  // const handleSetContentError = useCallback(() => {
-  //   setContentErrorAlert.show();
-  // }, [setContentErrorAlert]);
+  useEffect(() => {
+    SwfServiceCatalogStore.refresh(settings.serviceRegistry.config, settings.serviceAccount.config).then((services) => {
+      swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
+    });
+  }, [
+    settings.serviceAccount.config,
+    settings.serviceRegistry.config,
+    settings.serviceRegistry.config.coreRegistryApi,
+    swfServiceCatalogEnvelopeServer,
+  ]);
 
   return (
     <OnlineEditorPage>

@@ -35,7 +35,6 @@ import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { useHistory } from "react-router";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
@@ -88,6 +87,7 @@ import { SwaggerEditorModal } from "./SwaggerEditor/SwaggerEditorModal";
 import { LoadingSpinner } from "../../common/LoadingSpinner";
 import { useAlertsController } from "../../alerts/AlertsProvider";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 
 export interface Props {
   editor: EmbeddedEditorRef | undefined;

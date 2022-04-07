@@ -5,15 +5,14 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { useSettings } from "../../settings/SettingsContext";
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { isConfigValid } from "../../settings/openshift/OpenShiftSettingsConfig";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { useAlert } from "../../alerts/Alerts";
 import { useAlertsController } from "../../alerts/AlertsProvider";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
