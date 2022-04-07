@@ -71,6 +71,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
   const expressionNameRef = useRef<HTMLInputElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [dataTypeSelectorOpen, setDataTypeSelectorOpen] = useState(false);
 
   useEffect(() => {
     setExpressionName(selectedExpressionName);
@@ -108,12 +109,19 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     saveExpression();
   }, [saveExpression]);
 
+  /**
+   * reset the inputs of the popover to the original state
+   */
+  const resetFormData = useCallback(() => {
+    setExpressionName(selectedExpressionName);
+    setDataType(selectedDataType);
+  }, [selectedExpressionName, selectedDataType]);
+
   const onCancel = useCallback(
     (_event: MouseEvent | KeyboardEvent) => {
-      setExpressionName(selectedExpressionName);
-      setDataType(selectedDataType);
+      resetFormData();
     },
-    [selectedExpressionName, selectedDataType]
+    [resetFormData]
   );
 
   const onShown = useCallback(() => {
@@ -123,6 +131,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onExpressionNameKeyPress = useCallback(
     (e: React.KeyboardEvent) => {
+      console.log("onExpressionNameKeyPress", e);
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
         setIsVisible(false);
@@ -131,7 +140,28 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
     [saveExpression]
   );
 
-  /* TODO: EditExpressionMenu: (online editor only) cancel editing and close popover on esc key */
+  const onExpressionNameKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (NavigationKeysUtils.isEscape(e.key)) {
+        resetFormData();
+        setIsVisible(false);
+      }
+    },
+    [resetFormData]
+  );
+
+  const onDataTypeKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (NavigationKeysUtils.isEscape(e.key) && !dataTypeSelectorOpen) {
+        setIsVisible(false);
+      }
+    },
+    [dataTypeSelectorOpen]
+  );
+
+  const onDataTypeToggle = useCallback((isOpen: boolean) => {
+    setDataTypeSelectorOpen(isOpen);
+  }, []);
 
   return (
     <PopoverMenu
@@ -143,7 +173,7 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
       onShown={onShown}
       isVisible={isVisible}
       body={
-        <div className="edit-expression-menu">
+        <div className="edit-expression-menu" onKeyDown={onExpressionNameKeyDown}>
           <div className="expression-name">
             <label>{nameField}</label>
             <input
@@ -171,7 +201,12 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
             >
               {i18n.manage}
             </Button>
-            <DataTypeSelector selectedDataType={dataType} onDataTypeChange={onDataTypeChange} />
+            <DataTypeSelector
+              selectedDataType={dataType}
+              onDataTypeChange={onDataTypeChange}
+              onToggle={onDataTypeToggle}
+              onKeyDown={onDataTypeKeyDown}
+            />
           </div>
         </div>
       }

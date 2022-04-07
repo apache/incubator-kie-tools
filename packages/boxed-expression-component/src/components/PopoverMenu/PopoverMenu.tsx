@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 import { useBoxedExpression } from "../../context";
@@ -113,7 +113,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
     [onCancel, onHide]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (triggerManually) {
       console.log("isVisible", isVisible);
       setIsPopoverVisible(isVisible);
