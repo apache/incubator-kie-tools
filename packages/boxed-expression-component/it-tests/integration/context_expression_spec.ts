@@ -300,7 +300,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
       //check the data type menu is open
       cy.get("@expressionDataType").find(".pf-c-select__menu").should("be.visible");
 
-      // set data type to "date". Only works with realPress
+      // set data type to "date". This only works with realPress
       cy.focused()
         .realPress("ArrowDown")
         .realPress("ArrowDown")

@@ -115,7 +115,6 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
 
   useEffect(() => {
     if (triggerManually) {
-      console.log("isVisible", isVisible);
       setIsPopoverVisible(isVisible);
     }
   }, [isVisible, triggerManually]);

@@ -46,25 +46,19 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
 
   const { dataTypes } = useBoxedExpression();
 
-  const [dataTypeSelectorIsOpen, setDataTypeSelectorIsOpen] = useState(false);
+  const [dataTypeSelectIsOpen, setDataTypeSelectIsOpen] = useState(false);
 
   const selectWrapperRef = useRef<HTMLDivElement>(null);
 
   const onDataTypeSelect = useCallback(
     (event, selection) => {
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
-      setTimeout(() => setDataTypeSelectorIsOpen(false), 0);
+      setTimeout(() => setDataTypeSelectIsOpen(false), 0);
 
       onDataTypeChange(selection);
 
       // Because Select leave the focus to the detached btn, give back the focus to the selectWrapperRef
-      // selectWrapperRef.current!.focus();
-      // setTimeout(()=>{
       (selectWrapperRef.current?.querySelector("button") as HTMLInputElement)?.focus();
-      console.log("event", event);
-      console.log("selectWrapperRef.current", selectWrapperRef.current);
-      console.log("document.activeElement", document.activeElement);
-      // }, 0);
     },
     [onDataTypeChange]
   );
@@ -115,26 +109,11 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
 
   const onDataTypeSelectToggle = useCallback(
     (isOpen) => {
-      setDataTypeSelectorIsOpen(isOpen);
+      setDataTypeSelectIsOpen(isOpen);
       onToggle(isOpen);
     },
     [onToggle]
   );
-
-  // const onKeydownSelectWrapper = useCallback((e:KeyboardEvent) => {
-  //   console.log("onKeydownSelectWrapper", e);
-  //   if (NavigationKeysUtils.isEscape(e.key)) {
-  //     setDataTypeSelectorIsOpen(false);
-  //   }
-  // }, []);
-  //
-  // useEffect(() => {
-  //   const selectWrapperElement = selectWrapperRef.current;
-  //   selectWrapperElement?.addEventListener("keydown", onKeydownSelectWrapper);
-  //   return () => {
-  //     selectWrapperElement?.removeEventListener("keydown", onKeydownSelectWrapper);
-  //   };
-  // }, [onKeydownSelectWrapper, dataTypeSelectorIsOpen]);
 
   return (
     <div ref={selectWrapperRef} tabIndex={-1} onKeyDown={onKeyDown}>
@@ -146,18 +125,12 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
         onToggle={onDataTypeSelectToggle}
         onSelect={onDataTypeSelect}
         onFilter={onFilteringDataTypes}
-        isOpen={dataTypeSelectorIsOpen}
+        isOpen={dataTypeSelectIsOpen}
         selections={selectedDataType}
         isGrouped
         hasInlineFilter
         inlineFilterPlaceholderText={i18n.choose}
         maxHeight={500}
-        onKeyDown={(e) => {
-          console.log("select okd", e);
-        }}
-        onKeyPress={(e) => {
-          console.log("select okp", e);
-        }}
       >
         {getDataTypes()}
       </Select>
