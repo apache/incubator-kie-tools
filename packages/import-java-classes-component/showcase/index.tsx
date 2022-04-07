@@ -45,7 +45,7 @@ const Showcase: React.FunctionComponent = () => {
       { fqcn: "com.Book", accessor: "title", type: "java.lang.String" },
       { fqcn: "com.Book", accessor: "year", type: "java.lang.Integer" },
       { fqcn: "com.Book", accessor: "boom", type: "org.kie.test.kogito.Boom" },
-      { fqcn: "com.Book", accessor: "getRelatedClass()", type: "java.lang.Class<?>" },
+      { fqcn: "com.Book", accessor: "getClass()", type: "java.lang.Class<?>" },
       { fqcn: "com.Book", accessor: "getOtherBookList()", type: "java.util.List<java.lang.String>" },
       { fqcn: "com.Book", accessor: "getTopicsMap()", type: "java.util.Map<java.lang.String, java.lang.String>" },
     ];

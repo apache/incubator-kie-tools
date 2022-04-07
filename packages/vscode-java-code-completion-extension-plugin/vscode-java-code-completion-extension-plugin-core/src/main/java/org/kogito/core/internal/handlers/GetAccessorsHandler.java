@@ -86,9 +86,10 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
             String fqcnType = data.get(DATA_FIELD_SIGNATURE);
             if (fqcnType != null && fqcnType.contains(")L")) {
                 type = fqcnType.split("\\)L")[1];
-                type.replaceAll(";$", "");
+                type = type.replaceAll(";$", "");
             }
             result.setType(type);
+            JavaLanguageServerPlugin.logInfo(type);
         } else {
             result.setAccessor("");
             result.setType("");
