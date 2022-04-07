@@ -146,3 +146,19 @@ export interface CellProps {
   /** Cell's column properties */
   columnId: string;
 }
+
+/**
+ * Interface to be inherited from the table cell components (td, th)
+ */
+export interface TableCellComponentProps {
+  /** event fired when the user press a key */
+  onKeyDown: (rowSpan?: number) => (e: KeyboardEvent) => void;
+  /** the row index */
+  rowIndex: number;
+  /** the cell index */
+  cellIndex: number;
+  /** the x position of the cell. Colspan are counted */
+  xPosition?: number;
+  /** the y position of the cell */
+  yPosition?: number;
+}
