@@ -221,10 +221,6 @@ export function DeployToolbar(props: DeployToolbarProps) {
               >
                 {isLoading ? "Deploying" : "Deploy"}
               </Button>
-              {/* Temporary Button to check fetching artifacts */}
-              <Button key="fetch-artifacts" variant="primary" onClick={onFetchArtifacts}>
-                {"Fetch artifacts"}
-              </Button>
             </ToolbarItem>
           </ToolbarContent>
         </Toolbar>
