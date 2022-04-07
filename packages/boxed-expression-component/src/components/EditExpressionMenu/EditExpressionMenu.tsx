@@ -131,7 +131,6 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onExpressionNameKeyPress = useCallback(
     (e: React.KeyboardEvent) => {
-      console.log("onExpressionNameKeyPress", e);
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
         setIsVisible(false);

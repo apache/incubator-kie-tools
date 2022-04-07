@@ -60,8 +60,7 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
       // Because Select leave the focus to the detached btn, give back the focus to the selectWrapperRef
       // selectWrapperRef.current!.focus();
       // setTimeout(()=>{
-      /* TODO: DataTypeSelector: use "button" selector */
-      (selectWrapperRef.current?.querySelector(".pf-c-select__toggle") as HTMLInputElement)?.focus();
+      (selectWrapperRef.current?.querySelector("button") as HTMLInputElement)?.focus();
       console.log("event", event);
       console.log("selectWrapperRef.current", selectWrapperRef.current);
       console.log("document.activeElement", document.activeElement);
