@@ -33,6 +33,7 @@ export function initJsonSchemaDiagnostics() {
   monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     validate: true,
     allowComments: false,
+    schemaValidation: "error",
     schemas: [
       {
         uri: "https://serverlessworkflow.io/schemas/0.8/common.json",

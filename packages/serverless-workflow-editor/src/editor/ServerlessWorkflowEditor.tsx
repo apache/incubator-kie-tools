@@ -23,7 +23,7 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationType } from "@kie-tools-core/notifications/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import svgPanZoom from "svg-pan-zoom";
@@ -31,6 +31,7 @@ import mermaid from "mermaid";
 import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { editor } from "monaco-editor/esm/vs/editor/editor.api";
 
 interface Props {
   /**
@@ -122,6 +123,23 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     []
   );
 
+  const setValidationErrors = (errors: editor.IMarker[]) => {
+    const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
+      type: "PROBLEM",
+      path: initialContent.path,
+      severity: "ERROR",
+      message: `${error.message}`,
+      position: {
+        startLineNumber: error.startLineNumber,
+        startColumn: error.startColumn,
+        endLineNumber: error.endLineNumber,
+        endColumn: error.endColumn,
+      },
+    }));
+    console.log("notifications", notifications);
+    props.setNotifications(initialContent.path, notifications);
+  };
+
   const onContentChanged = useCallback(
     (newContent: string, operation?: MonacoEditorOperation) => {
       if (operation === MonacoEditorOperation.EDIT) {
@@ -158,7 +176,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
 
   useEffect(() => {
     props.onReady.call(null);
-    onContentChanged(initialContent.originalContent);
+    if (initialContent !== null) {
+      onContentChanged(initialContent.originalContent);
+    }
   }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (
@@ -177,12 +197,13 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {initialContent.path !== "" && (
+          {initialContent && (
             <SwfMonacoEditor
               channelType={props.channelType}
               content={initialContent.originalContent}
               fileName={initialContent.path}
               onContentChange={onContentChanged}
+              setValidationErrors={setValidationErrors}
               ref={swfMonacoEditorRef}
             />
           )}

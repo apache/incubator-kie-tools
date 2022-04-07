@@ -53,7 +53,8 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     content: string,
     private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void,
     private readonly language: string,
-    private readonly operatingSystem: OperatingSystem | undefined
+    private readonly operatingSystem: OperatingSystem | undefined,
+    private readonly setValidationErrors: (errors: editor.IMarker[]) => void
   ) {
     this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => {
@@ -61,6 +62,10 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
         this.editor?.pushUndoStop();
         onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
       }
+    });
+
+    editor.onDidChangeMarkers(() => {
+      this.setValidationErrors(this.getValidationMarkers());
     });
   }
 
@@ -73,6 +78,10 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     this.editor?.focus();
     this.editor?.trigger("editor", "undo", null);
   }
+
+  public getValidationMarkers = (): editor.IMarker[] => {
+    return editor.getModelMarkers({});
+  };
 
   public setTheme(theme: EditorTheme): void {
     editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
