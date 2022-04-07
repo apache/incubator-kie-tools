@@ -24,17 +24,19 @@ import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-t
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { SwfServiceCatalogSingleton } from "../serviceCatalog";
 import { ServerlessWorkflowEditorChannelApi } from "../editor";
+import { editor } from "monaco-editor";
 
 interface Props {
   content: string;
   fileName: string;
   onContentChange: (content: string) => void;
   channelType: ChannelType;
+  setValidationErrors: (errors: editor.IMarker[]) => void;
   isReadOnly: boolean;
 }
 
 const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEditorApi | undefined, Props> = (
-  { content, fileName, onContentChange, channelType, isReadOnly },
+  { content, fileName, onContentChange, channelType, isReadOnly, setValidationErrors },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
@@ -53,7 +55,8 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
         onContentChange,
         "json",
         editorEnvelopeCtx.operatingSystem,
-        isReadOnly
+        isReadOnly,
+        setValidationErrors
       );
     }
     if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
@@ -62,7 +65,8 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
         onContentChange,
         "yaml",
         editorEnvelopeCtx.operatingSystem,
-        isReadOnly
+        isReadOnly,
+        setValidationErrors
       );
     }
     throw new Error(`Unsupported extension '${fileName}'`);

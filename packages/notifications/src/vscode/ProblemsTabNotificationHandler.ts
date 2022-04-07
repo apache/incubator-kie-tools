@@ -52,9 +52,12 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
   }
 
   private buildDiagnostic(notification: Notification): vscode.Diagnostic {
+    const startLineNumber = notification.position?.startLineNumber ? notification.position?.startLineNumber - 1 : 0;
+    const startColumn = notification.position?.startColumn ? notification.position?.startColumn - 1 : 0;
+    const endColumn = notification.position?.endColumn || 0;
     return {
       message: notification.message,
-      range: new vscode.Range(new vscode.Position(0, 0), new vscode.Position(0, 0)),
+      range: new vscode.Range(startLineNumber, startColumn, startLineNumber, endColumn),
       severity: this.getSeverity(notification.severity),
     };
   }

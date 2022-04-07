@@ -23,7 +23,7 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationType } from "@kie-tools-core/notifications/dist/api";
 import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
@@ -31,6 +31,7 @@ import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEd
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import "../../static/css/editor.css";
+import { editor } from "monaco-editor";
 
 interface Props {
   /**
@@ -73,11 +74,16 @@ export type ServerlessWorkflowEditorRef = {
   setContent(path: string, content: string): Promise<void>;
 };
 
+type ServerlessWorkflowEditorContent = {
+  originalContent: string;
+  path: string;
+};
+
 const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
+  const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | null>(null);
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
   const svgPreviewHiddenContainer = useRef<HTMLDivElement>(null);
@@ -130,6 +136,25 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     },
     []
   );
+  
+  const setValidationErrors = (errors: editor.IMarker[]) => {
+    if (!initialContent) {
+      return;
+    }
+    const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
+      type: "PROBLEM",
+      path: initialContent.path,
+      severity: "ERROR",
+      message: `${error.message}`,
+      position: {
+        startLineNumber: error.startLineNumber,
+        startColumn: error.startColumn,
+        endLineNumber: error.endLineNumber,
+        endColumn: error.endColumn,
+      },
+    }));
+    props.setNotifications(initialContent.path, notifications);
+  };
 
   const updateDiagram = useCallback(
     (newContent: string) => {
@@ -192,7 +217,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
 
   useEffect(() => {
     props.onReady.call(null);
-    updateDiagram(initialContent.originalContent);
+    if (initialContent !== null) {
+      updateDiagram(initialContent.originalContent);
+    }
   }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (
@@ -212,12 +239,13 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {initialContent.path !== "" && (
+          {initialContent && (
             <SwfMonacoEditor
               channelType={props.channelType}
               content={initialContent.originalContent}
               fileName={initialContent.path}
               onContentChange={onContentChanged}
+              setValidationErrors={setValidationErrors}
               ref={swfMonacoEditorRef}
               isReadOnly={props.isReadOnly}
             />
