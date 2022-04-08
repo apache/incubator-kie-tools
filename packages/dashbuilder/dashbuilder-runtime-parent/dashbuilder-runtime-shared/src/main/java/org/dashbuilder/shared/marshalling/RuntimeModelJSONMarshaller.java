@@ -16,7 +16,9 @@
 package org.dashbuilder.shared.marshalling;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -44,8 +46,8 @@ public class RuntimeModelJSONMarshaller {
     private static String LAYOUT_TEMPLATES = "layoutTemplates";
     private static String PAGES = "pages";
     private static String EXTERNAL_DATASET_DEFS = "datasets";
-    
-    
+    private static String PROPERTIES = "properties";
+
     static final String NAV_GROUP_ID = "__runtime_dashboards";
     static final String NAV_GROUP_NAME = "Dashboards";
     static final String NAV_GROUP_DESC = "Dashboards";
@@ -87,6 +89,7 @@ public class RuntimeModelJSONMarshaller {
         var navTreeJson = NavTreeJSONMarshaller.get().toJson(model.getNavTree());
         var ltArray = Json.createArray();
         var externalDefsArray = Json.createArray();
+        var propertiesObject = Json.createObject();
 
         jsonObject.set(LAST_MODIFIED, Json.create(model.getLastModified()));
         jsonObject.set(NAV_TREE, navTreeJson);
@@ -99,14 +102,21 @@ public class RuntimeModelJSONMarshaller {
 
         i.set(0);
         model.getClientDataSets()
-             .forEach(def -> externalDefsArray.set(i.getAndIncrement(), defMarshaller.toJsonObject(def)));
+                .forEach(def -> externalDefsArray.set(i.getAndIncrement(), defMarshaller.toJsonObject(def)));
         jsonObject.set(EXTERNAL_DATASET_DEFS, externalDefsArray);
+
+        model.getProperties().forEach((k, v) -> propertiesObject.set(k, Json.create(v)));
+        jsonObject.set(PROPERTIES, propertiesObject);
 
         return jsonObject;
     }
 
     public RuntimeModel fromJson(String json) {
         return fromJson(Json.parse(json));
+    }
+
+    public Map<String, String> retrieveProperties(String json) {
+        return extractProperties(Json.parse(json));
     }
 
     public RuntimeModel fromJson(JsonObject jsonObject) {
@@ -116,11 +126,10 @@ public class RuntimeModelJSONMarshaller {
         var lastModified = jsonObject.getNumber(LAST_MODIFIED);
         var layoutTemplates = new ArrayList<LayoutTemplate>();
         var externalDefs = new ArrayList<ExternalDataSetDef>();
-        
+
         if (ltArray == null) {
             ltArray = jsonObject.getArray(PAGES);
         }
-        
 
         for (int i = 0; i < ltArray.length(); i++) {
             var ltJson = ltArray.getObject(i);
@@ -137,17 +146,31 @@ public class RuntimeModelJSONMarshaller {
         }
 
         var navTree = NavTreeJSONMarshaller.get().fromJson(navTreeJSONObject);
-        
+
         if (navTree == null || navTree.getRootItems().isEmpty()) {
             navTree = navTreeForTemplates(layoutTemplates);
         }
-        
+
+        var properties = extractProperties(jsonObject);
+
         return new RuntimeModel(navTree,
                 layoutTemplates,
                 lastModified.longValue(),
-                externalDefs);
+                externalDefs,
+                properties);
     }
-    
+
+    private HashMap<String, String> extractProperties(JsonObject jsonObject) {
+        var properties = new HashMap<String, String>();
+        var propertiesObject = jsonObject.getObject(PROPERTIES);
+        if (propertiesObject != null) {
+            for (String key : propertiesObject.keys()) {
+                properties.put(key, propertiesObject.getString(key));
+            }
+        }
+        return properties;
+    }
+
     private NavTree navTreeForTemplates(List<LayoutTemplate> layoutTemplates) {
         var treeBuilder = new NavTreeBuilder();
         return buildLayoutTemplatesGroup(layoutTemplates, treeBuilder).build();

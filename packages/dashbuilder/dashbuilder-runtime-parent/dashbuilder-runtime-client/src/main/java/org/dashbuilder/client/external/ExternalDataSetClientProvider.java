@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.dashbuilder.client.external;
 
 import java.util.HashMap;
@@ -8,14 +23,15 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.dev.util.HttpHeaders;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.Response;
 import elemental2.promise.IThenable;
+import org.dashbuilder.client.external.transformer.JSONAtaInjector;
 import org.dashbuilder.client.external.transformer.JSONAtaTransformer;
-import org.dashbuilder.client.external.transformer.resources.JSONAtaInjector;
 import org.dashbuilder.common.client.error.ClientRuntimeError;
 import org.dashbuilder.dataset.DataSetFactory;
 import org.dashbuilder.dataset.DataSetLookup;
@@ -31,11 +47,16 @@ public class ExternalDataSetClientProvider {
     @Inject
     ClientDataSetManager clientDataSetManager;
 
+    @Inject
+    CSVParser csvParser;
+
     ExternalDataSetJSONParser externalParser;
 
     private Map<String, ExternalDataSetDef> externalDataSets;
 
     private Map<String, Double> scheduledTimeouts;
+
+    SupportedMimeType DEFAULT_TYPE = SupportedMimeType.JSON;
 
     @PostConstruct
     public void setup() {
@@ -51,7 +72,7 @@ public class ExternalDataSetClientProvider {
         if (defOp.isPresent()) {
             var def = defOp.get();
             if (def.getContent() != null && def.getUrl() == null) {
-                register(lookup, listener, def.getContent());
+                register(lookup, listener, def.getContent(), SupportedMimeType.JSON);
             } else {
                 fetch(def, lookup, listener);
             }
@@ -81,9 +102,15 @@ public class ExternalDataSetClientProvider {
 
     private void fetch(ExternalDataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) {
         DomGlobal.fetch(def.getUrl()).then((Response response) -> {
+            var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
+            var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, def.getUrl())
+                    .orElse(DEFAULT_TYPE);
             response.text().then(responseText -> {
                 if (response.status == HttpResponseCodes.SC_OK) {
-                    return register(lookup, listener, responseText);
+                    return register(lookup,
+                            listener,
+                            responseText,
+                            mimeType);
                 }
                 return notAbleToRetrieveDataSet(def, listener);
 
@@ -94,10 +121,11 @@ public class ExternalDataSetClientProvider {
 
     private IThenable<Object> register(DataSetLookup lookup,
                                        DataSetReadyCallback listener,
-                                       String responseText) {
+                                       String responseText,
+                                       SupportedMimeType contentType) {
         var uuid = lookup.getDataSetUUID();
         var def = externalDataSets.get(uuid);
-        var content = responseText;
+        var content = contentType == SupportedMimeType.CSV ? csvToJsonArray(responseText) : responseText;
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
@@ -177,9 +205,14 @@ public class ExternalDataSetClientProvider {
         var result = JSONAtaTransformer.jsonata(expression).evaluate(json);
         return Global.JSON.stringify(result);
     }
-    
+
     private void clearRegisteredDataSets() {
         externalDataSets.keySet().forEach(d -> clientDataSetManager.removeDataSet(d));
+    }
+
+    private String csvToJsonArray(String responseText) {
+        var array = csvParser.toJsonArray(responseText);
+        return array.toJson();
     }
 
 }

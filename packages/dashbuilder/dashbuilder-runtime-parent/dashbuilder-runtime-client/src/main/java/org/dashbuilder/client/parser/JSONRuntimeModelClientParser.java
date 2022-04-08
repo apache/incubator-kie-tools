@@ -23,14 +23,24 @@ import org.dashbuilder.shared.model.RuntimeModel;
 @ApplicationScoped
 public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
 
+    private static String PROPERTY_KEY = "VALUE";
+    private static String PROPERTY_REPLACEMENT_PATTERN = "\\$\\{" + PROPERTY_KEY + "\\}";
+
     @Override
     public RuntimeModel parse(String jsonContent) {
-        return RuntimeModelJSONMarshaller.get().fromJson(jsonContent);
+        var properties = RuntimeModelJSONMarshaller.get().retrieveProperties(jsonContent);
+        var contentSb = new StringBuffer(jsonContent);
+        properties.forEach((k, v) -> {
+            var replaceToken = PROPERTY_REPLACEMENT_PATTERN.replace(PROPERTY_KEY, k);
+            var replacedContent = contentSb.toString().replaceAll(replaceToken, v);
+            contentSb.replace(0, contentSb.length(), replacedContent);
+        });
+        return RuntimeModelJSONMarshaller.get().fromJson(contentSb.toString());
     }
 
     @Override
-    public String supportedType() {
-        return "json";
+    public boolean test(String content) {
+        return content.trim().startsWith("{");
     }
 
 }

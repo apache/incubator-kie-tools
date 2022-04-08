@@ -29,6 +29,7 @@ import com.google.gwt.regexp.shared.RegExp;
 import org.kie.workbench.common.dmn.api.definition.HasText;
 import org.kie.workbench.common.dmn.api.definition.HasVariable;
 import org.kie.workbench.common.dmn.api.definition.model.BusinessKnowledgeModel;
+import org.kie.workbench.common.dmn.api.definition.model.DMNElement;
 import org.kie.workbench.common.dmn.api.definition.model.DRGElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Expression;
@@ -99,6 +100,10 @@ public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneP
             cloneDRGElementBasicInfo((DRGElement) source, (DRGElement) target);
         }
 
+        if (source instanceof DMNElement) {
+            cloneDMNElement((DMNElement) source, (DMNElement) target);
+        }
+
         if (source instanceof HasText) {
             cloneTextElementBasicInfo((HasText) source, (HasText) target);
         }
@@ -120,11 +125,14 @@ public class DMNDeepCloneProcess extends DeepCloneProcess implements IDeepCloneP
         return target;
     }
 
+    private void cloneDMNElement(final DMNElement source, final DMNElement target) {
+        target.setId(new Id());
+        target.setDescription(source.getDescription().copy());
+    }
+
     private void cloneDRGElementBasicInfo(final DRGElement source, final DRGElement target) {
         final String uniqueNodeName = composeUniqueNodeName(source.getName().getValue());
-        target.setId(new Id());
         target.setNameHolder(new NameHolder(new Name(uniqueNodeName)));
-        target.setDescription(source.getDescription().copy());
         target.setParent(source.getParent());
         target.getLinksHolder().getValue().getLinks().addAll(cloneExternalLinkList(source));
     }

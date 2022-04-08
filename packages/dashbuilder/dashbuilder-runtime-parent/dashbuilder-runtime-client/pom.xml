@@ -416,7 +416,12 @@
       <groupId>org.webjars.npm</groupId>
       <artifactId>jsonata</artifactId>
       <scope>provided</scope>
-      </dependency>
+    </dependency>
+    <dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>js-yaml</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- Test dependencies -->
 
@@ -608,6 +613,27 @@
               <overWriteSnapshots>true</overWriteSnapshots>
             </configuration>
           </execution>
+          <execution>
+            <id>unpack-js-yaml</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.webjars.npm</groupId>
+                  <artifactId>js-yaml</artifactId>
+                  <version>${version.org.webjars.npm.js-yaml}</version>
+                  <type>jar</type>
+                  <overWrite>true</overWrite>
+                  <outputDirectory>${project.build.directory}/js-yaml</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -621,12 +647,30 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/external/transformer/resources/js</outputDirectory>
+	      <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
               <resources>
                 <resource>
                   <directory>${project.build.directory}/jsonata/META-INF/resources/webjars/jsonata/${version.org.webjars.npm.jsonata}</directory>
                   <includes>
                     <include>jsonata.min.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-js-yaml-resources-js</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+	      <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
+              <resources>
+                <resource>
+		  <directory>${project.build.directory}/js-yaml/META-INF/resources/webjars/js-yaml/${version.org.webjars.npm.js-yaml}/dist</directory>
+                  <includes>
+                    <include>js-yaml.min.js</include>
                   </includes>
                 </resource>
               </resources>
