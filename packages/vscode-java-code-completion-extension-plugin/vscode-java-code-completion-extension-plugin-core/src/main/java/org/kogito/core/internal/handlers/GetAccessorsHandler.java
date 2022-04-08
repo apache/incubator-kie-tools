@@ -89,7 +89,6 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                 type = type.replaceAll(";$", "");
             }
             result.setType(type);
-            JavaLanguageServerPlugin.logInfo(type);
         } else {
             result.setAccessor("");
             result.setType("");
