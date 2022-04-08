@@ -36,18 +36,16 @@ function getRouterArgs() {
 }
 
 function getOnlineEditorArgs() {
-  const onlineEditorUrl = buildEnv.chromeExtension.onlineEditorUrl;
   const manifestFile = buildEnv.chromeExtension.manifestFile;
 
-  console.info(`Chrome Extension :: Online Editor URL: ${onlineEditorUrl}`);
   console.info(`Chrome Extension :: Manifest file: ${manifestFile}`);
 
-  return [onlineEditorUrl, manifestFile];
+  return [manifestFile];
 }
 
 module.exports = async (env) => {
   const [router_targetOrigin, router_relativePath] = getRouterArgs(env);
-  const [onlineEditor_url, manifestFile] = getOnlineEditorArgs(env);
+  const [manifestFile] = getOnlineEditorArgs(env);
 
   return merge(common(env), {
     entry: {
@@ -65,7 +63,6 @@ module.exports = async (env) => {
       new EnvironmentPlugin({
         WEBPACK_REPLACE__targetOrigin: router_targetOrigin,
         WEBPACK_REPLACE__relativePath: router_relativePath,
-        WEBPACK_REPLACE__onlineEditor_url: onlineEditor_url,
       }),
       new CopyPlugin({
         patterns: [

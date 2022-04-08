@@ -504,7 +504,7 @@ jobs:
           path: kie-tools
           os: ubuntu-latest
 
-      - name: "Build"
+      - name: "Build Chrome Extension for kogito kie editors"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           lerna run build:prod --scope=chrome-extension-pack-kogito-kie-editors --include-dependencies --stream
@@ -517,7 +517,7 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
-          asset_name: chrome_extension_${{ inputs.tag }}.zip
+          asset_name: chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "Deploy to GitHub Pages (kogito-online)"
@@ -538,12 +538,12 @@ jobs:
 
           echo "Commit changes and push"
           git add .
-          git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension)"
+          git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension for kogito kie editors)"
           git push origin gh-pages
 
       - name: "Upload Chrome Extension to the Chrome Store"
         if: ${{ !inputs.dry_run }}
-        id: update_extension
+        id: update_extension_kogito_kie_editors
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip)
@@ -553,11 +553,11 @@ jobs:
       - name: "Check Upload"
         if: ${{ !inputs.dry_run }}
         run: |
-          [ "${{ steps.update_extension.outputs.upload_status }}" == 'SUCCESS' ]
+          [ "${{ steps.update_extension_kogito_kie_editors.outputs.upload_status }}" == 'SUCCESS' ]
 
       - name: "Publish Chrome Extension for users"
         if: ${{ !inputs.dry_run }}
-        id: publish_extension
+        id: publish_extension_kogito_kie_editors
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
@@ -567,9 +567,9 @@ jobs:
       - name: "Check Publish"
         if: ${{ !inputs.dry_run }}
         run: |
-          [ "${{ steps.publish_extension.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
+          [ "${{ steps.publish_extension_kogito_kie_editors.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension_kogito_kie_editors.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
 
-      - name: "Build"
+      - name: "Build Chrome Extension for serverless workflow editor"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           lerna run build:prod --scope=chrome-extension-serverless-workflow-editor --include-dependencies --stream
@@ -582,7 +582,7 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
-          asset_name: chrome_extension_${{ inputs.tag }}.zip
+          asset_name: chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "Deploy to GitHub Pages (kogito-online)"
@@ -599,12 +599,12 @@ jobs:
 
           echo "Commit changes and push"
           git add .
-          git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension)"
+          git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension for serverless workflow editor)"
           git push origin gh-pages
 
       - name: "Upload Chrome Extension to the Chrome Store"
         if: ${{ !inputs.dry_run }}
-        id: update_extension
+        id: update_extension_serverless_workflow_editor
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip)
@@ -614,11 +614,11 @@ jobs:
       - name: "Check Upload"
         if: ${{ !inputs.dry_run }}
         run: |
-          [ "${{ steps.update_extension.outputs.upload_status }}" == 'SUCCESS' ]
+          [ "${{ steps.update_extension_serverless_workflow_editor.outputs.upload_status }}" == 'SUCCESS' ]
 
       - name: "Publish Chrome Extension for users"
         if: ${{ !inputs.dry_run }}
-        id: publish_extension
+        id: publish_extension_serverless_workflow_editor
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
           publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
@@ -628,7 +628,7 @@ jobs:
       - name: "Check Publish"
         if: ${{ !inputs.dry_run }}
         run: |
-          [ "${{ steps.publish_extension.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
+          [ "${{ steps.publish_extension_serverless_workflow_editor.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension_serverless_workflow_editor.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
 
   vscode_extensions_dev:
     if: ${{ needs.extract_runners.outputs.vscode_extensions_dev == 'true' }}

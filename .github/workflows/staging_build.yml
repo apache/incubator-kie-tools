@@ -272,6 +272,7 @@ jobs:
         working-directory: ${{ github.workspace }}/kie-tools/packages/online-editor
         run: |
           zip -r dist.zip dist/*
+
       - name: "STAGING: Upload Online Editor (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
@@ -357,7 +358,7 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
-          asset_name: STAGING__chrome_extension_${{ inputs.tag }}.zip
+          asset_name: STAGING__chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Chrome Extension for serverless workflow editors (Ubuntu only)"
@@ -368,7 +369,7 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
-          asset_name: STAGING__chrome_extension_${{ inputs.tag }}.zip
+          asset_name: STAGING__chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Desktop App for Linux (Ubuntu only)"
