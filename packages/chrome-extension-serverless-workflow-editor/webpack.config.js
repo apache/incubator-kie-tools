@@ -27,7 +27,7 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 function getRouterArgs() {
   const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
-  const relativePath = buildEnv.chromeExtension.routerRelativePath;
+  const relativePath = buildEnv.chromeExtension.routerSWRelativePath;
 
   console.info(`Chrome Extension :: Router target origin: ${targetOrigin}`);
   console.info(`Chrome Extension :: Router relative path: ${relativePath}`);

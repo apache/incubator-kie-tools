@@ -466,6 +466,7 @@ jobs:
     env:
       CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ inputs.tag }}"
+      CHROME_EXTENSION__SW_routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
       CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
 
