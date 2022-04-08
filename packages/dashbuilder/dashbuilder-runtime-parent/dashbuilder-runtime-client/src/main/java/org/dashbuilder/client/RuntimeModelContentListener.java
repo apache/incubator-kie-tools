@@ -23,6 +23,7 @@ import javax.inject.Inject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.MessageEvent;
 import jsinterop.base.Js;
+import org.dashbuilder.displayer.external.ExternalComponentMessage;
 
 @ApplicationScoped
 public class RuntimeModelContentListener {
@@ -34,10 +35,10 @@ public class RuntimeModelContentListener {
 
     public void start(Consumer<String> contentConsumer) {
         DomGlobal.window.addEventListener("message", evt -> {
-            MessageEvent<String> message = Js.cast(evt);
+            MessageEvent<Object> message = Js.cast(evt);
             try {
-                if (!READY.equals(message.data)) {
-                    contentConsumer.accept(message.data);
+                if (!READY.equals(message.data) && !(message.data instanceof ExternalComponentMessage)) {
+                    contentConsumer.accept((String) message.data);
                     runtimeCommunication.showSuccess("Dashboard Updated");
                 }
             } catch (Exception e) {

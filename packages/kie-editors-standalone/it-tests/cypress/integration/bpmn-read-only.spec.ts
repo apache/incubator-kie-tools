@@ -67,7 +67,7 @@ describe("Bpmn Read Only.", () => {
               .find("[id='mainContainer']")
               .should("be.visible")
               .children(".row")
-              .should("have.length", 17)
+              .should("have.length", 19)
               .then(($items) => {
                 propertyItems = $items;
               });

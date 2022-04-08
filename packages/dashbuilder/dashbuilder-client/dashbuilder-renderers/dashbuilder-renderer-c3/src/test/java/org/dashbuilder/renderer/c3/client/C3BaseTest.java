@@ -95,7 +95,7 @@ public class C3BaseTest extends AbstractDisplayerTest {
         when(c3AxisX.getTick()).thenReturn(c3Tick);
         when(c3Conf.getAxis()).thenReturn(c3AxisInfo);
         when(c3Factory.c3ChartData(any(), any(), any(), any(), any())).thenReturn(c3ChartData);
-        when(c3Factory.c3ChartConf(any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(c3Conf);
+        when(c3Factory.c3ChartConf(any(), any(), any(), any(), any(), any(), any(), any(), any(), any())).thenReturn(c3Conf);
         return c3Factory;
     }
 

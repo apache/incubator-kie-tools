@@ -15,31 +15,22 @@
  */
 
 import * as React from "react";
-import { BaseSyntheticEvent, useCallback, useEffect, useMemo, useRef } from "react";
-import { Tbody, Td, Tr } from "@patternfly/react-table";
-import { Column as IColumn, TableHeaderVisibility } from "../../api";
-import { Cell, Column, Row, TableInstance } from "react-table";
-import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
-import {
-  focusCurrentCell,
-  focusInsideCell,
-  focusLowerCell,
-  focusNextCell,
-  focusNextDataCell,
-  focusParentCell,
-  focusPrevCell,
-  focusPrevDataCell,
-  focusUpperCell,
-  getParentCell,
-} from "./common";
+import { BaseSyntheticEvent, useCallback, useMemo } from "react";
+import { Tbody, Tr } from "@patternfly/react-table";
+import { TableHeaderVisibility } from "../../api";
+import { Cell, Column, HeaderGroup, Row, TableInstance } from "react-table";
 import { useBoxedExpression } from "../../context";
 import { LOGIC_TYPE_SELECTOR_CLASS } from "../LogicTypeSelector";
+import { TdAdditiveCell } from "./TdAdditiveCell";
+import { TdCell } from "./TdCell";
 
 export interface TableBodyProps {
   /** Table instance */
   tableInstance: TableInstance;
   /** The way in which the header will be rendered */
   headerVisibility?: TableHeaderVisibility;
+  /** True, for skipping the creation in the DOM of the last defined header group */
+  skipLastHeaderGroup: boolean;
   /** Optional children element to be appended below the table content */
   children?: React.ReactElement[];
   /** Custom function for getting row key prop, and avoid using the row index */
@@ -48,80 +39,40 @@ export interface TableBodyProps {
   getColumnKey: (column: Column) => string;
   /** Function to be executed when columns are modified */
   onColumnsUpdate?: (columns: Column[]) => void;
+  /** Function to be executed when a key has been pressed on a cell */
+  onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Td props */
   tdProps: (cellIndex: number, rowIndex: number) => any;
-  /** Enable the  Keyboar Navigation */
-  enableKeyboarNavigation?: boolean;
 }
 
 export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   tableInstance,
   children,
-  headerVisibility,
+  headerVisibility = TableHeaderVisibility.Full,
+  skipLastHeaderGroup,
   getRowKey,
   getColumnKey,
   onColumnsUpdate,
+  onCellKeyDown,
   tdProps,
-  enableKeyboarNavigation = true,
 }) => {
   const { boxedExpressionEditorGWTService } = useBoxedExpression();
 
   const headerVisibilityMemo = useMemo(() => headerVisibility ?? TableHeaderVisibility.Full, [headerVisibility]);
 
-  const { isContextMenuOpen } = useBoxedExpression();
-
-  const onKeyDown = useCallback(
-    (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => {
-      const key = e.key;
-      const isModKey = e.altKey || e.ctrlKey || e.shiftKey || key === "AltGraph";
-
-      if (!enableKeyboarNavigation) {
-        return;
-      }
-
-      //prevent the parent cell catch this event if there is a nested table
-      if (e.currentTarget !== getParentCell(e.target as HTMLElement)) {
-        return;
-      }
-
-      if (isContextMenuOpen) {
-        e.preventDefault();
-        if (key === "Escape") {
-          //close Select child components if any
-          focusCurrentCell(e.currentTarget);
-        }
-        return;
-      }
-
-      const isFiredFromThis = e.currentTarget === e.target;
-
-      if (key === "Tab") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          focusPrevDataCell(e.currentTarget, rowIndex);
-        } else {
-          focusNextDataCell(e.currentTarget, rowIndex);
-        }
-      } else if (key === "ArrowLeft") {
-        focusPrevCell(e.currentTarget);
-      } else if (key === "ArrowRight") {
-        focusNextCell(e.currentTarget);
-      } else if (key === "ArrowUp") {
-        focusUpperCell(e.currentTarget, rowIndex);
-      } else if (key === "ArrowDown") {
-        focusLowerCell(e.currentTarget, rowIndex);
-      } else if (key === "Escape") {
-        focusParentCell(e.currentTarget);
-      } else if (!isContextMenuOpen && isFiredFromThis && !isModKey) {
-        if (key === "Enter") {
-          focusInsideCell(e.currentTarget);
-        } else {
-          focusInsideCell(e.currentTarget, true);
-        }
-      }
-    },
-    [isContextMenuOpen, enableKeyboarNavigation]
-  );
+  const headerRowsLength = useMemo(() => {
+    const headerGroupsLength = tableInstance.headerGroups.length - (skipLastHeaderGroup ? 1 : 0);
+    switch (headerVisibility) {
+      case TableHeaderVisibility.Full:
+        return headerGroupsLength;
+      case TableHeaderVisibility.LastLevel:
+        return headerGroupsLength - 1;
+      case TableHeaderVisibility.SecondToLastLevel:
+        return headerGroupsLength - 1;
+      default:
+        return 0;
+    }
+  }, [headerVisibility, tableInstance]);
 
   const renderCell = useCallback(
     (cellIndex: number, cell: Cell, rowIndex: number, inAForm: boolean) => {
@@ -132,15 +83,16 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
           cell={cell}
           rowIndex={rowIndex}
           inAForm={inAForm}
-          onKeyDown={onKeyDown}
+          onKeyDown={onCellKeyDown}
           tableInstance={tableInstance}
           getColumnKey={getColumnKey}
           onColumnsUpdate={onColumnsUpdate!}
           tdProps={tdProps}
+          yPosition={headerRowsLength + rowIndex}
         />
       );
     },
-    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, onKeyDown]
+    [getColumnKey, onColumnsUpdate, tableInstance, tdProps, onCellKeyDown, headerRowsLength]
   );
 
   const eventPathHasNestedExpression = useCallback((event: React.BaseSyntheticEvent, path: EventTarget[]) => {
@@ -199,7 +151,14 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
   const renderAdditiveRow = useCallback(
     (rowIndex: number) => (
       <Tr className="table-row additive-row">
-        <TdAdditiveCell isEmptyCell={true} rowIndex={rowIndex} onKeyDown={onKeyDown} />
+        <TdAdditiveCell
+          isEmptyCell={true}
+          rowIndex={rowIndex}
+          cellIndex={0}
+          onKeyDown={onCellKeyDown}
+          xPosition={0}
+          yPosition={headerRowsLength + rowIndex}
+        />
         {children?.map((child, childIndex) => {
           return (
             <TdAdditiveCell
@@ -207,7 +166,9 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
               cellIndex={childIndex}
               isEmptyCell={false}
               rowIndex={rowIndex}
-              onKeyDown={onKeyDown}
+              onKeyDown={onCellKeyDown}
+              xPosition={childIndex + 1}
+              yPosition={headerRowsLength + rowIndex}
             >
               {child}
             </TdAdditiveCell>
@@ -215,7 +176,7 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
         })}
       </Tr>
     ),
-    [children, onKeyDown]
+    [children, onCellKeyDown]
   );
 
   return (
@@ -228,110 +189,3 @@ export const TableBody: React.FunctionComponent<TableBodyProps> = ({
     </Tbody>
   );
 };
-
-interface TdCellProps {
-  cellIndex: number;
-  cell: Cell;
-  rowIndex: number;
-  inAForm: boolean;
-  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
-  tableInstance: TableInstance;
-  getColumnKey: (column: Column) => string;
-  onColumnsUpdate: (columns: Column[]) => void;
-  tdProps: (cellIndex: number, rowIndex: number) => any;
-}
-
-function TdCell({
-  cellIndex,
-  cell,
-  rowIndex,
-  inAForm,
-  onKeyDown,
-  tableInstance,
-  getColumnKey,
-  onColumnsUpdate,
-  tdProps,
-}: TdCellProps) {
-  let cellType = cellIndex === 0 ? "counter-cell" : "data-cell";
-  const column = tableInstance.allColumns[cellIndex] as unknown as IColumn;
-  const width = typeof column?.width === "number" ? column?.width : DEFAULT_MIN_WIDTH;
-  const tdRef = useRef<HTMLElement>(null);
-
-  useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown(rowIndex);
-    const cell = tdRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
-    return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
-    };
-  }, [onKeyDown, rowIndex]);
-
-  const onResize = (width: number) => {
-    if (column.setWidth) {
-      column.setWidth(width);
-      tableInstance.allColumns[cellIndex].width = width;
-      onColumnsUpdate?.(tableInstance.columns);
-    }
-  };
-  const cellTemplate =
-    cellIndex === 0 ? (
-      <>{rowIndex + 1}</>
-    ) : (
-      <Resizer width={width} onHorizontalResizeStop={onResize}>
-        <>
-          {inAForm && typeof (cell.column as any)?.cellDelegate === "function"
-            ? (cell.column as any)?.cellDelegate(`dmn-auto-form-${rowIndex}`)
-            : cell.render("Cell")}
-        </>
-      </Resizer>
-    );
-
-  if (typeof (cell.column as any)?.cellDelegate === "function") {
-    cellType += " input";
-  }
-
-  return (
-    <Td
-      {...tdProps(cellIndex, rowIndex)}
-      ref={tdRef}
-      tabIndex={-1}
-      key={`${rowIndex}-${getColumnKey(cell.column)}-${cellIndex}`}
-      data-ouia-component-id={"expression-column-" + cellIndex}
-      className={`${cellType}`}
-    >
-      {cellTemplate}
-    </Td>
-  );
-}
-interface TdAdditiveCellProps {
-  children?: React.ReactElement;
-  cellIndex?: number;
-  isEmptyCell?: boolean;
-  onKeyDown: (rowIndex: number) => (e: React.KeyboardEvent<HTMLElement>) => void;
-  rowIndex: number;
-}
-
-function TdAdditiveCell({ children, cellIndex, isEmptyCell = false, onKeyDown, rowIndex }: TdAdditiveCellProps) {
-  const tdRef = useRef<HTMLTableCellElement>(null);
-
-  useEffect(() => {
-    // Typescript don't accept the conversion between DOM event and React event
-    const onKeyDownForIndex: any = onKeyDown(rowIndex);
-    const cell = tdRef.current;
-    cell?.addEventListener("keydown", onKeyDownForIndex);
-    return () => {
-      cell?.removeEventListener("keydown", onKeyDownForIndex);
-    };
-  }, [onKeyDown, rowIndex]);
-
-  return isEmptyCell ? (
-    <Td ref={tdRef} role="cell" className="empty-cell" tabIndex={-1}>
-      <br />
-    </Td>
-  ) : (
-    <Td ref={tdRef} role="cell" key={cellIndex} className="row-remainder-content" tabIndex={-1}>
-      {children}
-    </Td>
-  );
-}

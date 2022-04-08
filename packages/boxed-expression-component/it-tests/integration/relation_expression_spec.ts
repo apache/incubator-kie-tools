@@ -77,7 +77,7 @@ describe("Relation Expression Tests", () => {
     cy.ouiaId("expression-grid-table").should("contain.text", "row 49 column 49");
   });
 
-  it("Insert bellow", () => {
+  it("Insert below", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 

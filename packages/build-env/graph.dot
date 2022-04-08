@@ -178,6 +178,7 @@ digraph G {
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "blue" ];
   "@kie-tools/uniforms-bootstrap4-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly-codegen" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/unitables" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
