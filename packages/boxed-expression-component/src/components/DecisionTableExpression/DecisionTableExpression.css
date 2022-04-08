@@ -91,3 +91,12 @@
   .header-cell-info {
   width: 95%;
 }
+
+/** Focused Cells border ------------------------------------- */
+
+.expression-container .decision-table-expression table thead tr:last-child th.annotation.focused > .react-resizable,
+.expression-container .decision-table-expression table thead tr:last-child th.annotation:focus > .react-resizable,
+.expression-container .decision-table-expression table thead tr:last-child th.input:focus > .react-resizable {
+  outline: 2px solid #438cb1;
+  z-index: 3;
+}

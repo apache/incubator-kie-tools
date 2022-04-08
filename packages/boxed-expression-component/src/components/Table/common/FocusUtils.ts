@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-export const focusTextArea = (textarea?: HTMLTextAreaElement | null, eraseContent = false) => {
-  if (!textarea) {
+import { getCellByCoordinates, getFullCellCoordinates, hasCellTabindex, TableCellCoordinates } from "./TableUtils";
+
+export const focusTextInput = (input?: HTMLTextAreaElement | HTMLInputElement | null, eraseContent = false) => {
+  if (!input) {
     return;
   }
 
   if (eraseContent) {
-    textarea.value = "";
+    input.value = "";
   }
 
-  const value = textarea.value || "";
-  textarea.focus();
-  textarea.setSelectionRange(value.length, value.length);
+  const value = input.value || "";
+  input.focus();
+
+  if (input.tagName === "TEXTAREA") {
+    input.setSelectionRange(value.length, value.length);
+  }
 };
 
 export const blurActiveElement = () => {
@@ -61,7 +66,11 @@ export const getParentCell = (currentEl: HTMLElement | null): HTMLTableCellEleme
     return null;
   }
 
-  return (currentEl.matches(cellSelector) ? currentEl : currentEl.closest(cellSelector)) as HTMLTableCellElement;
+  if (currentEl.matches(cellSelector)) {
+    return currentEl as HTMLTableCellElement;
+  } else {
+    return currentEl.closest(cellSelector) as HTMLTableCellElement;
+  }
 };
 
 /**
@@ -73,6 +82,10 @@ export const getParentCell = (currentEl: HTMLElement | null): HTMLTableCellEleme
 export const cellFocus = (cell: HTMLTableCellElement | null): void => {
   if (!cell) {
     return;
+  }
+
+  if (!hasCellTabindex(cell)) {
+    return focusLowerCell(cell);
   }
 
   cell.click();
@@ -93,20 +106,11 @@ export const focusCurrentCell = (currentEl: HTMLElement | null): void => {
  * Focus Next Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @param stopAtLastDataCell true to stop stop at end of row
  * @returns
  */
-export const focusNextCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(getParentCell(currentEl)?.nextElementSibling as HTMLTableCellElement);
-};
-
-/**
- * Focus Next Data Cell of a react-table. Works from any element inside a cell or a cell itself.
- *
- * @param currentEl the crrent element
- * @param rowIndex the current row index
- * @returns
- */
-export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+const focusNextCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtLastDataCell = true): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
@@ -114,88 +118,179 @@ export const focusNextDataCell = (currentEl: HTMLElement | null, rowIndex: numbe
   }
 
   const nextCell = currentCell.nextElementSibling as HTMLTableCellElement;
+  const { x, y } = getFullCellCoordinates(currentCell);
 
   if (!nextCell) {
-    focusLowerCell(currentCell, rowIndex, 1);
-  } else {
-    cellFocus(nextCell);
+    if (!stopAtLastDataCell) {
+      return focusCellByCoordinates(currentCell, { y: y + 1, x: 1 });
+    }
+
+    return cellFocus(currentCell);
   }
+
+  if (rowSpan > 1) {
+    return focusCellByCoordinates(nextCell, { y: y - 1, x: x + 1 });
+  }
+
+  cellFocus(nextCell);
 };
 
 /**
- * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
+ * Focus Next Cell of a react-table, navigating with the arrow key.
+ * Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
  * @returns
  */
-export const focusPrevCell = (currentEl: HTMLElement | null): void => {
-  cellFocus(getParentCell(currentEl)?.previousElementSibling as HTMLTableCellElement);
+export const focusNextCellByArrowKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusNextCell(currentEl, rowSpan, true);
 };
 
 /**
- * Focus Prev Cell of a react-table. Works from any element inside a cell or a cell itself.
+ * Focus Next Cell of a react-table, navigating with the tab key.
+ * Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
- * @param rowIndex the current row index
+ * @param rowSpan the rowSpan of the current cell
  * @returns
  */
-export const focusPrevDataCell = (currentEl: HTMLElement | null, rowIndex: number): void => {
+export const focusNextCellByTabKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusNextCell(currentEl, rowSpan, false);
+};
+
+/**
+ * Focus the previous cell of a react-table. Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @param stopAtFirstDataCell true to stop at first data cell
+ * @returns
+ */
+const focusPrevCell = (currentEl: HTMLElement | null, rowSpan = 1, stopAtFirstDataCell = true): void => {
   const currentCell = getParentCell(currentEl);
 
   if (!currentCell) {
     return;
   }
 
-  const lastCellIndex = (currentCell.parentElement as HTMLTableRowElement).cells.length - 1;
-  const cellIndex = currentCell.cellIndex;
+  const { x, y } = getFullCellCoordinates(currentCell);
+  const xEdge = stopAtFirstDataCell ? 0 : 1;
+  const yEdge = stopAtFirstDataCell ? y : 0;
 
-  if (cellIndex <= 1) {
-    focusUpperCell(currentCell, rowIndex, lastCellIndex);
-  } else {
-    focusPrevCell(currentCell);
+  if (x <= xEdge && y <= yEdge) {
+    return cellFocus(currentCell);
   }
+
+  if (x <= xEdge && !stopAtFirstDataCell) {
+    const lastCellPrevRow = getCellByCoordinates(currentCell.closest("table")!, { y: y - 1, x: -1 });
+
+    return cellFocus(hasCellTabindex(lastCellPrevRow!) ? lastCellPrevRow : currentCell);
+  }
+
+  focusCellByCoordinates(currentCell, { y: rowSpan > 1 ? y - 1 : y, x: x - 1 });
+};
+
+/**
+ * Focus the previous cell of a react-table, navigating with the arrow key.
+ * Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @returns
+ */
+export const focusPrevCellByArrowKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusPrevCell(currentEl, rowSpan, true);
+};
+
+/**
+ * Focus the previous cell of a react-table, navigating with tab key.
+ * Works from any element inside a cell or a cell itself.
+ *
+ * @param currentEl the crrent element
+ * @param rowSpan the rowSpan of the current cell
+ * @returns
+ */
+export const focusPrevCellByTabKey = (currentEl: HTMLElement | null, rowSpan = 1): void => {
+  return focusPrevCell(currentEl, rowSpan, false);
 };
 
 /**
  * Focus Upper Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
- * @param rowIndex the current row index
  * @returns
  */
-export const focusUpperCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
+export const focusUpperCell = (currentEl: HTMLElement | null): void => {
   const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
     return;
   }
 
-  const currentBody = currentCell.closest("tbody");
-  const gotoRow = currentBody?.rows[rowIndex - 1];
-  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
+  const currentTable = currentCell.closest("table");
 
-  cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
+  if (!currentTable) {
+    return;
+  }
+
+  const { x, y } = getFullCellCoordinates(currentCell);
+
+  if (y <= 0) {
+    return cellFocus(currentCell);
+  }
+
+  focusCellByCoordinates(currentEl, { x, y: y - 1 });
+};
+
+/**
+ * Focus a cell by coordinates.
+ *
+ * @param currentEl the crrent element
+ * @param cellCoordinates the cell coordinates. set x or y = -1 to focus the last element.
+ * @returns
+ */
+export const focusCellByCoordinates = (currentEl: HTMLElement | null, cellCoordinates: TableCellCoordinates): void => {
+  const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
+  const { x, y } = cellCoordinates || {};
+
+  if (!currentCell || !cellCoordinates || x === undefined || x < -1 || y === undefined) {
+    return;
+  }
+
+  const currentTable = currentCell.closest("table");
+
+  if (!currentTable) {
+    return;
+  }
+
+  const gotoCell = getCellByCoordinates(currentTable, { x, y });
+
+  if (!gotoCell) {
+    return cellFocus(currentCell);
+  }
+  if (!hasCellTabindex(gotoCell)) {
+    return focusCellByCoordinates(currentEl, { x, y: y + 1 });
+  }
+  cellFocus(gotoCell);
 };
 
 /**
  * Focus Lower Cell of a react-table. Works from any element inside a cell or a cell itself.
  *
  * @param currentEl the crrent element
- * @param rowIndex the current row index
- * @param cellIndex the cell index to focus
  * @returns
  */
-export const focusLowerCell = (currentEl: HTMLElement | null, rowIndex: number, cellIndex?: number): void => {
+export const focusLowerCell = (currentEl: HTMLElement | null): void => {
   const currentCell = getParentCell(currentEl) as HTMLTableCellElement;
 
   if (!currentCell) {
     return;
   }
-  const currentBody = currentCell.closest("tbody");
-  const gotoRow = currentBody?.rows[rowIndex + 1];
-  const gotoCellIndex = cellIndex === undefined ? currentCell.cellIndex : cellIndex;
 
-  cellFocus((gotoRow?.cells[gotoCellIndex] as HTMLTableCellElement) || currentCell);
+  const { x, y } = getFullCellCoordinates(currentCell);
+
+  focusCellByCoordinates(currentEl, { x, y: y + 1 });
 };
 
 /**
@@ -217,21 +312,20 @@ export const focusInsideCell = (currentEl: HTMLElement | null, eraseContent = fa
     return;
   }
 
-  const cellWithPopoverMenu = currentEl.querySelector(".with-popover-menu, .logic-type-not-present") as HTMLElement;
+  const cellWithClickActionElement = currentEl.querySelector(`
+    .counter-header-cell .selected-function-kind,
+    .header-cell-info >:first-child:not(.function-definition-container), 
+    .with-popover-menu, 
+    .logic-type-not-present,
+    .logic-type-selector button
+  `) as HTMLElement;
 
-  if (cellWithPopoverMenu) {
-    cellWithPopoverMenu.click();
+  if (cellWithClickActionElement) {
+    cellWithClickActionElement.click();
     return;
   }
 
-  const cellWithSelect = currentEl.querySelector(".logic-type-selector button") as HTMLElement;
-
-  if (cellWithSelect) {
-    cellWithSelect.click();
-    return;
-  }
-
-  focusTextArea(currentEl.querySelector("textarea"), eraseContent);
+  focusTextInput(currentEl.querySelector("textarea, input[type=text]") as HTMLInputElement, eraseContent);
 };
 
 /**
@@ -245,5 +339,5 @@ export const focusParentCell = (currentCell: HTMLElement | null): void => {
     return;
   }
 
-  cellFocus(currentCell.parentElement?.closest("td") || null);
+  cellFocus(currentCell.parentElement?.closest("td, th") || null);
 };

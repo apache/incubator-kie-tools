@@ -94,12 +94,6 @@
   border: 1px solid var(--pf-global--palette--black-300);
 }
 
-.expression-container .table-component table tbody td:focus {
-  border: 2px solid #438cb1;
-  outline: none !important;
-  margin: -1px -1px;
-  z-index: 1;
-}
 .expression-container .table-component table tbody td.empty-cell:focus,
 .expression-container .table-component table tbody td.counter-cell:focus {
   margin: 0;
@@ -192,4 +186,30 @@
 
 .boxed-expression-provider .table-handler .pf-c-popover__arrow {
   display: none;
+}
+
+/** Focused Cells border ------------------------------------- */
+.expression-container .table-component table tbody td:focus {
+  border: 2px solid #438cb1;
+  outline: none !important;
+  margin: -1px;
+  z-index: 1;
+}
+
+.expression-container .table-component table thead tr th:focus {
+  outline: none !important;
+}
+
+.expression-container .table-component table thead tr th.counter-header-cell:focus {
+  border: 2px solid #438cb1;
+}
+.expression-container .table-component table thead tr th.data-header-cell:focus:before,
+.expression-container .decision-table-expression .table-component table thead tr th.output:focus:before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  border: 2px solid #438cb1;
 }

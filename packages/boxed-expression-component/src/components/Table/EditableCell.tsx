@@ -22,9 +22,9 @@ import { CellProps } from "../../api";
 import {
   blurActiveElement,
   focusCurrentCell,
-  focusNextDataCell,
-  focusPrevDataCell,
-  focusTextArea,
+  focusNextCellByTabKey,
+  focusPrevCellByTabKey,
+  focusTextInput,
   paste,
 } from "./common";
 import "./EditableCell.css";
@@ -81,7 +81,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
-      focusTextArea(textarea.current);
+      focusTextInput(textarea.current);
     },
     [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
   );
@@ -102,7 +102,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       return;
     }
     setIsSelected(true);
-    focusTextArea(textarea.current);
+    focusTextInput(textarea.current);
   }, [mode]);
 
   const onClick = useCallback(() => {
@@ -186,10 +186,10 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       if (isTab) {
         if (!event.shiftKey) {
           //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusNextDataCell(textarea.current, rowIndex), 0);
+          setTimeout(() => focusNextCellByTabKey(textarea.current, 1), 0);
         } else {
           //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusPrevDataCell(textarea.current, rowIndex), 0);
+          setTimeout(() => focusPrevCellByTabKey(textarea.current, 1), 0);
         }
       }
     },

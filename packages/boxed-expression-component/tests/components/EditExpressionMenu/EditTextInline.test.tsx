@@ -44,7 +44,7 @@ describe("EditTextInline tests", () => {
     expect(container.querySelector("input")).toHaveValue(value);
   });
 
-  test("should call text editing callback, when clicking outside", () => {
+  test("should call text change callback, when clicking outside", () => {
     const value = "Value";
     const newValue = "New Value";
     const mockedOnTextChange = jest.fn();
@@ -52,7 +52,7 @@ describe("EditTextInline tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         <div id="container">
-          <EditTextInline value={value} onTextChange={mockedOnTextChange} />
+          <EditTextInline value={value} onTextChange={(newValue) => mockedOnTextChange(newValue)} />
         </div>
       ).wrapper
     );
@@ -62,7 +62,7 @@ describe("EditTextInline tests", () => {
     expect(mockedOnTextChange).toHaveBeenCalledWith(newValue);
   });
 
-  test("should call text editing callback, when pressing enter", () => {
+  test("should call text change callback, when pressing enter", () => {
     const value = "Value";
     const newValue = "New Value";
     const mockedOnTextChange = jest.fn();
@@ -70,7 +70,7 @@ describe("EditTextInline tests", () => {
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         <div id="container">
-          <EditTextInline value={value} onTextChange={mockedOnTextChange} />
+          <EditTextInline value={value} onTextChange={(newValue) => mockedOnTextChange(newValue)} />
         </div>
       ).wrapper
     );
@@ -80,15 +80,16 @@ describe("EditTextInline tests", () => {
     expect(mockedOnTextChange).toHaveBeenCalledWith(newValue);
   });
 
-  test("should not call text editing callback, when pressing escape", () => {
+  test("should call cancel callback and should not call text change callback, when pressing escape", () => {
     const value = "Value";
     const newValue = "New Value";
     const mockedOnTextChange = jest.fn();
+    const mockedOnCancel = jest.fn();
 
     const { container } = render(
       usingTestingBoxedExpressionI18nContext(
         <div id="container">
-          <EditTextInline value={value} onTextChange={mockedOnTextChange} />
+          <EditTextInline value={value} onTextChange={mockedOnTextChange} onCancel={mockedOnCancel} />
         </div>
       ).wrapper
     );
@@ -96,6 +97,7 @@ describe("EditTextInline tests", () => {
     fireEvent.keyDown(changeInputValue(container, newValue), { key: "escape", keyCode: 27 });
 
     expect(mockedOnTextChange).toHaveBeenCalledTimes(0);
+    expect(mockedOnCancel).toHaveBeenCalled();
   });
 
   function changeInputValue(container: Element, newValue: string) {
