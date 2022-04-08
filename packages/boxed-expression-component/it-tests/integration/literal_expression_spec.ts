@@ -27,9 +27,16 @@ describe("Literal Expression Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Literal expression").click({ force: true });
   });
 
-  it("Regression tests", () => {
+  it("Regression without focus", () => {
     // check the snapshot for regression
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot("no_focus");
+  });
+
+  it("Regression tests with cell focus", () => {
+    cy.get(".literal-expression-body").click();
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot("data_cell_focus");
   });
 
   it("Change data type", () => {

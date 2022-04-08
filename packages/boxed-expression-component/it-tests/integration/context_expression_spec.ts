@@ -171,14 +171,14 @@ describe("Context Expression Tests :: Nested Relations", () => {
     cy.contains("th", "Expression Name").focus().wait(0);
 
     // check the snapshot for regression
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot("header_cell_focus");
   });
 
   it("Regression tests: data cell focus", () => {
     cy.contains("td", "ContextEntry-1").focus().wait(0);
 
     // check the snapshot for regression
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot("data_cell_focus");
   });
 
   it("Check nested Relation", () => {

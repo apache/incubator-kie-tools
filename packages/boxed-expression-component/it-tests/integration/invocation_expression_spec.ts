@@ -36,7 +36,7 @@ describe("Invocation Expression Tests", () => {
     cy.contains("td", "p-1").focus().wait(0);
 
     // check the snapshot for regression
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot("function_parameter_focus");
   });
 
   it("Edit function definition with the keyboard navigation", () => {

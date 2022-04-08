@@ -36,6 +36,6 @@ describe("List Expression Tests", () => {
     cy.ouiaId("expression-column-1").focus().wait(0);
 
     // check the snapshot for regression
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot("data_cell_focus");
   });
 });

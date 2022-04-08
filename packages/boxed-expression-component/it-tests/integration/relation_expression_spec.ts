@@ -155,6 +155,6 @@ describe("Relation Expression Tests", () => {
     cy.contains("td", "row 0 column 0").focus().wait(0);
 
     // check the snapshot for regression
-    cy.matchImageSnapshot();
+    cy.matchImageSnapshot("data_cell_focus");
   });
 });
