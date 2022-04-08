@@ -27,29 +27,45 @@ describe("PopoverMenu Tests", () => {
     cy.ouiaId("expression-popover-menu").contains("Context").click({ force: true });
   });
 
-  it("Cancel edit of expression data type by pressing escape", () => {
-    // open the context menu
-    cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
+  beforeEach(() => {
+    // Define ExpressionNameCell
+    cy.contains("th", "Expression Name").as("ExpressionNameCell");
 
-    // open the dataType select
+    //reset the state of the contextMenu. Necessary to pass test.
+    cy.get("body").click();
+
+    // focus the 1st header cell inside the nested decision table.
+    cy.get("@ExpressionNameCell").focus();
+  });
+
+  afterEach(() => {
+    // check the popover to be closed
+    cy.ouiaId("expression-popover-menu").should("not.to.exist");
+  });
+
+  it("Cancel edit of expression data type by pressing escape", () => {
+    // open the popover
+    cy.get("@ExpressionNameCell").click();
+
+    // open the data type select
     cy.ouiaId("edit-expression-data-type").as("dataTypeInput").find("button").click({ force: true });
 
     // select "context" type
     cy.get("@dataTypeInput").contains("context").click({ force: true });
 
-    // context menu should be open. This check is to check that the context menu is not closed after data type selection
-    cy.ouiaId("expression-popover-menu").should("be.visible");
-
-    // Cancel the editing
-    cy.ouiaId("expression-popover-menu").type("{esc}").should("not.exist");
+    cy.ouiaId("expression-popover-menu")
+      // check the popover be open. This check is to check that the popover is not closed after data type selection
+      .should("be.visible")
+      // Cancel the editing
+      .type("{esc}");
 
     // Assert data type not to be changed
     cy.get("@ExpressionNameCell").find(".data-type").should("contain.text", "Undefined");
   });
 
   it("Cancel edit of expression name by pressing escape", () => {
-    // open the context menu
-    cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
+    // open the popover
+    cy.get("@ExpressionNameCell").click();
 
     // change the expression name
     cy.get("#expression-name").type("{selectall}Newname", { force: true });
@@ -57,21 +73,89 @@ describe("PopoverMenu Tests", () => {
     // Cancel the editing
     cy.ouiaId("expression-popover-menu").contains("Edit Expression").click();
 
-    // context menu should be open. This check is to check that the context menu is not closed after data type selection
-    cy.ouiaId("expression-popover-menu").should("be.visible").type("{esc}").should("not.exist");
+    // check the popover be open. This check is to check that the popover is not closed after data type selection
+    cy.ouiaId("expression-popover-menu").should("be.visible").type("{esc}");
 
     // Assert expression name not to be changed
     cy.get("@ExpressionNameCell").find(".label").should("contain.text", "Expression Name");
   });
 
   it("The header cell's in the popover should have original values", () => {
-    // open the context menu
-    cy.contains("th", "Expression Name").as("ExpressionNameCell").click();
+    // open the popover
+    cy.get("@ExpressionNameCell").click();
 
     // expression name input should have original value
     cy.get("#expression-name").should("have.value", "Expression Name");
 
-    // dataType select should have original value
+    // data type select should have original value
     cy.ouiaId("edit-expression-data-type").should("contain.text", "Undefined");
+
+    // close the popover to reset the state of it
+    cy.ouiaId("expression-popover-menu").type("{esc}");
+  });
+
+  describe("Keyboard interaction with header's contextMenu in nested decision table", () => {
+    beforeEach(() => {
+      // open the popover by pressing enter
+      cy.get("@ExpressionNameCell").type("{enter}");
+
+      // check the popover is open
+      cy.ouiaId("expression-popover-menu").should("be.visible");
+
+      // check expression name is focused
+      cy.ouiaId("edit-expression-name").should("be.focused");
+    });
+
+    it("Edit expression name field and type esc to cancel", () => {
+      // type some text in expression name field
+      cy.ouiaId("edit-expression-name").type(" cancelled{esc}");
+
+      // check the expression name field doesn't have the new text
+      cy.get("@ExpressionNameCell").should("not.contain.text", "cancelled").should("contain.text", "Expression Name");
+    });
+
+    it("Edit expression name field and type enter to save", () => {
+      // type some text in expression name field
+      cy.ouiaId("edit-expression-name").type(" edited{enter}");
+
+      // check the expression name field has the new text
+      cy.get("@ExpressionNameCell").should("contain.text", "Expression Name edited");
+    });
+
+    it("Edit expression data type", () => {
+      // move from expression name field to data type field with the keyboard
+      cy.ouiaId("edit-expression-name").realPress("Tab").realPress("Tab");
+
+      // open the data type menu
+      cy.ouiaId("edit-expression-data-type")
+        .as("expressionDataType")
+        .find("button")
+        .should("be.focused")
+        .realPress("Enter");
+
+      // check the data type menu is open
+      cy.get("@expressionDataType").find(".pf-c-select__menu").should("be.visible");
+
+      // set data type to "date". This only works with realPress
+      cy.focused()
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("ArrowDown")
+        .realPress("Enter");
+
+      // check the data type menu is closed
+      cy.get("@expressionDataType").find(".pf-c-select__menu").should("not.exist");
+
+      // check data type is now "date"
+      cy.get("@expressionDataType").find(".pf-c-select__toggle-text").should("contain.text", "date");
+
+      // press enter from the expression name to save (from the expression data type the menu will be opened again if press enter)
+      cy.ouiaId("edit-expression-name").focus().realPress("Enter");
+
+      // check the expression name field has the new text
+      cy.get("@ExpressionNameCell").should("contain.text", "(date)");
+    });
   });
 });
