@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.dashbuilder.client.external.transformer.resources;
+package org.dashbuilder.client.resources;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.resources.client.ClientBundle;
@@ -25,5 +25,8 @@ public interface NativeLibraryResources extends ClientBundle {
 
     @Source("js/jsonata.min.js")
     TextResource jsonata();
-    
+
+    @Source("js/js-yaml.min.js")
+    TextResource jsYaml();
+
 }

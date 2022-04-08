@@ -44,7 +44,7 @@ public class RuntimeClientLoader {
 
     public static final String IMPORT_ID_PARAM = "import";
 
-    private static final String CLIENT_MODEL_ID = "client.json";
+    private static final String EDITOR_MODEL_ID = "editor";
 
     RuntimeModelResourceClient runtimeModelResourceClient;
 
@@ -135,26 +135,25 @@ public class RuntimeClientLoader {
                 errorMessage -> handleError(error,
                         errorMessage,
                         new RuntimeException("Not able to retrieve Runtime Model"))
-
         );
 
     }
 
     public String getImportId() {
         if (isOffline()) {
-            return CLIENT_MODEL_ID;
+            return EDITOR_MODEL_ID;
         } else {
             return Window.Location.getParameter(IMPORT_ID_PARAM);
         }
     }
 
     public void clientLoad(String fileName, String content) {
-        var parser = parserFactory.get(fileName)
-                .orElseThrow(() -> new IllegalArgumentException("File type is not supported"));
+        var parser = parserFactory.get(content)
+                .orElseThrow(() -> new IllegalArgumentException("Content is not supported or could not be parsed."));
         var runtimeModel = parser.parse(content);
         registerModel(runtimeModel);
         runtimeModelResourceClient.setClientModel(runtimeModel);
-        updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(CLIENT_MODEL_ID));
+        updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(EDITOR_MODEL_ID));
     }
 
     public boolean isOffline() {
@@ -163,7 +162,7 @@ public class RuntimeClientLoader {
 
     private boolean handleError(BiConsumer<Object, Throwable> error, Object message, Throwable throwable) {
         offline = true;
-        contentListener.start(content -> this.clientLoad(CLIENT_MODEL_ID, content));
+        contentListener.start(content -> this.clientLoad(EDITOR_MODEL_ID, content));
         loading.hideBusyIndicator();
         error.accept(message, throwable);
         return false;

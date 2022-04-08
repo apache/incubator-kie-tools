@@ -165,8 +165,10 @@ public class DMNDeepCloneProcessTest extends AbstractCloneProcessTest {
     @Test
     public void testCloneWhenSourceIsTextAnnotation() {
         final TextAnnotation source = buildTextAnnotation();
+        final TextAnnotation target = new TextAnnotation();
+        target.getId().setValue(SOURCE_ID);
 
-        final TextAnnotation cloned = dmnDeepCloneProcess.clone(source, new TextAnnotation());
+        final TextAnnotation cloned = dmnDeepCloneProcess.clone(source, target);
 
         assertThat(cloned).isNotNull();
         assertThat(cloned.getId().getValue()).isNotEqualTo(SOURCE_ID);

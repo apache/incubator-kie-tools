@@ -242,4 +242,21 @@ describe("Context Expression Tests :: Nested Relations", () => {
     // check the menu is closed
     cy.get(".pf-c-popover__content").should("not.exist");
   });
+
+  it("Keyboard interaction with header's contextMenu in nested decision table", () => {
+    //reset the state of the contextMenu. Necessary to pass test.
+    cy.get("body").click();
+
+    // focus the 1st header cell inside the nested decision table.
+    cy.contains("th", "column-3").as("targetCell").focus();
+
+    // check the menu is closed
+    cy.get(".pf-c-popover__content").should("not.exist");
+
+    // open the contextMenu by pressing enter
+    cy.wait(0).get("@targetCell").type("{enter}");
+
+    // check the menu is open
+    cy.get(".pf-c-popover__content").should("be.visible");
+  });
 });

@@ -107,7 +107,7 @@ public class RuntimeModelResourceClient {
 
             if (response.ok) {
                 response.text().then(runtimeResponseJson -> {
-                    RuntimeServiceResponse serviceResponse = RuntimeServiceResponseJSONMarshaller.get().fromJson(
+                    var serviceResponse = RuntimeServiceResponseJSONMarshaller.get().fromJson(
                             runtimeResponseJson);
                     runtimeModelInfoConsumer.accept(serviceResponse);
                     return null;
