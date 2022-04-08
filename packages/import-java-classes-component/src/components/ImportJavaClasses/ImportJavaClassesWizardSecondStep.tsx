@@ -71,8 +71,10 @@ export const ImportJavaClassesWizardSecondStep = ({
     return new JavaField(name, type, dmnTypeRef);
   }, []);
 
-  const isGetClassMethod = useCallback((accessorName: string) => {
-    return accessorName === "getClass()";
+  const isInDenyList = useCallback((accessorName: string) => {
+    console.log(accessorName);
+    const denyList = ["getClass()", "serialVersionUID"];
+    return denyList.includes(accessorName);
   }, []);
 
   const loadJavaFields = useCallback(
@@ -84,9 +86,8 @@ export const ImportJavaClassesWizardSecondStep = ({
             const retrievedFields = javaCodeCompletionFields
               .filter(
                 (javaCodeCompletionField) =>
-                  !isMethod(javaCodeCompletionField.accessor) ||
-                  isGetterMethod(javaCodeCompletionField.accessor) ||
-                  !isGetClassMethod(javaCodeCompletionField.accessor)
+                  !isInDenyList(javaCodeCompletionField.accessor) &&
+                  (!isMethod(javaCodeCompletionField.accessor) || isGetterMethod(javaCodeCompletionField.accessor))
               )
               .map((javaCodeCompletionField) =>
                 generateJavaClassField(
