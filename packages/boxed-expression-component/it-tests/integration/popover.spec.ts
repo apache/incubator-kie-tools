@@ -31,16 +31,11 @@ describe("PopoverMenu Tests", () => {
     // Define ExpressionNameCell
     cy.contains("th", "Expression Name").as("ExpressionNameCell");
 
-    //reset the state of the contextMenu. Necessary to pass test.
-    cy.get("body").click();
+    // check the popover to be closed
+    cy.ouiaId("expression-popover-menu").should("not.to.exist");
 
     // focus the 1st header cell inside the nested decision table.
     cy.get("@ExpressionNameCell").focus();
-  });
-
-  afterEach(() => {
-    // check the popover to be closed
-    cy.ouiaId("expression-popover-menu").should("not.to.exist");
   });
 
   it("Cancel edit of expression data type by pressing escape", () => {
@@ -96,8 +91,8 @@ describe("PopoverMenu Tests", () => {
 
   describe("Keyboard interaction with header's contextMenu in nested decision table", () => {
     beforeEach(() => {
-      // open the popover by pressing enter
-      cy.get("@ExpressionNameCell").type("{enter}");
+      // open the popover by pressing enter. Esc key is needed to reset the poopover state and pass the tests with Cypress UI open
+      cy.get("@ExpressionNameCell").type("{esc}{enter}");
 
       // check the popover is open
       cy.ouiaId("expression-popover-menu").should("be.visible");
