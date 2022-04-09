@@ -50,7 +50,7 @@
     <script>
       const query = window.location.search;
       //Получение URL с помощью "const urlParams = new URLSearchParams(queryString);" работает некорректно
-      var encodeFile = query.split("?q=");
+      var encodeFile = query.split("?q=")[1].split("&name=");
 
       var savedContent = {};
       var projectRoles = {};
@@ -60,7 +60,7 @@
       var savedSvg = {};
       var nodeElementType;
       var nodeElementName;
-      var processName;
+      var processName = b64DecodeUnicode(encodeFile[1]);
 
       var proxyElementId = new Proxy(nodeElementId, {
         set: function (target, key, value) {
@@ -118,7 +118,7 @@
 
       const editor = BpmnEditor.open({
         container: document.getElementById("bpmn-editor-container"),
-        initialContent: Promise.resolve(b64DecodeUnicode(encodeFile[1])),
+        initialContent: Promise.resolve(b64DecodeUnicode(encodeFile[0])),
         readOnly: false,
       });
 
