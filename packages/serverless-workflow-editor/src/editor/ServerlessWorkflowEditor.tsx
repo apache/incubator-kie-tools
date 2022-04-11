@@ -30,6 +30,7 @@ import mermaid from "mermaid";
 import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import "../../static/css/editor.css";
 
 interface Props {
   /**
@@ -139,7 +140,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           svgContainer.current!.innerHTML = mermaidSourceCode;
           svgContainer.current!.removeAttribute("data-processed");
           mermaid.init(svgContainer.current!);
-          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
+          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
+            controlIconsEnabled: true,
+          });
           svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
           svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
           setDiagramOutOfSync(false);
