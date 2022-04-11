@@ -66,7 +66,11 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
       return;
     }
 
-    const instance = controller.show(container.current, theme || EditorTheme.LIGHT);
+    if (editorEnvelopeCtx.channelApi && theme === undefined) {
+      return;
+    }
+
+    const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
     initJsonCompletion(commands);
