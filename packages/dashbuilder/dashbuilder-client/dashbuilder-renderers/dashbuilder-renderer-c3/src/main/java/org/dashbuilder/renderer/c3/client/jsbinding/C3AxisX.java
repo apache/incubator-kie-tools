@@ -24,11 +24,12 @@ import jsinterop.annotations.JsType;
 public class C3AxisX {
     
     @JsOverlay
-    static C3AxisX create(String type, String[] categories, C3Tick tick) {
+    static C3AxisX create(String type, String[] categories, C3Tick tick, boolean show) {
         C3AxisX instance = new C3AxisX();
         instance.setType(type);
         instance.setCategories(categories);
         instance.setTick(tick);
+        instance.setShow(show);
         return instance;
     }
 

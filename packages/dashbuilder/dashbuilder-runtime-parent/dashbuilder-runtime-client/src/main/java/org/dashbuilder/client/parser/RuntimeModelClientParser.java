@@ -22,6 +22,6 @@ public interface RuntimeModelClientParser {
     RuntimeModel parse(String content);
     
     
-    String supportedType();
+    boolean test(String content);
     
 }

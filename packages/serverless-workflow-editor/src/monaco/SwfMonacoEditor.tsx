@@ -20,7 +20,7 @@ import { DefaultSwfMonacoEditorController, SwfMonacoEditorApi } from "./SwfMonac
 import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
-import { ChannelType, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { SwfServiceCatalogSingleton } from "../serviceCatalog";
 import { ServerlessWorkflowEditorChannelApi } from "../editor";
@@ -38,11 +38,11 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 ) => {
   const container = useRef<HTMLDivElement>(null);
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
-  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
-  const [services] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_services);
-  const [user] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_user);
+  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
+  const [services] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_services);
+  const [user] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_user);
   const [serviceRegistryUrl] = useSharedValue(
-    editorEnvelopeCtx.channelApi.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
+    editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
   );
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
@@ -66,11 +66,7 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
       return;
     }
 
-    if (theme === undefined) {
-      return;
-    }
-
-    const instance = controller.show(container.current, theme);
+    const instance = controller.show(container.current, theme || EditorTheme.LIGHT);
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
     initJsonCompletion(commands);

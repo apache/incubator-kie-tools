@@ -172,20 +172,54 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get(".data-cell").each((cell, cellIndex) => {
       cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`);
     });
-    //click outside to finish editing
+    // click outside to finish editing
     cy.get("body").click();
   });
 
-  it("Navigate around", () => {
+  it("Navigate around data cells", () => {
     // from the cell 1, go to cell 10
-    cy.contains("td", /cell 1/).type(
-      "{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}"
-    );
+    cy.contains("td", /cell 1/)
+      .type("{rightarrow}{rightarrow}{rightarrow}{leftarrow}{downarrow}{downarrow}{leftarrow}")
+      // check the cell 10 is focused
+      .focused()
+      .should("contain.text", "cell 10");
 
-    // check the cell 10 is focused
-    cy.contains("td", /cell 10/).should("be.focused");
-    // check the cell 9 is focused
+    // check the cell 9 is not focused
     cy.contains("td", /cell 9/).should("not.be.focused");
+  });
+
+  it("Navigate around header and data cells", () => {
+    // from the cell 1, go up
+    cy.contains("td", /cell 1/)
+      .type("{uparrow}")
+      // check the cell "input-1" is focused
+      .focused()
+      .should("contain.text", "input-1")
+      // go right 2 times
+      .type("{rightarrow}{rightarrow}")
+      // check the cell "Expression Name" is focused
+      .focused()
+      .should("contain.text", "Expression Name")
+      // go down
+      .type("{downarrow}")
+      // check the cell "output-1" is focused
+      .focused()
+      .should("contain.text", "output-1")
+      // go right
+      .type("{rightarrow}")
+      // check the cell "annotation-1" is focused
+      .focused()
+      .should("contain.text", "annotation-1")
+      // go down
+      .type("{downarrow}")
+      // check the cell "cell-4" is focused
+      .focused()
+      .should("contain.text", "cell 4")
+      // go left and up
+      .type("{leftarrow}{uparrow}")
+      // check the cell "output-1" is focused
+      .focused()
+      .should("contain.text", "output-1");
   });
 
   it("Navigate around using tab", () => {
@@ -207,18 +241,6 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.focused().should("contains.text", "cell 12");
   });
 
-  it("The first cell should keep the focus after tab press", () => {
-    // from the cell 1
-    cy.contains("td", /cell 1/)
-      .as("cell-1")
-      .type("{enter}")
-      .focused();
-
-    cy.realPress(["Shift", "Tab"]);
-
-    cy.get("@cell-1").should("be.focused");
-  });
-
   it("The last cell should keep the focus after tab press", () => {
     // from the cell 12
     cy.contains("td", /cell 12/)
@@ -233,15 +255,16 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
   it("Go against edges", () => {
     // from the cell 1, go to cell 4
-    cy.contains("td", /cell 1/)
+    cy.contains("th", /input-1/)
       .click({ force: true })
       .type("{uparrow}{uparrow}{uparrow}")
       .should("be.focused")
-      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}");
+      .type("{rightarrow}{rightarrow}{rightarrow}{rightarrow}")
+      .focused()
+      .should("contains", /annotation-1/);
 
     // from the cell 4, go to cell 12
     cy.contains("td", /cell 4/)
-      .should("be.focused")
       .click({ force: true })
       .type("{downarrow}{downarrow}{downarrow}{downarrow}");
 
@@ -302,7 +325,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
-  it("Interaction with contextMenu", () => {
+  it("Keyboard interaction with contextMenu", () => {
     // rightclick on cell 3
     cy.contains("td", /cell 3/)
       .as("cell-3")
@@ -316,5 +339,45 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
     // close the menu
     cy.get("body").type("{esc}");
+  });
+
+  describe("Keyboard interaction with annotation cell", () => {
+    beforeEach(() => {
+      cy.contains("th", "annotation-1").as("annotationCell").focus().type("{enter}");
+
+      cy.get("@annotationCell").find("input:text").as("annotationInput").clear();
+    });
+
+    it("Edit and save with enter key", () => {
+      // from the annotation cell, edit the text then press enter to finish editing
+      cy.get("@annotationInput").type("annotation-1 edited{enter}");
+
+      cy.get("@annotationCell").should("have.text", "annotation-1 edited");
+
+      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
+    });
+
+    it("Cancel editing", () => {
+      // from the annotation cell, edit the text then press esc to cancel editing
+      cy.get("@annotationInput").type("not to save text{esc}");
+
+      cy.get("@annotationCell")
+        .should("have.text", "annotation-1 edited")
+        .should("not.contain.text", "not to save text");
+
+      cy.get("@annotationCell").should("be.focused").get("input").should("not.exist");
+    });
+
+    it("Edit and save clicking outside", () => {
+      // from the annotation cell, edit the text
+      cy.get("@annotationInput").type("annotation-1 edited");
+
+      // click outside the annotation cell to finish editing
+      cy.get(".expression-title").click();
+
+      cy.get("@annotationCell").should("have.text", "annotation-1 edited");
+
+      cy.get("@annotationCell").should("not.be.focused").get("input").should("not.exist");
+    });
   });
 });

@@ -21,7 +21,7 @@ import { ServerlessWorkflowEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
 import { HistoryButtons, Theme } from "./HistoryButtons";
 import "./App.scss";
-import { EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 type State = string | undefined;
@@ -92,6 +92,7 @@ export const App = () => {
       >
         <div ref={container} className="editor-container">
           <ServerlessWorkflowEditor
+            channelType={ChannelType.ONLINE}
             ref={editor}
             onReady={() => {
               /*NOP*/

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.forms.fields.model;
 
+import java.util.List;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,9 +34,32 @@ public class AssignmentDataTest extends AssignmentBaseTest {
         super.setUp();
     }
 
+
+
     @After
     public void tearDown() {
         super.tearDown();
+    }
+
+    @Test
+    public void testSetAssignments() {
+        AssignmentData assignmentData = new AssignmentData();
+        String assignment1 = "function.getValue(par1,par1)";
+        String assignment2 = "function.getValue(par2,par2)";
+        String assignment3 = "function.getValue(par3.Cpar3)";
+        String assignment4 = "function.getValue(par4,Cpar4)";
+        String sAssignments = "[din]DIA1=" + assignment1 + "," +
+                              "[din]DIA2=" + assignment2+ "," +
+                              "[dout]" + assignment3 + "=DOA1," +
+                              "[dout]" + assignment4 + "=DOA2";
+        assignmentData.setAssignments(sAssignments);
+        List<Assignment> result = assignmentData.getAssignments();
+        assertEquals(4, result.stream().count());
+        assertEquals(assignment1, result.get(0).getExpression());
+        assertEquals(assignment2, result.get(1).getExpression());
+        assertEquals(assignment3, result.get(2).getExpression());
+        assertEquals(assignment4, result.get(3).getExpression());
+
     }
 
     @Test
