@@ -78,7 +78,7 @@
 
     <sonar.skip>true</sonar.skip>
 
-    <version.com.fasterxml.jackson>2.12.1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.6.1</version.com.fasterxml.jackson>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.google.code.gson>2.8.6</version.com.google.code.gson>
     <version.com.google.jsinterop>2.0.0</version.com.google.jsinterop>
