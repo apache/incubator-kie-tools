@@ -32,6 +32,7 @@ export interface FeelInputProps {
 
 export interface FeelInputRef {
   setMonacoValue: (newValue: string) => void;
+  getMonacoValue: () => string | undefined;
 }
 
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
@@ -74,6 +75,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     useImperativeHandle(forwardRef, () => ({
       setMonacoValue: (newValue: string) => FeelEditorService.getStandaloneEditor()?.setValue(newValue),
+      getMonacoValue: () => FeelEditorService.getStandaloneEditor()?.getValue(),
     }));
 
     return (
