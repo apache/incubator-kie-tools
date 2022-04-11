@@ -61,6 +61,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const [previousValue, setPreviousValue] = useState("");
   const feelInputRef = useRef<FeelInputRef>(null);
   const boxedExpression = useBoxedExpression();
+  const [commandStack, setCommand] = useState<Array<string>>([]);
 
   // Common Handlers =========================================================
 
@@ -77,16 +78,16 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       }
 
       if (value !== newValue) {
-        boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
         onCellUpdate(rowIndex, columnId, newValue ?? value);
       }
 
       focusTextInput(textarea.current);
     },
-    [boxedExpression.boxedExpressionEditorGWTService, mode, columnId, onCellUpdate, rowIndex, value]
+    [mode, columnId, onCellUpdate, rowIndex, value]
   );
 
   const triggerEditMode = useCallback(() => {
+    boxedExpression.boxedExpressionEditorGWTService?.notifyUserAction();
     setPreviousValue(value);
     blurActiveElement();
     setMode(EDIT_MODE);
@@ -127,8 +128,8 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         return;
       }
 
-      onCellUpdate(rowIndex, columnId, newValue ?? value);
       triggerEditMode();
+      onCellUpdate(rowIndex, columnId, newValue ?? value);
     },
     [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
@@ -192,8 +193,22 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
           setTimeout(() => focusPrevCellByTabKey(textarea.current, 1), 0);
         }
       }
+
+      if (event.shiftKey && event.ctrlKey && key === "keyz") {
+        const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
+        if (commandStack.length > 0 && monacoValue.length - previousValue.length <= 0) {
+          onCellUpdate(rowIndex, columnId, commandStack[commandStack.length - 1]);
+          setCommand([...commandStack.slice(0, -1)]);
+        }
+      } else if (event.ctrlKey && key === "keyz") {
+        const monacoValue = feelInputRef.current?.getMonacoValue() ?? "";
+        if (monacoValue.length - previousValue.length >= 0) {
+          onCellUpdate(rowIndex, columnId, previousValue !== monacoValue ? previousValue : "");
+          setCommand([...commandStack, monacoValue]);
+        }
+      }
     },
-    [triggerReadMode, previousValue]
+    [triggerReadMode, previousValue, rowIndex, commandStack, onCellUpdate, columnId]
   );
 
   const onFeelChange = useCallback((_e, newValue, newPreview) => {
