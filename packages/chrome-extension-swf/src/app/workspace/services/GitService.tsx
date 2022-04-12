@@ -114,6 +114,36 @@ export class GitService {
     });
   }
 
+  public async deleteRemote(args: { fs: KieSandboxFs; dir: string; name: string }) {
+    await git.deleteRemote({
+      fs: args.fs,
+      dir: args.dir,
+      remote: args.name,
+    });
+  }
+
+  public async fetch(args: { fs: KieSandboxFs; dir: string; remote: string; ref: string }): Promise<void> {
+    await git.fetch({
+      fs: args.fs,
+      http: http,
+      corsProxy: this.corsProxy,
+      dir: args.dir,
+      remote: args.remote,
+      ref: args.ref,
+      singleBranch: true,
+      depth: 1,
+    });
+  }
+
+  public async checkout(args: { fs: KieSandboxFs; dir: string; ref: string; remote: string }) {
+    await git.checkout({
+      fs: args.fs,
+      dir: args.dir,
+      ref: args.ref,
+      remote: args.remote,
+    });
+  }
+
   public async commit(args: CommitArgs): Promise<void> {
     if (args.author) {
       await this.setupGitConfig(args.fs, args.dir, args.author);

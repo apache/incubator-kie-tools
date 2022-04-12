@@ -305,32 +305,60 @@ export class WorkspaceService {
     }
   }
 
-  public async moveFiles(
-    fs: KieSandboxFs,
-    files: WorkspaceFile[],
-    newDirPath: string,
-    broadcastArgs: { broadcast: boolean }
-  ): Promise<void> {
-    if (files.length === 0) {
-      return;
+  public async moveFile(args: {
+    fs: KieSandboxFs;
+    file: WorkspaceFile;
+    newDirPath: string;
+    broadcastArgs: { broadcast: boolean };
+  }): Promise<WorkspaceFile> {
+    const movedFile = this.toWorkspaceFile(
+      args.file.workspaceId,
+      await this.storageService.moveFile(args.fs, this.toStorageFile(args.file), args.newDirPath)
+    );
+
+    if (args.broadcastArgs.broadcast) {
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(args.file.workspaceId);
+
+      const broadcastChannel = new BroadcastChannel(args.file.workspaceId);
+      broadcastChannel.postMessage({
+        type: "MOVE_FILE",
+        workspaceId: args.file.workspaceId,
+        oldRelativePath: args.file.relativePath,
+        newRelativePath: movedFile.relativePath,
+      } as WorkspaceEvents);
+    }
+
+    return movedFile;
+  }
+
+  public async moveFiles(args: {
+    fs: KieSandboxFs;
+    files: WorkspaceFile[];
+    newDirPath: string;
+    broadcastArgs: { broadcast: boolean };
+  }): Promise<Map<string, string>> {
+    if (args.files.length === 0) {
+      return new Map();
     }
 
     const relativePaths = await this.storageService.moveFiles(
-      fs,
-      files.map((f) => this.toStorageFile(f)),
-      newDirPath
+      args.fs,
+      args.files.map((f) => this.toStorageFile(f)),
+      args.newDirPath
     );
 
-    if (broadcastArgs.broadcast) {
-      await this.workspaceDescriptorService.bumpLastUpdatedDate(files[0].workspaceId);
+    if (args.broadcastArgs.broadcast) {
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(args.files[0].workspaceId);
 
-      const broadcastChannel = new BroadcastChannel(files[0].workspaceId);
+      const broadcastChannel = new BroadcastChannel(args.files[0].workspaceId);
       broadcastChannel.postMessage({
         type: "MOVE_BATCH",
-        workspaceId: files[0].workspaceId,
+        workspaceId: args.files[0].workspaceId,
         relativePaths,
       } as WorkspaceEvents);
     }
+
+    return relativePaths;
   }
 
   private toWorkspaceFile(workspaceId: string, storageFile: StorageFile): WorkspaceFile {

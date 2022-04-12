@@ -30,10 +30,11 @@ import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constan
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
-import { useWorkspaces } from "../../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../../workspace/services/GitService";
+import { dirname, join } from "path";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -79,8 +80,60 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
+      const kogitoQuarkusTemplate = {
+        url: "https://github.com/caponetto/quarkus-template",
+        remoteName: "KOGITO_QUARKUS_SKELETON",
+        branch: "swf-template",
+      };
+
+      const resourcesFolder = "/src/main/resources";
+
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.workspaceId);
       const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.workspaceId });
+
+      const files = await workspaces.getFiles({
+        fs: fs,
+        workspaceId: props.workspace.workspaceId,
+      });
+
+      await workspaces.gitService.addRemote({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        url: kogitoQuarkusTemplate.url,
+        name: kogitoQuarkusTemplate.remoteName,
+        force: true,
+      });
+
+      await workspaces.gitService.fetch({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        remote: kogitoQuarkusTemplate.remoteName,
+        ref: kogitoQuarkusTemplate.branch,
+      });
+
+      for (const file of files) {
+        await workspaces.service.moveFile({
+          fs: fs,
+          file: file,
+          newDirPath: join(resourcesFolder, dirname(file.relativePath)),
+          broadcastArgs: {
+            broadcast: false,
+          },
+        });
+      }
+
+      await workspaces.gitService.checkout({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        ref: kogitoQuarkusTemplate.branch,
+        remote: kogitoQuarkusTemplate.remoteName,
+      });
+
+      await workspaces.gitService.deleteRemote({
+        fs,
+        dir: workspaceRootDirPath,
+        name: kogitoQuarkusTemplate.remoteName,
+      });
 
       await workspaces.gitService.addRemote({
         fs,
