@@ -10,5 +10,8 @@
     "refreshTime": "1second",
     "refreshAlways": false,
     "url": "http://datasets.com/dataset",
+    "headers": {
+    	"h1": "v1"
+    },
     "dynamic": true
 }
