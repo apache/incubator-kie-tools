@@ -35,6 +35,10 @@ import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../../workspace/services/GitService";
 import { dirname, join } from "path";
+import { NEW_FILE_DEFAULT_NAME } from "../../workspace/WorkspacesContextProvider";
+import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
+import { useHistory } from "react-router";
+import { useRoutes } from "../../navigation/Hooks";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -48,6 +52,8 @@ export function CreateGitHubRepositoryModal(props: {
   onClose: () => void;
   onSuccess: (args: { url: string }) => void;
 }) {
+  const history = useHistory();
+  const routes = useRoutes();
   const workspaces = useWorkspaces();
   const settingsDispatch = useSettingsDispatch();
   const githubAuthInfo = useGitHubAuthInfo();
@@ -111,8 +117,9 @@ export function CreateGitHubRepositoryModal(props: {
         ref: kogitoQuarkusTemplate.branch,
       });
 
+      let currentFileAfterMoving: WorkspaceFile | undefined;
       for (const file of files) {
-        await workspaces.service.moveFile({
+        const movedFile = await workspaces.service.moveFile({
           fs: fs,
           file: file,
           newDirPath: join(resourcesFolder, dirname(file.relativePath)),
@@ -120,6 +127,14 @@ export function CreateGitHubRepositoryModal(props: {
             broadcast: false,
           },
         });
+
+        if (file.relativePath === `${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`) {
+          currentFileAfterMoving = movedFile;
+        }
+      }
+
+      if (!currentFileAfterMoving) {
+        throw new Error("Failed to find current file after moving.");
       }
 
       await workspaces.gitService.checkout({
@@ -170,13 +185,20 @@ export function CreateGitHubRepositoryModal(props: {
 
       props.onClose();
       props.onSuccess({ url: repo.data.html_url });
+
+      history.replace({
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: props.workspace.workspaceId,
+          fileRelativePath: currentFileAfterMoving.relativePath,
+        }),
+      });
     } catch (err) {
       setError(err);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [githubAuthInfo, isPrivate, name, props, settingsDispatch.github.octokit, workspaces]);
+  }, [githubAuthInfo, isPrivate, name, props, settingsDispatch.github.octokit, workspaces, history, routes]);
 
   const isNameValid = useMemo(() => {
     return name.match(/^[._\-\w\d]+$/g);

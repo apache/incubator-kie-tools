@@ -33,6 +33,7 @@ import { useSettings } from "../../settings/SettingsContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useWorkspaces } from "../../workspace/WorkspacesContext";
 import { NEW_FILE_DEFAULT_NAME } from "../../workspace/WorkspacesContextProvider";
+import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
 
 const DEPLOYMENTS_DETAILS_POLLING_INTERVAL = 5000;
 
@@ -159,15 +160,19 @@ export function ServerlessWorkflowList() {
   ]);
 
   const onClickTableItem = useCallback(
-    (workspaceId: string) => {
+    async (descriptor: WorkspaceDescriptor) => {
+      const fs = await workspaces.fsService.getWorkspaceFs(descriptor.workspaceId);
+      const files = await workspaces.getFiles({ fs: fs, workspaceId: descriptor.workspaceId });
+      // For the sake of simplicity, we assume that there is only one workflow file in the workspace
+      const workflowFile = files.find((file) => file.name === `${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`);
       history.replace({
         pathname: routes.workspaceWithFilePath.path({
-          workspaceId: workspaceId,
-          fileRelativePath: `./${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`,
+          workspaceId: descriptor.workspaceId,
+          fileRelativePath: workflowFile?.relativePath ?? `./${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`,
         }),
       });
     },
-    [history, routes]
+    [history, routes.workspaceWithFilePath, workspaces]
   );
 
   useEffect(() => {
@@ -190,7 +195,7 @@ export function ServerlessWorkflowList() {
                 key={descriptor.workspaceId}
                 isInline={true}
                 variant={ButtonVariant.link}
-                onClick={() => onClickTableItem(descriptor.workspaceId)}
+                onClick={() => onClickTableItem(descriptor)}
               >
                 {descriptor.name}
               </Button>
