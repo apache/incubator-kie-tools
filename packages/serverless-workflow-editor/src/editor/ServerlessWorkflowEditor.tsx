@@ -23,7 +23,7 @@ import {
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
-import { Notification, NotificationType } from "@kie-tools-core/notifications/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
