@@ -38,7 +38,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
 
   return (
     <Page>
-      <PageSection variant={PageSectionVariants.light}>
+      <PageSection variant={PageSectionVariants.light} style={{ position: "relative" }}>
         <Alerts ref={alertsRef} width={"500px"} />
         <Flex>
           <FlexItem>
