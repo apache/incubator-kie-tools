@@ -110,6 +110,7 @@ export class StorageService {
       throw new Error(`File ${file.path} does not exist`);
     }
 
+    await this.mkdirDeep(fs, newDirPath);
     const newPath = join(newDirPath, basename(file.path));
     const newFile = new StorageFile({
       getFileContents: file.getFileContents,
@@ -123,6 +124,8 @@ export class StorageService {
 
   public async moveFiles(fs: KieSandboxFs, files: StorageFile[], newDirPath: string): Promise<Map<string, string>> {
     const paths = new Map<string, string>();
+    await this.mkdirDeep(fs, newDirPath);
+
     for (const fileToMove of files) {
       const movedFile = await this.moveFile(fs, fileToMove, newDirPath);
       paths.set(fileToMove.path, movedFile.path);

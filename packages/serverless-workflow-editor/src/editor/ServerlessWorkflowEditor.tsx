@@ -158,7 +158,10 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
 
   useEffect(() => {
     props.onReady.call(null);
-    onContentChanged(initialContent.originalContent);
+    // FIXME: setTimeout to avoid blank graphical editor
+    setTimeout(() => {
+      onContentChanged(initialContent.originalContent);
+    }, 0);
   }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (

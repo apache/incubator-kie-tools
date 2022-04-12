@@ -30,10 +30,15 @@ import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constan
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
-import { useWorkspaces } from "../../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../../workspace/services/GitService";
+import { dirname, join } from "path";
+import { NEW_FILE_DEFAULT_NAME } from "../../workspace/WorkspacesContextProvider";
+import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
+import { useHistory } from "react-router";
+import { useRoutes } from "../../navigation/Hooks";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -47,6 +52,8 @@ export function CreateGitHubRepositoryModal(props: {
   onClose: () => void;
   onSuccess: (args: { url: string }) => void;
 }) {
+  const history = useHistory();
+  const routes = useRoutes();
   const workspaces = useWorkspaces();
   const settingsDispatch = useSettingsDispatch();
   const githubAuthInfo = useGitHubAuthInfo();
@@ -79,8 +86,69 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
+      const kogitoQuarkusTemplate = {
+        url: "https://github.com/caponetto/quarkus-template",
+        remoteName: "KOGITO_QUARKUS_SKELETON",
+        branch: "swf-template",
+      };
+
+      const resourcesFolder = "/src/main/resources";
+
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.workspaceId);
       const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.workspaceId });
+
+      const files = await workspaces.getFiles({
+        fs: fs,
+        workspaceId: props.workspace.workspaceId,
+      });
+
+      await workspaces.gitService.addRemote({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        url: kogitoQuarkusTemplate.url,
+        name: kogitoQuarkusTemplate.remoteName,
+        force: true,
+      });
+
+      await workspaces.gitService.fetch({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        remote: kogitoQuarkusTemplate.remoteName,
+        ref: kogitoQuarkusTemplate.branch,
+      });
+
+      let currentFileAfterMoving: WorkspaceFile | undefined;
+      for (const file of files) {
+        const movedFile = await workspaces.service.moveFile({
+          fs: fs,
+          file: file,
+          newDirPath: join(resourcesFolder, dirname(file.relativePath)),
+          broadcastArgs: {
+            broadcast: false,
+          },
+        });
+
+        if (file.relativePath === `${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`) {
+          currentFileAfterMoving = movedFile;
+        }
+      }
+
+      if (!currentFileAfterMoving) {
+        throw new Error("Failed to find current file after moving.");
+      }
+
+      await workspaces.gitService.checkout({
+        fs: fs,
+        dir: workspaceRootDirPath,
+        ref: kogitoQuarkusTemplate.branch,
+        remote: kogitoQuarkusTemplate.remoteName,
+      });
+
+      await workspaces.gitService.deleteRemote({
+        fs,
+        dir: workspaceRootDirPath,
+        name: kogitoQuarkusTemplate.remoteName,
+      });
 
       await workspaces.gitService.addRemote({
         fs,
@@ -117,13 +185,20 @@ export function CreateGitHubRepositoryModal(props: {
 
       props.onClose();
       props.onSuccess({ url: repo.data.html_url });
+
+      history.replace({
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: props.workspace.workspaceId,
+          fileRelativePath: currentFileAfterMoving.relativePath,
+        }),
+      });
     } catch (err) {
       setError(err);
       throw err;
     } finally {
       setLoading(false);
     }
-  }, [githubAuthInfo, isPrivate, name, props, settingsDispatch.github.octokit, workspaces]);
+  }, [githubAuthInfo, isPrivate, name, props, settingsDispatch.github.octokit, workspaces, history, routes]);
 
   const isNameValid = useMemo(() => {
     return name.match(/^[._\-\w\d]+$/g);

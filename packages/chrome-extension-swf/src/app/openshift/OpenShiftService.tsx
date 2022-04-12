@@ -307,7 +307,7 @@ export class OpenShiftService {
           Authorization:
             "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
           "Content-Type": "application/json",
-          "X-Registry-ArtifactId": args.artifactId.replace(/\//g, " "),
+          "X-Registry-ArtifactId": args.artifactId.replace(/\s|\//g, "_"),
         },
         body: args.openApiContent,
       }
