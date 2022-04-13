@@ -693,52 +693,44 @@ describe("Table tests", () => {
         ).wrapper
       );
 
-      await clickOnHeaderText(container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement);
+      const element = container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement;
+      element.click();
 
-      fireEvent.keyDown(changeValue(container, "new value"), { key: "enter", keyCode: 13 });
+      const input = changeValue(container, "new value");
+      input.blur();
 
       expect(mockedNotifyUserAction).toHaveBeenCalled();
     });
 
-    //   test("should not trigger boxedExpressionEditorGWTService.notifyUserAction, when column name is not changed", async () => {
-    //     const { boxedExpressionEditorGWTService, mockedNotifyUserAction } = mockBoxedExpressionEditorGWTService();
-    //
-    //     const nameColumn = {
-    //       label: columnName,
-    //       accessor: columnName,
-    //       dataType: DataType.Undefined,
-    //       width: DEFAULT_MIN_WIDTH,
-    //       inlineEditable: true,
-    //     } as ColumnInstance;
-    //
-    //     const { container } = render(
-    //       usingTestingBoxedExpressionI18nContext(
-    //         usingTestingBoxedExpressionProviderContext(<Table columns={[nameColumn]} rows={[]} />, {
-    //           boxedExpressionEditorGWTService,
-    //         }).wrapper
-    //       ).wrapper
-    //     );
-    //
-    //     await act(async () => {
-    //       fireEvent.click(container.querySelectorAll("p.pf-u-text-truncate")[0]);
-    //       fireEvent.keyDown(changeValue(container, columnName), { key: "enter", keyCode: 13 });
-    //
-    //       await flushPromises();
-    //       jest.runAllTimers();
-    //     });
-    //
-    //     expect(mockedNotifyUserAction).toHaveBeenCalledTimes(0);
-    //   });
+    test("should not trigger boxedExpressionEditorGWTService.notifyUserAction, when column name is not changed", async () => {
+      const { boxedExpressionEditorGWTService, mockedNotifyUserAction } = mockBoxedExpressionEditorGWTService();
+
+      const nameColumn = {
+        label: columnName,
+        accessor: columnName,
+        dataType: DataType.Undefined,
+        width: DEFAULT_MIN_WIDTH,
+        inlineEditable: true,
+      } as ColumnInstance;
+
+      const { container } = render(
+        usingTestingBoxedExpressionI18nContext(
+          usingTestingBoxedExpressionProviderContext(<Table columns={[nameColumn]} rows={[]} />, {
+            boxedExpressionEditorGWTService,
+          }).wrapper
+        ).wrapper
+      );
+
+      const element = container.querySelectorAll("p.pf-u-text-truncate")[0] as HTMLElement;
+      element.click();
+
+      const input = changeValue(container, columnName);
+      input.blur();
+
+      expect(mockedNotifyUserAction).toHaveBeenCalledTimes(0);
+    });
   });
 });
-
-async function clickOnHeaderText(element: HTMLElement): Promise<void> {
-  await act(async () => {
-    element.click();
-    await flushPromises();
-    jest.runAllTimers();
-  });
-}
 
 async function selectMenuEntryIfNotDisabled(baseElement: Element, menuEntry: string) {
   await act(async () => {
