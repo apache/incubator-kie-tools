@@ -17,7 +17,6 @@
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { Logger } from "../../Logger";
-import { Dependencies } from "../Dependencies";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 import { GlobalContext } from "./GlobalContext";
 import { ChromeExtensionI18nContextProvider } from "../i18n";
@@ -26,7 +25,6 @@ export interface GlobalProps {
   id: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
-  dependencies?: Dependencies;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   resourcesUriPath: string;
   imagesUriPath: string;
@@ -39,7 +37,6 @@ export const Global: React.FunctionComponent<GlobalProps> = (props) => {
         value={{
           id: props.id,
           logger: props.logger,
-          dependencies: props.dependencies,
           envelopeLocator: props.editorEnvelopeLocator,
           imagesUriPath: props.imagesUriPath,
           resourcesUriPath: props.resourcesUriPath,

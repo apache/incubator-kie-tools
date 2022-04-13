@@ -25,8 +25,8 @@ const { ProvidePlugin } = require("webpack");
 module.exports = async (env, argv) => {
   return merge(common(env), {
     entry: {
-      index: "./src/standalone-index.tsx",
-      "envelope/index": "./src/app/standalone/editor.ts",
+      index: "./src/index.tsx",
+      envelope: "./src/app/standalone/editor.ts",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -37,6 +37,7 @@ module.exports = async (env, argv) => {
       new CopyPlugin({
         patterns: [
           { from: "./static/resources", to: "./resources" },
+          { from: "./static/images", to: "./images" },
           { from: "./static/envelope/index.html", to: "./envelope.html" },
         ],
       }),

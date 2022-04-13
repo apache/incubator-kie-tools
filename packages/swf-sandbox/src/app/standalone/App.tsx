@@ -10,7 +10,7 @@ const imagesUriPath = "/images/";
 const resourcesUriPath = "/resources/";
 
 export const editorEnvelopeLocator = new EditorEnvelopeLocator(window.location.origin, [
-  new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", `envelope/`, `envelope/index.html`),
+  new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", "", "envelope.html"),
 ]);
 
 const resourceContentServiceFactory = new ResourceContentServiceFactory();

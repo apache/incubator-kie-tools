@@ -1,15 +1,11 @@
 {
-  "name": "@kie-tools-core/chrome-extension-swf",
+  "name": "@kie-tools/swf-sandbox",
   "version": "0.0.0",
+  "private": true,
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "src",
-    "static"
-  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
@@ -45,10 +41,11 @@
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "start:standalone": "webpack serve --host 0.0.0.0 --env dev",
-    "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
-    "watch:dev": "tsc -p tsconfig.dev.json -w",
-    "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json"
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack && yarn test:it",
+    "start": "webpack serve --host 0.0.0.0 --env dev",
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then  \"echo Nothing to do\""
   },
   "babel": {
     "presets": [

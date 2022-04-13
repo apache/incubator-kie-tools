@@ -17,14 +17,12 @@
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import * as React from "react";
 import { Logger } from "../../Logger";
-import { Dependencies } from "../Dependencies";
 import { ResourceContentServiceFactory } from "./ChromeResourceContentService";
 
 export interface GlobalContextType {
   id: string;
   envelopeLocator: EditorEnvelopeLocator;
   logger: Logger;
-  dependencies?: Dependencies;
   resourceContentServiceFactory: ResourceContentServiceFactory;
   imagesUriPath: string;
   resourcesUriPath: string;
