@@ -21,12 +21,14 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
+const buildEnv = require("@kie-tools/build-env");
 
 module.exports = async (env, argv) => {
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
-      envelope: "./src/app/standalone/editor.ts",
+      "swf-envelope": "./src/envelope/SwfEditorEnvelopeApp.ts",
+      "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -38,7 +40,8 @@ module.exports = async (env, argv) => {
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
-          { from: "./static/envelope/index.html", to: "./envelope.html" },
+          { from: "./static/envelope/swf-envelope.html", to: "./swf-envelope.html" },
+          { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
       }),
       new ProvidePlugin({
@@ -58,11 +61,11 @@ module.exports = async (env, argv) => {
     },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
-      https: false,
+      server: "https",
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: 9002,
+      port: buildEnv.swfSandbox.dev.port,
     },
   });
 };

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import "@patternfly/patternfly/patternfly-addons.scss";
-import "@patternfly/react-core/dist/styles/base.css";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { App } from "./App";
-import "../static/resources/style.css";
-
-ReactDOM.render(<App />, document.getElementById("app")!);
+module.exports = {
+  reporters: ["default"],
+  moduleDirectories: ["node_modules", "src"],
+  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
+  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
+  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  transform: {
+    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.tsx?$": "ts-jest",
+  },
+  moduleNameMapper: {
+    "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+  },
+};

@@ -449,6 +449,12 @@ module.exports = {
     },
   },
 
+  swfSandbox: {
+    dev: {
+      port: 9009,
+    },
+  },
+
   kogitoRuntime: {
     version: getOrDefault(ENV_VARS.KOGITO_RUNTIME_version),
   },
