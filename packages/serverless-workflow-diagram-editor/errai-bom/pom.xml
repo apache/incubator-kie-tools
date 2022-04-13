@@ -69,7 +69,7 @@
     <javaee.api.version>8.0.1</javaee.api.version>
 
     <!-- ip-bom uses artifact with groupId org.jboss.remoting3 -->
-    <jboss.remoting.version>5.0.16.Final</jboss.remoting.version>
+    <jboss.remoting.version>5.0.20.Final</jboss.remoting.version>
 
     <jboss.vfs.version>3.0.1.GA</jboss.vfs.version>
     <jboss.web.version>7.0.16.Final</jboss.web.version>
