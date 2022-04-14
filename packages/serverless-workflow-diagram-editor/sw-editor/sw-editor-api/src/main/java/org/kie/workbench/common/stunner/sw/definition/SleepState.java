@@ -22,6 +22,14 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
+/**
+ * Sleep state suspends workflow execution for a given time duration.
+ * The delay is defined in its duration property using the ISO 8601 duration format.
+ *
+ * Note that transition and end properties are mutually exclusive, meaning that you cannot define both of them at the same time.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Sleep-State"> Sleep state </a>
+ */
 @Bindable
 @Definition
 @Morph(base = State.class)
@@ -31,6 +39,11 @@ public class SleepState extends State {
     @JsIgnore
     public static final String TYPE_SLEEP = "sleep";
 
+    /**
+     * Duration (ISO 8601 duration format) to sleep.
+     *
+     * For example: "PT15M" (sleep 15 minutes), or "P2DT3H4M" (sleep 2 days, 3 hours and 4 minutes)
+     */
     public String duration;
 
     public SleepState() {

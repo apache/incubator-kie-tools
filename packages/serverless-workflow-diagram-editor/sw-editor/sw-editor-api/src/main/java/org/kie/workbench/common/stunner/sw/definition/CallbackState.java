@@ -22,6 +22,11 @@ import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
+/**
+ * The Callback state allows you to explicitly model manual decision steps during workflow execution.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Callback-State"> Callback state </a>
+ */
 @Bindable
 @Definition
 @Morph(base = State.class)
@@ -31,8 +36,14 @@ public class CallbackState extends State {
     @JsIgnore
     public static final String TYPE_CALLBACK = "callback";
 
+    /**
+     * Reference to an unique callback event name in the defined workflow events.
+     */
     public String eventRef;
 
+    /**
+     * The action to be executed.
+     */
     public ActionNode action;
 
     public CallbackState() {

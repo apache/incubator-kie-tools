@@ -30,6 +30,11 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 
+/**
+ * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Workflow-definition"> Workflow definition </a>
+ */
 @Bindable
 @Definition
 @CanContain(roles = {Workflow.LABEL_ROOT_NODE})
@@ -48,17 +53,34 @@ public class Workflow {
     @JsIgnore
     public static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
 
+    /**
+     *  Workflow unique identifier.
+     */
     @Property
     public String id;
 
+    /**
+     * Workflow name.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
+    /**
+     * Workflow start definition.
+     */
     public String start;
 
+    /**
+     * Workflow event definitions.
+     */
     public Event[] events;
 
+    /**
+     * Workflow state definitions.
+     */
     public State[] states;
+
+    // missing specVersion, functions
 
     public Workflow() {
     }

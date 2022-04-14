@@ -32,6 +32,12 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 
+/**
+ * Switch state data conditions specify a data-based condition statement,
+ * which causes a transition to another workflow state if evaluated to true.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Switch-State-Data-Conditions"> State data conditions</a>
+ */
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
 @CanConnect(startRole = State.LABEL_STATE, endRole = State.LABEL_STATE)
@@ -55,13 +61,28 @@ public class DataConditionTransition {
     @JsIgnore
     private final Set<String> labels = Stream.of(LABEL_TRANSITION_DATA_CONDITION).collect(Collectors.toSet());
 
+    /**
+     * Unique data condition name.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
+    /**
+     * Workflow expression evaluated against state data. Must evaluate to true or false.
+     * Example: `${ .applicant | .age > 18 }`
+     */
     public String condition;
 
+    /**
+     * Defines what to do if condition is true.
+     * Transitions to another state if set.
+     */
     public String transition;
 
+    /**
+     * Defines what to do if condition is true.
+     * End the workflow if set to true.
+     */
     public boolean end;
 
     public DataConditionTransition() {

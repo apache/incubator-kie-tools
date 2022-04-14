@@ -32,6 +32,12 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 
+/**
+ * Switch state event conditions specify events, which the switch state must wait for.
+ * Each condition can reference one workflow-defined event.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Switch-State-Event-Conditions"> State event conditions</a>
+ */
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
 @CanConnect(startRole = State.LABEL_STATE, endRole = State.LABEL_STATE)
@@ -55,13 +61,27 @@ public class EventConditionTransition {
     @JsIgnore
     private final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT_CONDITION).collect(Collectors.toSet());
 
+    /**
+     * Event condition name.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
+    /**
+     * Reference to an unique event name in the defined workflow events.
+     */
     public String eventRef;
 
+    /**
+     * Defines what to do if condition is true.
+     * Transitions to another state if set.
+     */
     public String transition;
 
+    /**
+     * Defines what to do if condition is true.
+     * End the workflow if set to true.
+     */
     public boolean end;
 
     public EventConditionTransition() {

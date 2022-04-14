@@ -32,6 +32,10 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 
+/**
+ * Compensation deals with undoing or reversing the work of one or more states which have already successfully completed.
+ * This class represents transition in case compensation happens.
+ */
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
 @CanConnect(startRole = State.LABEL_STATE, endRole = State.LABEL_STATE)
@@ -55,10 +59,16 @@ public class CompensationTransition {
     private final Set<String> labels = Stream.of(Transition.LABEL_TRANSITION,
                                                  LABEL_TRANSITION_COMPENSATION).collect(Collectors.toSet());
 
+    /**
+     * Unique name of the
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     @JsIgnore
     public String name;
 
+    /**
+     * Transition target.
+     */
     @JsIgnore
     public String transition;
 

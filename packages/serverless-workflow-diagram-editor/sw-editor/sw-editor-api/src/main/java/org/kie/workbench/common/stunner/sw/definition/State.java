@@ -31,6 +31,12 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
+/**
+ * This class defines workflow states define building blocks of the workflow execution instructions.
+ * They define the control flow logic instructions on what the workflow is supposed to do.
+ *
+ * Type of the state is specified by its category, which is set in constructor for all its descendants.
+ */
 @Bindable
 @Definition
 @CanDock(roles = {Timeout.LABEL_TIMEOUT})
@@ -49,21 +55,42 @@ public class State {
     public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                        LABEL_STATE).collect(Collectors.toSet());
 
+    /**
+     * Unique state name, can't be null.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
+    /**
+     * Type of the state, can't be null.
+     */
     public String type;
 
+    /**
+     * Next transition of the workflow.
+     */
     // TODO: Not all states supports this (eg: switch state)
     public String transition;
 
+    /**
+     * Whether this State is a last state in the workflow.
+     */
     // TODO: Not all states supports this (eg: switch state)
     public boolean end;
 
+    /**
+     * Definitions of states error handling.
+     */
     public ErrorTransition[] onErrors;
 
+    /**
+     * State specific timeouts.
+     */
     public String eventTimeout;
 
+    /**
+     * Unique name of a workflow state which is responsible for compensation of this state.
+     */
     public String compensatedBy;
 
     public State() {

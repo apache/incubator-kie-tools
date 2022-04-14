@@ -50,6 +50,12 @@ import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
+/**
+ * Definitions required by serverless workflow editor.
+ * Defines everything that can be drawn by the editor.
+ *
+ * New classes needs to be added here.
+ */
 @ApplicationScoped
 @Bindable
 @DefinitionSet(
