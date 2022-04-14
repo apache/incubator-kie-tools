@@ -24,9 +24,8 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
 
-export function NewWorkspaceWithEmptyFilePage() {
+export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
   const workspaces = useWorkspaces();
   const history = useHistory();
   const routes = useRoutes();
@@ -39,18 +38,19 @@ export function NewWorkspaceWithEmptyFilePage() {
           fs: await workspaces.fsService.getWorkspaceFs(workspace.workspaceId),
           workspaceId: workspace.workspaceId,
           destinationDirRelativePath: "",
-          extension: SW_JSON_EXTENSION,
+          extension: props.extension,
         })
       )
       .then((file) => {
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: file.workspaceId,
-            fileRelativePath: file.relativePath,
+            fileRelativePath: file.relativePathWithoutExtension,
+            extension: file.extension,
           }),
         });
       });
-  }, [routes, history, workspaces]);
+  }, [routes, history, props.extension, workspaces]);
 
   return (
     <OnlineEditorPage>

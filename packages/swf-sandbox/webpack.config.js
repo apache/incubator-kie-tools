@@ -22,8 +22,10 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 const buildEnv = require("@kie-tools/build-env");
+const { EnvironmentPlugin } = require("webpack");
 
 module.exports = async (env, argv) => {
+  const buildInfo = getBuildInfo();
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
@@ -35,6 +37,9 @@ module.exports = async (env, argv) => {
         template: "./static/index.html",
         inject: false,
         minify: false,
+      }),
+      new EnvironmentPlugin({
+        WEBPACK_REPLACE__buildInfo: buildInfo,
       }),
       new CopyPlugin({
         patterns: [
@@ -69,3 +74,9 @@ module.exports = async (env, argv) => {
     },
   });
 };
+
+function getBuildInfo() {
+  const buildInfo = buildEnv.onlineEditor.buildInfo;
+  console.info(`SWF Sandbox :: Build info: ${buildInfo}`);
+  return buildInfo;
+}

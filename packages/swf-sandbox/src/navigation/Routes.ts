@@ -17,16 +17,16 @@
 const IS_HASH_ROUTER = true;
 
 export enum QueryParams {
+  SETTINGS = "settings",
   URL = "url",
   BRANCH = "branch",
-  SETTINGS = "settings",
   EXPAND = "expand",
 }
 
 export enum PathParams {
+  EXTENSION = "extension",
   WORKSPACE_ID = "workspaceId",
   FILE_RELATIVE_PATH = "fileRelativePath",
-  EXTENSION = "extension",
 }
 
 export class Route<
@@ -106,29 +106,30 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
   };
 }
 
-export const routes = (imagesUriPath: string, resourcesUriPath: string) => {
-  return {
-    home: new Route<{
-      queryParams: QueryParams.EXPAND;
-    }>(() => "/"),
+export const routes = {
+  home: new Route<{
+    queryParams: QueryParams.EXPAND;
+  }>(() => `/`),
 
-    newWorskapce: new Route(() => "/new"),
+  newModel: new Route<{
+    pathParams: PathParams.EXTENSION;
+  }>(({ extension }) => `/new/${extension}`),
 
-    import: new Route<{
-      queryParams: QueryParams.URL | QueryParams.BRANCH;
-    }>(() => `/import`),
+  importModel: new Route<{
+    queryParams: QueryParams.URL | QueryParams.BRANCH;
+  }>(() => `/import`),
 
-    workspaceWithFilePath: new Route<{
-      pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH;
-    }>(({ workspaceId, fileRelativePath }) => `/${workspaceId}/file/${fileRelativePath}`),
+  workspaceWithFilePath: new Route<{
+    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
+  }>(({ workspaceId, fileRelativePath, extension }) => `/${workspaceId}/file/${fileRelativePath}.${extension}`),
 
-    static: {
-      images: {
-        vscodeLogoBlue: new Route<{}>(() => `${imagesUriPath}/vscode.svg`),
-        vscodeLogoWhite: new Route<{}>(() => `${imagesUriPath}/vscode-alt.svg`),
-        kogitoLogoWhite: new Route<{}>(() => `${imagesUriPath}/kogito_logo_white.png`),
-        kieHorizontalLogoReverse: new Route<{}>(() => `${imagesUriPath}/kie_horizontal_rgb_fullcolor_reverse.svg`),
-      },
+  static: {
+    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`), //FIXME
+    images: {
+      vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
+      vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
+      kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
+      kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
-  };
+  },
 };

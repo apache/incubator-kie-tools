@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { matchPath } from "react-router";
 import { extname } from "path";
 import { useMemo } from "react";
-import { useEditorEnvelopeLocator } from "../../common/GlobalContext";
+import { matchPath } from "react-router";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 
 export enum UrlType {
   GIT,

@@ -29,16 +29,14 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { useSettingsDispatch } from "../../settings/SettingsContext";
-import { useGitHubAuthInfo } from "../../settings/github/Hooks";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../../workspace/services/GitService";
+import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useSettingsDispatch } from "../settings/SettingsContext";
+import { useGitHubAuthInfo } from "../settings/github/Hooks";
+import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
 import { dirname, join } from "path";
-import { NEW_FILE_DEFAULT_NAME } from "../../workspace/WorkspacesContextProvider";
-import { SW_JSON_EXTENSION } from "../../openshift/OpenShiftContext";
 import { useHistory } from "react-router";
-import { useRoutes } from "../../navigation/Hooks";
+import { useRoutes } from "../navigation/Hooks";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -51,6 +49,7 @@ export function CreateGitHubRepositoryModal(props: {
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (args: { url: string }) => void;
+  currentFile: WorkspaceFile;
 }) {
   const history = useHistory();
   const routes = useRoutes();
@@ -128,7 +127,7 @@ export function CreateGitHubRepositoryModal(props: {
           },
         });
 
-        if (file.relativePath === `${NEW_FILE_DEFAULT_NAME}.${SW_JSON_EXTENSION}`) {
+        if (file.relativePath === props.currentFile.relativePath) {
           currentFileAfterMoving = movedFile;
         }
       }
@@ -189,7 +188,8 @@ export function CreateGitHubRepositoryModal(props: {
       history.replace({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: props.workspace.workspaceId,
-          fileRelativePath: currentFileAfterMoving.relativePath,
+          fileRelativePath: currentFileAfterMoving.relativePathWithoutExtension,
+          extension: currentFileAfterMoving.extension,
         }),
       });
     } catch (err) {

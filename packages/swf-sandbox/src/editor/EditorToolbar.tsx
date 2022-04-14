@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
+import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
+import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import {
   Dropdown,
   DropdownGroup,
@@ -21,75 +26,68 @@ import {
   DropdownPosition,
   DropdownToggle,
 } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import {
   Toolbar,
   ToolbarContent,
   ToolbarItem,
   ToolbarItemProps,
 } from "@patternfly/react-core/dist/js/components/Toolbar";
-import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
-import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { AngleLeftIcon } from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
+import { ArrowCircleUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-circle-up-icon";
+import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
+import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
+import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
+import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
+import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
+import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { Location } from "history";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
-import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
-import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
-import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
-import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
-import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
-import { ArrowCircleUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-circle-up-icon";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
-import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Location } from "history";
-import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
-import { useAppI18n } from "../../i18n";
+import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
+import { useAlertsController } from "../alerts/AlertsProvider";
+import { LoadingSpinner } from "../common/LoadingSpinner";
+import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
   useNavigationStatus,
   useNavigationStatusToggle,
   useRoutes,
-} from "../../navigation/Hooks";
-import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
-import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { useWorkspacePromise } from "../../workspace/hooks/WorkspaceHooks";
-import { useAlert } from "../../alerts/Alerts";
-import { UrlType, useImportableUrl } from "../../workspace/hooks/ImportableUrlHooks";
-import { useGitHubAuthInfo } from "../../settings/github/Hooks";
-import { useCancelableEffect } from "../../reactExt/Hooks";
-import { WorkspaceKind } from "../../workspace/model/WorkspaceOrigin";
-import {
-  GIST_DEFAULT_BRANCH,
-  GIST_ORIGIN_REMOTE_NAME,
-  GIT_ORIGIN_REMOTE_NAME,
-} from "../../workspace/services/GitService";
-import { FileLabel } from "../../workspace/components/FileLabel";
-import { SettingsTabs } from "../../settings/SettingsDrawerBody";
-import { PromiseStateWrapper } from "../../workspace/hooks/PromiseState";
-import { WorkspaceLabel } from "../../workspace/components/WorkspaceLabel";
-import { WorkspaceStatusIndicator } from "../../workspace/components/WorkspaceStatusIndicator";
+} from "../navigation/Hooks";
+import { useOpenShift } from "../openshift/OpenShiftContext";
+import { useCancelableEffect } from "../reactExt/Hooks";
+import { useGitHubAuthInfo } from "../settings/github/Hooks";
+import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { SettingsTabs } from "../settings/SettingsDrawerBody";
+import { FileLabel } from "../workspace/components/FileLabel";
+import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
+import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
+import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
+import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
+import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
+import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
+import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { DeployToolbar } from "./DeployToolbar";
-import { useWorkspaceFilePromise } from "../../workspace/hooks/WorkspaceFileHooks";
 import { SwaggerEditorModal } from "./SwaggerEditor/SwaggerEditorModal";
-import { LoadingSpinner } from "../../common/LoadingSpinner";
-import { useAlertsController } from "../../alerts/AlertsProvider";
-import { useOpenShift } from "../../openshift/OpenShiftContext";
-import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 
 export interface Props {
+  alerts: AlertsController | undefined;
+  alertsRef: (controller: AlertsController) => void;
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
 }
@@ -558,8 +556,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
         history.replace({
-          pathname: routes.import.path({}),
-          search: routes.import.queryString({ url: gist.data.html_url }),
+          pathname: routes.importModel.path({}),
+          search: routes.importModel.queryString({ url: gist.data.html_url }),
         });
       });
     } catch (err) {
@@ -576,7 +574,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     props.workspaceFile.workspaceId,
     navigationBlockersBypass,
     history,
-    routes.import,
+    routes.importModel,
     errorAlert,
   ]);
 
@@ -976,8 +974,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         });
 
         history.replace({
-          pathname: routes.import.path({}),
-          search: routes.import.queryString({
+          pathname: routes.importModel.path({}),
+          search: routes.importModel.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
             branch: newBranchName,
           }),
@@ -1239,6 +1237,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       promise={workspacePromise}
       resolved={(workspace) => (
         <>
+          <Alerts ref={props.alertsRef} width={"500px"} />
           <PageSection type={"nav"} variant={"light"} style={{ padding: "noPadding" }}>
             <Flex>
               {workspace && (
@@ -1604,6 +1603,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             onSuccess={({ url }) => {
               createRepositorySuccessAlert.show({ url });
             }}
+            currentFile={props.workspaceFile}
           />
           <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
           <a ref={downloadRef} />

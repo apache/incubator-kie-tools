@@ -19,7 +19,6 @@ import { useContext } from "react";
 import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { Deployments } from "./resources/Deployment";
 import { KNativeServices } from "./resources/KNativeService";
 

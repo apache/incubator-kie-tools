@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useContext, useEffect, useMemo } from "react";
-import { useGlobals } from "../common/GlobalContext";
 import { BlockerDelegate, NavigationBlockerContext, NavigationStatusContext } from "./NavigationContextProvider";
 import { routes } from "./Routes";
 
@@ -48,6 +47,5 @@ export function useNavigationBlocker(key: string, blocker: BlockerDelegate) {
 }
 
 export function useRoutes() {
-  const { imagesUriPath, resourcesUriPath } = useGlobals();
-  return useMemo(() => routes(imagesUriPath, resourcesUriPath), [imagesUriPath, resourcesUriPath]);
+  return useMemo(() => routes, []);
 }

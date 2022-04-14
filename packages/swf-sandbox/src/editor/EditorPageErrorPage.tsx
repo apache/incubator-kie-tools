@@ -24,7 +24,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { useRoutes } from "../../navigation/Hooks";
+import { useRoutes } from "../navigation/Hooks";
 
 export interface Props {
   errors: string[];

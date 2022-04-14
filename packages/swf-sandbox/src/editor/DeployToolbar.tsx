@@ -1,18 +1,18 @@
-import * as React from "react";
-import { useState, useCallback, useEffect, useMemo } from "react";
-import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { useOpenShift } from "../../openshift/OpenShiftContext";
-import { useSettings } from "../../settings/SettingsContext";
-import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
-import { useWorkspaces } from "../../workspace/WorkspacesContext";
-import { useAlert } from "../../alerts/Alerts";
-import { useAlertsController } from "../../alerts/AlertsProvider";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import * as React from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useAlert } from "../alerts/Alerts";
+import { useAlertsController } from "../alerts/AlertsProvider";
+import { useOpenShift } from "../openshift/OpenShiftContext";
+import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
+import { useSettings } from "../settings/SettingsContext";
+import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",

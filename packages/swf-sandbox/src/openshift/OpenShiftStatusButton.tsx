@@ -51,7 +51,7 @@ export function OpenshiftStatusButton() {
         aria-label="Openshift Settings"
         className={"kie-tools--masthead-hoverable-dark"}
       >
-        <OpenshiftIcon color={isOpenshiftSandboxConnected ? "green" : "red"} />
+        <OpenshiftIcon color={isOpenshiftSandboxConnected ? undefined : "gray"} />
       </Button>
     </Tooltip>
   );

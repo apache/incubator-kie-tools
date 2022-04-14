@@ -62,6 +62,10 @@ export class WorkspaceFile {
   }
 
   get relativePathWithoutExtension() {
+    if (this.relativePath.endsWith(".sw.json")) {
+      // FIXME: temporary
+      return this.relativePath.replace(".sw.json", "");
+    }
     return this.relativePath.split(".").slice(0, -1).join(".");
   }
 
@@ -70,6 +74,10 @@ export class WorkspaceFile {
   }
 
   get extension() {
+    if (this.relativePath.endsWith(".sw.json")) {
+      // FIXME: temporary
+      return "sw.json";
+    }
     return extname(this.relativePath).replace(".", "");
   }
 

@@ -278,6 +278,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  SWF_SANDBOX__buildInfo: {
+    name: "SWF_SANDBOX__buildInfo",
+    default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+    description: "",
+  },
 };
 
 module.exports = {
@@ -450,6 +455,7 @@ module.exports = {
   },
 
   swfSandbox: {
+    buildInfo: getOrDefault(ENV_VARS.SWF_SANDBOX__buildInfo),
     dev: {
       port: 9009,
     },

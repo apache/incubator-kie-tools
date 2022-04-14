@@ -14,50 +14,36 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import {
-  Page,
-  PageHeaderToolsItem,
-  PageSection,
-  PageSectionVariants,
-} from "@patternfly/react-core/dist/js/components/Page";
-import { useRoutes } from "../navigation/Hooks";
-import { useHistory } from "react-router";
-import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
-import { SettingsButton } from "../settings/SettingsButton";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
+import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Alerts } from "../alerts/Alerts";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import * as React from "react";
+import { useHistory } from "react-router";
 import { useAlertsController } from "../alerts/AlertsProvider";
+import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftStatusButton } from "../openshift/OpenShiftStatusButton";
+import { SettingsButton } from "../settings/SettingsButton";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
-  const [, alertsRef] = useAlertsController();
-
   return (
-    <Page>
-      <PageSection variant={PageSectionVariants.light} style={{ position: "relative" }}>
-        <Alerts ref={alertsRef} width={"500px"} />
-        <Flex>
-          <FlexItem>
-            <PageHeaderToolsItem>
+    <Page
+      header={
+        <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
+          <MastheadMain style={{ justifyContent: "space-between" }}>
+            <PageHeaderToolsItem className={"pf-l-flex"}>
               <MastheadBrand
-                onClick={() => history.replace({ pathname: routes.home.path({}) })}
+                onClick={() => history.push({ pathname: routes.home.path({}) })}
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>Serverless Workflow</Text>
-                  <Text component={TextVariants.p}>
-                    Manage and deploy your Serverless Workflows to the Openshift cloud.
-                  </Text>
+                  <Text component={TextVariants.h1}>Serverless Workflow Sandbox</Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>
-          </FlexItem>
-          <FlexItem grow={{ default: "grow" }} alignSelf={{ default: "alignSelfCenter" }}>
-            <Flex justifyContent={{ default: "justifyContentFlexEnd" }} spaceItems={{ default: "spaceItemsNone" }}>
+            <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
               <FlexItem>
                 <PageHeaderToolsItem>
                   <OpenshiftStatusButton />
@@ -69,9 +55,10 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 </PageHeaderToolsItem>
               </FlexItem>
             </Flex>
-          </FlexItem>
-        </Flex>
-      </PageSection>
+          </MastheadMain>
+        </Masthead>
+      }
+    >
       {props.children}
     </Page>
   );

@@ -19,8 +19,8 @@ import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useEffect, useRef, useState } from "react";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
-import { useAppI18n } from "../../../i18n";
-import { WorkspaceFile } from "../../../workspace/WorkspacesContext";
+import { useAppI18n } from "../../i18n";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 const importMonacoEditor = () => import(/* webpackChunkName: "monaco-editor" */ "@kie-tools-core/monaco-editor");
 

@@ -1,30 +1,27 @@
 import * as React from "react";
-import { Main } from "./common/Main";
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
-import { ResourceContentServiceFactory } from "./common/AppResourceContentService";
+import { HashRouter } from "react-router-dom";
+import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/EditorEnvelopeLocatorContext";
+import { AppI18nContextProvider } from "./i18n";
+import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
-import { Global } from "./common/Global";
-
-const imagesUriPath = "/images/";
-const resourcesUriPath = "/resources/";
-
-// TODO: Replace it by EditorEnvelopeLocatorContext
-export const editorEnvelopeLocator = new EditorEnvelopeLocator(window.location.origin, [
-  new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", "", "swf-envelope.html"),
-]);
-
-const resourceContentServiceFactory = new ResourceContentServiceFactory();
+import { SettingsContextProvider } from "./settings/SettingsContext";
+import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 
 export const App = () => (
-  <Global
-    id={"standalone"}
-    editorEnvelopeLocator={editorEnvelopeLocator}
-    resourceContentServiceFactory={resourceContentServiceFactory}
-    imagesUriPath={imagesUriPath}
-    resourcesUriPath={resourcesUriPath}
-  >
-    <Main>
-      <RoutesSwitch />
-    </Main>
-  </Global>
+  <HashRouter>
+    {nest(
+      [AppI18nContextProvider, {}],
+      [EditorEnvelopeLocatorContextProvider, {}],
+      [SettingsContextProvider, {}],
+      [WorkspacesContextProvider, {}],
+      [NavigationContextProvider, {}],
+      [RoutesSwitch, {}]
+    )}
+  </HashRouter>
 );
+
+function nest(...components: Array<[(...args: any[]) => any, object]>) {
+  return components.reduceRight((acc, [Component, props]) => {
+    return <Component {...props}>{acc}</Component>;
+  }, <></>);
+}

@@ -32,7 +32,7 @@ import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService"
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
-import { EditorPageErrorPage } from "../../components/Editor/EditorPageErrorPage";
+import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -76,7 +76,8 @@ export function NewWorkspaceFromUrlPage() {
       history.replace({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspace.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePath,
+          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+          extension: suggestedFirstFile.extension,
         }),
       });
       return res;
@@ -95,7 +96,8 @@ export function NewWorkspaceFromUrlPage() {
           history.replace({
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePath,
+              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+              extension: suggestedFirstFile.extension,
             }),
           });
         });
@@ -179,7 +181,8 @@ export function NewWorkspaceFromUrlPage() {
           history.replace({
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePath,
+              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+              extension: suggestedFirstFile.extension,
             }),
           });
         }

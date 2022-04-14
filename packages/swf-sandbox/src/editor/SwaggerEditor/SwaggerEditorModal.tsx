@@ -18,7 +18,7 @@ import * as React from "react";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useEffect, useRef, useState } from "react";
-import { WorkspaceFile } from "../../../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css";
 
