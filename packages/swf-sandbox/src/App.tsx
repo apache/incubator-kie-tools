@@ -4,6 +4,7 @@ import { EditorEnvelopeLocatorContextProvider } from "./envelopeLocator/EditorEn
 import { AppI18nContextProvider } from "./i18n";
 import { NavigationContextProvider } from "./navigation/NavigationContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
+import { OpenShiftProvider } from "./openshift/OpenShiftProvider";
 import { SettingsContextProvider } from "./settings/SettingsContext";
 import { WorkspacesContextProvider } from "./workspace/WorkspacesContextProvider";
 
@@ -14,6 +15,7 @@ export const App = () => (
       [EditorEnvelopeLocatorContextProvider, {}],
       [SettingsContextProvider, {}],
       [WorkspacesContextProvider, {}],
+      [OpenShiftProvider, {}],
       [NavigationContextProvider, {}],
       [RoutesSwitch, {}]
     )}

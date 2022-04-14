@@ -90,7 +90,10 @@ export class StorageService {
       return file;
     }
 
-    const newPath = join(dirname(file.path), `${newFileName}${extname(file.path)}`);
+    // FIXME: Temporary
+    const extension = file.path.endsWith(".sw.json") ? ".sw.json" : extname(file.path);
+
+    const newPath = join(dirname(file.path), `${newFileName}${extension}`);
 
     if (await this.exists(fs, newPath)) {
       throw new Error(`File ${newPath} already exists`);

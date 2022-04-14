@@ -285,7 +285,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const renameFile = useCallback(
     async (args: { fs: KieSandboxFs; file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
-      const newFile = service.renameFile({
+      const newFile = await service.renameFile({
         fs: args.fs,
         file: args.file,
         newFileNameWithoutExtension: args.newFileNameWithoutExtension,

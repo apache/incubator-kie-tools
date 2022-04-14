@@ -6,8 +6,7 @@ import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dis
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useAlert } from "../alerts/Alerts";
-import { useAlertsController } from "../alerts/AlertsProvider";
+import { AlertsController, useAlert } from "../alerts/Alerts";
 import { useOpenShift } from "../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../settings/SettingsContext";
@@ -20,6 +19,7 @@ enum FormValiationOptions {
   SUCCESS = "SUCCESS",
 }
 export interface DeployToolbarProps {
+  alerts: AlertsController | undefined;
   workspace: ActiveWorkspace;
   editor?: EmbeddedEditorRef;
 }
@@ -30,11 +30,10 @@ export function DeployToolbar(props: DeployToolbarProps) {
   const workspaces = useWorkspaces();
   const [deployStatus, setDeployStatus] = useState(FormValiationOptions.INITIAL);
   const [isLoading, setLoading] = useState(false);
-  const [alerts] = useAlertsController();
   const [canDeploy, setCanDeploy] = useState(false);
 
   const setDeployError = useAlert(
-    alerts,
+    props.alerts,
     useCallback(({ close }) => {
       return (
         <Alert
@@ -50,7 +49,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
   );
 
   const setDeploySuccess = useAlert(
-    alerts,
+    props.alerts,
     useCallback(({ close }) => {
       return (
         <Alert
@@ -73,7 +72,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
   );
 
   const openApiUploadSuccess = useAlert(
-    alerts,
+    props.alerts,
     useCallback(({ close }) => {
       return (
         <Alert
@@ -186,24 +185,19 @@ export function DeployToolbar(props: DeployToolbarProps) {
       return;
     }
 
-    if (!props.workspace.descriptor.deploymentResourceName) {
-      setCanDeploy(true);
-      return;
-    }
+    // if (!props.workspace.descriptor.deploymentResourceName) {
+    //   setCanDeploy(true);
+    //   return;
+    // }
 
-    setCanDeploy(false);
-    fetchOpenApiSpec(props.workspace.descriptor.deploymentResourceName);
+    setCanDeploy(true);
+    //fetchOpenApiSpec(props.workspace.descriptor.deploymentResourceName);
   }, [
     fetchOpenApiSpec,
     props.workspace.descriptor.deploymentResourceName,
     settings.openshift.config,
     settings.openshift.status,
   ]);
-
-  const onFetchArtifacts = useCallback(async () => {
-    const artifacts = await openshift.fetchServiceRegistryArtifacts();
-    console.log(artifacts);
-  }, [openshift]);
 
   return (
     <Flex>

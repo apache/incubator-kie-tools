@@ -20,7 +20,6 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useHistory } from "react-router";
-import { useAlertsController } from "../alerts/AlertsProvider";
 import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftStatusButton } from "../openshift/OpenShiftStatusButton";
 import { SettingsButton } from "../settings/SettingsButton";
