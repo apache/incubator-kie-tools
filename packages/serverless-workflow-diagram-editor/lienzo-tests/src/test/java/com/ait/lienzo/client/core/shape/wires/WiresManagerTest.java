@@ -231,6 +231,37 @@ public class WiresManagerTest {
     }
 
     @Test
+    public void testRegisterAddHandler() {
+        final IConnectionAcceptor connectionAcceptor = mock(IConnectionAcceptor.class);
+        tested.setConnectionAcceptor(connectionAcceptor);
+        final WiresManager spied = spy(tested);
+        final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
+        doReturn(handlerRegistrationManager).when(spied).createHandlerRegistrationManager();
+        final Group group = new Group();
+        final Group shapeGroup = spy(group);
+        final AbstractDirectionalMultiPointShape<?> line = mock(AbstractDirectionalMultiPointShape.class);
+        final MultiPath head = mock(MultiPath.class);
+        final MultiPath tail = mock(MultiPath.class);
+        final WiresConnector connector = mock(WiresConnector.class);
+        final WiresHandlerFactory wiresHandlerFactory = mock(WiresHandlerFactory.class);
+        final WiresConnectorHandler wiresConnectorHandler = mock(WiresConnectorHandler.class);
+        final WiresConnectorControl wiresConnectorControl = mock(WiresConnectorControl.class);
+        doReturn(shapeGroup).when(connector).getGroup();
+        doReturn(line).when(connector).getLine();
+        doReturn(head).when(connector).getHead();
+        doReturn(tail).when(connector).getTail();
+        doReturn(group.uuid()).when(connector).uuid();
+        doReturn(wiresConnectorHandler).when(wiresHandlerFactory).newConnectorHandler(connector, spied);
+        doReturn(wiresConnectorControl).when(wiresConnectorHandler).getControl();
+
+        spied.setWiresHandlerFactory(wiresHandlerFactory);
+        assertEquals(spied.getWiresHandlerFactory(), wiresHandlerFactory);
+        spied.addHandlers(connector);
+        assertTrue(spied.getConnectorList().isEmpty());
+        verify(wiresHandlerFactory, times(1)).newConnectorHandler(connector, spied);
+    }
+
+    @Test
     public void testDeregisterConnector() {
         final WiresManager spied = spy(tested);
         final HandlerRegistrationManager handlerRegistrationManager = mock(HandlerRegistrationManager.class);
@@ -249,8 +280,11 @@ public class WiresManagerTest {
         spied.enableSelectionManager();
         spied.getSelectionManager().getSelectedItems().add(connector);
         spied.register(connector);
+        spied.addHandlers(connector);
         spied.deregister(connector);
         assertTrue(spied.getConnectorList().isEmpty());
         assertTrue(spied.getSelectionManager().getSelectedItems().isEmpty());
+        verify(handlerRegistrationManager, times(1)).removeHandler();
+        verify(connector, times(1)).destroy();
     }
 }
