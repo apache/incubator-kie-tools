@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 function getRouterArgs() {
-  const targetOrigin = buildEnv.chromeExtension.routerTargetOrigin;
+  const targetOrigin = buildEnv.chromeExtension.routerSWTargetOrigin;
   const relativePath = buildEnv.chromeExtension.routerSWRelativePath;
 
   console.info(`Chrome Extension :: Router target origin: ${targetOrigin}`);
@@ -35,17 +35,17 @@ function getRouterArgs() {
   return [targetOrigin, relativePath];
 }
 
-function getOnlineEditorArgs() {
+function getManifestFile() {
   const manifestFile = buildEnv.chromeExtension.manifestFile;
 
   console.info(`Chrome Extension :: Manifest file: ${manifestFile}`);
 
-  return [manifestFile];
+  return manifestFile;
 }
 
 module.exports = async (env) => {
   const [router_targetOrigin, router_relativePath] = getRouterArgs(env);
-  const [manifestFile] = getOnlineEditorArgs(env);
+  const manifestFile = getManifestFile(env);
 
   return merge(common(env), {
     entry: {

@@ -79,6 +79,8 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
           CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
+          CHROME_EXTENSION__SW_routerTargetOrigin: "https://kiegroup.github.io"
+          CHROME_EXTENSION__SW_routerRelativePath: "kogito-online/dev/editors/"
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_linux_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.tar.gz"
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_macos_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.dmg"
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_windows_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.exe"
@@ -199,12 +201,19 @@ jobs:
           name: vscode-extension-backend
           path: kie-tools/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
 
-      - name: "Upload Chrome Extension (Ubuntu only)"
+      - name: "Upload Chrome Extension for kie editors(Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension
           path: kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
+
+      - name: "Upload Chrome Extension for serverless workflow editor(Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v1
+        with:
+          name: swf-chrome-extension
+          path: kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ steps.version.outputs.version }}.zip
 
       - name: "Upload Desktop App - Ubuntu (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
@@ -245,6 +254,8 @@ jobs:
           cp -RL ../kie-tools/packages/stunner-editors/dist/dmn dev/editors/
           cp -RL ../kie-tools/packages/stunner-editors/dist/bpmn dev/editors/
           cp -RL ../kie-tools/packages/stunner-editors/dist/scesim dev/editors/
+          cp -RL ../kie-tools/packages/serverless/dist/scesim dev/editors/
+          cp -RL ../kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} dev/editors/sw
           cp -r ../kie-tools/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
           ln -s editors dev/gwt-editors

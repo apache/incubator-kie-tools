@@ -40,6 +40,8 @@ on:
         required: false
       chrome_extension_id:
         required: false
+      swf_chrome_extension_id:
+        required: false
       kiegroup_npm_token:
         required: false
       openshift_server:
@@ -448,6 +450,7 @@ jobs:
           cp -RL ${{ github.workspace }}/kie-tools/packages/stunner-editors/dist/dmn $EDITORS_DIR
           cp -RL ${{ github.workspace }}/kie-tools/packages/stunner-editors/dist/bpmn $EDITORS_DIR
           cp -RL ${{ github.workspace }}//kie-tools/packages/stunner-editors/dist/scesim $EDITORS_DIR
+          cp -RL ${{ github.workspace }}//kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} $EDITORS_DIR/sw
           rm -rf ./editors/latest
           ln -s ${{ inputs.tag }} ./editors/latest
 
@@ -466,6 +469,7 @@ jobs:
     env:
       CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ inputs.tag }}"
+      CHROME_EXTENSION__SW_routerTargetOrigin: "https://kiegroup.github.io"
       CHROME_EXTENSION__SW_routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
       CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
@@ -521,7 +525,7 @@ jobs:
           asset_name: chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: "Deploy to GitHub Pages (kogito-online)"
+      - name: "Deploy Chrome Extension for kie editors to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kogito-online
         shell: bash
@@ -542,7 +546,7 @@ jobs:
           git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension for kogito kie editors)"
           git push origin gh-pages
 
-      - name: "Upload Chrome Extension to the Chrome Store"
+      - name: "Upload Chrome Extension for kie editors to the Chrome Store"
         if: ${{ !inputs.dry_run }}
         id: update_extension_kogito_kie_editors
         run: |
@@ -551,12 +555,12 @@ jobs:
           echo "$uploadResponse"
           echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
 
-      - name: "Check Upload"
+      - name: "Check Upload - Chrome Extension for kie editors"
         if: ${{ !inputs.dry_run }}
         run: |
           [ "${{ steps.update_extension_kogito_kie_editors.outputs.upload_status }}" == 'SUCCESS' ]
 
-      - name: "Publish Chrome Extension for users"
+      - name: "Publish Chrome Extension for kie editors for users"
         if: ${{ !inputs.dry_run }}
         id: publish_extension_kogito_kie_editors
         run: |
@@ -565,7 +569,7 @@ jobs:
           echo "$publishResponse"
           echo ::set-output name=publish_status::$(echo "$publishResponse" | jq -r '.status | .[0]')
 
-      - name: "Check Publish"
+      - name: "Check Publish - Chrome Extension for kie editors"
         if: ${{ !inputs.dry_run }}
         run: |
           [ "${{ steps.publish_extension_kogito_kie_editors.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension_kogito_kie_editors.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]
@@ -586,7 +590,7 @@ jobs:
           asset_name: chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: "Deploy to GitHub Pages (kogito-online)"
+      - name: "Deploy Chrome Extension for serverless workflow editor to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/kogito-online
         shell: bash
@@ -603,30 +607,30 @@ jobs:
           git commit -m "Deploy ${{ inputs.tag }} (Chrome Extension for serverless workflow editor)"
           git push origin gh-pages
 
-      - name: "Upload Chrome Extension to the Chrome Store"
+      - name: "Upload Chrome Extension for serverless workflow editor to the Chrome Store"
         if: ${{ !inputs.dry_run }}
         id: update_extension_serverless_workflow_editor
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
-          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip)
+          uploadResponse=$(curl -X PUT -sS "https://www.googleapis.com/upload/chromewebstore/v1.1/items/${{ secrets.swf_chrome_extension_id }}" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -T ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip)
           echo "$uploadResponse"
           echo ::set-output name=upload_status::$(echo "$uploadResponse" | jq -r '.uploadState')
 
-      - name: "Check Upload"
+      - name: "Check Upload - Chrome Extension for serverless workflow editor"
         if: ${{ !inputs.dry_run }}
         run: |
           [ "${{ steps.update_extension_serverless_workflow_editor.outputs.upload_status }}" == 'SUCCESS' ]
 
-      - name: "Publish Chrome Extension for users"
+      - name: "Publish Chrome Extension for serverless workflow editor for users"
         if: ${{ !inputs.dry_run }}
         id: publish_extension_serverless_workflow_editor
         run: |
           access_token=$(curl -X POST -fsS "https://oauth2.googleapis.com/token" -d "client_id=${{ secrets.google_developer_console_client_id }}&client_secret=${{ secrets.google_developer_console_client_secret }}&refresh_token=${{ secrets.google_developer_console_refresh_token }}&grant_type=refresh_token" | jq -r '.access_token')
-          publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
+          publishResponse=$(curl -X POST -sS "https://www.googleapis.com/chromewebstore/v1.1/items/${{ secrets.swf_chrome_extension_id }}/publish" -H "Authorization:Bearer ${access_token}" -H "x-goog-api-version:2" -H "Content-Length:0")
           echo "$publishResponse"
           echo ::set-output name=publish_status::$(echo "$publishResponse" | jq -r '.status | .[0]')
 
-      - name: "Check Publish"
+      - name: "Check Publish - Chrome Extension for serverless workflow editor"
         if: ${{ !inputs.dry_run }}
         run: |
           [ "${{ steps.publish_extension_serverless_workflow_editor.outputs.publish_status }}" == 'OK' ] || [ "${{ steps.publish_extension_serverless_workflow_editor.outputs.publish_status }}" == 'PUBLISHED_WITH_FRICTION_WARNING' ]

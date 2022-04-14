@@ -89,7 +89,6 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     initJsonCodeLenses(commands, channelType, editorEnvelopeCtx.operatingSystem);
 
     return () => {
-      // disposing the editor - this is required when updating the content (PR)
       controller.dispose();
     };
 

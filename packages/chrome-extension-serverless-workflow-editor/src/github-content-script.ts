@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,6 @@ startExtension({
   name: "Kogito :: Serverless workflow editor",
   extensionIconUrl: chrome.extension.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
-  externalEditorManager: {
-    name: "KIE Sandbox",
-    getImportRepoUrl: (repoUrl: string) => {
-      //FIXME: The paths are duplicated from `online-editor`.
-      return `${process.env.WEBPACK_REPLACE__onlineEditor_url}/#/import?url=${repoUrl}`;
-    },
-  },
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
     new EnvelopeMapping(
       "sw",
