@@ -20,6 +20,7 @@ import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -28,7 +29,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
-import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
@@ -42,18 +42,6 @@ import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
-
-const Loading = () => (
-  <Bullseye>
-    <TextContent>
-      <Bullseye>
-        <Spinner />
-      </Bullseye>
-      <br />
-      <Text component={TextVariants.p}>{`Loading...`}</Text>
-    </TextContent>
-  </Bullseye>
-);
 
 export interface Props {
   workspaceId: string;
@@ -273,35 +261,41 @@ export function EditorPage(props: Props) {
     <OnlineEditorPage>
       <PromiseStateWrapper
         promise={workspaceFilePromise}
-        pending={<Loading />}
+        pending={
+          <Bullseye>
+            <TextContent>
+              <Bullseye>
+                <Spinner />
+              </Bullseye>
+              <br />
+              <Text component={TextVariants.p}>{`Loading...`}</Text>
+            </TextContent>
+          </Bullseye>
+        }
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <>
             <Page>
               <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+              <Divider />
               <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                <div style={{ height: "100%", backgroundColor: "white" }}>
-                  {!isEditorReady && <LoadingSpinner />}
-                  {embeddedEditorFile && (
-                    <div style={{ display: isEditorReady ? "inline" : "none" }}>
-                      <EmbeddedEditor
-                        /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                         * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                         */
-                        key={workspaces.getUniqueFileIdentifier(file)}
-                        ref={editorRef}
-                        file={embeddedEditorFile}
-                        kogitoWorkspace_openFile={handleOpenFile}
-                        kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                        kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                        kogitoEditor_setContentError={handleSetContentError}
-                        editorEnvelopeLocator={editorEnvelopeLocator}
-                        channelType={ChannelType.ONLINE_MULTI_FILE}
-                        locale={locale}
-                      />
-                    </div>
-                  )}
-                </div>
+                {embeddedEditorFile && (
+                  <EmbeddedEditor
+                    /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                     * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                     */
+                    key={workspaces.getUniqueFileIdentifier(file)}
+                    ref={editorRef}
+                    file={embeddedEditorFile}
+                    kogitoWorkspace_openFile={handleOpenFile}
+                    kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                    kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                    kogitoEditor_setContentError={handleSetContentError}
+                    editorEnvelopeLocator={editorEnvelopeLocator}
+                    channelType={ChannelType.ONLINE_MULTI_FILE}
+                    locale={locale}
+                  />
+                )}
               </PageSection>
             </Page>
           </>
