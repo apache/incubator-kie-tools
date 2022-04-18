@@ -179,7 +179,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   return (
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
-        <DrawerContentBody style={{ overflowY: "hidden" }}>
+        <DrawerContentBody style={{ overflow: "hidden" }}>
           {initialContent.path !== "" && (
             <SwfMonacoEditor
               channelType={props.channelType}
