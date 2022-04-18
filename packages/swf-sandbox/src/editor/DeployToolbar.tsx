@@ -1,4 +1,3 @@
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -15,7 +14,6 @@ import { WorkspaceFile } from "../workspace/WorkspacesContext";
 export interface DeployToolbarProps {
   alerts: AlertsController | undefined;
   currentFile: WorkspaceFile;
-  editor?: EmbeddedEditorRef;
 }
 
 export function DeployToolbar(props: DeployToolbarProps) {
@@ -97,7 +95,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
   );
 
   const onDeploy = useCallback(async () => {
-    const content = await props.editor?.getContent();
+    const content = await props.currentFile.getFileContentsAsString();
 
     if (!content) {
       setDeployError.show();
@@ -132,8 +130,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
       setDeployError.show();
     }
   }, [
-    props.editor,
-    props.currentFile.relativePath,
+    props.currentFile,
     openshift,
     settings.openshift.config,
     settings.apacheKafka.config,

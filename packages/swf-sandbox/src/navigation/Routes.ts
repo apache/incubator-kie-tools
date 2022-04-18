@@ -124,7 +124,7 @@ export const routes = {
   }>(({ workspaceId, fileRelativePath, extension }) => `/${workspaceId}/file/${fileRelativePath}.${extension}`),
 
   static: {
-    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`), //FIXME
+    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`),
     images: {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),

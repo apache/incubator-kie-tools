@@ -45,6 +45,7 @@ module.exports = async (env, argv) => {
         patterns: [
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
+          { from: "./static/samples", to: "./samples" },
           { from: "./static/envelope/swf-envelope.html", to: "./swf-envelope.html" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],

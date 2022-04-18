@@ -108,8 +108,8 @@ export function NewFileDropdownMenu(props: {
 
       try {
         const url = new URL(urlString);
-        const extension = extname(url.pathname).replace(".", "");
-        const name = decodeURIComponent(basename(url.pathname, extname(url.pathname)));
+        const extension = url.pathname.endsWith(".sw.json") ? "sw.json" : extname(url.pathname).replace(".", ""); // FIXME: temporary
+        const name = decodeURIComponent(basename(url.pathname, `.${extension}`));
 
         const response = await fetch(urlString);
         if (!response.ok) {
@@ -139,9 +139,9 @@ export function NewFileDropdownMenu(props: {
 
   const addSample = useCallback(
     (extension: SupportedFileExtensions) =>
-      /*importFromUrl(
+      importFromUrl(
         `${window.location.origin}${window.location.pathname}${routes.static.sample.path({ type: extension })}`
-      )*/ console.log("FIXME"),
+      ),
     [importFromUrl, routes]
   );
 

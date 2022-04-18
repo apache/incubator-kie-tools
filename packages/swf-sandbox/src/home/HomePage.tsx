@@ -483,6 +483,24 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
               New {props.title}
             </Button>
           </Link>
+          <Link
+            to={{
+              pathname: routes.importModel.path({}),
+              search: routes.importModel.queryString({
+                url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
+                  type: props.extension,
+                })}`,
+              }),
+            }}
+          >
+            <Button
+              variant={ButtonVariant.link}
+              style={{ paddingLeft: "2px" }}
+              ouiaId={`try-${props.extension}-sample-button`}
+            >
+              Try sample
+            </Button>
+          </Link>
         </Grid>
       </CardFooter>
     </Card>
