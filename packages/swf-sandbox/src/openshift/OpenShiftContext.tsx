@@ -40,7 +40,6 @@ export interface DeploymentWorkflow {
 export interface OpenShiftContextType {
   deploy(args: DeployArgs): Promise<string>;
   uploadOpenApiToServiceRegistry(openApiContent: string, artifactId: string): Promise<void>;
-  fetchServiceRegistryArtifacts(): Promise<any>;
 
   fetchOpenApiFile(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
   fetchWorkflowRoute(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;

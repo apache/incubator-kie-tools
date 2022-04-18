@@ -19,19 +19,12 @@ export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatal
 export class SwfServiceCatalogStore {
   public static services: SwfServiceCatalogService[];
   public static async refresh(
+    proxyUrl: string,
     serviceRegistryConfig: ServiceRegistrySettingsConfig,
     serviceAccountConfig: ServiceAccountSettingsConfig
   ) {
     const serviceRegistryUrl = serviceRegistryConfig.coreRegistryApi;
     const shouldReferenceFunctionsWithUrls = true;
-
-    const requestHeaders = {
-      headers: {
-        // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-        Authorization: "Basic " + btoa(`${serviceAccountConfig.clientId}:${serviceAccountConfig.clientSecret}`),
-        "Content-Type": "application/json",
-      },
-    };
 
     const serviceRegistryRestApi = {
       getArtifactContentUrl: (params: { groupId: string; id: string }) => {
@@ -43,7 +36,14 @@ export class SwfServiceCatalogStore {
     };
 
     const artifactsMetadata: ServiceRegistryArtifactSearchResponse = (
-      await axios.get(serviceRegistryRestApi.getArtifactsUrl(), requestHeaders)
+      await axios.get(proxyUrl + "/devsandbox", {
+        headers: {
+          // We are facing a 401 Error when using oauth, let's use Basic auth for now.
+          Authorization: "Basic " + btoa(`${serviceAccountConfig.clientId}:${serviceAccountConfig.clientSecret}`),
+          "Content-Type": "application/json",
+          "Target-Url": serviceRegistryRestApi.getArtifactsUrl(),
+        },
+      })
     ).data;
 
     const artifactsWithContent = await Promise.all(
@@ -52,7 +52,14 @@ export class SwfServiceCatalogStore {
         .map(async (artifactMetadata) => ({
           metadata: artifactMetadata,
           content: (
-            await axios.get(serviceRegistryRestApi.getArtifactContentUrl(artifactMetadata), requestHeaders)
+            await axios.get(proxyUrl + "/devsandbox", {
+              headers: {
+                // We are facing a 401 Error when using oauth, let's use Basic auth for now.
+                Authorization: "Basic " + btoa(`${serviceAccountConfig.clientId}:${serviceAccountConfig.clientSecret}`),
+                "Content-Type": "application/json",
+                "Target-Url": serviceRegistryRestApi.getArtifactContentUrl(artifactMetadata),
+              },
+            })
           ).data as OpenAPIV3.Document,
         }))
     );

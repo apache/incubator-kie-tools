@@ -101,7 +101,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const hasLocalChanges = useCallback(
     async (args: { fs: KieSandboxFs; workspaceId: string }) => {
-      return await gitService.hasLocalChanges({
+      return gitService.hasLocalChanges({
         fs: args.fs,
         dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
       });
@@ -194,7 +194,7 @@ export function WorkspacesContextProvider(props: Props) {
       preferredName?: string;
       gitConfig?: { email: string; name: string };
     }) => {
-      return await createWorkspace({
+      return createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
         useInMemoryFs: args.useInMemoryFs,
@@ -263,7 +263,7 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
     }) => {
-      return await createWorkspace({
+      return createWorkspace({
         preferredName: args.origin.url.pathname.substring(1), // Remove slash
         origin: args.origin,
         useInMemoryFs: true,

@@ -140,14 +140,4 @@ export class WorkspaceDescriptorService {
   public newWorkspaceId(): string {
     return uuid();
   }
-
-  public async setDeploymentResourceName(workspaceId: string, resourceName: string | undefined) {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        deploymentResourceName: resourceName,
-      })
-    );
-  }
 }

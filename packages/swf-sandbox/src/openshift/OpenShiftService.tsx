@@ -163,7 +163,7 @@ export class OpenShiftService {
         ...commonArgs,
         buildConfigUid: buildConfig.metadata.uid,
         file: {
-          name: args.workflow.name,
+          path: args.workflow.name,
           content: processedFileContent,
         },
       }),
@@ -213,12 +213,12 @@ export class OpenShiftService {
     return resourceName;
   }
 
-  public async listServices(config: OpenShiftSettingsConfig) {
-    return await this.fetchResource<KNativeServices>(config.proxy, new ListKNativeServices(config));
+  public async listServices(config: OpenShiftSettingsConfig): Promise<KNativeServices> {
+    return this.fetchResource<KNativeServices>(config.proxy, new ListKNativeServices(config));
   }
 
-  public async listDeployments(config: OpenShiftSettingsConfig) {
-    return await this.fetchResource<Deployments>(config.proxy, new ListDeployments(config));
+  public async listDeployments(config: OpenShiftSettingsConfig): Promise<Deployments> {
+    return this.fetchResource<Deployments>(config.proxy, new ListDeployments(config));
   }
 
   public async fetchResource<T = Resource>(
@@ -264,78 +264,35 @@ export class OpenShiftService {
     }
   }
 
-  public async onCheckConfig(config: OpenShiftSettingsConfig) {
-    return isConfigValid(config) && (await this.isConnectionEstablished(config));
-  }
-
-  public async getServiceRegistryAccessToken(args: {
-    proxyUrl: string;
-    serviceAccountConfig: ServiceAccountSettingsConfig;
-  }): Promise<string> {
-    const response = await fetch(args.proxyUrl + "/devsandbox", {
-      method: "POST",
-      headers: {
-        "Target-Url": OPENSHIFT_IDENTITY_API_URL,
-      },
-      body: new URLSearchParams({
-        grant_type: "client_credentials",
-        client_id: `${args.serviceAccountConfig.clientId}`,
-        client_secret: `${args.serviceAccountConfig.clientSecret}`,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Could not fetch access token: Error ${response.status}`);
-    }
-
-    return ((await response.json()) as AccessToken).access_token;
+  public async onCheckConfig(config: OpenShiftSettingsConfig): Promise<boolean> {
+    return isConfigValid(config) && this.isConnectionEstablished(config);
   }
 
   public async uploadOpenApiToServiceRegistry(args: {
+    proxyUrl: string;
     groupId: string;
     artifactId: string;
     openApiContent: string;
     serviceAccountConfig: ServiceAccountSettingsConfig;
     serviceRegistryConfig: ServiceRegistrySettingsConfig;
   }): Promise<void> {
-    const response = await fetch(
-      `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(args.groupId)}/artifacts`,
-      {
-        method: "POST",
-        headers: {
-          // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-          Authorization:
-            "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
-          "Content-Type": "application/json",
-          "X-Registry-ArtifactId": args.artifactId.replace(/\s|\//g, "_"),
-        },
-        body: args.openApiContent,
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Could not upload OpenAPI to Service Registry: Error ${response.status}`);
-    }
-  }
-
-  public async fetchServiceRegistryArtifacts(args: {
-    serviceAccountConfig: ServiceAccountSettingsConfig;
-    serviceRegistryConfig: ServiceRegistrySettingsConfig;
-  }): Promise<any> {
-    const response = await fetch(`${args.serviceRegistryConfig.coreRegistryApi}/search/artifacts`, {
-      method: "GET",
+    const response = await fetch(args.proxyUrl + "/devsandbox", {
+      method: "POST",
       headers: {
         // We are facing a 401 Error when using oauth, let's use Basic auth for now.
         Authorization:
           "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
         "Content-Type": "application/json",
+        "X-Registry-ArtifactId": args.artifactId.replace(/\s|\//g, "_"),
+        "Target-Url": `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(
+          args.groupId
+        )}/artifacts`,
       },
+      body: args.openApiContent,
     });
 
     if (!response.ok) {
-      throw new Error(`Could not fetch OpenAPI list from Service Registry: Error ${response.status}`);
+      throw new Error(`Could not upload OpenAPI to Service Registry: Error ${response.status}`);
     }
-
-    return response;
   }
 }

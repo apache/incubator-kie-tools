@@ -22,5 +22,4 @@ export interface WorkspaceDescriptor {
   origin: WorkspaceOrigin;
   createdDateISO: string;
   lastUpdatedDateISO: string;
-  deploymentResourceName?: string;
 }

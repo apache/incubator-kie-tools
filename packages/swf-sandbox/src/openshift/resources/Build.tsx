@@ -32,7 +32,7 @@ export interface Builds {
 export interface CreateBuildArgs {
   buildConfigUid: string;
   file: {
-    name: string;
+    path: string;
     content: string;
   };
 }
@@ -57,7 +57,7 @@ export class CreateBuild extends ResourceFetch {
   }
 
   protected async requestBody(): Promise<string | undefined> {
-    const modelPath = `${this.PROJECT_METAINF_RESOURCES}/${this.args.file.name}`;
+    const modelPath = `${this.PROJECT_METAINF_RESOURCES}/${this.args.file.path}`;
     return `
       kind: Build
       apiVersion: build.openshift.io/v1

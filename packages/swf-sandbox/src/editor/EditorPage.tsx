@@ -33,6 +33,7 @@ import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocat
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
+import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
 import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
 import { useSettings } from "../settings/SettingsContext";
@@ -72,6 +73,24 @@ export function EditorPage(props: Props) {
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+
+  const queryParams = useQueryParams();
+
+  // keep the page in sync with the name of `workspaceFilePromise`, even if changes
+  useEffect(() => {
+    if (!workspaceFilePromise.data) {
+      return;
+    }
+
+    history.replace({
+      pathname: routes.workspaceWithFilePath.path({
+        workspaceId: workspaceFilePromise.data.workspaceId,
+        fileRelativePath: workspaceFilePromise.data.relativePathWithoutExtension,
+        extension: workspaceFilePromise.data.extension,
+      }),
+      search: queryParams.toString(),
+    });
+  }, [history, routes, workspaceFilePromise, queryParams]);
 
   // update EmbeddedEditorFile, but only if content is different than what was saved
   useCancelableEffect(
@@ -181,13 +200,17 @@ export function EditorPage(props: Props) {
   ]);
 
   useEffect(() => {
-    SwfServiceCatalogStore.refresh(settings.serviceRegistry.config, settings.serviceAccount.config).then((services) => {
+    SwfServiceCatalogStore.refresh(
+      settings.openshift.config.proxy,
+      settings.serviceRegistry.config,
+      settings.serviceAccount.config
+    ).then((services) => {
       swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
     });
   }, [
+    settings.openshift.config.proxy,
     settings.serviceAccount.config,
     settings.serviceRegistry.config,
-    settings.serviceRegistry.config.coreRegistryApi,
     swfServiceCatalogEnvelopeServer,
   ]);
 

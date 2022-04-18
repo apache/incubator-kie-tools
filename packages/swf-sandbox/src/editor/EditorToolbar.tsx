@@ -59,7 +59,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
-import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useAppI18n } from "../i18n";
 import {
@@ -1479,7 +1478,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     <ToolbarItem visibility={hideWhenSmall}>
                       <FlexItem>
-                        <DeployToolbar editor={props.editor} workspace={workspace} alerts={props.alerts} />
+                        <DeployToolbar editor={props.editor} alerts={props.alerts} currentFile={props.workspaceFile} />
                       </FlexItem>
                       {/* <PromiseStateWrapper
                         promise={workspaceOpenApiFilePromise}

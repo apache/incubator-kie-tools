@@ -20,7 +20,6 @@ import { DeployArgs, DeploymentWorkflow, OpenShiftContext } from "./OpenShiftCon
 import { OpenShiftService } from "./OpenShiftService";
 import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import { useSettings } from "../settings/SettingsContext";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 
@@ -34,12 +33,7 @@ export function OpenShiftProvider(props: Props) {
   const settings = useSettings();
   const service = useMemo(() => new OpenShiftService(), []);
 
-  const deploy = useCallback(
-    async (args: DeployArgs) => {
-      return await service.deploy(args);
-    },
-    [service]
-  );
+  const deploy = useCallback(async (args: DeployArgs) => service.deploy(args), [service]);
 
   const fetchWorkflowRoute = useCallback(
     async (config: OpenShiftSettingsConfig, resourceName: string) => {
@@ -176,6 +170,7 @@ export function OpenShiftProvider(props: Props) {
       }
 
       await service.uploadOpenApiToServiceRegistry({
+        proxyUrl: settings.openshift.config.proxy,
         groupId: DEFAULT_GROUP_ID,
         artifactId: artifactId,
         serviceAccountConfig: settings.serviceAccount.config,
@@ -183,29 +178,13 @@ export function OpenShiftProvider(props: Props) {
         openApiContent: openApiContent,
       });
     },
-    [service, settings.serviceAccount.config, settings.serviceRegistry.config]
+    [service, settings.serviceAccount.config, settings.serviceRegistry.config, settings.openshift.config]
   );
-
-  const fetchServiceRegistryArtifacts = useCallback(async () => {
-    if (!isServiceAccountConfigValid(settings.serviceAccount.config)) {
-      throw new Error("Invalid service account config");
-    }
-
-    if (!isServiceRegistryConfigValid(settings.serviceRegistry.config)) {
-      throw new Error("Invalid service registry config");
-    }
-
-    return await service.fetchServiceRegistryArtifacts({
-      serviceAccountConfig: settings.serviceAccount.config,
-      serviceRegistryConfig: settings.serviceRegistry.config,
-    });
-  }, [service, settings.serviceAccount.config, settings.serviceRegistry.config]);
 
   const value = useMemo(
     () => ({
       deploy,
       uploadOpenApiToServiceRegistry,
-      fetchServiceRegistryArtifacts,
       fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,
@@ -217,7 +196,6 @@ export function OpenShiftProvider(props: Props) {
     [
       deploy,
       uploadOpenApiToServiceRegistry,
-      fetchServiceRegistryArtifacts,
       fetchOpenApiFile,
       fetchWorkflow,
       fetchWorkflows,
