@@ -23,8 +23,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
-module.exports = async (env, argv) => {
+module.exports = async (env) => {
   const buildInfo = getBuildInfo();
   return merge(common(env), {
     entry: {
@@ -53,13 +54,26 @@ module.exports = async (env, argv) => {
       new ProvidePlugin({
         Buffer: ["buffer", "Buffer"],
       }),
+      new MonacoWebpackPlugin({
+        languages: ["json"],
+        customLanguages: [
+          {
+            label: "yaml",
+            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
+            worker: {
+              id: "monaco-yaml/yamlWorker",
+              entry: "monaco-yaml/lib/esm/yaml.worker",
+            },
+          },
+        ],
+      }),
     ],
     resolve: {
       alias: {
         // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
         // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
         // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
+        // "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
       },
     },
     module: {
