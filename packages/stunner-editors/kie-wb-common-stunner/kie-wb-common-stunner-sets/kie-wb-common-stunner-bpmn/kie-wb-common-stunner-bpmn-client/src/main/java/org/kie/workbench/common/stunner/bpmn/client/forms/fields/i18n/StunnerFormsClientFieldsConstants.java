@@ -103,6 +103,8 @@ public interface StunnerFormsClientFieldsConstants extends Messages {
 
     String RenameDiagramVariableError();
 
+    String DuplicatedVariableIDError(String processIDName);
+
     String DuplicatedVariableNameError(String variableName);
 
     String DuplicatedAttributeNameError(String attributeName);
