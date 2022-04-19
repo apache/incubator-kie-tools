@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-core/backend",
-  "version": "0.0.0",
+  "version": "0.18.1",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -12,15 +12,15 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/i18n": "0.18.1",
+    "@kie-tools-core/notifications": "0.18.1",
+    "@kie-tools-core/workspace": "0.18.1",
     "axios": "^0.21.1",
     "fast-xml-parser": "^3.17.4",
     "portfinder": "^1.0.27"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.18.1"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

@@ -3,7 +3,7 @@
     "access": "public"
   },
   "name": "@kie-tools/kie-sandbox-fs",
-  "version": "0.0.0",
+  "version": "0.18.1",
   "description": "In-browser FS based on KieSandboxFs",
   "main": "dist/index.js",
   "unpkg": "dist/index.js",
@@ -19,13 +19,13 @@
   },
   "dependencies": {
     "@isomorphic-git/idb-keyval": "^3.3.2",
+    "dexie": "^3.0.3",
     "isomorphic-textencoder": "^1.0.1",
     "just-debounce-it": "^3.0.1",
-    "just-once": "^2.0.1",
-    "dexie": "^3.0.3"
+    "just-once": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools/build-env": "0.18.1",
     "karma": "^6.3.9",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",

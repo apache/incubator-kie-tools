@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-core/run-script-if",
-  "version": "0.0.0",
+  "version": "0.18.1",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -22,6 +22,6 @@
     "yargs": "^17.0.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.18.1"
   }
 }
