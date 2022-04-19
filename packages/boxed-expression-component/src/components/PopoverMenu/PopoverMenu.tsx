@@ -19,14 +19,7 @@ import { useCallback, useState, useEffect } from "react";
 import { Popover } from "@patternfly/react-core";
 import "./PopoverMenu.css";
 import { useBoxedExpression } from "../../context";
-
-/**
- * Check if the key pressed is Esc Key.
- *
- * @param key the key from the event
- * @return true if yes, false otherwise
- */
-const isEscKey = (key = ""): boolean => /^esc.*/i.test(key);
+import { NavigationKeysUtils } from "../common";
 
 export interface PopoverMenuProps {
   /** Optional children element to be considered for triggering the popover */
@@ -48,7 +41,7 @@ export interface PopoverMenuProps {
   /**
    * True to show the popover programmatically.
    */
-  isVisible?: boolean;
+  isVisible?: boolean | null;
   /**
    * Lifecycle function invoked when the popover has fully transitioned out, called when the user click outside the popover.
    */
@@ -72,7 +65,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
   className,
   hasAutoWidth,
   minWidth,
-  isVisible = false,
+  isVisible = null,
   onHide = () => {},
   onCancel = () => {},
   onShown = () => {},
@@ -102,7 +95,7 @@ export const PopoverMenu: React.FunctionComponent<PopoverMenuProps> = ({
         return;
       }
 
-      if (event instanceof KeyboardEvent && isEscKey(event?.key)) {
+      if (event instanceof KeyboardEvent && NavigationKeysUtils.isEscape(event?.key)) {
         onCancel(event);
       } else {
         onHide();
