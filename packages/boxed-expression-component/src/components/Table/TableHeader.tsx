@@ -133,6 +133,9 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
           <EditTextInline
             value={column.label as string}
             onTextChange={(value) => {
+              if (column.label != value) {
+                boxedExpressionEditorGWTService?.notifyUserAction();
+              }
               onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value });
             }}
             onKeyDown={(event) => {
