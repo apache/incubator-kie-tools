@@ -3477,10 +3477,10 @@
     "@angular-devkit/schematics" "13.1.2"
     jsonc-parser "3.0.0"
 
-"@severlessworkflow/sdk-typescript@^3.0.2":
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/@severlessworkflow/sdk-typescript/-/sdk-typescript-3.0.2.tgz#3484b7fe0e0a9de41daa6ff54003a52c1e713248"
-  integrity sha512-+tZwDYmY/HLLDTs5WRzRy6hUvJj7CS20NZ3UPTl3kMSTALtJlojK6IOJC1qeMnELybfxyOCacIbmFdo/JNKD4A==
+"@severlessworkflow/sdk-typescript@^3.0.3":
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/@severlessworkflow/sdk-typescript/-/sdk-typescript-3.0.3.tgz#6fcec70e5651db77e0145697c91b8c40808d0526"
+  integrity sha512-lrIyDa5jI+nfMZg2Q2u70cRJBRGu2FtASVgzci7/MW5YxtTFYGYfc4rRxuMEf3EHVSFCVTKrtCYp4v2rHeLQYw==
   dependencies:
     ajv "^8.1.0"
     js-yaml "^4.1.0"
