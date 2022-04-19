@@ -28,17 +28,11 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { MermaidDiagram } from "../diagram";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
-import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
-import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
+import { SwfTextEditorController, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";
+import { SwfTextEditor } from "../textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 
 interface Props {
-  /**
-   * Delegation for KogitoEditorChannelApi.kogitoEditor_ready() to signal to the Channel
-   * that the editor is ready. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
-   */
-  onReady: () => void;
-
   /**
    * Delegation for KogitoEditorChannelApi.kogitoEditor_stateControlCommandUpdate(command) to signal to the Channel
    * that the editor is performing an undo/redo operation. Increases the decoupling of the ServerlessWorkflowEditor
@@ -76,97 +70,84 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
-  const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
-  const svgContainer = useRef<HTMLDivElement>(null);
-  const swfMonacoEditorRef = useRef<SwfMonacoEditorApi>(null);
+  const [fileContent, setFileContent] = useState<{ content: string; path: string } | undefined>(undefined);
+  const [diagramEditorOutOfSync, setDiagramEditorOutOfSync] = useState<boolean>(false);
+  const diagramEditorContainerRef = useRef<HTMLDivElement>(null);
+  const swfTextEditorRef = useRef<SwfTextEditorController>(null);
 
   useImperativeHandle(
     forwardedRef,
     () => {
       return {
-        setContent: (path: string, newContent: string): Promise<void> => {
+        setContent: async (path: string, content: string) => {
           try {
-            setInitialContent({
-              originalContent: newContent,
-              path: path,
-            });
-            return Promise.resolve();
+            setFileContent({ content, path });
           } catch (e) {
             console.error(e);
-            return Promise.reject();
+            throw e;
           }
         },
-        getContent: (): Promise<string> => {
-          return Promise.resolve(swfMonacoEditorRef.current?.getContent() || "");
-        },
-        getPreview: (): Promise<string> => {
-          // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
-          const svgContent = svgContainer.current!.innerHTML.replaceAll("<br>", "<br/>");
-          return Promise.resolve(svgContent);
-        },
-        undo: (): Promise<void> => {
-          return swfMonacoEditorRef.current?.undo() || Promise.resolve();
-        },
-        redo: (): Promise<void> => {
-          return swfMonacoEditorRef.current?.redo() || Promise.resolve();
-        },
-        validate: (): Notification[] => {
-          return [];
-        },
-        setTheme: (theme: EditorTheme): Promise<void> => {
-          return swfMonacoEditorRef.current?.setTheme(theme) || Promise.resolve();
-        },
+        getContent: async () => swfTextEditorRef.current?.getContent(),
+        getPreview: async () => diagramEditorContainerRef.current!.innerHTML.replaceAll("<br>", "<br/>"), // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766,
+        undo: async () => swfTextEditorRef.current?.undo(),
+        redo: async () => swfTextEditorRef.current?.redo(),
+        validate: (): Notification[] => [],
+        setTheme: async (theme: EditorTheme) => swfTextEditorRef.current?.setTheme(theme),
       };
     },
     []
   );
 
-  const onContentChanged = useCallback(
-    (newContent: string, operation?: MonacoEditorOperation) => {
-      if (operation === MonacoEditorOperation.EDIT) {
-        props.onNewEdit(new KogitoEdit(newContent));
-      } else if (operation === MonacoEditorOperation.UNDO) {
-        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
-      } else if (operation === MonacoEditorOperation.REDO) {
-        props.onStateControlCommandUpdate(StateControlCommand.REDO);
+  const updateDiagramEditor = useCallback((newContent: string) => {
+    try {
+      const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
+      const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
+
+      if (mermaidSourceCode?.length > 0) {
+        diagramEditorContainerRef.current!.innerHTML = mermaidSourceCode;
+        diagramEditorContainerRef.current!.removeAttribute("data-processed");
+        mermaid.init(diagramEditorContainerRef.current!);
+        svgPanZoom(diagramEditorContainerRef.current!.getElementsByTagName("svg")[0]);
+        diagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+        diagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.height = "100%";
+        setDiagramEditorOutOfSync(false);
+      } else {
+        diagramEditorContainerRef.current!.innerHTML = "Create a workflow to see its preview here.";
+        setDiagramEditorOutOfSync(true);
+      }
+    } catch (e) {
+      console.error(e);
+      setDiagramEditorOutOfSync(true);
+    }
+  }, []);
+
+  const onSwfTextEditorContentChanged = useCallback(
+    (newContent: string, operation: SwfTextEditorOperation) => {
+      if (operation === SwfTextEditorOperation.EDIT) {
+        props.onNewEdit.call(undefined, new KogitoEdit(new Date().getTime().toString()));
+      } else if (operation === SwfTextEditorOperation.UNDO) {
+        props.onStateControlCommandUpdate.call(undefined, StateControlCommand.UNDO);
+      } else if (operation === SwfTextEditorOperation.REDO) {
+        props.onStateControlCommandUpdate.call(undefined, StateControlCommand.REDO);
       }
 
-      try {
-        const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
-        const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
-
-        if (mermaidSourceCode?.length > 0) {
-          svgContainer.current!.innerHTML = mermaidSourceCode;
-          svgContainer.current!.removeAttribute("data-processed");
-          mermaid.init(svgContainer.current!);
-          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
-          svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-          svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
-          setDiagramOutOfSync(false);
-        } else {
-          svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
-          setDiagramOutOfSync(true);
-        }
-      } catch (e) {
-        console.error(e);
-        setDiagramOutOfSync(true);
-      }
+      updateDiagramEditor(newContent);
     },
-    [props]
+    [props.onNewEdit, props.onStateControlCommandUpdate, updateDiagramEditor]
   );
 
   useEffect(() => {
-    props.onReady.call(null);
-    onContentChanged(initialContent.originalContent);
-  }, [initialContent, onContentChanged, props.onReady]);
+    if (fileContent?.content !== undefined) {
+      updateDiagramEditor(fileContent.content);
+    }
+  }, [fileContent?.content, updateDiagramEditor]);
 
   const panelContent = (
     <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
       <DrawerPanelBody>
         <div
-          style={{ height: "100%", textAlign: "center", opacity: diagramOutOfSync ? 0.5 : 1 }}
-          ref={svgContainer}
+          style={{ height: "100%", textAlign: "center", opacity: diagramEditorOutOfSync ? 0.5 : 1 }}
+          ref={diagramEditorContainerRef}
           className={"mermaid"}
         />
       </DrawerPanelBody>
@@ -177,13 +158,13 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
         <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {initialContent.path !== "" && (
-            <SwfMonacoEditor
+          {fileContent !== undefined && (
+            <SwfTextEditor
               channelType={props.channelType}
-              content={initialContent.originalContent}
-              fileName={initialContent.path}
-              onContentChange={onContentChanged}
-              ref={swfMonacoEditorRef}
+              content={fileContent.content}
+              filePath={fileContent.path}
+              onContentChange={onSwfTextEditorContentChanged}
+              ref={swfTextEditorRef}
             />
           )}
         </DrawerContentBody>

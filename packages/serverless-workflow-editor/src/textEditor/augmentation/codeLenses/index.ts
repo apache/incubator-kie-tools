@@ -3,7 +3,7 @@ import {
   SwfLanguageServiceCommandIds,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service";
-import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
+import { ServerlessWorkflowEditorChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export function initJsonCodeLenses(

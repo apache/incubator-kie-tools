@@ -31,15 +31,13 @@ import { Notification, NotificationsApi } from "@kie-tools-core/notifications/di
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
-  JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
-  JavaCodeCompletionClass,
+  JavaCodeCompletionApi,
   JavaCodeCompletionChannelApi,
+  JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
-  private readonly decoder = new TextDecoder("utf-8");
-
   constructor(
     private readonly editor: KogitoEditor,
     private readonly resourceContentService: ResourceContentService,
@@ -48,12 +46,19 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
     private readonly notificationsApi: NotificationsApi,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
-    private readonly i18n: I18n<VsCodeI18n>,
-    private initialBackup = editor.document.initialBackup
+    private readonly i18n: I18n<VsCodeI18n>
   ) {}
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit) {
-    this.editor.document.notifyEdit(this.editor, edit);
+  public async kogitoWorkspace_newEdit(kogitoEdit: KogitoEdit) {
+    const edit = new vscode.WorkspaceEdit();
+
+    const { content } = await this.editor.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest();
+
+    // Just replace the entire document every time for this example extension.
+    // A more complete extension should compute minimal edits instead.
+    edit.replace(this.editor.document.uri, new vscode.Range(0, 0, this.editor.document.lineCount, 0), content);
+
+    return vscode.workspace.applyEdit(edit);
   }
 
   public kogitoWorkspace_openFile(path: string) {
@@ -63,18 +68,17 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   }
 
   public async kogitoEditor_contentRequest() {
-    let contentArray: Uint8Array;
+    let content: string;
     try {
-      contentArray = await vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri);
+      content = this.editor.document.getText();
     } catch (e) {
       // If file doesn't exist, we create an empty one.
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
       await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
-      return { content: "", path: this.editor.document.relativePath };
+      return { content: "", path: this.editor.document.uri.path };
     }
 
-    this.initialBackup = undefined;
-    return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
+    return { content, path: this.editor.document.uri.path };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {

@@ -94,9 +94,6 @@ export const App = () => {
           <ServerlessWorkflowEditor
             channelType={ChannelType.ONLINE}
             ref={editor}
-            onReady={() => {
-              /*NOP*/
-            }}
             onNewEdit={() => {
               /*NOP*/
             }}

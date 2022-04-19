@@ -129,7 +129,6 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       javaCodeCompletionApi,
       viewType,
       i18n,
-      initialBackup,
       new SwfServiceCatalogChannelApiImpl({
         swfServiceCatalogStore,
         baseFileAbsolutePosixPath: editor.document.uri.path,

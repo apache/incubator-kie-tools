@@ -15,7 +15,7 @@
  */
 
 import * as vscode from "vscode";
-import { ColorThemeKind, UIKind } from "vscode";
+import { ColorThemeKind, TextDocument, UIKind } from "vscode";
 import {
   ChannelType,
   EditorApi,
@@ -26,16 +26,25 @@ import {
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+
+function fileExtension(document: TextDocument) {
+  const lastSlashIndex = document.uri.fsPath.lastIndexOf("/");
+  const fileName = document.uri.fsPath.substring(lastSlashIndex + 1);
+
+  const firstDotIndex = fileName.indexOf(".");
+  const fileExtension = fileName.substring(firstDotIndex + 1);
+
+  return fileExtension;
+}
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
 
   public constructor(
-    public readonly document: KogitoEditableDocument,
+    public readonly document: TextDocument,
     public readonly panel: vscode.WebviewPanel,
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
@@ -57,7 +66,7 @@ export class KogitoEditor implements EditorApi {
         self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
-            fileExtension: document.fileExtension,
+            fileExtension: fileExtension(document),
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
             isReadOnly: false,
@@ -207,8 +216,32 @@ export class KogitoEditor implements EditorApi {
   }
 
   public startListeningToThemeChanges() {
-    vscode.window.onDidChangeActiveColorTheme((colorTheme) => {
+    const changeThemeSubscription = vscode.window.onDidChangeActiveColorTheme((colorTheme) => {
       return this.setTheme(this.getEditorThemeByVscodeTheme(colorTheme.kind));
+    });
+
+    // Make sure we get rid of the listener when our editor is closed.
+    this.panel.onDidDispose(() => {
+      changeThemeSubscription.dispose();
+    });
+  }
+
+  public startListeningToDocumentChanges() {
+    const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
+      const newDocumentContent = e.document.getText();
+      const editorContent = (await this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest()).content;
+
+      if (e.document.uri.toString() === this.document.uri.toString() && editorContent !== newDocumentContent) {
+        this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({
+          content: newDocumentContent,
+          path: e.document.uri.path,
+        });
+      }
+    });
+
+    // Make sure we get rid of the listener when our editor is closed.
+    this.panel.onDidDispose(() => {
+      changeDocumentSubscription.dispose();
     });
   }
 }

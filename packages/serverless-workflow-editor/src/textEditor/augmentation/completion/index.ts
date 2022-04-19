@@ -15,8 +15,8 @@
  */
 
 import * as monaco from "monaco-editor";
-import { SwfMonacoEditorInstance } from "../../SwfMonacoEditorApi";
-import { ServerlessWorkflowEditorChannelApi } from "../../../editor";
+import { SwfMonacoEditorInstance } from "../../SwfTextEditorController";
+import { ServerlessWorkflowEditorChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as ls from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-language-service";

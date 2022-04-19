@@ -43,7 +43,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
+import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor/dist/api";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
@@ -60,7 +60,6 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,
-    initialBackup = editor.document.initialBackup,
     private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
   ) {
@@ -72,8 +71,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
       notificationsApi,
       javaCodeCompletionApi,
       viewType,
-      i18n,
-      initialBackup
+      i18n
     );
   }
 
@@ -82,7 +80,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   }
 
   public kogitoEditor_ready(): void {
-    this.defaultApiImpl.kogitoEditor_contentRequest();
+    this.defaultApiImpl.kogitoEditor_ready();
   }
 
   public kogitoEditor_setContentError(content: EditorContent): void {

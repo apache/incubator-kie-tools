@@ -24,16 +24,17 @@ import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 initJsonSchemaDiagnostics();
 initYamlSchemaDiagnostics();
 
-export interface SwfMonacoEditorApi {
+export interface SwfTextEditorController {
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
   undo: () => void;
   redo: () => void;
   getContent: () => string;
+  setContent: (content: string) => void;
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
 }
 
-export enum MonacoEditorOperation {
+export enum SwfTextEditorOperation {
   UNDO,
   REDO,
   EDIT,
@@ -44,23 +45,26 @@ export interface SwfMonacoEditorInstance {
   instance: editor.IStandaloneCodeEditor;
 }
 
-export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
+export class DefaultSwfTextEditorController implements SwfTextEditorController {
   private readonly model: editor.ITextModel;
 
   public editor: editor.IStandaloneCodeEditor | undefined;
 
   constructor(
-    content: string,
-    private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void,
+    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
     private readonly language: string,
     private readonly operatingSystem: OperatingSystem | undefined
   ) {
-    this.model = editor.createModel(content, this.language);
+    this.model = editor.createModel("", this.language);
+
+    //FIXME: tiago setup a debounce here. one edit per character is too much.
     this.model.onDidChangeContent((event) => {
-      if (!event.isUndoing && !event.isRedoing) {
-        this.editor?.pushUndoStop();
-        onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
+      if (event.isUndoing || event.isRedoing) {
+        return;
       }
+
+      this.editor?.pushUndoStop();
+      onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT);
     });
   }
 
@@ -76,6 +80,10 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
 
   public setTheme(theme: EditorTheme): void {
     editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
+  }
+
+  public setContent(content: string): void {
+    this.model.setValue(content);
   }
 
   public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {
@@ -96,16 +104,16 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     this.editor.updateOptions({ wordBasedSuggestions: false });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
-      this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
+      this.onContentChange(this.model.getValue(), SwfTextEditorOperation.UNDO);
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyZ, () => {
-      this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+      this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
     });
 
     if (this.operatingSystem !== OperatingSystem.MACOS) {
       this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
-        this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
+        this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
       });
     }
 
@@ -113,7 +121,7 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
   }
 
   public getContent(): string {
-    return this.editor?.getModel()?.getValue() || "";
+    return this.model.getValue();
   }
 
   public forceRedraw() {

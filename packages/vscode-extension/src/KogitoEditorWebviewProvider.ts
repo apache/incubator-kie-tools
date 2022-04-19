@@ -15,28 +15,15 @@
  */
 
 import * as vscode from "vscode";
-import {
-  CancellationToken,
-  CustomDocumentBackupContext,
-  CustomDocumentEditEvent,
-  CustomDocumentOpenContext,
-  CustomEditorProvider,
-  EventEmitter,
-  Uri,
-  WebviewPanel,
-} from "vscode";
+import { CancellationToken, CustomTextEditorProvider, TextDocument, WebviewPanel } from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 
-export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
-  private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
-  public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
-
+export class KogitoEditorWebviewProvider implements CustomTextEditorProvider {
   public constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly viewType: string,
@@ -55,58 +42,7 @@ export class KogitoEditorWebviewProvider implements CustomEditorProvider<KogitoE
     });
   }
 
-  public async resolveCustomEditor(
-    document: KogitoEditableDocument,
-    webviewPanel: WebviewPanel,
-    cancellation: CancellationToken
-  ) {
+  public async resolveCustomTextEditor(document: TextDocument, webviewPanel: WebviewPanel, token: CancellationToken) {
     this.editorFactory.configureNew(webviewPanel, document);
-  }
-
-  public async openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, cancellation: CancellationToken) {
-    await this.createStorageFolder();
-    const document = new KogitoEditableDocument(
-      uri,
-      this.resolveBackupUri(openContext.backupId),
-      this.editorStore,
-      this.vsCodeI18n,
-      this.vsCodeNotificationsApi,
-      this.editorEnvelopeLocator
-    );
-    this.setupListeners(document);
-    return document;
-  }
-
-  public async saveCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
-    return document.save(document.uri, cancellation);
-  }
-
-  public async saveCustomDocumentAs(document: KogitoEditableDocument, dest: Uri, cancellation: CancellationToken) {
-    return document.save(dest, cancellation);
-  }
-
-  public async revertCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
-    return document.revert(cancellation);
-  }
-
-  public backupCustomDocument(
-    document: KogitoEditableDocument,
-    context: CustomDocumentBackupContext,
-    cancellation: CancellationToken
-  ) {
-    return document.backup(context.destination, cancellation);
-  }
-
-  private async createStorageFolder() {
-    await vscode.workspace.fs.createDirectory(this.context.storageUri ?? this.context.globalStorageUri);
-  }
-
-  private setupListeners(document: KogitoEditableDocument) {
-    const listeners = [document.onDidChange((e) => this._onDidChangeCustomDocument.fire({ ...e, document }))];
-    document.onDidDispose(() => listeners.forEach((listener) => listener.dispose()));
-  }
-
-  private resolveBackupUri(backupId: string | undefined): Uri | undefined {
-    return backupId ? Uri.parse(backupId) : undefined;
   }
 }

@@ -16,39 +16,43 @@
 
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { DefaultSwfMonacoEditorController, SwfMonacoEditorApi } from "./SwfMonacoEditorApi";
+import {
+  DefaultSwfTextEditorController,
+  SwfTextEditorOperation,
+  SwfTextEditorController,
+} from "./SwfTextEditorController";
 import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { ServerlessWorkflowEditorChannelApi } from "../editor";
+import { ServerlessWorkflowEditorChannelApi } from "../api";
 
 interface Props {
   content: string;
-  fileName: string;
-  onContentChange: (content: string) => void;
+  filePath: string;
+  onContentChange: (content: string, operation: SwfTextEditorOperation) => void;
   channelType: ChannelType;
 }
 
-const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEditorApi | undefined, Props> = (
-  { content, fileName, onContentChange, channelType },
+const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorController | undefined, Props> = (
+  { content, filePath, onContentChange, channelType },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
 
-  const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
-    if (fileName.endsWith(".sw.json")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "json", editorEnvelopeCtx.operatingSystem);
+  const controller = useMemo<SwfTextEditorController>(() => {
+    if (filePath.endsWith(".sw.json")) {
+      return new DefaultSwfTextEditorController(onContentChange, "json", editorEnvelopeCtx.operatingSystem);
     }
-    if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", editorEnvelopeCtx.operatingSystem);
+    if (filePath.endsWith(".sw.yaml") || filePath.endsWith(".sw.yml")) {
+      return new DefaultSwfTextEditorController(onContentChange, "yaml", editorEnvelopeCtx.operatingSystem);
     }
 
-    throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
+    throw new Error(`Unsupported extension '${filePath}'`);
+  }, [editorEnvelopeCtx.operatingSystem, filePath, onContentChange]);
 
   useEffect(() => {
     if (!container.current) {
@@ -68,19 +72,15 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
     // TODO: Add support to YAML
     // initYamlCompletion(commands, editorEnvelopeCtx.channelApi);
     // initYamlWidgets(commands, editorEnvelopeCtx.channelApi);
-  }, [
-    content,
-    fileName,
-    channelType,
-    controller,
-    theme,
-    editorEnvelopeCtx.channelApi,
-    editorEnvelopeCtx.operatingSystem,
-  ]);
+  }, [controller, theme, editorEnvelopeCtx.channelApi, editorEnvelopeCtx.operatingSystem]);
+
+  useEffect(() => {
+    controller.setContent(content);
+  }, [controller, content]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 
   return <div style={{ height: "100%" }} ref={container} />;
 };
 
-export const SwfMonacoEditor = React.forwardRef(RefForwardingSwfMonacoEditor);
+export const SwfTextEditor = React.forwardRef(RefForwardingSwfTextEditor);
