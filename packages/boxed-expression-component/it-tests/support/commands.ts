@@ -45,7 +45,8 @@ import { addMatchImageSnapshotCommand } from "cypress-image-snapshot/command";
 addMatchImageSnapshotCommand({
   customSnapshotsDir: "../it-tests/cypress/snapshots",
   blackout: [".updated-json"],
-  customDiffConfig: { threshold: 0.6 },
+  failureThreshold: 0.3, // threshold for entire image
+  failureThresholdType: "percent", // percent of image or number of pixels
   capture: "fullPage",
 });
 
