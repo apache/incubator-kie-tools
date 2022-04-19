@@ -166,6 +166,7 @@ describe("DecisionTableExpression tests", () => {
       broadcastDecisionTableExpressionDefinition: (definition: DecisionTableProps) =>
         mockedBroadcastDefinition(definition),
       notifyUserAction: () => {},
+      selectObject(): void {},
     } as BoxedExpressionEditorGWTService;
 
     const { container, baseElement } = render(
