@@ -145,13 +145,20 @@ export function HomePage() {
               <Gallery
                 hasGutter={true}
                 // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(100% - 16px)", default: "100%" }}
+                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
                 <NewModelCard
                   title={"Workflow"}
                   extension={"sw.json"}
                   description={"Serverless Workflow files are used to define orchestration logic for services."}
+                />
+                <NewModelCard
+                  title={"Dashboard"}
+                  extension={"db"}
+                  description={
+                    "Dashboard files are used to define data visualization extracted from business applications."
+                  }
                 />
               </Gallery>
             </PageSection>
@@ -466,6 +473,8 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
 export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
   const routes = useRoutes();
 
+  const isDashboard = useMemo(() => props.extension === "db", [props.extension]); // FIXME: remove it
+
   return (
     <Card isFullHeight={true} isPlain={true} isLarge={true}>
       <CardTitle>
@@ -478,25 +487,30 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
       </CardBody>
       <CardFooter>
         <Grid>
-          <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
-            <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
+          <Link to={isDashboard ? "" : { pathname: routes.newModel.path({ extension: props.extension }) }}>
+            <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`} isDisabled={isDashboard}>
               New {props.title}
             </Button>
           </Link>
           <Link
-            to={{
-              pathname: routes.importModel.path({}),
-              search: routes.importModel.queryString({
-                url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                  type: props.extension,
-                })}`,
-              }),
-            }}
+            to={
+              isDashboard
+                ? ""
+                : {
+                    pathname: routes.importModel.path({}),
+                    search: routes.importModel.queryString({
+                      url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
+                        type: props.extension,
+                      })}`,
+                    }),
+                  }
+            }
           >
             <Button
               variant={ButtonVariant.link}
               style={{ paddingLeft: "2px" }}
               ouiaId={`try-${props.extension}-sample-button`}
+              isDisabled={isDashboard}
             >
               Try sample
             </Button>

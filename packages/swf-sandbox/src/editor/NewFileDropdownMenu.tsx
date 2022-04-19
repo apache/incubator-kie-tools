@@ -74,6 +74,11 @@ export function NewFileDropdownMenu(props: {
 
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
+      if (extension === "db") {
+        //FIXME: remove it
+        return;
+      }
+
       const file = await workspaces.addEmptyFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
@@ -138,10 +143,15 @@ export function NewFileDropdownMenu(props: {
   );
 
   const addSample = useCallback(
-    (extension: SupportedFileExtensions) =>
+    (extension: SupportedFileExtensions) => {
+      if (extension === "db") {
+        //FIXME: remove it
+        return;
+      }
       importFromUrl(
         `${window.location.origin}${window.location.pathname}${routes.static.sample.path({ type: extension })}`
-      ),
+      );
+    },
     [importFromUrl, routes]
   );
 
@@ -221,6 +231,15 @@ export function NewFileDropdownMenu(props: {
               <FileLabel style={{ marginBottom: "4px" }} extension={"sw.json"} />
             </b>
           </MenuItem>
+          <MenuItem
+            itemId={"newDashboardItemId"}
+            onClick={() => addEmptyFile("db")}
+            description="Dashboard files are used to define data visualization extracted from business applications."
+          >
+            <b>
+              <FileLabel style={{ marginBottom: "4px" }} extension={"db"} />
+            </b>
+          </MenuItem>
           <Divider />
           <MenuItem
             description={"Try sample models"}
@@ -238,6 +257,17 @@ export function NewFileDropdownMenu(props: {
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
                       <FileLabel extension={"sw.json"} />
+                    </FlexItem>
+                  </Flex>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => addSample("db")}
+                  description="Dashboard files are used to define data visualization extracted from business applications."
+                >
+                  <Flex>
+                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>
+                      <FileLabel extension={"db"} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>
