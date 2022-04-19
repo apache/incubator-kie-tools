@@ -135,8 +135,5 @@
         "title": "Serverless Workflow: Remove Service Registry URL"
       }
     ]
-  },
-  "extensionDependencies": [
-    "redhat.vscode-redhat-account"
-  ]
+  }
 }
