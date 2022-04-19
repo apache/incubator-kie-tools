@@ -1,3 +1,7 @@
+# 0.18.1 (alpha)
+
+- [KOGITO-6983](https://issues.redhat.com/browse/KOGITO-6983) - Update @severlessworkflow/sdk-typescript to 3.0.3
+
 # 0.18.0 (alpha)
 
 - [KOGITO-6899](https://issues.redhat.com/browse/KOGITO-6899) - [SWF Editor] Integrate Service Catalog with Service Registries on Red Hat Hybrid Cloud Console
