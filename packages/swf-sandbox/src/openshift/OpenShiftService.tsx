@@ -159,6 +159,7 @@ export class OpenShiftService {
         file: {
           path: args.workflow.name,
           content: processedFileContent,
+          preview: args.workflow.preview ?? "",
         },
       }),
       rollbacks.slice(--rollbacksCount)

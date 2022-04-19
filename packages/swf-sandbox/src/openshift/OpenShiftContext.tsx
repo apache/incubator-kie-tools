@@ -22,6 +22,7 @@ export const SW_JSON_EXTENSION = "sw.json";
 export interface DeploymentWorkflow {
   name: string;
   content: string;
+  preview?: string;
 }
 
 export interface OpenShiftContextType {

@@ -1,3 +1,4 @@
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -13,7 +14,8 @@ import { WorkspaceFile } from "../workspace/WorkspacesContext";
 
 export interface DeployToolbarProps {
   alerts: AlertsController | undefined;
-  currentFile: WorkspaceFile;
+  workspaceFile: WorkspaceFile;
+  editor?: EmbeddedEditorRef;
 }
 
 export function DeployToolbar(props: DeployToolbarProps) {
@@ -85,17 +87,18 @@ export function DeployToolbar(props: DeployToolbarProps) {
       }
 
       await openshift.uploadArtifactToServiceRegistry(
-        `${props.currentFile.nameWithoutExtension} ${deploymentResourceName}`,
+        `${props.workspaceFile.nameWithoutExtension} ${deploymentResourceName}`,
         openApiContents
       );
 
       return true;
     },
-    [openshift, props.currentFile.nameWithoutExtension]
+    [openshift, props.workspaceFile.nameWithoutExtension]
   );
 
   const onDeploy = useCallback(async () => {
-    const content = await props.currentFile.getFileContentsAsString();
+    const content = await props.editor?.getContent();
+    const preview = await props.editor?.getPreview();
 
     if (!content) {
       setDeployError.show();
@@ -104,8 +107,9 @@ export function DeployToolbar(props: DeployToolbarProps) {
 
     setLoading(true);
     const resourceName = await openshift.deploy({
-      name: props.currentFile.relativePath,
+      name: props.workspaceFile.relativePath,
       content: content,
+      preview: preview,
     });
     setLoading(false);
 
@@ -125,7 +129,15 @@ export function DeployToolbar(props: DeployToolbarProps) {
     } else {
       setDeployError.show();
     }
-  }, [props.currentFile, openshift, setDeployError, setDeploySuccess, fetchOpenApiSpec, openApiUploadSuccess]);
+  }, [
+    props.editor,
+    props.workspaceFile.relativePath,
+    openshift,
+    setDeployError,
+    setDeploySuccess,
+    fetchOpenApiSpec,
+    openApiUploadSuccess,
+  ]);
 
   return (
     <Flex>

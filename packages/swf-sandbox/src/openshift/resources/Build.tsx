@@ -34,6 +34,7 @@ export interface CreateBuildArgs {
   file: {
     path: string;
     content: string;
+    preview: string;
   };
 }
 
@@ -58,6 +59,7 @@ export class CreateBuild extends ResourceFetch {
 
   protected async requestBody(): Promise<string | undefined> {
     const modelPath = `${this.PROJECT_METAINF_RESOURCES}/${this.args.file.path}`;
+    const previewPath = `${modelPath}.svg`;
     return `
       kind: Build
       apiVersion: build.openshift.io/v1
@@ -102,6 +104,7 @@ export class CreateBuild extends ResourceFetch {
             ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"
             RUN mkdir -p '${dirname(modelPath)}' \
                 && echo -e $'${this.args.file.content}' > '${modelPath}' \
+                && echo -e $'${this.args.file.preview}' > '${previewPath}' \
                 && ${this.MVNW_PATH} clean package -B -ntp -f ${this.POM_PATH} \
                 && cp ${this.QUARKUS_APP_FOLDER}/*.jar ${this.DEPLOYMENTS_FOLDER} \
                 && cp -R ${this.QUARKUS_APP_FOLDER}/lib/ ${this.DEPLOYMENTS_FOLDER} \

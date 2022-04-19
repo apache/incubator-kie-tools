@@ -1478,7 +1478,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                     </ToolbarItem>
                     <ToolbarItem visibility={hideWhenSmall}>
                       <FlexItem>
-                        <DeployToolbar alerts={props.alerts} currentFile={props.workspaceFile} />
+                        <DeployToolbar
+                          editor={props.editor}
+                          alerts={props.alerts}
+                          workspaceFile={props.workspaceFile}
+                        />
                       </FlexItem>
                       {/* <PromiseStateWrapper
                         promise={workspaceOpenApiFilePromise}
