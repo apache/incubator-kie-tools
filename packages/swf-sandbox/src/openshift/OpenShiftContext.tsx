@@ -16,21 +16,8 @@
 
 import * as React from "react";
 import { useContext } from "react";
-import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
-import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
-import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
-import { Deployments } from "./resources/Deployment";
-import { KNativeServices } from "./resources/KNativeService";
 
 export const SW_JSON_EXTENSION = "sw.json";
-
-export interface DeployArgs {
-  workflow: DeploymentWorkflow;
-  openShiftConfig: OpenShiftSettingsConfig;
-  kafkaConfig: KafkaSettingsConfig;
-  serviceAccountConfig: ServiceAccountSettingsConfig;
-  resourceName?: string;
-}
 
 export interface DeploymentWorkflow {
   name: string;
@@ -38,16 +25,9 @@ export interface DeploymentWorkflow {
 }
 
 export interface OpenShiftContextType {
-  deploy(args: DeployArgs): Promise<string>;
-  uploadOpenApiToServiceRegistry(openApiContent: string, artifactId: string): Promise<void>;
-
-  fetchOpenApiFile(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
-  fetchWorkflowRoute(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
-  fetchWorkflowName(config: OpenShiftSettingsConfig, resourceName: string): Promise<string | undefined>;
-  fetchWorkflow(config: OpenShiftSettingsConfig, resourceName: string): Promise<DeploymentWorkflow | undefined>;
-  fetchWorkflows(config: OpenShiftSettingsConfig): Promise<DeploymentWorkflow[]>;
-  listServices(config: OpenShiftSettingsConfig): Promise<KNativeServices | undefined>;
-  listDeployments(config: OpenShiftSettingsConfig): Promise<Deployments | undefined>;
+  deploy(workflow: DeploymentWorkflow): Promise<string>;
+  uploadArtifactToServiceRegistry(artifactId: string, content: string): Promise<void>;
+  fetchOpenApiFile(resourceName: string): Promise<string | undefined>;
 }
 
 export const OpenShiftContext = React.createContext<OpenShiftContextType>({} as any);

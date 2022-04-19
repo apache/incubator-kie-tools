@@ -35,7 +35,7 @@ export const EMPTY_CONFIG: OpenShiftSettingsConfig = {
   token: "",
 };
 
-export function isConfigValid(config: OpenShiftSettingsConfig): boolean {
+export function isOpenShiftConfigValid(config: OpenShiftSettingsConfig): boolean {
   return (
     isProxyValid(config.proxy) &&
     isNamespaceValid(config.namespace) &&

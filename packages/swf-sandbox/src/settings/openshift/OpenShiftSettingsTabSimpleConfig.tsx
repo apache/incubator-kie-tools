@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-import * as React from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
+import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
-import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useAppI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import {
   EMPTY_CONFIG,
-  isConfigValid,
+  isOpenShiftConfigValid,
   OpenShiftSettingsConfig,
   saveConfigCookie,
 } from "../openshift/OpenShiftSettingsConfig";
-import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -78,7 +77,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
       return;
     }
 
-    if (!isConfigValid(config)) {
+    if (!isOpenShiftConfigValid(config)) {
       setConfigValidated(FormValiationOptions.INVALID);
       return;
     }

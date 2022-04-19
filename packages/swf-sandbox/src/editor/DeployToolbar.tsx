@@ -78,20 +78,20 @@ export function DeployToolbar(props: DeployToolbarProps) {
 
   const fetchOpenApiSpec = useCallback(
     async (deploymentResourceName: string) => {
-      const openApiContents = await openshift.fetchOpenApiFile(settings.openshift.config, deploymentResourceName);
+      const openApiContents = await openshift.fetchOpenApiFile(deploymentResourceName);
 
       if (!openApiContents) {
         return false;
       }
 
-      await openshift.uploadOpenApiToServiceRegistry(
-        openApiContents,
-        `${props.currentFile.nameWithoutExtension} ${deploymentResourceName}`
+      await openshift.uploadArtifactToServiceRegistry(
+        `${props.currentFile.nameWithoutExtension} ${deploymentResourceName}`,
+        openApiContents
       );
 
       return true;
     },
-    [openshift, props.currentFile.nameWithoutExtension, settings.openshift.config]
+    [openshift, props.currentFile.nameWithoutExtension]
   );
 
   const onDeploy = useCallback(async () => {
@@ -104,13 +104,8 @@ export function DeployToolbar(props: DeployToolbarProps) {
 
     setLoading(true);
     const resourceName = await openshift.deploy({
-      openShiftConfig: settings.openshift.config,
-      workflow: {
-        name: props.currentFile.relativePath,
-        content: content,
-      },
-      kafkaConfig: settings.apacheKafka.config,
-      serviceAccountConfig: settings.serviceAccount.config,
+      name: props.currentFile.relativePath,
+      content: content,
     });
     setLoading(false);
 
@@ -119,27 +114,18 @@ export function DeployToolbar(props: DeployToolbarProps) {
 
       const fetchOpenApiTask = window.setInterval(async () => {
         const success = await fetchOpenApiSpec(resourceName);
-
-        if (success) {
-          window.clearInterval(fetchOpenApiTask);
-          setDeploySuccess.close();
-          openApiUploadSuccess.show();
+        if (!success) {
+          return;
         }
+
+        window.clearInterval(fetchOpenApiTask);
+        setDeploySuccess.close();
+        openApiUploadSuccess.show();
       }, 5000);
     } else {
       setDeployError.show();
     }
-  }, [
-    props.currentFile,
-    openshift,
-    settings.openshift.config,
-    settings.apacheKafka.config,
-    settings.serviceAccount.config,
-    setDeployError,
-    setDeploySuccess,
-    fetchOpenApiSpec,
-    openApiUploadSuccess,
-  ]);
+  }, [props.currentFile, openshift, setDeployError, setDeploySuccess, fetchOpenApiSpec, openApiUploadSuccess]);
 
   return (
     <Flex>

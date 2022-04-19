@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
-import { isKafkaConfigValid } from "../settings/kafka/KafkaSettingsConfig";
-import { isConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
+import { isKafkaConfigValid, KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
+import { isOpenShiftConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 import {
   isServiceAccountConfigValid,
   ServiceAccountSettingsConfig,
 } from "../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../settings/serviceRegistry/ServiceRegistryConfig";
-import { DeployArgs } from "./OpenShiftContext";
+import { DeploymentWorkflow } from "./OpenShiftContext";
 import { CreateBuild, DeleteBuild } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
-import { Deployments, ListDeployments } from "./resources/Deployment";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
 import { CreateKafkaSource, DeleteKafkaSource } from "./resources/KafkaSource";
 import {
@@ -39,16 +38,6 @@ import { KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resou
 import { CreateSecret, DeleteSecret } from "./resources/Secret";
 
 export const DEFAULT_CREATED_BY = "kie-tools-swf-sandbox";
-
-const OPENSHIFT_IDENTITY_API_URL = "https://identity.api.openshift.com/auth/realms/rhoas/protocol/openid-connect/token";
-
-interface AccessToken {
-  access_token: string;
-  expires_in: number;
-  refresh_expires_in: number;
-  token_type: string;
-  scope: string;
-}
 
 export class OpenShiftService {
   public async getWorkflowFileName(args: {
@@ -123,7 +112,12 @@ export class OpenShiftService {
     );
   }
 
-  public async deploy(args: DeployArgs): Promise<string> {
+  public async deploy(args: {
+    workflow: DeploymentWorkflow;
+    openShiftConfig: OpenShiftSettingsConfig;
+    kafkaConfig: KafkaSettingsConfig;
+    serviceAccountConfig: ServiceAccountSettingsConfig;
+  }): Promise<string> {
     const resourceName = `swf-${this.generateRandomId()}`;
 
     const commonArgs = {
@@ -213,14 +207,6 @@ export class OpenShiftService {
     return resourceName;
   }
 
-  public async listServices(config: OpenShiftSettingsConfig): Promise<KNativeServices> {
-    return this.fetchResource<KNativeServices>(config.proxy, new ListKNativeServices(config));
-  }
-
-  public async listDeployments(config: OpenShiftSettingsConfig): Promise<Deployments> {
-    return this.fetchResource<Deployments>(config.proxy, new ListDeployments(config));
-  }
-
   public async fetchResource<T = Resource>(
     proxyUrl: string,
     target: ResourceFetch,
@@ -265,7 +251,7 @@ export class OpenShiftService {
   }
 
   public async onCheckConfig(config: OpenShiftSettingsConfig): Promise<boolean> {
-    return isConfigValid(config) && this.isConnectionEstablished(config);
+    return isOpenShiftConfigValid(config) && this.isConnectionEstablished(config);
   }
 
   public async uploadOpenApiToServiceRegistry(args: {
