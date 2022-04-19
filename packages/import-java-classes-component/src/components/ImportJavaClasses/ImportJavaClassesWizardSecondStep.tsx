@@ -41,10 +41,11 @@ export const ImportJavaClassesWizardSecondStep = ({
   onSelectedJavaClassedFieldsLoaded,
   selectedJavaClasses,
 }: ImportJavaClassesWizardSecondStepProps) => {
-  const getPrefix = "get";
+  const accessorPrefixesList = ["get", "is"];
+  const denyList = ["getClass()", "serialVersionUID"];
 
   const isGetterMethod = useCallback((accessorName: string) => {
-    return accessorName.includes("()") && accessorName.startsWith(getPrefix);
+    return accessorName.includes("()") && accessorPrefixesList.some((value) => accessorName.startsWith(value));
   }, []);
 
   const isMethod = useCallback((accessorName: string) => {
@@ -54,7 +55,8 @@ export const ImportJavaClassesWizardSecondStep = ({
   const renameAccessorName = useCallback(
     (originalName: string) => {
       if (isGetterMethod(originalName)) {
-        const name = originalName.substring(originalName.indexOf(getPrefix) + 3, originalName.lastIndexOf("("));
+        const prefixIndex = accessorPrefixesList.findIndex((value) => originalName.startsWith(value));
+        const name = originalName.substring(accessorPrefixesList[prefixIndex].length, originalName.lastIndexOf("("));
         return name.charAt(0).toLowerCase() + name.slice(1);
       } else {
         return originalName;
@@ -72,8 +74,6 @@ export const ImportJavaClassesWizardSecondStep = ({
   }, []);
 
   const isInDenyList = useCallback((accessorName: string) => {
-    console.log(accessorName);
-    const denyList = ["getClass()", "serialVersionUID"];
     return denyList.includes(accessorName);
   }, []);
 

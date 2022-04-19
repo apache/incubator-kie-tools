@@ -49,6 +49,7 @@ const Showcase: React.FunctionComponent = () => {
       { fqcn: "com.Book", accessor: "getClass()", type: "java.lang.Class<?>" },
       { fqcn: "com.Book", accessor: "getOtherBookList()", type: "java.util.List<java.lang.String>" },
       { fqcn: "com.Book", accessor: "getTopicsMap()", type: "java.util.Map<java.lang.String, java.lang.String>" },
+      { fqcn: "com.Boom", accessor: "isAvailable()", type: "java.lang.Boolean" },
     ];
     const boomClassFieldsList = [
       { fqcn: "com.Boom", accessor: "time", type: "java.util.Date" },
