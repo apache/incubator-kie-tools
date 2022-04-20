@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as React from "react";
 import { useEffect, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/";
 
@@ -29,7 +30,7 @@ interface ToolbarProps {
 export const Toolbar = (props: ToolbarProps) => {
   const [previewButtonSelected, setPreviewButtonSelected] = useState(props.preview);
 
-  useEffect(() => props.onPreviewChange(previewButtonSelected), [previewButtonSelected]);
+  useEffect(() => props.onPreviewChange(previewButtonSelected), [props, previewButtonSelected]);
   return (
     <div className="toolbar ignore-onclickoutside">
       <Split hasGutter={true}>

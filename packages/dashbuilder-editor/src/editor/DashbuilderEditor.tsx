@@ -84,11 +84,11 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
   const [content, setContent] = useState("");
   const [showPreview, setShowPreview] = useState<boolean>(props.showEditor!);
-  var newContentRef = useRef<string>("");
-  var oldContentRef = useRef<string>("");
+  const newContentRef = useRef<string>("");
+  const oldContentRef = useRef<string>("");
   const dashbuilderMonacoEditorRef = useRef<DashbuilderMonacoEditorApi>(null);
 
-  useEffect(() => props.onShowPreviewChange!(showPreview), [showPreview]);
+  useEffect(() => props.onShowPreviewChange!(showPreview), [props, showPreview]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -119,20 +119,27 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent() || "");
+          if (dashbuilderMonacoEditorRef.current) {
+            Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent());
+          }
+          return Promise.resolve("");
         },
         getPreview: (): Promise<string> => {
           // TODO: implement it on Dashbuilder
           return Promise.resolve("");
         },
         undo: (): Promise<void> => {
-          dashbuilderMonacoEditorRef.current?.undo();
-          newContentRef.current = dashbuilderMonacoEditorRef.current?.getContent()!;
+          if (dashbuilderMonacoEditorRef.current) {
+            dashbuilderMonacoEditorRef.current.undo();
+            newContentRef.current = dashbuilderMonacoEditorRef.current.getContent()!;
+          }
           return Promise.resolve();
         },
         redo: (): Promise<void> => {
-          dashbuilderMonacoEditorRef.current?.redo();
-          newContentRef.current = dashbuilderMonacoEditorRef.current?.getContent()!;
+          if (dashbuilderMonacoEditorRef.current) {
+            dashbuilderMonacoEditorRef.current.redo();
+            newContentRef.current = dashbuilderMonacoEditorRef.current.getContent()!;
+          }
           return Promise.resolve();
         },
         validate: (): Notification[] => {

@@ -80,6 +80,6 @@ module.exports = (env) =>
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname) }],
       compress: true,
-      port: buildEnv.dashbuilderEditor.dev.port,
+      port: 9007,
     },
   });

@@ -38,7 +38,7 @@ const RefForwardingDashbuilderMonacoEditor: React.ForwardRefRenderFunction<
 
   const controller: DashbuilderMonacoEditorApi = useMemo<DashbuilderMonacoEditorApi>(
     () => new DefaultDashbuilderMonacoEditorController(content, onContentChange, editorEnvelopeCtx.operatingSystem),
-    [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]
+    [content, editorEnvelopeCtx.operatingSystem, onContentChange]
   );
 
   useEffect(() => {
