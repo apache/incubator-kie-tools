@@ -70,7 +70,6 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
   const expressionNameRef = useRef<HTMLInputElement>(null);
-  // const [isVisible, setIsVisible] = useState(false);
   const [dataTypeSelectorOpen, setDataTypeSelectorOpen] = useState(false);
   const popoverMenuRef = useRef<PopoverMenuRef>();
 
@@ -127,7 +126,6 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onShown = useCallback(() => {
     expressionNameRef.current?.focus();
-    // setIsVisible(true);
     popoverMenuRef?.current?.setIsVisible(true);
   }, []);
 
