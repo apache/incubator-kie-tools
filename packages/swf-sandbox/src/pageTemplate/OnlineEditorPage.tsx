@@ -21,7 +21,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
-import { OpenshiftStatusButton } from "../openshift/OpenShiftStatusButton";
+import { OpenshiftDeploymentsDropdown } from "../openshift/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
@@ -45,7 +45,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
             <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
               <FlexItem>
                 <PageHeaderToolsItem>
-                  <OpenshiftStatusButton />
+                  <OpenshiftDeploymentsDropdown />
                 </PageHeaderToolsItem>
               </FlexItem>
               <FlexItem>

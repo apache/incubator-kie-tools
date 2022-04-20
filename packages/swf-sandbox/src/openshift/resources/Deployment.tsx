@@ -18,7 +18,7 @@ import {
   HttpMethod,
   JAVA_RUNTIME_VERSION,
   KOGITO_CREATED_BY,
-  KOGITO_WORKFLOW_FILE,
+  KOGITO_URI,
   Resource,
   ResourceArgs,
   ResourceFetch,
@@ -44,7 +44,7 @@ export interface Deployments {
 }
 
 export interface CreateDeploymentArgs {
-  fileName: string;
+  uri: string;
 }
 
 export class CreateDeployment extends ResourceFetch {
@@ -64,7 +64,7 @@ export class CreateDeployment extends ResourceFetch {
         annotations:
           image.openshift.io/triggers: >-
             [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:latest","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
-          ${KOGITO_WORKFLOW_FILE}: ${this.args.fileName}
+          ${KOGITO_URI}: ${this.args.uri}
         name: ${this.args.resourceName}
         namespace: ${this.args.namespace}
         labels:

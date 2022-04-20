@@ -15,11 +15,11 @@
  */
 
 import { dirname } from "path";
-import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
+import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, Resource, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
 
-export interface Build extends ResourceFetch {
+export interface Build extends Resource {
   status: {
     phase: "New" | "Pending" | "Running" | "Complete" | "Failed" | "Error" | "Cancelled";
   };

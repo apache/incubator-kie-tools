@@ -348,7 +348,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
         </FormGroup>
         <ActionGroup>
           <Button
-            id="dmn-dev-sandbox-config-save-button"
+            id="openshift-config-save-button"
             key="save"
             variant="primary"
             onClick={onConnect}

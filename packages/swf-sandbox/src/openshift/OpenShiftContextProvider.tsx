@@ -15,23 +15,30 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsConfig";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
-import { useSettings } from "../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
+import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
-import { OpenShiftService } from "./OpenShiftService";
+import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
+import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 
 interface Props {
   children: React.ReactNode;
 }
 
 const DEFAULT_GROUP_ID = "org.kie";
+const LOAD_DEPLOYMENTS_POLLING_TIME = 1000;
 
 export function OpenShiftContextProvider(props: Props) {
   const settings = useSettings();
-  const service = useMemo(() => new OpenShiftService(), []);
+  const settingsDispatch = useSettingsDispatch();
+  const workspaces = useWorkspaces();
+  const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
+  const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
 
   const deploy = useCallback(
     async (workflow: DeploymentWorkflow) => {
@@ -39,14 +46,25 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid OpenShift config");
       }
 
-      return service.deploy({
+      const descriptorService = await workspaces.descriptorService.get(workflow.workspaceFile.workspaceId);
+      const workspaceName =
+        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workflow.workspaceFile.name;
+
+      return settingsDispatch.openshift.service.deploy({
         workflow: workflow,
+        workspaceName: workspaceName,
         openShiftConfig: settings.openshift.config,
         kafkaConfig: settings.apacheKafka.config,
         serviceAccountConfig: settings.serviceAccount.config,
       });
     },
-    [service, settings.apacheKafka.config, settings.openshift.config, settings.serviceAccount.config]
+    [
+      settings.apacheKafka.config,
+      settings.openshift.config,
+      settings.serviceAccount.config,
+      settingsDispatch.openshift.service,
+      workspaces.descriptorService,
+    ]
   );
 
   const fetchOpenApiFile = useCallback(
@@ -56,7 +74,10 @@ export function OpenShiftContextProvider(props: Props) {
       }
 
       try {
-        const routeUrl = await service.getDeploymentRoute({ config: settings.openshift.config, resourceName });
+        const routeUrl = await settingsDispatch.openshift.service.getDeploymentRoute({
+          config: settings.openshift.config,
+          resourceName,
+        });
         if (!routeUrl) {
           return;
         }
@@ -72,7 +93,7 @@ export function OpenShiftContextProvider(props: Props) {
         return;
       }
     },
-    [service, settings.openshift.config]
+    [settings.openshift.config, settingsDispatch.openshift.service]
   );
 
   const uploadArtifactToServiceRegistry = useCallback(
@@ -85,7 +106,7 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid service registry config");
       }
 
-      await service.uploadOpenApiToServiceRegistry({
+      await settingsDispatch.openshift.service.uploadOpenApiToServiceRegistry({
         proxyUrl: settings.openshift.config.proxy,
         groupId: DEFAULT_GROUP_ID,
         artifactId: artifactId,
@@ -94,16 +115,67 @@ export function OpenShiftContextProvider(props: Props) {
         openApiContent: content,
       });
     },
-    [service, settings.serviceAccount.config, settings.serviceRegistry.config, settings.openshift.config]
+    [
+      settingsDispatch.openshift.service,
+      settings.serviceAccount.config,
+      settings.serviceRegistry.config,
+      settings.openshift.config,
+    ]
   );
+
+  useEffect(() => {
+    if (!isOpenShiftConfigValid(settings.openshift.config)) {
+      if (deployments.length > 0) {
+        setDeployments([]);
+      }
+      return;
+    }
+
+    if (settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED) {
+      settingsDispatch.openshift.service
+        .isConnectionEstablished(settings.openshift.config)
+        .then((isConfigOk: boolean) => {
+          settingsDispatch.openshift.setStatus(
+            isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
+          );
+          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments(settings.openshift.config) : [];
+        })
+        .then((ds) => setDeployments(ds))
+        .catch((error) => console.error(error));
+      return;
+    }
+
+    if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
+      const loadDeploymentsTask = window.setInterval(() => {
+        settingsDispatch.openshift.service
+          .loadDeployments(settings.openshift.config)
+          .then((ds) => setDeployments(ds))
+          .catch((error) => {
+            setDeployments([]);
+            window.clearInterval(loadDeploymentsTask);
+            console.error(error);
+          });
+      }, LOAD_DEPLOYMENTS_POLLING_TIME);
+      return () => window.clearInterval(loadDeploymentsTask);
+    }
+  }, [
+    settings.openshift,
+    settingsDispatch.openshift.service,
+    deployments.length,
+    settingsDispatch.openshift,
+    isDeploymentsDropdownOpen,
+  ]);
 
   const value = useMemo(
     () => ({
+      deployments,
+      isDeploymentsDropdownOpen,
+      setDeploymentsDropdownOpen,
       deploy,
       uploadArtifactToServiceRegistry,
       fetchOpenApiFile,
     }),
-    [deploy, uploadArtifactToServiceRegistry, fetchOpenApiFile]
+    [deployments, isDeploymentsDropdownOpen, deploy, uploadArtifactToServiceRegistry, fetchOpenApiFile]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;

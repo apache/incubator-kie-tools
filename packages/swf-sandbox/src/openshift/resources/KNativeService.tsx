@@ -18,7 +18,8 @@ import {
   HttpMethod,
   JAVA_RUNTIME_VERSION,
   KOGITO_CREATED_BY,
-  KOGITO_WORKFLOW_FILE,
+  KOGITO_URI,
+  KOGITO_WORKSPACE_NAME,
   Resource,
   ResourceArgs,
   ResourceFetch,
@@ -36,12 +37,13 @@ export interface KNativeServices {
   items: KNativeService[];
 }
 
-export interface CreateDeploymentArgs {
-  fileName: string;
+export interface CreateKNativeServiceArgs {
+  uri: string;
+  workspaceName: string;
 }
 
 export class CreateKNativeService extends ResourceFetch {
-  public constructor(protected args: ResourceArgs & CreateDeploymentArgs) {
+  public constructor(protected args: ResourceArgs & CreateKNativeServiceArgs) {
     super(args);
   }
 
@@ -57,7 +59,8 @@ export class CreateKNativeService extends ResourceFetch {
       annotations:
         image.openshift.io/triggers: >-
           [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:latest","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
-        ${KOGITO_WORKFLOW_FILE}: ${this.args.fileName}
+        ${KOGITO_URI}: ${this.args.uri}
+        ${KOGITO_WORKSPACE_NAME}: ${this.args.workspaceName}
       name: ${this.args.resourceName}
       namespace: ${this.args.namespace}
       labels:

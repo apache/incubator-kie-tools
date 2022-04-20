@@ -97,21 +97,14 @@ export function DeployToolbar(props: DeployToolbarProps) {
   );
 
   const onDeploy = useCallback(async () => {
-    const content = await props.editor?.getContent();
-    const preview = await props.editor?.getPreview();
-
-    if (!content) {
-      setDeployError.show();
-      return;
-    }
-
     setLoading(true);
     const resourceName = await openshift.deploy({
-      name: props.workspaceFile.relativePath,
-      content: content,
-      preview: preview,
+      workspaceFile: props.workspaceFile,
+      preview: await props.editor?.getPreview(),
     });
     setLoading(false);
+
+    openshift.setDeploymentsDropdownOpen(true);
 
     if (resourceName) {
       setDeploySuccess.show();
@@ -131,7 +124,7 @@ export function DeployToolbar(props: DeployToolbarProps) {
     }
   }, [
     props.editor,
-    props.workspaceFile.relativePath,
+    props.workspaceFile,
     openshift,
     setDeployError,
     setDeploySuccess,

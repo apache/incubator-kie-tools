@@ -16,16 +16,22 @@
 
 import * as React from "react";
 import { useContext } from "react";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
+import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
 
 export const SW_JSON_EXTENSION = "sw.json";
 
 export interface DeploymentWorkflow {
-  name: string;
-  content: string;
+  workspaceFile: WorkspaceFile;
   preview?: string;
 }
 
 export interface OpenShiftContextType {
+  deployments: OpenShiftDeployedModel[];
+
+  isDeploymentsDropdownOpen: boolean;
+  setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
   deploy(workflow: DeploymentWorkflow): Promise<string>;
   uploadArtifactToServiceRegistry(artifactId: string, content: string): Promise<void>;
   fetchOpenApiFile(resourceName: string): Promise<string | undefined>;

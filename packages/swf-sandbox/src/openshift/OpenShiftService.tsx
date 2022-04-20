@@ -22,8 +22,10 @@ import {
 } from "../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { DeploymentWorkflow } from "./OpenShiftContext";
-import { CreateBuild, DeleteBuild } from "./resources/Build";
+import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
+import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
+import { Deployment, DeploymentCondition, Deployments, ListDeployments } from "./resources/Deployment";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
 import { CreateKafkaSource, DeleteKafkaSource } from "./resources/KafkaSource";
 import {
@@ -34,10 +36,18 @@ import {
   ListKNativeServices,
 } from "./resources/KNativeService";
 import { GetProject } from "./resources/Project";
-import { KOGITO_WORKFLOW_FILE, Resource, ResourceFetch } from "./resources/Resource";
+import {
+  KNATIVE_SERVING_SERVICE,
+  KOGITO_CREATED_BY,
+  KOGITO_URI,
+  KOGITO_WORKFLOW_FILE,
+  KOGITO_WORKSPACE_NAME,
+  Resource,
+  ResourceFetch,
+} from "./resources/Resource";
 import { CreateSecret, DeleteSecret } from "./resources/Secret";
 
-export const DEFAULT_CREATED_BY = "kie-tools-swf-sandbox";
+export const DEFAULT_CREATED_BY = "kie-tools-sandbox";
 
 export class OpenShiftService {
   public async getWorkflowFileName(args: {
@@ -112,8 +122,52 @@ export class OpenShiftService {
     );
   }
 
+  public async loadDeployments(config: OpenShiftSettingsConfig): Promise<OpenShiftDeployedModel[]> {
+    const commonArgs = {
+      host: config.host,
+      namespace: config.namespace,
+      token: config.token,
+      createdBy: DEFAULT_CREATED_BY,
+    };
+
+    const kNativeServices = await this.fetchResource<KNativeServices>(
+      config.proxy,
+      new ListKNativeServices(commonArgs)
+    );
+
+    if (kNativeServices.items.length === 0) {
+      return [];
+    }
+
+    const deployments = await this.fetchResource<Deployments>(config.proxy, new ListDeployments(commonArgs));
+    const builds = await this.fetchResource<Builds>(config.proxy, new ListBuilds(commonArgs));
+
+    return kNativeServices.items
+      .filter(
+        (kns: KNativeService) =>
+          KOGITO_CREATED_BY in kns.metadata.labels && kns.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY
+      )
+      .map((kns: KNativeService) => {
+        const build = builds.items.find((b: Build) => b.metadata.name === kns.metadata.name);
+        const deployment = deployments.items.find(
+          (d: Deployment) =>
+            KNATIVE_SERVING_SERVICE in d.metadata.labels &&
+            d.metadata.labels[KNATIVE_SERVING_SERVICE] === kns.metadata.name
+        );
+        return {
+          resourceName: kns.metadata.name,
+          uri: kns.metadata.annotations[KOGITO_URI],
+          baseUrl: `${kns.status.url}/q/swagger-ui`,
+          creationTimestamp: new Date(kns.metadata.creationTimestamp),
+          state: this.extractDeploymentState(deployment, build),
+          workspaceName: kns.metadata.annotations[KOGITO_WORKSPACE_NAME],
+        };
+      });
+  }
+
   public async deploy(args: {
     workflow: DeploymentWorkflow;
+    workspaceName: string;
     openShiftConfig: OpenShiftSettingsConfig;
     kafkaConfig: KafkaSettingsConfig;
     serviceAccountConfig: ServiceAccountSettingsConfig;
@@ -146,7 +200,7 @@ export class OpenShiftService {
       rollbacks.slice(--rollbacksCount)
     );
 
-    const processedFileContent = args.workflow.content
+    const processedFileContent = (await args.workflow.workspaceFile.getFileContentsAsString())
       .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
       .replace(/"/g, '\\"') // Escape double quotes
       .replace(/'/g, "\\x27"); // Escape single quotes
@@ -157,7 +211,7 @@ export class OpenShiftService {
         ...commonArgs,
         buildConfigUid: buildConfig.metadata.uid,
         file: {
-          path: args.workflow.name,
+          path: args.workflow.workspaceFile.relativePath,
           content: processedFileContent,
           preview: args.workflow.preview ?? "",
         },
@@ -167,7 +221,11 @@ export class OpenShiftService {
 
     await this.fetchResource(
       args.openShiftConfig.proxy,
-      new CreateKNativeService({ ...commonArgs, fileName: args.workflow.name }),
+      new CreateKNativeService({
+        ...commonArgs,
+        uri: args.workflow.workspaceFile.relativePath,
+        workspaceName: args.workspaceName,
+      }),
       rollbacks.slice(--rollbacksCount)
     );
 
@@ -281,5 +339,41 @@ export class OpenShiftService {
     if (!response.ok) {
       throw new Error(`Could not upload OpenAPI to Service Registry: Error ${response.status}`);
     }
+  }
+
+  private extractDeploymentState(deployment?: Deployment, build?: Build): OpenShiftDeployedModelState {
+    if (!build) {
+      return OpenShiftDeployedModelState.DOWN;
+    }
+
+    if (["New", "Pending"].includes(build.status.phase)) {
+      return OpenShiftDeployedModelState.PREPARING;
+    }
+
+    if (["Failed", "Error", "Cancelled"].includes(build.status.phase)) {
+      return OpenShiftDeployedModelState.DOWN;
+    }
+
+    if (build.status.phase === "Running" || !deployment) {
+      return OpenShiftDeployedModelState.IN_PROGRESS;
+    }
+
+    if (!deployment.status.replicas || +deployment.status.replicas === 0) {
+      return OpenShiftDeployedModelState.DOWN;
+    }
+
+    const progressingCondition = deployment.status.conditions?.find(
+      (condition: DeploymentCondition) => condition.type === "Progressing"
+    );
+
+    if (!progressingCondition || progressingCondition.status !== "True") {
+      return OpenShiftDeployedModelState.DOWN;
+    }
+
+    if (!deployment.status.readyReplicas || +deployment.status.readyReplicas === 0) {
+      return OpenShiftDeployedModelState.IN_PROGRESS;
+    }
+
+    return OpenShiftDeployedModelState.UP;
   }
 }
