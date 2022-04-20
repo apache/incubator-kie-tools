@@ -5,3 +5,7 @@
 #svg-pan-zoom-controls {
   transform: translateX(calc(100% - 50px)) scale(0.6);
 }
+
+.hidden {
+  display: none;
+}
