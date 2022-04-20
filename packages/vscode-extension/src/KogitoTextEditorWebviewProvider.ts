@@ -17,21 +17,12 @@
 import * as vscode from "vscode";
 import { CancellationToken, CustomTextEditorProvider, TextDocument, WebviewPanel } from "vscode";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { VsCodeI18n } from "./i18n";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
-import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 
-export class KogitoEditorWebviewProvider implements CustomTextEditorProvider {
+export class KogitoTextEditorWebviewProvider implements CustomTextEditorProvider {
   public constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly viewType: string,
-    private readonly editorStore: KogitoEditorStore,
-    private readonly editorFactory: KogitoEditorFactory,
-    private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vsCodeNotificationsApi: VsCodeNotificationsApi,
-    private readonly editorEnvelopeLocator: EditorEnvelopeLocator
+    private readonly editorFactory: KogitoEditorFactory
   ) {}
 
   public register() {
@@ -43,6 +34,6 @@ export class KogitoEditorWebviewProvider implements CustomTextEditorProvider {
   }
 
   public async resolveCustomTextEditor(document: TextDocument, webviewPanel: WebviewPanel, token: CancellationToken) {
-    this.editorFactory.configureNew(webviewPanel, document);
+    this.editorFactory.configureNew(webviewPanel, { type: "text", document });
   }
 }

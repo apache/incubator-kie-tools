@@ -22,7 +22,7 @@ import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { EditorEnvelopeLocator, EnvelopeMapping, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { KogitoEditor } from "./KogitoEditor";
+import { KogitoEditor, KogitoEditorDocument } from "./KogitoEditor";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
 import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
@@ -49,7 +49,7 @@ export class KogitoEditorFactory {
     private readonly channelApiProducer: KogitoEditorChannelApiProducer = new DefaultKogitoEditorChannelApiProducer()
   ) {}
 
-  public configureNew(webviewPanel: vscode.WebviewPanel, document: TextDocument) {
+  public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditorDocument) {
     webviewPanel.webview.options = {
       enableCommandUris: true,
       enableScripts: true,
@@ -58,13 +58,13 @@ export class KogitoEditorFactory {
 
     const editorEnvelopeLocator = this.getEditorEnvelopeLocatorForWebview(webviewPanel.webview);
     const resourceContentService = this.createResourceContentService(
-      document.uri.fsPath,
-      vscode.workspace.asRelativePath(document.uri).replace(/\//g, __path.sep)
+      document.document.uri.fsPath,
+      vscode.workspace.asRelativePath(document.document.uri).replace(/\//g, __path.sep)
     );
 
-    const envelopeMapping = editorEnvelopeLocator.getEnvelopeMapping(document.uri.fsPath);
+    const envelopeMapping = editorEnvelopeLocator.getEnvelopeMapping(document.document.uri.fsPath);
     if (!envelopeMapping) {
-      throw new Error(`No envelope mapping found for '${document.fileName}'`);
+      throw new Error(`No envelope mapping found for '${document.document.uri}'`);
     }
 
     const editor = new KogitoEditor(

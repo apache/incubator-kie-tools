@@ -47,6 +47,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   KogitoVsCode.startExtension({
+    editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsServerlessWorkflow",

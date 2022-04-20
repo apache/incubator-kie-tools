@@ -50,49 +50,63 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   ) {}
 
   public async kogitoWorkspace_newEdit(kogitoEdit: KogitoEdit) {
-    console.error("@@@@: Start ignoring edits.");
-    this.editor.stopListeningToDocumentChanges();
+    if (this.editor.document.type === "custom") {
+      this.editor.document.document.notifyEdit(this.editor, kogitoEdit);
+      return;
+    }
 
-    const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
-      if (e.contentChanges.length <= 0) {
-        console.error("@@@@: Ignoring because no changes were made.");
-        return;
-      }
+    if (this.editor.document.type === "text") {
+      console.error("@@@@: Start ignoring edits.");
+      this.editor.stopListeningToDocumentChanges();
 
-      console.error("@@@@: Stop ignoring edits.");
-      this.editor.startListeningToDocumentChanges();
-      changeDocumentSubscription.dispose();
-    });
+      const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
+        if (e.contentChanges.length <= 0) {
+          console.error("@@@@: Ignoring because no changes were made.");
+          return;
+        }
 
-    const { content } = await this.editor.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest();
+        console.error("@@@@: Stop ignoring edits.");
+        this.editor.startListeningToDocumentChanges();
+        changeDocumentSubscription.dispose();
+      });
 
-    console.error("@@@@: newEdit arrived on VS Code. Applying edit.");
-    const edit = new vscode.WorkspaceEdit();
-    // Just replace the entire document every time for this example extension.
-    // A more complete extension should compute minimal edits instead.
-    edit.replace(this.editor.document.uri, new vscode.Range(0, 0, this.editor.document.lineCount, 0), content);
+      const { content } = await this.editor.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest();
 
-    vscode.workspace.applyEdit(edit);
+      console.error("@@@@: newEdit arrived on VS Code. Applying edit.");
+      const edit = new vscode.WorkspaceEdit();
+      // Just replace the entire document every time for this example extension.
+      // A more complete extension should compute minimal edits instead.
+      edit.replace(
+        this.editor.document.document.uri,
+        new vscode.Range(0, 0, this.editor.document.document.lineCount, 0),
+        content
+      );
+
+      vscode.workspace.applyEdit(edit);
+      return;
+    }
+
+    throw new Error("Document type not supported");
   }
 
   public kogitoWorkspace_openFile(path: string) {
     this.workspaceApi.kogitoWorkspace_openFile(
-      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.path), path)
+      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.document.uri.path), path)
     );
   }
 
   public async kogitoEditor_contentRequest() {
     let content: string;
     try {
-      content = this.editor.document.getText();
+      content = await this.editor.getDocumentContent();
     } catch (e) {
       // If file doesn't exist, we create an empty one.
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
-      await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
-      return { content: "", path: this.editor.document.uri.path };
+      await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
+      return { content: "", path: this.editor.document.document.uri.path };
     }
 
-    return { content, path: this.editor.document.uri.path };
+    return { content, path: this.editor.document.document.uri.path };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
@@ -100,7 +114,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
 
     vscode.window
       .showErrorMessage(
-        i18n.errorOpeningFileText(this.editor.document.uri.fsPath.split("/").pop()!),
+        i18n.errorOpeningFileText(this.editor.document.document.uri.fsPath.split("/").pop()!),
         i18n.openAsTextButton
       )
       .then((s1) => {
@@ -109,17 +123,19 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
         }
 
         this.editor.close();
-        vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, "default");
+        vscode.commands.executeCommand("vscode.openWith", this.editor.document.document.uri, "default");
         vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then((s2) => {
           if (s2 !== i18n.reopenAsDiagramButton) {
             return;
           }
 
           vscode.window
-            .showTextDocument(this.editor.document.uri)
+            .showTextDocument(this.editor.document.document.uri)
             .then((editor) => editor.document.save())
             .then(() => vscode.commands.executeCommand("workbench.action.closeActiveEditor"))
-            .then(() => vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, this.viewType));
+            .then(() =>
+              vscode.commands.executeCommand("vscode.openWith", this.editor.document.document.uri, this.viewType)
+            );
         });
       });
   }

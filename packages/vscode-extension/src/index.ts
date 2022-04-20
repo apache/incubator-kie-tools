@@ -24,10 +24,11 @@ import { generateSvg } from "./generateSvg";
 import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditorWebviewProvider } from "./KogitoEditorWebviewProvider";
+import { KogitoTextEditorWebviewProvider } from "./KogitoTextEditorWebviewProvider";
 import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
 import { VsCodeJavaCodeCompletionImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
 import { KogitoEditorChannelApiProducer } from "./KogitoEditorChannelApiProducer";
+import { KogitoCustomEditorWebviewProvider } from "./KogitoCustomEditorWebviewProvider";
 
 /**
  * Starts a Kogito extension.
@@ -48,6 +49,7 @@ export async function startExtension(args: {
   editorEnvelopeLocator: EditorEnvelopeLocator;
   backendProxy: VsCodeBackendProxy;
   channelApiProducer?: KogitoEditorChannelApiProducer;
+  editorDocumentType?: "text" | "custom";
 }) {
   await args.backendProxy.tryLoadBackendExtension(true);
 
@@ -72,21 +74,37 @@ export async function startExtension(args: {
     args.channelApiProducer
   );
 
-  const editorWebviewProvider = new KogitoEditorWebviewProvider(
-    args.context,
-    args.viewType,
-    editorStore,
-    editorFactory,
-    vsCodeI18n,
-    vsCodeNotificationsApi,
-    args.editorEnvelopeLocator
-  );
-
-  args.context.subscriptions.push(
-    vscode.window.registerCustomEditorProvider(args.viewType, editorWebviewProvider, {
-      webviewOptions: { retainContextWhenHidden: true },
-    })
-  );
+  if (args.editorDocumentType === undefined || args.editorDocumentType === "custom") {
+    args.context.subscriptions.push(
+      vscode.window.registerCustomEditorProvider(
+        args.viewType,
+        new KogitoCustomEditorWebviewProvider(
+          args.context,
+          args.viewType,
+          editorStore,
+          editorFactory,
+          vsCodeI18n,
+          vsCodeNotificationsApi,
+          args.editorEnvelopeLocator
+        ),
+        {
+          webviewOptions: { retainContextWhenHidden: true },
+        }
+      )
+    );
+  } else if (args.editorDocumentType === "text") {
+    args.context.subscriptions.push(
+      vscode.window.registerCustomEditorProvider(
+        args.viewType,
+        new KogitoTextEditorWebviewProvider(args.context, args.viewType, editorFactory),
+        {
+          webviewOptions: { retainContextWhenHidden: true },
+        }
+      )
+    );
+  } else {
+    throw new Error("Type not supported");
+  }
 
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.generateSvgCommandId, () =>

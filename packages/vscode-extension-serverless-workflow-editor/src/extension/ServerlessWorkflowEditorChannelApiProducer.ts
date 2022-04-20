@@ -60,13 +60,13 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
     const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
-      baseFileAbsolutePosixPath: editor.document.uri.path,
+      baseFileAbsolutePosixPath: editor.document.document.uri.path,
       rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
       configuration: this.args.configuration,
     });
 
     const fsWatchingServiceCatalogStore = new FsWatchingServiceCatalogStore({
-      baseFileAbsolutePosixPath: editor.document.uri.path,
+      baseFileAbsolutePosixPath: editor.document.document.uri.path,
       configuration: this.args.configuration,
     });
 
@@ -131,7 +131,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       i18n,
       new SwfServiceCatalogChannelApiImpl({
         swfServiceCatalogStore,
-        baseFileAbsolutePosixPath: editor.document.uri.path,
+        baseFileAbsolutePosixPath: editor.document.document.uri.path,
         configuration: this.args.configuration,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
         defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),

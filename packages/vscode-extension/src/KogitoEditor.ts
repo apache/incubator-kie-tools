@@ -30,10 +30,11 @@ import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { IDisposable } from "monaco-editor";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
 
-function fileExtension(document: TextDocument) {
-  const lastSlashIndex = document.uri.fsPath.lastIndexOf("/");
-  const fileName = document.uri.fsPath.substring(lastSlashIndex + 1);
+function fileExtension(documentUri: vscode.Uri) {
+  const lastSlashIndex = documentUri.fsPath.lastIndexOf("/");
+  const fileName = documentUri.fsPath.substring(lastSlashIndex + 1);
 
   const firstDotIndex = fileName.indexOf(".");
   const fileExtension = fileName.substring(firstDotIndex + 1);
@@ -41,12 +42,24 @@ function fileExtension(document: TextDocument) {
   return fileExtension;
 }
 
+export type KogitoEditorDocument =
+  | {
+      type: "text";
+      document: TextDocument;
+    }
+  | {
+      type: "custom";
+      document: KogitoEditableDocument;
+    };
+
+const decoder = new TextDecoder("utf-8");
+
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
   private changeDocumentSubscription: IDisposable | undefined;
 
   public constructor(
-    public readonly document: TextDocument,
+    public readonly document: KogitoEditorDocument,
     public readonly panel: vscode.WebviewPanel,
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
@@ -68,7 +81,7 @@ export class KogitoEditor implements EditorApi {
         self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
-            fileExtension: fileExtension(document),
+            fileExtension: fileExtension(document.document.uri),
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
             isReadOnly: false,
@@ -176,7 +189,7 @@ export class KogitoEditor implements EditorApi {
   }
 
   public hasUri(uri: vscode.Uri) {
-    return this.document.uri === uri;
+    return this.document.document.uri === uri;
   }
 
   public isActive() {
@@ -239,7 +252,7 @@ export class KogitoEditor implements EditorApi {
       console.error("@@@@: New applied edit observed in VS Code's KogitoEditor.");
       const newDocumentContent = e.document.getText();
 
-      if (e.document.uri.toString() !== this.document.uri.toString()) {
+      if (e.document.uri.toString() !== this.document.document.uri.toString()) {
         console.error("@@@@: Not the same URI. Skipping.");
         return;
       }
@@ -260,5 +273,19 @@ export class KogitoEditor implements EditorApi {
     this.panel.onDidDispose(() => {
       this.changeDocumentSubscription?.dispose();
     });
+  }
+
+  public async getDocumentContent() {
+    if (this.document.type === "custom") {
+      const fileUri = this.document.document.initialBackup ?? this.document.document.uri;
+      const contentArray = await vscode.workspace.fs.readFile(fileUri);
+      return decoder.decode(contentArray);
+    }
+
+    if (this.document.type === "text") {
+      return this.document.document.getText();
+    }
+
+    throw new Error("Document type not supported");
   }
 }
