@@ -129,7 +129,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
-      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+        { content: content! },
+        { showLoadingOverlay: true }
+      );
     });
   }, [props.file.getFileContents]);
 
@@ -159,7 +162,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         getContent: () => envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest().then((c) => c.content),
         getPreview: () => envelopeServer.envelopeApi.requests.kogitoEditor_previewRequest(),
         setContent: (path, content) =>
-          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path, content }),
+          envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+            { path, content },
+            { showLoadingOverlay: true }
+          ),
         validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
         setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       };

@@ -100,8 +100,11 @@ export class KogitoEditorEnvelopeApiImpl<
     this.args.envelopeContext.channelApi.notifications.kogitoEditor_ready.send();
   };
 
-  public kogitoEditor_contentChanged = (editorContent: EditorContent) => {
-    this.view().setLoading();
+  public kogitoEditor_contentChanged = (editorContent: EditorContent, args: { showLoadingOverlay: boolean }) => {
+    if (args.showLoadingOverlay) {
+      this.view().setLoading();
+    }
+
     return this.editor
       .setContent(editorContent.path ?? "", editorContent.content)
       .catch((e) => {

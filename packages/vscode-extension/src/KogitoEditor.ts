@@ -115,7 +115,10 @@ export class KogitoEditor implements EditorApi {
   }
 
   public setContent(path: string, content: string) {
-    return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path: path, content: content });
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+      { path, content },
+      { showLoadingOverlay: true }
+    );
   }
 
   public async undo() {
@@ -263,10 +266,13 @@ export class KogitoEditor implements EditorApi {
       }
 
       console.error("@@@@: Same URI. Sending contentChanged notification.");
-      this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({
-        content: newDocumentContent,
-        path: e.document.uri.path,
-      });
+      this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+        {
+          content: newDocumentContent,
+          path: e.document.uri.path,
+        },
+        { showLoadingOverlay: false }
+      );
     });
 
     // Make sure we get rid of the listener when our editor is closed.
