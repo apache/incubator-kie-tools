@@ -164,6 +164,14 @@ packages/stunner-editors/**/src/main/webapp/WEB-INF/model/
 packages/stunner-editors/**/src/main/webapp/model/
 packages/stunner-editors/**/kie-wb-common-dmn-webapp
 
+# serverless-workflow-diagram-editor
+packages/serverless-workflow-diagram-editor/**/dependency-reduced-pom.xml
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/classes/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/deploy/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/lib/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/WEB-INF/model/
+packages/serverless-workflow-diagram-editor/**/src/main/webapp/model/
+
 # dashbuilder
 packages/dashbuilder/**/org.uberfire
 packages/dashbuilder/**/org.dashbuilder

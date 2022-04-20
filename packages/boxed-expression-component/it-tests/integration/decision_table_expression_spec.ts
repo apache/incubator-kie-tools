@@ -174,6 +174,22 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     });
     // click outside to finish editing
     cy.get("body").click();
+
+    cy.get(".boxed-expression").scrollTo("top");
+  });
+
+  it("Regression tests: input header cell focus", () => {
+    cy.contains("th", "input-1").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot("input_header_cell_focus");
+  });
+
+  it("Regression tests: output header cell focus", () => {
+    cy.contains("th", "output-1").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot("input_header_cell_focus");
   });
 
   it("Navigate around data cells", () => {

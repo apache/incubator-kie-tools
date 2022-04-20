@@ -245,7 +245,7 @@ public class AssignmentData {
     public void setAssignments(final String sAssignments) {
         assignments.clear();
         if (sAssignments != null && !sAssignments.isEmpty()) {
-            String[] as = sAssignments.split(",");
+            String[] as = sAssignments.split(",(?=\\[din])|,(?=\\[dout])");
             for (String a : as) {
                 if (!a.isEmpty()) {
                     Assignment ass = Assignment.deserialize(this,

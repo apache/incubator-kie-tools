@@ -7,8 +7,14 @@ Create and edit Serverless Workflow definition files (\*.sw.json, \*.sw.yaml, \*
 
 ## Features
 
-- Create and edit CNCF Serverless Workflow v0.8 definition files.
-- Automatically export diagram to SVG (see below for Settings).
+- Create and edit CNCF Serverless Workflow v0.8 definition files
+- Real-time diagram preview rendering
+- Editor code-lens to assist the authoring of your workflow
+- Contextual auto-complete
+- Open API auto-completion to your functions
+- Integration with Red Hat Hybrid Console Authentication
+- Red Hat Service Catalog Integration
+- Automatically export diagram to SVG (see below for Settings)
 
 #### Editing a new Serverless Workflow file
 
@@ -31,3 +37,13 @@ The `kogito.sw.svgFilenameTemplate` and `kogito.sw.svgFilePath` settings accept 
 | **${fileExtname}**             | `.ext`                                    |
 | **${fileBasename}**            | `file.ext`                                |
 | **${fileBasenameNoExtension}** | `file`                                    |
+
+### Thank you
+
+Some Open Source projects were vital for the development of this extension, and we would like to thank all of them, with highlights to:
+
+- [CNCF Serverless Workflow SDK Typescript](https://github.com/serverlessworkflow/sdk-typescript): for workflow parsing;
+- [Mermaid](https://mermaid-js.github.io/): for workflow rendering and visualization;
+- [Apicurio](https://www.apicur.io/): for our service catalog integration;
+
+You can also checkout the [CNCF Serverless Workflow VSCode extension](https://marketplace.visualstudio.com/items?itemName=serverlessworkflow.serverless-workflow-vscode-extension) at VSCode Marketplace.
