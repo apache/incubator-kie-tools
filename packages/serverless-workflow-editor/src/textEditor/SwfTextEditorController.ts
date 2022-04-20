@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { editor, KeyCode, KeyMod } from "monaco-editor";
+import { editor, IDisposable, KeyCode, KeyMod } from "monaco-editor";
 import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
@@ -45,27 +45,47 @@ export interface SwfMonacoEditorInstance {
   instance: editor.IStandaloneCodeEditor;
 }
 
+const MONACO_CHANGES_DEBOUNCE_TIME_IN_MS = 400;
+
 export class DefaultSwfTextEditorController implements SwfTextEditorController {
   private readonly model: editor.ITextModel;
 
   public editor: editor.IStandaloneCodeEditor | undefined;
+  private onDidChangeContentSubscription: IDisposable;
 
   constructor(
-    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
+    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation, versionId?: number) => void,
     private readonly language: string,
     private readonly operatingSystem: OperatingSystem | undefined
   ) {
+    console.error("@@@@: Settings up a new Monaco controller. This should only happen once.");
     this.model = editor.createModel("", this.language);
 
-    //FIXME: tiago setup a debounce here. one edit per character is too much.
-    this.model.onDidChangeContent((event) => {
-      if (event.isUndoing || event.isRedoing) {
-        return;
+    this.startListeningToContentChanges();
+  }
+
+  private startListeningToContentChanges() {
+    let debouncedHandler: ReturnType<typeof setTimeout> | undefined;
+
+    this.onDidChangeContentSubscription = this.model.onDidChangeContent((event) => {
+      if (debouncedHandler !== undefined) {
+        clearTimeout(debouncedHandler);
       }
 
-      this.editor?.pushUndoStop();
-      onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT);
+      debouncedHandler = setTimeout(() => {
+        debouncedHandler = undefined;
+        this.handleNewContent(event);
+      }, MONACO_CHANGES_DEBOUNCE_TIME_IN_MS);
     });
+  }
+
+  private handleNewContent(event: editor.IModelContentChangedEvent) {
+    if (event.isUndoing || event.isRedoing) {
+      return;
+    }
+
+    console.error("@@@@: Monaco did change. Sending newEdit");
+    this.onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT, event.versionId);
   }
 
   public redo(): void {
@@ -83,7 +103,16 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
   }
 
   public setContent(content: string): void {
+    this.onDidChangeContentSubscription.dispose();
+    const position = this.editor?.getPosition();
     this.model.setValue(content);
+
+    // FIXME: tiago - this is not ideal. I think Monaco should be handling the undo/redos and letting the channel know through a newEdit once it's done.
+    if (position) {
+      this.editor?.setPosition(position);
+    }
+
+    this.startListeningToContentChanges();
   }
 
   public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {

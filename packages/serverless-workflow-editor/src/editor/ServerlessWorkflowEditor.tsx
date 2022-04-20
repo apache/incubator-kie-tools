@@ -122,9 +122,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   }, []);
 
   const onSwfTextEditorContentChanged = useCallback(
-    (newContent: string, operation: SwfTextEditorOperation) => {
+    (newContent: string, operation: SwfTextEditorOperation, versionId?: number) => {
       if (operation === SwfTextEditorOperation.EDIT) {
-        props.onNewEdit.call(undefined, new KogitoEdit(new Date().getTime().toString()));
+        props.onNewEdit.call(undefined, new KogitoEdit(`${versionId}`));
       } else if (operation === SwfTextEditorOperation.UNDO) {
         props.onStateControlCommandUpdate.call(undefined, StateControlCommand.UNDO);
       } else if (operation === SwfTextEditorOperation.REDO) {
@@ -137,9 +137,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   );
 
   useEffect(() => {
-    if (fileContent?.content !== undefined) {
-      updateDiagramEditor(fileContent.content);
+    if (fileContent?.content === undefined) {
+      return;
     }
+
+    updateDiagramEditor(fileContent.content);
   }, [fileContent?.content, updateDiagramEditor]);
 
   const panelContent = (

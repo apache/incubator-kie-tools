@@ -29,6 +29,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { IDisposable } from "monaco-editor";
 
 function fileExtension(document: TextDocument) {
   const lastSlashIndex = document.uri.fsPath.lastIndexOf("/");
@@ -42,6 +43,7 @@ function fileExtension(document: TextDocument) {
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
+  private changeDocumentSubscription: IDisposable | undefined;
 
   public constructor(
     public readonly document: TextDocument,
@@ -226,22 +228,37 @@ export class KogitoEditor implements EditorApi {
     });
   }
 
-  public startListeningToDocumentChanges() {
-    const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
-      const newDocumentContent = e.document.getText();
-      const editorContent = (await this.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest()).content;
+  public stopListeningToDocumentChanges() {
+    this.changeDocumentSubscription?.dispose();
+    this.changeDocumentSubscription = undefined;
+  }
 
-      if (e.document.uri.toString() === this.document.uri.toString() && editorContent !== newDocumentContent) {
-        this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({
-          content: newDocumentContent,
-          path: e.document.uri.path,
-        });
+  public startListeningToDocumentChanges() {
+    this.changeDocumentSubscription?.dispose();
+    this.changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
+      console.error("@@@@: New applied edit observed in VS Code's KogitoEditor.");
+      const newDocumentContent = e.document.getText();
+
+      if (e.document.uri.toString() !== this.document.uri.toString()) {
+        console.error("@@@@: Not the same URI. Skipping.");
+        return;
       }
+
+      if (e.contentChanges.length <= 0) {
+        console.error("@@@@: Ignoring because no changes were made.");
+        return;
+      }
+
+      console.error("@@@@: Same URI. Sending contentChanged notification.");
+      this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({
+        content: newDocumentContent,
+        path: e.document.uri.path,
+      });
     });
 
     // Make sure we get rid of the listener when our editor is closed.
     this.panel.onDidDispose(() => {
-      changeDocumentSubscription.dispose();
+      this.changeDocumentSubscription?.dispose();
     });
   }
 }

@@ -50,15 +50,29 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   ) {}
 
   public async kogitoWorkspace_newEdit(kogitoEdit: KogitoEdit) {
-    const edit = new vscode.WorkspaceEdit();
+    console.error("@@@@: Start ignoring edits.");
+    this.editor.stopListeningToDocumentChanges();
+
+    const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
+      if (e.contentChanges.length <= 0) {
+        console.error("@@@@: Ignoring because no changes were made.");
+        return;
+      }
+
+      console.error("@@@@: Stop ignoring edits.");
+      this.editor.startListeningToDocumentChanges();
+      changeDocumentSubscription.dispose();
+    });
 
     const { content } = await this.editor.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest();
 
+    console.error("@@@@: newEdit arrived on VS Code. Applying edit.");
+    const edit = new vscode.WorkspaceEdit();
     // Just replace the entire document every time for this example extension.
     // A more complete extension should compute minimal edits instead.
     edit.replace(this.editor.document.uri, new vscode.Range(0, 0, this.editor.document.lineCount, 0), content);
 
-    return vscode.workspace.applyEdit(edit);
+    vscode.workspace.applyEdit(edit);
   }
 
   public kogitoWorkspace_openFile(path: string) {
@@ -157,9 +171,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
+
   public kogitoJavaCodeCompletion__getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
+
   public kogitoJavaCodeCompletion__isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }

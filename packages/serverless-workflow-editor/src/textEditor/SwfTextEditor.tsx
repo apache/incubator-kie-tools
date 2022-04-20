@@ -31,7 +31,7 @@ import { ServerlessWorkflowEditorChannelApi } from "../api";
 interface Props {
   content: string;
   filePath: string;
-  onContentChange: (content: string, operation: SwfTextEditorOperation) => void;
+  onContentChange: (content: string, operation: SwfTextEditorOperation, versionId?: number) => void;
   channelType: ChannelType;
 }
 
