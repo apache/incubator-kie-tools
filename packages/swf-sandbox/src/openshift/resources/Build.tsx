@@ -39,7 +39,7 @@ export interface CreateBuildArgs {
 }
 
 export class CreateBuild extends ResourceFetch {
-  private readonly BASE_IMAGE = `quay.io/caponetto/serverless-workflow-base-image:latest`; //TODO CAPONETTO: use webpack env var for this
+  private readonly BASE_IMAGE = `${process.env.WEBPACK_REPLACE__swfSandbox_baseImageFullUrl}`;
   private readonly KOGITO_FOLDER = "/tmp/kogito";
   private readonly PROJECT_FOLDER = `${this.KOGITO_FOLDER}/serverless-workflow-base`;
   private readonly PROJECT_MAIN_RESOURCES = `${this.PROJECT_FOLDER}/src/main/resources`;

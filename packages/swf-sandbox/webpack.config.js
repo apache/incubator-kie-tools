@@ -23,10 +23,15 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
 const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
 module.exports = async (env) => {
   const buildInfo = getBuildInfo();
+  const gtmResource = getGtmResource();
+  const [swfSandbox_baseImageRegistry, swfSandbox_baseImageAccount, swfSandbox_baseImageName, swfSandbox_baseImageTag] =
+    getSwfSandboxBaseImageArgs();
+
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
@@ -39,8 +44,20 @@ module.exports = async (env) => {
         inject: false,
         minify: false,
       }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+          replacement: (match, gtm, type) => {
+            if (gtmResource) {
+              return gtmResource[type] ?? `${match}`;
+            }
+            return `${match}`;
+          },
+        },
+      ]),
       new EnvironmentPlugin({
         WEBPACK_REPLACE__buildInfo: buildInfo,
+        WEBPACK_REPLACE__swfSandbox_baseImageFullUrl: `${swfSandbox_baseImageRegistry}/${swfSandbox_baseImageAccount}/${swfSandbox_baseImageName}:${swfSandbox_baseImageTag}`,
       }),
       new CopyPlugin({
         patterns: [
@@ -89,6 +106,53 @@ module.exports = async (env) => {
     },
   });
 };
+
+function getSwfSandboxBaseImageArgs() {
+  const baseImageRegistry = buildEnv.swfSandbox.baseImage.registry;
+  const baseImageAccount = buildEnv.swfSandbox.baseImage.account;
+  const baseImageName = buildEnv.swfSandbox.baseImage.name;
+  const baseImageTag = buildEnv.swfSandbox.baseImage.tag;
+
+  console.info("SWF Sandbox :: Base Image Registry: " + baseImageRegistry);
+  console.info("SWF Sandbox :: Base Image Account: " + baseImageAccount);
+  console.info("SWF Sandbox :: Base Image Name: " + baseImageName);
+  console.info("SWF Sandbox :: Base Image Tag: " + baseImageTag);
+
+  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag];
+}
+
+function getGtmResource() {
+  const gtmId = buildEnv.swfSandbox.gtmId;
+  console.info(`Google Tag Manager :: ID: ${gtmId}`);
+
+  if (!gtmId) {
+    return undefined;
+  }
+
+  return {
+    id: gtmId,
+    header: `<!-- Google Tag Manager -->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${gtmId}');
+    </script>
+    <!-- End Google Tag Manager -->`,
+    body: `<!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe
+        src="https://www.googletagmanager.com/ns.html?id=${gtmId}"
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+      >
+      </iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->`,
+  };
+}
 
 function getBuildInfo() {
   const buildInfo = buildEnv.onlineEditor.buildInfo;

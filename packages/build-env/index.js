@@ -258,29 +258,34 @@ const ENV_VARS = {
     default: "dist",
     description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
   },
-  SERVERLESS_WORKFLOW__baseImageRegistry: {
-    name: "SERVERLESS_WORKFLOW__baseImageRegistry",
-    default: "quay.io",
-    description: "",
-  },
-  SERVERLESS_WORKFLOW__baseImageAccount: {
-    name: "SERVERLESS_WORKFLOW__baseImageAccount",
-    default: "caponetto",
-    description: "",
-  },
-  SERVERLESS_WORKFLOW__baseImageName: {
-    name: "SERVERLESS_WORKFLOW__baseImageName",
-    default: "serverless-workflow-base-image",
-    description: "",
-  },
-  SERVERLESS_WORKFLOW__baseImageBuildTags: {
-    name: "SERVERLESS_WORKFLOW__baseImageBuildTags",
-    default: "latest",
-    description: "",
-  },
   SWF_SANDBOX__buildInfo: {
     name: "SWF_SANDBOX__buildInfo",
     default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+    description: "",
+  },
+  SWF_SANDBOX__gtmId: {
+    name: "SWF_SANDBOX__gtmId",
+    default: undefined,
+    description: "",
+  },
+  SWF_SANDBOX__baseImageRegistry: {
+    name: "SWF_SANDBOX__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  SWF_SANDBOX__baseImageAccount: {
+    name: "SWF_SANDBOX__baseImageAccount",
+    default: "caponetto", //FIXME: kie-tools
+    description: "",
+  },
+  SWF_SANDBOX__baseImageName: {
+    name: "SWF_SANDBOX__baseImageName",
+    default: "serverless-workflow-base-image",
+    description: "",
+  },
+  SWF_SANDBOX__baseImageTag: {
+    name: "SWF_SANDBOX__baseImageTag",
+    default: "latest",
     description: "",
   },
 };
@@ -421,15 +426,6 @@ module.exports = {
     },
   },
 
-  serverlessWorkflow: {
-    baseImage: {
-      registry: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageRegistry),
-      account: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageAccount),
-      name: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageName),
-      buildTags: getOrDefault(ENV_VARS.SERVERLESS_WORKFLOW__baseImageBuildTags),
-    },
-  },
-
   dmnFormWebApp: {
     dev: {
       port: 9008,
@@ -456,8 +452,15 @@ module.exports = {
 
   swfSandbox: {
     buildInfo: getOrDefault(ENV_VARS.SWF_SANDBOX__buildInfo),
+    gtmId: getOrDefault(ENV_VARS.SWF_SANDBOX__gtmId),
     dev: {
       port: 9009,
+    },
+    baseImage: {
+      registry: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageAccount),
+      name: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageName),
+      tag: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageTag),
     },
   },
 
