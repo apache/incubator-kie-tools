@@ -17,7 +17,7 @@
 import "./EditExpressionMenu.css";
 import * as React from "react";
 import { useCallback, useEffect, useState, useRef } from "react";
-import { PopoverMenu } from "../PopoverMenu";
+import { PopoverMenu, PopoverMenuRef } from "../PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataType, ExpressionProps } from "../../api";
 import { useBoxedExpression } from "../../context";
@@ -70,8 +70,9 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
   const [dataType, setDataType] = useState(selectedDataType);
   const [expressionName, setExpressionName] = useState(selectedExpressionName);
   const expressionNameRef = useRef<HTMLInputElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+  // const [isVisible, setIsVisible] = useState(false);
   const [dataTypeSelectorOpen, setDataTypeSelectorOpen] = useState(false);
+  const popoverMenuRef = useRef<PopoverMenuRef>();
 
   useEffect(() => {
     setExpressionName(selectedExpressionName);
@@ -126,14 +127,15 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onShown = useCallback(() => {
     expressionNameRef.current?.focus();
-    setIsVisible(true);
+    // setIsVisible(true);
+    popoverMenuRef?.current?.setIsVisible(true);
   }, []);
 
   const onExpressionNameKeyPress = useCallback(
     (e: React.KeyboardEvent) => {
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
-        setIsVisible(false);
+        popoverMenuRef?.current?.setIsVisible(false);
       }
     },
     [saveExpression]
@@ -141,18 +143,18 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   const onExpressionNameKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (NavigationKeysUtils.isEscape(e.key)) {
+      if (NavigationKeysUtils.isEscape(e.key) && !dataTypeSelectorOpen) {
         resetFormData();
-        setIsVisible(false);
+        popoverMenuRef?.current?.setIsVisible(false);
       }
     },
-    [resetFormData]
+    [resetFormData, dataTypeSelectorOpen]
   );
 
   const onDataTypeKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (NavigationKeysUtils.isEscape(e.key) && !dataTypeSelectorOpen) {
-        setIsVisible(false);
+        popoverMenuRef?.current?.setIsVisible(false);
       }
     },
     [dataTypeSelectorOpen]
@@ -164,13 +166,13 @@ export const EditExpressionMenu: React.FunctionComponent<EditExpressionMenuProps
 
   return (
     <PopoverMenu
+      ref={popoverMenuRef}
       title={title}
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
       onCancel={onCancel}
       onHide={onHide}
       onShown={onShown}
-      isVisible={isVisible}
       body={
         <div className="edit-expression-menu" onKeyDown={onExpressionNameKeyDown}>
           <div className="expression-name">
