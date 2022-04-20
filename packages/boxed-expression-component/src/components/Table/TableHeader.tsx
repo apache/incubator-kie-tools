@@ -20,10 +20,12 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Column, ColumnInstance, HeaderGroup, TableInstance } from "react-table";
 import { DataType, TableHeaderVisibility } from "../../api";
-import { EditExpressionMenu, EditTextInline } from "../EditExpressionMenu";
-import { DEFAULT_MIN_WIDTH, Resizer } from "../Resizer";
 import { getColumnsAtLastLevel, getColumnSearchPredicate } from "./Table";
 import { useBoxedExpression } from "../../context";
+import { focusCurrentCell, getParentCell } from "./common";
+import { ThCell } from "./ThCell";
+import { ResizableHeaderCell } from "./ResizableHeaderCell";
+import { EditTextInline } from "../EditExpressionMenu";
 
 export interface TableHeaderProps {
   /** Table instance */
@@ -40,6 +42,8 @@ export interface TableHeaderProps {
   tableColumns: Column[];
   /** Function to be executed when columns are modified */
   onColumnsUpdate: (columns: Column[]) => void;
+  /** Function to be executed when a key has been pressed on a cell */
+  onCellKeyDown: () => (e: KeyboardEvent) => void;
   /** Th props */
   thProps: (column: ColumnInstance) => any;
   /** Option to enable or disable header edits */
@@ -54,6 +58,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   getColumnKey,
   tableColumns,
   onColumnsUpdate,
+  onCellKeyDown,
   thProps,
   editableHeader,
 }) => {
@@ -95,27 +100,61 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderCountColumn = useCallback(
-    (column: ColumnInstance) => {
+    (column: ColumnInstance, rowIndex: number) => {
       const columnKey = getColumnKey(column);
-      const classNames = `${columnKey} fixed-column no-clickable-cell`;
+      const classNames = `${columnKey} fixed-column no-clickable-cell counter-header-cell`;
+
       return (
-        <Th {...column.getHeaderProps()} className={classNames} key={columnKey}>
+        <ThCell
+          rowIndex={rowIndex}
+          cellIndex={0}
+          rowSpan={1}
+          headerProps={column.getHeaderProps()}
+          className={classNames}
+          key={columnKey}
+          isFocusable={true}
+          onKeyDown={onCellKeyDown}
+          xPosition={0}
+          yPosition={rowIndex}
+        >
           <div className="header-cell" data-ouia-component-type="expression-column-header">
             {column.label}
           </div>
-        </Th>
+        </ThCell>
       );
     },
-    [getColumnKey]
+    [getColumnKey, onCellKeyDown]
   );
 
   const renderCellInfoLabel = useCallback(
-    (column: ColumnInstance, columnIndex: number) => {
+    (column: ColumnInstance, columnIndex: number, onAnnotationCellToggle?: (isReadMode: boolean) => void) => {
       if (column.inlineEditable) {
         return (
           <EditTextInline
             value={column.label as string}
-            onTextChange={(value) => onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value })}
+            onTextChange={(value) => {
+              if (column.label != value) {
+                boxedExpressionEditorGWTService?.notifyUserAction();
+              }
+              onColumnNameOrDataTypeUpdate(column, columnIndex)({ name: value });
+            }}
+            onKeyDown={(event) => {
+              const parentCell = getParentCell(event.target as HTMLElement);
+              //this timeout prevent the cell focus to call the input's blur and the onValueBlur
+              setTimeout(() => {
+                if (/(enter)/i.test(event.key)) {
+                  focusCurrentCell(parentCell);
+                }
+              }, 0);
+            }}
+            onCancel={(event) => {
+              const parentCell = getParentCell(event.target as HTMLElement);
+              //this timeout prevent the cell focus to call the input's blur and the onValueBlur
+              setTimeout(() => {
+                focusCurrentCell(parentCell);
+              }, 0);
+            }}
+            onToggle={onAnnotationCellToggle}
           />
         );
       }
@@ -125,9 +164,11 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
   );
 
   const renderHeaderCellInfo = useCallback(
-    (column, columnIndex) => (
+    (column, columnIndex, onAnnotationCellToggle?: (isReadMode: boolean) => void) => (
       <div className="header-cell-info" data-ouia-component-type="expression-column-header-cell-info">
-        {column.headerCellElement ? column.headerCellElement : renderCellInfoLabel(column, columnIndex)}
+        {column.headerCellElement
+          ? column.headerCellElement
+          : renderCellInfoLabel(column, columnIndex, onAnnotationCellToggle)}
         {column.dataType ? <p className="pf-u-text-truncate data-type">({column.dataType})</p> : null}
       </div>
     ),
@@ -164,78 +205,43 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     [boxedExpressionEditorGWTService]
   );
 
-  const renderResizableHeaderCell = useCallback(
-    (column, columnIndex) => {
-      const headerProps = {
-        ...column.getHeaderProps(),
-        style: {},
-      };
-      const width = column.width || DEFAULT_MIN_WIDTH;
-      const isColspan = (column.columns?.length ?? 0) > 0 || false;
-      const columnKey = getColumnKey(column);
-
-      const getCssClass = () => {
-        const cssClasses = [columnKey];
-        if (!column.dataType) {
-          cssClasses.push("no-clickable-cell");
-        }
-        if (isColspan) {
-          cssClasses.push("colspan-header");
-        }
-        if (column.placeholderOf) {
-          cssClasses.push("colspan-header");
-          cssClasses.push(column.placeholderOf.cssClasses);
-          cssClasses.push(column.placeholderOf.groupType);
-        }
-        cssClasses.push(column.groupType || "");
-        cssClasses.push(column.cssClasses || "");
-        return cssClasses.join(" ");
-      };
-
-      return (
-        <Th
-          {...headerProps}
-          {...thProps(column)}
-          className={getCssClass()}
-          key={columnKey}
-          onClick={onHeaderClick(columnKey)}
-        >
-          <Resizer width={width} onHorizontalResizeStop={(columnWidth) => onHorizontalResizeStop(column, columnWidth)}>
-            <div className="header-cell" data-ouia-component-type="expression-column-header">
-              {column.dataType && editableHeader ? (
-                <EditExpressionMenu
-                  title={getColumnLabel(column.groupType)}
-                  selectedExpressionName={column.label}
-                  selectedDataType={column.dataType}
-                  onExpressionUpdate={(expression) => onColumnNameOrDataTypeUpdate(column, columnIndex)(expression)}
-                  key={columnKey}
-                >
-                  {renderHeaderCellInfo(column, columnIndex)}
-                </EditExpressionMenu>
-              ) : (
-                renderHeaderCellInfo(column, columnIndex)
-              )}
-            </div>
-          </Resizer>
-        </Th>
-      );
-    },
-    [
-      getColumnKey,
-      thProps,
-      onHeaderClick,
-      editableHeader,
-      getColumnLabel,
-      renderHeaderCellInfo,
-      onHorizontalResizeStop,
-      onColumnNameOrDataTypeUpdate,
-    ]
-  );
-
   const renderColumn = useCallback(
-    (column: ColumnInstance, columnIndex: number) =>
-      column.isCountColumn ? renderCountColumn(column) : renderResizableHeaderCell(column, columnIndex),
-    [renderCountColumn, renderResizableHeaderCell]
+    (column: ColumnInstance, rowIndex: number, columnIndex: number, xPosition?: number) =>
+      column.isCountColumn ? (
+        renderCountColumn(column, rowIndex)
+      ) : (
+        <ResizableHeaderCell
+          key={`${rowIndex}_${columnIndex}`}
+          editableHeader={editableHeader}
+          getColumnKey={getColumnKey}
+          getColumnLabel={getColumnLabel}
+          onCellKeyDown={onCellKeyDown}
+          onColumnNameOrDataTypeUpdate={onColumnNameOrDataTypeUpdate}
+          onHeaderClick={onHeaderClick}
+          onHorizontalResizeStop={onHorizontalResizeStop}
+          renderHeaderCellInfo={renderHeaderCellInfo}
+          thProps={thProps}
+          tableInstance={tableInstance}
+          column={column}
+          rowIndex={rowIndex}
+          columnIndex={columnIndex}
+          xPosition={xPosition ?? columnIndex}
+          yPosition={rowIndex}
+        />
+      ),
+    [
+      renderCountColumn,
+      editableHeader,
+      getColumnKey,
+      getColumnLabel,
+      onCellKeyDown,
+      onColumnNameOrDataTypeUpdate,
+      onHeaderClick,
+      onHorizontalResizeStop,
+      renderHeaderCellInfo,
+      tableInstance,
+      thProps,
+    ]
   );
 
   const getHeaderGroups = useCallback(
@@ -247,13 +253,16 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
 
   const renderHeaderGroups = useMemo(
     () =>
-      getHeaderGroups(tableInstance).map((headerGroup: HeaderGroup) => {
+      getHeaderGroups(tableInstance).map((headerGroup: HeaderGroup, rowIndex: number) => {
         const { key, ...props } = { ...headerGroup.getHeaderGroupProps(), style: {} };
+        let xPosition = 0;
         return (
           <Tr key={key} {...props}>
-            {headerGroup.headers.map((column: ColumnInstance, columnIndex: number) =>
-              renderColumn(column, columnIndex)
-            )}
+            {headerGroup.headers.map((column: ColumnInstance, columnIndex: number) => {
+              const currentXPosition = xPosition;
+              xPosition += column.columns?.length ?? 1;
+              return renderColumn(column, rowIndex, columnIndex, currentXPosition);
+            })}
           </Tr>
         );
       }),
@@ -264,7 +273,7 @@ export const TableHeader: React.FunctionComponent<TableHeaderProps> = ({
     (level: number) => (
       <Tr>
         {_.nth(tableInstance.headerGroups as HeaderGroup[], level)!.headers.map(
-          (column: ColumnInstance, columnIndex: number) => renderColumn(column, columnIndex)
+          (column: ColumnInstance, columnIndex: number) => renderColumn(column, 0, columnIndex)
         )}
       </Tr>
     ),

@@ -163,6 +163,22 @@ describe("Context Expression Tests :: Nested Relations", () => {
       });
     //click outside to finish editing
     cy.get("body").click();
+
+    cy.get(".boxed-expression").scrollTo("top");
+  });
+
+  it("Regression tests: header cell focus", () => {
+    cy.contains("th", "Expression Name").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot("header_cell_focus");
+  });
+
+  it("Regression tests: data cell focus", () => {
+    cy.contains("td", "ContextEntry-1").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot("data_cell_focus");
   });
 
   it("Check nested Relation", () => {
@@ -226,7 +242,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     cy.ouiaId("expression-column-1").not("table table").should("be.focused");
   });
 
-  it("Interaction with contextMenu", () => {
+  it("Keyboard interaction with contextMenu", () => {
     // open contextMenu and expression menu from the expression cell of the 2nd row and check you are not able to navigate. Then close the contextMenu.
     cy.ouiaId("OUIA-Generated-TableRow-2")
       .contains("td", "Select expression")
@@ -240,5 +256,22 @@ describe("Context Expression Tests :: Nested Relations", () => {
 
     // check the menu is closed
     cy.get(".pf-c-popover__content").should("not.exist");
+  });
+
+  it("Keyboard interaction with header's contextMenu in nested decision table", () => {
+    //reset the state of the contextMenu. Necessary to pass test.
+    cy.get("body").click();
+
+    // focus the 1st header cell inside the nested decision table.
+    cy.contains("th", "column-3").as("targetCell").focus();
+
+    // check the menu is closed
+    cy.get(".pf-c-popover__content").should("not.exist");
+
+    // open the contextMenu by pressing enter
+    cy.wait(0).get("@targetCell").type("{enter}");
+
+    // check the menu is open
+    cy.get(".pf-c-popover__content").should("be.visible");
   });
 });

@@ -30,6 +30,7 @@ import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-compon
 import "./DmnRunnerTable.css";
 import { DmnRunnerClause, DmnRunnerRule } from "./DmnRunnerTableTypes";
 import { useDmnAutoTableI18n } from "../i18n";
+import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
 
 enum DecisionTableColumnType {
   InputClause = "input",
@@ -169,7 +170,7 @@ export function DmnRunnerTable(props: DmnRunnerTableProps) {
             return {
               groupType: DecisionTableColumnType.OutputClause,
               label: entryKey,
-              width: output.width,
+              width: output.width ?? DEFAULT_MIN_WIDTH,
               accessor: `output-${entryKey}`,
               cssClasses: "decision-table--output",
             } as ColumnInstance;

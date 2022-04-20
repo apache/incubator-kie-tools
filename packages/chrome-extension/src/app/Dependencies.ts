@@ -85,7 +85,7 @@ export class Dependencies {
       return container.querySelectorAll("details-menu a")[0] as HTMLAnchorElement | null;
     },
     pr__unprocessedFilePathContainer: (container: HTMLElement) => {
-      return container.querySelector(".file-info > a.Link--primary") as HTMLAnchorElement | null;
+      return container.querySelector(".file-info a.Link--primary") as HTMLAnchorElement | null;
     },
 
     array: {
