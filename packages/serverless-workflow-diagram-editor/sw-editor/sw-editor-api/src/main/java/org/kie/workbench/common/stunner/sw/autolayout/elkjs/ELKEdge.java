@@ -35,6 +35,10 @@ public class ELKEdge {
     JsArray<String> targets;
     @JsProperty
     JsArray<Object> sections;
+    @JsProperty
+    int priority;
+    @JsIgnore
+    JsArray<Point2D> bendPoints;
 
     @JsIgnore
     public ELKEdge(String id, String source, String target) {
@@ -42,6 +46,7 @@ public class ELKEdge {
         this.sources = new JsArray<>(source);
         this.targets = new JsArray<>(target);
         this.sections = new JsArray<>();
+        this.priority = 10;
     }
 
     @JsIgnore
@@ -85,20 +90,39 @@ public class ELKEdge {
     }
 
     @JsIgnore
-    public JsArray<Point2D> getBendPoints() {
-        JsArray<Point2D> points = new JsArray<>();
-        JsPropertyMap<?> parsedSection = Js.cast(sections.getAt(0));
-        JsArray<Object> bendPoints = Js.cast(parsedSection.get("bendPoints"));
+    public void setBendPoints(JsArray<Point2D> bendPoints) {
+        this.bendPoints = bendPoints;
+    }
 
+    @JsIgnore
+    public int getPriority() {
+        return priority;
+    }
+
+    @JsIgnore
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    @JsIgnore
+    public JsArray<Point2D> getBendPoints() {
         if (null != bendPoints) {
-            for (Object elkBendPoint : bendPoints.asList()) {
-                JsPropertyMap<?> parsedBendPoint = Js.cast(elkBendPoint);
-                final double x = Js.cast(parsedBendPoint.get("x"));
-                final double y = Js.cast(parsedBendPoint.get("y"));
-                points.push(new Point2D(x, y));
+            return bendPoints;
+        }
+
+        bendPoints = new JsArray<>();
+        JsPropertyMap<?> parsedSection = Js.cast(sections.getAt(0));
+        JsArray<Object> points = Js.cast(parsedSection.get("bendPoints"));
+
+        if (null != points) {
+            for (Object elkBendPoint : points.asList()) {
+                JsPropertyMap<?> parsedPoint = Js.cast(elkBendPoint);
+                final double x = Js.cast(parsedPoint.get("x"));
+                final double y = Js.cast(parsedPoint.get("y"));
+                bendPoints.push(new Point2D(x, y));
             }
         }
 
-        return points;
+        return bendPoints;
     }
 }

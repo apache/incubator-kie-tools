@@ -24,10 +24,10 @@ import jsinterop.base.JsPropertyMap;
 public class ELKUtils {
 
     //General
-    public static final boolean MERGE_EDGES = true;
+    public static final boolean MERGE_EDGES = false;
 
     //TOPDOWN canvas layout
-    public static final double CANVAS_TOPDOWN_BETWEEN_LAYERS_SPACING = 70d;
+    public static final double CANVAS_TOPDOWN_BETWEEN_LAYERS_SPACING = 85d;
     public static final double CANVAS_TOPDOWN_BASE_SPACING = 70d;
     public static final double CANVAS_TOPDOWN_TOP_PADDING = 50d;
     public static final double CANVAS_TOPDOWN_LEFT_PADDING = 70d;
@@ -57,7 +57,6 @@ public class ELKUtils {
     public static final double CONTAINER_LEFTTORIGHT_LEFT_PADDING = 25d;
     public static final double CONTAINER_LEFTTORIGHT_BOTTOM_PADDING = 25d;
     public static final double CONTAINER_LEFTTORIGHT_RIGHT_PADDING = 25d;
-    ;
 
     public static Promise<Object> processGraph(final Object graph) {
         ELK elk = new ELK();
@@ -83,6 +82,8 @@ public class ELKUtils {
                                   ELKLayoutProperties.directionType.DOWN.getValue(),
                                   ELKLayoutProperties.edgeRoutingType.ORTHOGONAL.getValue(),
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
+                                  ELKLayoutProperties.layeringStrategyType.INTERACTIVE.getValue(),
+                                  ELKLayoutProperties.nodePlacementStrategyType.BRANDES_KOEPF.getValue(),
                                   CANVAS_TOPDOWN_BETWEEN_LAYERS_SPACING,
                                   CANVAS_TOPDOWN_BASE_SPACING,
                                   CANVAS_TOPDOWN_TOP_PADDING,
@@ -97,6 +98,8 @@ public class ELKUtils {
                                   ELKLayoutProperties.directionType.RIGHT.getValue(),
                                   ELKLayoutProperties.edgeRoutingType.ORTHOGONAL.getValue(),
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
+                                  ELKLayoutProperties.layeringStrategyType.INTERACTIVE.getValue(),
+                                  ELKLayoutProperties.nodePlacementStrategyType.NETWORK_SIMPLEX.getValue(),
                                   CANVAS_LEFTTORIGHT_BETWEEN_LAYERS_SPACING,
                                   CANVAS_LEFTTORIGHT_BASE_SPACING,
                                   CANVAS_LEFTTORIGHT_TOP_PADDING,
@@ -111,6 +114,8 @@ public class ELKUtils {
                                   ELKLayoutProperties.directionType.DOWN.getValue(),
                                   ELKLayoutProperties.edgeRoutingType.ORTHOGONAL.getValue(),
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
+                                  ELKLayoutProperties.layeringStrategyType.INTERACTIVE.getValue(),
+                                  ELKLayoutProperties.nodePlacementStrategyType.NETWORK_SIMPLEX.getValue(),
                                   CONTAINER_TOPDOWN_BETWEEN_LAYERS_SPACING,
                                   CONTAINER_TOPDOWN_BASE_SPACING,
                                   CONTAINER_TOPDOWN_TOP_PADDING,
@@ -125,6 +130,8 @@ public class ELKUtils {
                                   ELKLayoutProperties.directionType.RIGHT.getValue(),
                                   ELKLayoutProperties.edgeRoutingType.ORTHOGONAL.getValue(),
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
+                                  ELKLayoutProperties.layeringStrategyType.NETWORK_SIMPLEX.getValue(),
+                                  ELKLayoutProperties.nodePlacementStrategyType.BRANDES_KOEPF.getValue(),
                                   CONTAINER_LEFTTORIGHT_BETWEEN_LAYERS_SPACING,
                                   CONTAINER_LEFTTORIGHT_BASE_SPACING,
                                   CONTAINER_LEFTTORIGHT_TOP_PADDING,
@@ -138,6 +145,8 @@ public class ELKUtils {
                                              final String direction,
                                              final String edgeRouting,
                                              final String fixedAlignment,
+                                             final String layeringStrategy,
+                                             final String nodePlacementStrategy,
                                              final double nodeNodeBetweenLayersSpacing,
                                              final double baseValueSpacing,
                                              final double topPadding,
@@ -151,6 +160,8 @@ public class ELKUtils {
                                          + direction + ", "
                                          + edgeRouting + ", "
                                          + fixedAlignment + ", "
+                                         + layeringStrategy + ", "
+                                         + nodePlacementStrategy + ", "
                                          + ELKLayoutProperties.getBaseValueSpacing(baseValueSpacing) + ", "
                                          + ELKLayoutProperties.getNodeNodeBetweenLayersSpacing(nodeNodeBetweenLayersSpacing) + ", "
                                          + ELKLayoutProperties.getMergeEdges(mergeEdges) + ", "

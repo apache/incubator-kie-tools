@@ -18,13 +18,17 @@ package org.kie.workbench.common.stunner.sw.client.editor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.core.Context2D;
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
+import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
@@ -117,6 +121,24 @@ public class DiagramEditor {
                                                          public void onError(ClientRuntimeError error) {
                                                              stunnerEditor.handleError(error);
                                                              failure.onInvoke(error);
+                                                         }
+
+                                                         @Override
+                                                         public void afterCanvasInitialized() {
+                                                             WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
+                                                             ScrollableLienzoPanel lienzoPanel = (ScrollableLienzoPanel) canvas.getView().getLienzoPanel();
+
+                                                             Layer bgLayer = new Layer() {
+                                                                 @Override
+                                                                 public Layer draw(Context2D context) {
+                                                                     super.draw(context);
+                                                                     context.setFillColor("#f2f2f2");
+                                                                     context.fillRect(0, 0, getWidth(), getHeight());
+
+                                                                     return this;
+                                                                 }
+                                                             };
+                                                             lienzoPanel.setBackgroundLayer(bgLayer);
                                                          }
                                                      });
                                          }
