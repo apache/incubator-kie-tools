@@ -35,7 +35,7 @@
     <tycho.extras.version>${tycho.version}</tycho.extras.version>
     <tycho.scmUrl>scm:git:https://github.com/kiegroup/kie-tools.git</tycho.scmUrl>
     <tycho.generateSourceReferences>true</tycho.generateSourceReferences>
-    <jdt.ls.version>1.7.0.20211216164144</jdt.ls.version>
+    <jdt.ls.version>1.10.0.20220413193208</jdt.ls.version>
 
     <tycho.test.platformArgs />
     <tycho.test.jvmArgs>-Xmx512m ${tycho.test.platformArgs}</tycho.test.jvmArgs>
@@ -53,9 +53,9 @@
   </properties>
   <repositories>
     <repository>
-      <id>2022-03</id>
+      <id>2022-06</id>
       <layout>p2</layout>
-      <url>http://download.eclipse.org/releases/2022-03/</url>
+      <url>http://download.eclipse.org/releases/2022-06/</url>
     </repository>
     <repository>
       <id>jdt.ls.p2</id>
