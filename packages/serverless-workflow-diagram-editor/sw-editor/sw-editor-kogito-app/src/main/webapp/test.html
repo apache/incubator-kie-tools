@@ -416,8 +416,14 @@
             specVersion: "0.8",
             name: "States Example",
             description: "States Example",
-            start: "Inject data",
+            start: "Create Initial Data",
             states: [
+                {
+                    name: "Create Initial Data",
+                    type: "inject",
+                    end: false,
+                    transition: "Inject data"
+                },
                 {
                     name: "Inject data",
                     type: "inject",
@@ -428,12 +434,22 @@
                         {
                             errorRef: "SomeError1",
                             end: false,
-                            transition: "Handle Error",
+                            transition: "Handle Error1",
+                        },
+                        {
+                            errorRef: "SomeError2",
+                            end: false,
+                            transition: "Handle Error2",
                         },
                     ],
                 },
                 {
-                    name: "Handle Error",
+                    name: "Handle Error1",
+                    type: "inject",
+                    end: true,
+                },
+                {
+                    name: "Handle Error2",
                     type: "inject",
                     end: true,
                 },
@@ -450,7 +466,7 @@
                             ],
                         },
                     ],
-                    eventTimeout: "PT1H",
+                    // eventTimeout: "PT1H",
                     transition: "Run Operations",
                     end: false,
                 },
@@ -468,6 +484,51 @@
                             subFlowRef: "Task2",
                         },
                     ],
+                    end: false,
+                    transition: "Switch State"
+                },
+                {
+                    name: "Switch State",
+                    type: "switch",
+                    onErrors: [
+                        {
+                            errorRef: "SomeError3",
+                            end: false,
+                            transition: "Handle Error3",
+                        },
+                    ],
+                    eventConditions: [
+                        {
+                            eventRef: "event1",
+                            transition: "Event1 State",
+                        },
+                        {
+                            eventRef: "event2",
+                            transition: "Event2 State",
+                        },
+                    ],
+                    defaultCondition: {
+                        transition: "Default State",
+                    },
+                },
+                {
+                    name: "Handle Error3",
+                    type: "inject",
+                    end: true,
+                },
+                {
+                    name: "Event1 State",
+                    type: "inject",
+                    end: true,
+                },
+                {
+                    name: "Event2 State",
+                    type: "inject",
+                    end: true,
+                },
+                {
+                    name: "Default State",
+                    type: "inject",
                     end: true,
                 },
                 {

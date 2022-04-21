@@ -93,13 +93,13 @@ public interface StateMarshalling {
                     }
                 }
 
-                // Parse state timeouts.
-                if (isValidString(state.eventTimeout)) {
+                // TODO: Timeouts not in use, just was a PoC, consider dropping at the end if not making sense.
+                /*if (isValidString(state.eventTimeout)) {
                     EventTimeout eventTimeout = new EventTimeout();
                     eventTimeout.setEventTimeout(state.eventTimeout);
                     Node eventTimeoutNode = context.addNode(null, eventTimeout);
                     context.dock(stateNode, eventTimeoutNode);
-                }
+                }*/
 
                 context.sourceNode = null;
 

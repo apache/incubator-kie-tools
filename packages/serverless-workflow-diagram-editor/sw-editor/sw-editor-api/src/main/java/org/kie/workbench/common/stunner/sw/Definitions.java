@@ -51,10 +51,8 @@ import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
 /**
- * Definitions required by serverless workflow editor.
- * Defines everything that can be drawn by the editor.
- *
- * New classes needs to be added here.
+ * Domain Model definitions supported by the serverless workflow editor.
+ * New domain classes have to be referenced here in order to be part of the editor's SWF domain.
  */
 @ApplicationScoped
 @Bindable
