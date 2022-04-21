@@ -92,7 +92,9 @@ public class TestingGraphMockHandler {
     private void init() {
         this.graphAPI = new StunnerTestingGraphMockAPI();
         this.graph = spy(graphAPI.graphFactory.build(GRAPH_UUID, DEF_SET_ID));
-        this.graphIndex = spy(new MapIndexBuilder().build(graph));
+        NullSafeMapMutableIndex testMapMutableIndex = new NullSafeMapMutableIndex(graph);
+        MapIndexBuilder.populate(graph, testMapMutableIndex.index);
+        this.graphIndex = spy(testMapMutableIndex);
         this.ruleSet = spy(new RuleSetImpl("TestingRuleSet", new ArrayList<>()));
         this.graphCommandExecutionContext = spy(new ContextualGraphCommandExecutionContext(getDefinitionManager(),
                                                                                            getFactoryManager(),

@@ -66,8 +66,8 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
                                                   new DefaultDefinitionsCacheRegistry(factoryManager,
                                                                                       adapterManager)));
         initAdapters();
-        when(factoryRegistry.getElementFactory(NodeFactory.class)).thenReturn(new NodeFactoryImpl(definitionUtils));
-        when(factoryRegistry.getElementFactory(EdgeFactory.class)).thenReturn(new EdgeFactoryImpl(definitionManager));
+        when(factoryRegistry.getElementFactory(NodeFactory.class)).thenReturn(spy(new NodeFactoryImpl(definitionUtils)));
+        when(factoryRegistry.getElementFactory(EdgeFactory.class)).thenReturn(spy(new EdgeFactoryImpl(definitionManager)));
     }
 
     protected void initFactory() {
@@ -82,6 +82,9 @@ public class StunnerTestingMockAPI extends StunnerTestingAPI {
         definitionAdapter = spy(new DefinitionAdapter() {
             @Override
             public DefinitionId getId(Object pojo) {
+                if (null == pojo) {
+                    return null;
+                }
                 return DefinitionId.build(pojo.getClass().getName());
             }
 
