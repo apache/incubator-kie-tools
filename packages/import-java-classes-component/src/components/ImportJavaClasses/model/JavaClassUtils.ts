@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * It removes the class package and the generic type (if present).
+ * Static inner class are not supported (e.g. `Class.Nested` will result as `Nested`)
+ * @param javaClassName
+ */
 export const getJavaClassSimpleName = (javaClassName: string) => {
-  return javaClassName.split(".").pop()!;
+  let javaClassSimpleName = javaClassName;
+  if (javaClassName.includes("<")) {
+    javaClassSimpleName = javaClassSimpleName.split("<")[0]!;
+  }
+  return javaClassSimpleName.split(".").pop()!;
 };

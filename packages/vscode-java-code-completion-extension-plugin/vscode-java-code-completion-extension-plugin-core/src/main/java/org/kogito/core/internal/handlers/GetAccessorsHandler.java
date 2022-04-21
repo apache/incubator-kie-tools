@@ -17,7 +17,7 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -27,6 +27,8 @@ import org.kogito.core.internal.api.GetPublicParameters;
 import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
+
+import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
 
@@ -40,7 +42,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     }
 
     @Override
-    public CompletableFuture<List<GetPublicResult>> handle(List<Object> arguments, IProgressMonitor progress) {
+    public List<GetPublicResult> handle(List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo("Handle Accessors");
         GetPublicParameters parameters = checkParameters(arguments);
         BuildInformation buildInformation = javaEngine.buildPublicContent(this.autocompleteHandler.getUri(),
@@ -48,8 +50,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                                                                           parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());
         List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", buildInformation);
-        List<GetPublicResult> completedClasses = this.transformCompletionItemsToResult(parameters.getFqcn(), items);
-        return CompletableFuture.supplyAsync(() -> completedClasses);
+        return this.transformCompletionItemsToResult(parameters.getFqcn(), items);
     }
 
     private GetPublicParameters checkParameters(List<Object> arguments) {
@@ -80,7 +81,15 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
             JavaLanguageServerPlugin.logInfo(item.getLabel());
             String[] label = item.getLabel().split(":");
             result.setAccessor(label[0].trim());
-            result.setType(label[1].trim());
+            String type = label[1].trim();
+            Map<String,String> data = (Map<String, String>) item.getData();
+            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
+            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
+            if (fqcnType != null && fqcnType.contains(")L")) {
+                type = fqcnType.split("\\)L")[1];
+                type = type.replaceAll(";$", "");
+            }
+            result.setType(type);
         } else {
             result.setAccessor("");
             result.setType("");

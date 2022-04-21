@@ -66,7 +66,7 @@ export const ImportJavaClassesWizardFirstStep = ({
       javaCodeCompletionService
         .getClasses(value)
         .then((javaCodeCompletionClasses) => {
-          const retrievedClasses = javaCodeCompletionClasses.map((item) => item.query);
+          const retrievedClasses = javaCodeCompletionClasses.map((item) => item.fqcn);
           setRetrievedJavaClassesNames(retrievedClasses);
           setRequestLoading(false);
         })
@@ -133,17 +133,7 @@ export const ImportJavaClassesWizardFirstStep = ({
   return (
     <>
       <div className="fs-search-input">
-        {searchValue.length < 3 ? (
-          <Tooltip content={i18n.modalWizard.firstStep.input.tooltip}>
-            <SearchInput
-              autoFocus
-              onChange={handleSearchValueChange}
-              onClear={handleClearSearch}
-              placeholder={i18n.modalWizard.firstStep.input.placeholder}
-              value={searchValue}
-            />
-          </Tooltip>
-        ) : (
+        <Tooltip content={i18n.modalWizard.firstStep.input.tooltip} isVisible={searchValue.length < 3}>
           <SearchInput
             autoFocus
             onChange={handleSearchValueChange}
@@ -151,7 +141,7 @@ export const ImportJavaClassesWizardFirstStep = ({
             placeholder={i18n.modalWizard.firstStep.input.placeholder}
             value={searchValue}
           />
-        )}
+        </Tooltip>
       </div>
       {isRequestLoading ? (
         <Bullseye>

@@ -15,5 +15,5 @@
  */
 
 export interface JavaCodeCompletionClass {
-  query: string;
+  fqcn: string;
 }
