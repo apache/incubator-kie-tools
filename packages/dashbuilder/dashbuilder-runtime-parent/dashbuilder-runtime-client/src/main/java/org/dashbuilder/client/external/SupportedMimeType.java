@@ -17,19 +17,26 @@ package org.dashbuilder.client.external;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 enum SupportedMimeType {
+    
 
-    JSON("application/json", "json"),
-    CSV("text/csv", "csv");
+    // JSON is a no-op transformer
+    JSON("application/json", "json", v -> v),
+    CSV("text/csv", "csv", new CSVParser()),
+    METRIC("text/plain", "metrics", new MetricsParser());
 
     String mimeType;
 
     String extension;
+    
+    Function<String, String> tranformer;
 
-    private SupportedMimeType(String type, String extension) {
+    private SupportedMimeType(String type, String extension, Function<String, String> tranformer) {
         this.mimeType = type;
         this.extension = extension;
+        this.tranformer = tranformer;
     }
 
     public String getMimeType() {

@@ -134,7 +134,7 @@ public class ExternalDataSetClientProvider {
                                        SupportedMimeType contentType) {
         var uuid = lookup.getDataSetUUID();
         var def = externalDataSets.get(uuid);
-        var content = contentType == SupportedMimeType.CSV ? csvToJsonArray(responseText) : responseText;
+        var content = contentType.tranformer.apply(responseText);
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
@@ -218,10 +218,4 @@ public class ExternalDataSetClientProvider {
     private void clearRegisteredDataSets() {
         externalDataSets.keySet().forEach(d -> clientDataSetManager.removeDataSet(d));
     }
-
-    private String csvToJsonArray(String responseText) {
-        var array = csvParser.toJsonArray(responseText);
-        return array.toJson();
-    }
-
 }
