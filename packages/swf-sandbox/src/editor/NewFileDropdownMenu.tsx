@@ -24,7 +24,6 @@ import {
   DrilldownMenu,
   Menu,
   MenuContent,
-  MenuGroup,
   MenuInput,
   MenuItem,
   MenuList,
@@ -37,6 +36,7 @@ import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
+import { resolveExtension } from "../fixme";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -113,7 +113,7 @@ export function NewFileDropdownMenu(props: {
 
       try {
         const url = new URL(urlString);
-        const extension = url.pathname.endsWith(".sw.json") ? "sw.json" : extname(url.pathname).replace(".", ""); // FIXME: temporary
+        const extension = resolveExtension(url.pathname);
         const name = decodeURIComponent(basename(url.pathname, `.${extension}`));
 
         const response = await fetch(urlString);

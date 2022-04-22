@@ -18,7 +18,7 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import * as React from "react";
 import { useContext, useMemo } from "react";
 
-export type SupportedFileExtensions = "sw.json" | "db"; //FIXME db?
+export type SupportedFileExtensions = "sw.json" | "sw.yaml" | "sw.yml" | "db"; //FIXME db?
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 

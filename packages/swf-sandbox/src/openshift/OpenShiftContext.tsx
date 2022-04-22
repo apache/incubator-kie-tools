@@ -19,8 +19,6 @@ import { useContext } from "react";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
 
-export const SW_JSON_EXTENSION = "sw.json";
-
 export interface DeploymentWorkflow {
   workspaceFile: WorkspaceFile;
   preview?: string;

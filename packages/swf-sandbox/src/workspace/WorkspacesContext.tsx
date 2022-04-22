@@ -32,6 +32,7 @@ import { GitService } from "./services/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { StorageService } from "./services/StorageService";
+import { resolveExtension } from "../fixme";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -62,11 +63,7 @@ export class WorkspaceFile {
   }
 
   get relativePathWithoutExtension() {
-    if (this.relativePath.endsWith(".sw.json")) {
-      // FIXME: temporary
-      return this.relativePath.replace(".sw.json", "");
-    }
-    return this.relativePath.split(".").slice(0, -1).join(".");
+    return this.relativePath.replace(`.${this.extension}`, "");
   }
 
   get relativeDirPath() {
@@ -74,11 +71,7 @@ export class WorkspaceFile {
   }
 
   get extension() {
-    if (this.relativePath.endsWith(".sw.json")) {
-      // FIXME: temporary
-      return "sw.json";
-    }
-    return extname(this.relativePath).replace(".", "");
+    return resolveExtension(this.relativePath);
   }
 
   get nameWithoutExtension() {

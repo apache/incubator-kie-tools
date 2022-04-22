@@ -25,6 +25,10 @@ const dashboardLabel: LabelColorType = { color: "purple", label: "Dashboard" };
 const labelColors = new Map<string, LabelColorType>([
   ["sw.json", swfLabel],
   ["SW.JSON", swfLabel],
+  ["sw.yaml", swfLabel],
+  ["SW.YAML", swfLabel],
+  ["sw.yml", swfLabel],
+  ["SW.YML", swfLabel],
   ["db", dashboardLabel], //FIXME: db?
 ]);
 

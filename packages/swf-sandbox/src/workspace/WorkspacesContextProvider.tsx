@@ -27,6 +27,7 @@ import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
@@ -35,19 +36,18 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { SW_JSON_EXTENSION } from "../openshift/OpenShiftContext";
 
-export const EDITOR_SUPPORTED_FILE_EXTENSIONS = [SW_JSON_EXTENSION];
 export const DEFAULT_CORS_PROXY_URL = "https://cors.isomorphic-git.org";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
-export const NEW_FILE_DEFAULT_NAME = "Untitled";
+const NEW_FILE_DEFAULT_NAME = "Untitled";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export function WorkspacesContextProvider(props: Props) {
+  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const storageService = useMemo(() => new StorageService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
   const svgService = useMemo(() => new WorkspaceSvgService(storageService), [storageService]);
@@ -90,13 +90,13 @@ export function WorkspacesContextProvider(props: Props) {
         return { workspace, suggestedFirstFile: undefined };
       }
 
-      const [suggestedFirstFile] = files.filter((file) =>
-        EDITOR_SUPPORTED_FILE_EXTENSIONS.some((ext) => file.name.includes(ext))
-      );
+      const suggestedFirstFile = files
+        .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
+        .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
       return { workspace, suggestedFirstFile };
     },
-    [service]
+    [editorEnvelopeLocator, service]
   );
 
   const hasLocalChanges = useCallback(
@@ -333,7 +333,7 @@ export function WorkspacesContextProvider(props: Props) {
       name: string;
       destinationDirRelativePath: string;
       content: string;
-      extension: string;
+      extension: SupportedFileExtensions;
     }) => {
       for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
         const index = i === 0 ? "" : `-${i}`;
@@ -364,8 +364,12 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const addEmptyFile = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string; destinationDirRelativePath: string; extension: string }) =>
-      addFile({ ...args, name: NEW_FILE_DEFAULT_NAME, content: "{}" }),
+    async (args: {
+      fs: KieSandboxFs;
+      workspaceId: string;
+      destinationDirRelativePath: string;
+      extension: SupportedFileExtensions;
+    }) => addFile({ ...args, name: NEW_FILE_DEFAULT_NAME, content: "" }),
     [addFile]
   );
 

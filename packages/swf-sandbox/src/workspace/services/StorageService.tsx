@@ -16,6 +16,7 @@
 
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { basename, dirname, extname, join, relative, resolve } from "path";
+import { resolveExtension } from "../../fixme";
 
 export class EagerStorageFile {
   constructor(private readonly args: { path: string; content: Uint8Array }) {}
@@ -90,10 +91,8 @@ export class StorageService {
       return file;
     }
 
-    // FIXME: Temporary
-    const extension = file.path.endsWith(".sw.json") ? ".sw.json" : extname(file.path);
-
-    const newPath = join(dirname(file.path), `${newFileName}${extension}`);
+    const extension = resolveExtension(file.path);
+    const newPath = join(dirname(file.path), `${newFileName}.${extension}`);
 
     if (await this.exists(fs, newPath)) {
       throw new Error(`File ${newPath} already exists`);

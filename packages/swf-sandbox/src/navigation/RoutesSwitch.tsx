@@ -10,7 +10,7 @@ import { NoMatchPage } from "./NoMatchPage";
 
 export function RoutesSwitch() {
   const routes = useRoutes();
-  const supportedExtensions = useMemo(() => "sw.json", []);
+  const supportedExtensions = useMemo(() => "sw.json|sw.yaml|sw.yml", []);
 
   return (
     <Switch>
