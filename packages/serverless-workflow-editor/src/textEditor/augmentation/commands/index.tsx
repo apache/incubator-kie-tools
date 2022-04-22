@@ -33,7 +33,7 @@ export function initAugmentationCommands(
     "swf.ls.commands.ImportFunctionFromCompletionItem": editorInstance.addCommand(
       0,
       async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.ImportFunctionFromCompletionItem"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args.containingService);
+        channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
       }
     )!,
     "swf.ls.commands.LogInToRhhcc": editorInstance.addCommand(

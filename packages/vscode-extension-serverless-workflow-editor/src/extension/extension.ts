@@ -29,6 +29,7 @@ import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageS
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -75,6 +76,11 @@ export async function activate(context: vscode.ExtensionContext) {
     swfServiceCatalogGlobalStore,
   });
 
+  const swfServiceCatalogSupportActions = new SwfServiceCatalogSupportActions({
+    configuration,
+    swfServiceCatalogGlobalStore,
+  });
+
   context.subscriptions.push(swfLanguageService);
 
   KogitoVsCode.startExtension({
@@ -96,12 +102,19 @@ export async function activate(context: vscode.ExtensionContext) {
       configuration,
       rhhccAuthenticationStore,
       swfLanguageService,
-      swfServiceCatalogStore: swfServiceCatalogGlobalStore,
+      swfServiceCatalogSupportActions,
     }),
     backendProxy,
   });
 
-  setupBuiltInVsCodeEditorSwfContributions({ context, swfLanguageService });
+  setupBuiltInVsCodeEditorSwfContributions({
+    context,
+    swfLanguageService,
+    configuration,
+    swfServiceCatalogGlobalStore,
+    swfServiceCatalogSupportActions,
+  });
+
   setupCommands({ context, configuration });
 
   context.subscriptions.push(

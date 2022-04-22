@@ -41,7 +41,10 @@ export type SwfLanguageServiceCommandArgs = {
   "swf.ls.commands.LogInToRhhcc": {};
   "swf.ls.commands.SetupServiceRegistryUrl": {};
   "swf.ls.commands.RefreshServiceCatalogFromRhhcc": {};
-  "swf.ls.commands.ImportFunctionFromCompletionItem": { containingService: SwfServiceCatalogService };
+  "swf.ls.commands.ImportFunctionFromCompletionItem": {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  };
   "swf.ls.commands.OpenFunctionsWidget": { position: Position };
   "swf.ls.commands.OpenStatesWidget": { position: Position };
   "swf.ls.commands.OpenFunctionsCompletionItems": { newCursorPosition: Position };

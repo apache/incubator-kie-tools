@@ -49,7 +49,7 @@ const completions = new Map<
 >([
   [
     ["functions", "*"],
-    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices }) => {
+    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices, document }) => {
       const separator = currentNode.type === "object" ? "," : "";
       const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
@@ -67,6 +67,7 @@ const completions = new Map<
               name: "swf.ls.commands.ImportFunctionFromCompletionItem",
               args: {
                 containingService: swfServiceCatalogService,
+                documentUri: document.uri,
               },
             };
 

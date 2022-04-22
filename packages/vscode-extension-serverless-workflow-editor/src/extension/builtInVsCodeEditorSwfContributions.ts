@@ -6,44 +6,46 @@ import {
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
+import { SwfVsCodeExtensionConfiguration } from "./configuration";
+import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
+  configuration: SwfVsCodeExtensionConfiguration;
   swfLanguageService: SwfLanguageServiceChannelApiImpl;
+  swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
+  swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
-    "swf.ls.commands.ImportFunctionFromCompletionItem": (args) => {
-      // FIXME: tiago
-      // Copy from kogitoSwfServiceCatalog_importFunctionFromCompletionItem
-      console.error(args);
+    "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
+      args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(cmdArgs);
     },
-    "swf.ls.commands.RefreshServiceCatalogFromRhhcc": (args) => {
-      // FIXME: tiago
-      // Copy from kogitoSwfServiceCatalog_refresh
-      console.error(args);
+    "swf.ls.commands.RefreshServiceCatalogFromRhhcc": (cmdArgs) => {
+      args.swfServiceCatalogSupportActions.refresh();
     },
-    "swf.ls.commands.SetupServiceRegistryUrl": (args) => {
-      vscode.commands.executeCommand(COMMAND_IDS.setupServiceRegistryUrl, args);
+    "swf.ls.commands.SetupServiceRegistryUrl": (cmdArgs) => {
+      vscode.commands.executeCommand(COMMAND_IDS.setupServiceRegistryUrl, cmdArgs);
     },
-    "swf.ls.commands.LogInToRhhcc": (args) => {
-      vscode.commands.executeCommand(COMMAND_IDS.loginToRhhcc, args);
+    "swf.ls.commands.LogInToRhhcc": (cmdArgs) => {
+      vscode.commands.executeCommand(COMMAND_IDS.loginToRhhcc, cmdArgs);
     },
-    "swf.ls.commands.OpenFunctionsCompletionItems": (args) => {
+    "swf.ls.commands.OpenFunctionsCompletionItems": (cmdArgs) => {
       if (!vscode.window.activeTextEditor) {
         return;
       }
 
       vscode.window.activeTextEditor.selection = new vscode.Selection(
-        new vscode.Position(args.newCursorPosition.line, args.newCursorPosition.character),
-        new vscode.Position(args.newCursorPosition.line, args.newCursorPosition.character)
+        new vscode.Position(cmdArgs.newCursorPosition.line, cmdArgs.newCursorPosition.character),
+        new vscode.Position(cmdArgs.newCursorPosition.line, cmdArgs.newCursorPosition.character)
       );
 
       vscode.commands.executeCommand("editor.action.triggerSuggest");
     },
-    "swf.ls.commands.OpenFunctionsWidget": (args) => {
+    "swf.ls.commands.OpenFunctionsWidget": (cmdArgs) => {
       console.info("No op");
     },
-    "swf.ls.commands.OpenStatesWidget": (args) => {
+    "swf.ls.commands.OpenStatesWidget": (cmdArgs) => {
       console.info("No op");
     },
   };

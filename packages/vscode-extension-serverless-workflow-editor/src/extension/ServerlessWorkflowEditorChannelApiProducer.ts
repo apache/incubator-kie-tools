@@ -26,7 +26,6 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
-import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import {
@@ -36,6 +35,7 @@ import {
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
@@ -43,7 +43,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
       swfLanguageService: SwfLanguageServiceChannelApiImpl;
-      swfServiceCatalogStore: SwfServiceCatalogStore;
+      swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
   get(
@@ -90,11 +90,11 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       viewType,
       i18n,
       new SwfServiceCatalogChannelApiImpl({
-        swfServiceCatalogStore: this.args.swfServiceCatalogStore,
         baseFileAbsolutePosixPath: editor.document.document.uri.path,
         configuration: this.args.configuration,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
         defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
+        swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
       this.args.swfLanguageService
     );
