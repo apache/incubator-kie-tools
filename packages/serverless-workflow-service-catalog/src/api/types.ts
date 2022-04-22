@@ -80,7 +80,6 @@ export type SwfServiceCatalogFunctionSource =
 export interface SwfServiceCatalogFunction {
   source: SwfServiceCatalogFunctionSource;
   name: string;
-  operation: string;
   arguments: Record<string, SwfServiceCatalogFunctionArgumentType>;
   type: SwfServiceCatalogFunctionType;
 }

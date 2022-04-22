@@ -164,7 +164,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
             <SwfTextEditor
               channelType={props.channelType}
               content={fileContent.content}
-              filePath={fileContent.path}
+              fileUri={fileContent.path}
               onContentChange={onSwfTextEditorContentChanged}
               ref={swfTextEditorRef}
             />

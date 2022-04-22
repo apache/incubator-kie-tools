@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import * as monaco from "monaco-editor";
 import { editor, IDisposable, KeyCode, KeyMod } from "monaco-editor";
 import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
@@ -56,10 +57,11 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
   constructor(
     private readonly onContentChange: (content: string, operation: SwfTextEditorOperation, versionId?: number) => void,
     private readonly language: string,
-    private readonly operatingSystem: OperatingSystem | undefined
+    private readonly operatingSystem: OperatingSystem | undefined,
+    private readonly uri: string
   ) {
     console.error("@@@@: Settings up a new Monaco controller. This should only happen once.");
-    this.model = editor.createModel("", this.language);
+    this.model = editor.createModel("", this.language, monaco.Uri.parse(this.uri));
 
     this.startListeningToContentChanges();
   }

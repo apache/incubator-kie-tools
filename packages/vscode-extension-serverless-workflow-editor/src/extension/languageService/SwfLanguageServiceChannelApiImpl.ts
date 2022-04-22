@@ -19,16 +19,27 @@ import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
+  SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as swfModelQueries from "./modelQueries";
 import * as vscode from "vscode";
 import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
+import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
+import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/rhhccServiceRegistry";
+import { posix as posixPath } from "path";
+import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
+
+type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
+type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "functions"> & {
+  functions: SwfCompletionItemServiceCatalogFunction[];
+};
 
 const completions = new Map<
   jsonc.JSONPath,
   (args: {
-    model: TextDocument;
+    swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
+    document: TextDocument;
     cursorPosition: Position;
     currentNode: jsonc.Node;
     overwriteRange: Range;
@@ -38,56 +49,56 @@ const completions = new Map<
 >([
   [
     ["functions", "*"],
-    ({ currentNode, rootNode, overwriteRange }) => {
+    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices }) => {
       const separator = currentNode.type === "object" ? "," : "";
-      const existingOperations = [] as string[]; // FIXME: tiago swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
+      const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
-      return ([] as SwfServiceCatalogService[]) //FIXME: tiago
-        .flatMap((swfServiceCatalogService) =>
-          swfServiceCatalogService.functions
-            .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
-            .map((swfServiceCatalogFunc) => {
-              const swfFunction: Omit<Specification.Function, "normalize"> = {
-                name: `$\{1:${swfServiceCatalogFunc.name}}`,
-                operation: swfServiceCatalogFunc.operation,
-                type: swfServiceCatalogFunc.type,
-              };
+      return swfCompletionItemServiceCatalogServices.flatMap((swfServiceCatalogService) =>
+        swfServiceCatalogService.functions
+          .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
+          .map((swfServiceCatalogFunc) => {
+            const swfFunction: Omit<Specification.Function, "normalize"> = {
+              name: `$\{1:${swfServiceCatalogFunc.name}}`,
+              operation: swfServiceCatalogFunc.operation,
+              type: swfServiceCatalogFunc.type,
+            };
 
-              const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportFunctionFromCompletionItem"> = {
-                name: "swf.ls.commands.ImportFunctionFromCompletionItem",
-                args: {
-                  containingService: swfServiceCatalogService,
-                },
-              };
+            const command: SwfLanguageServiceCommandExecution<"swf.ls.commands.ImportFunctionFromCompletionItem"> = {
+              name: "swf.ls.commands.ImportFunctionFromCompletionItem",
+              args: {
+                containingService: swfServiceCatalogService,
+              },
+            };
 
-              return {
-                kind:
-                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
-                    ? CompletionItemKind.Interface
-                    : CompletionItemKind.Reference,
-                label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
-                detail:
-                  swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
-                    ? ""
-                    : swfServiceCatalogFunc.operation,
-                textEdit: {
-                  newText: JSON.stringify(swfFunction, null, 2) + separator,
-                  range: overwriteRange,
-                },
-                insertTextFormat: InsertTextFormat.Snippet,
-                command: {
-                  command: command.name,
-                  title: "Import function from completion item",
-                  arguments: [command.args],
-                },
-              };
-            })
-        );
+            return {
+              kind:
+                swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                  ? CompletionItemKind.Interface
+                  : CompletionItemKind.Reference,
+              label: toCompletionItemLabelPrefix(swfServiceCatalogFunc) + swfServiceCatalogFunc.name,
+              detail:
+                swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                  ? ""
+                  : swfServiceCatalogFunc.operation,
+              textEdit: {
+                newText: JSON.stringify(swfFunction, null, 2) + separator,
+                range: overwriteRange,
+              },
+              snippet: true,
+              insertTextFormat: InsertTextFormat.Snippet,
+              command: {
+                command: command.name,
+                title: "Import function from completion item",
+                arguments: [command.args],
+              },
+            };
+          })
+      );
     },
   ],
   [
     ["functions", "*", "operation"],
-    ({ currentNode, rootNode, overwriteRange }) => {
+    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices }) => {
       if (!currentNode.parent?.parent) {
         return [];
       }
@@ -99,9 +110,11 @@ const completions = new Map<
         return [];
       }
 
-      const existingOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
-      return ([] as SwfServiceCatalogFunction[]) //FIXME: tiago
-        .filter((swfServiceCatalogFunc) => !existingOperations.includes(swfServiceCatalogFunc.operation))
+      const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
+
+      return swfCompletionItemServiceCatalogServices
+        .flatMap((s) => s.functions)
+        .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
         .map((swfServiceCatalogFunc) => {
           return {
             kind: CompletionItemKind.Value,
@@ -126,7 +139,7 @@ const completions = new Map<
       }
 
       return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        const swfServiceCatalogFunc = {} as SwfServiceCatalogFunction; //FIXME: tiago //SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+        const swfServiceCatalogFunc = {} as SwfCompletionItemServiceCatalogFunction; //FIXME: tiago //SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
         if (!swfServiceCatalogFunc) {
           return [];
         }
@@ -181,7 +194,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
-    ({ overwriteRange, currentNode, rootNode }) => {
+    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices }) => {
       if (currentNode.type !== "property") {
         console.debug("Cannot autocomplete: functionRef should be a property.");
         return [];
@@ -244,7 +257,7 @@ function toCompletionItemLabelPrefix(swfServiceCatalogFunction: SwfServiceCatalo
 }
 
 function createCodeLenses(args: {
-  model: TextDocument;
+  document: TextDocument;
   rootNode: jsonc.Node;
   jsonPath: JSONPath;
   commandDelegates: (args: {
@@ -260,8 +273,8 @@ function createCodeLenses(args: {
       args.positionLensAt === "end" &&
       (node.type === "object" || node.type === "array") &&
       (node.children?.length ?? 0) > 0
-        ? args.model.positionAt(node.offset + node.length)
-        : args.model.positionAt(node.offset);
+        ? args.document.positionAt(node.offset + node.length)
+        : args.document.positionAt(node.offset);
 
     return args.commandDelegates({ position, node }).map((command) => ({
       command: {
@@ -324,25 +337,76 @@ export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath
 }
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
+  private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
   constructor(
     private readonly args: {
       rhhccAuthenticationStore: RhhccAuthenticationStore;
       configuration: SwfVsCodeExtensionConfiguration;
+      swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
     }
   ) {}
+
+  private getSwfCompletionItemServiceCatalogFunctionOperation(
+    containingService: SwfServiceCatalogService,
+    func: SwfServiceCatalogFunction,
+    document: TextDocument
+  ): string {
+    const { specsDirRelativePosixPath } = this.getSpecsDirPosixPaths(document);
+
+    if (func.source.type === SwfServiceCatalogFunctionSourceType.LOCAL_FS) {
+      const serviceFileName = posixPath.basename(func.source.serviceFileAbsolutePath);
+      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
+      return `${serviceFileRelativePosixPath}#${func.name}`;
+    }
+
+    //
+    else if (this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls()) {
+      //FIXME: Tiago
+      return "";
+    }
+
+    //
+    else if (
+      containingService.source.type === SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY &&
+      func.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+    ) {
+      const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(containingService.source.id);
+      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
+      return `${serviceFileRelativePosixPath}#${func.name}`;
+    }
+
+    //
+    else {
+      throw new Error("Unknown Service Catalog function source type");
+    }
+  }
+
+  private getSpecsDirPosixPaths(document: TextDocument) {
+    const baseFileAbsolutePosixPath = vscode.Uri.parse(document.uri).path;
+
+    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath({
+      baseFileAbsolutePosixPath,
+    });
+    const specsDirRelativePosixPath = posixPath.relative(
+      posixPath.dirname(baseFileAbsolutePosixPath),
+      specsDirAbsolutePosixPath
+    );
+    return { specsDirRelativePosixPath, specsDirAbsolutePosixPath };
+  }
+
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    const model = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
+    const document = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
     const rootNode = jsonc.parseTree(args.content);
     if (!rootNode) {
       return [];
     }
 
-    const cursorOffset = model.offsetAt(args.cursorPosition);
+    const cursorOffset = document.offsetAt(args.cursorPosition);
 
     const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
     if (!currentNode) {
@@ -350,8 +414,8 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     }
 
     const currentNodePosition = {
-      start: model.positionAt(currentNode.offset),
-      end: model.positionAt(currentNode.offset + currentNode.length),
+      start: document.positionAt(currentNode.offset),
+      end: document.positionAt(currentNode.offset + currentNode.length),
     };
 
     const overwriteRange = ["string", "number", "boolean", "null"].includes(currentNode?.type)
@@ -360,30 +424,54 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
 
     const cursorJsonLocation = jsonc.getLocation(args.content, cursorOffset);
 
+    const specsDirAbsolutePosixPath = this.getSpecsDirPosixPaths(document).specsDirAbsolutePosixPath;
+    let swfServiceCatalogRelativeStore = this.fsWatchingSwfServiceCatalogStore.get(specsDirAbsolutePosixPath);
+    if (!swfServiceCatalogRelativeStore) {
+      swfServiceCatalogRelativeStore = new FsWatchingServiceCatalogRelativeStore({
+        baseFileAbsolutePosixPath: vscode.Uri.parse(document.uri).path,
+        configuration: this.args.configuration,
+      });
+
+      await swfServiceCatalogRelativeStore.init();
+      this.fsWatchingSwfServiceCatalogStore.set(specsDirAbsolutePosixPath, swfServiceCatalogRelativeStore);
+    }
+
+    const swfCompletionItemServiceCatalogServices = [
+      ...this.args.swfServiceCatalogGlobalStore.storedServices,
+      ...swfServiceCatalogRelativeStore.storedServices,
+    ].map((service) => ({
+      ...service,
+      functions: service.functions.map((func) => ({
+        ...func,
+        operation: this.getSwfCompletionItemServiceCatalogFunctionOperation(service, func, document),
+      })),
+    }));
+
     return Array.from(completions.entries())
       .filter(([path, _]) => cursorJsonLocation.matches(path) && cursorJsonLocation.path.length === path.length)
       .flatMap(([_, completionItemsDelegate]) =>
         completionItemsDelegate({
-          model,
+          document,
           cursorPosition: args.cursorPosition,
           currentNode,
           currentNodePosition,
           rootNode,
           overwriteRange,
+          swfCompletionItemServiceCatalogServices,
         })
       );
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    const model = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
+    const document = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
 
-    const rootNode = jsonc.parseTree(model.getText());
+    const rootNode = jsonc.parseTree(document.getText());
     if (!rootNode) {
       return [];
     }
 
     const addFunction = createCodeLenses({
-      model,
+      document,
       rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
@@ -392,7 +480,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
           return [];
         }
 
-        const newCursorPosition = model.positionAt(node.offset + 1);
+        const newCursorPosition = document.positionAt(node.offset + 1);
 
         return [
           {
@@ -407,7 +495,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     });
 
     const logInToRhhcc = createCodeLenses({
-      model,
+      document,
       rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
@@ -432,7 +520,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     });
 
     const setupServiceRegistryUrl = createCodeLenses({
-      model,
+      document,
       rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
@@ -462,7 +550,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     });
 
     const refreshServiceRegistry = createCodeLenses({
-      model,
+      document,
       rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
@@ -500,5 +588,9 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
       ...(displayRhhccIntegration ? refreshServiceRegistry : []),
       ...addFunction,
     ];
+  }
+
+  public dispose() {
+    Array.from(this.fsWatchingSwfServiceCatalogStore.values()).forEach((f) => f.dispose());
   }
 }

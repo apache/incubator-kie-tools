@@ -30,13 +30,13 @@ import { ServerlessWorkflowEditorChannelApi } from "../api";
 
 interface Props {
   content: string;
-  filePath: string;
+  fileUri: string;
   onContentChange: (content: string, operation: SwfTextEditorOperation, versionId?: number) => void;
   channelType: ChannelType;
 }
 
 const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorController | undefined, Props> = (
-  { content, filePath, onContentChange, channelType },
+  { content, fileUri, onContentChange, channelType },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
@@ -44,15 +44,15 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorCo
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
 
   const controller = useMemo<SwfTextEditorController>(() => {
-    if (filePath.endsWith(".sw.json")) {
-      return new DefaultSwfTextEditorController(onContentChange, "json", editorEnvelopeCtx.operatingSystem);
+    if (fileUri.endsWith(".sw.json")) {
+      return new DefaultSwfTextEditorController(onContentChange, "json", editorEnvelopeCtx.operatingSystem, fileUri);
     }
-    if (filePath.endsWith(".sw.yaml") || filePath.endsWith(".sw.yml")) {
-      return new DefaultSwfTextEditorController(onContentChange, "yaml", editorEnvelopeCtx.operatingSystem);
+    if (fileUri.endsWith(".sw.yaml") || fileUri.endsWith(".sw.yml")) {
+      return new DefaultSwfTextEditorController(onContentChange, "yaml", editorEnvelopeCtx.operatingSystem, fileUri);
     }
 
-    throw new Error(`Unsupported extension '${filePath}'`);
-  }, [editorEnvelopeCtx.operatingSystem, filePath, onContentChange]);
+    throw new Error(`Unsupported extension '${fileUri}'`);
+  }, [editorEnvelopeCtx.operatingSystem, fileUri, onContentChange]);
 
   useEffect(() => {
     if (!container.current) {

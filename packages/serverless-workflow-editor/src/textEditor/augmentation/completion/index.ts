@@ -15,11 +15,13 @@
  */
 
 import * as monaco from "monaco-editor";
+import { languages } from "monaco-editor";
 import { SwfMonacoEditorInstance } from "../../SwfTextEditorController";
 import { ServerlessWorkflowEditorChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as ls from "vscode-languageserver-types";
 import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-language-service";
+import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 
 export function initJsonCompletion(
   commandIds: SwfMonacoEditorInstance["commands"],
@@ -64,6 +66,8 @@ export function initJsonCompletion(
         sortText: c.sortText,
         detail: c.detail,
         filterText: c.filterText,
+        insertTextRules:
+          c.insertTextFormat === ls.InsertTextFormat.Snippet ? CompletionItemInsertTextRule.InsertAsSnippet : undefined,
         insertText: c.insertText ?? c.textEdit?.newText ?? "",
         command: c.command
           ? {

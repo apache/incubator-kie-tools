@@ -22,26 +22,28 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../c
 
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
-export class FsWatchingServiceCatalogStore {
-  private onChangeCallback: undefined | ((services: SwfServiceCatalogService[]) => Promise<any>);
+export class FsWatchingServiceCatalogRelativeStore {
   private configurationChangedCallback: Disposable | undefined;
   private fsWatcher: Disposable | undefined;
+  private services: SwfServiceCatalogService[] = [];
 
   constructor(
     private readonly args: { baseFileAbsolutePosixPath: string; configuration: SwfVsCodeExtensionConfiguration }
   ) {}
 
-  public init(args: { onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any> }) {
-    this.onChangeCallback = args.onNewServices;
-
+  public init() {
     const initialSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(
       this.args
     );
 
-    this.fsWatcher = this.setupFsWatcher(initialSpecsDirAbsolutePosixPath);
+    this.fsWatcher = this.setupFsWatcher({ specsDirAbsolutePosixPath: initialSpecsDirAbsolutePosixPath });
     this.configurationChangedCallback = this.getConfigurationChangedCallback();
 
-    return this.refresh(initialSpecsDirAbsolutePosixPath);
+    return this.refresh({ specsDirAbsolutePosixPath: initialSpecsDirAbsolutePosixPath });
+  }
+
+  public get storedServices() {
+    return this.services;
   }
 
   private getConfigurationChangedCallback() {
@@ -52,23 +54,23 @@ export class FsWatchingServiceCatalogStore {
 
       const newSpecsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
       this.fsWatcher?.dispose();
-      this.fsWatcher = this.setupFsWatcher(newSpecsDirAbsolutePosixPath);
+      this.fsWatcher = this.setupFsWatcher({ specsDirAbsolutePosixPath: newSpecsDirAbsolutePosixPath });
 
-      return this.refresh(newSpecsDirAbsolutePosixPath);
+      return this.refresh({ specsDirAbsolutePosixPath: newSpecsDirAbsolutePosixPath });
     });
   }
 
-  private setupFsWatcher(absolutePosixPath: string): Disposable {
+  private setupFsWatcher(args: { specsDirAbsolutePosixPath: string }): Disposable {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
-      `${absolutePosixPath}/*.{json,yaml,yml}`,
+      `${vscode.Uri.parse(args.specsDirAbsolutePosixPath).path}/*.{json,yaml,yml}`,
       false,
       false,
       false
     );
 
-    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh(absolutePosixPath));
-    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh(absolutePosixPath));
-    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh(absolutePosixPath));
+    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh(args));
+    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh(args));
+    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh(args));
 
     return {
       dispose: () => {
@@ -85,24 +87,24 @@ export class FsWatchingServiceCatalogStore {
     this.configurationChangedCallback?.dispose();
   }
 
-  private async refresh(specsDirAbsolutePosixPath: string) {
+  public async refresh(args: { specsDirAbsolutePosixPath: string }) {
     try {
-      const services = await this.readFileSystemServices(specsDirAbsolutePosixPath);
-      return this.onChangeCallback?.(services);
+      console.info("SWF Service Catalog relative store :: updating...");
+      this.services = await this.readFileSystemServices(args);
+      console.info("SWF Service Catalog relative store :: updated.");
     } catch (e) {
-      console.error("Could not refresh SWF Service Catalog services", e);
-      return this.onChangeCallback?.([]);
+      console.error("Could not refresh SWF Service Catalog relative store.", e);
     }
   }
 
-  private readFileSystemServices(specsDirAbsolutePosixPath: string): Promise<SwfServiceCatalogService[]> {
+  private readFileSystemServices(args: { specsDirAbsolutePosixPath: string }): Promise<SwfServiceCatalogService[]> {
     return new Promise<SwfServiceCatalogService[]>((resolve, reject) => {
       try {
-        const specsDirAbsolutePosixPathUri = vscode.Uri.parse(specsDirAbsolutePosixPath);
+        const specsDirAbsolutePosixPathUri = vscode.Uri.parse(args.specsDirAbsolutePosixPath);
 
         vscode.workspace.fs.stat(specsDirAbsolutePosixPathUri).then((stats) => {
           if (!stats || stats.type !== FileType.Directory) {
-            reject(`Invalid specs dir path: ${specsDirAbsolutePosixPath}`);
+            reject(`Invalid specs dir path: ${args.specsDirAbsolutePosixPath}`);
             return;
           }
 
@@ -119,8 +121,10 @@ export class FsWatchingServiceCatalogStore {
                 return;
               }
 
-              const fileUri = specsDirAbsolutePosixPathUri.with({ path: specsDirAbsolutePosixPath + "/" + fileName });
-              promises.push(this.readServiceFile(fileUri, fileName, specsDirAbsolutePosixPath));
+              const fileUri = specsDirAbsolutePosixPathUri.with({
+                path: specsDirAbsolutePosixPathUri.path + "/" + fileName,
+              });
+              promises.push(this.readServiceFile(fileUri, fileName, args.specsDirAbsolutePosixPath));
             });
 
             if (promises.length > 0) {
@@ -137,13 +141,12 @@ export class FsWatchingServiceCatalogStore {
     });
   }
 
-  private async readServiceFile(fileUrl: vscode.Uri, fileName: string, specsDirAbsolutePosixPath: string) {
-    const rawData = await vscode.workspace.fs.readFile(fileUrl);
+  private async readServiceFile(fileUri: vscode.Uri, fileName: string, specsDirAbsolutePosixPath: string) {
+    const rawData = await vscode.workspace.fs.readFile(fileUri);
     try {
       return [
         parseOpenApi({
-          baseFileAbsolutePosixPath: this.args.baseFileAbsolutePosixPath,
-          specsDirAbsolutePosixPath: specsDirAbsolutePosixPath,
+          specsDirAbsolutePosixPath,
           serviceFileName: fileName,
           serviceFileContent: new TextDecoder("utf-8").decode(rawData),
         }),

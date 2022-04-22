@@ -35,9 +35,6 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
-import { FsWatchingServiceCatalogStore } from "./serviceCatalog/fs";
-import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
@@ -46,6 +43,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
       swfLanguageService: SwfLanguageServiceChannelApiImpl;
+      swfServiceCatalogStore: SwfServiceCatalogStore;
     }
   ) {}
   get(
@@ -59,51 +57,14 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     i18n: I18n<VsCodeI18n>,
     initialBackup?: Uri
   ): KogitoEditorChannelApi {
-    const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
-      baseFileAbsolutePosixPath: editor.document.document.uri.path,
-      rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
-      configuration: this.args.configuration,
-    });
-
-    const fsWatchingServiceCatalogStore = new FsWatchingServiceCatalogStore({
-      baseFileAbsolutePosixPath: editor.document.document.uri.path,
-      configuration: this.args.configuration,
-    });
-
-    const swfServiceCatalogStore = new SwfServiceCatalogStore({
-      fsWatchingServiceCatalogStore,
-      rhhccServiceRegistryServiceCatalogStore,
-    });
-
-    // TODO: This is a workaround
+    // TODO: This casting to `unknown` first is a workaround
     const swfServiceCatalogEnvelopeServer = editor.envelopeServer as unknown as EnvelopeServer<
       SwfServiceCatalogChannelApi,
       KogitoEditorEnvelopeApi
     >;
 
-    swfServiceCatalogStore.init({
-      onNewServices: async (services) => {
-        swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services);
-      },
-    });
-
     const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
       swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_user.set(getUser(session));
-
-      if (!session) {
-        return rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const configuredServiceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
-      if (configuredServiceRegistryUrl) {
-        return rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const serviceRegistryUrl = await askForServiceRegistryUrl({ currentValue: configuredServiceRegistryUrl });
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
-
-      return rhhccServiceRegistryServiceCatalogStore.refresh();
     });
 
     const rhhccServiceRegistryUrlSubscription = vscode.workspace.onDidChangeConfiguration(async (e) => {
@@ -115,9 +76,8 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     });
 
     editor.panel.onDidDispose(() => {
-      swfServiceCatalogStore.dispose();
       rhhccServiceRegistryUrlSubscription.dispose();
-      this.args.rhhccAuthenticationStore.unsubscribeToSessionChange(rhhccSessionSubscription);
+      rhhccSessionSubscription.dispose();
     });
 
     return new ServerlessWorkflowEditorChannelApiImpl(
@@ -130,7 +90,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       viewType,
       i18n,
       new SwfServiceCatalogChannelApiImpl({
-        swfServiceCatalogStore,
+        swfServiceCatalogStore: this.args.swfServiceCatalogStore,
         baseFileAbsolutePosixPath: editor.document.document.uri.path,
         configuration: this.args.configuration,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
