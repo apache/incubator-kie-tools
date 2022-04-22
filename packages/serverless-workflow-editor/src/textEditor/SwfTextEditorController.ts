@@ -141,7 +141,7 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
     });
 
     if (this.operatingSystem !== OperatingSystem.MACOS) {
-      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
+      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
         this.onContentChange(this.model.getValue(), SwfTextEditorOperation.REDO);
       });
     }
