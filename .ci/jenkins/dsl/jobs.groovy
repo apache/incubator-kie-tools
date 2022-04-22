@@ -58,7 +58,7 @@ void setupPrJob(String branch = "${GIT_BRANCH}") {
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
     def jobParams = getJobParams('kogito-images-deploy', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.deploy", 'Kogito Images Deploy')
     if (jobType == KogitoJobType.PR) {
-        jobParams.git.branch = '${GIT_BRANCH_NAME}'
+        jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
