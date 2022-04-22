@@ -30,7 +30,7 @@ export class DmnUnitablesJsonSchemaBridge extends UnitablesJsonSchemaBridge {
     if (field.format === YEARS_AND_MONTHS_DURATION_FORMAT) {
       field.placeholder = "P1Y5M or P2Y or P1M";
     }
-    if (!field.type && field["x-dmn-type"] === FEEL_CONTEXT) {
+    if (field["x-dmn-type"] === FEEL_CONTEXT) {
       field.placeholder = `{ "x": <value> }`;
     }
     return field;

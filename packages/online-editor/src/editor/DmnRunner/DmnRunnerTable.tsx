@@ -188,23 +188,22 @@ export function DmnRunnerTable(props: Props) {
                     </>
                   }
                 >
-                  <div ref={inputsContainerRef}>
-                    <Unitables
-                      ref={unitablesRef}
-                      name={"DMN Runner Table"}
-                      i18n={i18n.dmnRunner.table}
-                      jsonSchema={dmnRunnerState.jsonSchema}
-                      rowCount={rowCount}
-                      openRow={openRow}
-                      inputRows={dmnRunnerState.inputRows}
-                      setInputRows={dmnRunnerDispatch.setInputRows}
-                      error={dmnRunnerState.error}
-                      setError={dmnRunnerDispatch.setError}
-                      jsonSchemaBridge={jsonSchemaBridge}
-                      propertiesEntryPath={"definitions.InputSet"}
-                      onRowNumberUpdate={onRowNumberUpdate}
-                    />
-                  </div>
+                  <Unitables
+                    ref={unitablesRef}
+                    name={"DMN Runner Table"}
+                    i18n={i18n.dmnRunner.table}
+                    jsonSchema={dmnRunnerState.jsonSchema}
+                    rowCount={rowCount}
+                    openRow={openRow}
+                    inputRows={dmnRunnerState.inputRows}
+                    setInputRows={dmnRunnerDispatch.setInputRows}
+                    error={dmnRunnerState.error}
+                    setError={dmnRunnerDispatch.setError}
+                    jsonSchemaBridge={jsonSchemaBridge}
+                    propertiesEntryPath={"definitions.InputSet"}
+                    onRowNumberUpdate={onRowNumberUpdate}
+                    inputsContainerRef={inputsContainerRef}
+                  />
                 </DrawerContent>
               </Drawer>
             </ErrorBoundary>

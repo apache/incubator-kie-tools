@@ -49,7 +49,8 @@ interface Props {
   rowCount: number;
   jsonSchemaBridge: UnitablesJsonSchemaBridge;
   propertiesEntryPath: string;
-  onRowNumberUpdate: any;
+  onRowNumberUpdate: (rowQtt: number, operation?: TableOperation, rowIndex?: number) => void;
+  inputsContainerRef: React.RefObject<HTMLDivElement>;
 }
 
 export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRef) => {
@@ -88,7 +89,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
 
   return (
     <>
-      {shouldRender && inputRules && (
+      {inputs && shouldRender && inputRules && (
         <ErrorBoundary ref={inputErrorBoundaryRef} setHasError={props.setError} error={<InputError />}>
           <BoxedExpressionProvider
             expressionDefinition={{}}
@@ -96,7 +97,7 @@ export const Unitables = React.forwardRef<UnitablesApi, Props>((props, forwardRe
             decisionNodeId={inputUid}
             dataTypes={[]}
           >
-            <div style={{ display: "flex" }}>
+            <div style={{ display: "flex" }} ref={props.inputsContainerRef}>
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ width: "50px", height: "55px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
                 <div style={{ width: "50px", height: "56px", border: "1px solid", visibility: "hidden" }}>{" # "}</div>
