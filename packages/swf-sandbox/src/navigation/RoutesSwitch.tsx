@@ -24,7 +24,7 @@ export function RoutesSwitch() {
         path={routes.workspaceWithFilePath.path({
           workspaceId: ":workspaceId",
           fileRelativePath: `:fileRelativePath*`,
-          extension: `:extension(${supportedExtensions})`,
+          extension: `:extension`,
         })}
       >
         {({ match }) => (

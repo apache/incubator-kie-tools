@@ -321,7 +321,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
-          {(editableFiles.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
+          {(workspace.files.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}
@@ -333,9 +333,9 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               onClick={() => {
                 history.push({
                   pathname: routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
+                    workspaceId: workspace.files[0].workspaceId,
+                    fileRelativePath: workspace.files[0].relativePathWithoutExtension,
+                    extension: workspace.files[0].extension,
                   }),
                 });
               }}
@@ -343,9 +343,9 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               <CardHeader>
                 <Link
                   to={routes.workspaceWithFilePath.path({
-                    workspaceId: editableFiles[0].workspaceId,
-                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                    extension: editableFiles[0].extension,
+                    workspaceId: workspace.files[0].workspaceId,
+                    fileRelativePath: workspace.files[0].relativePathWithoutExtension,
+                    extension: workspace.files[0].extension,
                   })}
                 >
                   <CardHeaderMain style={{ width: "100%" }}>
@@ -356,14 +356,14 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                             <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
                               <TaskIcon />
                               &nbsp;&nbsp;
-                              {editableFiles[0].nameWithoutExtension}
+                              {workspace.files[0].nameWithoutExtension}
                             </Text>
                           </TextContent>
                         </CardTitle>
                       </FlexItem>
                       <FlexItem>
                         <b>
-                          <FileLabel extension={editableFiles[0].extension} />
+                          <FileLabel extension={workspace.files[0].extension} />
                         </b>
                       </FlexItem>
                     </Flex>
@@ -378,11 +378,11 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
                           <FlexItem>
-                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                            Delete <b>{`"${workspace.files[0].nameWithoutExtension}"`}</b>
                           </FlexItem>
                           <FlexItem>
                             <b>
-                              <FileLabel extension={editableFiles[0].extension} />
+                              <FileLabel extension={workspace.files[0].extension} />
                             </b>
                           </FlexItem>
                         </Flex>
@@ -431,7 +431,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     </FlexItem>
                     <FlexItem>
                       <Text component={TextVariants.p}>
-                        {`${workspace.files.length} files, ${editableFiles?.length} models`}
+                        {`${workspace.files.length} file(s), ${editableFiles?.length} model(s)`}
                       </Text>
                     </FlexItem>
                   </Flex>
@@ -563,7 +563,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
               <Flex>
                 <FlexItem>
                   <TextContent>
-                    <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
+                    <Text component={TextVariants.h3}>{`Files in '${workspacePromise.data?.descriptor.name}'`}</Text>
                   </TextContent>
                 </FlexItem>
                 <FlexItem>
@@ -604,7 +604,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
             </DrawerHead>
             <DrawerPanelBody>
               <DataList aria-label="models-data-list">
-                {models.map((file) => (
+                {[...models, ...otherFiles].map((file) => (
                   <Link
                     key={file.relativePath}
                     to={routes.workspaceWithFilePath.path({
@@ -618,19 +618,6 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                 ))}
               </DataList>
               <br />
-              {otherFiles.length > 0 && (
-                <ExpandableSection
-                  toggleTextCollapsed="View other files"
-                  toggleTextExpanded="Hide other files"
-                  className={"plain"}
-                >
-                  <DataList aria-label="other-files-data-list">
-                    {otherFiles.map((file) => (
-                      <FileDataListItem key={file.relativePath} file={file} />
-                    ))}
-                  </DataList>
-                </ExpandableSection>
-              )}
             </DrawerPanelBody>
           </>
         )}
