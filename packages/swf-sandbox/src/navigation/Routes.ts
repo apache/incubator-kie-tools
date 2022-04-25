@@ -121,7 +121,10 @@ export const routes = {
 
   workspaceWithFilePath: new Route<{
     pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
-  }>(({ workspaceId, fileRelativePath, extension }) => `/${workspaceId}/file/${fileRelativePath}.${extension}`),
+  }>(
+    ({ workspaceId, fileRelativePath, extension }) =>
+      `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
+  ),
 
   static: {
     sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`),

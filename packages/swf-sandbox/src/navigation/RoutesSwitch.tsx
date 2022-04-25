@@ -24,13 +24,15 @@ export function RoutesSwitch() {
         path={routes.workspaceWithFilePath.path({
           workspaceId: ":workspaceId",
           fileRelativePath: `:fileRelativePath*`,
-          extension: `:extension`,
+          extension: `:extension?`,
         })}
       >
         {({ match }) => (
           <EditorPage
             workspaceId={match!.params.workspaceId!}
-            fileRelativePath={`${match!.params.fileRelativePath ?? ""}.${match!.params.extension}`}
+            fileRelativePath={`${match!.params.fileRelativePath ?? ""}${
+              match!.params.extension ? `.${match!.params.extension}` : ""
+            }`}
           />
         )}
       </Route>

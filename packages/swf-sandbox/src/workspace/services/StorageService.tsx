@@ -92,7 +92,7 @@ export class StorageService {
     }
 
     const extension = resolveExtension(file.path);
-    const newPath = join(dirname(file.path), `${newFileName}.${extension}`);
+    const newPath = join(dirname(file.path), `${newFileName}${extension ? "." + extension : ""}`);
 
     if (await this.exists(fs, newPath)) {
       throw new Error(`File ${newPath} already exists`);
