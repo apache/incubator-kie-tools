@@ -39,16 +39,12 @@ export async function activate(context: vscode.ExtensionContext) {
   const configuration = new SwfVsCodeExtensionConfiguration();
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
 
-  const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
-    rhhccAuthenticationStore: rhhccAuthenticationStore,
-    configuration: configuration,
-  });
-
-  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
-
-  await swfServiceCatalogGlobalStore.init();
-  console.info(
-    `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
+  context.subscriptions.push(
+    vscode.authentication.onDidChangeSessions(async (e) => {
+      if (e.provider.id === "redhat-mas-account-auth") {
+        await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
+      }
+    })
   );
 
   context.subscriptions.push(
@@ -68,6 +64,20 @@ export async function activate(context: vscode.ExtensionContext) {
 
       return rhhccServiceRegistryServiceCatalogStore.refresh();
     })
+  );
+
+  const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
+    rhhccAuthenticationStore,
+    configuration,
+  });
+
+  await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
+
+  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
+
+  await swfServiceCatalogGlobalStore.init();
+  console.info(
+    `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
   );
 
   const swfLanguageService = new SwfLanguageServiceChannelApiImpl({
@@ -116,16 +126,6 @@ export async function activate(context: vscode.ExtensionContext) {
   });
 
   setupCommands({ context, configuration });
-
-  context.subscriptions.push(
-    vscode.authentication.onDidChangeSessions(async (e) => {
-      if (e.provider.id === "redhat-mas-account-auth") {
-        await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
-      }
-    })
-  );
-
-  updateRhhccAuthenticationSession(rhhccAuthenticationStore);
 
   context.subscriptions.push(
     new vscode.Disposable(() => {
