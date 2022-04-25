@@ -70,7 +70,7 @@ import {
 import { useCancelableEffect } from "../reactExt/Hooks";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
 import { AuthStatus, GithubScopes, useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsDrawerBody";
+import { SettingsTabs } from "../settings/SettingsModalBody";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";

@@ -19,8 +19,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { getCookie, setCookie } from "../cookies";
 import { Octokit } from "@octokit/rest";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { SettingsDrawerBody, SettingsTabs } from "./SettingsDrawerBody";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { SettingsModalBody, SettingsTabs } from "./SettingsModalBody";
 import { OpenShiftSettingsConfig, readOpenShiftConfigCookie } from "./openshift/OpenShiftSettingsConfig";
 import { OpenShiftInstanceStatus } from "../openshift/OpenShiftInstanceStatus";
 import { OpenShiftService } from "../openshift/OpenShiftService";
@@ -28,16 +28,6 @@ import { useHistory } from "react-router";
 import { QueryParams } from "../navigation/Routes";
 import { GITHUB_AUTH_TOKEN_COOKIE_NAME } from "./github/GitHubSettingsTab";
 import { KafkaSettingsConfig, readKafkaConfigCookie } from "./kafka/KafkaSettingsConfig";
-import {
-  Drawer,
-  DrawerPanelContent,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerHead,
-  DrawerActions,
-  DrawerCloseButton,
-  DrawerPanelBody,
-} from "@patternfly/react-core/dist/js/components/Drawer";
 import { readServiceAccountConfigCookie, ServiceAccountSettingsConfig } from "./serviceAccount/ServiceAccountConfig";
 import {
   readServiceRegistryConfigCookie,
@@ -300,33 +290,15 @@ export function SettingsContextProvider(props: any) {
     serviceRegistryConfig,
   ]);
 
-  const panelContent = useMemo(
-    () => (
-      <DrawerPanelContent widths={{ default: "width_66" }}>
-        <DrawerHead>
-          <TextContent>
-            <Text component={TextVariants.h2}>Settings</Text>
-          </TextContent>
-          <DrawerActions>
-            <DrawerCloseButton onClick={close} />
-          </DrawerActions>
-        </DrawerHead>
-        <DrawerPanelBody>
-          <SettingsDrawerBody />
-        </DrawerPanelBody>
-      </DrawerPanelContent>
-    ),
-    [close]
-  );
-
   return (
     <SettingsContext.Provider value={value}>
       <SettingsDispatchContext.Provider value={dispatch}>
-        <Drawer isExpanded={isOpen}>
-          <DrawerContent panelContent={panelContent}>
-            <DrawerContentBody>{props.children}</DrawerContentBody>
-          </DrawerContent>
-        </Drawer>
+        {githubAuthStatus !== AuthStatus.LOADING && <>{props.children}</>}
+        <Modal title="Settings" isOpen={isOpen} onClose={close} variant={ModalVariant.large}>
+          <div style={{ height: "calc(100vh * 0.5)" }} className={"kie-tools--settings-modal-content"}>
+            <SettingsModalBody />
+          </div>
+        </Modal>
       </SettingsDispatchContext.Provider>
     </SettingsContext.Provider>
   );

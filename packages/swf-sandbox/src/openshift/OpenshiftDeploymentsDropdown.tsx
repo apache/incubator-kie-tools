@@ -26,7 +26,7 @@ import { useCallback, useMemo } from "react";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
-import { SettingsTabs } from "../settings/SettingsDrawerBody";
+import { SettingsTabs } from "../settings/SettingsModalBody";
 import { useOpenShift } from "./OpenShiftContext";
 import { OpenShiftDeploymentDropdownItem } from "./OpenShiftDeploymentDropdownItem";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";

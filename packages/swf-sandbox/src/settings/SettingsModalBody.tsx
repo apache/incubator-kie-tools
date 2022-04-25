@@ -31,7 +31,7 @@ export enum SettingsTabs {
   KAFKA = "kafka",
 }
 
-export function SettingsDrawerBody() {
+export function SettingsModalBody() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
 

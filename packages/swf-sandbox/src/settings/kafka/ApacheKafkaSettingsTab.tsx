@@ -27,7 +27,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { saveBootstrapServerCookie, saveTopicCookie } from "./KafkaSettingsConfig";
-import { SettingsTabs } from "../SettingsDrawerBody";
+import { SettingsTabs } from "../SettingsModalBody";
 
 export function ApacheKafkaSettingsTab() {
   const settings = useSettings();
