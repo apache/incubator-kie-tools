@@ -24,12 +24,12 @@ import {
  */
 export interface JavaCodeCompletionService {
   /**
-   * Return a list of classes for given query. If the query is empty or there is not matching result,
+   * Return a list of classes for given FQCN query. If the query is empty or there is not matching result,
    * an empty list is returned
-   * @param query A class name or a FQCN string
+   * @param fqcn A class name or a fqcn string
    * @returns A list of Classes or empty list if nothing found
    */
-  getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
+  getClasses(fqcn: string): Promise<JavaCodeCompletionClass[]>;
 
   /**
    * Return a list of accessors for a given class. If the class does not exist or if it can't find anything

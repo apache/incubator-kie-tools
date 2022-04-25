@@ -17,7 +17,6 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -25,7 +24,7 @@ public abstract class Handler<T> {
 
     private final String id;
 
-    public Handler(String id) {
+    protected Handler(String id) {
         this.id = id;
     }
 
@@ -37,5 +36,5 @@ public abstract class Handler<T> {
         return this.getId().equals(commandId);
     }
 
-    public abstract CompletableFuture<T> handle(List<Object> arguments, IProgressMonitor progress);
+    public abstract T handle(List<Object> arguments, IProgressMonitor progress);
 }

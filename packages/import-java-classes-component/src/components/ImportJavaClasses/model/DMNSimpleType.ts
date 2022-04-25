@@ -71,9 +71,17 @@ export const JAVA_TO_DMN_MAP = new Map([
   ["ChronoPeriod", DMNSimpleType.DURATION_DAYS_TIME],
   /** Boolean */
   ["Boolean", DMNSimpleType.BOOLEAN],
+  ["boolean", DMNSimpleType.BOOLEAN],
   /** Context */
   ["Map", DMNSimpleType.CONTEXT],
   ["LinkedHashMap", DMNSimpleType.CONTEXT],
   ["HashMap", DMNSimpleType.CONTEXT],
   ["TreeMap", DMNSimpleType.CONTEXT],
+  /** List */
+  ["List", DMNSimpleType.ANY],
+  ["ArrayList", DMNSimpleType.ANY],
+  ["LinkedList", DMNSimpleType.ANY],
+  /** Any */
+  ["Class", DMNSimpleType.ANY],
+  ["Object", DMNSimpleType.ANY],
 ]);

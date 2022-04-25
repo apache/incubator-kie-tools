@@ -28,8 +28,6 @@ declare global {
 
   interface Envelope {
     javaCodeCompletionService: JavaCodeCompletionApi;
-    lspGetClassServiceMocked: (value: string) => string[]; //TODO To be removed
-    lspGetClassFieldsServiceMocked: (className: string) => Promise<Map<string, string>>; //TODO to be removed
   }
 
   interface ImportJavaClassesAPI {
