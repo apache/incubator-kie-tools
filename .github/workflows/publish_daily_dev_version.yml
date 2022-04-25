@@ -201,14 +201,14 @@ jobs:
           name: vscode-extension-backend
           path: kie-tools/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
 
-      - name: "Upload Chrome Extension for kie editors(Ubuntu only)"
+      - name: "Upload Chrome Extension for kie editors (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension
           path: kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
 
-      - name: "Upload Chrome Extension for serverless workflow editor(Ubuntu only)"
+      - name: "Upload Chrome Extension for serverless workflow editor (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
@@ -254,7 +254,6 @@ jobs:
           cp -RL ../kie-tools/packages/stunner-editors/dist/dmn dev/editors/
           cp -RL ../kie-tools/packages/stunner-editors/dist/bpmn dev/editors/
           cp -RL ../kie-tools/packages/stunner-editors/dist/scesim dev/editors/
-          cp -RL ../kie-tools/packages/serverless/dist/scesim dev/editors/
           cp -RL ../kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} dev/editors/sw
           cp -r ../kie-tools/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
