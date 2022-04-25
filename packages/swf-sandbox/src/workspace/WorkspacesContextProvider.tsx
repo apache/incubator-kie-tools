@@ -94,6 +94,11 @@ export function WorkspacesContextProvider(props: Props) {
         .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
+      if (!suggestedFirstFile) {
+        const allFilesSorted = files.sort((a, b) => a.relativePath.localeCompare(b.relativePath));
+        return { workspace, suggestedFirstFile: allFilesSorted[0] };
+      }
+
       return { workspace, suggestedFirstFile };
     },
     [editorEnvelopeLocator, service]
