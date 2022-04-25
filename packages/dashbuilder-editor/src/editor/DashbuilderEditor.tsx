@@ -30,6 +30,49 @@ import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/e
 import { Dashbuilder } from "../dashbuilder/Dashbuilder";
 import { Toolbar } from "./Toolbar";
 
+const INITIAL_CONTENT = `datasets:
+- uuid: products
+  content: >-
+            [
+              ["Computers", "Scanner", 5, 3],
+              ["Computers", "Printer", 7, 4],
+              ["Computers", "Laptop", 3, 2],
+              ["Electronics", "Camera", 10, 7],
+              ["Electronics", "Headphones", 5, 9]
+            ]
+  columns:
+    - id: Section
+      type: LABEL
+    - id: Product
+      type: LABEL
+    - id: Quantity
+      type: NUMBER
+    - id: Quantity2
+      type: NUMBER
+pages:
+- components:
+    - html: Welcome to Dashbuilder!
+      properties:
+        font-size: xx-large
+        margin-bottom: 30px
+    - settings:
+        type: BARCHART
+        dataSetLookup:
+            uuid: products
+            group:
+                - columnGroup:
+                    source: Product
+                  groupFunctions:
+                    - source: Product
+                    - source: Quantity
+                      function: SUM
+                    - source: Quantity2
+                      function: SUM
+    - settings:
+        type: TABLE
+        dataSetLookup:
+            uuid: products`;
+
 interface Props {
   /**
    * Delegation for KogitoEditorChannelApi.kogitoEditor_ready() to signal to the Channel
@@ -81,7 +124,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   props,
   forwardedRef
 ) => {
-  const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
+  const [initialContent, setInitialContent] = useState({ originalContent: INITIAL_CONTENT, path: "" });
   const [content, setContent] = useState("");
   const [showPreview, setShowPreview] = useState<boolean>(props.showEditor!);
   const newContentRef = useRef<string>("");
@@ -109,7 +152,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
         setContent: (path: string, newContent: string): Promise<void> => {
           try {
             setInitialContent({
-              originalContent: newContent,
+              originalContent: INITIAL_CONTENT,
               path: path,
             });
             return Promise.resolve();
