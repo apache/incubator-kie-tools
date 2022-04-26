@@ -168,7 +168,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
         }
         props.onStateControlCommandUpdate(StateControlCommand.REDO);
       }
-
+      // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
       setTimeout(() => {
         updateDiagram(swfMonacoEditorRef.current!.getContent());
       }, 100);
