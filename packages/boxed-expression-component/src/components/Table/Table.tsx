@@ -43,9 +43,9 @@ import {
   focusUpperCell,
   getParentCell,
   pasteOnTable,
-  NavigationKeysUtils,
   PASTE_OPERATION,
 } from "./common";
+import { NavigationKeysUtils } from "../common";
 import { EditableCell } from "./EditableCell";
 import "./Table.css";
 import { TableBody } from "./TableBody";
