@@ -16,6 +16,7 @@ export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatal
   return `${swfServiceCatalogServiceId}__latest.yaml`;
 }
 
+// TODO: refactor and remove duplicated code
 export class SwfServiceCatalogStore {
   public static services: SwfServiceCatalogService[];
   public static async refresh(
@@ -98,7 +99,27 @@ export class SwfServiceCatalogStore {
     return SwfServiceCatalogStore.services;
   }
 
-  public dispose() {}
+  public static async uploadArtifact(args: {
+    groupId: string;
+    artifactId: string;
+    content: string;
+    proxyUrl: string;
+    serviceRegistryConfig: ServiceRegistrySettingsConfig;
+    serviceAccountConfig: ServiceAccountSettingsConfig;
+  }): Promise<void> {
+    await axios.post(args.proxyUrl + "/devsandbox", args.content, {
+      headers: {
+        // We are facing a 401 Error when using oauth, let's use Basic auth for now.
+        Authorization:
+          "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
+        "Content-Type": "application/json",
+        "X-Registry-ArtifactId": args.artifactId.replace(/\s|\//g, "_"),
+        "Target-Url": `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(
+          args.groupId
+        )}/artifacts`,
+      },
+    });
+  }
 }
 
 export interface ServiceRegistryArtifactSearchResponse {

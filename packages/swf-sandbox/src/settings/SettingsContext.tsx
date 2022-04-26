@@ -186,10 +186,26 @@ export function SettingsContextProvider(props: any) {
     });
   }, [githubAuthService]);
 
-  //openshift
-  const openshiftService = useMemo(() => new OpenShiftService(), []);
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
+  const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
+  const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
+    readServiceAccountConfigCookie()
+  );
+  const [serviceRegistryConfig, setServiceRegistryConfig] = useState<ServiceRegistrySettingsConfig>(
+    readServiceRegistryConfigCookie()
+  );
+
   const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
+
+  const openshiftService = useMemo(
+    () =>
+      new OpenShiftService({
+        openShift: openshiftConfig,
+        kafka: kafkaConfig,
+        serviceAccount: serviceAccountConfig,
+      }),
+    [kafkaConfig, openshiftConfig, serviceAccountConfig]
+  );
 
   // Initial check for openshift status
   useEffect(() => {
@@ -213,19 +229,6 @@ export function SettingsContextProvider(props: any) {
       };
     }
   }, [openshiftConfig, openshiftService, openshiftStatus]);
-
-  // apache kafka
-  const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
-
-  // service account
-  const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
-    readServiceAccountConfigCookie()
-  );
-
-  // service registry
-  const [serviceRegistryConfig, setServiceRegistryConfig] = useState<ServiceRegistrySettingsConfig>(
-    readServiceRegistryConfigCookie()
-  );
 
   const dispatch = useMemo(() => {
     return {

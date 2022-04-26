@@ -16,6 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
 import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsConfig";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
@@ -53,18 +54,9 @@ export function OpenShiftContextProvider(props: Props) {
       return settingsDispatch.openshift.service.deploy({
         workflow: workflow,
         workspaceName: workspaceName,
-        openShiftConfig: settings.openshift.config,
-        kafkaConfig: settings.apacheKafka.config,
-        serviceAccountConfig: settings.serviceAccount.config,
       });
     },
-    [
-      settings.apacheKafka.config,
-      settings.openshift.config,
-      settings.serviceAccount.config,
-      settingsDispatch.openshift.service,
-      workspaces.descriptorService,
-    ]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces.descriptorService]
   );
 
   const fetchOpenApiFile = useCallback(
@@ -74,10 +66,7 @@ export function OpenShiftContextProvider(props: Props) {
       }
 
       try {
-        const routeUrl = await settingsDispatch.openshift.service.getDeploymentRoute({
-          config: settings.openshift.config,
-          resourceName,
-        });
+        const routeUrl = await settingsDispatch.openshift.service.getDeploymentRoute(resourceName);
         if (!routeUrl) {
           return;
         }
@@ -106,21 +95,16 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid service registry config");
       }
 
-      await settingsDispatch.openshift.service.uploadOpenApiToServiceRegistry({
-        proxyUrl: settings.openshift.config.proxy,
-        groupId: DEFAULT_GROUP_ID,
+      await SwfServiceCatalogStore.uploadArtifact({
         artifactId: artifactId,
+        groupId: DEFAULT_GROUP_ID,
+        content: content,
+        proxyUrl: settings.openshift.config.proxy,
         serviceAccountConfig: settings.serviceAccount.config,
         serviceRegistryConfig: settings.serviceRegistry.config,
-        openApiContent: content,
       });
     },
-    [
-      settingsDispatch.openshift.service,
-      settings.serviceAccount.config,
-      settings.serviceRegistry.config,
-      settings.openshift.config,
-    ]
+    [settings.serviceAccount.config, settings.serviceRegistry.config, settings.openshift.config.proxy]
   );
 
   useEffect(() => {
@@ -138,7 +122,7 @@ export function OpenShiftContextProvider(props: Props) {
           settingsDispatch.openshift.setStatus(
             isConfigOk ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.EXPIRED
           );
-          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments(settings.openshift.config) : [];
+          return isConfigOk ? settingsDispatch.openshift.service.loadDeployments() : [];
         })
         .then((ds) => setDeployments(ds))
         .catch((error) => console.error(error));
@@ -148,7 +132,7 @@ export function OpenShiftContextProvider(props: Props) {
     if (settings.openshift.status === OpenShiftInstanceStatus.CONNECTED && isDeploymentsDropdownOpen) {
       const loadDeploymentsTask = window.setInterval(() => {
         settingsDispatch.openshift.service
-          .loadDeployments(settings.openshift.config)
+          .loadDeployments()
           .then((ds) => setDeployments(ds))
           .catch((error) => {
             setDeployments([]);
