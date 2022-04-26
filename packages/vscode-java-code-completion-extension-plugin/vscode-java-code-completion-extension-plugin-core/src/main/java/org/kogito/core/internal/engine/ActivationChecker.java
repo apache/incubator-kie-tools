@@ -27,8 +27,7 @@ import org.kogito.core.internal.util.WorkspaceUtil;
 public class ActivationChecker {
 
     private final WorkspaceUtil workspaceUtil;
-    private String activatorUri = "";
-    private boolean present = false;
+    private String activatorUri = null;
 
     public ActivationChecker(WorkspaceUtil workspaceUtil) {
         this.workspaceUtil = workspaceUtil;
@@ -37,29 +36,25 @@ public class ActivationChecker {
     public void check() {
         ActivationFileVisitor visitor = new ActivationFileVisitor();
         try {
-            Files.walkFileTree(Paths.get(getRootUri()), visitor);
+            Files.walkFileTree(Paths.get(workspaceUtil.getWorkspace()), visitor);
         } catch (IOException e) {
             JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
         }
-        this.present = visitor.isPresent();
-        if (this.present) {
-            this.activatorUri = visitor.getActivatorFile().toAbsolutePath().toString();
+        if (visitor.isPresent()) {
+            activatorUri = visitor.getActivatorFile().toAbsolutePath().toString();
         }
     }
 
     public boolean existActivator() {
-        return this.present || new File(this.getActivatorUri()).exists();
+        return new File(activatorUri).exists();
     }
 
     public String getActivatorUri() {
-        if (this.existActivator() && this.activatorUri != null && !this.activatorUri.isEmpty()) {
+        if (this.activatorUri != null && !this.activatorUri.isEmpty()) {
             return "file://" + this.activatorUri;
         } else {
-            throw new ActivationCheckerException("Activator URI is not present");
+            throw new IllegalStateException("Activator URI is not present");
         }
     }
 
-    private String getRootUri() {
-        return this.workspaceUtil.getWorkspace();
-    }
 }

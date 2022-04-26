@@ -29,6 +29,8 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
 
     protected static final String IMPORT_ACTIVATOR = "import org.kie.api.project.KieActivator;";
     protected static final String ANNOTATION_ACTIVATOR = "@KieActivator";
+    protected static final String PACKAGE_ACTIVATOR = "package ";
+    protected static final String PUBLIC_CLASS_DECLARATION = "public class ";
     protected static final String JAVA_EXTENSION = ".java";
 
     private boolean present;
@@ -39,28 +41,35 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        String filePath = file.toString();
-        if (!filePath.endsWith(JAVA_EXTENSION)) {
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
+        String fileName = path.toFile().getName();
+        if (!fileName.endsWith(JAVA_EXTENSION)) {
             return FileVisitResult.CONTINUE;
         }
+        JavaLanguageServerPlugin.logInfo("Java path found: " + fileName);
 
-        JavaLanguageServerPlugin.logInfo("Java file found: " + filePath);
+        String javaFileName = fileName.replaceAll("\\.\\w+$", "");
 
-        long linesThatMatch = Files.lines(file).filter(this::containsActivator).count();
+       //TODO close resource here
+        long linesThatMatch = Files.lines(path).filter(line -> containsActivator(line, javaFileName)).limit(2).count();
 
-        if (linesThatMatch >= 2) {
+        JavaLanguageServerPlugin.logInfo("Lines found: " + linesThatMatch);
+
+        if (linesThatMatch == 2) {
             this.present = true;
-            JavaLanguageServerPlugin.logInfo("Activator found: " + filePath);
-            this.activatorPath = file;
+            JavaLanguageServerPlugin.logInfo("Activator found: " + fileName);
+            this.activatorPath = path;
             return FileVisitResult.TERMINATE;
         } else {
             return FileVisitResult.CONTINUE;
         }
     }
 
-    protected boolean containsActivator(String line) {
-        return line.contains(IMPORT_ACTIVATOR) || line.contains(ANNOTATION_ACTIVATOR);
+    protected boolean containsActivator(String line, String fileName) {
+        JavaLanguageServerPlugin.logInfo("Searching for: " + PACKAGE_ACTIVATOR);
+        JavaLanguageServerPlugin.logInfo("Lines found: " + PUBLIC_CLASS_DECLARATION + fileName);
+
+        return line.contains(PACKAGE_ACTIVATOR) || line.contains(PUBLIC_CLASS_DECLARATION + fileName);
     }
 
     public boolean isPresent() {
