@@ -149,7 +149,10 @@ export function NewFileDropdownMenu(props: {
         return;
       }
       importFromUrl(
-        `${window.location.origin}${window.location.pathname}${routes.static.sample.path({ type: extension })}`
+        `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
+          type: extension,
+          name: "greetings",
+        })}`
       );
     },
     [importFromUrl, routes]

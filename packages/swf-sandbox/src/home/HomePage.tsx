@@ -87,6 +87,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { Showcase } from "./Showcase";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -183,6 +184,7 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
+      <Showcase />
       <PageSection isFilled={true} variant={"light"} hasOverflowScroll={false}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
@@ -501,6 +503,7 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
                     search: routes.importModel.queryString({
                       url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
                         type: props.extension,
+                        name: "greetings",
                       })}`,
                     }),
                   }

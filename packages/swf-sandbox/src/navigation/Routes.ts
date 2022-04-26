@@ -127,7 +127,7 @@ export const routes = {
   ),
 
   static: {
-    sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`),
+    sample: new Route<{ pathParams: "type" | "name" }>(({ type, name }) => `samples/${name}/${name}.${type}`),
     images: {
       vscodeLogoBlue: new Route<{}>(() => `images/vscode.svg`),
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
