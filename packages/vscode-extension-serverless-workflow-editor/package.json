@@ -118,7 +118,7 @@
         },
         "kogito.sw.svgFilenameTemplate": {
           "type": "string",
-          "default": "${fileBasenameNoExtension}.svg",
+          "default": "${fileBasename}.svg",
           "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
         },
         "kogito.sw.svgFilePath": {
@@ -140,6 +140,16 @@
           "type": "boolean",
           "default": false,
           "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file."
+        },
+        "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor": {
+          "type": "string",
+          "default": "Ask next time",
+          "enum": [
+            "Open automatically",
+            "Do not open",
+            "Ask next time"
+          ],
+          "markdownDescription": "When opening Serverless Workflow files, decide wether or not to open the Diagram Editor alongside the text editor. Regardless of the configured option, you can always open the Serverless Workflow Diagram Editor using the 'Open as Diagram' button."
         }
       }
     },
@@ -167,8 +177,75 @@
       {
         "command": "extension.kogito.swf.removeServiceRegistryUrl",
         "title": "Serverless Workflow: Remove Service Registry URL"
+      },
+      {
+        "command": "extension.kogito.swf.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
+        "title": "Serverless Workflow: Setup automatically open Diagram Editor alongside Text Editor"
+      },
+      {
+        "command": "extension.kogito.swf.openAsDiagram",
+        "title": "Serverless Workflow: Open as Diagram (to the side)",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "extension.kogito.swf.openAsSource",
+        "title": "Serverless Workflow: Open as Source",
+        "icon": "$(go-to-file)"
       }
-    ]
+    ],
+    "keybindings": [
+      {
+        "command": "extension.kogito.swf.openAsDiagram",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "!activeCustomEditorId && resourceLangId =~ /serverless-workflow/"
+      },
+      {
+        "command": "extension.kogito.swf.openAsSource",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow"
+      },
+      {
+        "command": "extension.kogito.swf.getPreviewSvg",
+        "key": "ctrl+k p",
+        "mac": "cmd+k p",
+        "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.getPreviewSvg"
+        },
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.openAsSource"
+        },
+        {
+          "when": "!activeCustomEditorId && resourceLangId =~ /serverless-workflow/",
+          "command": "extension.kogito.swf.openAsDiagram"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.getPreviewSvg",
+          "group": "navigation"
+        },
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.openAsSource",
+          "group": "navigation"
+        },
+        {
+          "when": "!activeCustomEditorId && resourceLangId =~ /serverless-workflow/",
+          "command": "extension.kogito.swf.openAsDiagram",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "extensionDependencies": [
     "redhat.vscode-redhat-account"

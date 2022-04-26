@@ -22,7 +22,11 @@ import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { ViewColumn } from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
+import {
+  CONFIGURATION_SECTIONS,
+  ShouldOpenDiagramEditorAutomaticallyConfiguration,
+  SwfVsCodeExtensionConfiguration,
+} from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
 import { COMMAND_IDS, setupCommands } from "./commands";
@@ -136,39 +140,87 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  async function openPreviewIfSwf(textEditor: vscode.TextEditor) {
-    const languageId = textEditor.document.languageId;
+  async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
+    const languageId = args.textEditor.document.languageId;
     if (!(languageId === "serverless-workflow-json" || languageId === "serverless-workflow-yaml")) {
       return;
     }
 
-    await vscode.commands.executeCommand("vscode.openWith", textEditor.document.uri, WEBVIEW_EDITOR_VIEW_TYPE, {
+    await vscode.commands.executeCommand("vscode.openWith", args.textEditor.document.uri, WEBVIEW_EDITOR_VIEW_TYPE, {
       viewColumn: ViewColumn.Beside,
       // the combination of these two properties below is IMPERATIVE for the good functioning of the preview mechanism.
-      preserveFocus: true,
-      background: true,
+      preserveFocus: !args.active,
+      background: !args.active,
     });
+  }
+
+  async function maybeOpenAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
+    if (
+      configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
+      ShouldOpenDiagramEditorAutomaticallyConfiguration.ASK
+    ) {
+      await configuration.configureAutomaticallyOpenDiagramEditorAlongsideTextEditor();
+    }
+
+    if (
+      configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
+      ShouldOpenDiagramEditorAutomaticallyConfiguration.DO_NOT_OPEN
+    ) {
+      return;
+    }
+
+    await openAsDiagramIfSwf(args);
   }
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
-      kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
-        if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
-          kieToolsEditor.close();
-        }
-      });
+      if (kieToolsEditorStore.activeEditor) {
+        return;
+      }
+
+      if (
+        configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
+        ShouldOpenDiagramEditorAutomaticallyConfiguration.OPEN_AUTOMATICALLY
+      ) {
+        kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
+          if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
+            kieToolsEditor.close();
+          }
+        });
+      }
 
       if (!textEditor) {
         return;
       }
 
-      await openPreviewIfSwf(textEditor);
+      await maybeOpenAsDiagramIfSwf({ textEditor, active: false });
     })
   );
 
   if (vscode.window.activeTextEditor) {
-    await openPreviewIfSwf(vscode.window.activeTextEditor);
+    await maybeOpenAsDiagramIfSwf({ textEditor: vscode.window.activeTextEditor, active: false });
   }
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_IDS.openAsDiagram, async () => {
+      if (vscode.window.activeTextEditor) {
+        await openAsDiagramIfSwf({ textEditor: vscode.window.activeTextEditor, active: true });
+      }
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_IDS.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor, async () => {
+      await configuration.configureAutomaticallyOpenDiagramEditorAlongsideTextEditor();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async (resource) => {
+      //TODO: tiago
+      console.info("Opening source");
+    })
+  );
 
   console.info("Extension is successfully setup.");
 }
