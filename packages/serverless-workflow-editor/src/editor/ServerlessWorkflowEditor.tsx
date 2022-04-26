@@ -123,16 +123,8 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     []
   );
 
-  const onContentChanged = useCallback(
-    (newContent: string, operation?: MonacoEditorOperation) => {
-      if (operation === MonacoEditorOperation.EDIT) {
-        props.onNewEdit(new KogitoEdit(newContent));
-      } else if (operation === MonacoEditorOperation.UNDO) {
-        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
-      } else if (operation === MonacoEditorOperation.REDO) {
-        props.onStateControlCommandUpdate(StateControlCommand.REDO);
-      }
-
+  const updateDiagram = useCallback(
+    (newContent: string) => {
       try {
         const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
         const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
@@ -157,9 +149,36 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     [props]
   );
 
+  const isVSCode = useCallback(() => {
+    return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
+  }, [props]);
+
+  const onContentChanged = useCallback(
+    (newContent: string, operation?: MonacoEditorOperation) => {
+      if (operation === MonacoEditorOperation.EDIT) {
+        props.onNewEdit(new KogitoEdit(newContent));
+      } else if (operation === MonacoEditorOperation.UNDO) {
+        if (!isVSCode()) {
+          swfMonacoEditorRef.current?.undo();
+        }
+        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
+      } else if (operation === MonacoEditorOperation.REDO) {
+        if (!isVSCode()) {
+          swfMonacoEditorRef.current?.redo();
+        }
+        props.onStateControlCommandUpdate(StateControlCommand.REDO);
+      }
+
+      setTimeout(() => {
+        updateDiagram(swfMonacoEditorRef.current!.getContent());
+      }, 100);
+    },
+    [props, isVSCode, updateDiagram]
+  );
+
   useEffect(() => {
     props.onReady.call(null);
-    onContentChanged(initialContent.originalContent);
+    updateDiagram(initialContent.originalContent);
   }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (
