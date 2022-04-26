@@ -18,8 +18,9 @@ import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/ba
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode/VsCodeBackendProxy";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
+import { ViewColumn } from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
@@ -30,6 +31,8 @@ import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore"
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+
+const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -93,11 +96,11 @@ export async function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(swfLanguageService);
 
-  KogitoVsCode.startExtension({
+  const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
-    viewType: "kieKogitoWebviewEditorsServerlessWorkflow",
+    viewType: WEBVIEW_EDITOR_VIEW_TYPE,
     generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
     silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
@@ -132,6 +135,40 @@ export async function activate(context: vscode.ExtensionContext) {
       return backendProxy.stopServices();
     })
   );
+
+  async function openPreviewIfSwf(textEditor: vscode.TextEditor) {
+    const languageId = textEditor.document.languageId;
+    if (!(languageId === "serverless-workflow-json" || languageId === "serverless-workflow-yaml")) {
+      return;
+    }
+
+    await vscode.commands.executeCommand("vscode.openWith", textEditor.document.uri, WEBVIEW_EDITOR_VIEW_TYPE, {
+      viewColumn: ViewColumn.Beside,
+      // the combination of these two properties below is IMPERATIVE for the good functioning of the preview mechanism.
+      preserveFocus: true,
+      background: true,
+    });
+  }
+
+  context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
+      kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
+        if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
+          kieToolsEditor.close();
+        }
+      });
+
+      if (!textEditor) {
+        return;
+      }
+
+      await openPreviewIfSwf(textEditor);
+    })
+  );
+
+  if (vscode.window.activeTextEditor) {
+    await openPreviewIfSwf(vscode.window.activeTextEditor);
+  }
 
   console.info("Extension is successfully setup.");
 }

@@ -144,34 +144,41 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     updateDiagramEditor(fileContent.content);
   }, [fileContent?.content, updateDiagramEditor]);
 
-  const panelContent = (
-    <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-      <DrawerPanelBody>
-        <div
-          style={{ height: "100%", textAlign: "center", opacity: diagramEditorOutOfSync ? 0.5 : 1 }}
-          ref={diagramEditorContainerRef}
-          className={"mermaid"}
-        />
-      </DrawerPanelBody>
-    </DrawerPanelContent>
+  const svgContainer = (
+    <div
+      style={{ height: "100%", textAlign: "center", opacity: diagramEditorOutOfSync ? 0.5 : 1 }}
+      ref={diagramEditorContainerRef}
+      className={"mermaid"}
+    />
   );
 
   return (
-    <Drawer isExpanded={true} isInline={true}>
-      <DrawerContent panelContent={panelContent}>
-        <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {fileContent !== undefined && (
-            <SwfTextEditor
-              channelType={props.channelType}
-              content={fileContent.content}
-              fileUri={fileContent.path}
-              onContentChange={onSwfTextEditorContentChanged}
-              ref={swfTextEditorRef}
-            />
-          )}
-        </DrawerContentBody>
-      </DrawerContent>
-    </Drawer>
+    <>
+      {((props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB) &&
+        svgContainer) || (
+        <Drawer isExpanded={true} isInline={true}>
+          <DrawerContent
+            panelContent={
+              <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
+                <DrawerPanelBody>{svgContainer}</DrawerPanelBody>
+              </DrawerPanelContent>
+            }
+          >
+            <DrawerContentBody style={{ overflowY: "hidden" }}>
+              {fileContent !== undefined && (
+                <SwfTextEditor
+                  channelType={props.channelType}
+                  content={fileContent.content}
+                  fileUri={fileContent.path}
+                  onContentChange={onSwfTextEditorContentChanged}
+                  ref={swfTextEditorRef}
+                />
+              )}
+            </DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
+      )}
+    </>
   );
 };
 

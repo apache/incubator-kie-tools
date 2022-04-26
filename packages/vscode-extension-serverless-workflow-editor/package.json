@@ -40,9 +40,9 @@
     "Other"
   ],
   "activationEvents": [
-    "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow",
     "onLanguage:serverless-workflow-json",
-    "onLanguage:serverless-workflow-yaml"
+    "onLanguage:serverless-workflow-yaml",
+    "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow"
   ],
   "capabilities": {
     "untrustedWorkspaces": {
@@ -54,6 +54,7 @@
       {
         "viewType": "kieKogitoWebviewEditorsServerlessWorkflow",
         "displayName": "Serverless Workflow Editor",
+        "priority": "option",
         "selector": [
           {
             "filenamePattern": "*.{sw.json,sw.yaml,sw.yml}"

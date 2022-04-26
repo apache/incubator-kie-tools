@@ -129,4 +129,8 @@ export async function startExtension(args: {
       })
     )
   );
+
+  return editorStore;
 }
+
+export * from "./KogitoEditorStore";
