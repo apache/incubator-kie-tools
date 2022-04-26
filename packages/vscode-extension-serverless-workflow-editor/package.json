@@ -40,6 +40,8 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:yaml",
     "onLanguage:serverless-workflow-json",
     "onLanguage:serverless-workflow-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow"
@@ -101,6 +103,17 @@
       }
     ],
     "configurationDefaults": {
+      "files.associations": {
+        "*.sw.json": "json",
+        "*.sw.yaml": "yaml",
+        "*.sw.yml": "yaml"
+      },
+      "[json]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[yaml]": {
+        "editor.wordBasedSuggestions": false
+      },
       "[serverless-workflow-json]": {
         "editor.wordBasedSuggestions": false
       },
@@ -198,7 +211,7 @@
         "command": "extension.kogito.swf.openAsDiagram",
         "key": "ctrl+k v",
         "mac": "cmd+k v",
-        "when": "!activeCustomEditorId && resourceLangId =~ /serverless-workflow/"
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.json$/"
       },
       {
         "command": "extension.kogito.swf.openAsSource",
@@ -213,6 +226,12 @@
         "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow"
       }
     ],
+    "jsonValidation": [
+      {
+        "fileMatch": "**/*.sw.json",
+        "url": "https://serverlessworkflow.io/schemas/0.8/workflow.json"
+      }
+    ],
     "menus": {
       "commandPalette": [
         {
@@ -224,7 +243,7 @@
           "command": "extension.kogito.swf.openAsSource"
         },
         {
-          "when": "!activeCustomEditorId && resourceLangId =~ /serverless-workflow/",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.json$/",
           "command": "extension.kogito.swf.openAsDiagram"
         }
       ],
@@ -240,7 +259,7 @@
           "group": "navigation"
         },
         {
-          "when": "!activeCustomEditorId && resourceLangId =~ /serverless-workflow/",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.json$/",
           "command": "extension.kogito.swf.openAsDiagram",
           "group": "navigation"
         }

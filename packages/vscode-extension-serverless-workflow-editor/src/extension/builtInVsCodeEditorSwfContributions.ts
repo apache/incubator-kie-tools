@@ -60,7 +60,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(
-      { scheme: "file", language: "serverless-workflow-json" },
+      { scheme: "file", pattern: "**/*.sw.json" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
           const lsCodeLenses = await args.swfLanguageService.kogitoSwfLanguageService__getCodeLenses({
@@ -92,7 +92,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCompletionItemProvider(
-      { scheme: "file", language: "serverless-workflow-json" },
+      { scheme: "file", pattern: "**/*.sw.json" },
       {
         provideCompletionItems: async (
           document: vscode.TextDocument,

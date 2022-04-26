@@ -141,8 +141,8 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
-    const languageId = args.textEditor.document.languageId;
-    if (!(languageId === "serverless-workflow-json" || languageId === "serverless-workflow-yaml")) {
+    const isSwf = /^.*\.sw\.(json|yml|yaml)$/.test(args.textEditor.document.fileName);
+    if (!isSwf) {
       return;
     }
 

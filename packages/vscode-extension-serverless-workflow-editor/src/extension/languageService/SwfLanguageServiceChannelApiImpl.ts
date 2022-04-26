@@ -113,6 +113,7 @@ const completions = new Map<
 
       const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
+      //FIXME: Tiago - differentiate between different sources
       return swfCompletionItemServiceCatalogServices
         .flatMap((s) => s.functions)
         .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
@@ -401,7 +402,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    const document = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
+    const document = TextDocument.create(args.uri, "json", 0, args.content);
     const rootNode = jsonc.parseTree(args.content);
     if (!rootNode) {
       return [];
@@ -464,7 +465,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    const document = TextDocument.create(args.uri, "serverless-workflow-json", 0, args.content);
+    const document = TextDocument.create(args.uri, "json", 0, args.content);
 
     const rootNode = jsonc.parseTree(document.getText());
     if (!rootNode) {
