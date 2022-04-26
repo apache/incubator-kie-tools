@@ -11,10 +11,19 @@ declare module 'uniforms' {
     checkboxes: never;
     exclusiveMaximum: never;
     exclusiveMinimum: never;
+    menuAppendTo: never;
   }
 }
 
-filterDOMProps.register('decimal', 'minCount', 'autoValue', 'isDisabled', 'exclusiveMaximum', 'exclusiveMinimum');
+filterDOMProps.register(
+  'decimal',
+  'minCount',
+  'autoValue',
+  'isDisabled',
+  'exclusiveMaximum',
+  'exclusiveMinimum',
+  'menuAppendTo'
+);
 
 type WrapperProps = {
   id: string;
