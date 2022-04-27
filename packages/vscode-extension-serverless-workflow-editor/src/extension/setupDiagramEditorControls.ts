@@ -88,9 +88,12 @@ export async function setupDiagramEditorControls(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async (resource) => {
-      //TODO: tiago
-      console.info("Opening source");
+    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async (resourceUri) => {
+      await vscode.commands.executeCommand("vscode.open", resourceUri, {
+        viewColumn: vscode.ViewColumn.One, // Not ideal, but works well enough.
+        preserveFocus: false,
+        background: false,
+      });
     })
   );
 
