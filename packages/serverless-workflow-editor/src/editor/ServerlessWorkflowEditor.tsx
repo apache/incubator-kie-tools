@@ -24,8 +24,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { MermaidDiagram } from "../diagram";
+import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { SwfTextEditorController, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";

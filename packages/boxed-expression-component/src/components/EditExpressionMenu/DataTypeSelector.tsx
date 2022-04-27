@@ -16,7 +16,7 @@
 
 import { Divider, Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import * as _ from "lodash";
 import { DataType, DataTypeProps } from "../../api";
@@ -28,6 +28,10 @@ export interface DataTypeSelectorProps {
   /** On DataType selection callback */
   onDataTypeChange: (dataType: DataType) => void;
   /** By default the menu will be appended inline, but it is possible to append on the parent or on other elements */
+  /** Callback for toggle select behavior */
+  onToggle?: (isOpen: boolean) => void;
+  /** event fired when the user press a key */
+  onKeyDown?: (e: React.KeyboardEvent) => void;
   menuAppendTo?: HTMLElement | "inline" | (() => HTMLElement) | "parent";
 }
 
@@ -35,19 +39,26 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
   selectedDataType,
   onDataTypeChange,
   menuAppendTo,
+  onToggle = () => {},
+  onKeyDown = () => {},
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
 
   const { dataTypes } = useBoxedExpression();
 
-  const [dataTypeSelectOpen, setDataTypeSelectOpen] = useState(false);
+  const [dataTypeSelectIsOpen, setDataTypeSelectIsOpen] = useState(false);
+
+  const selectWrapperRef = useRef<HTMLDivElement>(null);
 
   const onDataTypeSelect = useCallback(
     (event, selection) => {
       /* this setTimeout keeps the context menu open after type selection changes. Without this Popover component thinks there has been a click outside the context menu, after DataTypeSelector has changed. This because the Select component has been removed from the html*/
-      setTimeout(() => setDataTypeSelectOpen(false), 0);
+      setTimeout(() => setDataTypeSelectIsOpen(false), 0);
 
       onDataTypeChange(selection);
+
+      // Because Select leave the focus to the detached btn, give back the focus to the selectWrapperRef
+      (selectWrapperRef.current?.querySelector("button") as HTMLInputElement)?.focus();
     },
     [onDataTypeChange]
   );
@@ -96,25 +107,33 @@ export const DataTypeSelector: React.FunctionComponent<DataTypeSelectorProps> = 
     [getDataTypes]
   );
 
-  const onDataTypeSelectToggle = useCallback((isOpen) => setDataTypeSelectOpen(isOpen), []);
+  const onDataTypeSelectToggle = useCallback(
+    (isOpen) => {
+      setDataTypeSelectIsOpen(isOpen);
+      onToggle(isOpen);
+    },
+    [onToggle]
+  );
 
   return (
-    <Select
-      menuAppendTo={menuAppendTo}
-      ouiaId="edit-expression-data-type"
-      variant={SelectVariant.single}
-      typeAheadAriaLabel={i18n.choose}
-      onToggle={onDataTypeSelectToggle}
-      onSelect={onDataTypeSelect}
-      onFilter={onFilteringDataTypes}
-      isOpen={dataTypeSelectOpen}
-      selections={selectedDataType}
-      isGrouped
-      hasInlineFilter
-      inlineFilterPlaceholderText={i18n.choose}
-      maxHeight={500}
-    >
-      {getDataTypes()}
-    </Select>
+    <div ref={selectWrapperRef} tabIndex={-1} onKeyDown={onKeyDown}>
+      <Select
+        menuAppendTo={menuAppendTo}
+        ouiaId="edit-expression-data-type"
+        variant={SelectVariant.single}
+        typeAheadAriaLabel={i18n.choose}
+        onToggle={onDataTypeSelectToggle}
+        onSelect={onDataTypeSelect}
+        onFilter={onFilteringDataTypes}
+        isOpen={dataTypeSelectIsOpen}
+        selections={selectedDataType}
+        isGrouped
+        hasInlineFilter
+        inlineFilterPlaceholderText={i18n.choose}
+        maxHeight={500}
+      >
+        {getDataTypes()}
+      </Select>
+    </div>
   );
 };

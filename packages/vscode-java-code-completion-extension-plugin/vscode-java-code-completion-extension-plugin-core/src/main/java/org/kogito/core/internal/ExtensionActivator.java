@@ -16,8 +16,6 @@
 
 package org.kogito.core.internal;
 
-import java.io.File;
-
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -31,11 +29,11 @@ public class ExtensionActivator implements BundleActivator {
 
     private static ExtensionActivator plugin;
 
-    public void start(BundleContext context) throws Exception {
+    public void start(BundleContext context) {
         plugin = this;
     }
 
-    public void stop(BundleContext context) throws Exception {
+    public void stop(BundleContext context) {
         plugin = null;
     }
 

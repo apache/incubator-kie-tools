@@ -20,7 +20,7 @@ import { ExpandableRowContent, TableComposable, Tbody, Td, Tr } from "@patternfl
 import { JavaClass } from "./model/JavaClass";
 import { Button } from "@patternfly/react-core";
 import { JavaField } from "./model/JavaField";
-import { DMNSimpleType } from "./model/DMNSimpleType";
+import { DMNSimpleType, JAVA_TO_DMN_MAP } from "./model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./model/JavaClassUtils";
 import { useCallback, useState } from "react";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
@@ -62,7 +62,7 @@ const TableJavaClassItem = ({
   const [isExpanded, setExpanded] = useState(true);
 
   const isFetchable = useCallback((field: JavaField) => {
-    return field.dmnTypeRef === DMNSimpleType.ANY;
+    return field.dmnTypeRef === DMNSimpleType.ANY && !JAVA_TO_DMN_MAP.has(getJavaClassSimpleName(field.type));
   }, []);
 
   const parentRow = (

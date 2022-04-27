@@ -114,8 +114,7 @@ public class DataTypesPage extends DMNPage {
         }
         refreshPageView();
 
-        /* Temporary hide the import-java-classes button, to be restored with JavaCodeCompletion fixed */
-        //dataTypeList.activateReactComponents();
+        dataTypeList.activateReactComponents();
     }
 
     @Override

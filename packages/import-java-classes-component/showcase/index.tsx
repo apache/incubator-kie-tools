@@ -22,9 +22,9 @@ import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from ".
 
 const Showcase: React.FunctionComponent = () => {
   const getJavaCodeCompletionClassesMock = async (value: string) => {
-    const booClassesList = [{ query: "org.kie.test.kogito.Book" }, { query: "org.kie.test.kogito.Boom" }];
-    const bookClassesList = [{ query: "org.kie.test.kogito.Book" }];
-    const boomClassesList = [{ query: "org.kie.test.kogito.Boom" }];
+    const booClassesList = [{ fqcn: "org.kie.test.kogito.Book" }, { fqcn: "org.kie.test.kogito.Boom" }];
+    const bookClassesList = [{ fqcn: "org.kie.test.kogito.Book" }];
+    const boomClassesList = [{ fqcn: "org.kie.test.kogito.Boom" }];
 
     await delay();
 
@@ -41,22 +41,27 @@ const Showcase: React.FunctionComponent = () => {
 
   const getJavaCodeCompletionFieldsMock = async (className: string) => {
     const bookClassFieldsList = [
-      { fqcn: "org.kie.test.kogito.Author", accessor: "author" },
-      { fqcn: "java.lang.String", accessor: "title" },
-      { fqcn: "java.lang.Integer", accessor: "year" },
-      { fqcn: "org.kie.test.kogito.Boom", accessor: "boom" },
+      { fqcn: "com.Book", accessor: "author", type: "org.kie.test.kogito.Author" },
+      { fqcn: "com.Book", accessor: "title", type: "java.lang.String" },
+      { fqcn: "com.Book", accessor: "year", type: "java.lang.Integer" },
+      { fqcn: "com.Book", accessor: "boom", type: "org.kie.test.kogito.Boom" },
+      { fqcn: "com.Book", accessor: "serialVersionUID", type: "long" },
+      { fqcn: "com.Book", accessor: "getClass()", type: "java.lang.Class<?>" },
+      { fqcn: "com.Book", accessor: "getOtherBookList()", type: "java.util.List<java.lang.String>" },
+      { fqcn: "com.Book", accessor: "getTopicsMap()", type: "java.util.Map<java.lang.String, java.lang.String>" },
+      { fqcn: "com.Boom", accessor: "isAvailable()", type: "java.lang.Boolean" },
     ];
     const boomClassFieldsList = [
-      { fqcn: "java.util.Date", accessor: "time" },
-      { fqcn: "java.lang.Boolean", accessor: "big" },
-      { fqcn: "java.lang.String", accessor: "color" },
-      { fqcn: "java.time.Duration", accessor: "countdown" },
+      { fqcn: "com.Boom", accessor: "time", type: "java.util.Date" },
+      { fqcn: "com.Boom", accessor: "big", type: "java.lang.Boolean" },
+      { fqcn: "com.Boom", accessor: "color", type: "java.lang.String" },
+      { fqcn: "com.Boom", accessor: "countdown", type: "java.time.Duration" },
     ];
     const authorClassFieldsList = [
-      { fqcn: "int", accessor: "age" },
-      { fqcn: "java.lang.String", accessor: "name" },
-      { fqcn: "java.lang.String", accessor: "color" },
-      { fqcn: "java.time.Duration", accessor: "countdown" },
+      { fqcn: "com.Author", accessor: "age", type: "int" },
+      { fqcn: "com.Author", accessor: "name", type: "java.lang.String" },
+      { fqcn: "com.Author", accessor: "color", type: "java.lang.String" },
+      { fqcn: "com.Author", accessor: "countdown", type: "java.time.Duration" },
     ];
 
     await delay();
