@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
@@ -13,6 +29,7 @@ import * as vscode from "vscode";
 import * as yaml from "yaml";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./index";
 import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/src/api";
+import { getServiceRegistryRestApi } from "../apicurio";
 
 export class RhhccServiceRegistryServiceCatalogStore {
   private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
@@ -62,8 +79,6 @@ export class RhhccServiceRegistryServiceCatalogStore {
 
   public async refresh() {
     const serviceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
-    const shouldReferenceFunctionsWithUrls =
-      this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
 
     if (!this.args.rhhccAuthenticationStore.session) {
       return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription([])));
@@ -77,14 +92,7 @@ export class RhhccServiceRegistryServiceCatalogStore {
       headers: { Authorization: "Bearer " + this.args.rhhccAuthenticationStore.session.accessToken },
     };
 
-    const serviceRegistryRestApi = {
-      getArtifactContentUrl: (params: { groupId: string; id: string }) => {
-        return `${serviceRegistryUrl.toString()}/groups/${params.groupId}/artifacts/${params.id}`;
-      },
-      getArtifactsUrl: () => {
-        return `${serviceRegistryUrl?.toString()}/search/artifacts`;
-      },
-    };
+    const serviceRegistryRestApi = getServiceRegistryRestApi(serviceRegistryUrl);
 
     const artifactsMetadata: ServiceRegistryArtifactSearchResponse = (
       await axios.get(serviceRegistryRestApi.getArtifactsUrl(), requestHeaders)
@@ -105,21 +113,10 @@ export class RhhccServiceRegistryServiceCatalogStore {
       const serviceId = artifact.metadata.id;
       const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
 
-      let swfFunctions: SwfServiceCatalogFunction[] = extractFunctions(artifact.content, {
+      const swfFunctions: SwfServiceCatalogFunction[] = extractFunctions(artifact.content, {
         type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
         serviceId: serviceId,
       });
-
-      if (shouldReferenceFunctionsWithUrls) {
-        // FIXME tiago: I believe we should be doing that in a better way. not here, as it won't work.
-        swfFunctions = swfFunctions.map(
-          (swfFunction) =>
-            ({
-              ...swfFunction,
-              operation: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
-            } as SwfServiceCatalogFunction)
-        );
-      }
 
       return {
         name: serviceFileName,
@@ -127,6 +124,7 @@ export class RhhccServiceRegistryServiceCatalogStore {
         type: SwfServiceCatalogServiceType.rest,
         functions: swfFunctions,
         source: {
+          url: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
           type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY,
           id: serviceId,
         },

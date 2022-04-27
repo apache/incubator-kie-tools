@@ -40,6 +40,7 @@ export class SwfLanguageService {
           textDocument: TextDocument
         ) => Promise<{ specsDirRelativePosixPath: string; specsDirAbsolutePosixPath: string }>;
         shouldDisplayRhhccIntegration: () => Promise<boolean>;
+        shouldReferenceServiceRegistryFunctionsWithUrls: () => Promise<boolean>;
       };
     }
   ) {}
@@ -245,11 +246,13 @@ export class SwfLanguageService {
     }
 
     //
-    // FIXME: Tiago
-    //
-    // else if (this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls()) {
-    //   return "";
-    // }
+    else if (
+      (await this.args.config.shouldReferenceServiceRegistryFunctionsWithUrls()) &&
+      containingService.source.type === SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY &&
+      func.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+    ) {
+      return `${containingService.source.url}#${func.name}`;
+    }
 
     //
     else if (
