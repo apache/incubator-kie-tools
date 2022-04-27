@@ -26,9 +26,14 @@ import java.util.stream.Stream;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 
-
-//JavaFileVisitor
-public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
+/**
+ * Scope of this Visitor class is to find at least a Valid Java Class file.
+ * A Java class file is valid if :
+ * - It has the .java extension
+ * - It has a `package ' statement
+ * - It has a 'public class ' statement
+ */
+public class ActivatorFileVisitor extends SimpleFileVisitor<Path> {
 
     protected static final String IMPORT_ACTIVATOR = "import org.kie.api.project.KieActivator;";
     protected static final String ANNOTATION_ACTIVATOR = "@KieActivator";
@@ -39,17 +44,16 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
     private boolean present;
     private Path activatorPath;
 
-    public ActivationFileVisitor() {
+    public ActivatorFileVisitor() {
         this.present = false;
     }
 
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
         String fileName = path.toFile().getName();
-        if (!fileName.endsWith(JAVA_EXTENSION)) {
+        if (!fileName.endsWith(JAVA_EXTENSION) ) {
             return FileVisitResult.CONTINUE;
         }
-        JavaLanguageServerPlugin.logInfo("Java path found: " + fileName);
 
         String javaFileName = fileName.replaceAll("\\.\\w+$", "");
 
@@ -60,7 +64,7 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
 
         if (linesThatMatch == 2) {
             this.present = true;
-            JavaLanguageServerPlugin.logInfo("Activator found: " + fileName);
+            JavaLanguageServerPlugin.logInfo("Valid Java Class File found: " + fileName);
             this.activatorPath = path;
             return FileVisitResult.TERMINATE;
         } else {

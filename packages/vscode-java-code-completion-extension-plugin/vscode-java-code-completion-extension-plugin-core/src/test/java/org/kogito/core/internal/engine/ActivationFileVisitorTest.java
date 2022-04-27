@@ -28,30 +28,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ActivationFileVisitorTest {
 
-    private ActivationFileVisitor activationFileVisitor;
+    private ActivatorFileVisitor activatorFileVisitor;
 
     @BeforeEach
     public void setUp() {
 
-        activationFileVisitor = new ActivationFileVisitor();
+        activatorFileVisitor = new ActivatorFileVisitor();
     }
 
     @Test
     public void testContainsActivator() throws IOException {
         Path workspace = Paths.get("src/test/resources/testProject");
-        Files.walkFileTree(workspace.toAbsolutePath(), this.activationFileVisitor);
-        assertThat(this.activationFileVisitor.isPresent()).isTrue();
+        Files.walkFileTree(workspace.toAbsolutePath(), this.activatorFileVisitor);
+        assertThat(this.activatorFileVisitor.isPresent()).isTrue();
     }
 
     @Test
     public void testContainsActivatorImport() {
-        boolean present = this.activationFileVisitor.containsActivator(ActivationFileVisitor.IMPORT_ACTIVATOR);
+        boolean present = this.activatorFileVisitor.containsActivator(ActivatorFileVisitor.IMPORT_ACTIVATOR);
         assertThat(present).isTrue();
     }
 
     @Test
     public void testContainsActivatorAnnotation() {
-        boolean present = this.activationFileVisitor.containsActivator(ActivationFileVisitor.ANNOTATION_ACTIVATOR);
+        boolean present = this.activatorFileVisitor.containsActivator(ActivatorFileVisitor.ANNOTATION_ACTIVATOR);
         assertThat(present).isTrue();
     }
 }

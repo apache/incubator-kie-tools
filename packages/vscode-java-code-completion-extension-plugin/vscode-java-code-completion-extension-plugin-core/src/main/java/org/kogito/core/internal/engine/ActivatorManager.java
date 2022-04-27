@@ -25,30 +25,49 @@ import java.nio.file.Paths;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.util.WorkspaceUtil;
 
+/**
+ * Scope of this class is to manage the Activator file. This is a support java class defined in ACTIVATOR_FILE_NAME,
+ * which is required to enable the Auto-Completion process. All the templates are applied inside this file, so the
+ * Auto-Completion request will be managed within this file. The Activator Java Class needs to be automatically created
+ * BEFORE every Auto-Completion command request to work, and eventually remove it when the command request is completed.
+ */
 public class ActivatorManager {
 
     private static final String ACTIVATOR_FILE_NAME = "KieJCActivator.java";
 
-    private String firstJavaFileURI = null;
     private Path activatorPath = null;
 
-    public void check() {
-        ActivationFileVisitor visitor = new ActivationFileVisitor();
+    /**
+     * It returns TRUE if the Activator is correctly set and enabled. This happens when at least a Java File is found
+     * in the project and the Activator path has been set. The Activator path is lazily loaded at the first request.
+     * If not enabled, it walks over the workspace to find at least a VALID Java Class and eventually define the Activator
+     * path, in the same directory of the First Valid Java file found and the ACTIVATOR_FILE_NAME as Name
+     * @return
+     */
+    public boolean isActivatorEnabled() {
+        if (activatorPath != null) {
+            return true;
+        }
+        ActivatorFileVisitor visitor = new ActivatorFileVisitor();
         try {
             Files.walkFileTree(Paths.get(WorkspaceUtil.getWorkspace()), visitor);
         } catch (IOException e) {
             JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
+            activatorPath = null;
+            return false;
         }
         if (visitor.isPresent()) {
-            firstJavaFileURI = visitor.getActivatorFile().toAbsolutePath().toString();
             activatorPath = Path.of(visitor.getActivatorFile().toAbsolutePath().getParent() + File.separator + ACTIVATOR_FILE_NAME);
+            return true;
         }
+        activatorPath = null;
+        return false;
     }
 
-    public boolean isEnabled() {
-        return new File(firstJavaFileURI).exists() && this.activatorPath != null;
-    }
-
+    /**
+     * String representation of the Activator Path with "file://" as prefix
+     * @return
+     */
     public String getActivatorURI() {
         if (this.activatorPath != null) {
             return "file://" + this.activatorPath;

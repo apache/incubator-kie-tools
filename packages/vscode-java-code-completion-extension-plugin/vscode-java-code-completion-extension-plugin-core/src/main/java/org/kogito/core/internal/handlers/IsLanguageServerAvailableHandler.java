@@ -32,7 +32,7 @@ public class IsLanguageServerAvailableHandler extends Handler<Boolean> {
 
     @Override
     public Boolean handle(List<Object> arguments, IProgressMonitor progress) {
-        return activatorManager.isEnabled();
+        return activatorManager.isActivatorEnabled();
     }
 
 }

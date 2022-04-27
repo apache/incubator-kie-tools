@@ -30,29 +30,26 @@ import org.kogito.core.internal.handlers.Handler;
 import org.kogito.core.internal.handlers.HandlerConstants;
 import org.kogito.core.internal.handlers.IsLanguageServerAvailableHandler;
 
-public class DelegateCommandHandler implements IDelegateCommandHandler {
+public class DelegateHandler implements IDelegateCommandHandler {
 
     private static final JavaEngine JAVA_ENGINE = new JavaEngine();
-    private static final ActivatorManager ACTIVATION_CHECKER = new ActivatorManager();
-    private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATION_CHECKER);
+    private static final ActivatorManager ACTIVATOR_MANAGER = new ActivatorManager();
+    private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATOR_MANAGER);
     private static final List<Handler<?>> handlers = List.of(
             new GetClassesHandler(HandlerConstants.GET_CLASSES, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
             new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
-            new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, ACTIVATION_CHECKER));
-
-    public DelegateCommandHandler() {
-        ACTIVATION_CHECKER.check();
-    }
+            new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, ACTIVATOR_MANAGER));
 
     @Override
     public Object executeCommand(String commandId, List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo(commandId);
 
-        if (ACTIVATION_CHECKER.isEnabled()) {
-            return handlers.stream().filter(handler -> handler.canHandle(commandId)).findFirst()
+        if (ACTIVATOR_MANAGER.isActivatorEnabled()) {
+            return handlers.stream()
+                    .filter(handler -> handler.canHandle(commandId))
+                    .findFirst()
                     .map(handler -> handler.handle(arguments, progress))
-                    .orElseThrow(() -> new UnsupportedOperationException(
-                            String.format("Unsupported command '%s'!", commandId)));
+                    .orElseThrow(() -> new UnsupportedOperationException(String.format("Unsupported command '%s'!", commandId)));
         } else {
             throw new IllegalStateException("Activator is not working correctly");
         }

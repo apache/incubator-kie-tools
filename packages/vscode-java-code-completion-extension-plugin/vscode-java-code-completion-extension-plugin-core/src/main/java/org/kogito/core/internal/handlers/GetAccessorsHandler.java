@@ -51,6 +51,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
                                                                           parameters.getFqcn(),
                                                                           parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());
+        WorkspaceUtil.deleteFile(autocompleteHandler.getActivatorPath());
         List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", buildInformation);
         return this.transformCompletionItemsToResult(parameters.getFqcn(), items);
     }
