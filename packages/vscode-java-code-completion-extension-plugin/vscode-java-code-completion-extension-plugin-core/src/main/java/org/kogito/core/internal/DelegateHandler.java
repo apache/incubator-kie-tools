@@ -16,9 +16,7 @@
 
 package org.kogito.core.internal;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.ls.core.internal.IDelegateCommandHandler;
@@ -40,12 +38,9 @@ public class DelegateHandler implements IDelegateCommandHandler {
     private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATION_CHECKER);
     private final IsLanguageServerAvailableHandler isAvailableHandler;
 
-    private static final List<Handler<?>> handlers = new ArrayList<>() {
-        {
-            add(new GetClassesHandler(HandlerConstants.GET_CLASSES, JAVA_ENGINE, AUTOCOMPLETE_HANDLER));
-            add(new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER));
-        }
-    };
+    private static final List<Handler<?>> handlers = List.of(
+            new GetClassesHandler(HandlerConstants.GET_CLASSES, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
+            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER));
 
     public DelegateHandler() {
         ACTIVATION_CHECKER.check();
@@ -53,8 +48,7 @@ public class DelegateHandler implements IDelegateCommandHandler {
                 ACTIVATION_CHECKER);
     }
 
-    public CompletableFuture<?> executeCommand(String commandId, List<Object> arguments, IProgressMonitor progress)
-            throws Exception {
+    public Object executeCommand(String commandId, List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo(commandId);
 
         if (this.isAvailableHandler.canHandle(commandId)) {
@@ -68,7 +62,7 @@ public class DelegateHandler implements IDelegateCommandHandler {
                             String.format("Unsupported command '%s'!", commandId)));
         } else {
             ACTIVATION_CHECKER.check();
-            return CompletableFuture.supplyAsync(() -> "");
+            return "";
         }
     }
 }

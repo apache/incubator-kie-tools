@@ -24,13 +24,13 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { MermaidDiagram } from "../diagram";
+import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import "../../static/css/editor.css";
 
 interface Props {
   /**
@@ -79,6 +79,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
+  const svgPreviewHiddenContainer = useRef<HTMLDivElement>(null);
   const swfMonacoEditorRef = useRef<SwfMonacoEditorApi>(null);
 
   useImperativeHandle(
@@ -101,8 +102,15 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           return Promise.resolve(swfMonacoEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
+          svgPreviewHiddenContainer.current!.innerHTML = svgContainer.current!.innerHTML;
+          svgPreviewHiddenContainer.current!.getElementsByTagName("svg")[0].removeAttribute("style");
+
+          // Remove zoom controls from SVG
+          svgPreviewHiddenContainer.current!.getElementsByTagName("svg")[0].lastChild?.remove();
+
           // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
-          const svgContent = svgContainer.current!.innerHTML.replaceAll("<br>", "<br/>");
+          const svgContent = svgPreviewHiddenContainer.current!.innerHTML.replaceAll("<br>", "<br/>");
+
           return Promise.resolve(svgContent);
         },
         undo: (): Promise<void> => {
@@ -140,7 +148,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           svgContainer.current!.innerHTML = mermaidSourceCode;
           svgContainer.current!.removeAttribute("data-processed");
           mermaid.init(svgContainer.current!);
-          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0]);
+          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
+            controlIconsEnabled: true,
+          });
           svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
           svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
           setDiagramOutOfSync(false);
@@ -169,6 +179,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           ref={svgContainer}
           className={"mermaid"}
         />
+        <div ref={svgPreviewHiddenContainer} className={"hidden"} />
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

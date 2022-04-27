@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DmnSchema } from "@kie-tools/form/dist/dmn";
+import { DmnSchema } from "@kie-tools/form-dmn";
 import { routes } from "./Routes";
 
 export interface FormData {

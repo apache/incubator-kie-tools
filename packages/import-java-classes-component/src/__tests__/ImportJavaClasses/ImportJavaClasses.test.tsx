@@ -17,14 +17,17 @@
 import * as React from "react";
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { ImportJavaClasses, GWTLayerService, JavaCodeCompletionService } from "../../components";
-import * as _ from "lodash";
+import {
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 describe("ImportJavaClasses component tests", () => {
   test("should render ImportJavaClasses Button component", async () => {
     const { baseElement } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn(() => []))}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
       />
     );
 
@@ -37,7 +40,7 @@ describe("ImportJavaClasses component tests", () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn(() => []))}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
       />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
@@ -47,11 +50,11 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should search box works", async () => {
+  test("Should search box works", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn(() => []))}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
       />
     );
     await testImportJavaClassesButtonEnabled(baseElement);
@@ -62,17 +65,16 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).not.toBeInTheDocument();
   });
 
-  test.skip("Should search box with results works", () => {
+  test("Should search box with results works", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }])
-        )}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([{ fqcn: "com.Book" }, { fqcn: "com.Author" }])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
-    testJavaClassSelection(baseElement, false);
+    await testJavaClassSelection(baseElement, false);
     let checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
     fireEvent.click(checkSecondElement);
     checkSecondElement = baseElement.querySelector('[aria-labelledby="com.Author"]')! as HTMLInputElement;
@@ -81,13 +83,14 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should close Modal after opening it and clicking on the Cancel button", () => {
+  test("Should close Modal after opening it and clicking on the Cancel button", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(jest.fn())}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     const modalWizardButton = getByText("Import Java classes")! as HTMLButtonElement;
     modalWizardButton.click();
     const cancelButton = getByText("Cancel") as HTMLButtonElement;
@@ -96,33 +99,39 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should move to second step", async () => {
+  test("Should move to second step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
-        )}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([
+          { fqcn: "com.Book" },
+          { fqcn: "com.Author" },
+          { fqcn: "com.Test" },
+        ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
-    testJavaClassSelection(baseElement, true);
+    await testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
 
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should move to second step and fetch a Java Class", async () => {
+  test("Should move to second step and fetch a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
-        )}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([
+          { fqcn: "com.Book" },
+          { fqcn: "com.Author" },
+          { fqcn: "com.Test" },
+        ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
-    testJavaClassSelection(baseElement, true);
+    await testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
 
     const fetchButton = getByText('Fetch "Test" class')! as HTMLButtonElement;
@@ -135,17 +144,20 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement).toMatchSnapshot();
   });
 
-  test.skip("Should move to second step and fetch, remove a Java Class", async () => {
+  test("Should move to second step and fetch, remove a Java Class", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
-        )}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([
+          { fqcn: "com.Book" },
+          { fqcn: "com.Author" },
+          { fqcn: "com.Test" },
+        ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
-    testJavaClassSelection(baseElement, true);
+    await testJavaClassSelection(baseElement, true);
     await testNextStepFieldsTable(baseElement, getByText);
     await testFetchClicked(getByText);
 
@@ -164,17 +176,20 @@ describe("ImportJavaClasses component tests", () => {
     expect(fetchButton).toBeInTheDocument();
   });
 
-  test.skip("Should move to third step", async () => {
+  test("Should move to third step", async () => {
     const { baseElement, getByText } = render(
       <ImportJavaClasses
         gwtLayerService={gwtLayerServiceMock}
-        javaCodeCompletionService={getJavaCodeCompletionServiceMock(
-          jest.fn((value) => [{ query: "com.Book" }, { query: "com.Author" }, { query: "com.Test" }])
-        )}
+        javaCodeCompletionService={getJavaCodeCompletionServiceMock([
+          { fqcn: "com.Book" },
+          { fqcn: "com.Author" },
+          { fqcn: "com.Test" },
+        ])}
       />
     );
+    await testImportJavaClassesButtonEnabled(baseElement);
     testSearchInput(baseElement, getByText);
-    testJavaClassSelection(baseElement, true);
+    await testJavaClassSelection(baseElement, true);
     /* Second Step */
     await testNextStepFieldsTable(baseElement, getByText);
     /* Third Step */
@@ -194,7 +209,10 @@ describe("ImportJavaClasses component tests", () => {
     expect(baseElement.querySelector('[aria-label="Reset"]')! as HTMLButtonElement).toBeInTheDocument();
   }
 
-  function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
+  async function testJavaClassSelection(baseElement: Element, hasThirdElement: boolean) {
+    await waitFor(() => {
+      expect(baseElement.querySelector('[aria-label="class-data-list"]')!).toBeInTheDocument();
+    });
     const firstElement = baseElement.querySelector('[id="com.Book"]')! as HTMLSpanElement;
     expect(firstElement).toBeInTheDocument();
     const secondElement = baseElement.querySelector('[id="com.Author"]')! as HTMLSpanElement;
@@ -258,39 +276,37 @@ describe("ImportJavaClasses component tests", () => {
     });
   }
 
-  const lspGetClassFieldsServiceMocked = async (className: string) => {
-    const bookClassFieldsMap = new Map<string, string>();
-    bookClassFieldsMap.set("title", "java.lang.String");
-    bookClassFieldsMap.set("year", "java.lang.Integer");
-    bookClassFieldsMap.set("test", "com.Test");
-    const authorClassFieldsMap = new Map<string, string>();
-    authorClassFieldsMap.set("name", "java.lang.String");
-    authorClassFieldsMap.set("isAlive", "java.lang.Boolean");
-    if (className === "com.Book") {
-      return bookClassFieldsMap;
-    } else if (className === "com.Author") {
-      return authorClassFieldsMap;
-    } else {
-      return new Map<string, string>();
-    }
-  };
-
   const gwtLayerServiceMock: GWTLayerService = {
     importJavaClassesInDataTypeEditor: jest.fn((javaClasses) => {
       /* Do Nothing */
     }),
   };
 
-  function getJavaCodeCompletionServiceMock(getClassesMock: jest.Mock) {
+  function getJavaCodeCompletionServiceMock(classMocks: JavaCodeCompletionClass[]) {
     const javaCodeCompletionServiceMock: JavaCodeCompletionService = {
-      getClasses: getClassesMock,
-      getFields: jest.fn(() => new Promise(() => [])),
-      isLanguageServerAvailable: isLanguageServerAvailableMock,
+      getClasses: (value) => Promise.resolve(classMocks),
+      getFields: getFieldsMocks,
+      isLanguageServerAvailable: () => Promise.resolve(true),
     };
     return javaCodeCompletionServiceMock;
   }
 
-  const isLanguageServerAvailableMock = async () => {
-    return true;
-  };
+  async function getFieldsMocks(className: string) {
+    const bookClassFields = [
+      { fqcn: "com.Book", accessor: "title", type: "java.lang.String" },
+      { fqcn: "com.Book", accessor: "year", type: "java.lang.Integer" },
+      { fqcn: "com.Book", accessor: "test", type: "com.Test" },
+    ];
+    const authorClassFields = [
+      { fqcn: "com.Author", accessor: "name", type: "java.lang.String" },
+      { fqcn: "com.Author", accessor: "isAlive", type: "java.lang.Boolean" },
+    ];
+    if (className === "com.Book") {
+      return bookClassFields;
+    } else if (className === "com.Author") {
+      return authorClassFields;
+    } else {
+      return [];
+    }
+  }
 });

@@ -17,7 +17,6 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -38,17 +37,16 @@ public class GetClassesHandler extends Handler<List<GetClassesResult>> {
         this.autocompleteHandler = autocompleteHandler;
     }
 
-    public CompletableFuture<List<GetClassesResult>> handle(List<Object> arguments, IProgressMonitor progress) {
+    public List<GetClassesResult> handle(List<Object> arguments, IProgressMonitor progress) {
         checkParameters(arguments);
         String completeText = (String) arguments.get(0);
         BuildInformation buildInformation = javaEngine.buildImportClass(this.autocompleteHandler.getUri(), completeText);
         List<CompletionItem> items = this.autocompleteHandler.handle("GetClassesHandler", buildInformation);
-        List<GetClassesResult> completedClasses = this.transformCompletionItemsToResult(items);
-        return CompletableFuture.supplyAsync(() -> completedClasses);
+        return this.transformCompletionItemsToResult(items);
     }
 
     private void checkParameters(List<Object> arguments) {
-        if (arguments.size() < 1) {
+        if (arguments.isEmpty()) {
             throw new IllegalArgumentException("Not enough arguments for GetClasses command. Need one argument containing a text to be autocompleted");
         } else {
             JavaLanguageServerPlugin.logError("Arguments: " + arguments.get(0));

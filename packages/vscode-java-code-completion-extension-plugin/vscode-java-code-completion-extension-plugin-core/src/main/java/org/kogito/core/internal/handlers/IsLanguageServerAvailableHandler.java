@@ -17,16 +17,9 @@
 package org.kogito.core.internal.handlers;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
-import org.eclipse.lsp4j.CompletionItem;
-import org.kogito.core.internal.api.GetClassesResult;
 import org.kogito.core.internal.engine.ActivationChecker;
-import org.kogito.core.internal.engine.BuildInformation;
-import org.kogito.core.internal.engine.JavaEngine;
 
 public class IsLanguageServerAvailableHandler extends Handler<Boolean> {
 
@@ -41,8 +34,8 @@ public class IsLanguageServerAvailableHandler extends Handler<Boolean> {
         return false;
     }
 
-    public CompletableFuture<Boolean> handle(List<Object> arguments, IProgressMonitor progress) {
-        return CompletableFuture.completedFuture(activationChecker.existActivator());
+    public Boolean handle(List<Object> arguments, IProgressMonitor progress) {
+        return activationChecker.existActivator();
     }
 
 }

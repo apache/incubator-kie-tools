@@ -16,12 +16,15 @@
 
 package org.kogito.core.internal.handlers;
 
+import java.util.Map;
+
 import org.eclipse.lsp4j.CompletionItem;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kogito.core.internal.api.GetPublicResult;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
 class GetAccessorsHandlerTest {
 
@@ -60,5 +63,41 @@ class GetAccessorsHandlerTest {
         assertThat(accessor.getFqcn()).isEqualTo("org.kogito.Class");
         assertThat(accessor.getType()).isEqualTo("String");
         assertThat(accessor.getAccessor()).isEqualTo("method()");
+    }
+
+    @Test
+    public void testCorrectGetFQCNAccessor() {
+        CompletionItem completionItem = new CompletionItem();
+        completionItem.setLabel("getName() : String");
+        Map<String, String> data = Map.of(DATA_FIELD_SIGNATURE, "()Ljava.lang.String;");
+        completionItem.setData(data);
+        GetPublicResult accessor = this.getAccessorHandler.getAccessor(completionItem, "org.kogito.Class");
+        assertThat(accessor.getFqcn()).isEqualTo("org.kogito.Class");
+        assertThat(accessor.getType()).isEqualTo("java.lang.String");
+        assertThat(accessor.getAccessor()).isEqualTo("getName()");
+    }
+
+    @Test
+    public void testCorrectGetFQCListAccessor() {
+        CompletionItem completionItem = new CompletionItem();
+        completionItem.setLabel("getBooksList() : List<Book>");
+        Map<String, String> data = Map.of(DATA_FIELD_SIGNATURE, "()Ljava.util.List<Lcom.Book;>");
+        completionItem.setData(data);
+        GetPublicResult accessor = this.getAccessorHandler.getAccessor(completionItem, "org.kogito.Class");
+        assertThat(accessor.getFqcn()).isEqualTo("org.kogito.Class");
+        assertThat(accessor.getType()).isEqualTo("java.util.List<Lcom.Book;>");
+        assertThat(accessor.getAccessor()).isEqualTo("getBooksList()");
+    }
+
+    @Test
+    public void testCorrectGetFQCNMapAccessor() {
+        CompletionItem completionItem = new CompletionItem();
+        completionItem.setLabel("getBooksMap() : Map<String,Book>");
+        Map<String, String> data = Map.of(DATA_FIELD_SIGNATURE, "()Ljava.util.Map<Ljava.lang.String;Lcom.Book;>;");
+        completionItem.setData(data);
+        GetPublicResult accessor = this.getAccessorHandler.getAccessor(completionItem, "org.kogito.Class");
+        assertThat(accessor.getFqcn()).isEqualTo("org.kogito.Class");
+        assertThat(accessor.getType()).isEqualTo("java.util.Map<Ljava.lang.String;Lcom.Book;>");
+        assertThat(accessor.getAccessor()).isEqualTo("getBooksMap()");
     }
 }

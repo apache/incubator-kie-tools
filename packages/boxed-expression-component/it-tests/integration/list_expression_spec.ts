@@ -19,16 +19,23 @@ import * as buildEnv from "@kie-tools/build-env";
 describe("List Expression Tests", () => {
   beforeEach(() => {
     cy.visit(`http://localhost:${buildEnv.boxedExpressionComponent.dev.port}/`);
-  });
 
-  it("Define List expression", () => {
     // Entry point for each new expression
     cy.ouiaId("expression-container").click();
 
     // Define new expression as List
     cy.ouiaId("expression-popover-menu").contains("List").click({ force: true });
+  });
 
+  it("Define List expression", () => {
     // Assert some content
     cy.ouiaId("expression-row-0").should("contain.text", "1");
+  });
+
+  it("Regression tests: focus on the first data cell", () => {
+    cy.ouiaId("expression-column-1").focus().wait(0);
+
+    // check the snapshot for regression
+    cy.matchImageSnapshot("data_cell_focus");
   });
 });

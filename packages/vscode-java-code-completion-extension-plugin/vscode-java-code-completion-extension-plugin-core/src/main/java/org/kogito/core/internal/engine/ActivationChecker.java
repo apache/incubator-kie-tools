@@ -31,7 +31,6 @@ public class ActivationChecker {
     private boolean present = false;
 
     public ActivationChecker(WorkspaceUtil workspaceUtil) {
-
         this.workspaceUtil = workspaceUtil;
     }
 
