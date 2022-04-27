@@ -1,3 +1,4 @@
+//go:build !headless
 // +build !headless
 
 /*
@@ -31,11 +32,11 @@ import (
 )
 
 type KogitoSystray struct {
-	controller								*Proxy
-	runnerPortItem						*systray.MenuItem
-	openModeler								*systray.MenuItem
-	StartStopItem							*systray.MenuItem
-	ToggleInsecureSkipVerify	*systray.MenuItem
+	controller               *Proxy
+	runnerPortItem           *systray.MenuItem
+	openModeler              *systray.MenuItem
+	StartStopItem            *systray.MenuItem
+	ToggleInsecureSkipVerify *systray.MenuItem
 }
 
 func (self *KogitoSystray) Run() {
