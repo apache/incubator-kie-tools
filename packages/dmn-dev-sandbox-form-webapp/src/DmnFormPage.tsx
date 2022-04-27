@@ -15,7 +15,7 @@
  */
 
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form/dist/dmn";
+import { DecisionResult, DmnForm, DmnFormResult, extractDifferences } from "@kie-tools/form-dmn";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -146,8 +146,8 @@ export function DmnFormPage(props: Props) {
                 <div className={"kogito--dmn-form__content-body"}>
                   <PageSection className={"kogito--dmn-form__content-body-input"}>
                     <DmnForm
-                      formData={formInputs}
-                      setFormData={setFormInputs}
+                      formInputs={formInputs}
+                      setFormInputs={setFormInputs}
                       formError={formError}
                       setFormError={setFormError}
                       formSchema={props.formData.schema}
@@ -156,8 +156,8 @@ export function DmnFormPage(props: Props) {
                       notificationsPanel={false}
                       onSubmit={onSubmit}
                       placeholder={true}
-                      autosave={true}
-                      autosaveDelay={AUTO_SAVE_DELAY}
+                      autoSave={true}
+                      autoSaveDelay={AUTO_SAVE_DELAY}
                       submitField={() => <></>}
                       errorsField={() => <></>}
                       locale={locale}
