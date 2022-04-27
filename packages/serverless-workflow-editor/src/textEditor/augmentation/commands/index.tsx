@@ -6,7 +6,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   SwfLanguageServiceCommandArgs,
   SwfLanguageServiceCommandIds,
-} from "@kie-tools/serverless-workflow-language-service";
+} from "@kie-tools/serverless-workflow-language-service/dist/api";
 
 // Part of an example
 //

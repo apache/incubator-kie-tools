@@ -16,7 +16,7 @@
 
 import * as monaco from "monaco-editor";
 import { editor, IDisposable, KeyCode, KeyMod } from "monaco-editor";
-import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service";
+import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";

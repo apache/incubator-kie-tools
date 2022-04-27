@@ -1,10 +1,10 @@
 import * as vscode from "vscode";
-import { COMMAND_IDS } from "./commands";
+import { COMMAND_IDS } from "./commandIds";
 import * as ls from "vscode-languageserver-types";
 import {
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
-} from "@kie-tools/serverless-workflow-language-service";
+} from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";

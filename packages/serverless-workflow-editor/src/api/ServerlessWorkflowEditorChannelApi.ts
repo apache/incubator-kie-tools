@@ -16,7 +16,7 @@
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 
 export interface ServerlessWorkflowEditorChannelApi
   extends KogitoEditorChannelApi,

@@ -2,7 +2,7 @@ import * as monaco from "monaco-editor";
 import {
   SwfLanguageServiceCommandIds,
   SwfLanguageServiceCommandTypes,
-} from "@kie-tools/serverless-workflow-language-service";
+} from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { ServerlessWorkflowEditorChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 

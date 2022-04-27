@@ -21,7 +21,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import * as vscode from "vscode";
-import { COMMAND_IDS } from "../commands";
+import { COMMAND_IDS } from "../commandIds";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
 import { SwfServiceCatalogSupportActions } from "./SwfServiceCatalogSupportActions";
 

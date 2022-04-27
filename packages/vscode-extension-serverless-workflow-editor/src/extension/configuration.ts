@@ -4,6 +4,8 @@ import {
 } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import * as vscode from "vscode";
 
+export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
+
 export const CONFIGURATION_SECTIONS = {
   serviceRegistryUrl: "kogito.sw.serviceRegistryUrl",
   specsStoragePath: "kogito.sw.specsStoragePath",

@@ -20,68 +20,47 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { ViewColumn } from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
-import {
-  CONFIGURATION_SECTIONS,
-  ShouldOpenDiagramEditorAutomaticallyConfiguration,
-  SwfVsCodeExtensionConfiguration,
-} from "./configuration";
+import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
-import { COMMAND_IDS, setupCommands } from "./commands";
+import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-
-const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
+import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
+import { COMMAND_IDS } from "./commandIds";
+import { setupRhhccAuthenticationStore } from "./rhhcc/setupRhhccAuthenticationStore";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
   const backendProxy = new VsCodeBackendProxy(context, backendI18n);
+  context.subscriptions.push(
+    new vscode.Disposable(() => {
+      return backendProxy.stopServices();
+    })
+  );
+
   const configuration = new SwfVsCodeExtensionConfiguration();
+
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
-
-  context.subscriptions.push(
-    vscode.authentication.onDidChangeSessions(async (e) => {
-      if (e.provider.id === "redhat-mas-account-auth") {
-        await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
-      }
-    })
-  );
-
-  context.subscriptions.push(
-    rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
-      if (!session) {
-        return rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const configuredServiceRegistryUrl = configuration.getConfiguredServiceRegistryUrl();
-      if (configuredServiceRegistryUrl) {
-        return rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const serviceRegistryUrl = await askForServiceRegistryUrl({ currentValue: configuredServiceRegistryUrl });
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
-
-      return rhhccServiceRegistryServiceCatalogStore.refresh();
-    })
-  );
 
   const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
     rhhccAuthenticationStore,
     configuration,
   });
 
-  await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
+  await setupRhhccAuthenticationStore({
+    context,
+    configuration,
+    rhhccAuthenticationStore,
+    rhhccServiceRegistryServiceCatalogStore,
+  });
 
   const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
-
   await swfServiceCatalogGlobalStore.init();
   console.info(
     `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
@@ -92,13 +71,12 @@ export async function activate(context: vscode.ExtensionContext) {
     rhhccAuthenticationStore,
     swfServiceCatalogGlobalStore,
   });
+  context.subscriptions.push(swfLanguageService);
 
   const swfServiceCatalogSupportActions = new SwfServiceCatalogSupportActions({
     configuration,
     swfServiceCatalogGlobalStore,
   });
-
-  context.subscriptions.push(swfLanguageService);
 
   const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
@@ -132,99 +110,16 @@ export async function activate(context: vscode.ExtensionContext) {
     swfServiceCatalogSupportActions,
   });
 
-  setupCommands({ context, configuration });
+  setupServiceRegistryIntegrationCommands({
+    context,
+    configuration,
+  });
 
-  context.subscriptions.push(
-    new vscode.Disposable(() => {
-      return backendProxy.stopServices();
-    })
-  );
-
-  async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
-    const isSwf = /^.*\.sw\.(json|yml|yaml)$/.test(args.textEditor.document.fileName);
-    if (!isSwf) {
-      return;
-    }
-
-    await vscode.commands.executeCommand("vscode.openWith", args.textEditor.document.uri, WEBVIEW_EDITOR_VIEW_TYPE, {
-      viewColumn: ViewColumn.Beside,
-      // the combination of these two properties below is IMPERATIVE for the good functioning of the preview mechanism.
-      preserveFocus: !args.active,
-      background: !args.active,
-    });
-  }
-
-  async function maybeOpenAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
-    if (
-      configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
-      ShouldOpenDiagramEditorAutomaticallyConfiguration.ASK
-    ) {
-      await configuration.configureAutomaticallyOpenDiagramEditorAlongsideTextEditor();
-    }
-
-    if (
-      configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
-      ShouldOpenDiagramEditorAutomaticallyConfiguration.DO_NOT_OPEN
-    ) {
-      return;
-    }
-
-    await openAsDiagramIfSwf(args);
-  }
-
-  context.subscriptions.push(
-    vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
-      if (kieToolsEditorStore.activeEditor) {
-        return;
-      }
-
-      if (
-        configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
-        ShouldOpenDiagramEditorAutomaticallyConfiguration.OPEN_AUTOMATICALLY
-      ) {
-        kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
-          if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
-            kieToolsEditor.close();
-          }
-        });
-      }
-
-      if (!textEditor) {
-        return;
-      }
-
-      await maybeOpenAsDiagramIfSwf({ textEditor, active: false });
-    })
-  );
-
-  if (vscode.window.activeTextEditor) {
-    await maybeOpenAsDiagramIfSwf({ textEditor: vscode.window.activeTextEditor, active: false });
-  }
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.openAsDiagram, async () => {
-      if (vscode.window.activeTextEditor) {
-        await openAsDiagramIfSwf({ textEditor: vscode.window.activeTextEditor, active: true });
-      }
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor, async () => {
-      await configuration.configureAutomaticallyOpenDiagramEditorAlongsideTextEditor();
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.openAsSource, async (resource) => {
-      //TODO: tiago
-      console.info("Opening source");
-    })
-  );
+  await setupDiagramEditorControls({
+    context,
+    configuration,
+    kieToolsEditorStore,
+  });
 
   console.info("Extension is successfully setup.");
-}
-
-async function updateRhhccAuthenticationSession(rhhccAuthenticationStore: RhhccAuthenticationStore) {
-  rhhccAuthenticationStore.setSession(await vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]));
 }

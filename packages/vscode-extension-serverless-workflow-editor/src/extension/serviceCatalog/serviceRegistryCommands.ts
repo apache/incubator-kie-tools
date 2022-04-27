@@ -1,21 +1,9 @@
 import * as vscode from "vscode";
-import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
+import { askForServiceRegistryUrl } from "./rhhccServiceRegistry";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../configuration";
+import { COMMAND_IDS } from "../commandIds";
 
-export const COMMAND_IDS = {
-  loginToRhhcc: "extension.kogito.swf.logInToRhhcc",
-  setupServiceRegistryUrl: "extension.kogito.swf.setupServiceRegistryUrl",
-  removeServiceRegistryUrl: "extension.kogito.swf.removeServiceRegistryUrl",
-  getPreviewSvg: "extension.kogito.swf.getPreviewSvg",
-  silentlyGetPreviewSvg: "extension.kogito.swf.silentlyGenerateSvg",
-  openAsDiagram: "extension.kogito.swf.openAsDiagram",
-  openAsSource: "extension.kogito.swf.openAsSource",
-  swfLsCommand: "extension.kogito.swf.ls.command",
-  setupAutomaticallyOpenDiagramEditorAlongsideTextEditor:
-    "extension.kogito.swf.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
-};
-
-export function setupCommands(args: {
+export function setupServiceRegistryIntegrationCommands(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
 }) {

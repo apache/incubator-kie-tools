@@ -13,7 +13,7 @@ import {
   SwfLanguageServiceChannelApi,
   SwfLanguageServiceCommandArgs,
   SwfLanguageServiceCommandExecution,
-} from "@kie-tools/serverless-workflow-language-service";
+} from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import {
   SwfServiceCatalogFunction,
@@ -113,13 +113,15 @@ const completions = new Map<
 
       const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
-      //FIXME: Tiago - differentiate between different sources
       return swfCompletionItemServiceCatalogServices
         .flatMap((s) => s.functions)
         .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
         .map((swfServiceCatalogFunc) => {
           return {
-            kind: CompletionItemKind.Value,
+            kind:
+              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY
+                ? CompletionItemKind.Interface
+                : CompletionItemKind.Value,
             label: `"${swfServiceCatalogFunc.operation}"`,
             detail: `"${swfServiceCatalogFunc.operation}"`,
             filterText: `"${swfServiceCatalogFunc.operation}"`,

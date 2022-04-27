@@ -20,7 +20,7 @@ import { SwfMonacoEditorInstance } from "../../SwfTextEditorController";
 import { ServerlessWorkflowEditorChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as ls from "vscode-languageserver-types";
-import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-language-service";
+import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 
 export function initJsonCompletion(
