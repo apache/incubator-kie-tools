@@ -155,18 +155,22 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
 
   const onContentChanged = useCallback(
     (newContent: string, operation?: MonacoEditorOperation) => {
-      if (operation === MonacoEditorOperation.EDIT) {
-        props.onNewEdit(new KogitoEdit(newContent));
-      } else if (operation === MonacoEditorOperation.UNDO) {
-        if (!isVSCode()) {
-          swfMonacoEditorRef.current?.undo();
-        }
-        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
-      } else if (operation === MonacoEditorOperation.REDO) {
-        if (!isVSCode()) {
-          swfMonacoEditorRef.current?.redo();
-        }
-        props.onStateControlCommandUpdate(StateControlCommand.REDO);
+      switch (operation) {
+        case MonacoEditorOperation.EDIT:
+          props.onNewEdit(new KogitoEdit(newContent));
+          break;
+        case MonacoEditorOperation.UNDO:
+          if (!isVSCode()) {
+            swfMonacoEditorRef.current?.undo();
+          }
+          props.onStateControlCommandUpdate(StateControlCommand.UNDO);
+          break;
+        case MonacoEditorOperation.REDO:
+          if (!isVSCode()) {
+            swfMonacoEditorRef.current?.redo();
+          }
+          props.onStateControlCommandUpdate(StateControlCommand.REDO);
+          break;
       }
       // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
       setTimeout(() => {
