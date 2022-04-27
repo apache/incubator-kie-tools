@@ -22,9 +22,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.stream.Stream;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 
+
+//JavaFileVisitor
 public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
 
     protected static final String IMPORT_ACTIVATOR = "import org.kie.api.project.KieActivator;";
@@ -50,10 +53,10 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
 
         String javaFileName = fileName.replaceAll("\\.\\w+$", "");
 
-       //TODO close resource here
-        long linesThatMatch = Files.lines(path).filter(line -> containsActivator(line, javaFileName)).limit(2).count();
-
-        JavaLanguageServerPlugin.logInfo("Lines found: " + linesThatMatch);
+        long linesThatMatch = 0;
+        try (Stream<String> s = Files.lines(path)) {
+            linesThatMatch = s.filter(line -> containsActivator(line, javaFileName)).limit(2).count();
+        }
 
         if (linesThatMatch == 2) {
             this.present = true;
@@ -66,9 +69,6 @@ public class ActivationFileVisitor extends SimpleFileVisitor<Path> {
     }
 
     protected boolean containsActivator(String line, String fileName) {
-        JavaLanguageServerPlugin.logInfo("Searching for: " + PACKAGE_ACTIVATOR);
-        JavaLanguageServerPlugin.logInfo("Lines found: " + PUBLIC_CLASS_DECLARATION + fileName);
-
         return line.contains(PACKAGE_ACTIVATOR) || line.contains(PUBLIC_CLASS_DECLARATION + fileName);
     }
 

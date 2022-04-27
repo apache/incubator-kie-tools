@@ -27,6 +27,7 @@ import org.kogito.core.internal.api.GetPublicParameters;
 import org.kogito.core.internal.api.GetPublicResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
+import org.kogito.core.internal.util.WorkspaceUtil;
 
 import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
@@ -44,6 +45,7 @@ public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
     @Override
     public List<GetPublicResult> handle(List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo("Handle Accessors");
+        WorkspaceUtil.createFile(autocompleteHandler.getActivatorPath());
         GetPublicParameters parameters = checkParameters(arguments);
         BuildInformation buildInformation = javaEngine.buildPublicContent(this.autocompleteHandler.getUri(),
                                                                           parameters.getFqcn(),

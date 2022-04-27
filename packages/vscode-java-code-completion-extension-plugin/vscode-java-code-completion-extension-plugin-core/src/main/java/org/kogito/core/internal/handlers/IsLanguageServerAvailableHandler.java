@@ -19,23 +19,20 @@ package org.kogito.core.internal.handlers;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.kogito.core.internal.engine.ActivationChecker;
+import org.kogito.core.internal.engine.ActivatorManager;
 
 public class IsLanguageServerAvailableHandler extends Handler<Boolean> {
 
-    private final ActivationChecker activationChecker;
+    private final ActivatorManager activatorManager;
 
-    public IsLanguageServerAvailableHandler(String id, ActivationChecker activationChecker) {
+    public IsLanguageServerAvailableHandler(String id, ActivatorManager activatorManager) {
         super(id);
-        this.activationChecker = activationChecker;
+        this.activatorManager = activatorManager;
     }
 
-    public boolean canHandle() {
-        return false;
-    }
-
+    @Override
     public Boolean handle(List<Object> arguments, IProgressMonitor progress) {
-        return activationChecker.existActivator();
+        return activatorManager.isEnabled();
     }
 
 }

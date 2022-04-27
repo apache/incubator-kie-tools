@@ -16,13 +16,59 @@
 
 package org.kogito.core.internal.util;
 
+import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 
+/**
+ * Utility Class to interact with the opened Workspace
+ */
 public class WorkspaceUtil {
 
-    public String getWorkspace() {
+    /**
+     * It returns the Workspace root URI
+     * @return
+     */
+    public static String getWorkspace() {
         IProject p = ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
         return p.getRawLocation().makeAbsolute().toOSString();
     }
+
+    /**
+     * It creates a hidden file given a path
+     * @return
+     */
+    public static Path createFile(Path path) {
+        try {
+            Path createdPath = Files.createFile(path);
+            Files.setAttribute(createdPath, "dos:hidden", true);
+            return createdPath;
+        } catch (IOException e) {
+            if (e instanceof FileAlreadyExistsException)
+                return path;
+            else {
+                JavaLanguageServerPlugin.logInfo("Error during file creation:" + e.getMessage());
+            }
+        }
+        return null;
+    }
+
+    /**
+     * It deletes a file given a path
+     * @return
+     */
+    public static boolean deleteFile(Path path) {
+        try {
+            return Files.deleteIfExists(path);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

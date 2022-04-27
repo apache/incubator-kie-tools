@@ -21,7 +21,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.ls.core.internal.IDelegateCommandHandler;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
-import org.kogito.core.internal.engine.ActivationChecker;
+import org.kogito.core.internal.engine.ActivatorManager;
 import org.kogito.core.internal.engine.JavaEngine;
 import org.kogito.core.internal.handlers.AutocompleteHandler;
 import org.kogito.core.internal.handlers.GetAccessorsHandler;
@@ -29,40 +29,32 @@ import org.kogito.core.internal.handlers.GetClassesHandler;
 import org.kogito.core.internal.handlers.Handler;
 import org.kogito.core.internal.handlers.HandlerConstants;
 import org.kogito.core.internal.handlers.IsLanguageServerAvailableHandler;
-import org.kogito.core.internal.util.WorkspaceUtil;
 
-public class DelegateHandler implements IDelegateCommandHandler {
+public class DelegateCommandHandler implements IDelegateCommandHandler {
 
     private static final JavaEngine JAVA_ENGINE = new JavaEngine();
-    private static final ActivationChecker ACTIVATION_CHECKER = new ActivationChecker(new WorkspaceUtil());
+    private static final ActivatorManager ACTIVATION_CHECKER = new ActivatorManager();
     private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATION_CHECKER);
-    private final IsLanguageServerAvailableHandler isAvailableHandler;
-
     private static final List<Handler<?>> handlers = List.of(
             new GetClassesHandler(HandlerConstants.GET_CLASSES, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
-            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER));
+            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
+            new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, ACTIVATION_CHECKER));
 
-    public DelegateHandler() {
+    public DelegateCommandHandler() {
         ACTIVATION_CHECKER.check();
-        this.isAvailableHandler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE,
-                ACTIVATION_CHECKER);
     }
 
+    @Override
     public Object executeCommand(String commandId, List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo(commandId);
 
-        if (this.isAvailableHandler.canHandle(commandId)) {
-            return this.isAvailableHandler.handle(arguments, progress);
-        }
-
-        if (ACTIVATION_CHECKER.existActivator()) {
+        if (ACTIVATION_CHECKER.isEnabled()) {
             return handlers.stream().filter(handler -> handler.canHandle(commandId)).findFirst()
                     .map(handler -> handler.handle(arguments, progress))
                     .orElseThrow(() -> new UnsupportedOperationException(
                             String.format("Unsupported command '%s'!", commandId)));
         } else {
-            ACTIVATION_CHECKER.check();
-            return "";
+            throw new IllegalStateException("Activator is not working correctly");
         }
     }
 }

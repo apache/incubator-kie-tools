@@ -25,6 +25,7 @@ import org.eclipse.lsp4j.CompletionItem;
 import org.kogito.core.internal.api.GetClassesResult;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
+import org.kogito.core.internal.util.WorkspaceUtil;
 
 public class GetClassesHandler extends Handler<List<GetClassesResult>> {
 
@@ -37,11 +38,14 @@ public class GetClassesHandler extends Handler<List<GetClassesResult>> {
         this.autocompleteHandler = autocompleteHandler;
     }
 
+    @Override
     public List<GetClassesResult> handle(List<Object> arguments, IProgressMonitor progress) {
+        WorkspaceUtil.createFile(autocompleteHandler.getActivatorPath());
         checkParameters(arguments);
         String completeText = (String) arguments.get(0);
         BuildInformation buildInformation = javaEngine.buildImportClass(this.autocompleteHandler.getUri(), completeText);
         List<CompletionItem> items = this.autocompleteHandler.handle("GetClassesHandler", buildInformation);
+        WorkspaceUtil.deleteFile(autocompleteHandler.getActivatorPath());
         return this.transformCompletionItemsToResult(items);
     }
 

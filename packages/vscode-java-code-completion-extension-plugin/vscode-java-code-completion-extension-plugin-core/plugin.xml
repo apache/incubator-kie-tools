@@ -18,7 +18,7 @@
 
 <plugin>
   <extension point="org.eclipse.jdt.ls.core.delegateCommandHandler">
-    <delegateCommandHandler class="org.kogito.core.internal.DelegateHandler">
+    <delegateCommandHandler class="org.kogito.core.internal.DelegateCommandHandler">
       <command id="extension.kogito.classes" />
       <command id="extension.kogito.accessors" />
       <command id="extension.kogito.isAvailable" />

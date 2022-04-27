@@ -19,41 +19,49 @@ package org.kogito.core.internal.engine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.util.WorkspaceUtil;
 
-public class ActivationChecker {
+public class ActivatorManager {
 
-    private final WorkspaceUtil workspaceUtil;
-    private String activatorUri = null;
+    private static final String ACTIVATOR_FILE_NAME = "KieJCActivator.java";
 
-    public ActivationChecker(WorkspaceUtil workspaceUtil) {
-        this.workspaceUtil = workspaceUtil;
-    }
+    private String firstJavaFileURI = null;
+    private Path activatorPath = null;
 
     public void check() {
         ActivationFileVisitor visitor = new ActivationFileVisitor();
         try {
-            Files.walkFileTree(Paths.get(workspaceUtil.getWorkspace()), visitor);
+            Files.walkFileTree(Paths.get(WorkspaceUtil.getWorkspace()), visitor);
         } catch (IOException e) {
             JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
         }
         if (visitor.isPresent()) {
-            activatorUri = visitor.getActivatorFile().toAbsolutePath().toString();
+            firstJavaFileURI = visitor.getActivatorFile().toAbsolutePath().toString();
+            activatorPath = Path.of(visitor.getActivatorFile().toAbsolutePath().getParent() + File.separator + ACTIVATOR_FILE_NAME);
         }
     }
 
-    public boolean existActivator() {
-        return new File(activatorUri).exists();
+    public boolean isEnabled() {
+        return new File(firstJavaFileURI).exists() && this.activatorPath != null;
     }
 
-    public String getActivatorUri() {
-        if (this.activatorUri != null && !this.activatorUri.isEmpty()) {
-            return "file://" + this.activatorUri;
+    public String getActivatorURI() {
+        if (this.activatorPath != null) {
+            return "file://" + this.activatorPath;
         } else {
             throw new IllegalStateException("Activator URI is not present");
+        }
+    }
+
+    public Path getActivatorPath() {
+        if (this.activatorPath != null) {
+            return activatorPath;
+        } else {
+            throw new IllegalStateException("Activator Path is not present");
         }
     }
 
