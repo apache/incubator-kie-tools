@@ -216,6 +216,9 @@ func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
 
 		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 
+		var config config.Config
+		conf := config.GetConfig()
+
 		// tolerate self-signed certificates
 		proxy.Transport = &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
@@ -229,7 +232,7 @@ func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
 			TLSHandshakeTimeout:   10 * time.Second,
 			ExpectContinueTimeout: 1 * time.Second,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
+				InsecureSkipVerify: conf.TlsClientConfig.AllowSelfSignedCert,
 			},
 		}
 

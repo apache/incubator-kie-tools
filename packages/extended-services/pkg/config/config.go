@@ -37,6 +37,9 @@ type Config struct {
 	Modeler struct {
 		Link string `yaml:"link"`
 	} `yaml:"modeler"`
+	TlsClientConfig struct {
+		AllowSelfSignedCert bool `yaml:allowSelfSignedCert`
+	} `yaml:tlsClientConfig`
 }
 
 func (c *Config) GetConfig() *Config {
