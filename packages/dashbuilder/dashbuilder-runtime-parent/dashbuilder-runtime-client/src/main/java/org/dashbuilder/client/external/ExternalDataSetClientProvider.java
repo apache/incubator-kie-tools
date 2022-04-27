@@ -128,17 +128,17 @@ public class ExternalDataSetClientProvider {
         }).catch_(e -> notAbleToRetrieveDataSet(def, listener));
     }
 
-    private IThenable<Object> register(DataSetLookup lookup,
-                                       DataSetReadyCallback listener,
-                                       String responseText,
-                                       SupportedMimeType contentType) {
+    private IThenable<Object> register(final DataSetLookup lookup,
+                                       final DataSetReadyCallback listener,
+                                       final String responseText,
+                                       final SupportedMimeType contentType) {
         var uuid = lookup.getDataSetUUID();
         var def = externalDataSets.get(uuid);
         var content = contentType.tranformer.apply(responseText);
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
-                content = applyExpression(def.getExpression(), responseText);
+                content = applyExpression(def.getExpression(), content);
             } catch (Exception e) {
                 listener.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
                 return null;
