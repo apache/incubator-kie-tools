@@ -43,15 +43,15 @@ import (
 )
 
 type Proxy struct {
-	view            		*KogitoSystray
-	srv             		*http.Server
-	cmd             		*exec.Cmd
-	Started         		bool
-	URL             		string
-	Port            		int
-	RunnerPort      		int
-	jitexecutorPath 		string
-	InsecureSkipVerify 	bool
+	view								*KogitoSystray
+	srv									*http.Server
+	cmd									*exec.Cmd
+	Started							bool
+	URL									string
+	Port								int
+	RunnerPort					int
+	jitexecutorPath			string
+	InsecureSkipVerify	bool
 }
 
 func NewProxy(port int, jitexecutor []byte) *Proxy {

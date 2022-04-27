@@ -28,7 +28,7 @@ https://extensions.gnome.org/extension/615/appindicator-support/
 
 ### Configuration
 
-In the `config.yaml` file you will be able to configure Proxy, Runner, TlsClient and Modeler properties as runner location or modeler URL. Runner ip is `127.0.0.1` and port is a random free port.
+In the `config.yaml` file you will be able to configure Proxy, Runner and Modeler properties as runner location or modeler URL. Runner ip is `127.0.0.1` and port is a random free port.
 
 ### How do I create the image.go?
 

@@ -31,10 +31,10 @@ import (
 )
 
 type KogitoSystray struct {
-	controller     						*Proxy
-	runnerPortItem 						*systray.MenuItem
-	openModeler    						*systray.MenuItem
-	StartStopItem  						*systray.MenuItem
+	controller								*Proxy
+	runnerPortItem						*systray.MenuItem
+	openModeler								*systray.MenuItem
+	StartStopItem							*systray.MenuItem
 	ToggleInsecureSkipVerify	*systray.MenuItem
 }
 
@@ -114,9 +114,9 @@ func (self *KogitoSystray) mainSection() {
 
 func (self *KogitoSystray) operationSection() {
 	if self.controller.InsecureSkipVerify {
-		self.ToggleInsecureSkipVerify = systray.AddMenuItem(DISALLOW_INSECURE_SKIP_VERIFY, "")
+		self.ToggleInsecureSkipVerify = systray.AddMenuItem(DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of self-signed certificates")
 	} else {
-		self.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "")
+		self.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of self-signed certificates")
 	}
 	self.StartStopItem = systray.AddMenuItem(START, "")
 
