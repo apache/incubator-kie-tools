@@ -36,7 +36,6 @@ type KogitoSystray struct {
 	openModeler    						*systray.MenuItem
 	StartStopItem  						*systray.MenuItem
 	ToggleInsecureSkipVerify	*systray.MenuItem
-	insecureSkipVerifyStatus	*systray.MenuItem
 }
 
 func (self *KogitoSystray) Run() {
@@ -68,15 +67,12 @@ func (self *KogitoSystray) onReady() {
 			}
 		case <-self.ToggleInsecureSkipVerify.ClickedCh:
 			if self.controller.InsecureSkipVerify {
-				fmt.Println("Disallowing InsecureSkipVerify")
 				self.controller.InsecureSkipVerify = false
 				self.ToggleInsecureSkipVerify.SetTitle(ALLOW_INSECURE_SKIP_VERIFY)
 			} else {
-				fmt.Println("Allowing InsecureSkipVerify")
 				self.controller.InsecureSkipVerify = true
 				self.ToggleInsecureSkipVerify.SetTitle(DISALLOW_INSECURE_SKIP_VERIFY)
 			}
-			self.insecureSkipVerifyStatus.SetTitle("InsecureSkipVerify: "+ strconv.FormatBool(self.controller.InsecureSkipVerify))
 		case <-quitItem.ClickedCh:
 			self.Stop()
 			systray.Quit()
@@ -122,8 +118,6 @@ func (self *KogitoSystray) operationSection() {
 	} else {
 		self.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "")
 	}
-	self.insecureSkipVerifyStatus = systray.AddMenuItem("InsecureSkipVerify: "+ strconv.FormatBool(self.controller.InsecureSkipVerify), "")
-	self.insecureSkipVerifyStatus.Disable()
 	self.StartStopItem = systray.AddMenuItem(START, "")
 
 }
