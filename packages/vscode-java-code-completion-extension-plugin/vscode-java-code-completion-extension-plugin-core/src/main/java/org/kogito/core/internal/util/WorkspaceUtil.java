@@ -45,9 +45,7 @@ public class WorkspaceUtil {
      */
     public static Path createFile(Path path) {
         try {
-            Path createdPath = Files.createFile(path);
-            Files.setAttribute(createdPath, "dos:hidden", true);
-            return createdPath;
+            return Files.createFile(path);
         } catch (IOException e) {
             if (e instanceof FileAlreadyExistsException)
                 return path;

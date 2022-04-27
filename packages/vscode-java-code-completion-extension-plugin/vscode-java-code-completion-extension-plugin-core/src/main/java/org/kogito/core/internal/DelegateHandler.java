@@ -35,14 +35,19 @@ public class DelegateHandler implements IDelegateCommandHandler {
     private static final JavaEngine JAVA_ENGINE = new JavaEngine();
     private static final ActivatorManager ACTIVATOR_MANAGER = new ActivatorManager();
     private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATOR_MANAGER);
+    private static final IsLanguageServerAvailableHandler LANGUAGE_SERVER_AVAILABLE_HANDLER =
+            new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, ACTIVATOR_MANAGER);
     private static final List<Handler<?>> handlers = List.of(
             new GetClassesHandler(HandlerConstants.GET_CLASSES, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
-            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
-            new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, ACTIVATOR_MANAGER));
+            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER));
 
     @Override
     public Object executeCommand(String commandId, List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo(commandId);
+
+        if (LANGUAGE_SERVER_AVAILABLE_HANDLER.canHandle(commandId)) {
+            return LANGUAGE_SERVER_AVAILABLE_HANDLER.handle(arguments, progress);
+        }
 
         if (ACTIVATOR_MANAGER.isActivatorEnabled()) {
             return handlers.stream()
