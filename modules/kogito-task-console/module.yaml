@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.task.console
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: task-console-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/task-console/2.0.0-SNAPSHOT/task-console-2.0.0-20220404.032429-442-runner.jar
-    md5: cfe99b9b4d1f398ea762261da32d51b1
+- path: /tmp/build/task-console/task-console-quarkus-app.zip
+  name: task-console-quarkus-app.zip
 
 execute:
   - script: configure

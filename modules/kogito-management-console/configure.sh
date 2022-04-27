@@ -5,7 +5,7 @@ SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 ADDED_DIR="${SCRIPT_DIR}"/added
 
-cp -v "${SOURCES_DIR}"/management-console-runner.jar "${KOGITO_HOME}"/bin/
+unzip "${SOURCES_DIR}"/management-console-quarkus-app.zip -d "${KOGITO_HOME}"/bin/
 cp -rv "${ADDED_DIR}"/launch/* "${KOGITO_HOME}"/launch/
 
 chown -R 1001:0 "${KOGITO_HOME}"

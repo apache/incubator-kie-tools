@@ -11,16 +11,12 @@ Feature: Kogito-trusty infinispan feature.
     And the image should contain label io.k8s.display-name with value Kogito Trusty Service - Infinispan
     And the image should contain label io.openshift.tags with value kogito,trusty,trusty-infinispan
 
-  Scenario: verify if the binary index is available on /home/kogito
-    When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/trusty-service-infinispan-runner.jar' in container and immediately check its output for /home/kogito/bin/trusty-service-infinispan-runner.jar
-
   Scenario: Verify if the explainability messaging is disabled
     When container is started with env
       | variable      | value |
       | SCRIPT_DEBUG  | true  |
       | EXPLAINABILITY_ENABLED     | false  |
-    Then container log should contain -Dtrusty.explainability.enabled=false -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/trusty-service-infinispan-runner.jar
+    Then container log should contain -Dtrusty.explainability.enabled=false -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
 
   Scenario: verify if auth is correctly set
     When container is started with env

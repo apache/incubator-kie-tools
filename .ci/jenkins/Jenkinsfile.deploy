@@ -107,34 +107,34 @@ pipeline {
                 }
             }
         }
-        stage('Update Maven information') {
-            steps {
-                script {
-                    // Update artifacts
-                    updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
-                    if (getMavenArtifactRepository() != '') {
-                        updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()} --ignore-self-signed-cert"
-                    }
-
-                    try {
-                        sh updateArtifactCmd
-                    } catch (err) {
-                        unstable('Error while updating Maven artifacts. Please check logs.')
-                    } finally {
-                        if (isThereAnyChanges()) {
-                            commitChanges('Updated Maven artifacts')
-                        } else {
-                            echo 'No changes to commit'
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Update Maven information') {
+        //     steps {
+        //         script {
+        //             // Update artifacts
+        //             updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
+        //             if (getMavenArtifactRepository() != '') {
+        //                 updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()} --ignore-self-signed-cert"
+        //             }
+        //
+        //             try {
+        //                 sh updateArtifactCmd
+        //             } catch (err) {
+        //                 unstable('Error while updating Maven artifacts. Please check logs.')
+        //             } finally {
+        //                 if (isThereAnyChanges()) {
+        //                     commitChanges('Updated Maven artifacts')
+        //                 } else {
+        //                     echo 'No changes to commit'
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
         stage('Validate CeKit Image and Modules descriptors') {
             steps {
                 script {
                     sh '''
-                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/v1.2/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
+                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/v1.3.1/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
                         tar -xzvf cekit-image-validator-runner.tgz
                         chmod +x cekit-image-validator-runner
                     '''
@@ -193,28 +193,24 @@ pipeline {
                         initWorkspace(image)
                         String workspacePath = getWorkspacePath(image)
                         parallelStages["Build&Test ${image}"] = { 
-                            stage("Build ${image}") {
-                                try {
-                                    dir(workspacePath) {
+                            stage("Build/Test ${image}") {
+                                dir(workspacePath) {
+                                    try {
                                         buildImage(image)
+                                        registerBuiltImage(image)
+                                    } catch (err) {
+                                        registerBuildFailedImage(image)
+                                        util.archiveConsoleLog(image, 400)
+                                        throw err
                                     }
-                                    registerBuiltImage(image)
-                                } catch (err) {
-                                    registerBuildFailedImage(image)
-                                    util.archiveConsoleLog(image)
-                                    throw err
-                                }
-                            }
-                            stage("Test ${image}") {
-                                if(!shouldSkipTests()) {
-                                    dir(workspacePath) {
+                                    if(!shouldSkipTests()) {
                                         try {
                                             testImage(image)
                                         } catch (err) {
                                             registerTestFailedImage(image)
                                         } finally {
-                                            junit testResults: "target/test/results/*.xml", allowEmptyResults: true
-                                            archiveArtifacts artifacts: "target/test/results/*.xml", allowEmptyArchive: true
+                                            junit testResults: 'target/test/results/*.xml', allowEmptyResults: true
+                                            archiveArtifacts artifacts: 'target/test/results/*.xml', allowEmptyArchive: true
                                         }
                                     }
                                 }
@@ -423,6 +419,10 @@ List getBuiltImages() {
 
 List getBuildFailedImages() {
     return BUILD_FAILED_IMAGES
+}
+
+boolean isBuildFailedImage(String imageName) {
+    return BUILD_FAILED_IMAGES.contains(imageName)
 }
 
 List getTestFailedImages() {

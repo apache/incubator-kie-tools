@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.jobs.service.mongodb
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: jobs-service-mongodb-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-mongodb/2.0.0-SNAPSHOT/jobs-service-mongodb-2.0.0-20220404.024808-310-runner.jar
-    md5: 6d490e11f2db6088012ac51e8c7a8606
+- path: /tmp/build/jobs-service-mongodb/jobs-service-mongodb-quarkus-app.zip
+  name: jobs-service-mongodb-quarkus-app.zip
 
 execute:
   - script: configure

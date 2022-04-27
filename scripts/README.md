@@ -11,7 +11,6 @@ Today we have these scripts:
 - [push-local-registry.sh](push-local-registry.sh)
 - [push-staging.py](push-staging.py)
 - [run-bats.sh](run-bats.sh)
-- [update-maven-artifacts.py](update-maven-artifacts.py)
 - [update-tests.py](update-tests.py)
 
 
@@ -156,55 +155,6 @@ It will look for the current RC images available on [quay.io](https://quay.io/or
 accordingly then push the new tag so it can be tested by others. 
 If there is no need to update the tag, there is the option to override it, just set the flag "-o".
 
-### Updating Kogito Images Service artifacts
-
-The `update-maven-artifacts` script will help in fetching the artifacts from the Maven repository and update them into service modules (`module.yaml` will be updated)
-
-#### Script dependencies
-
-The `update-maven-artifacts.py` has some dependencies that needs to be manually installed:
-
-```bash
-$ pip install -U ruamel.yaml
-$ pip install -U elementpath
-```
-
-#### Usage
-
-Its default behavior is pretty simple:
-
-```bash
-$ python update-maven-artifacts.py
-```
-
-##### Update Maven artifact repository url
-
-This script also accepts `--repo-url` as argument in specifying the Maven repository from where to fetch the artifacts
-
-```bash
-$ python update-maven-artifacts.py --repo-url='https://maven-repository.mirror.com/public'
-```
-
-If no argument is given, it takes the JBoss repository as the default value.
-
-The command will update the needed files with the new URL:
-
-- kogito-data-index-infinispan/module.yaml
-- kogito-data-index-ephemeral/module.yaml
-- kogito-data-index-mongodb/module.yaml
-- kogito-data-index-postgresql/module.yaml
-- kogito-explainability/module.yaml
-- kogito-jit-runner/module.yaml
-- kogito-jobs-service-ephemeral/module.yaml
-- kogito-jobs-service-infinispan/module.yaml
-- kogito-jobs-service-mongodb/module.yaml
-- kogito-jobs-service-postgresql/module.yaml  
-- kogito-management-console/module.yaml
-- kogito-task-console/module.yaml
-- kogito-trusty-ui/module.yaml
-- kogito-trusty-infinispan/module.yaml
-- kogito-trusty-redis/module.yaml
-- kogito-trusty-postgresql/module.yaml
 
 ### Update tests script
 

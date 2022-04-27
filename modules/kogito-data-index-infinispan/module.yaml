@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.dataindex.infinispan
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: data-index-service-infinispan-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/data-index-service-infinispan/2.0.0-SNAPSHOT/data-index-service-infinispan-2.0.0-20220404.025504-450-runner.jar
-    md5: 17b4319dd628a76f30f6b3f3a701b65a
+- path: /tmp/build/data-index-service-infinispan/data-index-service-infinispan-quarkus-app.zip
+  name: data-index-service-infinispan-quarkus-app.zip
 
 execute:
   - script: configure

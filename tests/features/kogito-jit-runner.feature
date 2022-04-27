@@ -11,15 +11,11 @@ Feature: Kogito-jit-runner feature.
     And the image should contain label io.k8s.display-name with value Kogito JIT Runner
     And the image should contain label io.openshift.tags with value kogito,jit-runner
 
-  Scenario: verify if the binary index is available on /home/kogito
-    When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/jitexecutor-runner.jar' in container and immediately check its output for /home/kogito/bin/jitexecutor-runner.jar
-
   Scenario: Verify if the debug is correctly enabled and test default http port
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jitexecutor-runner.jar
+    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
 
   Scenario: Verify that jit runner can evaluate a DMN model with a context
     When container is started with env

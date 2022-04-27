@@ -373,7 +373,7 @@ Both methods are described below.
 
 ##### KJAR Maven Project
 
-[KJAR](https://developers.redhat.com/blog/2018/03/14/what-is-a-kjar/) stands for Knowledge jar which is a custom JAR file 
+[KieJAR](https://developers.redhat.com/blog/2018/03/14/what-is-a-kjar/) stands for Knowledge Is Everything jar which is a custom JAR file 
 that contains Business Process or Rules and all needed dependencies and files to execute it on the target runtime, 
 either Quarkus or Spring Boot.
 

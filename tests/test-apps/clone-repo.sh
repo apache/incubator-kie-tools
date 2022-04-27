@@ -2,34 +2,19 @@
 #
 # Clone the kogito-examples and edit the rules-quarkus-helloworld and dmn-quarkus-example for testing purposes
 
-SCRIPT_DIR=`pwd`
-MVN_MODULE="${SCRIPT_DIR}/../../modules/kogito-maven/3.6.x"
+set -e
+base_dir=`dirname $(realpath -s $0)`
+
+. ${base_dir}/../../scripts/setup-maven.sh
+
+MAVEN_OPTIONS="-U ${MAVEN_OPTIONS}"
+
 CONTAINER_ENGINE="docker"
-MAVEN_OPTIONS="-DskipTests -U"
 MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS="-Dquarkus.native.container-build=true -Dquarkus.native.container-runtime=${CONTAINER_ENGINE}"
-# MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE=true
 
 NATIVE_BUILD=$1
 if [ -z $NATIVE_BUILD ]; then
     NATIVE_BUILD=true
-fi
-
-# exit when any command fails
-set -e
-# Setup maven configuration only on CI
-if [ "${CI}" ]; then
-    # setup maven env
-    export JBOSS_MAVEN_REPO_URL="https://repository.jboss.org/nexus/content/groups/public/"
-    # export MAVEN_REPO_URL=
-    cp "${MVN_MODULE}"/maven/settings.xml "${HOME}"/.m2/settings.xml
-    source "${MVN_MODULE}"/added/configure-maven.sh
-    configure
-
-    cat "${HOME}"/.m2/settings.xml
-fi
-
-if [ "${MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE}" = "true" ]; then
-    MAVEN_OPTIONS="${MAVEN_OPTIONS} -Denforcer.skip"
 fi
 
 # Clone examples
@@ -49,6 +34,7 @@ mvn -f kogito-springboot-examples/process-springboot-example clean package ${MAV
 
 if [ "$NATIVE_BUILD" = 'true' ]; then
     mvn -f kogito-quarkus-examples/rules-quarkus-helloworld-native -Pnative clean package ${MAVEN_OPTIONS} ${MAVEN_QUARKUS_NATIVE_CONTAINER_BUILD_ARGS}
+    ls -lah /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld-native/target/
 fi
 
 # preparing directory to run kogito maven archetypes tests
@@ -58,7 +44,8 @@ cp /tmp/kogito-examples/kogito-quarkus-examples/dmn-quarkus-example/src/main/res
 # by adding the application.properties file telling app to start on
 # port 10000, the purpose of this tests is make sure that the images
 # will ensure the use of the port 8080.
-cp "${SCRIPT_DIR}"/application.properties /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld/src/main/resources/META-INF/
+
+cp ${base_dir}/application.properties /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld/src/main/resources/META-INF/
 (echo ""; echo "server.port=10000") >> /tmp/kogito-examples/kogito-springboot-examples/process-springboot-example/src/main/resources/application.properties
 
 git add --all  :/

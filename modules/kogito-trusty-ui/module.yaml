@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.trusty.ui
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: trusty-ui-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/trusty-ui/2.0.0-SNAPSHOT/trusty-ui-2.0.0-20220404.032400-440-runner.jar
-    md5: bef4d94a621f51fae03c8b1cdbff19ce
+- path: /tmp/build/trusty-ui/trusty-ui-quarkus-app.zip
+  name: trusty-ui-quarkus-app.zip
 
 execute:
   - script: configure

@@ -10,10 +10,6 @@ Feature: Kogito-jobs-service-mongodb feature.
     And the image should contain label io.k8s.description with value Runtime image for Kogito Jobs Service based on MongoDB
     And the image should contain label io.k8s.display-name with value Kogito Jobs Service based on MongoDB
     And the image should contain label io.openshift.tags with value kogito,jobs-service-mongodb
-  
-  Scenario: verify if the jobs service mongodb binary is available on /home/kogito/bin
-    When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/jobs-service-mongodb-runner.jar' in container and immediately check its output for /home/kogito/bin/jobs-service-mongodb-runner.jar
 
   Scenario: verify if of container is correctly started with mongo parameters
     When container is started with env
@@ -21,5 +17,5 @@ Feature: Kogito-jobs-service-mongodb feature.
       | SCRIPT_DEBUG                      | true                                           |
       | QUARKUS_MONGODB_CONNECTION_STRING | mongodb://user:password@localhost:27017/admin  |
       | QUARKUS_MONGODB_DATABASE          | kogito                                         |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-mongodb-runner.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should not contain Application failed to start

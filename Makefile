@@ -1,5 +1,6 @@
 IMAGE_VERSION := $(shell cat image.yaml | egrep ^version  | cut -d"\"" -f2)
 SHORTENED_LATEST_VERSION := $(shell echo $(IMAGE_VERSION) | awk -F. '{print $$1"."$$2}')
+KOGITO_APPS_TARGET_BRANCH ?= main
 BUILD_ENGINE := docker
 .DEFAULT_GOAL := build
 CEKIT_CMD := cekit -v ${cekit_option}
@@ -9,6 +10,7 @@ clone-repos:
 # if the NO_TEST env defined, proceed with the tests, as first step prepare the repo to be used
 ifneq ($(ignore_test),true)
 	cd tests/test-apps && sh clone-repo.sh $(NATIVE)
+	cd ../..
 endif
 
 .PHONY: list
@@ -21,13 +23,14 @@ list:
 build: clone-repos _build
 
 _build:
-	@for f in $(shell make list); do make build-image image_name=$${f}; done
+	@for f in $(shell make list); do make build-image image_name=$${iname}; done
 
 
 .PHONY: build-image
 image_name=
 build-image:
 ifneq ($(ignore_build),true)
+	scripts/build-kogito-apps-components.sh ${KOGITO_APPS_TARGET_BRANCH} ${image_name};
 	${CEKIT_CMD} build --overrides-file ${image_name}-overrides.yaml ${BUILD_ENGINE}
 endif
 # if ignore_test is set to true, ignore the tests
@@ -42,21 +45,21 @@ endif
 # Build all images
 .PHONY: build-prod
 # start to build the images
-build-prod: clone-repos
-	@for iname in $(shell make list arg=--prod); do make build-prod-image image_name=$${iname} ; done
+build-prod:
+	@for iname in $(shell make list arg=--prod); do make build-prod-image image_name=$${iname}; done
 
 
 .PHONY: build-prod-image
 image_name=
 build-prod-image: clone-repos
 ifneq ($(ignore_build),true)
+	scripts/build-kogito-apps-components.sh ${KOGITO_APPS_TARGET_BRANCH} ${image_name};
 	scripts/build-product-image.sh "build" $(image_name) ${BUILD_ENGINE}
 endif
 # if ignore_test is set to true, ignore the tests
 ifneq ($(ignore_test),true)
 	scripts/build-product-image.sh "test" $(image_name) ${test_options}
 endif
-
 
 # push images to quay.io, this requires permissions under kiegroup organization
 .PHONY: push

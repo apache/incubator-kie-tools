@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.jobs.service.postgresql
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: jobs-service-postgresql-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-postgresql/2.0.0-SNAPSHOT/jobs-service-postgresql-2.0.0-20220404.024621-329-runner.jar
-    md5: cce13d9570b36719bca94b186c2aaa64
+- path: /tmp/build/jobs-service-postgresql/jobs-service-postgresql-quarkus-app.zip
+  name: jobs-service-postgresql-quarkus-app.zip
 
 execute:
   - script: configure

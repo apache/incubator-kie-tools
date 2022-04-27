@@ -42,7 +42,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/v1.2/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
+                        curl -Ls https://github.com/kiegroup/kie-cloud-tools/releases/download/v1.3.1/cekit-image-validator-runner.tgz --output cekit-image-validator-runner.tgz
                         tar -xzvf cekit-image-validator-runner.tgz
                         chmod +x cekit-image-validator-runner
                     '''
@@ -65,19 +65,15 @@ pipeline {
                         initWorkspace(image)
                         String workspacePath = getWorkspacePath(image)
                         parallelStages["Build&Test ${image}"] = {
-                            stage("Build ${image}") {
-                                try {
-                                    dir(workspacePath) {
-                                        buildImage(image)
-                                    }
-                                } catch (err) {
-                                    registerBuildFailedImage(image)
-                                    util.archiveConsoleLog(image)
-                                    throw err
-                                }
-                            }
-                            stage("Test ${image}") {
+                            stage("Build/Test ${image}") {
                                 dir(workspacePath) {
+                                    try {
+                                        buildImage(image)
+                                    } catch (err) {
+                                        registerBuildFailedImage(image)
+                                        util.archiveConsoleLog(image, 400)
+                                        throw err
+                                    }
                                     try {
                                         testImage(image)
                                     } catch (err) {

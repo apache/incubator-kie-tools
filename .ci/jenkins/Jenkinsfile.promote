@@ -55,41 +55,41 @@ pipeline {
                 }
             }
         }
-        stage('Update PR with released Maven artifacts') {
-            when {
-                expression { return isRelease() && getPRSourceBranch() != '' }
-            }
-            steps {
-                script {
-                    // Update maven information with new artifacts from Maven central in the PR
-                    dir('artifacts-update') {
-                        checkoutRepo()
-                        githubscm.forkRepo(getBotAuthorCredsID())
-
-                        // Get the working branch
-                        sh 'git fetch origin'
-                        sh "git checkout ${getPRSourceBranch()}"
-
-                        // Update artifacts
-                        updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
-                        if (getMavenArtifactRepository() != '') {
-                            updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
-                        }
-                        sh updateArtifactCmd
-
-                        try {
-                            githubscm.commitChanges('Setup Maven artifacts to released ones')
-                            githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
-                        } catch (err) {
-                            String body = "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
-                                    "And take your decision here: ${env.BUILD_URL}input"
-                            sendNotification(body, 'Release Pipeline')
-                            input message: 'Should the pipeline continue ?', ok: 'Yes'
-                        }
-                    }
-                }
-            }
-        }
+        // stage('Update PR with released Maven artifacts') {
+        //     when {
+        //         expression { return isRelease() && getPRSourceBranch() != '' }
+        //     }
+        //     steps {
+        //         script {
+        //             // Update maven information with new artifacts from Maven central in the PR
+        //             dir('artifacts-update') {
+        //                 checkoutRepo()
+        //                 githubscm.forkRepo(getBotAuthorCredsID())
+        //
+        //                 // Get the working branch
+        //                 sh 'git fetch origin'
+        //                 sh "git checkout ${getPRSourceBranch()}"
+        //
+        //                 // Update artifacts
+        //                 updateArtifactCmd = 'python3 scripts/update-maven-artifacts.py'
+        //                 if (getMavenArtifactRepository() != '') {
+        //                     updateArtifactCmd += " --repo-url ${getMavenArtifactRepository()}"
+        //                 }
+        //                 sh updateArtifactCmd
+        //
+        //                 try {
+        //                     githubscm.commitChanges('Setup Maven artifacts to released ones')
+        //                     githubscm.pushObject('origin', getPRSourceBranch(), getBotAuthorCredsID())
+        //                 } catch (err) {
+        //                     String body = "Seems like no change is to be committed.\nPlease review in ${env.BUILD_URL}console.\n" +
+        //                             "And take your decision here: ${env.BUILD_URL}input"
+        //                     sendNotification(body, 'Release Pipeline')
+        //                    input message: 'Should the pipeline continue ?', ok: 'Yes'
+        //                }
+        //            }
+        //        }
+        //    }
+        // }
         stage('Pull "old" images') {
             steps {
                 script {

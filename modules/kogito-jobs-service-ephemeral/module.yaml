@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.jobs.service.ephemeral
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: jobs-service-inmemory-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-inmemory/2.0.0-SNAPSHOT/jobs-service-inmemory-2.0.0-20220404.024952-261-runner.jar
-    md5: 9a8f32ab219d46b22c77d39ff3ee0fec
+- path: /tmp/build/jobs-service-inmemory/jobs-service-inmemory-quarkus-app.zip
+  name: jobs-service-inmemory-quarkus-app.zip
 
 packages:
   install:

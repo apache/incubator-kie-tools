@@ -27,4 +27,4 @@ exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${KOGIT
         -Djava.library.path="${KOGITO_HOME}"/lib \
         -Dquarkus.http.host=0.0.0.0 \
         -Dquarkus.http.port=8080 \
-        -jar "${KOGITO_HOME}"/bin/trusty-service-redis-runner.jar
+        -jar "${KOGITO_HOME}"/bin/quarkus-app/quarkus-run.jar

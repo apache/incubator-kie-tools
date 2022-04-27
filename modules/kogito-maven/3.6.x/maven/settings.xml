@@ -12,7 +12,7 @@
   </proxies>
 
   <profiles>
-    <!-- ### redhat maven repositories ### -->
+    <!-- ### extra maven repositories ### -->
 
     <profile>
       <id>default</id>
@@ -54,7 +54,7 @@
     </profile>
   </profiles>
   <activeProfiles>
-    <!-- ### redhat maven profile ### -->
+    <!-- ### extra maven profile ### -->
     <activeProfile>default</activeProfile>
   </activeProfiles>
 </settings>

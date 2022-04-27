@@ -15,23 +15,23 @@ teardown() {
 
 @test "test if the default explainability communication type is correctly set" {
     configure_explainability_jar
-    expected="explainability-service-messaging-runner.jar"
+    expected="messaging"
     echo "result: ${EXPLAINABILITY_SERVICE_JAR} \n expected: ${expected}"
-    [ "${EXPLAINABILITY_SERVICE_JAR}" = "${expected}" ]
+    [ "${EXPLAINABILITY_SERVICE_COMMUNICATION}" = "${expected}" ]
 }
 
 @test "test if explainability communication service default value is correctly set if a nonsense type is set" {
     EXPLAINABILITY_COMMUNICATION="nonsense"
     configure_explainability_jar
-    expected="explainability-service-messaging-runner.jar"
+    expected="messaging"
     echo "result: ${EXPLAINABILITY_SERVICE_JAR} \n expected: ${expected}"
-    [ "${EXPLAINABILITY_SERVICE_JAR}" = "${expected}" ]
+    [ "${EXPLAINABILITY_SERVICE_COMMUNICATION}" = "${expected}" ]
 }
 
 @test "test if explainability communication service default value s correctly set if set to rest" {
     EXPLAINABILITY_COMMUNICATION="rest"
     configure_explainability_jar
-    expected="explainability-service-rest-runner.jar"
+    expected="rest"
     echo "result: ${EXPLAINABILITY_SERVICE_JAR} \n expected: ${expected}"
-    [ "${EXPLAINABILITY_SERVICE_JAR}" = "${expected}" ]
+    [ "${EXPLAINABILITY_SERVICE_COMMUNICATION}" = "${expected}" ]
 }

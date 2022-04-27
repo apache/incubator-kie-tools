@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Please keep them in alphabatical order
+#Please keep them in alphabetical order
 function prepareEnv() {
     unset HTTP_PROXY_HOST
     unset HTTP_PROXY_PORT

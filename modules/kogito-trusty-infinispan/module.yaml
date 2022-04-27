@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.trusty.infinispan
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: trusty-service-infinispan-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/trusty-service-infinispan/2.0.0-SNAPSHOT/trusty-service-infinispan-2.0.0-20220404.034252-361-runner.jar
-    md5: 96494956d6d654b7729971233076a64a
+- path: /tmp/build/trusty-service-infinispan/trusty-service-infinispan-quarkus-app.zip
+  name: trusty-service-infinispan-quarkus-app.zip
 
 execute:
   - script: configure

@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.jobs.service.infinispan
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: jobs-service-infinispan-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jobs-service-infinispan/2.0.0-SNAPSHOT/jobs-service-infinispan-2.0.0-20220404.024438-329-runner.jar
-    md5: 664998f6a5a966546918619216bdb783
+- path: /tmp/build/jobs-service-infinispan/jobs-service-infinispan-quarkus-app.zip
+  name: jobs-service-infinispan-quarkus-app.zip
 
 execute:
   - script: configure

@@ -11,10 +11,6 @@ Feature: Kogito-data-index mongodb feature.
       And the image should contain label io.k8s.display-name with value Kogito Data Index Service - Mongodb
       And the image should contain label io.openshift.tags with value kogito,data-index,data-index-mongodb
 
-  Scenario: verify if the indexing service binaries are available on /home/kogito/bin
-    When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/data-index-service-mongodb-runner.jar' in container and immediately check its output for /home/kogito/bin/data-index-service-mongodb-runner.jar
-
   Scenario: verify if all parameters are correctly set
     When container is started with env
       | variable                                   | value                       |

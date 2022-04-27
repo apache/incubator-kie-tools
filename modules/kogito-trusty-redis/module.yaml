@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.trusty.redis
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: trusty-service-redis-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/trusty-service-redis/2.0.0-SNAPSHOT/trusty-service-redis-2.0.0-20220404.034352-364-runner.jar
-    md5: d6cdf942ca99709fed2f2b241f129b4e
+- path: /tmp/build/trusty-service-redis/trusty-service-redis-quarkus-app.zip
+  name: trusty-service-redis-quarkus-app.zip
 
 execute:
   - script: configure

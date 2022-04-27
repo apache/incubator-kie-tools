@@ -2,10 +2,13 @@ schema_version: 1
 name: org.kie.kogito.management.console
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: management-console-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/management-console/2.0.0-SNAPSHOT/management-console-2.0.0-20220404.032229-442-runner.jar
-    md5: e5b389ebfc089abf83c4a34e1518b79c
+  - path: /tmp/build/management-console/management-console-quarkus-app.zip
+    name: management-console-quarkus-app.zip
 
 execute:
-  - script: configure
+  - script: configure.sh
+
+

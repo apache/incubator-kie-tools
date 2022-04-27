@@ -17,10 +17,12 @@ function configure_explainability_jar {
     local communication="MESSAGING"
     if [[ ! "${allowed_communication_types[*]}" =~ ${EXPLAINABILITY_COMMUNICATION^^} ]]; then
         log_warning "Explainability communication type ${EXPLAINABILITY_COMMUNICATION} is not allowed, the allowed types are [${allowed_communication_types[*]}]. Defaulting to ${communication}."
-    elif [ "${EXPLAINABILITY_COMMUNICATION^^}" == "REST" ]; then
-        communication="${EXPLAINABILITY_COMMUNICATION^^}"
+        unset EXPLAINABILITY_COMMUNICATION
+
+    elif [ "x${EXPLAINABILITY_COMMUNICATION}" != "x" ]; then
+        communication="${EXPLAINABILITY_COMMUNICATION}"
     fi
 
     log_info "Explainability communication is set to ${communication}"
-    EXPLAINABILITY_SERVICE_JAR="explainability-service-${communication,,}-runner.jar"
+    EXPLAINABILITY_SERVICE_COMMUNICATION="${communication,,}"
 }

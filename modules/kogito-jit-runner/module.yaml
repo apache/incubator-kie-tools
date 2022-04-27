@@ -2,10 +2,11 @@ schema_version: 1
 name: org.kie.kogito.jit-runner
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: jitexecutor-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/jitexecutor-runner/2.0.0-SNAPSHOT/jitexecutor-runner-2.0.0-20220404.034752-395-runner.jar
-    md5: c0c6b3ff17868553dab18ada0b874a4d
+- path: /tmp/build/jitexecutor-runner/jitexecutor-runner-quarkus-app.zip
+  name: jitexecutor-runner-quarkus-app.zip
 
 execute:
   - script: configure

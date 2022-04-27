@@ -10,10 +10,6 @@ Feature: Kogito-jobs-service-infinispan feature.
     And the image should contain label io.k8s.description with value Runtime image for Kogito Jobs Service based on Infinispan
     And the image should contain label io.k8s.display-name with value Kogito Jobs Service based on Infinispan
     And the image should contain label io.openshift.tags with value kogito,jobs-service-infinispan
-  
-  Scenario: verify if the jobs service infinispan binary is available on /home/kogito/bin
-    When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/jobs-service-infinispan-runner.jar' in container and immediately check its output for /home/kogito/bin/jobs-service-infinispan-runner.jar
 
   Scenario: verify if auth is correctly set
     When container is started with env
@@ -25,7 +21,7 @@ Feature: Kogito-jobs-service-infinispan feature.
       | QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD   | hard2guess        |
       | QUARKUS_INFINISPAN_CLIENT_AUTH_REALM      | SecretRealm       |
       | QUARKUS_INFINISPAN_CLIENT_SASL_MECHANISM  | COOLGSSAPI        |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/jobs-service-infinispan-runner.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should contain QUARKUS_INFINISPAN_CLIENT_SERVER_LIST=172.18.0.1:11222
     And container log should contain QUARKUS_INFINISPAN_CLIENT_USE_AUTH=true
     And container log should contain QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD=hard2guess

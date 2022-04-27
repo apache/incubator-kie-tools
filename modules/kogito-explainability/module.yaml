@@ -2,13 +2,13 @@ schema_version: 1
 name: org.kie.kogito.explainability
 version: "2.0.0-snapshot"
 
+# see build-kogito-apps-components.sh script, responsible for build it.
+# called by the Makefile before builds
 artifacts:
-  - name: explainability-service-rest-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/explainability-service-rest/2.0.0-SNAPSHOT/explainability-service-rest-2.0.0-20220404.033934-454-runner.jar
-    md5: adf7e263ec370e308707cda1570d5f3d
-  - name: explainability-service-messaging-runner.jar
-    url: https://repository.jboss.org/nexus/content/groups/public/org/kie/kogito/explainability-service-messaging/2.0.0-SNAPSHOT/explainability-service-messaging-2.0.0-20220404.033825-449-runner.jar
-    md5: 2f47df6c4dab34d5f8d42db44602c528
+- path: /tmp/build/explainability-service-rest/explainability-service-rest-quarkus-app.zip
+  name: explainability-service-rest-quarkus-app.zip
+- path: /tmp/build/explainability-service-messaging/explainability-service-messaging-quarkus-app.zip
+  name: explainability-service-messaging-quarkus-app.zip
 
 execute:
   - script: configure

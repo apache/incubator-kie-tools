@@ -83,8 +83,8 @@ if [ "${ENABLE_RH_MAVEN_REPO}" == "true" ]; then
   </pluginRepositories>\
 </profile>\
 "
-    sed -i "s|<!-- ### redhat maven repositories ### -->|$rh_repos|" "${KOGITO_HOME}"/.m2/settings.xml
-    sed -i "s|<!-- ### redhat maven profile ### -->|<activeProfile>redhat-maven-repositories</activeProfile>|" "${KOGITO_HOME}"/.m2/settings.xml
+    sed -i "s|<!-- ### extra maven repositories ### -->|$rh_repos|" "${KOGITO_HOME}"/.m2/settings.xml
+    sed -i "s|<!-- ### extra maven profile ### -->|<activeProfile>redhat-maven-repositories</activeProfile>|" "${KOGITO_HOME}"/.m2/settings.xml
 
     mv "${KOGITO_HOME}"/.m2/settings.xml "${KOGITO_HOME}"/.m2/settings.xml.bkp
     #format and write the new file

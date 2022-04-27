@@ -1,8 +1,8 @@
 <!-- Keep them in alphabetical order -->
 ## Enhancements
+- [KOGITO-6684](https://issues.redhat.com/browse/KOGITO-6684) - Kogito images for supporting services should no longer download the runner jar from maven repository
 
 ## Bug Fixes
-- [KOGITO-6215](https://issues.redhat.com/browse/KOGITO-6215) - Improve logs on kogito-builder image while trying to get project version
 
 ## Known Issues
 

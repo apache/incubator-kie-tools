@@ -11,15 +11,11 @@ Feature: kogito-task-console feature
     And the image should contain label io.k8s.display-name with value Kogito Task Console
     And the image should contain label io.openshift.tags with value kogito,task,task-console
 
-  Scenario: verify if the task console jar is available on /home/kogito
-    When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/task-console-runner.jar' in container and immediately check its output for /home/kogito/bin/task-console-runner.jar
-
   Scenario: Verify if the debug is correctly enabled and test default http port
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | true  |
-    Then container log should contain -Dkogito.dataindex.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/task-console-runner.jar
+    Then container log should contain -Dkogito.dataindex.http.url=http://localhost:8180 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should contain Data index url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start
@@ -29,7 +25,7 @@ Feature: kogito-task-console feature
       | variable                  | value            |
       | SCRIPT_DEBUG              | true             |
       | KOGITO_DATAINDEX_HTTP_URL | http://test:9090 |
-    Then container log should contain -Dkogito.dataindex.http.url=http://test:9090 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/task-console-runner.jar
+    Then container log should contain -Dkogito.dataindex.http.url=http://test:9090 -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should not contain Data index url not set, default will be used: http://localhost:8180
     And container log should contain started in
     And container log should not contain Application failed to start
