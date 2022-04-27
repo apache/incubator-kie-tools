@@ -30,8 +30,8 @@ import mermaid from "mermaid";
 import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
-import "../../static/css/editor.css";
 import { editor } from "monaco-editor";
+import "../../static/css/editor.css";
 
 interface Props {
   /**

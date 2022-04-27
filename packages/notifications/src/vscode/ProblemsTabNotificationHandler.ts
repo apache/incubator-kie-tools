@@ -55,9 +55,10 @@ export class ProblemsTabNotificationHandler implements NotificationsApi {
     const startLineNumber = notification.position?.startLineNumber ? notification.position?.startLineNumber - 1 : 0;
     const startColumn = notification.position?.startColumn ? notification.position?.startColumn - 1 : 0;
     const endColumn = notification.position?.endColumn || 0;
+    const endLineNumber = notification.position?.endLineNumber ? notification.position?.endLineNumber - 1 : 0;
     return {
       message: notification.message,
-      range: new vscode.Range(startLineNumber, startColumn, startLineNumber, endColumn),
+      range: new vscode.Range(startLineNumber, startColumn, endLineNumber, endColumn),
       severity: this.getSeverity(notification.severity),
     };
   }
