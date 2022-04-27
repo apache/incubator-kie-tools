@@ -33,13 +33,11 @@ type Config struct {
 	Proxy struct {
 		IP   string `yaml:"ip"`
 		Port int    `yaml:"port"`
+		InsecureSkipVerify bool `yaml:"insecureSkipVerify"`
 	} `yaml:"proxy"`
 	Modeler struct {
 		Link string `yaml:"link"`
 	} `yaml:"modeler"`
-	TlsClientConfig struct {
-		AllowSelfSignedCert bool `yaml:allowSelfSignedCert`
-	} `yaml:tlsClientConfig`
 }
 
 func (c *Config) GetConfig() *Config {
