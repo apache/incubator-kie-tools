@@ -20,7 +20,7 @@ import { SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } fro
 import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 
-export class SwfLanguageService {
+export class SwfJsonLanguageService {
   constructor(
     private readonly args: {
       fs: {};
@@ -31,10 +31,10 @@ export class SwfLanguageService {
         relative: {
           getServices: (textDocument: TextDocument) => Promise<SwfServiceCatalogService[]>;
         };
-        getServiceFileNameFromSwfServiceCatalogServiceId: (s: string) => Promise<string>;
+        getServiceFileNameFromSwfServiceCatalogServiceId: (swfServiceCatalogServiceId: string) => Promise<string>;
       };
       config: {
-        getServiceRegistryUrl: () => string; //FIXME: tiago make async
+        getServiceRegistryUrl: () => string | undefined; //FIXME: tiago make async
         getServiceRegistryAuthInfo: () => { username: string; token: string } | undefined; //FIXME: tiago make async
         getSpecsDirPosixPaths: (
           textDocument: TextDocument

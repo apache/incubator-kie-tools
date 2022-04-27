@@ -20,12 +20,12 @@ import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
 import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
 import { posix as posixPath } from "path";
-import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/rhhccServiceRegistry";
 
 export class VsCodeSwfLanguageService {
-  public readonly ls: SwfLanguageService;
+  public readonly ls: SwfJsonLanguageService;
   private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
   constructor(
     private readonly args: {
@@ -34,7 +34,7 @@ export class VsCodeSwfLanguageService {
       swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
     }
   ) {
-    this.ls = new SwfLanguageService({
+    this.ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: {
         global: {
@@ -60,8 +60,8 @@ export class VsCodeSwfLanguageService {
             return swfServiceCatalogRelativeStore.getServices();
           },
         },
-        getServiceFileNameFromSwfServiceCatalogServiceId: async (s) => {
-          return getServiceFileNameFromSwfServiceCatalogServiceId(s);
+        getServiceFileNameFromSwfServiceCatalogServiceId: async (swfServiceCatalogServiceId) => {
+          return getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatalogServiceId);
         },
       },
       config: {

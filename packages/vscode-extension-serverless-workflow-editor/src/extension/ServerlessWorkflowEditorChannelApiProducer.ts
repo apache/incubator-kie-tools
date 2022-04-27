@@ -36,14 +36,14 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./confi
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
-import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
-      swfLanguageService: SwfLanguageService;
+      swfLanguageService: SwfJsonLanguageService;
       swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}

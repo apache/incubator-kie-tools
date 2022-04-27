@@ -1,1 +1,1 @@
-export * from "./SwfLanguageService";
+export * from "./SwfJsonLanguageService";

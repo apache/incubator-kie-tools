@@ -24,12 +24,12 @@ import {
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  swfLanguageService: SwfLanguageService;
+  swfLanguageService: SwfJsonLanguageService;
   swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
