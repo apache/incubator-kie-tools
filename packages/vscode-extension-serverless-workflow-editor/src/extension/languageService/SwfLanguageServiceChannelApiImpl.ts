@@ -134,14 +134,17 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef"],
-    ({ overwriteRange, currentNode, rootNode }) => {
+    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices }) => {
       if (currentNode.type !== "property") {
         console.debug("Cannot autocomplete: functionRef should be a property.");
         return [];
       }
 
       return swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
-        const swfServiceCatalogFunc = {} as SwfCompletionItemServiceCatalogFunction; //FIXME: tiago //SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+        const swfServiceCatalogFunc = swfCompletionItemServiceCatalogServices
+          .flatMap((f) => f.functions)
+          .filter((f) => f.operation === swfFunction.operation)
+          .pop()!;
         if (!swfServiceCatalogFunc) {
           return [];
         }
@@ -219,7 +222,10 @@ const completions = new Map<
         return [];
       }
 
-      const swfServiceCatalogFunc = {} as SwfServiceCatalogFunction; //FIXME: tiago //SwfServiceCatalogSingleton.get().getFunctionByOperation(swfFunction.operation);
+      const swfServiceCatalogFunc = swfCompletionItemServiceCatalogServices
+        .flatMap((f) => f.functions)
+        .filter((f) => f.operation === swfFunction.operation)
+        .pop()!;
       if (!swfServiceCatalogFunc) {
         return [];
       }
