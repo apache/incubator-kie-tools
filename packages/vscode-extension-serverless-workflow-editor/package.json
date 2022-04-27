@@ -103,6 +103,12 @@
       }
     ],
     "configurationDefaults": {
+      "yaml.schemas": {
+        "https://serverlessworkflow.io/schemas/0.8/workflow.json": [
+          "**/*.sw.yml",
+          "**/*.sw.yaml"
+        ]
+      },
       "files.associations": {
         "*.sw.json": "json",
         "*.sw.yaml": "yaml",
@@ -211,7 +217,7 @@
         "command": "extension.kogito.swf.openAsDiagram",
         "key": "ctrl+k v",
         "mac": "cmd+k v",
-        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.json$/"
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.(json|yaml|yml)$/"
       },
       {
         "command": "extension.kogito.swf.openAsSource",
@@ -243,7 +249,7 @@
           "command": "extension.kogito.swf.openAsSource"
         },
         {
-          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.json$/",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.(json|yaml|yml)/",
           "command": "extension.kogito.swf.openAsDiagram"
         }
       ],
@@ -259,7 +265,7 @@
           "group": "navigation"
         },
         {
-          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.json$/",
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.(json|yaml|yml)/",
           "command": "extension.kogito.swf.openAsDiagram",
           "group": "navigation"
         }
