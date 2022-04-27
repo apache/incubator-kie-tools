@@ -15,7 +15,6 @@
  */
 
 import * as vscode from "vscode";
-import { Disposable, FileType } from "vscode";
 import { parseOpenApi } from "@kie-tools/serverless-workflow-service-catalog/dist/channel";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
@@ -23,8 +22,8 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../c
 const OPENAPI_EXTENSIONS_REGEX = new RegExp("^.*\\.(yaml|yml|json)$");
 
 export class FsWatchingServiceCatalogRelativeStore {
-  private configurationChangedCallback: Disposable | undefined;
-  private fsWatcher: Disposable | undefined;
+  private configurationChangedCallback: vscode.Disposable | undefined;
+  private fsWatcher: vscode.Disposable | undefined;
   private services: SwfServiceCatalogService[] = [];
 
   constructor(
@@ -60,7 +59,7 @@ export class FsWatchingServiceCatalogRelativeStore {
     });
   }
 
-  private setupFsWatcher(args: { specsDirAbsolutePosixPath: string }): Disposable {
+  private setupFsWatcher(args: { specsDirAbsolutePosixPath: string }): vscode.Disposable {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
       `${vscode.Uri.parse(args.specsDirAbsolutePosixPath).path}/*.{json,yaml,yml}`,
       false,
@@ -68,9 +67,9 @@ export class FsWatchingServiceCatalogRelativeStore {
       false
     );
 
-    const onDidCreate: Disposable = fsWatcher.onDidCreate(() => this.refresh(args));
-    const onDidChange: Disposable = fsWatcher.onDidChange(() => this.refresh(args));
-    const onDidDelete: Disposable = fsWatcher.onDidDelete(() => this.refresh(args));
+    const onDidCreate: vscode.Disposable = fsWatcher.onDidCreate(() => this.refresh(args));
+    const onDidChange: vscode.Disposable = fsWatcher.onDidChange(() => this.refresh(args));
+    const onDidDelete: vscode.Disposable = fsWatcher.onDidDelete(() => this.refresh(args));
 
     return {
       dispose: () => {
@@ -103,7 +102,7 @@ export class FsWatchingServiceCatalogRelativeStore {
         const specsDirAbsolutePosixPathUri = vscode.Uri.parse(args.specsDirAbsolutePosixPath);
 
         vscode.workspace.fs.stat(specsDirAbsolutePosixPathUri).then((stats) => {
-          if (!stats || stats.type !== FileType.Directory) {
+          if (!stats || stats.type !== vscode.FileType.Directory) {
             reject(`Invalid specs dir path: ${args.specsDirAbsolutePosixPath}`);
             return;
           }
@@ -117,7 +116,7 @@ export class FsWatchingServiceCatalogRelativeStore {
             const promises: Thenable<SwfServiceCatalogService[]>[] = [];
 
             files.forEach(([fileName, type]) => {
-              if (!(type === FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase()))) {
+              if (!(type === vscode.FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase()))) {
                 return;
               }
 
@@ -155,5 +154,9 @@ export class FsWatchingServiceCatalogRelativeStore {
       console.error(e);
       return [];
     }
+  }
+
+  getServices() {
+    return this.services;
   }
 }

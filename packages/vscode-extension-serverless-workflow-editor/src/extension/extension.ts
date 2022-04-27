@@ -24,7 +24,7 @@ import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflow
 import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
-import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
+import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
@@ -66,12 +66,12 @@ export async function activate(context: vscode.ExtensionContext) {
     `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
   );
 
-  const swfLanguageService = new SwfLanguageServiceChannelApiImpl({
+  const vsCodeSwfLanguageService = new VsCodeSwfLanguageService({
     configuration,
     rhhccAuthenticationStore,
     swfServiceCatalogGlobalStore,
   });
-  context.subscriptions.push(swfLanguageService);
+  context.subscriptions.push(vsCodeSwfLanguageService);
 
   const swfServiceCatalogSupportActions = new SwfServiceCatalogSupportActions({
     configuration,
@@ -96,7 +96,7 @@ export async function activate(context: vscode.ExtensionContext) {
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
       configuration,
       rhhccAuthenticationStore,
-      swfLanguageService,
+      swfLanguageService: vsCodeSwfLanguageService.ls,
       swfServiceCatalogSupportActions,
     }),
     backendProxy,
@@ -104,7 +104,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   setupBuiltInVsCodeEditorSwfContributions({
     context,
-    swfLanguageService,
+    swfLanguageService: vsCodeSwfLanguageService.ls,
     configuration,
     swfServiceCatalogGlobalStore,
     swfServiceCatalogSupportActions,

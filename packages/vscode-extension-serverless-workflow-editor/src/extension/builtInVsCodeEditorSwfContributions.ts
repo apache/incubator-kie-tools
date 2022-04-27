@@ -5,15 +5,15 @@ import {
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  swfLanguageService: SwfLanguageServiceChannelApiImpl;
+  swfLanguageService: SwfLanguageService;
   swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
@@ -63,7 +63,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       { scheme: "file", pattern: "**/*.sw.json" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
-          const lsCodeLenses = await args.swfLanguageService.kogitoSwfLanguageService__getCodeLenses({
+          const lsCodeLenses = await args.swfLanguageService.getCodeLenses({
             uri: document.uri.toString(),
             content: document.getText(),
           });
@@ -102,7 +102,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         ) => {
           const cursorWordRange = document.getWordRangeAtPosition(position);
 
-          const lsCompletionItems = await args.swfLanguageService.kogitoSwfLanguageService__getCompletionItems({
+          const lsCompletionItems = await args.swfLanguageService.getCompletionItems({
             uri: document.uri.toString(),
             content: document.getText(),
             cursorPosition: position,

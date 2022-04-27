@@ -34,15 +34,16 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
+import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
-      swfLanguageService: SwfLanguageServiceChannelApiImpl;
+      swfLanguageService: SwfLanguageService;
       swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
@@ -96,7 +97,9 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
         swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
-      this.args.swfLanguageService
+      new SwfLanguageServiceChannelApiImpl({
+        ls: this.args.swfLanguageService,
+      })
     );
   }
 }
