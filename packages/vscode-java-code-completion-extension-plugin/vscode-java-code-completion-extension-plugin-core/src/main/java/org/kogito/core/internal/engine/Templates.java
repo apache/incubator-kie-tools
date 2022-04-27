@@ -18,6 +18,6 @@ package org.kogito.core.internal.engine;
 
 public class Templates {
 
-    public final static String TEMPLATE_CLASS = "templateClass.java";
-    public final static String TEMPLATE_ACCESSORS = "templateAccessors.java";
+    public static final String TEMPLATE_CLASS = "templateClass.java";
+    public static final String TEMPLATE_ACCESSORS = "templateAccessors.java";
 }

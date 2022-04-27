@@ -18,7 +18,7 @@ package org.kogito.core.internal.handlers;
 
 public class HandlerConstants {
 
-    public final static String GET_CLASSES = "extension.kogito.classes";
-    public final static String GET_ACCESSORS = "extension.kogito.accessors";
-    public final static String IS_AVAILABLE = "extension.kogito.isAvailable";
+    public static final String GET_CLASSES = "extension.kogito.classes";
+    public static final String GET_ACCESSORS = "extension.kogito.accessors";
+    public static final String IS_AVAILABLE = "extension.kogito.isAvailable";
 }

@@ -58,7 +58,7 @@ public class AutocompleteHandler {
 
         System.setProperty("java.lsp.joinOnCompletion", "true");
 
-        JavaLanguageServerPlugin.logInfo("BUILD INFORMATION TEXT:" +buildInformation.getText());
+        JavaLanguageServerPlugin.logInfo(buildInformation.getText());
         {
             DidOpenTextDocumentParams didOpenTextDocumentParams = new DidOpenTextDocumentParams();
             TextDocumentItem textDocumentItem = new TextDocumentItem();

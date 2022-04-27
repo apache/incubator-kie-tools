@@ -46,12 +46,10 @@ public class WorkspaceUtil {
     public static Path createFile(Path path) {
         try {
             return Files.createFile(path);
+        } catch (FileAlreadyExistsException e) {
+            return path;
         } catch (IOException e) {
-            if (e instanceof FileAlreadyExistsException)
-                return path;
-            else {
                 JavaLanguageServerPlugin.logInfo("Error during file creation:" + e.getMessage());
-            }
         }
         return null;
     }
