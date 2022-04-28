@@ -47,8 +47,6 @@ public class RuntimeClientLoader {
 
     public static final String IMPORT_ID_PARAM = "import";
 
-    private static final String EDITOR_MODEL_ID = "editor";
-
     RuntimeModelResourceClient runtimeModelResourceClient;
 
     RuntimePerspectiveGenerator perspectiveEditorGenerator;
@@ -66,12 +64,18 @@ public class RuntimeClientLoader {
     RuntimeModelContentListener contentListener;
 
     Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
-    
+
     RouterScreen router;
 
     boolean offline;
-    
+
     RuntimeModel clientModel;
+
+    enum RuntimeClientMode {
+        EDITOR,
+        CLIENT,
+        APP;
+    }
 
     public RuntimeClientLoader() {
         // do nothing
@@ -106,7 +110,7 @@ public class RuntimeClientLoader {
             responseConsumer.accept(buildClientResponse());
             return;
         }
-        
+
         final var importID = getImportId();
         loading.showBusyIndicator(i18n.loadingDashboards());
 
@@ -151,7 +155,7 @@ public class RuntimeClientLoader {
             }
             return;
         }
-        
+
         loading.showBusyIndicator(i18n.loadingDashboards());
         runtimeModelResourceClient.getRuntimeModel(importId,
                 modelOp -> handleResponse(modelLoaded, emptyModel, modelOp),
@@ -162,14 +166,10 @@ public class RuntimeClientLoader {
     }
 
     public String getImportId() {
-        if (isOffline()) {
-            return EDITOR_MODEL_ID;
-        } else {
-            return Window.Location.getParameter(IMPORT_ID_PARAM);
-        }
+        return Window.Location.getParameter(IMPORT_ID_PARAM);
     }
 
-    public void clientLoad(String fileName, String content) {
+    public void clientLoad(String content) {
         if (content == null) {
             return;
         }
@@ -180,8 +180,8 @@ public class RuntimeClientLoader {
             var parser = parserFactory.getEditorParser(content);
             var runtimeModel = parser.parse(content);
             registerModel(runtimeModel);
-            this.clientModel = runtimeModel;            
-            updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(EDITOR_MODEL_ID));
+            this.clientModel = runtimeModel;
+            updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
         }
     }
 
@@ -191,7 +191,7 @@ public class RuntimeClientLoader {
 
     private boolean handleError(BiConsumer<Object, Throwable> error, Object message, Throwable throwable) {
         offline = true;
-        contentListener.start(content -> this.clientLoad(EDITOR_MODEL_ID, content));
+        contentListener.start(content -> this.clientLoad(content));
         loading.hideBusyIndicator();
         error.accept(message, throwable);
         return false;

@@ -182,7 +182,7 @@ public class RouterScreen {
     public void onUpdatedRuntimeModelEvent(@Observes UpdatedRuntimeModelEvent updatedRuntimeModelEvent) {
         String updatedModel = updatedRuntimeModelEvent.getRuntimeModelId();
 
-        if (updatedModel.equals(clientLoader.getImportId())) {
+        if (updatedModel.equals(clientLoader.getImportId()) || clientLoader.isOffline()) {
             doRoute();
             runtimeScreen.setKeepHistory(true);
         }
