@@ -77,4 +77,6 @@ public interface AppConstants extends Messages {
 
     String emptyEditorMode();
 
+    String errorContentTitle();
+
 }

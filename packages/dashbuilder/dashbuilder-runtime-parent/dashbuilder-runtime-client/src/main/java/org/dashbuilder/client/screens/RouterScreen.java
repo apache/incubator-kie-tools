@@ -27,6 +27,7 @@ import elemental2.dom.DomGlobal;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.navbar.AppNavBar;
+import org.dashbuilder.client.perspective.ContentErrorPerspective;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.perspective.RuntimePerspective;
@@ -67,6 +68,9 @@ public class RouterScreen {
 
     @Inject
     DashboardsListScreen dashboardsListScreen;
+    
+    @Inject
+    ContentErrorScreen contentErrorScreen;
 
     @Inject
     RuntimeCommunication runtimeCommunication;
@@ -168,6 +172,11 @@ public class RouterScreen {
                 "Dashbuilder Runtime",
                 GWT.getHostPageBaseURL());
         doRoute();
+    }
+    
+    public void goToContentError(Throwable contentException) {
+        contentErrorScreen.showContentError(contentException.getMessage());
+        placeManager.goTo(ContentErrorPerspective.ID);
     }
 
     public void onUpdatedRuntimeModelEvent(@Observes UpdatedRuntimeModelEvent updatedRuntimeModelEvent) {

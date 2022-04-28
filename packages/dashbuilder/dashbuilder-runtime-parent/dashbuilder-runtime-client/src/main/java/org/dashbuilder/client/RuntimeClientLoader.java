@@ -172,15 +172,12 @@ public class RuntimeClientLoader {
     public void clientLoad(String fileName, String content) {
         if (content == null) {
             return;
-
         }
         if (content.trim().isEmpty()) {
             clientModel = null;
             router.doRoute();
         } else {
-            var parser = parserFactory.get(content)
-                    .orElseThrow(() -> new IllegalArgumentException(
-                            "Content is not supported or could not be parsed."));
+            var parser = parserFactory.getEditorParser(content);
             var runtimeModel = parser.parse(content);
             registerModel(runtimeModel);
             this.clientModel = runtimeModel;            
