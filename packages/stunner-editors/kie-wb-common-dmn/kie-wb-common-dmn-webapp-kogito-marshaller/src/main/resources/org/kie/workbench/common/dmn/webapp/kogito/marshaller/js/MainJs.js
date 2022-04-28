@@ -207,7 +207,7 @@ MainJs = {
     var unmarshaller = context.createUnmarshaller();
     var toReturn = unmarshaller.unmarshalString(text);
     var modelURI = toReturn.name.namespaceURI;
-    var isDMN12 = modelURI.match(new RegExp("http://www.omg.org/spec/DMN/20180521/MODEL/", "g"));
+    var isDMN12 = modelURI.match(new RegExp("http://www\\.omg\\.org/spec/DMN/20180521/MODEL/", "g"));
 
     if (!isDMN12) {
       patchParsedModelProperties(toReturn);
