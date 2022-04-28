@@ -55,8 +55,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     notificationsApi: NotificationsApi,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
-    i18n: I18n<VsCodeI18n>,
-    initialBackup?: Uri
+    i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
     // TODO: This casting to `unknown` first is a workaround
     const swfServiceCatalogEnvelopeServer = editor.envelopeServer as unknown as EnvelopeServer<
