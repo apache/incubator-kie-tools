@@ -16,14 +16,10 @@
 
 import * as monaco from "monaco-editor";
 import {
-  SW_SPEC_AUTH_SCHEMA,
   SW_SPEC_COMMON_SCHEMA,
-  SW_SPEC_ERRORS_SCHEMA,
   SW_SPEC_EVENTS_SCHEMA,
   SW_SPEC_FUNCTIONS_SCHEMA,
   SW_SPEC_RETRIES_SCHEMA,
-  SW_SPEC_SECRETS_SCHEMA,
-  SW_SPEC_TIMEOUTS_SCHEMA,
   SW_SPEC_WORKFLOW_SCHEMA,
 } from "../schemas";
 
@@ -39,19 +35,9 @@ export function initJsonSchemaDiagnostics() {
     allowComments: false,
     schemas: [
       {
-        uri: "https://serverlessworkflow.io/schemas/0.8/auth.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_AUTH_SCHEMA,
-      },
-      {
         uri: "https://serverlessworkflow.io/schemas/0.8/common.json",
         fileMatch: ["*"],
         schema: SW_SPEC_COMMON_SCHEMA,
-      },
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/errors.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_ERRORS_SCHEMA,
       },
       {
         uri: "https://serverlessworkflow.io/schemas/0.8/events.json",
@@ -67,16 +53,6 @@ export function initJsonSchemaDiagnostics() {
         uri: "https://serverlessworkflow.io/schemas/0.8/retries.json",
         fileMatch: ["*"],
         schema: SW_SPEC_RETRIES_SCHEMA,
-      },
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/secrets.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_SECRETS_SCHEMA,
-      },
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/timeouts.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_TIMEOUTS_SCHEMA,
       },
       {
         uri: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
