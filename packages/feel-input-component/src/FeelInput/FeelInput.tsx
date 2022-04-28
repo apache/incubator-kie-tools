@@ -33,6 +33,10 @@ export interface FeelInputProps {
 export interface FeelInputRef {
   setMonacoValue: (newValue: string) => void;
   getMonacoValue: () => string | undefined;
+  /**
+   * insert a newline character to the editor in the current position and move the cursor to new position
+   */
+  insertNewLineToMonaco: () => void;
 }
 
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
@@ -75,6 +79,15 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     useImperativeHandle(forwardRef, () => ({
       setMonacoValue: (newValue: string) => FeelEditorService.getStandaloneEditor()?.setValue(newValue),
+      insertNewLineToMonaco: () => {
+        const editor = FeelEditorService.getStandaloneEditor();
+
+        if (!editor) {
+          return;
+        }
+
+        editor.trigger("keyboard", "type", { text: "\n" });
+      },
       getMonacoValue: () => FeelEditorService.getStandaloneEditor()?.getValue(),
     }));
 

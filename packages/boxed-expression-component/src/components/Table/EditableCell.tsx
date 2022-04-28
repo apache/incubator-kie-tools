@@ -29,6 +29,7 @@ import {
 } from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
+import { NavigationKeysUtils } from "../common";
 
 const CELL_LINE_HEIGHT = 20;
 const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -164,15 +165,21 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     (event: Monaco.IKeyboardEvent, newValue: string) => {
       const key = event?.code.toLowerCase() ?? "";
       const isModKey = event.altKey || event.ctrlKey || event.shiftKey;
-      const isEnter = isModKey && key === "enter";
+      const isEnter = key === "enter";
       const isTab = key === "tab";
       const isEsc = !!key.match("esc");
 
       if (isEnter || isTab || isEsc) {
         event.preventDefault();
       }
+      /* TODO: EditableCell: use NavigationKeysUtils instead all the manually defined*/
+      /* TODO: EditableCell: Enter key go to the cell below on edit mode */
+      /* FIXME: EditableCell: feelExpression selection stopped to work */
+      if (event.ctrlKey && isEnter) {
+        feelInputRef.current?.insertNewLineToMonaco();
+      }
 
-      if (isEnter || isTab) {
+      if ((!event.ctrlKey && isEnter) || isTab) {
         triggerReadMode(newValue);
         setMode(READ_MODE);
       }

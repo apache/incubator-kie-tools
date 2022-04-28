@@ -341,6 +341,19 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
+  it("Insert a newline in a cell pressing Ctrl+Enter", () => {
+    // from the cell 3, enter edit mode and write TestInput
+    cy.contains(".editable-cell ", /cell 3/)
+      .as("textarea-3")
+      .type("{enter}{ctrl+enter}newline");
+
+    // click on cell 7
+    cy.contains("td", /cell 7/).click({ force: true });
+
+    // check the cell 1 now has "TestInput" text
+    cy.get("@textarea-3").find(".editable-cell-textarea").should("have.text", "cell 3\nnewline");
+  });
+
   it("Keyboard interaction with contextMenu", () => {
     // rightclick on cell 3
     cy.contains("td", /cell 3/)
