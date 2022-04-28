@@ -20092,10 +20092,10 @@ uniforms-bridge-simple-schema-2@^3.5.5:
     tslib "^2.2.0"
     uniforms "^3.6.2"
 
-uniforms-patternfly@^4.7.4:
-  version "4.7.4"
-  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.7.4.tgz#1bffc61554e17aaead6d5d438b6ab28844292ab9"
-  integrity sha512-FVFbUFtbiGBE1utjYAmYG3J/i+azr305MtV7OALGoneh/zmuofdPHLNEP1ayHNalUmggQDc437FRbyXHwbz5lA==
+uniforms-patternfly@^4.7.5:
+  version "4.7.5"
+  resolved "https://registry.yarnpkg.com/uniforms-patternfly/-/uniforms-patternfly-4.7.5.tgz#3d80d90942780b6cb9948cd1843dd13a14328224"
+  integrity sha512-ntK+Yv9ZeORm3uvcX9xga/9SdXoNH3p26YSmBIcnapfDy2D6IyDXDBphCcpD4FvodL5UOlx13rC5nUk4GPtMvA==
   dependencies:
     classnames "^2.0.0"
     invariant "^2.0.0"
