@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -136,7 +136,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     },
     []
   );
-  
+
   const setValidationErrors = (errors: editor.IMarker[]) => {
     if (!initialContent) {
       return;
@@ -156,33 +156,30 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     props.setNotifications(initialContent.path, notifications);
   };
 
-  const updateDiagram = useCallback(
-    (newContent: string) => {
-      try {
-        const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
-        const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
+  const updateDiagram = useCallback((newContent: string) => {
+    try {
+      const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
+      const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
 
-        if (mermaidSourceCode?.length > 0) {
-          svgContainer.current!.innerHTML = mermaidSourceCode;
-          svgContainer.current!.removeAttribute("data-processed");
-          mermaid.init(svgContainer.current!);
-          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
-            controlIconsEnabled: true,
-          });
-          svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-          svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
-          setDiagramOutOfSync(false);
-        } else {
-          svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
-          setDiagramOutOfSync(true);
-        }
-      } catch (e) {
-        console.error(e);
+      if (mermaidSourceCode?.length > 0) {
+        svgContainer.current!.innerHTML = mermaidSourceCode;
+        svgContainer.current!.removeAttribute("data-processed");
+        mermaid.init(svgContainer.current!);
+        svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
+          controlIconsEnabled: true,
+        });
+        svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+        svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
+        setDiagramOutOfSync(false);
+      } else {
+        svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
         setDiagramOutOfSync(true);
       }
-    },
-    [props]
-  );
+    } catch (e) {
+      console.error(e);
+      setDiagramOutOfSync(true);
+    }
+  }, []);
 
   const isVSCode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
@@ -235,22 +232,26 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     </DrawerPanelContent>
   );
 
+  const swfMonacoEditor = useMemo(
+    () =>
+      initialContent && (
+        <SwfMonacoEditor
+          channelType={props.channelType}
+          content={initialContent.originalContent}
+          fileName={initialContent.path}
+          onContentChange={onContentChanged}
+          setValidationErrors={setValidationErrors}
+          ref={swfMonacoEditorRef}
+          isReadOnly={props.isReadOnly}
+        />
+      ),
+    [initialContent, props.channelType, onContentChanged, setValidationErrors]
+  );
+
   return (
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
-        <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {initialContent && (
-            <SwfMonacoEditor
-              channelType={props.channelType}
-              content={initialContent.originalContent}
-              fileName={initialContent.path}
-              onContentChange={onContentChanged}
-              setValidationErrors={setValidationErrors}
-              ref={swfMonacoEditorRef}
-              isReadOnly={props.isReadOnly}
-            />
-          )}
-        </DrawerContentBody>
+        <DrawerContentBody style={{ overflowY: "hidden" }}>{swfMonacoEditor}</DrawerContentBody>
       </DrawerContent>
     </Drawer>
   );
