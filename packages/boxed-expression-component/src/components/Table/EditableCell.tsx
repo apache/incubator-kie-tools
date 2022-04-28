@@ -173,6 +173,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         event.preventDefault();
       }
       /* TODO: EditableCell: Enter key go to the cell below on edit mode */
+      /* FIXME: EditableCell: if enter a newline,then press tab, shift tab, enter: the cell is not highlighted */
       /* FIXME: EditableCell: feelExpression selection stopped to work */
       if (event.ctrlKey && isEnter) {
         feelInputRef.current?.insertNewLineToMonaco();
