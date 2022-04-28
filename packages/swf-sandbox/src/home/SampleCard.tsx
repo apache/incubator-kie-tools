@@ -5,12 +5,14 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useRoutes } from "../navigation/Hooks";
 import { Link } from "react-router-dom";
 
-export type SampleCardProps = {
+export type Sample = {
   name: string;
+  fileName: string;
   svg: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  description: string;
 };
 
-export function SampleCard(props: SampleCardProps) {
+export function SampleCard({ sample }: { sample: Sample }) {
   const routes = useRoutes();
 
   return (
@@ -18,14 +20,11 @@ export function SampleCard(props: SampleCardProps) {
       <Card isCompact={true} isFullHeight={true}>
         <Grid style={{ height: "100%" }}>
           <GridItem md={6} style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle" }}>
-            <props.svg style={{ height: "100%", maxWidth: "100%" }} />
+            <sample.svg style={{ height: "100%", maxWidth: "100%" }} />
           </GridItem>
           <GridItem md={6}>
-            <CardTitle>Headline</CardTitle>
-            <CardBody>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse arcu purus, lobortis nec euismod eu,
-              tristique ut sapien.
-            </CardBody>
+            <CardTitle>{sample.name}</CardTitle>
+            <CardBody>{sample.description}</CardBody>
             <CardFooter>
               <Link
                 to={{
@@ -33,7 +32,7 @@ export function SampleCard(props: SampleCardProps) {
                   search: routes.importModel.queryString({
                     url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
                       type: "sw.json",
-                      name: props.name,
+                      name: sample.fileName,
                     })}`,
                   }),
                 }}
