@@ -94,7 +94,26 @@ module.exports = async (env) => {
       },
     },
     module: {
-      rules: [...patternflyBase.webpackModuleRules],
+      rules: [
+        {
+          test: /\.svg$/,
+          use: [
+            {
+              loader: require.resolve("@svgr/webpack"),
+              options: {
+                prettier: false,
+                svgo: false,
+                svgoConfig: {
+                  plugins: [{ removeViewBox: false }],
+                },
+                titleProp: true,
+                ref: true,
+              },
+            },
+          ],
+        },
+        ...patternflyBase.webpackModuleRules,
+      ],
     },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
