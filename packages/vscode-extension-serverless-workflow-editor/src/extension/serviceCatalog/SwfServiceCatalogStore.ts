@@ -52,10 +52,7 @@ export class SwfServiceCatalogStore {
   }
 
   public async refresh() {
-    console.info("SWF Service Catalog global store :: updating...");
-    const ret = await this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
-    console.info("SWF Service Catalog global store :: updated.");
-    return ret;
+    return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
   }
 
   public dispose() {

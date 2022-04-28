@@ -56,26 +56,22 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
     }
 
     if (this.editor.document.type === "text") {
-      console.error("@@@@: Start ignoring edits.");
       this.editor.stopListeningToDocumentChanges();
 
       const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
         if (e.contentChanges.length <= 0) {
-          console.error("@@@@: Ignoring because no changes were made.");
           return;
         }
 
-        console.error("@@@@: Stop ignoring edits.");
         this.editor.startListeningToDocumentChanges();
         changeDocumentSubscription.dispose();
       });
 
       const { content } = await this.editor.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest();
 
-      console.error("@@@@: newEdit arrived on VS Code. Applying edit.");
       const edit = new vscode.WorkspaceEdit();
-      // Just replace the entire document every time for this example extension.
-      // A more complete extension should compute minimal edits instead.
+
+      // TODO: This shouldn't be a replace all the time. More conscious changes lead to better undo/redo stack.
       edit.replace(
         this.editor.document.document.uri,
         new vscode.Range(0, 0, this.editor.document.document.lineCount, 0),

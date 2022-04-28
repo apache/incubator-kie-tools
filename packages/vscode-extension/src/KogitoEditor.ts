@@ -252,19 +252,14 @@ export class KogitoEditor implements EditorApi {
   public startListeningToDocumentChanges() {
     this.changeDocumentSubscription?.dispose();
     this.changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
-      console.error("@@@@: New applied edit observed in VS Code's KogitoEditor.");
-
       if (e.document.uri.toString() !== this.document.document.uri.toString()) {
-        console.error("@@@@: Not the same URI. Skipping.");
         return;
       }
 
       if (e.contentChanges.length <= 0) {
-        console.error("@@@@: Ignoring edit because no changes were made.");
         return;
       }
 
-      console.error("@@@@: Same URI. Sending contentChanged notification.");
       this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
         {
           content: e.document.getText(),
@@ -274,7 +269,6 @@ export class KogitoEditor implements EditorApi {
       );
     });
 
-    // Make sure we get rid of the listener when our editor is closed.
     this.panel.onDidDispose(() => {
       this.changeDocumentSubscription?.dispose();
     });

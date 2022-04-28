@@ -60,9 +60,7 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly uri: string
   ) {
-    console.error("@@@@: Settings up a new Monaco controller. This should only happen once.");
     this.model = editor.createModel("", this.language, monaco.Uri.parse(this.uri));
-
     this.startListeningToContentChanges();
   }
 
@@ -86,7 +84,6 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
       return;
     }
 
-    console.error("@@@@: Monaco did change. Sending newEdit");
     this.onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT, event.versionId);
   }
 
@@ -106,14 +103,7 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
 
   public setContent(content: string): void {
     this.onDidChangeContentSubscription.dispose();
-    const position = this.editor?.getPosition();
     this.model.setValue(content);
-
-    // FIXME: tiago - this is not ideal. I think Monaco should be handling the undo/redos and letting the channel know through a newEdit once it's done.
-    if (position) {
-      this.editor?.setPosition(position);
-    }
-
     this.startListeningToContentChanges();
   }
 

@@ -88,9 +88,7 @@ export class FsWatchingServiceCatalogRelativeStore {
 
   public async refresh(args: { specsDirAbsolutePosixPath: string }) {
     try {
-      console.info("SWF Service Catalog relative store :: updating...");
       this.services = await this.readFileSystemServices(args);
-      console.info("SWF Service Catalog relative store :: updated.");
     } catch (e) {
       console.error("Could not refresh SWF Service Catalog relative store.", e);
     }
