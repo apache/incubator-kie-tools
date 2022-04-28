@@ -144,7 +144,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         return;
       }
 
-      if (key !== "Enter") {
+      if (!NavigationKeysUtils.isEnter(key)) {
         (e.target as HTMLTextAreaElement).value = "";
       }
     },
@@ -163,16 +163,15 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
 
   const onFeelKeyDown = useCallback(
     (event: Monaco.IKeyboardEvent, newValue: string) => {
-      const key = event?.code.toLowerCase() ?? "";
+      const key = event?.code ?? "";
       const isModKey = event.altKey || event.ctrlKey || event.shiftKey;
-      const isEnter = key === "enter";
-      const isTab = key === "tab";
-      const isEsc = !!key.match("esc");
+      const isEnter = NavigationKeysUtils.isEnter(key);
+      const isTab = NavigationKeysUtils.isTab(key);
+      const isEsc = NavigationKeysUtils.isEscape(key);
 
       if (isEnter || isTab || isEsc) {
         event.preventDefault();
       }
-      /* TODO: EditableCell: use NavigationKeysUtils instead all the manually defined*/
       /* TODO: EditableCell: Enter key go to the cell below on edit mode */
       /* FIXME: EditableCell: feelExpression selection stopped to work */
       if (event.ctrlKey && isEnter) {
