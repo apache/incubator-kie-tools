@@ -450,7 +450,6 @@ jobs:
           cp -RL ${{ github.workspace }}/kie-tools/packages/stunner-editors/dist/dmn $EDITORS_DIR
           cp -RL ${{ github.workspace }}/kie-tools/packages/stunner-editors/dist/bpmn $EDITORS_DIR
           cp -RL ${{ github.workspace }}//kie-tools/packages/stunner-editors/dist/scesim $EDITORS_DIR
-          cp -RL ${{ github.workspace }}//kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} $EDITORS_DIR/sw
           rm -rf ./editors/latest
           ln -s ${{ inputs.tag }} ./editors/latest
 
