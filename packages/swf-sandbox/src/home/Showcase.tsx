@@ -32,7 +32,7 @@ export const samples: Array<Sample> = [
 ];
 
 export function Showcase() {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const onToggle = useCallback(() => {
     setExpanded((expanded) => !expanded);
   }, []);
@@ -52,7 +52,7 @@ export function Showcase() {
           id="showcase-accordion"
         >
           <TextContent>
-            <Text component="h1">Serverless Workflow Samples</Text>
+            <Text component="h1">Serverless Workflow Samples Showcase</Text>
             {ArrowRightIcon}
           </TextContent>
         </AccordionToggle>
