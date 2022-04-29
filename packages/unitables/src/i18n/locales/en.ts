@@ -14,66 +14,14 @@
  * limitations under the License.
  */
 
-import { DmnAutoTableI18n } from "..";
+import { UnitablesI18n } from "../UnitablesI18n";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
+import { en as en_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/en";
 
-export const en: DmnAutoTableI18n = {
+export const en: UnitablesI18n = {
   ...en_common,
-  addParameter: "Add parameter",
-  builtInAggregator: "Builtin Aggregator",
-  choose: "Choose...",
-  class: "class",
-  clear: "Clear",
-  columnOperations: {
-    delete: "Delete",
-    insertLeft: "Insert left",
-    insertRight: "Insert right",
+  ...en_boxed_expression,
+  schema: {
+    selectPlaceholder: "Select...",
   },
-  columns: "COLUMNS",
-  context: "Context",
-  contextEntry: "CONTEXT ENTRY",
-  dataType: "Data Type",
-  decisionRule: "DECISION RULE",
-  decisionTable: "Decision Table",
-  delete: "Delete",
-  document: "document",
-  editClause: {
-    input: "Edit Input Clause",
-    output: "Edit Output Clause",
-  },
-  editContextEntry: "Edit Context Entry",
-  editExpression: "Edit Expression",
-  editHitPolicy: "Edit Hit Policy",
-  editParameter: "Edit Parameter",
-  editParameters: "Edit parameters",
-  editRelation: "Edit Relation",
-  enterFunction: "Enter function",
-  function: "Function",
-  hitPolicy: "Hit Policy",
-  inputClause: "INPUT CLAUSE",
-  invocation: "Invocation",
-  list: "List",
-  literalExpression: "Literal expression",
-  methodSignature: "method signature",
-  model: "model",
-  name: "Name",
-  outputClause: "OUTPUT CLAUSE",
-  parameters: "PARAMETERS",
-  pmml: {
-    firstSelection: "First select PMML document",
-    secondSelection: "Second select PMML model",
-  },
-  relation: "Relation",
-  rowOperations: {
-    clear: "Clear",
-    delete: "Delete",
-    duplicate: "Duplicate",
-    insertAbove: "Insert above",
-    insertBelow: "Insert below",
-  },
-  rows: "ROWS",
-  ruleAnnotation: "RULE ANNOTATION",
-  selectExpression: "Select expression",
-  selectFunctionKind: "Select Function Kind",
-  selectLogicType: "Select logic type",
 };

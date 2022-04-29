@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools/form": "0.0.0",
+    "@kie-tools/form-dmn": "0.0.0",
     "@kie-tools/i18n-common-dictionary": "0.0.0",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",

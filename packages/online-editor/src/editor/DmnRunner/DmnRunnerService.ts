@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DmnResult, DmnSchema } from "@kie-tools/form/dist/dmn";
+import { DmnResult, DmnSchema } from "@kie-tools/form-dmn";
 
 export interface DmnRunnerModelResource {
   URI: string;

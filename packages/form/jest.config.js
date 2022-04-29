@@ -16,10 +16,10 @@
 
 module.exports = {
   reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
+  moduleDirectories: ["../../node_modules", "node_modules", "src"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
+  setupFilesAfterEnv: ["./tests/jest.setup.ts"],
+  testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transformIgnorePatterns: [],
   transform: {
     "^.+\\.jsx?$": "babel-jest",
@@ -27,5 +27,10 @@ module.exports = {
   },
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "<rootDir>/__mocks__/styleMock.js",
+  },
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.dev.json",
+    },
   },
 };

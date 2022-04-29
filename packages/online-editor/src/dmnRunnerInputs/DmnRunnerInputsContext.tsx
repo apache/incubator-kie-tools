@@ -15,7 +15,7 @@
  */
 
 import { createContext, useContext } from "react";
-import { InputRow } from "../editor/DmnRunner/DmnRunnerContext";
+import { InputRow } from "@kie-tools/form-dmn";
 import { DmnRunnerInputsService } from "./DmnRunnerInputsService";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
 

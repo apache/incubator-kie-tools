@@ -141,11 +141,11 @@ export class Cell {
           ...Array.from((refSibling as HTMLElement)?.querySelectorAll(".input")),
           ...Array.from((refSibling as HTMLElement)?.querySelectorAll(".output")),
         ];
-        const element =
-          entries[
-            (properties.originalIndex - headerSize - headerElements.length) % entries.length
-          ]?.getBoundingClientRect();
-        this.setWidth(element.width - BORDER * 2);
+        const element = entries[(properties.originalIndex - headerSize - headerElements.length) % entries.length];
+        const rect = element?.getBoundingClientRect();
+        if (rect) {
+          this.setWidth(rect.width - BORDER * 2);
+        }
       }
     }
   }
