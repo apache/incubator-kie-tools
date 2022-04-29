@@ -43,14 +43,15 @@ import (
 )
 
 type Proxy struct {
-	view            *KogitoSystray
-	srv             *http.Server
-	cmd             *exec.Cmd
-	Started         bool
-	URL             string
-	Port            int
-	RunnerPort      int
-	jitexecutorPath string
+	view               *KogitoSystray
+	srv                *http.Server
+	cmd                *exec.Cmd
+	Started            bool
+	URL                string
+	Port               int
+	RunnerPort         int
+	jitexecutorPath    string
+	InsecureSkipVerify bool
 }
 
 func NewProxy(port int, jitexecutor []byte) *Proxy {
@@ -64,6 +65,8 @@ func (self *Proxy) Start() {
 
 	var config config.Config
 	conf := config.GetConfig()
+
+	self.InsecureSkipVerify = conf.Proxy.InsecureSkipVerify
 
 	self.RunnerPort = getFreePort()
 	runnerPort := strconv.Itoa(self.RunnerPort)
@@ -216,6 +219,9 @@ func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
 
 		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 
+		var config config.Config
+		conf := config.GetConfig()
+
 		// tolerate self-signed certificates
 		proxy.Transport = &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
@@ -229,7 +235,7 @@ func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
 			TLSHandshakeTimeout:   10 * time.Second,
 			ExpectContinueTimeout: 1 * time.Second,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: true,
+				InsecureSkipVerify: conf.Proxy.InsecureSkipVerify,
 			},
 		}
 
