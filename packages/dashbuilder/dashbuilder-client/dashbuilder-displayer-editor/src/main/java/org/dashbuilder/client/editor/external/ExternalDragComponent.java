@@ -9,8 +9,8 @@ import javax.inject.Inject;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.dashbuilder.displayer.client.widgets.ExternalComponentEditorPopUp;
 import org.dashbuilder.displayer.client.widgets.ExternalComponentPresenter;
-import org.dashbuilder.displayer.external.ExternalComponentMessage;
 import org.dashbuilder.displayer.external.ExternalComponentMessageHelper;
+import org.dashbuilder.external.model.ExternalComponent;
 import org.gwtbootstrap3.client.ui.Label;
 import org.gwtbootstrap3.client.ui.Modal;
 import org.jboss.errai.ioc.client.container.SyncBeanManager;
@@ -44,21 +44,18 @@ public class ExternalDragComponent implements ExternalComponentDragDef, HasModal
 
     @Override
     public IsWidget getShowWidget(RenderingContext ctx) {
-        Map<String, String> ltProps = ctx.getComponent().getProperties();
-        String storedComponentId = ltProps.get(COMPONENT_ID_KEY);
-        String partition = ltProps.get(COMPONENT_PARTITION_KEY);
+        var ltProps = ctx.getComponent().getProperties();
+        var storedComponentId = ltProps.get(COMPONENT_ID_KEY);
+        var partition = ltProps.get(COMPONENT_PARTITION_KEY);
+        var baseUrl = ltProps.get(ExternalComponent.COMPONENT_BASE_URL_KEY);
         if (storedComponentId == null) {
             return new Label("Component not found.");
         }
         
-        if (partition != null) {
-            externalComponentPresenter.withComponent(storedComponentId, partition);
-        } else {
-            externalComponentPresenter.withComponent(storedComponentId);
-        }
+        externalComponentPresenter.withComponentBaseUrlIdAndPartition(baseUrl, storedComponentId, partition);
         
-        Map<String, Object> componentProperties = new HashMap<>(retrieveComponentProperties(storedComponentId, ltProps));
-        ExternalComponentMessage message = messageHelper.newInitMessage(componentProperties);
+        var componentProperties = new HashMap<String, Object>(retrieveComponentProperties(storedComponentId, ltProps));
+        var message = messageHelper.newInitMessage(componentProperties);
         externalComponentPresenter.sendMessage(message);
         
         return externalComponentPresenter.getView();

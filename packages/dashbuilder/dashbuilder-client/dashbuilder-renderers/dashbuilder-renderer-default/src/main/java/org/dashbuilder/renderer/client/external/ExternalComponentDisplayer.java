@@ -105,18 +105,15 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     @Override
     protected void updateVisualization() {
-        String currentComponentId = displayerSettings.getComponentId();
+        var currentComponentId = displayerSettings.getComponentId();
         if (currentComponentId != null && !currentComponentId.equals(componentId)) {
             componentId = currentComponentId;
-            String partitionId = displayerSettings.getComponentPartition();
-            if (partitionId != null) {
-                externalComponentPresenter.withComponent(componentId, partitionId);
-            } else {
-                externalComponentPresenter.withComponent(componentId);
-            }
+            var partitionId = displayerSettings.getComponentPartition();
+            var baseUrl = displayerSettings.getComponentBaseUrl();
+            externalComponentPresenter.withComponentBaseUrlIdAndPartition(baseUrl, componentId, partitionId);
         }
 
-        ExternalComponentMessage message = dataSetMessage();
+        var message = dataSetMessage();
         externalComponentPresenter.sendMessage(message);
 
         // legacy

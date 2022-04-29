@@ -81,18 +81,18 @@ public class UploadWidget implements IsElement {
     }
     
     public String getAcceptUpload() {
-        return runtimeClientLoader.isOffline() ? ".json,.yaml,.yml" : ".zip";
+        return runtimeClientLoader.isClient() ? ".json,.yaml,.yml" : ".zip";
     }
 
     public void submit(String fileName,
                        final File file,
                        final HTMLFormElement uploadForm) {
 
-        if (runtimeClientLoader.isOffline()) {
+        if (runtimeClientLoader.isClient()) {
             var reader = new FileReader();
             reader.onload = p -> {
                 try {
-                    runtimeClientLoader.clientLoad(reader.result.asString());
+                    runtimeClientLoader.loadClientModel(reader.result.asString());
                     routerScreen.doRoute();
                 } catch(Exception e) {
                     e.printStackTrace();

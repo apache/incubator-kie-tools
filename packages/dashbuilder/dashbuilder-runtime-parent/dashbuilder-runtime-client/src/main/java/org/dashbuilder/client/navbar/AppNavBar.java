@@ -23,6 +23,7 @@ import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import jsinterop.base.Js;
+import org.dashbuilder.client.RuntimeClientLoader;
 import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
@@ -52,11 +53,12 @@ public class AppNavBar implements Header {
     @Inject
     DashboardListMenuBuilder dashboardsListMenu;
 
+    @Inject
+    RuntimeClientLoader loader;
+
     private boolean isDashboardListEnabled = false;
 
     private boolean isGoToDashboardMenuEnabled = false;
-
-    private boolean clientOnly;
 
     @AfterInitialization
     public void setup() {
@@ -86,14 +88,10 @@ public class AppNavBar implements Header {
         this.isGoToDashboardMenuEnabled = isExternalMenuEnabled;
     }
 
-    public void setClientOnly(boolean clientOnly) {
-        this.clientOnly = clientOnly;
-    }
-
     public void setupMenus() {
         menuBarPresenter.clear();
         menuBarPresenter.clearContextMenu();
-        if (isGoToDashboardMenuEnabled && !clientOnly) {
+        if (isGoToDashboardMenuEnabled && !loader.isEditor()) {
             menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(goToDashboardMenu).endMenu().build());
         }
         if (isDashboardListEnabled) {

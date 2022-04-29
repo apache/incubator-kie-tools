@@ -16,6 +16,7 @@
 package org.dashbuilder.client.parser;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.dashbuilder.shared.marshalling.RuntimeModelJSONMarshaller;
 import org.dashbuilder.shared.model.RuntimeModel;
@@ -23,19 +24,14 @@ import org.dashbuilder.shared.model.RuntimeModel;
 @ApplicationScoped
 public class JSONRuntimeModelClientParser implements RuntimeModelClientParser {
 
-    private static String PROPERTY_KEY = "VALUE";
-    private static String PROPERTY_REPLACEMENT_PATTERN = "\\$\\{" + PROPERTY_KEY + "\\}";
+    @Inject
+    PropertyReplacementService replaceService;
 
     @Override
     public RuntimeModel parse(String jsonContent) {
         var properties = RuntimeModelJSONMarshaller.get().retrieveProperties(jsonContent);
-        var contentSb = new StringBuffer(jsonContent);
-        properties.forEach((k, v) -> {
-            var replaceToken = PROPERTY_REPLACEMENT_PATTERN.replace(PROPERTY_KEY, k);
-            var replacedContent = contentSb.toString().replaceAll(replaceToken, v);
-            contentSb.replace(0, contentSb.length(), replacedContent);
-        });
-        return RuntimeModelJSONMarshaller.get().fromJson(contentSb.toString());
+        var newContent = replaceService.replace(jsonContent, properties);
+        return RuntimeModelJSONMarshaller.get().fromJson(newContent);
     }
 
     @Override
