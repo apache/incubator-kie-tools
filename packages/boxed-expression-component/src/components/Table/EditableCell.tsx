@@ -122,7 +122,8 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       const newValue: string = event.target.value.trim("") ?? "";
       const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
 
-      if (textarea.current && isPastedValue) {
+      // event.nativeEvent.inputType==="insertFromPaste" ensure that this block is not executed on cells with newlines inside
+      if (textarea.current && isPastedValue && event.nativeEvent.inputType === "insertFromPaste") {
         const pasteValue = newValue.slice(value.length);
         paste(pasteValue, textarea.current, boxedExpression.editorRef.current!);
         triggerReadMode();
@@ -173,7 +174,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
         event.preventDefault();
       }
       /* TODO: EditableCell: Enter key go to the cell below on edit mode */
-      /* FIXME: EditableCell: if enter a newline,then press tab, shift tab, enter: the cell is not highlighted */
       /* FIXME: EditableCell: feelExpression selection stopped to work */
       if (event.ctrlKey && isEnter) {
         feelInputRef.current?.insertNewLineToMonaco();
