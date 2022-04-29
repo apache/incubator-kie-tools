@@ -4,6 +4,7 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "../navigation/Hooks";
 import { Link } from "react-router-dom";
+import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 
 export type Sample = {
   name: string;
@@ -16,16 +17,18 @@ export function SampleCard({ sample }: { sample: Sample }) {
   const routes = useRoutes();
 
   return (
-    <GridItem md={4} style={{ maxHeight: "400px" }}>
+    <GridItem md={4}>
       <Card isCompact={true} isFullHeight={true}>
         <Grid style={{ height: "100%" }}>
           <GridItem md={6} style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle" }}>
-            <sample.svg style={{ height: "100%", maxWidth: "100%" }} />
+            <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
           </GridItem>
-          <GridItem md={6}>
+          <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
             <CardTitle>{sample.name}</CardTitle>
-            <CardBody>{sample.description}</CardBody>
-            <CardFooter>
+            <CardBody isFilled={true}>
+              <Text component="p">{sample.description}</Text>
+            </CardBody>
+            <CardFooter style={{ alignItems: "baseline" }}>
               <Link
                 to={{
                   pathname: routes.importModel.path({}),
