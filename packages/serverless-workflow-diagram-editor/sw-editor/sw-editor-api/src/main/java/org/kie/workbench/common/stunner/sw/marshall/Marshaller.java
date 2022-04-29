@@ -73,10 +73,13 @@ import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.SWIT
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.ANY_EDGE_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.COMPENSATION_TRANSITION_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.COMPENSATION_TRANSITION_UNMARSHALLER;
+import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.DATA_CONDITION_TRANSITION_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.DATA_CONDITION_TRANSITION_UNMARSHALLER;
+import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.DEFAULT_CONDITION_TRANSITION_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.DEFAULT_CONDITION_TRANSITION_UNMARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.ERROR_TRANSITION_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.ERROR_TRANSITION_UNMARSHALLER;
+import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.EVENT_CONDITION_TRANSITION_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.EVENT_CONDITION_TRANSITION_UNMARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.START_TRANSITION_MARSHALLER;
 import static org.kie.workbench.common.stunner.sw.marshall.TransitionMarshalling.START_TRANSITION_UNMARSHALLER;
@@ -326,6 +329,7 @@ public class Marshaller {
         Object bean = ((Definition) edge.getContent()).getDefinition();
         EdgeMarshaller<Object> marshaller = getEdgeMarshallerForBean(bean);
         if (null == marshaller) {
+            final Class<?> type = bean.getClass();
             DomGlobal.console.warn("No EdgeMarshaller found for " + bean.getClass().getName());
             marshaller = (EdgeMarshaller<Object>) ANY_EDGE_MARSHALLER;
         }
@@ -370,11 +374,20 @@ public class Marshaller {
         if (Transition.class.equals(type)) {
             return (EdgeMarshaller<T>) TRANSITION_MARSHALLER;
         }
+        if (ErrorTransition.class.equals(type)) {
+            return (EdgeMarshaller<T>) ERROR_TRANSITION_MARSHALLER;
+        }
         if (CompensationTransition.class.equals(type)) {
             return (EdgeMarshaller<T>) COMPENSATION_TRANSITION_MARSHALLER;
         }
-        if (ErrorTransition.class.equals(type)) {
-            return (EdgeMarshaller<T>) ERROR_TRANSITION_MARSHALLER;
+        if (DefaultConditionTransition.class.equals(type)) {
+            return (EdgeMarshaller<T>) DEFAULT_CONDITION_TRANSITION_MARSHALLER;
+        }
+        if (EventConditionTransition.class.equals(type)) {
+            return (EdgeMarshaller<T>) EVENT_CONDITION_TRANSITION_MARSHALLER;
+        }
+        if (DataConditionTransition.class.equals(type)) {
+            return (EdgeMarshaller<T>) DATA_CONDITION_TRANSITION_MARSHALLER;
         }
         return null;
     }
