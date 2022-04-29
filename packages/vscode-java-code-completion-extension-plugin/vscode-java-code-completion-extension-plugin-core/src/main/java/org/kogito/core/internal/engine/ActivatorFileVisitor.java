@@ -35,8 +35,6 @@ import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
  */
 public class ActivatorFileVisitor extends SimpleFileVisitor<Path> {
 
-    protected static final String IMPORT_ACTIVATOR = "import org.kie.api.project.KieActivator;";
-    protected static final String ANNOTATION_ACTIVATOR = "@KieActivator";
     protected static final String PACKAGE_ACTIVATOR = "package ";
     protected static final String PUBLIC_CLASS_DECLARATION = "public class ";
     protected static final String JAVA_EXTENSION = ".java";
@@ -72,7 +70,7 @@ public class ActivatorFileVisitor extends SimpleFileVisitor<Path> {
         }
     }
 
-    protected boolean containsActivator(String line, String fileName) {
+    private boolean containsActivator(String line, String fileName) {
         return line.contains(PACKAGE_ACTIVATOR) || line.contains(PUBLIC_CLASS_DECLARATION + fileName);
     }
 

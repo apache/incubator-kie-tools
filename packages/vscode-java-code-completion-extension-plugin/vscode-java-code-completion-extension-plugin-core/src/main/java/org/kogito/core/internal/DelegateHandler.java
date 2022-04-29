@@ -23,7 +23,7 @@ import org.eclipse.jdt.ls.core.internal.IDelegateCommandHandler;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.kogito.core.internal.engine.ActivatorManager;
 import org.kogito.core.internal.engine.JavaEngine;
-import org.kogito.core.internal.handlers.AutocompleteHandler;
+import org.kogito.core.internal.engine.AutoCompletionManager;
 import org.kogito.core.internal.handlers.GetAccessorsHandler;
 import org.kogito.core.internal.handlers.GetClassesHandler;
 import org.kogito.core.internal.handlers.Handler;
@@ -34,7 +34,7 @@ public class DelegateHandler implements IDelegateCommandHandler {
 
     private static final JavaEngine JAVA_ENGINE = new JavaEngine();
     private static final ActivatorManager ACTIVATOR_MANAGER = new ActivatorManager();
-    private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATOR_MANAGER);
+    private static final AutoCompletionManager AUTOCOMPLETE_HANDLER = new AutoCompletionManager(ACTIVATOR_MANAGER);
     private static final IsLanguageServerAvailableHandler LANGUAGE_SERVER_AVAILABLE_HANDLER =
             new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, ACTIVATOR_MANAGER);
     private static final List<Handler<?>> handlers = List.of(

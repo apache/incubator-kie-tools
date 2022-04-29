@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package org.kogito.core.internal.handlers;
+package org.kogito.core.internal.engine;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -37,50 +37,43 @@ import org.eclipse.lsp4j.TextDocumentIdentifier;
 import org.eclipse.lsp4j.TextDocumentItem;
 import org.eclipse.lsp4j.VersionedTextDocumentIdentifier;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
-import org.kogito.core.internal.engine.ActivatorManager;
-import org.kogito.core.internal.engine.BuildInformation;
 
-public class AutocompleteHandler {
+public class AutoCompletionManager {
 
     private ActivatorManager activatorManager;
 
-    public AutocompleteHandler(ActivatorManager activatorManager) {
+    public AutoCompletionManager(ActivatorManager activatorManager) {
         this.activatorManager = activatorManager;
     }
 
-    public List<CompletionItem> handle(String identifier, BuildInformation buildInformation) {
+    public List<CompletionItem> launchAutoCompletionRequest(String identifier, BuildInformation buildInformation) {
 
         JDTLanguageServer languageServer = (JDTLanguageServer) JavaLanguageServerPlugin.getInstance().getProtocol();
 
-        String uri = this.getUri();
-        JavaLanguageServerPlugin.logInfo("URI:" + uri);
         JavaLanguageServerPlugin.logInfo("BUILD INFORMATION URI:" + buildInformation.getUri());
 
         System.setProperty("java.lsp.joinOnCompletion", "true");
 
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());
-        {
-            DidOpenTextDocumentParams didOpenTextDocumentParams = new DidOpenTextDocumentParams();
-            TextDocumentItem textDocumentItem = new TextDocumentItem();
-            textDocumentItem.setLanguageId("java");
-            textDocumentItem.setText(buildInformation.getOriginalText());
-            textDocumentItem.setUri(buildInformation.getUri());
-            textDocumentItem.setVersion(1);
-            didOpenTextDocumentParams.setTextDocument(textDocumentItem);
-            languageServer.didOpen(didOpenTextDocumentParams);
-        }
 
-        {
-            DidChangeTextDocumentParams didChangeTextDocumentParams = new DidChangeTextDocumentParams();
-            TextDocumentContentChangeEvent textDocumentContentChangeEvent = new TextDocumentContentChangeEvent();
-            textDocumentContentChangeEvent.setText(buildInformation.getText());
-            VersionedTextDocumentIdentifier versionedTextDocumentIdentifier = new VersionedTextDocumentIdentifier();
-            versionedTextDocumentIdentifier.setUri(buildInformation.getUri());
-            versionedTextDocumentIdentifier.setVersion(2);
-            didChangeTextDocumentParams.setTextDocument(versionedTextDocumentIdentifier);
-            didChangeTextDocumentParams.setContentChanges(Collections.singletonList(textDocumentContentChangeEvent));
-            languageServer.didChange(didChangeTextDocumentParams);
-        }
+        DidOpenTextDocumentParams didOpenTextDocumentParams = new DidOpenTextDocumentParams();
+        TextDocumentItem textDocumentItem = new TextDocumentItem();
+        textDocumentItem.setLanguageId("java");
+        textDocumentItem.setText(buildInformation.getOriginalText());
+        textDocumentItem.setUri(buildInformation.getUri());
+        textDocumentItem.setVersion(1);
+        didOpenTextDocumentParams.setTextDocument(textDocumentItem);
+        languageServer.didOpen(didOpenTextDocumentParams);
+
+        DidChangeTextDocumentParams didChangeTextDocumentParams = new DidChangeTextDocumentParams();
+        TextDocumentContentChangeEvent textDocumentContentChangeEvent = new TextDocumentContentChangeEvent();
+        textDocumentContentChangeEvent.setText(buildInformation.getText());
+        VersionedTextDocumentIdentifier versionedTextDocumentIdentifier = new VersionedTextDocumentIdentifier();
+        versionedTextDocumentIdentifier.setUri(buildInformation.getUri());
+        versionedTextDocumentIdentifier.setVersion(2);
+        didChangeTextDocumentParams.setTextDocument(versionedTextDocumentIdentifier);
+        didChangeTextDocumentParams.setContentChanges(Collections.singletonList(textDocumentContentChangeEvent));
+        languageServer.didChange(didChangeTextDocumentParams);
 
         CompletionContext context = new CompletionContext();
         context.setTriggerKind(CompletionTriggerKind.Invoked);
@@ -90,7 +83,7 @@ public class AutocompleteHandler {
         pos.setCharacter(buildInformation.getPosition());
 
         TextDocumentIdentifier textDocumentIdentifier = new TextDocumentIdentifier();
-        textDocumentIdentifier.setUri(uri);
+        textDocumentIdentifier.setUri(buildInformation.getUri());
 
         CompletionParams completionParams = new CompletionParams();
         completionParams.setTextDocument(textDocumentIdentifier);

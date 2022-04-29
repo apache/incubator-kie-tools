@@ -25,34 +25,27 @@ import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.eclipse.lsp4j.CompletionItem;
 import org.kogito.core.internal.api.GetPublicParameters;
 import org.kogito.core.internal.api.GetPublicResult;
+import org.kogito.core.internal.engine.AutoCompletionManager;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
-import org.kogito.core.internal.util.WorkspaceUtil;
 
 import static org.eclipse.jdt.ls.core.internal.handlers.CompletionResolveHandler.DATA_FIELD_SIGNATURE;
 
-public class GetAccessorsHandler extends Handler<List<GetPublicResult>> {
+public class GetAccessorsHandler extends AutoCompletionHandler<List<GetPublicResult>> {
 
-    private final JavaEngine javaEngine;
-    private final AutocompleteHandler autocompleteHandler;
-
-    public GetAccessorsHandler(String id, JavaEngine javaEngine, AutocompleteHandler autocompleteHandler) {
-        super(id);
-        this.javaEngine = javaEngine;
-        this.autocompleteHandler = autocompleteHandler;
+    public GetAccessorsHandler(String id, JavaEngine javaEngine, AutoCompletionManager autoCompletionManager) {
+        super(id, javaEngine, autoCompletionManager);
     }
 
     @Override
-    public List<GetPublicResult> handle(List<Object> arguments, IProgressMonitor progress) {
+    public List<GetPublicResult> internalHandler(List<Object> arguments, IProgressMonitor progress) {
         JavaLanguageServerPlugin.logInfo("Handle Accessors");
-        WorkspaceUtil.createFile(autocompleteHandler.getActivatorPath());
         GetPublicParameters parameters = checkParameters(arguments);
-        BuildInformation buildInformation = javaEngine.buildPublicContent(this.autocompleteHandler.getUri(),
+        BuildInformation buildInformation = javaEngine.buildPublicContent(autoCompletionManager.getUri(),
                                                                           parameters.getFqcn(),
                                                                           parameters.getQuery());
         JavaLanguageServerPlugin.logInfo(buildInformation.getText());
-        List<CompletionItem> items = this.autocompleteHandler.handle("GetAccessorsHandler", buildInformation);
-        WorkspaceUtil.deleteFile(autocompleteHandler.getActivatorPath());
+        List<CompletionItem> items = this.autoCompletionManager.launchAutoCompletionRequest("GetAccessorsHandler", buildInformation);
         return this.transformCompletionItemsToResult(parameters.getFqcn(), items);
     }
 

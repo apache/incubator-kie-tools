@@ -23,29 +23,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
 import org.eclipse.lsp4j.CompletionItem;
 import org.kogito.core.internal.api.GetClassesResult;
+import org.kogito.core.internal.engine.AutoCompletionManager;
 import org.kogito.core.internal.engine.BuildInformation;
 import org.kogito.core.internal.engine.JavaEngine;
-import org.kogito.core.internal.util.WorkspaceUtil;
 
-public class GetClassesHandler extends Handler<List<GetClassesResult>> {
+public class GetClassesHandler extends AutoCompletionHandler<List<GetClassesResult>> {
 
-    private final JavaEngine javaEngine;
-    private final AutocompleteHandler autocompleteHandler;
-
-    public GetClassesHandler(String id, JavaEngine javaEngine, AutocompleteHandler autocompleteHandler) {
-        super(id);
-        this.javaEngine = javaEngine;
-        this.autocompleteHandler = autocompleteHandler;
+    public GetClassesHandler(String id, JavaEngine javaEngine, AutoCompletionManager autoCompletionManager) {
+        super(id, javaEngine, autoCompletionManager);
     }
 
     @Override
-    public List<GetClassesResult> handle(List<Object> arguments, IProgressMonitor progress) {
-        WorkspaceUtil.createFile(autocompleteHandler.getActivatorPath());
-        checkParameters(arguments);
+    public List<GetClassesResult> internalHandler(List<Object> arguments, IProgressMonitor progress) {        checkParameters(arguments);
         String completeText = (String) arguments.get(0);
-        BuildInformation buildInformation = javaEngine.buildImportClass(this.autocompleteHandler.getUri(), completeText);
-        List<CompletionItem> items = this.autocompleteHandler.handle("GetClassesHandler", buildInformation);
-        WorkspaceUtil.deleteFile(autocompleteHandler.getActivatorPath());
+        BuildInformation buildInformation = javaEngine.buildImportClass(autoCompletionManager.getUri(), completeText);
+        List<CompletionItem> items = this.autoCompletionManager.launchAutoCompletionRequest("GetClassesHandler", buildInformation);
         return this.transformCompletionItemsToResult(items);
     }
 
