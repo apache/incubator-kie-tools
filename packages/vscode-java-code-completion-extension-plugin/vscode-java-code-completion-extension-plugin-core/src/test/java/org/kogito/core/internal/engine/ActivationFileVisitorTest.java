@@ -18,6 +18,7 @@ package org.kogito.core.internal.engine;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -25,33 +26,34 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class ActivationFileVisitorTest {
+class ActivationFileVisitorTest {
 
     private ActivatorFileVisitor activatorFileVisitor;
 
     @BeforeEach
     public void setUp() {
-
         activatorFileVisitor = new ActivatorFileVisitor();
     }
 
     @Test
-    public void testContainsActivator() throws IOException {
+    void testContainsActivator() throws IOException {
         Path workspace = Paths.get("src/test/resources/testProject");
         Files.walkFileTree(workspace.toAbsolutePath(), this.activatorFileVisitor);
         assertThat(this.activatorFileVisitor.isPresent()).isTrue();
     }
-
     @Test
-    public void testContainsActivatorImport() {
-        boolean present = this.activatorFileVisitor.containsActivator(ActivatorFileVisitor.IMPORT_ACTIVATOR);
-        assertThat(present).isTrue();
+    void testDoesntContainsActivator() {
+        Path workspace = Paths.get("src/test/resources/testProject/empty");
+        assertThrows(NoSuchFileException.class,
+                     () -> Files.walkFileTree(workspace.toAbsolutePath(), this.activatorFileVisitor));
     }
 
     @Test
-    public void testContainsActivatorAnnotation() {
-        boolean present = this.activatorFileVisitor.containsActivator(ActivatorFileVisitor.ANNOTATION_ACTIVATOR);
-        assertThat(present).isTrue();
+    void testContainsInvalidActivator() {
+        Path workspace = Paths.get("src/test/resources/testProject/invalid");
+        assertThat(this.activatorFileVisitor.isPresent()).isFalse();
     }
+
 }
