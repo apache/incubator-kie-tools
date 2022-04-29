@@ -79,11 +79,13 @@ public class GetAccessorsHandler extends AutoCompletionHandler<List<GetPublicRes
             result.setAccessor(label[0].trim());
             String type = label[1].trim();
             Map<String,String> data = (Map<String, String>) item.getData();
-            String fqcnType = data.get(DATA_FIELD_SIGNATURE);
-            /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
-            if (fqcnType != null && fqcnType.contains(")L")) {
-                type = fqcnType.split("\\)L")[1];
-                type = type.replaceAll(";$", "");
+            if (data != null && data.containsKey(DATA_FIELD_SIGNATURE)) {
+                String fqcnType = data.get(DATA_FIELD_SIGNATURE);
+                /* The DATA_FIELD_SIGNATURE format is: `method()Ljava.lang.String;` */
+                if (fqcnType != null && fqcnType.contains(")L")) {
+                    type = fqcnType.split("\\)L")[1];
+                    type = type.replaceAll(";$", "");
+                }
             }
             result.setType(type);
         } else {
