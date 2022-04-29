@@ -170,7 +170,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
     // write some text in the table
     cy.get(".data-cell").each((cell, cellIndex) => {
-      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`);
+      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`, { delay: 0, waitForAnimations: false });
     });
     // click outside to finish editing
     cy.get("body").click();
@@ -289,16 +289,27 @@ describe("Decision Table Keyboard Navigation Tests", () => {
   });
 
   it("Edit cells appending text selecting Td", () => {
-    // from the cell 1, enter edit mode and write TestInput
+    // from the cell 1, enter edit mode, write TestInput and press enter to save
     cy.contains("td", /cell 1/)
       .as("cell-1")
-      .type("{enter}TestAppend");
+      .type("{enter}TestAppend{enter}");
 
-    // click on cell 2
-    cy.contains("td", /cell 2/).click({ force: true });
+    // cell 5 should be focused
+    cy.contains("td", /cell 5/).should("be.focused");
 
     // check the cell 1 now has "TestInput" text
     cy.get("@cell-1").find(".editable-cell-textarea").should("have.text", "cell 1TestAppend");
+  });
+
+  it("Edit a cell in the last row appending text selecting Td", () => {
+    // from the cell 9, enter edit mode, write TestInput and press enter to save
+    cy.contains("td", /cell 9/)
+      .type("{enter}TestLastRowAppend{enter}")
+      // cell 9 should be focused
+      .should("be.focused")
+      // check the cell 9 now has "TestInput" text
+      .find(".editable-cell-textarea")
+      .should("contain.text", "cell 9TestLastRowAppend");
   });
 
   it("Edit cells appending text selecting TextArea", () => {

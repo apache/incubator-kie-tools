@@ -22,6 +22,7 @@ import { CellProps } from "../../api";
 import {
   blurActiveElement,
   focusCurrentCell,
+  focusLowerCell,
   focusNextCellByTabKey,
   focusPrevCellByTabKey,
   focusTextInput,
@@ -173,15 +174,19 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       if (isEnter || isTab || isEsc) {
         event.preventDefault();
       }
-      /* TODO: EditableCell: Enter key go to the cell below on edit mode */
       /* FIXME: EditableCell: feelExpression selection stopped to work */
-      if (event.ctrlKey && isEnter) {
-        feelInputRef.current?.insertNewLineToMonaco();
-      }
-
       if ((!event.ctrlKey && isEnter) || isTab) {
         triggerReadMode(newValue);
         setMode(READ_MODE);
+      }
+
+      if (isEnter) {
+        if (event.ctrlKey) {
+          feelInputRef.current?.insertNewLineToMonaco();
+        } else {
+          //this setTimeout fixes the focus outside of the table when the suggestions opens
+          setTimeout(() => focusLowerCell(textarea.current), 0);
+        }
       }
 
       if (isEsc) {
