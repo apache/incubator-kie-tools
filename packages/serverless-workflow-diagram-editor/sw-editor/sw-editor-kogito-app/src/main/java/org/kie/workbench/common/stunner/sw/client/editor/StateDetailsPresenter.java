@@ -60,6 +60,8 @@ import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 @Singleton
 public class StateDetailsPresenter {
 
+    private static final boolean ENABLED = false;
+
     @Inject
     private Marshaller marshaller;
 
@@ -72,6 +74,9 @@ public class StateDetailsPresenter {
 
     @SuppressWarnings("all")
     void show(CanvasHandler handler, String uuid) {
+        if (!ENABLED) {
+            return;
+        }
         if (null != selectedNode && !selectedNode.equals(uuid)) {
             close(handler);
         }
@@ -86,6 +91,9 @@ public class StateDetailsPresenter {
 
     @SuppressWarnings("all")
     void show(CanvasHandler canvasHandler, Node sourceNode) {
+        if (!ENABLED) {
+            return;
+        }
         selectedNode = sourceNode.getUUID();
         Object sourceNodeDef = ((View) sourceNode.getContent()).getDefinition();
         Object definition = getDetailsObject(sourceNodeDef);
@@ -216,6 +224,9 @@ public class StateDetailsPresenter {
     }
 
     void close(CanvasHandler canvasHandler) {
+        if (!ENABLED) {
+            return;
+        }
         deleteNode(canvasHandler);
         dropDecorator();
         selectedNode = null;
