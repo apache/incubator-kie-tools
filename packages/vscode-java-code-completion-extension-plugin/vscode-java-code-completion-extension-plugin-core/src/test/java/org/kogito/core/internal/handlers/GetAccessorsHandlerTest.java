@@ -36,27 +36,27 @@ class GetAccessorsHandlerTest {
     }
 
     @Test
-    public void testEmptyGetAccessor() {
+    void testEmptyGetAccessor() {
         CompletionItem completionItem = new CompletionItem();
         completionItem.setLabel("");
         GetPublicResult accessor = this.getAccessorHandler.getAccessor(completionItem, "org.kogito.Class");
         assertThat(accessor.getFqcn()).isEqualTo("org.kogito.Class");
-        assertThat(accessor.getType()).isEqualTo("");
-        assertThat(accessor.getAccessor()).isEqualTo("");
+        assertThat(accessor.getType()).isEmpty();
+        assertThat(accessor.getAccessor()).isEmpty();
     }
 
     @Test
-    public void testWrongGetAccessor() {
+    void testWrongGetAccessor() {
         CompletionItem completionItem = new CompletionItem();
         completionItem.setLabel("aRandomLabel - MoreRandom");
         GetPublicResult accessor = this.getAccessorHandler.getAccessor(completionItem, "org.kogito.Class");
         assertThat(accessor.getFqcn()).isEqualTo("org.kogito.Class");
-        assertThat(accessor.getType()).isEqualTo("");
-        assertThat(accessor.getAccessor()).isEqualTo("");
+        assertThat(accessor.getType()).isEmpty();
+        assertThat(accessor.getAccessor()).isEmpty();
     }
 
     @Test
-    public void testCorrectGetAccessor() {
+    void testCorrectGetAccessor() {
         CompletionItem completionItem = new CompletionItem();
         completionItem.setLabel("method() : String");
         GetPublicResult accessor = this.getAccessorHandler.getAccessor(completionItem, "org.kogito.Class");
@@ -66,7 +66,7 @@ class GetAccessorsHandlerTest {
     }
 
     @Test
-    public void testCorrectGetFQCNAccessor() {
+    void testCorrectGetFQCNAccessor() {
         CompletionItem completionItem = new CompletionItem();
         completionItem.setLabel("getName() : String");
         Map<String, String> data = Map.of(DATA_FIELD_SIGNATURE, "()Ljava.lang.String;");
@@ -78,7 +78,7 @@ class GetAccessorsHandlerTest {
     }
 
     @Test
-    public void testCorrectGetFQCListAccessor() {
+    void testCorrectGetFQCListAccessor() {
         CompletionItem completionItem = new CompletionItem();
         completionItem.setLabel("getBooksList() : List<Book>");
         Map<String, String> data = Map.of(DATA_FIELD_SIGNATURE, "()Ljava.util.List<Lcom.Book;>");
@@ -90,7 +90,7 @@ class GetAccessorsHandlerTest {
     }
 
     @Test
-    public void testCorrectGetFQCNMapAccessor() {
+    void testCorrectGetFQCNMapAccessor() {
         CompletionItem completionItem = new CompletionItem();
         completionItem.setLabel("getBooksMap() : Map<String,Book>");
         Map<String, String> data = Map.of(DATA_FIELD_SIGNATURE, "()Ljava.util.Map<Ljava.lang.String;Lcom.Book;>;");
