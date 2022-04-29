@@ -33,7 +33,7 @@ async function main() {
       ...checkCliTool("node", ["-v"]),
       ...checkCliTool("npm", ["-v"]),
       ...checkCliTool("yarn", ["-v"]),
-      ...checkCliTool("lerna", ["-v"]),
+      ...checkCliTool("pnpm", ["-v"]),
       ...checkCliTool("go", ["version"]),
       ...checkCliTool("mvn", ["-v"]),
     };

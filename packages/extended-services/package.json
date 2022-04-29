@@ -13,9 +13,9 @@
   },
   "scripts": {
     "copy-jitexecutor": "run-script-os",
-    "copy-jitexecutor:linux": "cp ../../node_modules/@kie-tools/jitexecutor-native/dist/linux/jitexecutor jitexecutor && chmod +x jitexecutor",
-    "copy-jitexecutor:darwin": "cp ../../node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor jitexecutor && chmod +x jitexecutor",
-    "copy-jitexecutor:win32": "COPY /B /Y ..\\..\\node_modules\\@kie-tools\\jitexecutor-native\\dist\\win32\\jitexecutor.exe jitexecutor",
+    "copy-jitexecutor:linux": "cp ./node_modules/@kie-tools/jitexecutor-native/dist/linux/jitexecutor jitexecutor && chmod +x jitexecutor",
+    "copy-jitexecutor:darwin": "cp ./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor jitexecutor && chmod +x jitexecutor",
+    "copy-jitexecutor:win32": "COPY /B /Y .\\node_modules\\@kie-tools\\jitexecutor-native\\dist\\win32\\jitexecutor.exe jitexecutor",
     "build": "run-script-os",
     "build-headless:linux": "GOOS=linux GOARCH=amd64 go build -tags headless -o dist/linux/kie_sandbox_extended_services_headless main.go",
     "build:linux": "GOOS=linux GOARCH=amd64 go build -o dist/linux/kie_sandbox_extended_services main.go && yarn build-headless:linux",
@@ -33,6 +33,7 @@
     "@kie-tools/jitexecutor-native": "1.12.0-Final"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0"
   }
 }

@@ -25,6 +25,10 @@
   },
   "dependencies": {
     "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
     "@kie-tools-core/editor": "0.0.0",
     "@kie-tools-core/i18n": "0.0.0",
     "@kie-tools-core/keyboard-shortcuts": "0.0.0",
@@ -33,6 +37,7 @@
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0"
   }
 }

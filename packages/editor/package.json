@@ -17,17 +17,23 @@
     "@kie-tools-core/backend": "0.0.0",
     "@kie-tools-core/envelope": "0.0.0",
     "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/operating-system": "0.0.0",
     "@kie-tools-core/guided-tour": "0.0.0",
     "@kie-tools-core/i18n": "0.0.0",
     "@kie-tools-core/keyboard-shortcuts": "0.0.0",
     "@kie-tools-core/notifications": "0.0.0",
     "@kie-tools-core/patternfly-base": "0.0.0",
     "@kie-tools-core/workspace": "0.0.0",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "csstype": "^3.0.11",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
