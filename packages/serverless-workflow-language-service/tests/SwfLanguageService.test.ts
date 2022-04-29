@@ -16,6 +16,7 @@
 
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
+  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
@@ -24,7 +25,6 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
-import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",

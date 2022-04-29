@@ -17,7 +17,7 @@
 import {
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
-} from "@kie-tools/serverless-workflow-service-catalog/src/api";
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./rhhccServiceRegistry";
 import { posix as posixPath } from "path";

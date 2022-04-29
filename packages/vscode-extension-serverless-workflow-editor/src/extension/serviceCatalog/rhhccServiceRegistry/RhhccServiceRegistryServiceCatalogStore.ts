@@ -15,6 +15,7 @@
  */
 
 import {
+  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
@@ -28,7 +29,6 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../c
 import * as vscode from "vscode";
 import * as yaml from "yaml";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./index";
-import { SwfServiceCatalogFunction } from "@kie-tools/serverless-workflow-service-catalog/src/api";
 import { getServiceRegistryRestApi } from "../apicurio";
 
 export class RhhccServiceRegistryServiceCatalogStore {

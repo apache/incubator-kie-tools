@@ -29,7 +29,6 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { IDisposable } from "monaco-editor";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 
 function fileExtension(documentUri: vscode.Uri) {
@@ -56,7 +55,7 @@ const decoder = new TextDecoder("utf-8");
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
-  private changeDocumentSubscription: IDisposable | undefined;
+  private changeDocumentSubscription: vscode.Disposable | undefined;
 
   public constructor(
     public readonly document: KogitoEditorDocument,
