@@ -78,7 +78,7 @@ test("BPMN from source", async () => {
 
   // check editor title name
   const title = await client.$("[data-testid='toolbar-title'] > h3");
-  expect(await title.getText()).toEqual("unsaved file");
+  expect(await title.getText()).toEqual("unsaved file.bpmn");
 
   // check save and close buttons
   const saveButton = await client.$("[data-ouia-component-id='save-button']");
@@ -136,7 +136,7 @@ test("DMN from source", async () => {
 
   // check editor title name
   const title = await client.$("[data-testid='toolbar-title'] > h3");
-  expect(await title.getText()).toEqual("unsaved file");
+  expect(await title.getText()).toEqual("unsaved file.dmn");
 
   // check save and close buttons
   const saveButton = await client.$("[data-ouia-component-id='save-button']");

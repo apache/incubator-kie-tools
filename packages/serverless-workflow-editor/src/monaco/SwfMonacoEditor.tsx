@@ -30,10 +30,11 @@ interface Props {
   fileName: string;
   onContentChange: (content: string) => void;
   channelType: ChannelType;
+  isReadOnly: boolean;
 }
 
 const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEditorApi | undefined, Props> = (
-  { content, fileName, onContentChange, channelType },
+  { content, fileName, onContentChange, channelType, isReadOnly },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
@@ -47,12 +48,23 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "json", editorEnvelopeCtx.operatingSystem);
+      return new DefaultSwfMonacoEditorController(
+        content,
+        onContentChange,
+        "json",
+        editorEnvelopeCtx.operatingSystem,
+        isReadOnly
+      );
     }
     if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", editorEnvelopeCtx.operatingSystem);
+      return new DefaultSwfMonacoEditorController(
+        content,
+        onContentChange,
+        "yaml",
+        editorEnvelopeCtx.operatingSystem,
+        isReadOnly
+      );
     }
-
     throw new Error(`Unsupported extension '${fileName}'`);
   }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
 
@@ -75,6 +87,10 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 
     initJsonCompletion(commands);
     initJsonCodeLenses(commands, channelType, editorEnvelopeCtx.operatingSystem);
+
+    return () => {
+      controller.dispose();
+    };
 
     // TODO: Add support to YAML
     // initYamlCompletion(commands);

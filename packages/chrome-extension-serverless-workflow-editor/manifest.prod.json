@@ -1,0 +1,28 @@
+{
+  "name": "Serverless Workflow Editor for GitHub",
+  "version": "0.0.0",
+  "manifest_version": 2,
+  "description": "Visualize and edit serverless workflow files using a graphical editor on GitHub",
+  "content_scripts": [
+    {
+      "run_at": "document_idle",
+      "js": ["content_scripts/github.js"],
+      "matches": ["https://*.github.com/*"],
+      "all_frames": true
+    }
+  ],
+  "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },
+  "browser_action": { "default_icon": "resources/icon_16.png" },
+  "background": { "scripts": ["background.js"], "persistent": true },
+  "web_accessible_resources": ["resources/*"],
+  "permissions": ["https://*.github.com/*", "http://*.github.com/*", "webRequest", "webRequestBlocking"],
+  "content_security_policy": "script-src 'self' https://raw.githubusercontent.com; object-src 'self'",
+  "externally_connectable": {
+    "matches": [
+      "https://*.github.com/*",
+      "http://*.github.com/*",
+      "https://kiegroup.github.io/*",
+      "http://kiegroup.github.io/*"
+    ]
+  }
+}
