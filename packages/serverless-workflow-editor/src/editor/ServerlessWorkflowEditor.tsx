@@ -77,11 +77,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | null>(null);
-  const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
-  const svgContainer = useRef<HTMLDivElement>(null);
-  const svgPreviewHiddenContainer = useRef<HTMLDivElement>(null);
-  const swfMonacoEditorRef = useRef<SwfTextEditorApi>(null);
+  const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | undefined>(undefined);
+  const [isSwfDiagramEditorOutOfSync, setSwfDiagramEditorOutOfSync] = useState<boolean>(false);
+  const swfDiagramEditorContainerRef = useRef<HTMLDivElement>(null);
+  const swfDiagramEditorHiddenContainerRef = useRef<HTMLDivElement>(null);
+  const swfTextEditorRef = useRef<SwfTextEditorApi>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -100,31 +100,31 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(swfMonacoEditorRef.current?.getContent() || "");
+          return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
-          svgPreviewHiddenContainer.current!.innerHTML = svgContainer.current!.innerHTML;
-          svgPreviewHiddenContainer.current!.getElementsByTagName("svg")[0].removeAttribute("style");
+          swfDiagramEditorHiddenContainerRef.current!.innerHTML = swfDiagramEditorContainerRef.current!.innerHTML;
+          swfDiagramEditorHiddenContainerRef.current!.getElementsByTagName("svg")[0].removeAttribute("style");
 
           // Remove zoom controls from SVG
-          svgPreviewHiddenContainer.current!.getElementsByTagName("svg")[0].lastChild?.remove();
+          swfDiagramEditorHiddenContainerRef.current!.getElementsByTagName("svg")[0].lastChild?.remove();
 
           // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
-          const svgContent = svgPreviewHiddenContainer.current!.innerHTML.replaceAll("<br>", "<br/>");
+          const svgContent = swfDiagramEditorHiddenContainerRef.current!.innerHTML.replaceAll("<br>", "<br/>");
 
           return Promise.resolve(svgContent);
         },
         undo: (): Promise<void> => {
-          return swfMonacoEditorRef.current?.undo() || Promise.resolve();
+          return swfTextEditorRef.current?.undo() || Promise.resolve();
         },
         redo: (): Promise<void> => {
-          return swfMonacoEditorRef.current?.redo() || Promise.resolve();
+          return swfTextEditorRef.current?.redo() || Promise.resolve();
         },
         validate: (): Notification[] => {
           return [];
         },
         setTheme: (theme: EditorTheme): Promise<void> => {
-          return swfMonacoEditorRef.current?.setTheme(theme) || Promise.resolve();
+          return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
       };
     },
@@ -156,28 +156,28 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
       const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
 
       if (mermaidSourceCode?.length > 0) {
-        svgContainer.current!.innerHTML = mermaidSourceCode;
-        svgContainer.current!.removeAttribute("data-processed");
-        mermaid.init(svgContainer.current!);
-        svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
+        swfDiagramEditorContainerRef.current!.innerHTML = mermaidSourceCode;
+        swfDiagramEditorContainerRef.current!.removeAttribute("data-processed");
+        mermaid.init(swfDiagramEditorContainerRef.current!);
+        svgPanZoom(swfDiagramEditorContainerRef.current!.getElementsByTagName("svg")[0], {
           controlIconsEnabled: true,
         });
-        svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-        svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
-        setDiagramOutOfSync(false);
+        swfDiagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+        swfDiagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.height = "100%";
+        setSwfDiagramEditorOutOfSync(false);
       } else {
-        svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
-        setDiagramOutOfSync(true);
+        swfDiagramEditorContainerRef.current!.innerHTML = "Create a workflow to see its preview here.";
+        setSwfDiagramEditorOutOfSync(true);
       }
     } catch (e) {
       console.error(e);
-      setDiagramOutOfSync(true);
+      setSwfDiagramEditorOutOfSync(true);
     }
   }, []);
 
-  const isVSCode = useCallback(() => {
+  const isVscode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
-  }, [props]);
+  }, [props.channelType]);
 
   const onContentChanged = useCallback(
     (newContent: string, operation?: SwfTextEditorOperation) => {
@@ -186,31 +186,31 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           props.onNewEdit(new KogitoEdit(newContent));
           break;
         case SwfTextEditorOperation.UNDO:
-          if (!isVSCode()) {
-            swfMonacoEditorRef.current?.undo();
+          if (!isVscode()) {
+            swfTextEditorRef.current?.undo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.UNDO);
           break;
         case SwfTextEditorOperation.REDO:
-          if (!isVSCode()) {
-            swfMonacoEditorRef.current?.redo();
+          if (!isVscode()) {
+            swfTextEditorRef.current?.redo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.REDO);
           break;
       }
       // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
       setTimeout(() => {
-        updateDiagram(swfMonacoEditorRef.current!.getContent());
+        updateDiagram(swfTextEditorRef.current!.getContent());
       }, 100);
     },
-    [props, isVSCode, updateDiagram]
+    [props, isVscode, updateDiagram]
   );
 
   useEffect(() => {
-    if (initialContent !== null) {
+    if (initialContent !== undefined) {
       updateDiagram(initialContent.originalContent);
     }
-  }, [initialContent, onContentChanged]);
+  }, [initialContent, updateDiagram]);
 
   const swfTextEditor = useMemo(
     () =>
@@ -221,29 +221,32 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           fileName={initialContent.path}
           onContentChange={onContentChanged}
           setValidationErrors={setValidationErrors}
-          ref={swfMonacoEditorRef}
+          ref={swfTextEditorRef}
           isReadOnly={props.isReadOnly}
         />
       ),
     [initialContent, props.channelType, onContentChanged, setValidationErrors]
   );
 
+  const swfDiagramEditorContainer = (
+    <>
+      <div
+        style={{ height: "100%", textAlign: "center", opacity: isSwfDiagramEditorOutOfSync ? 0.5 : 1 }}
+        ref={swfDiagramEditorContainerRef}
+        className={"mermaid"}
+      />
+      <div ref={swfDiagramEditorHiddenContainerRef} className={"hidden"} />
+    </>
+  );
+
   return (
     <>
-      {((props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB) &&
-        svgContainer) || (
+      {(isVscode() && swfDiagramEditorContainer) || (
         <Drawer isExpanded={true} isInline={true}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody>
-                  <div
-                    style={{ height: "100%", textAlign: "center", opacity: diagramOutOfSync ? 0.5 : 1 }}
-                    ref={svgContainer}
-                    className={"mermaid"}
-                  />
-                  <div ref={svgPreviewHiddenContainer} className={"hidden"} />
-                </DrawerPanelBody>
+                <DrawerPanelBody>{swfDiagramEditorContainer}</DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
