@@ -81,8 +81,7 @@ export class FeelEditorService {
    * @returns true if Suggest Widget is open, false otherwise.
    */
   static isSuggestWidgetOpen(): boolean {
-    // @ts-ignore
-    return !!this.getStandaloneEditor()?._contentWidgets["editor.widget.suggestWidget"]?.position;
+    return !!(this.getStandaloneEditor() as any)?._contentWidgets["editor.widget.suggestWidget"]?.position;
   }
 
   withDomElement(domElement: HTMLElement) {
