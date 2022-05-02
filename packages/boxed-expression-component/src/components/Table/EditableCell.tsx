@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
+import { FeelInput, FeelInputRef, FeelEditorService } from "@kie-tools/feel-input-component";
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -166,7 +166,6 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const onFeelKeyDown = useCallback(
     (event: Monaco.IKeyboardEvent, newValue: string) => {
       const key = event?.code ?? "";
-      const isModKey = event.altKey || event.ctrlKey || event.shiftKey;
       const isEnter = NavigationKeysUtils.isEnter(key);
       const isTab = NavigationKeysUtils.isTab(key);
       const isEsc = NavigationKeysUtils.isEscape(key);
@@ -174,8 +173,8 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       if (isEnter || isTab || isEsc) {
         event.preventDefault();
       }
-      /* FIXME: EditableCell: feelExpression selection stopped to work */
-      if ((!event.ctrlKey && isEnter) || isTab) {
+
+      if (isTab) {
         triggerReadMode(newValue);
         setMode(READ_MODE);
       }
@@ -183,9 +182,11 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       if (isEnter) {
         if (event.ctrlKey) {
           feelInputRef.current?.insertNewLineToMonaco();
-        } else {
-          //this setTimeout fixes the focus outside of the table when the suggestions opens
-          setTimeout(() => focusLowerCell(textarea.current), 0);
+        } else if (!FeelEditorService.isSuggestionsWidgetOpen()) {
+          console.log("go to lower cell");
+          triggerReadMode(newValue);
+          setMode(READ_MODE);
+          focusLowerCell(textarea.current);
         }
       }
 
