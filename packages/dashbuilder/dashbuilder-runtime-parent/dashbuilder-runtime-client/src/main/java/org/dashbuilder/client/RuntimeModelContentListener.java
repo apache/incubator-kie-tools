@@ -23,15 +23,19 @@ import javax.inject.Inject;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.MessageEvent;
 import jsinterop.base.Js;
+import org.dashbuilder.client.screens.RouterScreen;
 import org.dashbuilder.displayer.external.ExternalComponentMessage;
 
 @ApplicationScoped
 public class RuntimeModelContentListener {
 
     private static final String READY = "ready";
-    
+
     @Inject
     RuntimeCommunication runtimeCommunication;
+
+    @Inject
+    RouterScreen routerScreen;
 
     public void start(Consumer<String> contentConsumer) {
         DomGlobal.window.addEventListener("message", evt -> {
@@ -39,10 +43,10 @@ public class RuntimeModelContentListener {
             try {
                 if (!READY.equals(message.data) && !(message.data instanceof ExternalComponentMessage)) {
                     contentConsumer.accept((String) message.data);
-                    runtimeCommunication.showSuccess("Dashboard Updated");
+                    DomGlobal.console.log("Dashboard Updated");
                 }
             } catch (Exception e) {
-                runtimeCommunication.showWarning("Error loading content: " + e.getMessage(), e);
+                routerScreen.goToContentError(e);
             }
         });
         if (DomGlobal.window.parent != null) {
