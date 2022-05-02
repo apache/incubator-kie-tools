@@ -26,7 +26,8 @@
     "@kie-tools-core/notifications": "0.0.0",
     "@kie-tools-core/backend": "0.0.0",
     "@kie-tools-core/i18n": "0.0.0",
-    "minimatch": "^3.0.4"
+    "minimatch": "^3.0.4",
+    "@types/minimatch": "^3.0.4"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

@@ -34,8 +34,6 @@
     "bootstrap": "pnpm i",
     "env:print": "build-env --print-env",
     "env:vars": "build-env --print-vars",
-    "build:dev": "pnpm run build:dev --stream --filter",
-    "build:prod": "pnpm run build:prod --stream --filter",
     "update-version-to": "node ./scripts/update_version.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

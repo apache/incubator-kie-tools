@@ -56,7 +56,8 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "@kie-tools-core/webpack-base": "0.0.0",
-    "cypress-real-events": "^1.7.0"
+    "cypress-real-events": "^1.7.0",
+    "@types/minimatch": "^3.0.4"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

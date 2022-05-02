@@ -26,7 +26,8 @@
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.0.0",
+    "@types/minimatch": "^3.0.4"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
