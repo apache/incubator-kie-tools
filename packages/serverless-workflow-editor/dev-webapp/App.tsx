@@ -112,6 +112,7 @@ export const App = () => {
                 console.log("Nothing to do.");
               }
             }}
+            isReadOnly={false}
           />
         </div>
       </PageSection>

@@ -79,9 +79,8 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
   const [isReady, setReady] = useState(false);
-
   const envelopeMapping = useMemo(
-    () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.fileName + "." + props.file.fileExtension),
+    () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.path ?? props.file.fileName),
     [props.editorEnvelopeLocator, props.file]
   );
 
@@ -129,7 +128,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   useEffectAfterFirstRender(() => {
     props.file.getFileContents().then((content) => {
-      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content! });
+      envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ content: content!, path: props.file.fileName });
     });
   }, [props.file.getFileContents]);
 

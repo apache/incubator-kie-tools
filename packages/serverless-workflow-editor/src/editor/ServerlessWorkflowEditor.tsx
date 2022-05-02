@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -30,6 +30,7 @@ import mermaid from "mermaid";
 import { MonacoEditorOperation, SwfMonacoEditorApi } from "../monaco/SwfMonacoEditorApi";
 import { SwfMonacoEditor } from "../monaco/SwfMonacoEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { editor } from "monaco-editor";
 import "../../static/css/editor.css";
 
 interface Props {
@@ -66,17 +67,23 @@ interface Props {
    * ChannelType where the component is running.
    */
   channelType: ChannelType;
+  isReadOnly: boolean;
 }
 
 export type ServerlessWorkflowEditorRef = {
   setContent(path: string, content: string): Promise<void>;
 };
 
+type ServerlessWorkflowEditorContent = {
+  originalContent: string;
+  path: string;
+};
+
 const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [initialContent, setInitialContent] = useState({ originalContent: "", path: "" });
+  const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | null>(null);
   const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
   const svgContainer = useRef<HTMLDivElement>(null);
   const svgPreviewHiddenContainer = useRef<HTMLDivElement>(null);
@@ -130,45 +137,86 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     []
   );
 
-  const onContentChanged = useCallback(
-    (newContent: string, operation?: MonacoEditorOperation) => {
-      if (operation === MonacoEditorOperation.EDIT) {
-        props.onNewEdit(new KogitoEdit(newContent));
-      } else if (operation === MonacoEditorOperation.UNDO) {
-        props.onStateControlCommandUpdate(StateControlCommand.UNDO);
-      } else if (operation === MonacoEditorOperation.REDO) {
-        props.onStateControlCommandUpdate(StateControlCommand.REDO);
-      }
+  const setValidationErrors = (errors: editor.IMarker[]) => {
+    if (!initialContent) {
+      return;
+    }
+    const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
+      type: "PROBLEM",
+      path: initialContent.path,
+      severity: "ERROR",
+      message: `${error.message}`,
+      position: {
+        startLineNumber: error.startLineNumber,
+        startColumn: error.startColumn,
+        endLineNumber: error.endLineNumber,
+        endColumn: error.endColumn,
+      },
+    }));
+    props.setNotifications(initialContent.path, notifications);
+  };
 
-      try {
-        const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
-        const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
+  const updateDiagram = useCallback((newContent: string) => {
+    try {
+      const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
+      const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
 
-        if (mermaidSourceCode?.length > 0) {
-          svgContainer.current!.innerHTML = mermaidSourceCode;
-          svgContainer.current!.removeAttribute("data-processed");
-          mermaid.init(svgContainer.current!);
-          svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
-            controlIconsEnabled: true,
-          });
-          svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-          svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
-          setDiagramOutOfSync(false);
-        } else {
-          svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
-          setDiagramOutOfSync(true);
-        }
-      } catch (e) {
-        console.error(e);
+      if (mermaidSourceCode?.length > 0) {
+        svgContainer.current!.innerHTML = mermaidSourceCode;
+        svgContainer.current!.removeAttribute("data-processed");
+        mermaid.init(svgContainer.current!);
+        svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
+          controlIconsEnabled: true,
+        });
+        svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+        svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
+        setDiagramOutOfSync(false);
+      } else {
+        svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
         setDiagramOutOfSync(true);
       }
+    } catch (e) {
+      console.error(e);
+      setDiagramOutOfSync(true);
+    }
+  }, []);
+
+  const isVSCode = useCallback(() => {
+    return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
+  }, [props]);
+
+  const onContentChanged = useCallback(
+    (newContent: string, operation?: MonacoEditorOperation) => {
+      switch (operation) {
+        case MonacoEditorOperation.EDIT:
+          props.onNewEdit(new KogitoEdit(newContent));
+          break;
+        case MonacoEditorOperation.UNDO:
+          if (!isVSCode()) {
+            swfMonacoEditorRef.current?.undo();
+          }
+          props.onStateControlCommandUpdate(StateControlCommand.UNDO);
+          break;
+        case MonacoEditorOperation.REDO:
+          if (!isVSCode()) {
+            swfMonacoEditorRef.current?.redo();
+          }
+          props.onStateControlCommandUpdate(StateControlCommand.REDO);
+          break;
+      }
+      // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
+      setTimeout(() => {
+        updateDiagram(swfMonacoEditorRef.current!.getContent());
+      }, 100);
     },
-    [props]
+    [props, isVSCode, updateDiagram]
   );
 
   useEffect(() => {
     props.onReady.call(null);
-    onContentChanged(initialContent.originalContent);
+    if (initialContent !== null) {
+      updateDiagram(initialContent.originalContent);
+    }
   }, [initialContent, onContentChanged, props.onReady]);
 
   const panelContent = (
@@ -184,20 +232,26 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
     </DrawerPanelContent>
   );
 
+  const swfMonacoEditor = useMemo(
+    () =>
+      initialContent && (
+        <SwfMonacoEditor
+          channelType={props.channelType}
+          content={initialContent.originalContent}
+          fileName={initialContent.path}
+          onContentChange={onContentChanged}
+          setValidationErrors={setValidationErrors}
+          ref={swfMonacoEditorRef}
+          isReadOnly={props.isReadOnly}
+        />
+      ),
+    [initialContent, props.channelType, onContentChanged, setValidationErrors]
+  );
+
   return (
     <Drawer isExpanded={true} isInline={true}>
       <DrawerContent panelContent={panelContent}>
-        <DrawerContentBody style={{ overflowY: "hidden" }}>
-          {initialContent.path !== "" && (
-            <SwfMonacoEditor
-              channelType={props.channelType}
-              content={initialContent.originalContent}
-              fileName={initialContent.path}
-              onContentChange={onContentChanged}
-              ref={swfMonacoEditorRef}
-            />
-          )}
-        </DrawerContentBody>
+        <DrawerContentBody style={{ overflowY: "hidden" }}>{swfMonacoEditor}</DrawerContentBody>
       </DrawerContent>
     </Drawer>
   );

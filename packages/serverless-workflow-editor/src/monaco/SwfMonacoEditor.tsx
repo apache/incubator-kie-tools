@@ -24,16 +24,19 @@ import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-t
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { SwfServiceCatalogSingleton } from "../serviceCatalog";
 import { ServerlessWorkflowEditorChannelApi } from "../editor";
+import { editor } from "monaco-editor";
 
 interface Props {
   content: string;
   fileName: string;
   onContentChange: (content: string) => void;
   channelType: ChannelType;
+  setValidationErrors: (errors: editor.IMarker[]) => void;
+  isReadOnly: boolean;
 }
 
 const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEditorApi | undefined, Props> = (
-  { content, fileName, onContentChange, channelType },
+  { content, fileName, onContentChange, channelType, isReadOnly, setValidationErrors },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
@@ -47,12 +50,25 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 
   const controller: SwfMonacoEditorApi = useMemo<SwfMonacoEditorApi>(() => {
     if (fileName.endsWith(".sw.json")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "json", editorEnvelopeCtx.operatingSystem);
+      return new DefaultSwfMonacoEditorController(
+        content,
+        onContentChange,
+        "json",
+        editorEnvelopeCtx.operatingSystem,
+        isReadOnly,
+        setValidationErrors
+      );
     }
     if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-      return new DefaultSwfMonacoEditorController(content, onContentChange, "yaml", editorEnvelopeCtx.operatingSystem);
+      return new DefaultSwfMonacoEditorController(
+        content,
+        onContentChange,
+        "yaml",
+        editorEnvelopeCtx.operatingSystem,
+        isReadOnly,
+        setValidationErrors
+      );
     }
-
     throw new Error(`Unsupported extension '${fileName}'`);
   }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
 
@@ -75,6 +91,10 @@ const RefForwardingSwfMonacoEditor: React.ForwardRefRenderFunction<SwfMonacoEdit
 
     initJsonCompletion(commands);
     initJsonCodeLenses(commands, channelType, editorEnvelopeCtx.operatingSystem);
+
+    return () => {
+      controller.dispose();
+    };
 
     // TODO: Add support to YAML
     // initYamlCompletion(commands);

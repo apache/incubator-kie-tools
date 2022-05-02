@@ -1,5 +1,5 @@
-/**
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-import { NotificationSeverity } from "./NotificationSeverity";
-import { NotificationType } from "./NotificationType";
+import { init } from "@kie-tools-core/editor/dist/envelope";
+import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor/dist/editor";
 
-export interface Notification {
-  path: string;
-  severity: NotificationSeverity;
-  message: string;
-  type: NotificationType;
-  position?: Position;
-}
-
-export interface Position {
-  startLineNumber: number;
-  startColumn: number;
-  endLineNumber: number;
-  endColumn: number;
-}
+init({
+  container: document.getElementById("envelope-app")!,
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
+  editorFactory: new ServerlessWorkflowEditorFactory(),
+});

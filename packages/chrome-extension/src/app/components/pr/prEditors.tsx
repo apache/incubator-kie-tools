@@ -30,7 +30,7 @@ import { PrInfo } from "./IsolatedPrEditor";
 import { OpenInExternalEditorButton } from "../openRepoInExternalEditor/OpenInExternalEditorButton";
 import { GitHubPageType } from "../../github/GitHubPageType";
 
-export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
+export function renderPrEditorsApp(args: Globals) {
   // Necessary because GitHub apparently "caches" DOM structures between changes on History.
   // Without this method you can observe duplicated elements when using back/forward browser buttons.
   cleanup(args.id);
@@ -46,7 +46,7 @@ export function renderPrEditorsApp(args: Globals & { contentPath: string }) {
       resourceContentServiceFactory={args.resourceContentServiceFactory}
       externalEditorManager={args.externalEditorManager}
     >
-      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} contentPath={args.contentPath} />
+      <PrEditorsApp prInfo={parsePrInfo(args.dependencies)} />
       {ReactDOM.createPortal(
         <OpenInExternalEditorButton className={"btn btn-sm"} pageType={GitHubPageType.PR_FILES_OR_COMMITS} />,
         openRepoInExternalEditorContainer(args.id, args.dependencies.openRepoInExternalEditor.buttonContainerOnPrs()!)
