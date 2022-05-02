@@ -17,7 +17,16 @@
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools/stunner-editors": "0.0.0",
     "@kie-tools/kie-bc-editors": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0"
+    "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "minimatch": "^3.0.4"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

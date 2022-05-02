@@ -28,7 +28,13 @@
     "react-dom": "^17.0.2",
     "react-id-generator": "^3.0.1",
     "react-resizable": "^1.11.0",
-    "react-table": "^7.6.2"
+    "react-table": "^7.6.2",
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2",
+    "@patternfly/react-styles": "^4.18.8",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "@patternfly/react-table": "^4.27.15"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "0.0.0",

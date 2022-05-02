@@ -20,8 +20,10 @@ const fs = require("fs");
 
 module.exports = {
   quarkusRunnerPath: () => {
-    const packageRoot = path.dirname(require.resolve("@kie-tools/backend-extended-services"));
-    const jarPath = `${packageRoot}/kogito-extended-services-quarkus/target/kogito-extended-services-quarkus-${buildEnv.global.version}-runner.jar`;
+    const jarPath = path.resolve(
+      __dirname,
+      `kogito-extended-services-quarkus/target/kogito-extended-services-quarkus-${buildEnv.global.version}-runner.jar`
+    );
     if (!fs.existsSync(jarPath)) {
       console.error(`Quarkus Runner not found at path '${jarPath}'`);
     }

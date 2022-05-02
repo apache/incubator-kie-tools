@@ -16,6 +16,10 @@
   "dependencies": {
     "@kie-tools-core/editor": "0.0.0",
     "@kie-tools-core/monaco-editor": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
+    "monaco-editor": "^0.23.0",
     "@kie-tools-core/patternfly-base": "0.0.0",
     "@kie-tools/pmml-editor-marshaller": "0.0.0",
     "@types/lodash": "^4.14.168",
@@ -29,13 +33,18 @@
     "react-cool-onclickoutside": "^1.6.1",
     "react-monaco-editor": "^0.43.0",
     "react-redux": "^7.2.4",
+    "react-router": "^5.2.1",
     "react-router-dom": "^5.2.1",
     "react-sortable-hoc": "^2.0.0",
     "react-transition-group": "^4.4.1",
     "redux": "^4.1.0",
     "uuid": "^8.3.2",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "@patternfly/patternfly": "^4.135.2",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "@patternfly/react-charts": "^6.15.23"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

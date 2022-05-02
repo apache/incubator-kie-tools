@@ -1,8 +1,7 @@
 lockfileVersion: 5.3
 
 overrides:
-  react-dropzone: ^11.4.2
-  "@types/react": ^17.0.6
+  react-monaco-editor@0.43.0>monaco-editor: ^0.23.0
 
 importers:
   .:
@@ -127,7 +126,7 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie/npm-treatment-tool": 1.1.1
-      "@lerna/project": registry.npmjs.org/@lerna/project/4.0.0
+      "@lerna/project": 4.0.0
       "@severlessworkflow/sdk-typescript": 3.0.3
       "@simbathesailor/use-what-changed": 2.0.0
       "@testing-library/jest-dom": 5.16.1
@@ -242,12 +241,26 @@ importers:
   examples/base64png-editor:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      react: ^17.0.2
+      react-dom: ^17.0.2
     dependencies:
       "@kie-tools-core/editor": link:../../packages/editor
+      "@kie-tools-core/guided-tour": link:../../packages/guided-tour
+      "@kie-tools-core/notifications": link:../../packages/notifications
       "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
+      "@kie-tools-core/workspace": link:../../packages/workspace
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools/build-env": link:../../packages/build-env
@@ -298,9 +311,13 @@ importers:
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
     dependencies:
       "@kie-tools-core/envelope": link:../../packages/envelope
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools/build-env": link:../../packages/build-env
@@ -350,13 +367,19 @@ importers:
 
   examples/ping-pong-view-react:
     specifiers:
+      "@kie-tools-core/envelope": 0.0.0
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-examples/ping-pong-view": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
     dependencies:
+      "@kie-tools-core/envelope": link:../../packages/envelope
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
       "@kie-tools-examples/ping-pong-view": link:../ping-pong-view
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools/build-env": link:../../packages/build-env
@@ -367,15 +390,20 @@ importers:
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
     dependencies:
       "@kie-tools-core/envelope": link:../../packages/envelope
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools/build-env": link:../../packages/build-env
 
   examples/todo-list-view-vscode-extension:
     specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/vscode-extension": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
@@ -385,12 +413,14 @@ importers:
       "@kie-tools-core/vscode-extension": link:../../packages/vscode-extension
       "@kie-tools-examples/todo-list-view": link:../todo-list-view
     devDependencies:
+      "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@kie-tools/build-env": link:../../packages/build-env
 
   examples/webapp:
     specifiers:
+      "@kie-tools-core/editor": 0.0.0
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
@@ -403,9 +433,18 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/kie-bc-editors": 0.0.0
       "@kie-tools/kie-editors-standalone": 0.0.0
+      "@kie-tools/stunner-editors": 0.0.0
+      "@patternfly/patternfly": ^4.135.2
+      "@patternfly/react-charts": ^6.15.23
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@patternfly/react-tokens": ^4.33.1
       "@types/react-router-dom": ^5.1.7
+      react: ^17.0.2
+      react-dom: ^17.0.2
       react-router-dom: ^5.2.1
     dependencies:
+      "@kie-tools-core/editor": link:../../packages/editor
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
       "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
       "@kie-tools-examples/base64png-editor": link:../base64png-editor
@@ -415,12 +454,20 @@ importers:
       "@kie-tools-examples/todo-list-view": link:../todo-list-view
       "@kie-tools/kie-bc-editors": link:../../packages/kie-bc-editors
       "@kie-tools/kie-editors-standalone": link:../../packages/kie-editors-standalone
+      "@patternfly/patternfly": registry.npmjs.org/@patternfly/patternfly/4.135.2
+      "@patternfly/react-charts": registry.npmjs.org/@patternfly/react-charts/6.15.23_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-core": registry.npmjs.org/@patternfly/react-core/4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": registry.npmjs.org/@patternfly/react-icons/4.19.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-tokens": registry.npmjs.org/@patternfly/react-tokens/4.33.1
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@kie-tools/build-env": link:../../packages/build-env
+      "@kie-tools/stunner-editors": link:../../packages/stunner-editors
       "@types/react-router-dom": 5.1.7
-      react-router-dom: 5.3.0
+      react-router-dom: 5.3.0_react@17.0.2
 
   packages/backend:
     specifiers:
@@ -461,29 +508,41 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/feel-input-component": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@patternfly/react-styles": ^4.18.8
+      "@patternfly/react-table": ^4.27.15
       "@types/cypress-image-snapshot": ^3.1.6
       "@types/react-resizable": ^1.7.2
       "@types/react-table": ^7.0.25
       cypress-image-snapshot: ^4.0.1
       cypress-real-events: ^1.7.0
       gh-pages: ^3.2.3
+      lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
       react-id-generator: ^3.0.1
       react-json-view: ^1.21.3
       react-resizable: ^1.11.0
       react-table: ^7.6.2
+      uuid: ^8.3.2
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/feel-input-component": link:../feel-input-component
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-styles": 4.18.8
+      "@patternfly/react-table": 4.37.8_react-dom@17.0.2+react@17.0.2
+      lodash: 4.17.21
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-id-generator: 3.0.2_react@17.0.2
       react-resizable: 1.11.1_react-dom@17.0.2+react@17.0.2
       react-table: 7.7.0_react@17.0.2
+      uuid: 8.3.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -508,6 +567,7 @@ importers:
       "@kie-tools-core/i18n": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@octokit/rest": ^18.5.3
       minimatch: ^3.0.4
@@ -517,6 +577,7 @@ importers:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
       "@octokit/rest": 18.5.3
       minimatch: 3.0.5
       react: 17.0.2
@@ -528,6 +589,8 @@ importers:
   packages/chrome-extension-pack-kogito-kie-editors:
     specifiers:
       "@kie-tools-core/chrome-extension": 0.0.0
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
@@ -536,6 +599,8 @@ importers:
       "@kie-tools/stunner-editors": 0.0.0
     dependencies:
       "@kie-tools-core/chrome-extension": link:../chrome-extension
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
     devDependencies:
@@ -575,6 +640,8 @@ importers:
 
   packages/desktop:
     specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
       "@kie-tools-core/monaco-editor": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
@@ -583,16 +650,24 @@ importers:
       "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/kie-bc-editors": 0.0.0
       "@kie-tools/stunner-editors": 0.0.0
+      "@patternfly/patternfly": ^4.135.2
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       electron: ^12.0.11
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
     dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
+      "@patternfly/patternfly": 4.135.2
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       electron: 12.2.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -619,24 +694,36 @@ importers:
 
   packages/dmn-dev-sandbox-form-webapp:
     specifiers:
+      "@kie-tools-core/i18n": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/form-dmn": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/patternfly": ^4.135.2
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
+      react: ^17.0.2
+      react-dom: ^17.0.2
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
     dependencies:
+      "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/form-dmn": link:../form-dmn
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/patternfly": 4.135.2
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      react-router: 5.2.1
-      react-router-dom: 5.3.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -740,12 +827,14 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
+      monaco-editor: ^0.23.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      monaco-editor: 0.23.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
@@ -761,6 +850,8 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
@@ -774,6 +865,8 @@ importers:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       ajv: 6.12.6
       ajv-errors: 1.0.1_ajv@6.12.6
       deep-object-diff: 1.1.0
@@ -782,7 +875,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       uniforms: 3.6.2_react@17.0.2
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
-      uniforms-patternfly: 4.7.5_react@17.0.2
+      uniforms-patternfly: 4.7.5_1fb6ec186755ff4a3de22169479d60fd
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -797,6 +890,8 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/form": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
@@ -811,6 +906,8 @@ importers:
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools/form": link:../form
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       ajv: 6.12.6
       ajv-errors: 1.0.1_ajv@6.12.6
       deep-object-diff: 1.1.0
@@ -819,7 +916,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       uniforms: 3.6.2_react@17.0.2
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
-      uniforms-patternfly: 4.7.5_react@17.0.2
+      uniforms-patternfly: 4.7.5_1fb6ec186755ff4a3de22169479d60fd
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -833,12 +930,14 @@ importers:
       "@kie-tools/uniforms-bootstrap4-codegen": 0.0.0
       "@kie-tools/uniforms-patternfly-codegen": 0.0.0
       inquirer: ^8.1.1
+      lodash: ^4.17.21
       uniforms: ^3.5.5
       uniforms-bridge-json-schema: ^3.5.5
     dependencies:
       "@kie-tools/uniforms-bootstrap4-codegen": link:../uniforms-bootstrap4-codegen
       "@kie-tools/uniforms-patternfly-codegen": link:../uniforms-patternfly-codegen
       inquirer: 8.2.0
+      lodash: 4.17.21
       uniforms: 3.6.2
       uniforms-bridge-json-schema: 3.6.2
     devDependencies:
@@ -916,10 +1015,22 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/patternfly": ^4.135.2
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@patternfly/react-table": ^4.27.15
+      react: ^17.0.2
+      react-dom: ^17.0.2
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/patternfly": 4.135.2
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-table": 4.37.8_react-dom@17.0.2+react@17.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -945,31 +1056,67 @@ importers:
   packages/kie-bc-editors:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/vscode-java-code-completion": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/pmml-editor-marshaller": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
+      "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/pmml-editor-marshaller": link:../pmml-editor-marshaller
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/kie-editors-standalone:
     specifiers:
+      "@kie-tools-core/backend": 0.0.0
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/kie-bc-editors": 0.0.0
       "@kie-tools/stunner-editors": 0.0.0
+      minimatch: ^3.0.4
     devDependencies:
+      "@kie-tools-core/backend": link:../backend
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/stunner-editors": link:../stunner-editors
+      minimatch: 3.0.5
 
   packages/kie-sandbox-extended-services-image:
     specifiers:
@@ -1066,13 +1213,20 @@ importers:
   packages/online-editor:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/monaco-editor": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/boxed-expression-component": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/extended-services": 0.0.0
+      "@kie-tools/form": 0.0.0
       "@kie-tools/form-dmn": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/kie-bc-editors": 0.0.0
@@ -1081,22 +1235,39 @@ importers:
       "@kie-tools/stunner-editors": 0.0.0
       "@kie-tools/unitables": 0.0.0
       "@kie-tools/unitables-dmn": 0.0.0
+      "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
+      "@patternfly/patternfly": ^4.135.2
+      "@patternfly/react-charts": ^6.15.23
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@patternfly/react-tokens": ^4.33.1
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
       buffer: ^6.0.3
       cypress-real-events: ^1.7.0
       isomorphic-git: ^1.11.1
       jszip: ^3.7.1
+      minimatch: ^3.0.4
       moment: ^2.29.1
+      react: ^17.0.2
+      react-dom: ^17.0.2
       react-dropzone: ^11.4.2
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
+      uuid: ^8.3.2
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/monaco-editor": link:../monaco-editor
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
+      "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
@@ -1104,14 +1275,24 @@ importers:
       "@kie-tools/pmml-editor": link:../pmml-editor
       "@kie-tools/unitables": link:../unitables
       "@kie-tools/unitables-dmn": link:../unitables-dmn
+      "@octokit/plugin-rest-endpoint-methods": 5.0.1
       "@octokit/rest": 18.5.3
+      "@patternfly/patternfly": 4.135.2
+      "@patternfly/react-charts": 6.15.23_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-tokens": 4.33.1
       buffer: 6.0.3
       isomorphic-git: 1.11.1
       jszip: 3.7.1
+      minimatch: 3.0.5
       moment: 2.29.2
-      react-dropzone: 11.4.2
-      react-router: 5.2.1
-      react-router-dom: 5.3.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-dropzone: 11.4.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+      uuid: 8.3.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -1154,12 +1335,19 @@ importers:
   packages/pmml-editor:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
       "@kie-tools-core/monaco-editor": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/pmml-editor-marshaller": 0.0.0
+      "@patternfly/patternfly": ^4.135.2
+      "@patternfly/react-charts": ^6.15.23
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
       "@types/react-redux": ^7.1.16
       "@types/react-router-dom": ^5.1.7
@@ -1169,11 +1357,13 @@ importers:
       gh-pages: ^3.2.3
       immer: ^9.0.6
       lodash: ^4.17.21
+      monaco-editor: ^0.23.0
       react: ^17.0.2
       react-cool-onclickoutside: ^1.6.1
       react-dom: ^17.0.2
       react-monaco-editor: ^0.43.0
       react-redux: ^7.2.4
+      react-router: ^5.2.1
       react-router-dom: ^5.2.1
       react-sortable-hoc: ^2.0.0
       react-transition-group: ^4.4.1
@@ -1181,9 +1371,16 @@ importers:
       uuid: ^8.3.2
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/monaco-editor": link:../monaco-editor
+      "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/pmml-editor-marshaller": link:../pmml-editor-marshaller
+      "@patternfly/patternfly": registry.npmjs.org/@patternfly/patternfly/4.135.2
+      "@patternfly/react-charts": 6.15.23_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       "@types/lodash": 4.14.169
       "@types/react-redux": 7.1.16
       "@types/react-router-dom": 5.1.7
@@ -1192,11 +1389,13 @@ importers:
       combine-reducer: 1.0.2
       immer: 9.0.7
       lodash: 4.17.21
+      monaco-editor: 0.23.0
       react: 17.0.2
       react-cool-onclickoutside: 1.6.2_react@17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-monaco-editor: 0.43.0_ff4c499fe654e4edeee30199f4db039d
       react-redux: 7.2.4_react-dom@17.0.2+react@17.0.2
+      react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
       react-sortable-hoc: 2.0.0_react-dom@17.0.2+react@17.0.2
       react-transition-group: 4.4.1_react-dom@17.0.2+react@17.0.2
@@ -1335,23 +1534,35 @@ importers:
   packages/stunner-editors-dmn-loader:
     specifiers:
       "@kie-tools-core/keyboard-shortcuts": 0.0.0
+      "@kie-tools-core/monaco-editor": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/boxed-expression-component": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/import-java-classes-component": 0.0.0
+      lodash: ^4.17.21
+      monaco-editor: ^0.23.0
+      monaco-editor-webpack-plugin: ^7.0.1
       react: ^17.0.2
       react-dom: ^17.0.2
+      webpack: ^5.36.2
     dependencies:
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
       "@kie-tools/import-java-classes-component": link:../import-java-classes-component
+      lodash: 4.17.21
+      monaco-editor: 0.23.0
+      monaco-editor-webpack-plugin: 7.0.1_af8a768084f903a23f0321396e3ef1d0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
+      webpack: 5.70.0_webpack-cli@4.7.0
 
   packages/uniforms-bootstrap4-codegen:
     specifiers:
@@ -1367,8 +1578,8 @@ importers:
     dependencies:
       lodash: 4.17.21
       prettier: 2.3.0
-      react: registry.npmjs.org/react/17.0.2
-      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
       underscore: 1.13.1
       uniforms: 3.6.2_react@17.0.2
     devDependencies:
@@ -1389,8 +1600,8 @@ importers:
     dependencies:
       lodash: 4.17.21
       prettier: 2.3.0
-      react: registry.npmjs.org/react/17.0.2
-      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
       uniforms: 3.6.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
@@ -1403,10 +1614,17 @@ importers:
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools/boxed-expression-component": 0.0.0
       "@kie-tools/form": 0.0.0
+      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/react-table": ^7.0.25
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
+      deep-object-diff: ^1.1.0
       lodash: ^4.17.21
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-id-generator: ^3.0.1
       react-table: ^7.6.2
       uniforms: ^3.5.5
       uniforms-bridge-json-schema: ^3.5.5
@@ -1416,14 +1634,21 @@ importers:
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
       "@kie-tools/form": link:../form
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       "@types/react-table": 7.7.7
       ajv: 6.12.6
       ajv-errors: 1.0.1_ajv@6.12.6
+      deep-object-diff: 1.1.0
       lodash: 4.17.21
-      react-table: 7.7.0
-      uniforms: 3.6.2
-      uniforms-bridge-json-schema: 3.6.2
-      uniforms-patternfly: 4.7.5
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-id-generator: 3.0.2_react@17.0.2
+      react-table: 7.7.0_react@17.0.2
+      uniforms: 3.6.2_react@17.0.2
+      uniforms-bridge-json-schema: 3.6.2_react@17.0.2
+      uniforms-patternfly: 4.7.5_1fb6ec186755ff4a3de22169479d60fd
 
   packages/unitables-dmn:
     specifiers:
@@ -1431,11 +1656,18 @@ importers:
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools/boxed-expression-component": 0.0.0
       "@kie-tools/form": 0.0.0
+      "@kie-tools/form-dmn": 0.0.0
+      "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/unitables": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/react-table": ^7.0.25
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       lodash: ^4.17.21
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-id-generator: ^3.0.1
       react-table: ^7.6.2
       uniforms: ^3.5.5
       uniforms-bridge-json-schema: ^3.5.5
@@ -1445,15 +1677,22 @@ importers:
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
       "@kie-tools/form": link:../form
+      "@kie-tools/form-dmn": link:../form-dmn
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/unitables": link:../unitables
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       "@types/react-table": 7.7.7
       ajv: 6.12.6
       ajv-errors: 1.0.1_ajv@6.12.6
       lodash: 4.17.21
-      react-table: 7.7.0
-      uniforms: 3.6.2
-      uniforms-bridge-json-schema: 3.6.2
-      uniforms-patternfly: 4.7.5
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-id-generator: 3.0.2_react@17.0.2
+      react-table: 7.7.0_react@17.0.2
+      uniforms: 3.6.2_react@17.0.2
+      uniforms-bridge-json-schema: 3.6.2_react@17.0.2
+      uniforms-patternfly: 4.7.5_1fb6ec186755ff4a3de22169479d60fd
 
   packages/vscode-extension:
     specifiers:
@@ -1501,7 +1740,9 @@ importers:
 
   packages/vscode-extension-bpmn-editor:
     specifiers:
+      "@kie-tools-core/backend": 0.0.0
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/vscode-extension": 0.0.0
@@ -1511,7 +1752,9 @@ importers:
       "@kie-tools/stunner-editors": 0.0.0
       "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
     dependencies:
+      "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
@@ -1524,7 +1767,9 @@ importers:
 
   packages/vscode-extension-dmn-editor:
     specifiers:
+      "@kie-tools-core/backend": 0.0.0
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/vscode-extension": 0.0.0
@@ -1534,7 +1779,9 @@ importers:
       "@kie-tools/stunner-editors": 0.0.0
       "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
     dependencies:
+      "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
@@ -1557,23 +1804,39 @@ importers:
 
   packages/vscode-extension-pack-kogito-kie-editors:
     specifiers:
+      "@kie-tools-core/backend": 0.0.0
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/monaco-editor": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/vscode-extension": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/kie-bc-editors": 0.0.0
       "@kie-tools/pmml-editor": 0.0.0
       "@kie-tools/stunner-editors": 0.0.0
       "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
       minimatch: ^3.0.4
+      monaco-editor: ^0.23.0
     dependencies:
+      "@kie-tools-core/backend": link:../backend
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/monaco-editor": link:../monaco-editor
+      "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
+      "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/pmml-editor": link:../pmml-editor
       "@kie-tools/vscode-java-code-completion-extension-plugin": link:../vscode-java-code-completion-extension-plugin
       minimatch: 3.0.5
+      monaco-editor: registry.npmjs.org/monaco-editor/0.23.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -1582,8 +1845,10 @@ importers:
 
   packages/vscode-extension-pmml-editor:
     specifiers:
+      "@kie-tools-core/backend": 0.0.0
       "@kie-tools-core/editor": 0.0.0
       "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/monaco-editor": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/vscode-extension": 0.0.0
@@ -1592,8 +1857,10 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/pmml-editor": 0.0.0
     dependencies:
+      "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/monaco-editor": link:../monaco-editor
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
       "@kie-tools-core/workspace": link:../workspace
@@ -3750,7 +4017,7 @@ packages:
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
       glob: 7.2.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       istanbul-lib-coverage: 3.2.0
       istanbul-lib-instrument: 4.0.3
       istanbul-lib-report: 3.0.0
@@ -3777,8 +4044,8 @@ packages:
     engines: { node: ">= 10.14.2" }
     dependencies:
       callsites: 3.1.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
-      source-map: registry.npmjs.org/source-map/0.6.1
+      graceful-fs: 4.2.10
+      source-map: 0.6.1
     dev: true
 
   /@jest/test-result/26.6.2:
@@ -3798,7 +4065,7 @@ packages:
     engines: { node: ">= 10.14.2" }
     dependencies:
       "@jest/test-result": 26.6.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-haste-map: 26.6.2
       jest-runner: 26.6.3
       jest-runtime: 26.6.3
@@ -3821,7 +4088,7 @@ packages:
       chalk: 4.1.2
       convert-source-map: 1.7.0
       fast-json-stable-stringify: 2.1.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-haste-map: 26.6.2
       jest-regex-util: 26.0.0
       jest-util: 26.6.2
@@ -3893,7 +4160,6 @@ packages:
       load-json-file: 6.2.0
       npm-package-arg: 8.1.5
       write-pkg: 4.0.0
-    dev: false
 
   /@lerna/project/4.0.0:
     resolution:
@@ -3912,7 +4178,6 @@ packages:
       p-map: 4.0.0
       resolve-from: 5.0.0
       write-json-file: 4.3.0
-    dev: false
 
   /@lerna/validation-error/4.0.0:
     resolution:
@@ -3920,7 +4185,6 @@ packages:
     engines: { node: ">= 10.18.0" }
     dependencies:
       npmlog: 4.1.2
-    dev: false
 
   /@malept/cross-spawn-promise/1.1.1:
     resolution:
@@ -4098,6 +4362,16 @@ packages:
       "@octokit/core": 3.4.0
     dev: false
 
+  /@octokit/plugin-rest-endpoint-methods/5.0.1:
+    resolution:
+      { integrity: sha512-vvWbPtPqLyIzJ7A4IPdTl+8IeuKAwMJ4LjvmqWOOdfSuqWQYZXq2CEd0hsnkidff2YfKlguzujHs/reBdAx8Sg== }
+    peerDependencies:
+      "@octokit/core": ">=3"
+    dependencies:
+      "@octokit/types": 6.14.2
+      deprecation: 2.3.1
+    dev: false
+
   /@octokit/plugin-rest-endpoint-methods/5.0.1_@octokit+core@3.4.0:
     resolution:
       { integrity: sha512-vvWbPtPqLyIzJ7A4IPdTl+8IeuKAwMJ4LjvmqWOOdfSuqWQYZXq2CEd0hsnkidff2YfKlguzujHs/reBdAx8Sg== }
@@ -4218,6 +4492,37 @@ packages:
       victory-zoom-container: 35.11.4
     dev: false
 
+  /@patternfly/react-charts/6.15.23_react-dom@17.0.2+react@17.0.2:
+    resolution:
+      { integrity: sha512-X8ou27onHXrkpcvv9AZhyinlw8vXzd9MFesDIKuXRwaQESdaPEznKIVg55ciVBj3tdAYBk5mQmxegh4UJFWSig== }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    dependencies:
+      "@patternfly/react-styles": 4.18.8
+      "@patternfly/react-tokens": 4.33.1
+      hoist-non-react-statics: 3.3.2
+      lodash: 4.17.21
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      tslib: 2.3.1
+      victory-area: 35.11.4_react@17.0.2
+      victory-axis: 35.11.4_react@17.0.2
+      victory-bar: 35.11.4_react@17.0.2
+      victory-chart: 35.11.4_react@17.0.2
+      victory-core: 35.11.4_react@17.0.2
+      victory-create-container: 35.11.4_react@17.0.2
+      victory-group: 35.11.4_react@17.0.2
+      victory-legend: 35.11.4_react@17.0.2
+      victory-line: 35.11.4_react@17.0.2
+      victory-pie: 35.11.4_react@17.0.2
+      victory-scatter: 35.11.4_react@17.0.2
+      victory-stack: 35.11.4_react@17.0.2
+      victory-tooltip: 35.11.4_react@17.0.2
+      victory-voronoi-container: 35.11.4_react@17.0.2
+      victory-zoom-container: 35.11.4_react@17.0.2
+    dev: false
+
   /@patternfly/react-core/4.168.8:
     resolution:
       { integrity: sha512-wfG52saibeAXRoBYytzMgVGANoInbPuhUK0y6AynVp3/QKAPCKHpaI4nCh9ytNZ+UjiT2KGOcunhavsOw5+iMA== }
@@ -4229,7 +4534,7 @@ packages:
       "@patternfly/react-styles": 4.18.8
       "@patternfly/react-tokens": 4.33.1
       focus-trap: 6.2.2
-      react-dropzone: 11.4.2
+      react-dropzone: 9.0.0
       tippy.js: 5.1.2
       tslib: 2.3.1
     dev: false
@@ -4247,7 +4552,7 @@ packages:
       focus-trap: 6.2.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-      react-dropzone: 11.4.2_react@17.0.2
+      react-dropzone: 9.0.0_react@17.0.2
       tippy.js: 5.1.2
       tslib: 2.3.1
     dev: false
@@ -4288,6 +4593,23 @@ packages:
       "@patternfly/react-styles": 4.18.8
       "@patternfly/react-tokens": 4.33.1
       lodash: 4.17.21
+      tslib: 2.3.1
+    dev: false
+
+  /@patternfly/react-table/4.37.8_react-dom@17.0.2+react@17.0.2:
+    resolution:
+      { integrity: sha512-DEaRooSGgfauX5RV3rwNcc9ZgMzR7gcCxsn9V7oNz6UsBgAV5cL7leGdAETdcV/B2+JMmGb+6QPjc54lsvwiuQ== }
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    dependencies:
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-styles": 4.18.8
+      "@patternfly/react-tokens": 4.33.1
+      lodash: 4.17.21
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
       tslib: 2.3.1
     dev: false
 
@@ -5721,7 +6043,7 @@ packages:
     engines: { node: ">= 6" }
     dependencies:
       glob: 7.2.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       lazystream: 1.0.0
       lodash.defaults: 4.2.0
       lodash.difference: 4.5.0
@@ -5896,7 +6218,7 @@ packages:
       glob: 7.2.0
       minimatch: 3.0.5
     optionalDependencies:
-      "@types/glob": registry.npmjs.org/@types/glob/7.1.3
+      "@types/glob": 7.1.3
     dev: true
 
   /asn1/0.2.4:
@@ -5964,6 +6286,14 @@ packages:
     hasBin: true
     dev: true
 
+  /attr-accept/1.1.3:
+    resolution:
+      { integrity: sha512-iT40nudw8zmCweivz6j58g+RT33I4KbaIvRUhjNmDwO2WmsQUxFEZZYZ5w3vXe5x5MX9D7mfvA/XaLOZYFR9EQ== }
+    engines: { node: ">=4" }
+    dependencies:
+      core-js: 2.6.11
+    dev: false
+
   /attr-accept/2.2.2:
     resolution:
       { integrity: sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg== }
@@ -6023,7 +6353,7 @@ packages:
     resolution:
       { integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA== }
     dependencies:
-      follow-redirects: 1.14.8
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -6089,7 +6419,7 @@ packages:
       detect-indent: 4.0.0
       jsesc: 1.3.0
       lodash: 4.17.21
-      source-map: registry.npmjs.org/source-map/0.5.7
+      source-map: 0.5.7
       trim-right: 1.0.1
     dev: true
 
@@ -6225,7 +6555,7 @@ packages:
       babel-plugin-istanbul: 6.1.1
       babel-preset-jest: 26.6.2_@babel+core@7.16.12
       chalk: 4.1.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
@@ -6867,7 +7197,6 @@ packages:
   /big.js/5.2.2:
     resolution:
       { integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ== }
-    dev: true
 
   /binary-extensions/2.2.0:
     resolution:
@@ -7385,7 +7714,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: registry.npmjs.org/fsevents/2.3.2
+      fsevents: 2.3.2
     dev: true
 
   /chownr/1.1.4:
@@ -7537,7 +7866,7 @@ packages:
     dependencies:
       string-width: 4.2.3
     optionalDependencies:
-      colors: registry.npmjs.org/colors/1.4.0
+      colors: 1.4.0
     dev: true
 
   /cli-truncate/2.1.0:
@@ -7964,7 +8293,6 @@ packages:
       { integrity: sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg== }
     deprecated: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
     requiresBuild: true
-    dev: true
 
   /core-js/3.20.3:
     resolution:
@@ -9116,7 +9444,6 @@ packages:
 
   /dedent/0.7.0:
     resolution: { integrity: sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw= }
-    dev: false
 
   /deep-eql/3.0.1:
     resolution:
@@ -9308,13 +9635,11 @@ packages:
   /detect-indent/5.0.0:
     resolution: { integrity: sha1-OHHMCmoALow+Wzz38zYmRnXwa50= }
     engines: { node: ">=4" }
-    dev: false
 
   /detect-indent/6.0.0:
     resolution:
       { integrity: sha512-oSyFlqaTHCItVRGK5RmrmjB+CmaMOW7IaNA/kdxqhoa6d17j/5ce9O9eWXmV/KEdRwqpQA+Vqe8a8Bsybu4YnA== }
     engines: { node: ">=8" }
-    dev: false
 
   /detect-libc/1.0.3:
     resolution: { integrity: sha1-+hN8S9aY7fVc1c0CrFWfkaTEups= }
@@ -9527,7 +9852,6 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       is-obj: 2.0.0
-    dev: false
 
   /dotenv/8.6.0:
     resolution:
@@ -9701,11 +10025,19 @@ packages:
     resolution:
       { integrity: sha512-/kyM18EfinwXZbno9FyUGeFh87KC8HRQBQGildHZbEuRyWFOmv1U10o9BBp8XVZDVNNuQKyIGIu5ZYAAXJ0V2Q== }
     engines: { node: ">= 4" }
-    dev: true
 
   /encodeurl/1.0.2:
     resolution: { integrity: sha1-rT/0yG7C0CkyL1oCw6mmBslbP1k= }
     engines: { node: ">= 0.8" }
+
+  /encoding/0.1.13:
+    resolution:
+      { integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A== }
+    requiresBuild: true
+    dependencies:
+      iconv-lite: 0.6.3
+    dev: true
+    optional: true
 
   /end-of-stream/1.4.4:
     resolution:
@@ -9902,7 +10234,7 @@ packages:
       esutils: 2.0.3
       optionator: 0.8.3
     optionalDependencies:
-      source-map: registry.npmjs.org/source-map/0.6.1
+      source-map: 0.6.1
     dev: true
 
   /eslint-config-prettier/8.3.0_eslint@7.26.0:
@@ -10500,6 +10832,14 @@ packages:
       webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
+  /file-selector/0.1.19:
+    resolution:
+      { integrity: sha512-kCWw3+Aai8Uox+5tHCNgMFaUdgidxvMnLWO6fM5sZ0hA2wlHP5/DHGF0ECe84BiB95qdJbKNEJhWKVDvMN+JDQ== }
+    engines: { node: ">= 10" }
+    dependencies:
+      tslib: 2.3.1
+    dev: false
+
   /file-selector/0.2.4:
     resolution:
       { integrity: sha512-ZDsQNbrv6qRi1YTDOEWzf5J2KjZ9KMI1Q2SGeTkCJmNNW25Jg4TW4UMcmoqcg4WrAyKRcpBXdbWRxkfrOzVRbA== }
@@ -10689,6 +11029,7 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
 
   /follow-redirects/1.14.8_debug@4.3.1:
     resolution:
@@ -10712,7 +11053,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dev: false
 
   /for-in/1.0.2:
     resolution: { integrity: sha1-gQaNKVqBQuwKxybG4iAMMPttXoA= }
@@ -10795,7 +11135,7 @@ packages:
     resolution:
       { integrity: sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg== }
     dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jsonfile: 4.0.0
       universalify: 0.1.2
     dev: true
@@ -10852,12 +11192,21 @@ packages:
   /fs.realpath/1.0.0:
     resolution: { integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8= }
 
+  /fsevents/2.3.2:
+    resolution:
+      { integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA== }
+    engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
+    os: [darwin]
+    requiresBuild: true
+    dev: true
+    optional: true
+
   /fstream/1.0.12:
     resolution:
       { integrity: sha512-WvJ193OHa0GHPEL+AycEJgxvBEwyfRkN1vhjca23OaPVMCaLCXTd5qAu82AjTcgP1UJmytkOKb63Ypde7raDIg== }
     engines: { node: ">=0.6" }
     dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       inherits: 2.0.4
       mkdirp: 0.5.5
       rimraf: 2.7.1
@@ -11561,7 +11910,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.8
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -12104,7 +12453,6 @@ packages:
     resolution:
       { integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w== }
     engines: { node: ">=8" }
-    dev: false
 
   /is-path-cwd/2.2.0:
     resolution:
@@ -12121,7 +12469,6 @@ packages:
   /is-plain-obj/1.1.0:
     resolution: { integrity: sha1-caUMhCnfync8kqOQpKA7OfzVHT4= }
     engines: { node: ">=0.10.0" }
-    dev: false
 
   /is-plain-obj/2.1.0:
     resolution:
@@ -12346,7 +12693,7 @@ packages:
     dependencies:
       debug: 4.3.3
       istanbul-lib-coverage: 3.2.0
-      source-map: registry.npmjs.org/source-map/0.6.1
+      source-map: 0.6.1
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -12427,7 +12774,7 @@ packages:
       chalk: 4.1.2
       deepmerge: 4.2.2
       glob: 7.2.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-environment-jsdom: 26.6.2
       jest-environment-node: 26.6.2
       jest-get-type: 26.3.0
@@ -12523,7 +12870,7 @@ packages:
       "@types/node": 17.0.12
       anymatch: 3.1.2
       fb-watchman: 2.0.1
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-regex-util: 26.0.0
       jest-serializer: 26.6.2
       jest-util: 26.6.2
@@ -12532,7 +12879,7 @@ packages:
       sane: 4.1.0
       walker: 1.0.7
     optionalDependencies:
-      fsevents: registry.npmjs.org/fsevents/2.3.2
+      fsevents: 2.3.2
     dev: true
 
   /jest-image-snapshot/4.2.0_jest@26.6.3:
@@ -12613,7 +12960,7 @@ packages:
       "@jest/types": 26.6.2
       "@types/stack-utils": 2.0.0
       chalk: 4.1.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       micromatch: 4.0.4
       pretty-format: 26.6.2
       slash: 3.0.0
@@ -12669,7 +13016,7 @@ packages:
     dependencies:
       "@jest/types": 26.6.2
       chalk: 4.1.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-pnp-resolver: 1.2.2_jest-resolve@26.6.2
       jest-util: 26.6.2
       read-pkg-up: 7.0.1
@@ -12690,7 +13037,7 @@ packages:
       chalk: 4.1.2
       emittery: 0.7.2
       exit: 0.1.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-config: 26.6.3
       jest-docblock: 26.0.0
       jest-haste-map: 26.6.2
@@ -12730,7 +13077,7 @@ packages:
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
       glob: 7.2.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-config: 26.6.3
       jest-haste-map: 26.6.2
       jest-message-util: 26.6.2
@@ -12757,7 +13104,7 @@ packages:
     engines: { node: ">= 10.14.2" }
     dependencies:
       "@types/node": 17.0.12
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
     dev: true
 
   /jest-snapshot/26.6.2:
@@ -12771,7 +13118,7 @@ packages:
       "@types/prettier": 2.2.3
       chalk: 4.1.2
       expect: 26.6.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       jest-diff: 26.6.2
       jest-get-type: 26.3.0
       jest-haste-map: 26.6.2
@@ -13043,7 +13390,6 @@ packages:
     hasBin: true
     dependencies:
       minimist: 1.2.6
-    dev: true
 
   /jsonata/1.8.3:
     resolution:
@@ -13067,7 +13413,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
     dev: true
 
   /jsonparse/1.3.1:
@@ -13607,7 +13953,7 @@ packages:
     resolution: { integrity: sha1-eUfkIUmvgNaWy/eXvKq8/h/inKg= }
     engines: { node: ">=4" }
     dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       parse-json: 2.2.0
       pify: 2.3.0
       strip-bom: 3.0.0
@@ -13617,7 +13963,7 @@ packages:
     resolution: { integrity: sha1-L19Fq5HjMhYjT9U62rZo607AmTs= }
     engines: { node: ">=4" }
     dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       parse-json: 4.0.0
       pify: 3.0.0
       strip-bom: 3.0.0
@@ -13632,7 +13978,6 @@ packages:
       parse-json: 5.0.0
       strip-bom: 4.0.0
       type-fest: 0.6.0
-    dev: false
 
   /loader-runner/4.2.0:
     resolution:
@@ -13658,7 +14003,6 @@ packages:
       big.js: 5.2.2
       emojis-list: 3.0.0
       json5: 2.1.2
-    dev: true
 
   /loader-utils/3.2.0:
     resolution:
@@ -13905,7 +14249,6 @@ packages:
     dependencies:
       pify: 4.0.1
       semver: 5.7.1
-    dev: false
 
   /make-dir/3.1.0:
     resolution:
@@ -14168,17 +14511,6 @@ packages:
     engines: { node: ">=4" }
     dev: true
 
-  /mini-create-react-context/0.4.1_prop-types@15.7.2:
-    resolution:
-      { integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ== }
-    peerDependencies:
-      prop-types: ^15.0.0
-      react: ^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-    dependencies:
-      "@babel/runtime": 7.16.7
-      prop-types: 15.7.2
-      tiny-warning: 1.0.3
-
   /mini-create-react-context/0.4.1_prop-types@15.7.2+react@17.0.2:
     resolution:
       { integrity: sha512-YWCYEmd5CQeHGSAKrYvXgmzzkrvssZcuuQDDeqkT+PziKGMgE+0MCCtcKbROzocGBG1meBLl2FotlRwf4gAzbQ== }
@@ -14190,7 +14522,6 @@ packages:
       prop-types: 15.7.2
       react: 17.0.2
       tiny-warning: 1.0.3
-    dev: false
 
   /mini-css-extract-plugin/2.5.3_webpack@5.70.0:
     resolution:
@@ -14248,7 +14579,7 @@ packages:
       minipass-sized: 1.0.3
       minizlib: 2.1.2
     optionalDependencies:
-      encoding: registry.npmjs.org/encoding/0.1.13
+      encoding: 0.1.13
     dev: true
 
   /minipass-flush/1.0.5:
@@ -14422,6 +14753,18 @@ packages:
       monaco-editor: 0.33.0
       webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
+
+  /monaco-editor-webpack-plugin/7.0.1_af8a768084f903a23f0321396e3ef1d0:
+    resolution:
+      { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
+    peerDependencies:
+      monaco-editor: ">= 0.31.0"
+      webpack: ^4.5.0 || 5.x
+    dependencies:
+      loader-utils: 2.0.2
+      monaco-editor: 0.23.0
+      webpack: 5.70.0_webpack-cli@4.7.0
+    dev: false
 
   /monaco-editor-webpack-plugin/7.0.1_webpack@5.70.0:
     resolution:
@@ -14706,7 +15049,7 @@ packages:
     dependencies:
       env-paths: 2.2.1
       glob: 7.2.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       make-fetch-happen: 9.1.0
       nopt: 5.0.0
       npmlog: 6.0.0
@@ -16332,6 +16675,27 @@ packages:
       sisteransi: 1.0.5
     dev: true
 
+  /prop-types-extra/1.1.1:
+    resolution:
+      { integrity: sha512-59+AHNnHYCdiC+vMwY52WmvP5dM3QLeoumYuEyceQDi9aEhtwN9zIQ2ZNo25sMyXnbh32h+P1ezDsUpUH3JAew== }
+    peerDependencies:
+      react: ">=0.14.0"
+    dependencies:
+      react-is: 16.13.1
+      warning: 4.0.3
+    dev: false
+
+  /prop-types-extra/1.1.1_react@17.0.2:
+    resolution:
+      { integrity: sha512-59+AHNnHYCdiC+vMwY52WmvP5dM3QLeoumYuEyceQDi9aEhtwN9zIQ2ZNo25sMyXnbh32h+P1ezDsUpUH3JAew== }
+    peerDependencies:
+      react: ">=0.14.0"
+    dependencies:
+      react: 17.0.2
+      react-is: 16.13.1
+      warning: 4.0.3
+    dev: false
+
   /prop-types/15.7.2:
     resolution:
       { integrity: sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ== }
@@ -16344,7 +16708,7 @@ packages:
     resolution:
       { integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA== }
     dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
+      graceful-fs: 4.2.10
       retry: 0.12.0
       signal-exit: 3.0.3
     dev: true
@@ -16627,18 +16991,6 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /react-dropzone/11.4.2:
-    resolution:
-      { integrity: sha512-ocYzYn7Qgp0tFc1gQtUTOaHHSzVTwhWHxxY+r7cj2jJTPfMTZB5GWSJHdIVoxsl+EQENpjJ/6Zvcw0BqKZQ+Eg== }
-    engines: { node: ">= 10" }
-    peerDependencies:
-      react: ">= 16.8"
-    dependencies:
-      attr-accept: 2.2.2
-      file-selector: 0.2.4
-      prop-types: 15.7.2
-    dev: false
-
   /react-dropzone/11.4.2_react@17.0.2:
     resolution:
       { integrity: sha512-ocYzYn7Qgp0tFc1gQtUTOaHHSzVTwhWHxxY+r7cj2jJTPfMTZB5GWSJHdIVoxsl+EQENpjJ/6Zvcw0BqKZQ+Eg== }
@@ -16649,6 +17001,33 @@ packages:
       attr-accept: 2.2.2
       file-selector: 0.2.4
       prop-types: 15.7.2
+      react: 17.0.2
+    dev: false
+
+  /react-dropzone/9.0.0:
+    resolution:
+      { integrity: sha512-wZ2o9B2qkdE3RumWhfyZT9swgJYJPeU5qHEcMU8weYpmLex1eeWX0CC32/Y0VutB+BBi2D+iePV/YZIiB4kZGw== }
+    engines: { node: ">= 6" }
+    peerDependencies:
+      react: ">=0.14.0"
+    dependencies:
+      attr-accept: 1.1.3
+      file-selector: 0.1.19
+      prop-types: 15.7.2
+      prop-types-extra: 1.1.1
+    dev: false
+
+  /react-dropzone/9.0.0_react@17.0.2:
+    resolution:
+      { integrity: sha512-wZ2o9B2qkdE3RumWhfyZT9swgJYJPeU5qHEcMU8weYpmLex1eeWX0CC32/Y0VutB+BBi2D+iePV/YZIiB4kZGw== }
+    engines: { node: ">= 6" }
+    peerDependencies:
+      react: ">=0.14.0"
+    dependencies:
+      attr-accept: 1.1.3
+      file-selector: 0.1.19
+      prop-types: 15.7.2
+      prop-types-extra: 1.1.1_react@17.0.2
       react: 17.0.2
     dev: false
 
@@ -16716,7 +17095,7 @@ packages:
       react: ^17.x
     dependencies:
       "@types/react": 17.0.21
-      monaco-editor: 0.33.0
+      monaco-editor: 0.23.0
       prop-types: 15.7.2
       react: 17.0.2
     dev: false
@@ -16757,20 +17136,6 @@ packages:
       react-draggable: 4.4.4_react-dom@17.0.2+react@17.0.2
     dev: false
 
-  /react-router-dom/5.3.0:
-    resolution:
-      { integrity: sha512-ObVBLjUZsphUUMVycibxgMdh5jJ1e3o+KpAZBVeHcNQZ4W+uUGGWsokurzlF4YOldQYRQL4y6yFRWM4m3svmuQ== }
-    peerDependencies:
-      react: ">=15"
-    dependencies:
-      "@babel/runtime": 7.16.7
-      history: 4.10.1
-      loose-envify: 1.4.0
-      prop-types: 15.7.2
-      react-router: 5.2.1
-      tiny-invariant: 1.1.0
-      tiny-warning: 1.0.3
-
   /react-router-dom/5.3.0_react@17.0.2:
     resolution:
       { integrity: sha512-ObVBLjUZsphUUMVycibxgMdh5jJ1e3o+KpAZBVeHcNQZ4W+uUGGWsokurzlF4YOldQYRQL4y6yFRWM4m3svmuQ== }
@@ -16783,24 +17148,6 @@ packages:
       prop-types: 15.7.2
       react: 17.0.2
       react-router: 5.2.1_react@17.0.2
-      tiny-invariant: 1.1.0
-      tiny-warning: 1.0.3
-    dev: false
-
-  /react-router/5.2.1:
-    resolution:
-      { integrity: sha512-lIboRiOtDLFdg1VTemMwud9vRVuOCZmUIT/7lUoZiSpPODiiH1UQlfXy+vPLC/7IWdFYnhRwAyNqA/+I7wnvKQ== }
-    peerDependencies:
-      react: ">=15"
-    dependencies:
-      "@babel/runtime": 7.16.7
-      history: 4.10.1
-      hoist-non-react-statics: 3.3.2
-      loose-envify: 1.4.0
-      mini-create-react-context: 0.4.1_prop-types@15.7.2
-      path-to-regexp: 1.8.0
-      prop-types: 15.7.2
-      react-is: 16.13.1
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
 
@@ -16821,7 +17168,6 @@ packages:
       react-is: 16.13.1
       tiny-invariant: 1.1.0
       tiny-warning: 1.0.3
-    dev: false
 
   /react-shallow-renderer/16.14.1:
     resolution:
@@ -16845,13 +17191,6 @@ packages:
       prop-types: 15.7.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-    dev: false
-
-  /react-table/7.7.0:
-    resolution:
-      { integrity: sha512-jBlj70iBwOTvvImsU9t01LjFjy4sXEtclBovl3mTiqjz23Reu0DKnRza4zlLtOPACx6j2/7MrQIthIK1Wi+LIA== }
-    peerDependencies:
-      react: ^16.8.3 || ^17.0.0-0
     dev: false
 
   /react-table/7.7.0_react@17.0.2:
@@ -18011,7 +18350,7 @@ packages:
       define-property: 0.2.5
       extend-shallow: 2.0.1
       map-cache: 0.2.2
-      source-map: registry.npmjs.org/source-map/0.5.7
+      source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
     dev: true
@@ -18085,7 +18424,6 @@ packages:
     engines: { node: ">=4" }
     dependencies:
       is-plain-obj: 1.1.0
-    dev: false
 
   /sort-keys/4.2.0:
     resolution:
@@ -18093,7 +18431,6 @@ packages:
     engines: { node: ">=8" }
     dependencies:
       is-plain-obj: 2.1.0
-    dev: false
 
   /source-map-js/0.6.2:
     resolution:
@@ -19236,7 +19573,6 @@ packages:
     resolution:
       { integrity: sha512-IwzA/LSfD2vC1/YDYMv/zHP4rDF1usCwllsDpbolT3D4fUepIO7f9K70jjmUewU/LmGUKJcwcVtDCpnKk4BPMw== }
     engines: { node: ">=6" }
-    dev: false
 
   /type-fest/0.6.0:
     resolution:
@@ -19385,7 +19721,7 @@ packages:
       - react
     dev: true
 
-  /uniforms-patternfly/4.7.5:
+  /uniforms-patternfly/4.7.5_1fb6ec186755ff4a3de22169479d60fd:
     resolution:
       { integrity: sha512-ntK+Yv9ZeORm3uvcX9xga/9SdXoNH3p26YSmBIcnapfDy2D6IyDXDBphCcpD4FvodL5UOlx13rC5nUk4GPtMvA== }
     engines: { npm: ">=5.0.0" }
@@ -19394,22 +19730,8 @@ packages:
       "@patternfly/react-icons": ^4.11.0
       react: ^17.0.0 || ^16.8.0
     dependencies:
-      classnames: 2.3.1
-      invariant: 2.2.4
-      lodash: 4.17.21
-      tslib: 2.3.1
-      uniforms: 3.6.2
-    dev: false
-
-  /uniforms-patternfly/4.7.5_react@17.0.2:
-    resolution:
-      { integrity: sha512-ntK+Yv9ZeORm3uvcX9xga/9SdXoNH3p26YSmBIcnapfDy2D6IyDXDBphCcpD4FvodL5UOlx13rC5nUk4GPtMvA== }
-    engines: { npm: ">=5.0.0" }
-    peerDependencies:
-      "@patternfly/react-core": ^4.135.0
-      "@patternfly/react-icons": ^4.11.0
-      react: ^17.0.0 || ^16.8.0
-    dependencies:
+      "@patternfly/react-core": 4.168.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-icons": 4.19.8_react-dom@17.0.2+react@17.0.2
       classnames: 2.3.1
       invariant: 2.2.4
       lodash: 4.17.21
@@ -19436,7 +19758,7 @@ packages:
     dependencies:
       invariant: 2.2.4
       lodash: 4.17.21
-      react: registry.npmjs.org/react/17.0.2
+      react: 17.0.2
       tslib: 2.3.1
     dev: false
 
@@ -19652,7 +19974,7 @@ packages:
     dependencies:
       "@types/istanbul-lib-coverage": 2.0.1
       convert-source-map: 1.7.0
-      source-map: registry.npmjs.org/source-map/0.7.3
+      source-map: 0.7.3
     dev: true
 
   /validate-npm-package-license/3.0.4:
@@ -19698,6 +20020,19 @@ packages:
       victory-core: 35.11.4
     dev: false
 
+  /victory-area/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-i3rN4Jvn1uwA3YvCuv3EIPEcK2SWSOq3c+TvLvVj1BKFQug11C06UjyQje+3EEzffZ/EMkvGqj2+YudIjrGEzA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      d3-shape: 1.3.7
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-axis/35.11.4:
     resolution:
       { integrity: sha512-KmPXC/vgbiiWckhK0LruZvsFQqESg6BflhIqS/Xemc50ymWetqbT9VZhjPWbU0arOIP5E8xcFnGUimDN//Jffw== }
@@ -19707,6 +20042,18 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-axis/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-KmPXC/vgbiiWckhK0LruZvsFQqESg6BflhIqS/Xemc50ymWetqbT9VZhjPWbU0arOIP5E8xcFnGUimDN//Jffw== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-bar/35.11.4:
@@ -19721,6 +20068,19 @@ packages:
       victory-core: 35.11.4
     dev: false
 
+  /victory-bar/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-EZC+6VGwHkIcOYEppVFBIC5JymYnfF+RLF+NM0Uys7q5+AwaLx36LS9a2xBUBYO/gx20Wd1HVH8kjSHzw1rTqQ== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      d3-shape: 1.3.7
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-brush-container/35.11.4:
     resolution:
       { integrity: sha512-KpFYU2LxKbLIjZDhXTdveok1SWLFlG5s2R214IRq+ukYRz21CoxlvZCWhFL60lSPilD+ZD1Udv3sK/RW9CFMxA== }
@@ -19731,6 +20091,19 @@ packages:
       prop-types: 15.7.2
       react-fast-compare: 2.0.4
       victory-core: 35.11.4
+    dev: false
+
+  /victory-brush-container/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-KpFYU2LxKbLIjZDhXTdveok1SWLFlG5s2R214IRq+ukYRz21CoxlvZCWhFL60lSPilD+ZD1Udv3sK/RW9CFMxA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-chart/35.11.4:
@@ -19746,6 +20119,22 @@ packages:
       victory-core: 35.11.4
       victory-polar-axis: 35.11.4
       victory-shared-events: 35.11.4
+    dev: false
+
+  /victory-chart/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-oBTjx6ytp+/s6zswCuOUQotiISePQKuDUdOsjnbINBPSNvJuE2W9GXHD+B7ibDkCh4ZWXm8obHz7mnrRGbCGFQ== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+      victory-axis: 35.11.4_react@17.0.2
+      victory-core: 35.11.4_react@17.0.2
+      victory-polar-axis: 35.11.4_react@17.0.2
+      victory-shared-events: 35.11.4_react@17.0.2
     dev: false
 
   /victory-core/35.11.4:
@@ -19764,6 +20153,23 @@ packages:
       react-fast-compare: 2.0.4
     dev: false
 
+  /victory-core/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-PuqrOIn/a6GQgsp/DKvACiJBAJo71P77jltn56mlDZjAAzz+58BL4E0hx7x908GdodLXo2n9gEeuDdjOAlOt0Q== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      d3-ease: 1.0.7
+      d3-interpolate: 1.4.0
+      d3-scale: 1.0.7
+      d3-shape: 1.3.7
+      d3-timer: 1.0.10
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+    dev: false
+
   /victory-create-container/35.11.4:
     resolution:
       { integrity: sha512-baDLO4GSk/7eTVEYkhikwgwV5BtrSMuNPjKZBjZrIA3Ka9Fn5shklRG9PWg+26JIBFxqZdM6zOvpF7xhjxi37Q== }
@@ -19779,6 +20185,22 @@ packages:
       victory-zoom-container: 35.11.4
     dev: false
 
+  /victory-create-container/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-baDLO4GSk/7eTVEYkhikwgwV5BtrSMuNPjKZBjZrIA3Ka9Fn5shklRG9PWg+26JIBFxqZdM6zOvpF7xhjxi37Q== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      react: 17.0.2
+      victory-brush-container: 35.11.4_react@17.0.2
+      victory-core: 35.11.4_react@17.0.2
+      victory-cursor-container: 35.11.4_react@17.0.2
+      victory-selection-container: 35.11.4_react@17.0.2
+      victory-voronoi-container: 35.11.4_react@17.0.2
+      victory-zoom-container: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-cursor-container/35.11.4:
     resolution:
       { integrity: sha512-gs6bwRd/qbGTN78w2QgshIFxlyOsss5qWOMdCcY9i0Oi99l9OJ6UFQDBzSgKsgD53KGs7JxiKevmUqc3qSZZBg== }
@@ -19788,6 +20210,18 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-cursor-container/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-gs6bwRd/qbGTN78w2QgshIFxlyOsss5qWOMdCcY9i0Oi99l9OJ6UFQDBzSgKsgD53KGs7JxiKevmUqc3qSZZBg== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-group/35.11.4:
@@ -19803,6 +20237,20 @@ packages:
       victory-shared-events: 35.11.4
     dev: false
 
+  /victory-group/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-ceFBll9h1sPpdMjNcvdgEhnYELVHfx9ymmk8iMEjOKpxa4fVvapMhegPmL0/zTemJ/NCu71W2xIr0VqyqK0DaA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+      victory-core: 35.11.4_react@17.0.2
+      victory-shared-events: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-legend/35.11.4:
     resolution:
       { integrity: sha512-JZzQARjxYorWlNf9RmZRPAzlgPjukiUV1aTBaeC8YA2S4PhP4PWhNwO/Pb3aCdkifpumpgsm3JULpJiCGOPdBQ== }
@@ -19812,6 +20260,18 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-legend/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-JZzQARjxYorWlNf9RmZRPAzlgPjukiUV1aTBaeC8YA2S4PhP4PWhNwO/Pb3aCdkifpumpgsm3JULpJiCGOPdBQ== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-line/35.11.4:
@@ -19826,6 +20286,19 @@ packages:
       victory-core: 35.11.4
     dev: false
 
+  /victory-line/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-uKX6/1b1OmlqJZOsVDCCDlyc9QItgb39vRssTwP4CJX1NLU4Sfgq2i4VVUbHXCo/I2sMEczjf3cdnxdZtC6IFA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      d3-shape: 1.3.7
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-pie/35.11.4:
     resolution:
       { integrity: sha512-EruxP3PIkrTPTzsC5YhiRKg2s+0UtaRU1ZHZUWK8qi+zlbMDFKYg2AlHqsEnctu5AOdOWLLiye6qUG3oxjiURg== }
@@ -19836,6 +20309,19 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-pie/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-EruxP3PIkrTPTzsC5YhiRKg2s+0UtaRU1ZHZUWK8qi+zlbMDFKYg2AlHqsEnctu5AOdOWLLiye6qUG3oxjiURg== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      d3-shape: 1.3.7
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-polar-axis/35.11.4:
@@ -19849,6 +20335,18 @@ packages:
       victory-core: 35.11.4
     dev: false
 
+  /victory-polar-axis/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-mnIRpfARn36TG6ZdCgKR+oWY+pIX6wLHYS0un5xM1TTObKk4IyAR3dnQhEp+3KM1SGoLg0mENFR1Ac8xrus6nQ== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-scatter/35.11.4:
     resolution:
       { integrity: sha512-8n9rmXmVju2SqA6Xd90rRTmboaU7WStOnj1QUg4q96DDiAVf6kGPdolzCwbUBbiECLyluGoFNJ043WLXztGpiA== }
@@ -19860,6 +20358,18 @@ packages:
       victory-core: 35.11.4
     dev: false
 
+  /victory-scatter/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-8n9rmXmVju2SqA6Xd90rRTmboaU7WStOnj1QUg4q96DDiAVf6kGPdolzCwbUBbiECLyluGoFNJ043WLXztGpiA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-selection-container/35.11.4:
     resolution:
       { integrity: sha512-Olxnjp9tvHUHeFr4zU/K1dzp0zbeqQRMr2Qqpr85Dd4pWV9bIReE/DanxGhjNg9s3KB5Vsn1GC46PXSTMM1XIQ== }
@@ -19869,6 +20379,18 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-selection-container/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-Olxnjp9tvHUHeFr4zU/K1dzp0zbeqQRMr2Qqpr85Dd4pWV9bIReE/DanxGhjNg9s3KB5Vsn1GC46PXSTMM1XIQ== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-shared-events/35.11.4:
@@ -19884,6 +20406,20 @@ packages:
       victory-core: 35.11.4
     dev: false
 
+  /victory-shared-events/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-flvI27J9K+09BAbuVJf2w51D4OkXlDxE/5BlaHSKzM5jNDYsbcQ6djXa4pqa7NQtMGPOApTBkOSmVRyWRqVoYA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      json-stringify-safe: 5.0.1
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+      victory-core: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-stack/35.11.4:
     resolution:
       { integrity: sha512-fNTY50fN+DCHcK/9AgMUEq0uJ8IXGnMlRtkSCzMB9ZpEzB7Edx3jLM2Gl970zOkwVaDYXTlikPd1dwf+h3m0dA== }
@@ -19897,6 +20433,20 @@ packages:
       victory-shared-events: 35.11.4
     dev: false
 
+  /victory-stack/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-fNTY50fN+DCHcK/9AgMUEq0uJ8IXGnMlRtkSCzMB9ZpEzB7Edx3jLM2Gl970zOkwVaDYXTlikPd1dwf+h3m0dA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+      victory-core: 35.11.4_react@17.0.2
+      victory-shared-events: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-tooltip/35.11.4:
     resolution:
       { integrity: sha512-B+UUqzryurtMghJGiE34tg5eI44vHxyOOcuPIM3IpJLujnNIJXVykBjgQZnFq1CT/63TtDCOlzPkOjSbecPtXQ== }
@@ -19906,6 +20456,18 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-tooltip/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-B+UUqzryurtMghJGiE34tg5eI44vHxyOOcuPIM3IpJLujnNIJXVykBjgQZnFq1CT/63TtDCOlzPkOjSbecPtXQ== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /victory-voronoi-container/35.11.4:
@@ -19922,6 +20484,21 @@ packages:
       victory-tooltip: 35.11.4
     dev: false
 
+  /victory-voronoi-container/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-vmwHBm/+nZ9qdRcaNd7r08AVRkus/ER6UA4KAYWkKUe50ZT9NYjDxy0wW/Y7PHQldfL9q/VxAyIE/M6jSFWkEA== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      delaunay-find: 0.0.6
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-fast-compare: 2.0.4
+      victory-core: 35.11.4_react@17.0.2
+      victory-tooltip: 35.11.4_react@17.0.2
+    dev: false
+
   /victory-zoom-container/35.11.4:
     resolution:
       { integrity: sha512-8D4hTdvGZqyZdgWjkz/pDRVy/kijWhptFbK0KWl5J1Tt4YuCGiRC9oxQOpEjlqr8TSyeVnpyuF4QuIp9YOIrAw== }
@@ -19931,6 +20508,18 @@ packages:
       lodash: 4.17.21
       prop-types: 15.7.2
       victory-core: 35.11.4
+    dev: false
+
+  /victory-zoom-container/35.11.4_react@17.0.2:
+    resolution:
+      { integrity: sha512-8D4hTdvGZqyZdgWjkz/pDRVy/kijWhptFbK0KWl5J1Tt4YuCGiRC9oxQOpEjlqr8TSyeVnpyuF4QuIp9YOIrAw== }
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: 4.17.21
+      prop-types: 15.7.2
+      react: 17.0.2
+      victory-core: 35.11.4_react@17.0.2
     dev: false
 
   /void-elements/2.0.1:
@@ -20112,6 +20701,13 @@ packages:
     dependencies:
       makeerror: 1.0.11
     dev: true
+
+  /warning/4.0.3:
+    resolution:
+      { integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w== }
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /watchpack/2.3.1:
     resolution:
@@ -20555,7 +21151,6 @@ packages:
       graceful-fs: 4.2.10
       imurmurhash: 0.1.4
       signal-exit: 3.0.3
-    dev: false
 
   /write-file-atomic/3.0.3:
     resolution:
@@ -20577,7 +21172,6 @@ packages:
       pify: 4.0.1
       sort-keys: 2.0.0
       write-file-atomic: 2.4.3
-    dev: false
 
   /write-json-file/4.3.0:
     resolution:
@@ -20590,7 +21184,6 @@ packages:
       make-dir: 3.1.0
       sort-keys: 4.2.0
       write-file-atomic: 3.0.3
-    dev: false
 
   /write-pkg/4.0.0:
     resolution:
@@ -20600,7 +21193,6 @@ packages:
       sort-keys: 2.0.0
       type-fest: 0.4.1
       write-json-file: 3.2.0
-    dev: false
 
   /ws/6.2.2:
     resolution:
@@ -20890,171 +21482,119 @@ packages:
       tslib: 2.3.1
     dev: false
 
-  registry.npmjs.org/@babel/code-frame/7.16.7:
+  registry.npmjs.org/@patternfly/patternfly/4.135.2:
     resolution:
       {
-        integrity: sha512-iAXqUn8IIeBTNd72xsFlgaXHkMBMt6y4HJp1tIaK465CWLT/fG1aqB7ykr95gHHmlBdGbFeWWfyB4NJJ0nmeIg==,
+        integrity: sha512-oxLGfGdQNN5yGzvOSH51XR6AuoLjxajteLIOzXJKllqDSQgVP6nZQRCjjB0sUYuin5cUue7lRLqr7clzYd6Zbw==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.16.7.tgz,
+        tarball: https://registry.npmjs.org/@patternfly/patternfly/-/patternfly-4.135.2.tgz,
       }
-    name: "@babel/code-frame"
-    version: 7.16.7
-    engines: { node: ">=6.9.0" }
+    name: "@patternfly/patternfly"
+    version: 4.135.2
+    dev: false
+
+  registry.npmjs.org/@patternfly/react-charts/6.15.23_react-dom@17.0.2+react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-X8ou27onHXrkpcvv9AZhyinlw8vXzd9MFesDIKuXRwaQESdaPEznKIVg55ciVBj3tdAYBk5mQmxegh4UJFWSig==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/@patternfly/react-charts/-/react-charts-6.15.23.tgz,
+      }
+    id: registry.npmjs.org/@patternfly/react-charts/6.15.23
+    name: "@patternfly/react-charts"
+    version: 6.15.23
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      "@babel/highlight": registry.npmjs.org/@babel/highlight/7.16.7
-    dev: true
+      "@patternfly/react-styles": registry.npmjs.org/@patternfly/react-styles/4.18.8
+      "@patternfly/react-tokens": registry.npmjs.org/@patternfly/react-tokens/4.33.1
+      hoist-non-react-statics: registry.npmjs.org/hoist-non-react-statics/3.3.2
+      lodash: registry.npmjs.org/lodash/4.17.21
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
+      tslib: registry.npmjs.org/tslib/2.3.1
+      victory-area: registry.npmjs.org/victory-area/35.11.4_react@17.0.2
+      victory-axis: registry.npmjs.org/victory-axis/35.11.4_react@17.0.2
+      victory-bar: registry.npmjs.org/victory-bar/35.11.4_react@17.0.2
+      victory-chart: registry.npmjs.org/victory-chart/35.11.4_react@17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+      victory-create-container: registry.npmjs.org/victory-create-container/35.11.4_react@17.0.2
+      victory-group: registry.npmjs.org/victory-group/35.11.4_react@17.0.2
+      victory-legend: registry.npmjs.org/victory-legend/35.11.4_react@17.0.2
+      victory-line: registry.npmjs.org/victory-line/35.11.4_react@17.0.2
+      victory-pie: registry.npmjs.org/victory-pie/35.11.4_react@17.0.2
+      victory-scatter: registry.npmjs.org/victory-scatter/35.11.4_react@17.0.2
+      victory-stack: registry.npmjs.org/victory-stack/35.11.4_react@17.0.2
+      victory-tooltip: registry.npmjs.org/victory-tooltip/35.11.4_react@17.0.2
+      victory-voronoi-container: registry.npmjs.org/victory-voronoi-container/35.11.4_react@17.0.2
+      victory-zoom-container: registry.npmjs.org/victory-zoom-container/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/@babel/helper-validator-identifier/7.16.7:
+  registry.npmjs.org/@patternfly/react-core/4.168.8_react-dom@17.0.2+react@17.0.2:
     resolution:
       {
-        integrity: sha512-hsEnFemeiW4D08A5gUAZxLBTXpZ39P+a+DGDsHw1yxqyQ/jzFEnxf5uTEGp+3bzAbNOxU1paTgYS4ECU/IgfDw==,
+        integrity: sha512-wfG52saibeAXRoBYytzMgVGANoInbPuhUK0y6AynVp3/QKAPCKHpaI4nCh9ytNZ+UjiT2KGOcunhavsOw5+iMA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.16.7.tgz,
+        tarball: https://registry.npmjs.org/@patternfly/react-core/-/react-core-4.168.8.tgz,
       }
-    name: "@babel/helper-validator-identifier"
-    version: 7.16.7
-    engines: { node: ">=6.9.0" }
-    dev: true
-
-  registry.npmjs.org/@babel/highlight/7.16.7:
-    resolution:
-      {
-        integrity: sha512-aKpPMfLvGO3Q97V0qhw/V2SWNWlwfJknuwAunU7wZLSfrM4xTBvg7E5opUVi1kJTBKihE38CPg4nBiqX83PWYw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@babel/highlight/-/highlight-7.16.7.tgz,
-      }
-    name: "@babel/highlight"
-    version: 7.16.7
-    engines: { node: ">=6.9.0" }
+    id: registry.npmjs.org/@patternfly/react-core/4.168.8
+    name: "@patternfly/react-core"
+    version: 4.168.8
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      "@babel/helper-validator-identifier": registry.npmjs.org/@babel/helper-validator-identifier/7.16.7
-      chalk: registry.npmjs.org/chalk/2.4.2
-      js-tokens: registry.npmjs.org/js-tokens/4.0.0
-    dev: true
+      "@patternfly/react-icons": registry.npmjs.org/@patternfly/react-icons/4.19.8_react-dom@17.0.2+react@17.0.2
+      "@patternfly/react-styles": registry.npmjs.org/@patternfly/react-styles/4.18.8
+      "@patternfly/react-tokens": registry.npmjs.org/@patternfly/react-tokens/4.33.1
+      focus-trap: registry.npmjs.org/focus-trap/6.2.2
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
+      react-dropzone: registry.npmjs.org/react-dropzone/9.0.0_react@17.0.2
+      tippy.js: registry.npmjs.org/tippy.js/5.1.2
+      tslib: registry.npmjs.org/tslib/2.3.1
+    dev: false
 
-  registry.npmjs.org/@lerna/package/4.0.0:
+  registry.npmjs.org/@patternfly/react-icons/4.19.8_react-dom@17.0.2+react@17.0.2:
     resolution:
       {
-        integrity: sha512-l0M/izok6FlyyitxiQKr+gZLVFnvxRQdNhzmQ6nRnN9dvBJWn+IxxpM+cLqGACatTnyo9LDzNTOj2Db3+s0s8Q==,
+        integrity: sha512-JBBcVntRLspe857JnGo8lFaZfy+WOR/IYe2E9W3Rknqm1T8WO6oXpeEnrr5r9bpYDFUa4ttcb/acuQXc1xypxg==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@lerna/package/-/package-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/@patternfly/react-icons/-/react-icons-4.19.8.tgz,
       }
-    name: "@lerna/package"
-    version: 4.0.0
-    engines: { node: ">= 10.18.0" }
+    id: registry.npmjs.org/@patternfly/react-icons/4.19.8
+    name: "@patternfly/react-icons"
+    version: 4.19.8
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      load-json-file: registry.npmjs.org/load-json-file/6.2.0
-      npm-package-arg: registry.npmjs.org/npm-package-arg/8.1.5
-      write-pkg: registry.npmjs.org/write-pkg/4.0.0
-    dev: true
+      react: registry.npmjs.org/react/17.0.2
+      react-dom: registry.npmjs.org/react-dom/17.0.2_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/@lerna/project/4.0.0:
+  registry.npmjs.org/@patternfly/react-styles/4.18.8:
     resolution:
       {
-        integrity: sha512-o0MlVbDkD5qRPkFKlBZsXZjoNTWPyuL58564nSfZJ6JYNmgAptnWPB2dQlAc7HWRZkmnC2fCkEdoU+jioPavbg==,
+        integrity: sha512-136N/Whs0qXDtPpsh5JeNJld5BeFPsbmmcgI5LlMQ+P9dioddh24rTqaaOIea67tHiXUB7orxaqKpBBILXqcPQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@lerna/project/-/project-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/@patternfly/react-styles/-/react-styles-4.18.8.tgz,
       }
-    name: "@lerna/project"
-    version: 4.0.0
-    engines: { node: ">= 10.18.0" }
-    dependencies:
-      "@lerna/package": registry.npmjs.org/@lerna/package/4.0.0
-      "@lerna/validation-error": registry.npmjs.org/@lerna/validation-error/4.0.0
-      cosmiconfig: registry.npmjs.org/cosmiconfig/7.0.0
-      dedent: registry.npmjs.org/dedent/0.7.0
-      dot-prop: registry.npmjs.org/dot-prop/6.0.1
-      glob-parent: registry.npmjs.org/glob-parent/5.1.2
-      globby: registry.npmjs.org/globby/11.0.4
-      load-json-file: registry.npmjs.org/load-json-file/6.2.0
-      npmlog: registry.npmjs.org/npmlog/4.1.2
-      p-map: registry.npmjs.org/p-map/4.0.0
-      resolve-from: registry.npmjs.org/resolve-from/5.0.0
-      write-json-file: registry.npmjs.org/write-json-file/4.3.0
-    dev: true
+    name: "@patternfly/react-styles"
+    version: 4.18.8
+    dev: false
 
-  registry.npmjs.org/@lerna/validation-error/4.0.0:
+  registry.npmjs.org/@patternfly/react-tokens/4.33.1:
     resolution:
       {
-        integrity: sha512-1rBOM5/koiVWlRi3V6dB863E1YzJS8v41UtsHgMr6gB2ncJ2LsQtMKlJpi3voqcgh41H8UsPXR58RrrpPpufyw==,
+        integrity: sha512-n06+BYDviOEuoo+qE9f0Jm1DkMDpwtXWyaJFHsvi8w8uddQEsBGGoP7lpkwZj15u6jc+F9IDgk/j+EkTScrvUA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@lerna/validation-error/-/validation-error-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/@patternfly/react-tokens/-/react-tokens-4.33.1.tgz,
       }
-    name: "@lerna/validation-error"
-    version: 4.0.0
-    engines: { node: ">= 10.18.0" }
-    dependencies:
-      npmlog: registry.npmjs.org/npmlog/4.1.2
-    dev: true
-
-  registry.npmjs.org/@nodelib/fs.scandir/2.1.3:
-    resolution:
-      {
-        integrity: sha512-eGmwYQn3gxo4r7jdQnkrrN6bY478C3P+a/y72IJukF8LjB6ZHeB3c+Ehacj3sYeSmUXGlnA67/PmbM9CVwL7Dw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@nodelib/fs.scandir/-/fs.scandir-2.1.3.tgz,
-      }
-    name: "@nodelib/fs.scandir"
-    version: 2.1.3
-    engines: { node: ">= 8" }
-    dependencies:
-      "@nodelib/fs.stat": registry.npmjs.org/@nodelib/fs.stat/2.0.3
-      run-parallel: registry.npmjs.org/run-parallel/1.1.9
-    dev: true
-
-  registry.npmjs.org/@nodelib/fs.stat/2.0.3:
-    resolution:
-      {
-        integrity: sha512-bQBFruR2TAwoevBEd/NWMoAAtNGzTRgdrqnYCc7dhzfoNvqPzLyqlEQnzZ3kVnNrSp25iyxE00/3h2fqGAGArA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@nodelib/fs.stat/-/fs.stat-2.0.3.tgz,
-      }
-    name: "@nodelib/fs.stat"
-    version: 2.0.3
-    engines: { node: ">= 8" }
-    dev: true
-
-  registry.npmjs.org/@nodelib/fs.walk/1.2.4:
-    resolution:
-      {
-        integrity: sha512-1V9XOY4rDW0rehzbrcqAmHnz8e7SKvX27gh8Gt2WgB0+pdzdiLV83p72kZPU+jvMbS1qU5mauP2iOvO8rhmurQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@nodelib/fs.walk/-/fs.walk-1.2.4.tgz,
-      }
-    name: "@nodelib/fs.walk"
-    version: 1.2.4
-    engines: { node: ">= 8" }
-    dependencies:
-      "@nodelib/fs.scandir": registry.npmjs.org/@nodelib/fs.scandir/2.1.3
-      fastq: registry.npmjs.org/fastq/1.8.0
-    dev: true
-
-  registry.npmjs.org/@types/glob/7.1.3:
-    resolution:
-      {
-        integrity: sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@types/glob/-/glob-7.1.3.tgz,
-      }
-    name: "@types/glob"
-    version: 7.1.3
-    requiresBuild: true
-    dependencies:
-      "@types/minimatch": 3.0.4
-      "@types/node": 17.0.12
-    dev: true
-    optional: true
-
-  registry.npmjs.org/@types/parse-json/4.0.0:
-    resolution:
-      {
-        integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz,
-      }
-    name: "@types/parse-json"
-    version: 4.0.0
-    dev: true
+    name: "@patternfly/react-tokens"
+    version: 4.33.1
+    dev: false
 
   registry.npmjs.org/@types/yauzl/2.9.1:
     resolution:
@@ -21071,350 +21611,202 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/aggregate-error/3.1.0:
+  registry.npmjs.org/attr-accept/1.1.3:
     resolution:
       {
-        integrity: sha512-4I7Td01quW/RpocfNayFdFVk1qSuoh0E7JrbRJ16nH01HhKFQ88INq9Sd+nd72zqRySlr9BmDA8xlEJ6vJMrYA==,
+        integrity: sha512-iT40nudw8zmCweivz6j58g+RT33I4KbaIvRUhjNmDwO2WmsQUxFEZZYZ5w3vXe5x5MX9D7mfvA/XaLOZYFR9EQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/aggregate-error/-/aggregate-error-3.1.0.tgz,
+        tarball: https://registry.npmjs.org/attr-accept/-/attr-accept-1.1.3.tgz,
       }
-    name: aggregate-error
-    version: 3.1.0
-    engines: { node: ">=8" }
-    dependencies:
-      clean-stack: registry.npmjs.org/clean-stack/2.2.0
-      indent-string: registry.npmjs.org/indent-string/4.0.0
-    dev: true
-
-  registry.npmjs.org/ansi-regex/2.1.1:
-    resolution:
-      {
-        integrity: sha1-w7M6te42DYbg5ijwRorn7yfWVN8=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/ansi-regex/-/ansi-regex-2.1.1.tgz,
-      }
-    name: ansi-regex
-    version: 2.1.1
-    engines: { node: ">=0.10.0" }
-    dev: true
-
-  registry.npmjs.org/ansi-regex/5.0.1:
-    resolution:
-      {
-        integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz,
-      }
-    name: ansi-regex
-    version: 5.0.1
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/ansi-styles/3.2.1:
-    resolution:
-      {
-        integrity: sha512-VT0ZI6kZRdTh8YyJw3SMbYm/u+NqfsAxEpWO0Pf9sq8/e94WxxOpPKx9FR1FlyCtOVDNOQ+8ntlqFxiRc+r5qA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/ansi-styles/-/ansi-styles-3.2.1.tgz,
-      }
-    name: ansi-styles
-    version: 3.2.1
-    engines: { node: ">=4" }
-    dependencies:
-      color-convert: registry.npmjs.org/color-convert/1.9.3
-    dev: true
-
-  registry.npmjs.org/aproba/1.2.0:
-    resolution:
-      {
-        integrity: sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/aproba/-/aproba-1.2.0.tgz,
-      }
-    name: aproba
-    version: 1.2.0
-    dev: true
-
-  registry.npmjs.org/are-we-there-yet/1.1.5:
-    resolution:
-      {
-        integrity: sha512-5hYdAkZlcG8tOLujVDTgCT+uPX0VnpAH28gWsLfzpXYm7wP6mp5Q/gYyR7YQ0cKVJcXJnl3j2kpBan13PtQf6w==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/are-we-there-yet/-/are-we-there-yet-1.1.5.tgz,
-      }
-    name: are-we-there-yet
-    version: 1.1.5
-    dependencies:
-      delegates: registry.npmjs.org/delegates/1.0.0
-      readable-stream: registry.npmjs.org/readable-stream/2.3.7
-    dev: true
-
-  registry.npmjs.org/array-union/2.1.0:
-    resolution:
-      {
-        integrity: sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/array-union/-/array-union-2.1.0.tgz,
-      }
-    name: array-union
-    version: 2.1.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/braces/3.0.2:
-    resolution:
-      {
-        integrity: sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/braces/-/braces-3.0.2.tgz,
-      }
-    name: braces
-    version: 3.0.2
-    engines: { node: ">=8" }
-    dependencies:
-      fill-range: registry.npmjs.org/fill-range/7.0.1
-    dev: true
-
-  registry.npmjs.org/builtins/1.0.3:
-    resolution:
-      {
-        integrity: sha1-y5T662HIaWRR2zZTThQi+U8K7og=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/builtins/-/builtins-1.0.3.tgz,
-      }
-    name: builtins
-    version: 1.0.3
-    dev: true
-
-  registry.npmjs.org/callsites/3.1.0:
-    resolution:
-      {
-        integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/callsites/-/callsites-3.1.0.tgz,
-      }
-    name: callsites
-    version: 3.1.0
-    engines: { node: ">=6" }
-    dev: true
-
-  registry.npmjs.org/chalk/2.4.2:
-    resolution:
-      {
-        integrity: sha512-Mti+f9lpJNcwF4tWV8/OrTTtF1gZi+f8FqlyAdouralcFWFQWF2+NgCHShjkCb+IFBLq9buZwE1xckQU4peSuQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/chalk/-/chalk-2.4.2.tgz,
-      }
-    name: chalk
-    version: 2.4.2
-    engines: { node: ">=4" }
-    dependencies:
-      ansi-styles: registry.npmjs.org/ansi-styles/3.2.1
-      escape-string-regexp: registry.npmjs.org/escape-string-regexp/1.0.5
-      supports-color: registry.npmjs.org/supports-color/5.5.0
-    dev: true
-
-  registry.npmjs.org/clean-stack/2.2.0:
-    resolution:
-      {
-        integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/clean-stack/-/clean-stack-2.2.0.tgz,
-      }
-    name: clean-stack
-    version: 2.2.0
-    engines: { node: ">=6" }
-    dev: true
-
-  registry.npmjs.org/code-point-at/1.1.0:
-    resolution:
-      {
-        integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/code-point-at/-/code-point-at-1.1.0.tgz,
-      }
-    name: code-point-at
-    version: 1.1.0
-    engines: { node: ">=0.10.0" }
-    dev: true
-
-  registry.npmjs.org/color-convert/1.9.3:
-    resolution:
-      {
-        integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/color-convert/-/color-convert-1.9.3.tgz,
-      }
-    name: color-convert
-    version: 1.9.3
-    dependencies:
-      color-name: registry.npmjs.org/color-name/1.1.3
-    dev: true
-
-  registry.npmjs.org/color-name/1.1.3:
-    resolution:
-      {
-        integrity: sha1-p9BVi9icQveV3UIyj3QIMcpTvCU=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/color-name/-/color-name-1.1.3.tgz,
-      }
-    name: color-name
+    name: attr-accept
     version: 1.1.3
-    dev: true
-
-  registry.npmjs.org/colors/1.4.0:
-    resolution:
-      {
-        integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/colors/-/colors-1.4.0.tgz,
-      }
-    name: colors
-    version: 1.4.0
-    engines: { node: ">=0.1.90" }
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/console-control-strings/1.1.0:
-    resolution:
-      {
-        integrity: sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/console-control-strings/-/console-control-strings-1.1.0.tgz,
-      }
-    name: console-control-strings
-    version: 1.1.0
-    dev: true
-
-  registry.npmjs.org/core-util-is/1.0.2:
-    resolution:
-      {
-        integrity: sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/core-util-is/-/core-util-is-1.0.2.tgz,
-      }
-    name: core-util-is
-    version: 1.0.2
-    dev: true
-
-  registry.npmjs.org/cosmiconfig/7.0.0:
-    resolution:
-      {
-        integrity: sha512-pondGvTuVYDk++upghXJabWzL6Kxu6f26ljFw64Swq9v6sQPUL3EUlVDV56diOjpCayKihL6hVe8exIACU4XcA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-7.0.0.tgz,
-      }
-    name: cosmiconfig
-    version: 7.0.0
-    engines: { node: ">=10" }
-    dependencies:
-      "@types/parse-json": registry.npmjs.org/@types/parse-json/4.0.0
-      import-fresh: registry.npmjs.org/import-fresh/3.3.0
-      parse-json: registry.npmjs.org/parse-json/5.0.0
-      path-type: registry.npmjs.org/path-type/4.0.0
-      yaml: registry.npmjs.org/yaml/1.10.2
-    dev: true
-
-  registry.npmjs.org/dedent/0.7.0:
-    resolution:
-      {
-        integrity: sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/dedent/-/dedent-0.7.0.tgz,
-      }
-    name: dedent
-    version: 0.7.0
-    dev: true
-
-  registry.npmjs.org/delegates/1.0.0:
-    resolution:
-      {
-        integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/delegates/-/delegates-1.0.0.tgz,
-      }
-    name: delegates
-    version: 1.0.0
-    dev: true
-
-  registry.npmjs.org/detect-indent/5.0.0:
-    resolution:
-      {
-        integrity: sha1-OHHMCmoALow+Wzz38zYmRnXwa50=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/detect-indent/-/detect-indent-5.0.0.tgz,
-      }
-    name: detect-indent
-    version: 5.0.0
     engines: { node: ">=4" }
-    dev: true
-
-  registry.npmjs.org/detect-indent/6.0.0:
-    resolution:
-      {
-        integrity: sha512-oSyFlqaTHCItVRGK5RmrmjB+CmaMOW7IaNA/kdxqhoa6d17j/5ce9O9eWXmV/KEdRwqpQA+Vqe8a8Bsybu4YnA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/detect-indent/-/detect-indent-6.0.0.tgz,
-      }
-    name: detect-indent
-    version: 6.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/dir-glob/3.0.1:
-    resolution:
-      {
-        integrity: sha512-WkrWp9GR4KXfKGYzOLmTuGVi1UWFfws377n9cc55/tb6DuqyF6pcQ5AbiHEshaDpY9v6oaSr2XCDidGmMwdzIA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/dir-glob/-/dir-glob-3.0.1.tgz,
-      }
-    name: dir-glob
-    version: 3.0.1
-    engines: { node: ">=8" }
     dependencies:
-      path-type: registry.npmjs.org/path-type/4.0.0
-    dev: true
+      core-js: registry.npmjs.org/core-js/2.6.11
+    dev: false
 
-  registry.npmjs.org/dot-prop/6.0.1:
+  registry.npmjs.org/core-js/2.6.11:
     resolution:
       {
-        integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA==,
+        integrity: sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/dot-prop/-/dot-prop-6.0.1.tgz,
+        tarball: https://registry.npmjs.org/core-js/-/core-js-2.6.11.tgz,
       }
-    name: dot-prop
-    version: 6.0.1
-    engines: { node: ">=10" }
-    dependencies:
-      is-obj: registry.npmjs.org/is-obj/2.0.0
-    dev: true
-
-  registry.npmjs.org/emoji-regex/8.0.0:
-    resolution:
-      {
-        integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/emoji-regex/-/emoji-regex-8.0.0.tgz,
-      }
-    name: emoji-regex
-    version: 8.0.0
-    dev: true
-
-  registry.npmjs.org/encoding/0.1.13:
-    resolution:
-      {
-        integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/encoding/-/encoding-0.1.13.tgz,
-      }
-    name: encoding
-    version: 0.1.13
+    name: core-js
+    version: 2.6.11
+    deprecated: core-js@<3.4 is no longer maintained and not recommended for usage due to the number of issues. Because of the V8 engine whims, feature detection in old core-js versions could cause a slowdown up to 100x even if nothing is polyfilled. Please, upgrade your dependencies to the actual version of core-js.
     requiresBuild: true
+    dev: false
+
+  registry.npmjs.org/d3-array/1.2.4:
+    resolution:
+      {
+        integrity: sha512-KHW6M86R+FUPYGb3R5XiYjXPq7VzwxZ22buHhAEVG5ztoEcZZMLov530mmccaqA1GghZArjQV46fuc8kUqhhHw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-array/-/d3-array-1.2.4.tgz,
+      }
+    name: d3-array
+    version: 1.2.4
+    dev: false
+
+  registry.npmjs.org/d3-collection/1.0.7:
+    resolution:
+      {
+        integrity: sha512-ii0/r5f4sjKNTfh84Di+DpztYwqKhEyUlKoPrzUFfeSkWxjW49xU2QzO9qrPrNkpdI0XJkfzvmTu8V2Zylln6A==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-collection/-/d3-collection-1.0.7.tgz,
+      }
+    name: d3-collection
+    version: 1.0.7
+    dev: false
+
+  registry.npmjs.org/d3-color/1.4.1:
+    resolution:
+      {
+        integrity: sha512-p2sTHSLCJI2QKunbGb7ocOh7DgTAn8IrLx21QRc/BSnodXM4sv6aLQlnfpvehFMLZEfBc6g9pH9SWQccFYfJ9Q==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-color/-/d3-color-1.4.1.tgz,
+      }
+    name: d3-color
+    version: 1.4.1
+    dev: false
+
+  registry.npmjs.org/d3-ease/1.0.7:
+    resolution:
+      {
+        integrity: sha512-lx14ZPYkhNx0s/2HX5sLFUI3mbasHjSSpwO/KaaNACweVwxUruKyWVcb293wMv1RqTPZyZ8kSZ2NogUZNcLOFQ==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-ease/-/d3-ease-1.0.7.tgz,
+      }
+    name: d3-ease
+    version: 1.0.7
+    dev: false
+
+  registry.npmjs.org/d3-format/1.4.5:
+    resolution:
+      {
+        integrity: sha512-J0piedu6Z8iB6TbIGfZgDzfXxUFN3qQRMofy2oPdXzQibYGqPB/9iMcxr/TGalU+2RsyDO+U4f33id8tbnSRMQ==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-format/-/d3-format-1.4.5.tgz,
+      }
+    name: d3-format
+    version: 1.4.5
+    dev: false
+
+  registry.npmjs.org/d3-interpolate/1.4.0:
+    resolution:
+      {
+        integrity: sha512-V9znK0zc3jOPV4VD2zZn0sDhZU3WAE2bmlxdIwwQPPzPjvyLkd8B3JUVdS1IDUFDkWZ72c9qnv1GK2ZagTZ8EA==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-1.4.0.tgz,
+      }
+    name: d3-interpolate
+    version: 1.4.0
     dependencies:
-      iconv-lite: 0.6.3
-    dev: true
-    optional: true
+      d3-color: registry.npmjs.org/d3-color/1.4.1
+    dev: false
+
+  registry.npmjs.org/d3-path/1.0.9:
+    resolution:
+      {
+        integrity: sha512-VLaYcn81dtHVTjEHd8B+pbe9yHWpXKZUC87PzoFmsFrJqgFwDe/qxfp5MlfsfM1V5E/iVt0MmEbWQ7FVIXh/bg==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-path/-/d3-path-1.0.9.tgz,
+      }
+    name: d3-path
+    version: 1.0.9
+    dev: false
+
+  registry.npmjs.org/d3-scale/1.0.7:
+    resolution:
+      {
+        integrity: sha512-KvU92czp2/qse5tUfGms6Kjig0AhHOwkzXG0+PqIJB3ke0WUv088AHMZI0OssO9NCkXt4RP8yju9rpH8aGB7Lw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-scale/-/d3-scale-1.0.7.tgz,
+      }
+    name: d3-scale
+    version: 1.0.7
+    dependencies:
+      d3-array: registry.npmjs.org/d3-array/1.2.4
+      d3-collection: registry.npmjs.org/d3-collection/1.0.7
+      d3-color: registry.npmjs.org/d3-color/1.4.1
+      d3-format: registry.npmjs.org/d3-format/1.4.5
+      d3-interpolate: registry.npmjs.org/d3-interpolate/1.4.0
+      d3-time: registry.npmjs.org/d3-time/1.1.0
+      d3-time-format: registry.npmjs.org/d3-time-format/2.3.0
+    dev: false
+
+  registry.npmjs.org/d3-shape/1.3.7:
+    resolution:
+      {
+        integrity: sha512-EUkvKjqPFUAZyOlhY5gzCxCeI0Aep04LwIRpsZ/mLFelJiUfnK56jo5JMDSE7yyP2kLSb6LtF+S5chMk7uqPqw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-shape/-/d3-shape-1.3.7.tgz,
+      }
+    name: d3-shape
+    version: 1.3.7
+    dependencies:
+      d3-path: registry.npmjs.org/d3-path/1.0.9
+    dev: false
+
+  registry.npmjs.org/d3-time-format/2.3.0:
+    resolution:
+      {
+        integrity: sha512-guv6b2H37s2Uq/GefleCDtbe0XZAuy7Wa49VGkPVPMfLL9qObgBST3lEHJBMUp8S7NdLQAGIvr2KXk8Hc98iKQ==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-time-format/-/d3-time-format-2.3.0.tgz,
+      }
+    name: d3-time-format
+    version: 2.3.0
+    dependencies:
+      d3-time: registry.npmjs.org/d3-time/1.1.0
+    dev: false
+
+  registry.npmjs.org/d3-time/1.1.0:
+    resolution:
+      {
+        integrity: sha512-Xh0isrZ5rPYYdqhAVk8VLnMEidhz5aP7htAADH6MfzgmmicPkTo8LhkLxci61/lCB7n7UmE3bN0leRt+qvkLxA==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-time/-/d3-time-1.1.0.tgz,
+      }
+    name: d3-time
+    version: 1.1.0
+    dev: false
+
+  registry.npmjs.org/d3-timer/1.0.10:
+    resolution:
+      {
+        integrity: sha512-B1JDm0XDaQC+uvo4DT79H0XmBskgS3l6Ve+1SBCfxgmtIb1AVrPIoqd+nPSv+loMX8szQ0sVUhGngL7D5QPiXw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/d3-timer/-/d3-timer-1.0.10.tgz,
+      }
+    name: d3-timer
+    version: 1.0.10
+    dev: false
+
+  registry.npmjs.org/delaunator/4.0.1:
+    resolution:
+      {
+        integrity: sha512-WNPWi1IRKZfCt/qIDMfERkDp93+iZEmOxN2yy4Jg+Xhv8SLk2UTqqbe1sfiipn0and9QrE914/ihdx82Y/Giag==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/delaunator/-/delaunator-4.0.1.tgz,
+      }
+    name: delaunator
+    version: 4.0.1
+    dev: false
+
+  registry.npmjs.org/delaunay-find/0.0.6:
+    resolution:
+      {
+        integrity: sha512-1+almjfrnR7ZamBk0q3Nhg6lqSe6Le4vL0WJDSMx4IDbQwTpUTXPjxC00lqLBT8MYsJpPCbI16sIkw9cPsbi7Q==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/delaunay-find/-/delaunay-find-0.0.6.tgz,
+      }
+    name: delaunay-find
+    version: 0.0.6
+    dependencies:
+      delaunator: registry.npmjs.org/delaunator/4.0.1
+    dev: false
 
   registry.npmjs.org/errno/0.1.8:
     resolution:
@@ -21431,19 +21823,6 @@ packages:
       prr: 1.0.1
     dev: true
     optional: true
-
-  registry.npmjs.org/error-ex/1.3.2:
-    resolution:
-      {
-        integrity: sha512-7dFHNmqeFSEt2ZBsCriorKnn3Z2pj+fd9kmI6QoWw4//DL+icEBfc0U7qJCisqrTsKTjw4fNFy2pW9OqStD84g==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/error-ex/-/error-ex-1.3.2.tgz,
-      }
-    name: error-ex
-    version: 1.3.2
-    dependencies:
-      is-arrayish: registry.npmjs.org/is-arrayish/0.2.1
-    dev: true
 
   registry.npmjs.org/esbuild-android-arm64/0.14.22:
     resolution:
@@ -21784,111 +22163,32 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/escape-string-regexp/1.0.5:
+  registry.npmjs.org/file-selector/0.1.19:
     resolution:
       {
-        integrity: sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=,
+        integrity: sha512-kCWw3+Aai8Uox+5tHCNgMFaUdgidxvMnLWO6fM5sZ0hA2wlHP5/DHGF0ECe84BiB95qdJbKNEJhWKVDvMN+JDQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-1.0.5.tgz,
+        tarball: https://registry.npmjs.org/file-selector/-/file-selector-0.1.19.tgz,
       }
-    name: escape-string-regexp
-    version: 1.0.5
-    engines: { node: ">=0.8.0" }
-    dev: true
-
-  registry.npmjs.org/fast-glob/3.2.10:
-    resolution:
-      {
-        integrity: sha512-s9nFhFnvR63wls6/kM88kQqDhMu0AfdjqouE2l5GVQPbqLgyFjjU5ry/r2yKsJxpb9Py1EYNqieFrmMaX4v++A==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.10.tgz,
-      }
-    name: fast-glob
-    version: 3.2.10
-    engines: { node: ">=8.6.0" }
+    name: file-selector
+    version: 0.1.19
+    engines: { node: ">= 10" }
     dependencies:
-      "@nodelib/fs.stat": registry.npmjs.org/@nodelib/fs.stat/2.0.3
-      "@nodelib/fs.walk": registry.npmjs.org/@nodelib/fs.walk/1.2.4
-      glob-parent: registry.npmjs.org/glob-parent/5.1.2
-      merge2: registry.npmjs.org/merge2/1.4.1
-      micromatch: registry.npmjs.org/micromatch/4.0.4
-    dev: true
+      tslib: registry.npmjs.org/tslib/2.3.1
+    dev: false
 
-  registry.npmjs.org/fastq/1.8.0:
+  registry.npmjs.org/focus-trap/6.2.2:
     resolution:
       {
-        integrity: sha512-SMIZoZdLh/fgofivvIkmknUXyPnvxRE3DhtZ5Me3Mrsk5gyPL42F0xr51TdRXskBxHfMp+07bcYzfsYEsSQA9Q==,
+        integrity: sha512-qWovH9+LGoKqREvJaTCzJyO0hphQYGz+ap5Hc4NqXHNhZBdxCi5uBPPcaOUw66fHmzXLVwvETLvFgpwPILqKpg==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/fastq/-/fastq-1.8.0.tgz,
+        tarball: https://registry.npmjs.org/focus-trap/-/focus-trap-6.2.2.tgz,
       }
-    name: fastq
-    version: 1.8.0
+    name: focus-trap
+    version: 6.2.2
     dependencies:
-      reusify: registry.npmjs.org/reusify/1.0.4
-    dev: true
-
-  registry.npmjs.org/fill-range/7.0.1:
-    resolution:
-      {
-        integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/fill-range/-/fill-range-7.0.1.tgz,
-      }
-    name: fill-range
-    version: 7.0.1
-    engines: { node: ">=8" }
-    dependencies:
-      to-regex-range: registry.npmjs.org/to-regex-range/5.0.1
-    dev: true
-
-  registry.npmjs.org/fsevents/2.3.2:
-    resolution:
-      {
-        integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz,
-      }
-    name: fsevents
-    version: 2.3.2
-    engines: { node: ^8.16.0 || ^10.6.0 || >=11.0.0 }
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  registry.npmjs.org/gauge/2.7.4:
-    resolution:
-      {
-        integrity: sha1-LANAXHU4w51+s3sxcCLjJfsBi/c=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/gauge/-/gauge-2.7.4.tgz,
-      }
-    name: gauge
-    version: 2.7.4
-    dependencies:
-      aproba: registry.npmjs.org/aproba/1.2.0
-      console-control-strings: registry.npmjs.org/console-control-strings/1.1.0
-      has-unicode: registry.npmjs.org/has-unicode/2.0.1
-      object-assign: registry.npmjs.org/object-assign/4.1.1
-      signal-exit: registry.npmjs.org/signal-exit/3.0.3
-      string-width: registry.npmjs.org/string-width/1.0.2
-      strip-ansi: registry.npmjs.org/strip-ansi/3.0.1
-      wide-align: registry.npmjs.org/wide-align/1.1.5
-    dev: true
-
-  registry.npmjs.org/glob-parent/5.1.2:
-    resolution:
-      {
-        integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/glob-parent/-/glob-parent-5.1.2.tgz,
-      }
-    name: glob-parent
-    version: 5.1.2
-    engines: { node: ">= 6" }
-    dependencies:
-      is-glob: registry.npmjs.org/is-glob/4.0.3
-    dev: true
+      tabbable: registry.npmjs.org/tabbable/5.1.5
+    dev: false
 
   registry.npmjs.org/global-agent/2.2.0:
     resolution:
@@ -21929,25 +22229,6 @@ packages:
       tunnel: 0.0.6
     optional: true
 
-  registry.npmjs.org/globby/11.0.4:
-    resolution:
-      {
-        integrity: sha512-9O4MVG9ioZJ08ffbcyVYyLOJLk5JQ688pJ4eMGLpdWLHq/Wr1D9BlriLQyL0E+jbkuePVZXYFj47QM/v093wHg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/globby/-/globby-11.0.4.tgz,
-      }
-    name: globby
-    version: 11.0.4
-    engines: { node: ">=10" }
-    dependencies:
-      array-union: registry.npmjs.org/array-union/2.1.0
-      dir-glob: registry.npmjs.org/dir-glob/3.0.1
-      fast-glob: registry.npmjs.org/fast-glob/3.2.10
-      ignore: registry.npmjs.org/ignore/5.2.0
-      merge2: registry.npmjs.org/merge2/1.4.1
-      slash: registry.npmjs.org/slash/3.0.0
-    dev: true
-
   registry.npmjs.org/graceful-fs/4.2.10:
     resolution:
       {
@@ -21957,55 +22238,20 @@ packages:
       }
     name: graceful-fs
     version: 4.2.10
+    optional: true
 
-  registry.npmjs.org/has-flag/3.0.0:
+  registry.npmjs.org/hoist-non-react-statics/3.3.2:
     resolution:
       {
-        integrity: sha1-tdRU3CGZriJWmfNGfloH87lVuv0=,
+        integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/has-flag/-/has-flag-3.0.0.tgz,
+        tarball: https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-3.3.2.tgz,
       }
-    name: has-flag
-    version: 3.0.0
-    engines: { node: ">=4" }
-    dev: true
-
-  registry.npmjs.org/has-unicode/2.0.1:
-    resolution:
-      {
-        integrity: sha1-4Ob+aijPUROIVeCG0Wkedx3iqLk=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/has-unicode/-/has-unicode-2.0.1.tgz,
-      }
-    name: has-unicode
-    version: 2.0.1
-    dev: true
-
-  registry.npmjs.org/hosted-git-info/4.1.0:
-    resolution:
-      {
-        integrity: sha512-kyCuEOWjJqZuDbRHzL8V93NzQhwIB71oFWSyzVo+KPZI+pnQPPxucdkrOZvkLRnrf5URsQM+IJ09Dw29cRALIA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/hosted-git-info/-/hosted-git-info-4.1.0.tgz,
-      }
-    name: hosted-git-info
-    version: 4.1.0
-    engines: { node: ">=10" }
+    name: hoist-non-react-statics
+    version: 3.3.2
     dependencies:
-      lru-cache: registry.npmjs.org/lru-cache/6.0.0
-    dev: true
-
-  registry.npmjs.org/ignore/5.2.0:
-    resolution:
-      {
-        integrity: sha512-CmxgYGiEPCLhfLnpPp1MoRmifwEIOgjcHXxOBjv7mY96c+eWScsOP9c112ZyLdWHi0FxHjI+4uVhKYp/gcdRmQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/ignore/-/ignore-5.2.0.tgz,
-      }
-    name: ignore
-    version: 5.2.0
-    engines: { node: ">= 4" }
-    dev: true
+      react-is: registry.npmjs.org/react-is/16.13.1
+    dev: false
 
   registry.npmjs.org/image-size/0.5.5:
     resolution:
@@ -22022,189 +22268,6 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/import-fresh/3.3.0:
-    resolution:
-      {
-        integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/import-fresh/-/import-fresh-3.3.0.tgz,
-      }
-    name: import-fresh
-    version: 3.3.0
-    engines: { node: ">=6" }
-    dependencies:
-      parent-module: registry.npmjs.org/parent-module/1.0.1
-      resolve-from: registry.npmjs.org/resolve-from/4.0.0
-    dev: true
-
-  registry.npmjs.org/imurmurhash/0.1.4:
-    resolution:
-      {
-        integrity: sha1-khi5srkoojixPcT7a21XbyMUU+o=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/imurmurhash/-/imurmurhash-0.1.4.tgz,
-      }
-    name: imurmurhash
-    version: 0.1.4
-    engines: { node: ">=0.8.19" }
-    dev: true
-
-  registry.npmjs.org/indent-string/4.0.0:
-    resolution:
-      {
-        integrity: sha512-EdDDZu4A2OyIK7Lr/2zG+w5jmbuk1DVBnEwREQvBzspBJkCEbRa8GxU1lghYcaGJCnRWibjDXlq779X1/y5xwg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/indent-string/-/indent-string-4.0.0.tgz,
-      }
-    name: indent-string
-    version: 4.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/inherits/2.0.4:
-    resolution:
-      {
-        integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz,
-      }
-    name: inherits
-    version: 2.0.4
-    dev: true
-
-  registry.npmjs.org/is-arrayish/0.2.1:
-    resolution:
-      {
-        integrity: sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-arrayish/-/is-arrayish-0.2.1.tgz,
-      }
-    name: is-arrayish
-    version: 0.2.1
-    dev: true
-
-  registry.npmjs.org/is-extglob/2.1.1:
-    resolution:
-      {
-        integrity: sha1-qIwCU1eR8C7TfHahueqXc8gz+MI=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-extglob/-/is-extglob-2.1.1.tgz,
-      }
-    name: is-extglob
-    version: 2.1.1
-    engines: { node: ">=0.10.0" }
-    dev: true
-
-  registry.npmjs.org/is-fullwidth-code-point/1.0.0:
-    resolution:
-      {
-        integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-1.0.0.tgz,
-      }
-    name: is-fullwidth-code-point
-    version: 1.0.0
-    engines: { node: ">=0.10.0" }
-    dependencies:
-      number-is-nan: registry.npmjs.org/number-is-nan/1.0.1
-    dev: true
-
-  registry.npmjs.org/is-fullwidth-code-point/3.0.0:
-    resolution:
-      {
-        integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-fullwidth-code-point/-/is-fullwidth-code-point-3.0.0.tgz,
-      }
-    name: is-fullwidth-code-point
-    version: 3.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/is-glob/4.0.3:
-    resolution:
-      {
-        integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-glob/-/is-glob-4.0.3.tgz,
-      }
-    name: is-glob
-    version: 4.0.3
-    engines: { node: ">=0.10.0" }
-    dependencies:
-      is-extglob: registry.npmjs.org/is-extglob/2.1.1
-    dev: true
-
-  registry.npmjs.org/is-number/7.0.0:
-    resolution:
-      {
-        integrity: sha512-41Cifkg6e8TylSpdtTpeLVMqvSBEVzTttHvERD741+pnZ8ANv0004MRL43QKPDlK9cGvNp6NZWZUBlbGXYxxng==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-number/-/is-number-7.0.0.tgz,
-      }
-    name: is-number
-    version: 7.0.0
-    engines: { node: ">=0.12.0" }
-    dev: true
-
-  registry.npmjs.org/is-obj/2.0.0:
-    resolution:
-      {
-        integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-obj/-/is-obj-2.0.0.tgz,
-      }
-    name: is-obj
-    version: 2.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/is-plain-obj/1.1.0:
-    resolution:
-      {
-        integrity: sha1-caUMhCnfync8kqOQpKA7OfzVHT4=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-1.1.0.tgz,
-      }
-    name: is-plain-obj
-    version: 1.1.0
-    engines: { node: ">=0.10.0" }
-    dev: true
-
-  registry.npmjs.org/is-plain-obj/2.1.0:
-    resolution:
-      {
-        integrity: sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-plain-obj/-/is-plain-obj-2.1.0.tgz,
-      }
-    name: is-plain-obj
-    version: 2.1.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/is-typedarray/1.0.0:
-    resolution:
-      {
-        integrity: sha1-5HnICFjfDBsR3dppQPlgEfzaSpo=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/is-typedarray/-/is-typedarray-1.0.0.tgz,
-      }
-    name: is-typedarray
-    version: 1.0.0
-    dev: true
-
-  registry.npmjs.org/isarray/1.0.0:
-    resolution:
-      {
-        integrity: sha1-u5NdSFgsuhaMBoNJV6VKPgcSTxE=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/isarray/-/isarray-1.0.0.tgz,
-      }
-    name: isarray
-    version: 1.0.0
-    dev: true
-
   registry.npmjs.org/js-tokens/4.0.0:
     resolution:
       {
@@ -22214,45 +22277,29 @@ packages:
       }
     name: js-tokens
     version: 4.0.0
+    dev: false
 
-  registry.npmjs.org/json-parse-better-errors/1.0.2:
+  registry.npmjs.org/json-stringify-safe/5.0.1:
     resolution:
       {
-        integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==,
+        integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus=,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz,
+        tarball: https://registry.npmjs.org/json-stringify-safe/-/json-stringify-safe-5.0.1.tgz,
       }
-    name: json-parse-better-errors
-    version: 1.0.2
-    dev: true
+    name: json-stringify-safe
+    version: 5.0.1
+    dev: false
 
-  registry.npmjs.org/lines-and-columns/1.1.6:
+  registry.npmjs.org/lodash/4.17.21:
     resolution:
       {
-        integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA=,
+        integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.1.6.tgz,
+        tarball: https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz,
       }
-    name: lines-and-columns
-    version: 1.1.6
-    dev: true
-
-  registry.npmjs.org/load-json-file/6.2.0:
-    resolution:
-      {
-        integrity: sha512-gUD/epcRms75Cw8RT1pUdHugZYM5ce64ucs2GEISABwkRsOQr0q2wm/MV2TKThycIe5e0ytRweW2RZxclogCdQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/load-json-file/-/load-json-file-6.2.0.tgz,
-      }
-    name: load-json-file
-    version: 6.2.0
-    engines: { node: ">=8" }
-    dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
-      parse-json: registry.npmjs.org/parse-json/5.0.0
-      strip-bom: registry.npmjs.org/strip-bom/4.0.0
-      type-fest: registry.npmjs.org/type-fest/0.6.0
-    dev: true
+    name: lodash
+    version: 4.17.21
+    dev: false
 
   registry.npmjs.org/loose-envify/1.4.0:
     resolution:
@@ -22268,20 +22315,6 @@ packages:
       js-tokens: registry.npmjs.org/js-tokens/4.0.0
     dev: false
 
-  registry.npmjs.org/lru-cache/6.0.0:
-    resolution:
-      {
-        integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/lru-cache/-/lru-cache-6.0.0.tgz,
-      }
-    name: lru-cache
-    version: 6.0.0
-    engines: { node: ">=10" }
-    dependencies:
-      yallist: registry.npmjs.org/yallist/4.0.0
-    dev: true
-
   registry.npmjs.org/make-dir/2.1.0:
     resolution:
       {
@@ -22292,52 +22325,11 @@ packages:
     name: make-dir
     version: 2.1.0
     engines: { node: ">=6" }
-    requiresBuild: true
     dependencies:
       pify: 4.0.1
       semver: 5.7.1
     dev: true
-
-  registry.npmjs.org/make-dir/3.1.0:
-    resolution:
-      {
-        integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/make-dir/-/make-dir-3.1.0.tgz,
-      }
-    name: make-dir
-    version: 3.1.0
-    engines: { node: ">=8" }
-    dependencies:
-      semver: registry.npmjs.org/semver/6.3.0
-    dev: true
-
-  registry.npmjs.org/merge2/1.4.1:
-    resolution:
-      {
-        integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/merge2/-/merge2-1.4.1.tgz,
-      }
-    name: merge2
-    version: 1.4.1
-    engines: { node: ">= 8" }
-    dev: true
-
-  registry.npmjs.org/micromatch/4.0.4:
-    resolution:
-      {
-        integrity: sha512-pRmzw/XUcwXGpD9aI9q/0XOwLNygjETJ8y0ao0wdqprrzDa4YnxLcz7fQRZr8voh8V10kGhABbNcHVk5wHgWwg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/micromatch/-/micromatch-4.0.4.tgz,
-      }
-    name: micromatch
-    version: 4.0.4
-    engines: { node: ">=8.6" }
-    dependencies:
-      braces: registry.npmjs.org/braces/3.0.2
-      picomatch: registry.npmjs.org/picomatch/2.3.1
-    dev: true
+    optional: true
 
   registry.npmjs.org/mime/1.6.0:
     resolution:
@@ -22350,9 +22342,19 @@ packages:
     version: 1.6.0
     engines: { node: ">=4" }
     hasBin: true
-    requiresBuild: true
     dev: true
     optional: true
+
+  registry.npmjs.org/monaco-editor/0.23.0:
+    resolution:
+      {
+        integrity: sha512-q+CP5zMR/aFiMTE9QlIavGyGicKnG2v/H8qVvybLzeFsARM8f6G9fL0sMST2tyVYCwDKkGamZUI6647A0jR/Lg==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.23.0.tgz,
+      }
+    name: monaco-editor
+    version: 0.23.0
+    dev: false
 
   registry.npmjs.org/needle/2.9.1:
     resolution:
@@ -22365,7 +22367,6 @@ packages:
     version: 2.9.1
     engines: { node: ">= 4.4.x" }
     hasBin: true
-    requiresBuild: true
     dependencies:
       debug: 3.2.7
       iconv-lite: 0.4.24
@@ -22410,50 +22411,6 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/npm-package-arg/8.1.5:
-    resolution:
-      {
-        integrity: sha512-LhgZrg0n0VgvzVdSm1oiZworPbTxYHUJCgtsJW8mGvlDpxTM1vSJc3m5QZeUkhAHIzbz3VCHd/R4osi1L1Tg/Q==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/npm-package-arg/-/npm-package-arg-8.1.5.tgz,
-      }
-    name: npm-package-arg
-    version: 8.1.5
-    engines: { node: ">=10" }
-    dependencies:
-      hosted-git-info: registry.npmjs.org/hosted-git-info/4.1.0
-      semver: registry.npmjs.org/semver/7.3.5
-      validate-npm-package-name: registry.npmjs.org/validate-npm-package-name/3.0.0
-    dev: true
-
-  registry.npmjs.org/npmlog/4.1.2:
-    resolution:
-      {
-        integrity: sha512-2uUqazuKlTaSI/dC8AzicUck7+IrEaOnN/e0jd3Xtt1KcGpwx30v50mL7oPyr/h9bL3E4aZccVwpwP+5W9Vjkg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/npmlog/-/npmlog-4.1.2.tgz,
-      }
-    name: npmlog
-    version: 4.1.2
-    dependencies:
-      are-we-there-yet: registry.npmjs.org/are-we-there-yet/1.1.5
-      console-control-strings: registry.npmjs.org/console-control-strings/1.1.0
-      gauge: registry.npmjs.org/gauge/2.7.4
-      set-blocking: registry.npmjs.org/set-blocking/2.0.0
-    dev: true
-
-  registry.npmjs.org/number-is-nan/1.0.1:
-    resolution:
-      {
-        integrity: sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/number-is-nan/-/number-is-nan-1.0.1.tgz,
-      }
-    name: number-is-nan
-    version: 1.0.1
-    engines: { node: ">=0.10.0" }
-    dev: true
-
   registry.npmjs.org/object-assign/4.1.1:
     resolution:
       {
@@ -22464,98 +22421,52 @@ packages:
     name: object-assign
     version: 4.1.1
     engines: { node: ">=0.10.0" }
+    dev: false
 
-  registry.npmjs.org/p-map/4.0.0:
+  registry.npmjs.org/popper.js/1.16.1:
     resolution:
       {
-        integrity: sha512-/bjOqmgETBYB5BoEeGVea8dmvHb2m9GLy1E9W43yeyfP6QQCZGFNa+XRceJEuDB6zqr+gKpIAmlLebMpykw/MQ==,
+        integrity: sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/p-map/-/p-map-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/popper.js/-/popper.js-1.16.1.tgz,
       }
-    name: p-map
-    version: 4.0.0
-    engines: { node: ">=10" }
+    name: popper.js
+    version: 1.16.1
+    deprecated: You can find the new Popper v2 at @popperjs/core, this package is dedicated to the legacy v1
+    dev: false
+
+  registry.npmjs.org/prop-types-extra/1.1.1_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-59+AHNnHYCdiC+vMwY52WmvP5dM3QLeoumYuEyceQDi9aEhtwN9zIQ2ZNo25sMyXnbh32h+P1ezDsUpUH3JAew==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/prop-types-extra/-/prop-types-extra-1.1.1.tgz,
+      }
+    id: registry.npmjs.org/prop-types-extra/1.1.1
+    name: prop-types-extra
+    version: 1.1.1
+    peerDependencies:
+      react: ">=0.14.0"
     dependencies:
-      aggregate-error: registry.npmjs.org/aggregate-error/3.1.0
-    dev: true
+      react: registry.npmjs.org/react/17.0.2
+      react-is: registry.npmjs.org/react-is/16.13.1
+      warning: registry.npmjs.org/warning/4.0.3
+    dev: false
 
-  registry.npmjs.org/parent-module/1.0.1:
+  registry.npmjs.org/prop-types/15.7.2:
     resolution:
       {
-        integrity: sha512-GQ2EWRpQV8/o+Aw8YqtfZZPfNRWZYkbidE9k5rpl/hC3vtHHBfGm2Ifi6qWV+coDGkrUKZAxE3Lot5kcsRlh+g==,
+        integrity: sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/parent-module/-/parent-module-1.0.1.tgz,
+        tarball: https://registry.npmjs.org/prop-types/-/prop-types-15.7.2.tgz,
       }
-    name: parent-module
-    version: 1.0.1
-    engines: { node: ">=6" }
+    name: prop-types
+    version: 15.7.2
     dependencies:
-      callsites: registry.npmjs.org/callsites/3.1.0
-    dev: true
-
-  registry.npmjs.org/parse-json/5.0.0:
-    resolution:
-      {
-        integrity: sha512-OOY5b7PAEFV0E2Fir1KOkxchnZNCdowAJgQ5NuxjpBKTRP3pQhwkrkxqQjeoKJ+fO7bCpmIZaogI4eZGDMEGOw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/parse-json/-/parse-json-5.0.0.tgz,
-      }
-    name: parse-json
-    version: 5.0.0
-    engines: { node: ">=8" }
-    dependencies:
-      "@babel/code-frame": registry.npmjs.org/@babel/code-frame/7.16.7
-      error-ex: registry.npmjs.org/error-ex/1.3.2
-      json-parse-better-errors: registry.npmjs.org/json-parse-better-errors/1.0.2
-      lines-and-columns: registry.npmjs.org/lines-and-columns/1.1.6
-    dev: true
-
-  registry.npmjs.org/path-type/4.0.0:
-    resolution:
-      {
-        integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/path-type/-/path-type-4.0.0.tgz,
-      }
-    name: path-type
-    version: 4.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/picomatch/2.3.1:
-    resolution:
-      {
-        integrity: sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/picomatch/-/picomatch-2.3.1.tgz,
-      }
-    name: picomatch
-    version: 2.3.1
-    engines: { node: ">=8.6" }
-    dev: true
-
-  registry.npmjs.org/pify/4.0.1:
-    resolution:
-      {
-        integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/pify/-/pify-4.0.1.tgz,
-      }
-    name: pify
-    version: 4.0.1
-    engines: { node: ">=6" }
-    dev: true
-
-  registry.npmjs.org/process-nextick-args/2.0.1:
-    resolution:
-      {
-        integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/process-nextick-args/-/process-nextick-args-2.0.1.tgz,
-      }
-    name: process-nextick-args
-    version: 2.0.1
-    dev: true
+      loose-envify: registry.npmjs.org/loose-envify/1.4.0
+      object-assign: registry.npmjs.org/object-assign/4.1.1
+      react-is: registry.npmjs.org/react-is/16.13.1
+    dev: false
 
   registry.npmjs.org/react-dom/17.0.2_react@17.0.2:
     resolution:
@@ -22576,6 +22487,49 @@ packages:
       scheduler: registry.npmjs.org/scheduler/0.20.2
     dev: false
 
+  registry.npmjs.org/react-dropzone/9.0.0_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-wZ2o9B2qkdE3RumWhfyZT9swgJYJPeU5qHEcMU8weYpmLex1eeWX0CC32/Y0VutB+BBi2D+iePV/YZIiB4kZGw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/react-dropzone/-/react-dropzone-9.0.0.tgz,
+      }
+    id: registry.npmjs.org/react-dropzone/9.0.0
+    name: react-dropzone
+    version: 9.0.0
+    engines: { node: ">= 6" }
+    peerDependencies:
+      react: ">=0.14.0"
+    dependencies:
+      attr-accept: registry.npmjs.org/attr-accept/1.1.3
+      file-selector: registry.npmjs.org/file-selector/0.1.19
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      prop-types-extra: registry.npmjs.org/prop-types-extra/1.1.1_react@17.0.2
+      react: registry.npmjs.org/react/17.0.2
+    dev: false
+
+  registry.npmjs.org/react-fast-compare/2.0.4:
+    resolution:
+      {
+        integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-2.0.4.tgz,
+      }
+    name: react-fast-compare
+    version: 2.0.4
+    dev: false
+
+  registry.npmjs.org/react-is/16.13.1:
+    resolution:
+      {
+        integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz,
+      }
+    name: react-is
+    version: 16.13.1
+    dev: false
+
   registry.npmjs.org/react/17.0.2:
     resolution:
       {
@@ -22591,83 +22545,6 @@ packages:
       object-assign: registry.npmjs.org/object-assign/4.1.1
     dev: false
 
-  registry.npmjs.org/readable-stream/2.3.7:
-    resolution:
-      {
-        integrity: sha512-Ebho8K4jIbHAxnuxi7o42OrZgF/ZTNcsZj6nRKyUmkhLFq8CHItp/fy6hQZuZmP/n3yZ9VBUbp4zz/mX8hmYPw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/readable-stream/-/readable-stream-2.3.7.tgz,
-      }
-    name: readable-stream
-    version: 2.3.7
-    dependencies:
-      core-util-is: registry.npmjs.org/core-util-is/1.0.2
-      inherits: registry.npmjs.org/inherits/2.0.4
-      isarray: registry.npmjs.org/isarray/1.0.0
-      process-nextick-args: registry.npmjs.org/process-nextick-args/2.0.1
-      safe-buffer: registry.npmjs.org/safe-buffer/5.1.2
-      string_decoder: registry.npmjs.org/string_decoder/1.1.1
-      util-deprecate: registry.npmjs.org/util-deprecate/1.0.2
-    dev: true
-
-  registry.npmjs.org/resolve-from/4.0.0:
-    resolution:
-      {
-        integrity: sha512-pb/MYmXstAkysRFx8piNI1tGFNQIFA3vkE3Gq4EuA1dF6gHp/+vgZqsCGJapvy8N3Q+4o7FwvquPJcnZ7RYy4g==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/resolve-from/-/resolve-from-4.0.0.tgz,
-      }
-    name: resolve-from
-    version: 4.0.0
-    engines: { node: ">=4" }
-    dev: true
-
-  registry.npmjs.org/resolve-from/5.0.0:
-    resolution:
-      {
-        integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/resolve-from/-/resolve-from-5.0.0.tgz,
-      }
-    name: resolve-from
-    version: 5.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/reusify/1.0.4:
-    resolution:
-      {
-        integrity: sha512-U9nH88a3fc/ekCF1l0/UP1IosiuIjyTh7hBvXVMHYgVcfGvt897Xguj2UOLDeI5BG2m7/uwyaLVT6fbtCwTyzw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/reusify/-/reusify-1.0.4.tgz,
-      }
-    name: reusify
-    version: 1.0.4
-    engines: { iojs: ">=1.0.0", node: ">=0.10.0" }
-    dev: true
-
-  registry.npmjs.org/run-parallel/1.1.9:
-    resolution:
-      {
-        integrity: sha512-DEqnSRTDw/Tc3FXf49zedI638Z9onwUotBMiUFKmrO2sdFKIbXamXGQ3Axd4qgphxKB4kw/qP1w5kTxnfU1B9Q==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/run-parallel/-/run-parallel-1.1.9.tgz,
-      }
-    name: run-parallel
-    version: 1.1.9
-    dev: true
-
-  registry.npmjs.org/safe-buffer/5.1.2:
-    resolution:
-      {
-        integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.1.2.tgz,
-      }
-    name: safe-buffer
-    version: 5.1.2
-    dev: true
-
   registry.npmjs.org/scheduler/0.20.2:
     resolution:
       {
@@ -22682,107 +22559,6 @@ packages:
       object-assign: registry.npmjs.org/object-assign/4.1.1
     dev: false
 
-  registry.npmjs.org/semver/6.3.0:
-    resolution:
-      {
-        integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/semver/-/semver-6.3.0.tgz,
-      }
-    name: semver
-    version: 6.3.0
-    hasBin: true
-    dev: true
-
-  registry.npmjs.org/semver/7.3.5:
-    resolution:
-      {
-        integrity: sha512-PoeGJYh8HK4BTO/a9Tf6ZG3veo/A7ZVsYrSA6J8ny9nb3B1VrpkuN+z9OE5wfE5p6H4LchYZsegiQgbJD94ZFQ==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/semver/-/semver-7.3.5.tgz,
-      }
-    name: semver
-    version: 7.3.5
-    engines: { node: ">=10" }
-    hasBin: true
-    dependencies:
-      lru-cache: registry.npmjs.org/lru-cache/6.0.0
-    dev: true
-
-  registry.npmjs.org/set-blocking/2.0.0:
-    resolution:
-      {
-        integrity: sha1-BF+XgtARrppoA93TgrJDkrPYkPc=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/set-blocking/-/set-blocking-2.0.0.tgz,
-      }
-    name: set-blocking
-    version: 2.0.0
-    dev: true
-
-  registry.npmjs.org/signal-exit/3.0.3:
-    resolution:
-      {
-        integrity: sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.3.tgz,
-      }
-    name: signal-exit
-    version: 3.0.3
-    dev: true
-
-  registry.npmjs.org/slash/3.0.0:
-    resolution:
-      {
-        integrity: sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/slash/-/slash-3.0.0.tgz,
-      }
-    name: slash
-    version: 3.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/sort-keys/2.0.0:
-    resolution:
-      {
-        integrity: sha1-ZYU1WEhh7JfXMNbPQYIuH1ZoQSg=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/sort-keys/-/sort-keys-2.0.0.tgz,
-      }
-    name: sort-keys
-    version: 2.0.0
-    engines: { node: ">=4" }
-    dependencies:
-      is-plain-obj: registry.npmjs.org/is-plain-obj/1.1.0
-    dev: true
-
-  registry.npmjs.org/sort-keys/4.2.0:
-    resolution:
-      {
-        integrity: sha512-aUYIEU/UviqPgc8mHR6IW1EGxkAXpeRETYcrzg8cLAvUPZcpAlleSXHV2mY7G12GphSH6Gzv+4MMVSSkbdteHg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/sort-keys/-/sort-keys-4.2.0.tgz,
-      }
-    name: sort-keys
-    version: 4.2.0
-    engines: { node: ">=8" }
-    dependencies:
-      is-plain-obj: registry.npmjs.org/is-plain-obj/2.1.0
-    dev: true
-
-  registry.npmjs.org/source-map/0.5.7:
-    resolution:
-      {
-        integrity: sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz,
-      }
-    name: source-map
-    version: 0.5.7
-    engines: { node: ">=0.10.0" }
-    dev: true
-
   registry.npmjs.org/source-map/0.6.1:
     resolution:
       {
@@ -22794,310 +22570,459 @@ packages:
     version: 0.6.1
     engines: { node: ">=0.10.0" }
     dev: true
+    optional: true
 
-  registry.npmjs.org/source-map/0.7.3:
+  registry.npmjs.org/tabbable/5.1.5:
     resolution:
       {
-        integrity: sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==,
+        integrity: sha512-oVAPrWgLLqrbvQE8XqcU7CVBq6SQbaIbHkhOca3u7/jzuQvyZycrUKPCGr04qpEIUslmUlULbSeN+m3QrKEykA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz,
+        tarball: https://registry.npmjs.org/tabbable/-/tabbable-5.1.5.tgz,
       }
-    name: source-map
-    version: 0.7.3
-    engines: { node: ">= 8" }
-    dev: true
+    name: tabbable
+    version: 5.1.5
+    dev: false
 
-  registry.npmjs.org/string-width/1.0.2:
+  registry.npmjs.org/tippy.js/5.1.2:
     resolution:
       {
-        integrity: sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M=,
+        integrity: sha512-Qtrv2wqbRbaKMUb6bWWBQWPayvcDKNrGlvihxtsyowhT7RLGEh1STWuy6EMXC6QLkfKPB2MLnf8W2mzql9VDAw==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/string-width/-/string-width-1.0.2.tgz,
+        tarball: https://registry.npmjs.org/tippy.js/-/tippy.js-5.1.2.tgz,
       }
-    name: string-width
-    version: 1.0.2
-    engines: { node: ">=0.10.0" }
+    name: tippy.js
+    version: 5.1.2
     dependencies:
-      code-point-at: registry.npmjs.org/code-point-at/1.1.0
-      is-fullwidth-code-point: registry.npmjs.org/is-fullwidth-code-point/1.0.0
-      strip-ansi: registry.npmjs.org/strip-ansi/3.0.1
-    dev: true
+      popper.js: registry.npmjs.org/popper.js/1.16.1
+    dev: false
 
-  registry.npmjs.org/string-width/4.2.3:
+  registry.npmjs.org/tslib/2.3.1:
     resolution:
       {
-        integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==,
+        integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/string-width/-/string-width-4.2.3.tgz,
+        tarball: https://registry.npmjs.org/tslib/-/tslib-2.3.1.tgz,
       }
-    name: string-width
-    version: 4.2.3
-    engines: { node: ">=8" }
+    name: tslib
+    version: 2.3.1
+    dev: false
+
+  registry.npmjs.org/victory-area/35.11.4_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-i3rN4Jvn1uwA3YvCuv3EIPEcK2SWSOq3c+TvLvVj1BKFQug11C06UjyQje+3EEzffZ/EMkvGqj2+YudIjrGEzA==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/victory-area/-/victory-area-35.11.4.tgz,
+      }
+    id: registry.npmjs.org/victory-area/35.11.4
+    name: victory-area
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      emoji-regex: registry.npmjs.org/emoji-regex/8.0.0
-      is-fullwidth-code-point: registry.npmjs.org/is-fullwidth-code-point/3.0.0
-      strip-ansi: registry.npmjs.org/strip-ansi/6.0.1
-    dev: true
+      d3-shape: registry.npmjs.org/d3-shape/1.3.7
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/string_decoder/1.1.1:
+  registry.npmjs.org/victory-axis/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-n/ShnvDi6FHbbVfviro+WojiFzv+s8MPMHBczVePfUpDJLwoLT0ht1l4YwBCbi8pJAveEEdnkHyPyTP/mzRfwg==,
+        integrity: sha512-KmPXC/vgbiiWckhK0LruZvsFQqESg6BflhIqS/Xemc50ymWetqbT9VZhjPWbU0arOIP5E8xcFnGUimDN//Jffw==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/string_decoder/-/string_decoder-1.1.1.tgz,
+        tarball: https://registry.npmjs.org/victory-axis/-/victory-axis-35.11.4.tgz,
       }
-    name: string_decoder
-    version: 1.1.1
+    id: registry.npmjs.org/victory-axis/35.11.4
+    name: victory-axis
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      safe-buffer: registry.npmjs.org/safe-buffer/5.1.2
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/strip-ansi/3.0.1:
+  registry.npmjs.org/victory-bar/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=,
+        integrity: sha512-EZC+6VGwHkIcOYEppVFBIC5JymYnfF+RLF+NM0Uys7q5+AwaLx36LS9a2xBUBYO/gx20Wd1HVH8kjSHzw1rTqQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/strip-ansi/-/strip-ansi-3.0.1.tgz,
+        tarball: https://registry.npmjs.org/victory-bar/-/victory-bar-35.11.4.tgz,
       }
-    name: strip-ansi
-    version: 3.0.1
-    engines: { node: ">=0.10.0" }
+    id: registry.npmjs.org/victory-bar/35.11.4
+    name: victory-bar
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      ansi-regex: registry.npmjs.org/ansi-regex/2.1.1
-    dev: true
+      d3-shape: registry.npmjs.org/d3-shape/1.3.7
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/strip-ansi/6.0.1:
+  registry.npmjs.org/victory-brush-container/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==,
+        integrity: sha512-KpFYU2LxKbLIjZDhXTdveok1SWLFlG5s2R214IRq+ukYRz21CoxlvZCWhFL60lSPilD+ZD1Udv3sK/RW9CFMxA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/strip-ansi/-/strip-ansi-6.0.1.tgz,
+        tarball: https://registry.npmjs.org/victory-brush-container/-/victory-brush-container-35.11.4.tgz,
       }
-    name: strip-ansi
-    version: 6.0.1
-    engines: { node: ">=8" }
+    id: registry.npmjs.org/victory-brush-container/35.11.4
+    name: victory-brush-container
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      ansi-regex: registry.npmjs.org/ansi-regex/5.0.1
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/strip-bom/4.0.0:
+  registry.npmjs.org/victory-chart/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-3xurFv5tEgii33Zi8Jtp55wEIILR9eh34FAW00PZf+JnSsTmV/ioewSgQl97JHvgjoRGwPShsWm+IdrxB35d0w==,
+        integrity: sha512-oBTjx6ytp+/s6zswCuOUQotiISePQKuDUdOsjnbINBPSNvJuE2W9GXHD+B7ibDkCh4ZWXm8obHz7mnrRGbCGFQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/strip-bom/-/strip-bom-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/victory-chart/-/victory-chart-35.11.4.tgz,
       }
-    name: strip-bom
-    version: 4.0.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/supports-color/5.5.0:
-    resolution:
-      {
-        integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/supports-color/-/supports-color-5.5.0.tgz,
-      }
-    name: supports-color
-    version: 5.5.0
-    engines: { node: ">=4" }
+    id: registry.npmjs.org/victory-chart/35.11.4
+    name: victory-chart
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      has-flag: registry.npmjs.org/has-flag/3.0.0
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+      victory-axis: registry.npmjs.org/victory-axis/35.11.4_react@17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+      victory-polar-axis: registry.npmjs.org/victory-polar-axis/35.11.4_react@17.0.2
+      victory-shared-events: registry.npmjs.org/victory-shared-events/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/to-regex-range/5.0.1:
+  registry.npmjs.org/victory-core/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==,
+        integrity: sha512-PuqrOIn/a6GQgsp/DKvACiJBAJo71P77jltn56mlDZjAAzz+58BL4E0hx7x908GdodLXo2n9gEeuDdjOAlOt0Q==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz,
+        tarball: https://registry.npmjs.org/victory-core/-/victory-core-35.11.4.tgz,
       }
-    name: to-regex-range
-    version: 5.0.1
-    engines: { node: ">=8.0" }
+    id: registry.npmjs.org/victory-core/35.11.4
+    name: victory-core
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      is-number: registry.npmjs.org/is-number/7.0.0
-    dev: true
+      d3-ease: registry.npmjs.org/d3-ease/1.0.7
+      d3-interpolate: registry.npmjs.org/d3-interpolate/1.4.0
+      d3-scale: registry.npmjs.org/d3-scale/1.0.7
+      d3-shape: registry.npmjs.org/d3-shape/1.3.7
+      d3-timer: registry.npmjs.org/d3-timer/1.0.10
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+    dev: false
 
-  registry.npmjs.org/type-fest/0.4.1:
+  registry.npmjs.org/victory-create-container/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-IwzA/LSfD2vC1/YDYMv/zHP4rDF1usCwllsDpbolT3D4fUepIO7f9K70jjmUewU/LmGUKJcwcVtDCpnKk4BPMw==,
+        integrity: sha512-baDLO4GSk/7eTVEYkhikwgwV5BtrSMuNPjKZBjZrIA3Ka9Fn5shklRG9PWg+26JIBFxqZdM6zOvpF7xhjxi37Q==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/type-fest/-/type-fest-0.4.1.tgz,
+        tarball: https://registry.npmjs.org/victory-create-container/-/victory-create-container-35.11.4.tgz,
       }
-    name: type-fest
-    version: 0.4.1
-    engines: { node: ">=6" }
-    dev: true
-
-  registry.npmjs.org/type-fest/0.6.0:
-    resolution:
-      {
-        integrity: sha512-q+MB8nYR1KDLrgr4G5yemftpMC7/QLqVndBmEEdqzmNj5dcFOO4Oo8qlwZE3ULT3+Zim1F8Kq4cBnikNhlCMlg==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/type-fest/-/type-fest-0.6.0.tgz,
-      }
-    name: type-fest
-    version: 0.6.0
-    engines: { node: ">=8" }
-    dev: true
-
-  registry.npmjs.org/typedarray-to-buffer/3.1.5:
-    resolution:
-      {
-        integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/typedarray-to-buffer/-/typedarray-to-buffer-3.1.5.tgz,
-      }
-    name: typedarray-to-buffer
-    version: 3.1.5
+    id: registry.npmjs.org/victory-create-container/35.11.4
+    name: victory-create-container
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      is-typedarray: registry.npmjs.org/is-typedarray/1.0.0
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      react: registry.npmjs.org/react/17.0.2
+      victory-brush-container: registry.npmjs.org/victory-brush-container/35.11.4_react@17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+      victory-cursor-container: registry.npmjs.org/victory-cursor-container/35.11.4_react@17.0.2
+      victory-selection-container: registry.npmjs.org/victory-selection-container/35.11.4_react@17.0.2
+      victory-voronoi-container: registry.npmjs.org/victory-voronoi-container/35.11.4_react@17.0.2
+      victory-zoom-container: registry.npmjs.org/victory-zoom-container/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/util-deprecate/1.0.2:
+  registry.npmjs.org/victory-cursor-container/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=,
+        integrity: sha512-gs6bwRd/qbGTN78w2QgshIFxlyOsss5qWOMdCcY9i0Oi99l9OJ6UFQDBzSgKsgD53KGs7JxiKevmUqc3qSZZBg==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz,
+        tarball: https://registry.npmjs.org/victory-cursor-container/-/victory-cursor-container-35.11.4.tgz,
       }
-    name: util-deprecate
-    version: 1.0.2
-    dev: true
-
-  registry.npmjs.org/validate-npm-package-name/3.0.0:
-    resolution:
-      {
-        integrity: sha1-X6kS2B630MdK/BQN5zF/DKffQ34=,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/validate-npm-package-name/-/validate-npm-package-name-3.0.0.tgz,
-      }
-    name: validate-npm-package-name
-    version: 3.0.0
+    id: registry.npmjs.org/victory-cursor-container/35.11.4
+    name: victory-cursor-container
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      builtins: registry.npmjs.org/builtins/1.0.3
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/wide-align/1.1.5:
+  registry.npmjs.org/victory-group/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-eDMORYaPNZ4sQIuuYPDHdQvf4gyCF9rEEV/yPxGfwPkRodwEgiMUUXTx/dex+Me0wxx53S+NgUHaP7y3MGlDmg==,
+        integrity: sha512-ceFBll9h1sPpdMjNcvdgEhnYELVHfx9ymmk8iMEjOKpxa4fVvapMhegPmL0/zTemJ/NCu71W2xIr0VqyqK0DaA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/wide-align/-/wide-align-1.1.5.tgz,
+        tarball: https://registry.npmjs.org/victory-group/-/victory-group-35.11.4.tgz,
       }
-    name: wide-align
-    version: 1.1.5
+    id: registry.npmjs.org/victory-group/35.11.4
+    name: victory-group
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      string-width: registry.npmjs.org/string-width/4.2.3
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+      victory-shared-events: registry.npmjs.org/victory-shared-events/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/write-file-atomic/2.4.3:
+  registry.npmjs.org/victory-legend/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==,
+        integrity: sha512-JZzQARjxYorWlNf9RmZRPAzlgPjukiUV1aTBaeC8YA2S4PhP4PWhNwO/Pb3aCdkifpumpgsm3JULpJiCGOPdBQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/write-file-atomic/-/write-file-atomic-2.4.3.tgz,
+        tarball: https://registry.npmjs.org/victory-legend/-/victory-legend-35.11.4.tgz,
       }
-    name: write-file-atomic
-    version: 2.4.3
+    id: registry.npmjs.org/victory-legend/35.11.4
+    name: victory-legend
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
-      imurmurhash: registry.npmjs.org/imurmurhash/0.1.4
-      signal-exit: registry.npmjs.org/signal-exit/3.0.3
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/write-file-atomic/3.0.3:
+  registry.npmjs.org/victory-line/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q==,
+        integrity: sha512-uKX6/1b1OmlqJZOsVDCCDlyc9QItgb39vRssTwP4CJX1NLU4Sfgq2i4VVUbHXCo/I2sMEczjf3cdnxdZtC6IFA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/write-file-atomic/-/write-file-atomic-3.0.3.tgz,
+        tarball: https://registry.npmjs.org/victory-line/-/victory-line-35.11.4.tgz,
       }
-    name: write-file-atomic
-    version: 3.0.3
+    id: registry.npmjs.org/victory-line/35.11.4
+    name: victory-line
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      imurmurhash: registry.npmjs.org/imurmurhash/0.1.4
-      is-typedarray: registry.npmjs.org/is-typedarray/1.0.0
-      signal-exit: registry.npmjs.org/signal-exit/3.0.3
-      typedarray-to-buffer: registry.npmjs.org/typedarray-to-buffer/3.1.5
-    dev: true
+      d3-shape: registry.npmjs.org/d3-shape/1.3.7
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/write-json-file/3.2.0:
+  registry.npmjs.org/victory-pie/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-3xZqT7Byc2uORAatYiP3DHUUAVEkNOswEWNs9H5KXiicRTvzYzYqKjYc4G7p+8pltvAw641lVByKVtMpf+4sYQ==,
+        integrity: sha512-EruxP3PIkrTPTzsC5YhiRKg2s+0UtaRU1ZHZUWK8qi+zlbMDFKYg2AlHqsEnctu5AOdOWLLiye6qUG3oxjiURg==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/write-json-file/-/write-json-file-3.2.0.tgz,
+        tarball: https://registry.npmjs.org/victory-pie/-/victory-pie-35.11.4.tgz,
       }
-    name: write-json-file
-    version: 3.2.0
-    engines: { node: ">=6" }
+    id: registry.npmjs.org/victory-pie/35.11.4
+    name: victory-pie
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      detect-indent: registry.npmjs.org/detect-indent/5.0.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
-      make-dir: registry.npmjs.org/make-dir/2.1.0
-      pify: registry.npmjs.org/pify/4.0.1
-      sort-keys: registry.npmjs.org/sort-keys/2.0.0
-      write-file-atomic: registry.npmjs.org/write-file-atomic/2.4.3
-    dev: true
+      d3-shape: registry.npmjs.org/d3-shape/1.3.7
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/write-json-file/4.3.0:
+  registry.npmjs.org/victory-polar-axis/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-PxiShnxf0IlnQuMYOPPhPkhExoCQuTUNPOa/2JWCYTmBquU9njyyDuwRKN26IZBlp4yn1nt+Agh2HOOBl+55HQ==,
+        integrity: sha512-mnIRpfARn36TG6ZdCgKR+oWY+pIX6wLHYS0un5xM1TTObKk4IyAR3dnQhEp+3KM1SGoLg0mENFR1Ac8xrus6nQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/write-json-file/-/write-json-file-4.3.0.tgz,
+        tarball: https://registry.npmjs.org/victory-polar-axis/-/victory-polar-axis-35.11.4.tgz,
       }
-    name: write-json-file
-    version: 4.3.0
-    engines: { node: ">=8.3" }
+    id: registry.npmjs.org/victory-polar-axis/35.11.4
+    name: victory-polar-axis
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      detect-indent: registry.npmjs.org/detect-indent/6.0.0
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.10
-      is-plain-obj: registry.npmjs.org/is-plain-obj/2.1.0
-      make-dir: registry.npmjs.org/make-dir/3.1.0
-      sort-keys: registry.npmjs.org/sort-keys/4.2.0
-      write-file-atomic: registry.npmjs.org/write-file-atomic/3.0.3
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/write-pkg/4.0.0:
+  registry.npmjs.org/victory-scatter/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-v2UQ+50TNf2rNHJ8NyWttfm/EJUBWMJcx6ZTYZr6Qp52uuegWw/lBkCtCbnYZEmPRNL61m+u67dAmGxo+HTULA==,
+        integrity: sha512-8n9rmXmVju2SqA6Xd90rRTmboaU7WStOnj1QUg4q96DDiAVf6kGPdolzCwbUBbiECLyluGoFNJ043WLXztGpiA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/write-pkg/-/write-pkg-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/victory-scatter/-/victory-scatter-35.11.4.tgz,
       }
-    name: write-pkg
-    version: 4.0.0
-    engines: { node: ">=8" }
+    id: registry.npmjs.org/victory-scatter/35.11.4
+    name: victory-scatter
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
     dependencies:
-      sort-keys: registry.npmjs.org/sort-keys/2.0.0
-      type-fest: registry.npmjs.org/type-fest/0.4.1
-      write-json-file: registry.npmjs.org/write-json-file/3.2.0
-    dev: true
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/yallist/4.0.0:
+  registry.npmjs.org/victory-selection-container/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==,
+        integrity: sha512-Olxnjp9tvHUHeFr4zU/K1dzp0zbeqQRMr2Qqpr85Dd4pWV9bIReE/DanxGhjNg9s3KB5Vsn1GC46PXSTMM1XIQ==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/yallist/-/yallist-4.0.0.tgz,
+        tarball: https://registry.npmjs.org/victory-selection-container/-/victory-selection-container-35.11.4.tgz,
       }
-    name: yallist
-    version: 4.0.0
-    dev: true
+    id: registry.npmjs.org/victory-selection-container/35.11.4
+    name: victory-selection-container
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
 
-  registry.npmjs.org/yaml/1.10.2:
+  registry.npmjs.org/victory-shared-events/35.11.4_react@17.0.2:
     resolution:
       {
-        integrity: sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==,
+        integrity: sha512-flvI27J9K+09BAbuVJf2w51D4OkXlDxE/5BlaHSKzM5jNDYsbcQ6djXa4pqa7NQtMGPOApTBkOSmVRyWRqVoYA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/yaml/-/yaml-1.10.2.tgz,
+        tarball: https://registry.npmjs.org/victory-shared-events/-/victory-shared-events-35.11.4.tgz,
       }
-    name: yaml
-    version: 1.10.2
-    engines: { node: ">= 6" }
-    dev: true
+    id: registry.npmjs.org/victory-shared-events/35.11.4
+    name: victory-shared-events
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      json-stringify-safe: registry.npmjs.org/json-stringify-safe/5.0.1
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
+
+  registry.npmjs.org/victory-stack/35.11.4_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-fNTY50fN+DCHcK/9AgMUEq0uJ8IXGnMlRtkSCzMB9ZpEzB7Edx3jLM2Gl970zOkwVaDYXTlikPd1dwf+h3m0dA==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/victory-stack/-/victory-stack-35.11.4.tgz,
+      }
+    id: registry.npmjs.org/victory-stack/35.11.4
+    name: victory-stack
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+      victory-shared-events: registry.npmjs.org/victory-shared-events/35.11.4_react@17.0.2
+    dev: false
+
+  registry.npmjs.org/victory-tooltip/35.11.4_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-B+UUqzryurtMghJGiE34tg5eI44vHxyOOcuPIM3IpJLujnNIJXVykBjgQZnFq1CT/63TtDCOlzPkOjSbecPtXQ==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/victory-tooltip/-/victory-tooltip-35.11.4.tgz,
+      }
+    id: registry.npmjs.org/victory-tooltip/35.11.4
+    name: victory-tooltip
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
+
+  registry.npmjs.org/victory-voronoi-container/35.11.4_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-vmwHBm/+nZ9qdRcaNd7r08AVRkus/ER6UA4KAYWkKUe50ZT9NYjDxy0wW/Y7PHQldfL9q/VxAyIE/M6jSFWkEA==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/victory-voronoi-container/-/victory-voronoi-container-35.11.4.tgz,
+      }
+    id: registry.npmjs.org/victory-voronoi-container/35.11.4
+    name: victory-voronoi-container
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      delaunay-find: registry.npmjs.org/delaunay-find/0.0.6
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      react-fast-compare: registry.npmjs.org/react-fast-compare/2.0.4
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+      victory-tooltip: registry.npmjs.org/victory-tooltip/35.11.4_react@17.0.2
+    dev: false
+
+  registry.npmjs.org/victory-zoom-container/35.11.4_react@17.0.2:
+    resolution:
+      {
+        integrity: sha512-8D4hTdvGZqyZdgWjkz/pDRVy/kijWhptFbK0KWl5J1Tt4YuCGiRC9oxQOpEjlqr8TSyeVnpyuF4QuIp9YOIrAw==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/victory-zoom-container/-/victory-zoom-container-35.11.4.tgz,
+      }
+    id: registry.npmjs.org/victory-zoom-container/35.11.4
+    name: victory-zoom-container
+    version: 35.11.4
+    peerDependencies:
+      react: ^16.6.0 || ^17.0.0
+    dependencies:
+      lodash: registry.npmjs.org/lodash/4.17.21
+      prop-types: registry.npmjs.org/prop-types/15.7.2
+      react: registry.npmjs.org/react/17.0.2
+      victory-core: registry.npmjs.org/victory-core/35.11.4_react@17.0.2
+    dev: false
+
+  registry.npmjs.org/warning/4.0.3:
+    resolution:
+      {
+        integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/warning/-/warning-4.0.3.tgz,
+      }
+    name: warning
+    version: 4.0.3
+    dependencies:
+      loose-envify: registry.npmjs.org/loose-envify/1.4.0
+    dev: false

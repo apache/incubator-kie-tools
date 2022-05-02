@@ -24,6 +24,7 @@
     "@kie-tools/uniforms-patternfly-codegen": "0.0.0",
     "inquirer": "^8.1.1",
     "uniforms": "^3.5.5",
+    "lodash": "^4.17.21",
     "uniforms-bridge-json-schema": "^3.5.5"
   },
   "devDependencies": {

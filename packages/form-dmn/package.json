@@ -32,7 +32,9 @@
     "uniforms-bridge-json-schema": "^3.5.5",
     "uniforms-patternfly": "^4.7.5",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",

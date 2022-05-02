@@ -162,5 +162,10 @@
   "resolutions": {
     "react-dropzone": "^11.4.2",
     "@types/react": "^17.0.6"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-monaco-editor@0.43.0>monaco-editor": "^0.23.0"
+    }
   }
 }

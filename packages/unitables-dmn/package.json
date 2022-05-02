@@ -23,6 +23,7 @@
     "@kie-tools/boxed-expression-component": "0.0.0",
     "@kie-tools/form": "0.0.0",
     "@kie-tools/form-dmn": "0.0.0",
+    "@kie-tools/i18n-common-dictionary": "0.0.0",
     "@kie-tools/unitables": "0.0.0",
     "@types/react-table": "^7.0.25",
     "ajv": "^6.12.6",
@@ -31,7 +32,12 @@
     "react-table": "^7.6.2",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.5"
+    "uniforms-patternfly": "^4.7.5",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "react-id-generator": "^3.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "files": [
     "dist"

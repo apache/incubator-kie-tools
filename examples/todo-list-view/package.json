@@ -18,7 +18,9 @@
   },
   "dependencies": {
     "@kie-tools-core/envelope": "0.0.0",
-    "@kie-tools-core/envelope-bus": "0.0.0"
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
