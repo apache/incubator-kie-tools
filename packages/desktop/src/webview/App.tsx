@@ -18,9 +18,7 @@ import { Alert, AlertActionCloseButton, AlertVariant } from "@patternfly/react-c
 import * as electron from "electron";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import "@patternfly/patternfly/base/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
-import "@patternfly/patternfly/patternfly.scss";
+import "@patternfly/react-core/dist/styles/base.css";
 import "../../static/resources/style.css";
 import { ElectronFile, UNSAVED_FILE_NAME } from "../common/ElectronFile";
 import { GlobalContext } from "./common/GlobalContext";

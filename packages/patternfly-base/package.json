@@ -11,14 +11,6 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@patternfly/patternfly": "^4.135.2",
-    "@patternfly/react-charts": "^6.15.23",
-    "@patternfly/react-core": "^4.157.3",
-    "@patternfly/react-icons": "^4.11.17",
-    "@patternfly/react-table": "^4.27.15",
-    "@patternfly/react-tokens": "^4.33.1"
-  },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0"

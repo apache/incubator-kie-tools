@@ -1,5 +1,5 @@
 digraph G {
-  graph [ ranksep =2, splines = "polyline", rankdir =TB ];
+  graph [ ranksep =2, splines = "polyline", rankdir =TB, ordering = "out" ];
   node [ shape =box ];
   edge [ headport = "n", tailport = "s", arrowhead =dot, arrowsize =0.5 ];
   "kiegroup/kie-tools" [ shape =folder ];
@@ -105,8 +105,8 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
-  "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
-  "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "black" ];
+  "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "dashed", color = "black" ];
+  "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];

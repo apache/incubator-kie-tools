@@ -41,10 +41,10 @@
     "uuid": "^8.3.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "@patternfly/patternfly": "^4.135.2",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
-    "@patternfly/react-charts": "^6.15.23"
+    "@patternfly/react-charts": "^6.15.23",
+    "csstype": "^3.0.11"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
@@ -65,7 +65,8 @@
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
     "gh-pages": "^3.2.3",
-    "@types/lodash": "^4.14.168"
+    "@types/lodash": "^4.14.168",
+    "@types/uuid": "^8.3.0"
   },
   "babel": {
     "presets": [

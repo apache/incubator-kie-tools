@@ -21,7 +21,6 @@
     "@kie-tools/i18n-common-dictionary": "0.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "@patternfly/patternfly": "^4.135.2",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "@patternfly/react-table": "^4.27.15"

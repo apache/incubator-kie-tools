@@ -37,8 +37,7 @@
     "update-version-to": "node ./scripts/update_version.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky install",
-    "postinstall": "patch-package"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -51,6 +50,9 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.2",
+    "@types/testing-library__jest-dom": "^5.9.1",
+    "@types/testing-library__react": "^9.1.2",
+    "@types/testing-library__react-hooks": "^3.4.0",
     "@types/chai": "^4.2.17",
     "@types/chrome": "^0.0.143",
     "@types/filesystem": "^0.0.32",
@@ -117,7 +119,6 @@
     "npm-run-all": "^4.1.5",
     "null-loader": "^4.0.1",
     "os-browserify": "^0.3.0",
-    "patch-package": "^6.4.7",
     "path-browserify": "^1.0.1",
     "pkg": "^5.5.2",
     "postinstall-postinstall": "^2.1.0",

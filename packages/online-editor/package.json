@@ -35,13 +35,12 @@
     "jszip": "^3.7.1",
     "buffer": "^6.0.3",
     "moment": "^2.29.1",
+    "history": "^4.9.0",
     "react-dropzone": "^11.4.2",
     "react-router": "^5.2.1",
     "react-router-dom": "^5.2.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "@patternfly/patternfly": "^4.135.2",
-    "@patternfly/react-charts": "^6.15.23",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "@patternfly/react-tokens": "^4.33.1",
@@ -57,7 +56,9 @@
     "@types/react-router-dom": "^5.1.7",
     "@kie-tools-core/webpack-base": "0.0.0",
     "cypress-real-events": "^1.7.0",
-    "@types/minimatch": "^3.0.4"
+    "@types/minimatch": "^3.0.4",
+    "@types/uuid": "^8.3.0",
+    "@types/history": "^4.7.3"
   },
   "scripts": {
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",

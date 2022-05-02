@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-import "@patternfly/patternfly/base/patternfly-variables.css";
-import "@patternfly/patternfly/patternfly-addons.scss";
-import "@patternfly/patternfly/patternfly.scss";
+import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Brand, Nav, NavItem, NavList, NavExpandable, Page, PageHeader } from "@patternfly/react-core";
+import { Brand, Nav, NavItem, NavList, Page, PageHeader } from "@patternfly/react-core";
 import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
 import { Base64PngPage } from "./Pages/Base64Png/Base64PngPage";
 import { BpmnPage } from "./Pages/KogitoEditors/BpmnPage";

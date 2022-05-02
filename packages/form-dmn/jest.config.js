@@ -16,7 +16,7 @@
 
 module.exports = {
   reporters: ["default"],
-  moduleDirectories: ["../../node_modules", "node_modules", "src"],
+  moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   setupFilesAfterEnv: ["./tests/jest.setup.ts"],
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",

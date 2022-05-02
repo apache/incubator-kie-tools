@@ -27,6 +27,6 @@ module.exports = (env, argv) => [
     output: {
       libraryTarget: "commonjs2",
     },
-    externals: [nodeExternals({ modulesDir: "../../node_modules" })],
+    externals: [nodeExternals()],
   }),
 ];

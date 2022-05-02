@@ -8,15 +8,18 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@kie-tools-core/chrome-extension": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools/serverless-workflow-editor": "0.0.0"
-  },
   "devDependencies": {
+    "@kie-tools-core/chrome-extension": "0.0.0",
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools/serverless-workflow-editor": "0.0.0",
+    "monaco-yaml": "^3.2.1",
     "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
-    "monaco-editor-webpack-plugin": "^7.0.1"
+    "webpack": "^5.36.2",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "monaco-editor": "^0.33.0"
   },
   "scripts": {
     "cleanup-wrong-nohoisted-dependencies": "rimraf ./node_modules/monaco-yaml/node_modules",

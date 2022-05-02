@@ -19,7 +19,6 @@
     "@kie-tools-core/envelope-bus": "0.0.0",
     "@kie-tools-core/i18n": "0.0.0",
     "@kie-tools-core/patternfly-base": "0.0.0",
-    "@patternfly/patternfly": "^4.135.2",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "react": "^17.0.2",

@@ -86,6 +86,7 @@ async function main() {
     g.set("ranksep", "2");
     g.set("splines", "polyline");
     g.set("rankdir", "TB");
+    g.set("ordering", "out");
 
     g.setNodeAttribut("shape", "box");
 

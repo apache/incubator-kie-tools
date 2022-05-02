@@ -47,7 +47,8 @@
     "cypress-real-events": "^1.7.0",
     "gh-pages": "^3.2.3",
     "react-json-view": "^1.21.3",
-    "@types/lodash": "^4.14.168"
+    "@types/lodash": "^4.14.168",
+    "@types/uuid": "^8.3.0"
   },
   "babel": {
     "presets": [

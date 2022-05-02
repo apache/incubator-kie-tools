@@ -22,7 +22,7 @@ import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DataType, ExpressionProps } from "../../api";
 import { useBoxedExpression } from "../../context";
 import { DataTypeSelector } from "./DataTypeSelector";
-import { CogIcon } from "@patternfly/react-icons";
+import { CogIcon } from "@patternfly/react-icons/dist/js/icons/cog-icon";
 import { Button } from "@patternfly/react-core";
 import { NavigationKeysUtils } from "../common";
 
