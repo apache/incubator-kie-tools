@@ -68,7 +68,6 @@
     <version.jakarta.activation-api>1.2.2</version.jakarta.activation-api>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
     <version.com.google.jsinterop.annotations>2.0.0</version.com.google.jsinterop.annotations>
-    <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
     <version.org.apache.tomcat.tomcat-dbcp>9.0.21</version.org.apache.tomcat.tomcat-dbcp>
     <version.org.jboss.narayana.tomcat>5.9.0.Final</version.org.jboss.narayana.tomcat>
     <version.org.jboss.arquillian.container.weld>1.0.0.CR5</version.org.jboss.arquillian.container.weld>
@@ -426,16 +425,6 @@
         <groupId>org.jboss.xnio</groupId>
         <artifactId>xnio-nio</artifactId>
         <version>${version.org.jboss.xnio}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>
-        <artifactId>xstream</artifactId>
-        <version>${version.com.thoughtworks.xstream}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.thoughtworks.xstream</groupId>
-        <artifactId>xstream-hibernate</artifactId>
-        <version>${version.com.thoughtworks.xstream}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.tomcat</groupId>

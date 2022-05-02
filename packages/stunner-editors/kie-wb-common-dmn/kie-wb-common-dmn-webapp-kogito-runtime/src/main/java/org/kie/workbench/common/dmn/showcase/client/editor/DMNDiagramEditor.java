@@ -29,6 +29,7 @@ import elemental2.promise.Promise;
 import org.kie.workbench.common.dmn.api.qualifiers.DMNEditor;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.navigator.common.LazyCanvasFocusUtils;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
@@ -103,7 +104,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
                             final ReadOnlyProvider readOnlyProvider,
                             final LazyCanvasFocusUtils lazyCanvasFocusUtils,
                             final EditorSessionCommands commands,
-                            final ConfirmationDialog confirmationDialog) {
+                            final ConfirmationDialog confirmationDialog,
+                            final DecisionNavigatorPresenter decisionNavigatorPresenter) {
         super(view,
               containerView,
               stunnerEditor,
@@ -128,7 +130,8 @@ public class DMNDiagramEditor extends AbstractDMNDiagramEditor {
               kogitoChannelHelper,
               guidedTourBridgeInitializer,
               drdNameChanger,
-              confirmationDialog);
+              confirmationDialog,
+              decisionNavigatorPresenter);
         this.readOnlyProvider = readOnlyProvider;
         this.lazyCanvasFocusUtils = lazyCanvasFocusUtils;
         this.commands = commands;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -27,9 +27,11 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
 import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
-import { SwfTextEditorController, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";
+import { SwfTextEditorApi, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";
 import { SwfTextEditor } from "../textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { editor } from "monaco-editor";
+import "../../static/css/editor.css";
 
 interface Props {
   /**
@@ -59,96 +61,171 @@ interface Props {
    * ChannelType where the component is running.
    */
   channelType: ChannelType;
+  isReadOnly: boolean;
 }
 
 export type ServerlessWorkflowEditorRef = {
   setContent(path: string, content: string): Promise<void>;
 };
 
+type ServerlessWorkflowEditorContent = {
+  originalContent: string;
+  path: string;
+};
+
 const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   ServerlessWorkflowEditorRef | undefined,
   Props
 > = (props, forwardedRef) => {
-  const [fileContent, setFileContent] = useState<{ content: string; path: string } | undefined>(undefined);
-  const [diagramEditorOutOfSync, setDiagramEditorOutOfSync] = useState<boolean>(false);
-  const diagramEditorContainerRef = useRef<HTMLDivElement>(null);
-  const swfTextEditorRef = useRef<SwfTextEditorController>(null);
+  const [initialContent, setInitialContent] = useState<ServerlessWorkflowEditorContent | null>(null);
+  const [diagramOutOfSync, setDiagramOutOfSync] = useState<boolean>(false);
+  const svgContainer = useRef<HTMLDivElement>(null);
+  const svgPreviewHiddenContainer = useRef<HTMLDivElement>(null);
+  const swfMonacoEditorRef = useRef<SwfTextEditorApi>(null);
 
   useImperativeHandle(
     forwardedRef,
     () => {
       return {
-        setContent: async (path: string, content: string) => {
+        setContent: (path: string, newContent: string): Promise<void> => {
           try {
-            setFileContent({ content, path });
+            setInitialContent({
+              originalContent: newContent,
+              path: path,
+            });
+            return Promise.resolve();
           } catch (e) {
             console.error(e);
-            throw e;
+            return Promise.reject();
           }
         },
-        getContent: async () => swfTextEditorRef.current?.getContent(),
-        getPreview: async () => diagramEditorContainerRef.current!.innerHTML.replaceAll("<br>", "<br/>"), // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766,
-        undo: async () => swfTextEditorRef.current?.undo(),
-        redo: async () => swfTextEditorRef.current?.redo(),
-        validate: (): Notification[] => [],
-        setTheme: async (theme: EditorTheme) => swfTextEditorRef.current?.setTheme(theme),
+        getContent: (): Promise<string> => {
+          return Promise.resolve(swfMonacoEditorRef.current?.getContent() || "");
+        },
+        getPreview: (): Promise<string> => {
+          svgPreviewHiddenContainer.current!.innerHTML = svgContainer.current!.innerHTML;
+          svgPreviewHiddenContainer.current!.getElementsByTagName("svg")[0].removeAttribute("style");
+
+          // Remove zoom controls from SVG
+          svgPreviewHiddenContainer.current!.getElementsByTagName("svg")[0].lastChild?.remove();
+
+          // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
+          const svgContent = svgPreviewHiddenContainer.current!.innerHTML.replaceAll("<br>", "<br/>");
+
+          return Promise.resolve(svgContent);
+        },
+        undo: (): Promise<void> => {
+          return swfMonacoEditorRef.current?.undo() || Promise.resolve();
+        },
+        redo: (): Promise<void> => {
+          return swfMonacoEditorRef.current?.redo() || Promise.resolve();
+        },
+        validate: (): Notification[] => {
+          return [];
+        },
+        setTheme: (theme: EditorTheme): Promise<void> => {
+          return swfMonacoEditorRef.current?.setTheme(theme) || Promise.resolve();
+        },
       };
     },
     []
   );
 
-  const updateDiagramEditor = useCallback((newContent: string) => {
+  const setValidationErrors = (errors: editor.IMarker[]) => {
+    if (!initialContent) {
+      return;
+    }
+    const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
+      type: "PROBLEM",
+      path: initialContent.path,
+      severity: "ERROR",
+      message: `${error.message}`,
+      position: {
+        startLineNumber: error.startLineNumber,
+        startColumn: error.startColumn,
+        endLineNumber: error.endLineNumber,
+        endColumn: error.endColumn,
+      },
+    }));
+    props.setNotifications(initialContent.path, notifications);
+  };
+
+  const updateDiagram = useCallback((newContent: string) => {
     try {
       const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
       const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
 
       if (mermaidSourceCode?.length > 0) {
-        diagramEditorContainerRef.current!.innerHTML = mermaidSourceCode;
-        diagramEditorContainerRef.current!.removeAttribute("data-processed");
-        mermaid.init(diagramEditorContainerRef.current!);
-        svgPanZoom(diagramEditorContainerRef.current!.getElementsByTagName("svg")[0]);
-        diagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-        diagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.height = "100%";
-        setDiagramEditorOutOfSync(false);
+        svgContainer.current!.innerHTML = mermaidSourceCode;
+        svgContainer.current!.removeAttribute("data-processed");
+        mermaid.init(svgContainer.current!);
+        svgPanZoom(svgContainer.current!.getElementsByTagName("svg")[0], {
+          controlIconsEnabled: true,
+        });
+        svgContainer.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
+        svgContainer.current!.getElementsByTagName("svg")[0].style.height = "100%";
+        setDiagramOutOfSync(false);
       } else {
-        diagramEditorContainerRef.current!.innerHTML = "Create a workflow to see its preview here.";
-        setDiagramEditorOutOfSync(true);
+        svgContainer.current!.innerHTML = "Create a workflow to see its preview here.";
+        setDiagramOutOfSync(true);
       }
     } catch (e) {
       console.error(e);
-      setDiagramEditorOutOfSync(true);
+      setDiagramOutOfSync(true);
     }
   }, []);
 
-  const onSwfTextEditorContentChanged = useCallback(
-    (newContent: string, operation: SwfTextEditorOperation, versionId?: number) => {
-      if (operation === SwfTextEditorOperation.EDIT) {
-        props.onNewEdit.call(undefined, new KogitoEdit(`${versionId}`));
-      } else if (operation === SwfTextEditorOperation.UNDO) {
-        props.onStateControlCommandUpdate.call(undefined, StateControlCommand.UNDO);
-      } else if (operation === SwfTextEditorOperation.REDO) {
-        props.onStateControlCommandUpdate.call(undefined, StateControlCommand.REDO);
-      }
+  const isVSCode = useCallback(() => {
+    return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
+  }, [props]);
 
-      updateDiagramEditor(newContent);
+  const onContentChanged = useCallback(
+    (newContent: string, operation?: SwfTextEditorOperation) => {
+      switch (operation) {
+        case SwfTextEditorOperation.EDIT:
+          props.onNewEdit(new KogitoEdit(newContent));
+          break;
+        case SwfTextEditorOperation.UNDO:
+          if (!isVSCode()) {
+            swfMonacoEditorRef.current?.undo();
+          }
+          props.onStateControlCommandUpdate(StateControlCommand.UNDO);
+          break;
+        case SwfTextEditorOperation.REDO:
+          if (!isVSCode()) {
+            swfMonacoEditorRef.current?.redo();
+          }
+          props.onStateControlCommandUpdate(StateControlCommand.REDO);
+          break;
+      }
+      // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
+      setTimeout(() => {
+        updateDiagram(swfMonacoEditorRef.current!.getContent());
+      }, 100);
     },
-    [props.onNewEdit, props.onStateControlCommandUpdate, updateDiagramEditor]
+    [props, isVSCode, updateDiagram]
   );
 
   useEffect(() => {
-    if (fileContent?.content === undefined) {
-      return;
+    if (initialContent !== null) {
+      updateDiagram(initialContent.originalContent);
     }
+  }, [initialContent, onContentChanged]);
 
-    updateDiagramEditor(fileContent.content);
-  }, [fileContent?.content, updateDiagramEditor]);
-
-  const svgContainer = (
-    <div
-      style={{ height: "100%", textAlign: "center", opacity: diagramEditorOutOfSync ? 0.5 : 1 }}
-      ref={diagramEditorContainerRef}
-      className={"mermaid"}
-    />
+  const swfTextEditor = useMemo(
+    () =>
+      initialContent && (
+        <SwfTextEditor
+          channelType={props.channelType}
+          content={initialContent.originalContent}
+          fileName={initialContent.path}
+          onContentChange={onContentChanged}
+          setValidationErrors={setValidationErrors}
+          ref={swfMonacoEditorRef}
+          isReadOnly={props.isReadOnly}
+        />
+      ),
+    [initialContent, props.channelType, onContentChanged, setValidationErrors]
   );
 
   return (
@@ -159,21 +236,18 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody>{svgContainer}</DrawerPanelBody>
+                <DrawerPanelBody>
+                  <div
+                    style={{ height: "100%", textAlign: "center", opacity: diagramOutOfSync ? 0.5 : 1 }}
+                    ref={svgContainer}
+                    className={"mermaid"}
+                  />
+                  <div ref={svgPreviewHiddenContainer} className={"hidden"} />
+                </DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody style={{ overflowY: "hidden" }}>
-              {fileContent !== undefined && (
-                <SwfTextEditor
-                  channelType={props.channelType}
-                  content={fileContent.content}
-                  fileUri={fileContent.path}
-                  onContentChange={onSwfTextEditorContentChanged}
-                  ref={swfTextEditorRef}
-                />
-              )}
-            </DrawerContentBody>
+            <DrawerContentBody style={{ overflowY: "hidden" }}>{swfTextEditor}</DrawerContentBody>
           </DrawerContent>
         </Drawer>
       )}

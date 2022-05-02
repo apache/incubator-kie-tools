@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import * as monaco from "monaco-editor";
-import { editor, IDisposable, KeyCode, KeyMod } from "monaco-editor";
+import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
@@ -25,14 +24,14 @@ import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 initJsonSchemaDiagnostics();
 initYamlSchemaDiagnostics();
 
-export interface SwfTextEditorController {
+export interface SwfTextEditorApi {
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
   undo: () => void;
   redo: () => void;
   getContent: () => string;
-  setContent: (content: string) => void;
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
+  dispose: () => void;
 }
 
 export enum SwfTextEditorOperation {
@@ -41,50 +40,35 @@ export enum SwfTextEditorOperation {
   EDIT,
 }
 
-export interface SwfMonacoEditorInstance {
+export interface SwfTextEditorInstance {
   commands: SwfLanguageServiceCommandIds;
   instance: editor.IStandaloneCodeEditor;
 }
 
-const MONACO_CHANGES_DEBOUNCE_TIME_IN_MS = 400;
-
-export class DefaultSwfTextEditorController implements SwfTextEditorController {
+export class SwfTextEditorController implements SwfTextEditorApi {
   private readonly model: editor.ITextModel;
 
   public editor: editor.IStandaloneCodeEditor | undefined;
-  private onDidChangeContentSubscription: IDisposable;
 
   constructor(
-    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation, versionId?: number) => void,
+    content: string,
+    private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
     private readonly language: string,
     private readonly operatingSystem: OperatingSystem | undefined,
-    private readonly uri: string
+    private readonly isReadOnly: boolean,
+    private readonly setValidationErrors: (errors: editor.IMarker[]) => void
   ) {
-    this.model = editor.createModel("", this.language, monaco.Uri.parse(this.uri));
-    this.startListeningToContentChanges();
-  }
-
-  private startListeningToContentChanges() {
-    let debouncedHandler: ReturnType<typeof setTimeout> | undefined;
-
-    this.onDidChangeContentSubscription = this.model.onDidChangeContent((event) => {
-      if (debouncedHandler !== undefined) {
-        clearTimeout(debouncedHandler);
+    this.model = editor.createModel(content, this.language);
+    this.model.onDidChangeContent((event) => {
+      if (!event.isUndoing && !event.isRedoing) {
+        this.editor?.pushUndoStop();
+        onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT);
       }
-
-      debouncedHandler = setTimeout(() => {
-        debouncedHandler = undefined;
-        this.handleNewContent(event);
-      }, MONACO_CHANGES_DEBOUNCE_TIME_IN_MS);
     });
-  }
 
-  private handleNewContent(event: editor.IModelContentChangedEvent) {
-    if (event.isUndoing || event.isRedoing) {
-      return;
-    }
-
-    this.onContentChange(this.model.getValue(), SwfTextEditorOperation.EDIT, event.versionId);
+    editor.onDidChangeMarkers(() => {
+      this.setValidationErrors(this.getValidationMarkers());
+    });
   }
 
   public redo(): void {
@@ -97,17 +81,18 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
     this.editor?.trigger("editor", "undo", null);
   }
 
+  public getValidationMarkers = (): editor.IMarker[] => {
+    return editor.getModelMarkers({});
+  };
+
   public setTheme(theme: EditorTheme): void {
     editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
   }
 
-  public setContent(content: string): void {
-    this.onDidChangeContentSubscription.dispose();
-    this.model.setValue(content);
-    this.startListeningToContentChanges();
-  }
-
   public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {
+    if (!container) {
+      throw new Error("We need a container to show the editor!");
+    }
     if (this.editor !== undefined) {
       this.setTheme(theme);
       return this.editor;
@@ -120,9 +105,8 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
       automaticLayout: true,
       fontSize: 12,
       theme: this.getMonacoThemeByEditorTheme(theme),
+      readOnly: this.isReadOnly,
     });
-
-    this.editor.updateOptions({ wordBasedSuggestions: false });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
       this.onContentChange(this.model.getValue(), SwfTextEditorOperation.UNDO);
@@ -142,7 +126,7 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
   }
 
   public getContent(): string {
-    return this.model.getValue();
+    return this.editor?.getModel()?.getValue() || "";
   }
 
   public forceRedraw() {
@@ -158,5 +142,9 @@ export class DefaultSwfTextEditorController implements SwfTextEditorController {
       default:
         return "vs";
     }
+  }
+
+  public dispose(): void {
+    this.editor?.dispose();
   }
 }

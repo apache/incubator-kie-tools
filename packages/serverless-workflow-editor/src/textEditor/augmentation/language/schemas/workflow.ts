@@ -82,7 +82,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
       ],
     },
     secrets: {
-      $ref: "secrets.json#/secrets",
+      $ref: "#/definitions/secrets",
     },
     constants: {
       oneOf: [
@@ -112,10 +112,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
       minLength: 1,
     },
     timeouts: {
-      $ref: "timeouts.json#/timeouts",
+      $ref: "#/definitions/timeouts",
     },
     errors: {
-      $ref: "errors.json#/errors",
+      $ref: "#/definitions/errors",
     },
     keepActive: {
       type: "boolean",
@@ -124,13 +124,13 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
         "If 'true', workflow instances is not terminated when there are no active execution paths. Instance can be terminated via 'terminate end definition' or reaching defined 'workflowExecTimeout'",
     },
     metadata: {
-      $ref: "common.json#/definitions/metadata",
+      $ref: "#/definitions/metadata",
     },
     events: {
-      $ref: "events.json#/events",
+      $ref: "#/definitions/events",
     },
     functions: {
-      $ref: "functions.json#/functions",
+      $ref: "#/definitions/functions",
     },
     autoRetries: {
       type: "boolean",
@@ -138,10 +138,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
       description: "If set to true, actions should automatically be retried on unchecked errors. Default is false",
     },
     retries: {
-      $ref: "retries.json#/retries",
+      $ref: "#/definitions/retries",
     },
     auth: {
-      $ref: "auth.json#/auth",
+      $ref: "#/definitions/auth",
     },
     states: {
       type: "array",
@@ -274,7 +274,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
                 "If string type, an expression which selects parts of the states data output to become the workflow data input of continued execution. If object type, a custom object to become the workflow data input of the continued execution",
             },
             workflowExecTimeout: {
-              $ref: "timeouts.json#/definitions/workflowExecTimeout",
+              $ref: "#/definitions/workflowExecTimeout",
               description:
                 "Workflow execution timeout to be used by the workflow continuing execution. Overwrites any specific settings set by that workflow",
             },
@@ -599,10 +599,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             actionExecTimeout: {
-              $ref: "timeouts.json#/definitions/actionExecTimeout",
+              $ref: "#/definitions/actionExecTimeout",
             },
             branchExecTimeout: {
-              $ref: "timeouts.json#/definitions/branchExecTimeout",
+              $ref: "#/definitions/branchExecTimeout",
             },
           },
           required: [],
@@ -655,7 +655,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
           },
           required: [],
@@ -684,7 +684,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -749,13 +749,13 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
             actionExecTimeout: {
-              $ref: "timeouts.json#/definitions/actionExecTimeout",
+              $ref: "#/definitions/actionExecTimeout",
             },
             eventTimeout: {
-              $ref: "timeouts.json#/definitions/eventTimeout",
+              $ref: "#/definitions/eventTimeout",
             },
           },
           required: [],
@@ -787,7 +787,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "Unique Name of a workflow state which is responsible for compensation of this state",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -845,10 +845,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
             actionExecTimeout: {
-              $ref: "timeouts.json#/definitions/actionExecTimeout",
+              $ref: "#/definitions/actionExecTimeout",
             },
           },
           required: [],
@@ -877,7 +877,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -934,10 +934,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
             branchExecTimeout: {
-              $ref: "timeouts.json#/definitions/branchExecTimeout",
+              $ref: "#/definitions/branchExecTimeout",
             },
           },
           required: [],
@@ -988,7 +988,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1051,10 +1051,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
             eventTimeout: {
-              $ref: "timeouts.json#/definitions/eventTimeout",
+              $ref: "#/definitions/eventTimeout",
             },
           },
           required: [],
@@ -1093,7 +1093,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1126,7 +1126,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
           },
           required: [],
@@ -1165,7 +1165,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1223,7 +1223,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           $ref: "#/definitions/eventdatafilter",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1250,7 +1250,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           $ref: "#/definitions/eventdatafilter",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1283,7 +1283,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           $ref: "#/definitions/transition",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1306,7 +1306,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "Workflow end definition",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1343,7 +1343,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
           },
           required: [],
@@ -1367,7 +1367,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1450,10 +1450,10 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
             actionExecTimeout: {
-              $ref: "timeouts.json#/definitions/actionExecTimeout",
+              $ref: "#/definitions/actionExecTimeout",
             },
           },
           required: [],
@@ -1492,7 +1492,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           default: "parallel",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1550,13 +1550,13 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "State specific timeouts",
           properties: {
             stateExecTimeout: {
-              $ref: "timeouts.json#/definitions/stateExecTimeout",
+              $ref: "#/definitions/stateExecTimeout",
             },
             actionExecTimeout: {
-              $ref: "timeouts.json#/definitions/actionExecTimeout",
+              $ref: "#/definitions/actionExecTimeout",
             },
             eventTimeout: {
-              $ref: "timeouts.json#/definitions/eventTimeout",
+              $ref: "#/definitions/eventTimeout",
             },
           },
           required: [],
@@ -1597,7 +1597,7 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
           description: "If true, this state is used to compensate another state. Default is false",
         },
         metadata: {
-          $ref: "common.json#/definitions/metadata",
+          $ref: "#/definitions/metadata",
         },
       },
       additionalProperties: false,
@@ -1813,6 +1813,586 @@ export const SW_SPEC_WORKFLOW_SCHEMA = {
       },
       additionalProperties: false,
       required: [],
+    },
+    retrydef: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Unique retry strategy name",
+          minLength: 1,
+        },
+        delay: {
+          type: "string",
+          description: "Time delay between retry attempts (ISO 8601 duration format)",
+        },
+        maxDelay: {
+          type: "string",
+          description: "Maximum time delay between retry attempts (ISO 8601 duration format)",
+        },
+        increment: {
+          type: "string",
+          description: "Static value by which the delay increases during each attempt (ISO 8601 time format)",
+        },
+        multiplier: {
+          type: ["number", "string"],
+          minimum: 0,
+          minLength: 1,
+          multipleOf: 0.01,
+          description: "Numeric value, if specified the delay between retries is multiplied by this value.",
+        },
+        maxAttempts: {
+          type: ["number", "string"],
+          minimum: 1,
+          minLength: 0,
+          description: "Maximum number of retry attempts.",
+        },
+        jitter: {
+          type: ["number", "string"],
+          minimum: 0,
+          maximum: 1,
+          description:
+            "If float type, maximum amount of random time added or subtracted from the delay between each retry relative to total delay (between 0 and 1). If string type, absolute maximum amount of random time added or subtracted from the delay between each retry (ISO 8601 duration format)",
+        },
+      },
+      additionalProperties: false,
+      required: ["name", "maxAttempts"],
+    },
+    function: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Unique function name",
+          minLength: 1,
+        },
+        operation: {
+          type: "string",
+          description:
+            'If type is `rest`, <path_to_openapi_definition>#<operation_id>. If type is `asyncapi`, <path_to_asyncapi_definition>#<operation_id>. If type is `rpc`, <path_to_grpc_proto_file>#<service_name>#<service_method>. If type is `graphql`, <url_to_graphql_endpoint>#<literal \\"mutation\\" or \\"query\\">#<query_or_mutation_name>. If type is `odata`, <URI_to_odata_service>#<Entity_Set_Name>. If type is `expression`, defines the workflow expression.',
+          minLength: 1,
+        },
+        type: {
+          type: "string",
+          description:
+            "Defines the function type. Is either `rest`, `asyncapi, `rpc`, `graphql`, `odata`, `expression`, or `custom`. Default is `rest`",
+          enum: ["rest", "asyncapi", "rpc", "graphql", "odata", "expression", "custom"],
+          default: "rest",
+        },
+        authRef: {
+          type: "string",
+          description:
+            "References an auth definition name to be used to access to resource defined in the operation parameter",
+          minLength: 1,
+        },
+        metadata: {
+          $ref: "#/definitions/metadata",
+        },
+      },
+      additionalProperties: false,
+      required: ["name", "operation"],
+    },
+    metadata: {
+      type: "object",
+      description: "Metadata information",
+      additionalProperties: {
+        type: "string",
+      },
+    },
+    authdef: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Unique auth definition name",
+          minLength: 1,
+        },
+        scheme: {
+          type: "string",
+          description: "Defines the auth type",
+          enum: ["basic", "bearer", "oauth2"],
+          default: "basic",
+        },
+        properties: {
+          oneOf: [
+            {
+              type: "string",
+              description: "Expression referencing a workflow secret that contains all needed auth info",
+            },
+            {
+              title: "Basic Auth Info",
+              $ref: "#/definitions/basicpropsdef",
+            },
+            {
+              title: "Bearer Auth Info State",
+              $ref: "#/definitions/bearerpropsdef",
+            },
+            {
+              title: "OAuth2  Info",
+              $ref: "#/definitions/oauth2propsdef",
+            },
+          ],
+        },
+      },
+      required: ["name", "properties"],
+    },
+    basicpropsdef: {
+      oneOf: [
+        {
+          type: "string",
+          description: "Expression referencing a workflow secret that contains all needed basic auth info",
+        },
+        {
+          type: "object",
+          description: "Basic auth information",
+          properties: {
+            username: {
+              type: "string",
+              description: "String or a workflow expression. Contains the user name",
+              minLength: 1,
+            },
+            password: {
+              type: "string",
+              description: "String or a workflow expression. Contains the user password",
+              minLength: 1,
+            },
+            metadata: {
+              $ref: "#/definitions/metadata",
+            },
+          },
+          required: ["username", "password"],
+          additionalProperties: false,
+        },
+      ],
+    },
+    bearerpropsdef: {
+      oneOf: [
+        {
+          type: "string",
+          description: "Expression referencing a workflow secret that contains all needed bearer auth info",
+        },
+        {
+          type: "object",
+          description: "Bearer auth information",
+          properties: {
+            token: {
+              type: "string",
+              description: "String or a workflow expression. Contains the token",
+              minLength: 1,
+            },
+            metadata: {
+              $ref: "#/definitions/metadata",
+            },
+          },
+          required: ["token"],
+          additionalProperties: false,
+        },
+      ],
+    },
+    oauth2propsdef: {
+      oneOf: [
+        {
+          type: "string",
+          description: "Expression referencing a workflow secret that contains all needed OAuth2 auth info",
+        },
+        {
+          type: "object",
+          description: "OAuth2 information",
+          properties: {
+            authority: {
+              type: "string",
+              description: "String or a workflow expression. Contains the authority information",
+              minLength: 1,
+            },
+            grantType: {
+              type: "string",
+              description: "Defines the grant type",
+              enum: ["password", "clientCredentials", "tokenExchange"],
+              additionalItems: false,
+            },
+            clientId: {
+              type: "string",
+              description: "String or a workflow expression. Contains the client identifier",
+              minLength: 1,
+            },
+            clientSecret: {
+              type: "string",
+              description: "Workflow secret or a workflow expression. Contains the client secret",
+              minLength: 1,
+            },
+            scopes: {
+              type: "array",
+              description: "Array containing strings or workflow expressions. Contains the OAuth2 scopes",
+              items: {
+                type: "string",
+              },
+              minItems: 1,
+              additionalItems: false,
+            },
+            username: {
+              type: "string",
+              description:
+                "String or a workflow expression. Contains the user name. Used only if grantType is 'resourceOwner'",
+              minLength: 1,
+            },
+            password: {
+              type: "string",
+              description:
+                "String or a workflow expression. Contains the user password. Used only if grantType is 'resourceOwner'",
+              minLength: 1,
+            },
+            audiences: {
+              type: "array",
+              description: "Array containing strings or workflow expressions. Contains the OAuth2 audiences",
+              items: {
+                type: "string",
+              },
+              minItems: 1,
+              additionalItems: false,
+            },
+            subjectToken: {
+              type: "string",
+              description: "String or a workflow expression. Contains the subject token",
+              minLength: 1,
+            },
+            requestedSubject: {
+              type: "string",
+              description: "String or a workflow expression. Contains the requested subject",
+              minLength: 1,
+            },
+            requestedIssuer: {
+              type: "string",
+              description: "String or a workflow expression. Contains the requested issuer",
+              minLength: 1,
+            },
+            metadata: {
+              $ref: "#/definitions/metadata",
+            },
+          },
+          required: ["grantType", "clientId"],
+        },
+      ],
+    },
+    workflowExecTimeout: {
+      oneOf: [
+        {
+          type: "string",
+          description:
+            "Workflow execution timeout duration (ISO 8601 duration format). If not specified should be 'unlimited'",
+          minLength: 1,
+        },
+        {
+          type: "object",
+          properties: {
+            duration: {
+              type: "string",
+              description:
+                "Workflow execution timeout duration (ISO 8601 duration format). If not specified should be 'unlimited'",
+              minLength: 1,
+            },
+            interrupt: {
+              type: "boolean",
+              description:
+                "If `false`, workflow instance is allowed to finish current execution. If `true`, current workflow execution is abrupted.",
+              default: true,
+            },
+            runBefore: {
+              type: "string",
+              description: "Name of a workflow state to be executed before workflow instance is terminated",
+              minLength: 1,
+            },
+          },
+          additionalProperties: false,
+          required: ["duration"],
+        },
+      ],
+    },
+    stateExecTimeout: {
+      oneOf: [
+        {
+          type: "string",
+          description: "Total state execution timeout (including retries) (ISO 8601 duration format)",
+          minLength: 1,
+        },
+        {
+          type: "object",
+          description: "Workflow default timeouts",
+          properties: {
+            single: {
+              type: "string",
+              description: "Single state execution timeout, not including retries (ISO 8601 duration format)",
+              minLength: 1,
+            },
+            total: {
+              type: "string",
+              description: "Total state execution timeout, including retries (ISO 8601 duration format)",
+              minLength: 1,
+            },
+          },
+          additionalProperties: false,
+          required: ["total"],
+        },
+      ],
+    },
+    actionExecTimeout: {
+      type: "string",
+      description: "Single actions definition execution timeout duration (ISO 8601 duration format)",
+      minLength: 1,
+    },
+    branchExecTimeout: {
+      type: "string",
+      description: "Single branch execution timeout duration (ISO 8601 duration format)",
+      minLength: 1,
+    },
+    eventTimeout: {
+      type: "string",
+      description: "Timeout duration to wait for consuming defined events (ISO 8601 duration format)",
+      minLength: 1,
+    },
+    eventdef: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Unique event name",
+          minLength: 1,
+        },
+        source: {
+          type: "string",
+          description: "CloudEvent source",
+        },
+        type: {
+          type: "string",
+          description: "CloudEvent type",
+        },
+        kind: {
+          type: "string",
+          enum: ["consumed", "produced"],
+          description:
+            "Defines the CloudEvent as either 'consumed' or 'produced' by the workflow. Default is 'consumed'",
+          default: "consumed",
+        },
+        correlation: {
+          type: "array",
+          description: "CloudEvent correlation definitions",
+          minItems: 1,
+          items: {
+            type: "object",
+            $ref: "#/definitions/correlationDef",
+          },
+          additionalItems: false,
+        },
+        dataOnly: {
+          type: "boolean",
+          default: true,
+          description:
+            "If `true`, only the Event payload is accessible to consuming Workflow states. If `false`, both event payload and context attributes should be accessible ",
+        },
+        metadata: {
+          $ref: "#/definitions/metadata",
+          description: "Metadata information",
+        },
+      },
+      additionalProperties: false,
+      if: {
+        properties: {
+          kind: {
+            const: "consumed",
+          },
+        },
+      },
+      then: {
+        required: ["name", "source", "type"],
+      },
+      else: {
+        required: ["name", "type"],
+      },
+    },
+    correlationDef: {
+      type: "object",
+      description: "CloudEvent correlation definition",
+      properties: {
+        contextAttributeName: {
+          type: "string",
+          description: "CloudEvent Extension Context Attribute name",
+          minLength: 1,
+        },
+        contextAttributeValue: {
+          type: "string",
+          description: "CloudEvent Extension Context Attribute value",
+          minLength: 1,
+        },
+      },
+      additionalProperties: false,
+      required: ["contextAttributeName"],
+    },
+    errordef: {
+      type: "object",
+      properties: {
+        name: {
+          type: "string",
+          description: "Domain-specific error name",
+          minLength: 1,
+        },
+        code: {
+          type: "string",
+          description:
+            "Error code. Can be used in addition to the name to help runtimes resolve to technical errors/exceptions. Should not be defined if error is set to '*'",
+          minLength: 1,
+        },
+        description: {
+          type: "string",
+          description: "Error description",
+        },
+      },
+      additionalProperties: false,
+      required: ["name"],
+    },
+    secrets: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing secrets definitions (json or yaml)",
+        },
+        {
+          type: "array",
+          description: "Workflow Secrets definitions",
+          items: {
+            type: "string",
+          },
+          minItems: 1,
+        },
+      ],
+    },
+    timeouts: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing timeouts definitions (json or yaml)",
+        },
+        {
+          type: "object",
+          description: "Workflow default timeouts",
+          properties: {
+            workflowExecTimeout: {
+              $ref: "#/definitions/workflowExecTimeout",
+            },
+            stateExecTimeout: {
+              $ref: "#/definitions/stateExecTimeout",
+            },
+            actionExecTimeout: {
+              $ref: "#/definitions/actionExecTimeout",
+            },
+            branchExecTimeout: {
+              $ref: "#/definitions/branchExecTimeout",
+            },
+            eventTimeout: {
+              $ref: "#/definitions/eventTimeout",
+            },
+          },
+          additionalProperties: false,
+          required: [],
+        },
+      ],
+    },
+    errors: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing error definitions (json or yaml)",
+        },
+        {
+          type: "array",
+          description:
+            "Workflow Error definitions. Defines checked errors that can be explicitly handled during workflow execution",
+          items: {
+            type: "object",
+            $ref: "#/definitions/errordef",
+          },
+          additionalItems: false,
+          minItems: 1,
+        },
+      ],
+    },
+    events: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing event definitions (json or yaml)",
+        },
+        {
+          type: "array",
+          description: "Workflow CloudEvent definitions. Defines CloudEvents that can be consumed or produced",
+          items: {
+            type: "object",
+            $ref: "#/definitions/eventdef",
+          },
+          additionalItems: false,
+          minItems: 1,
+        },
+      ],
+    },
+    functions: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing function definitions (json or yaml)",
+        },
+        {
+          type: "array",
+          description: "Workflow function definitions",
+          items: {
+            type: "object",
+            $ref: "#/definitions/function",
+          },
+          additionalItems: false,
+          minItems: 1,
+        },
+      ],
+    },
+    retries: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing retry definitions (json or yaml)",
+        },
+        {
+          type: "array",
+          description:
+            "Workflow Retry definitions. Define retry strategies that can be referenced in states onError definitions",
+          items: {
+            type: "object",
+            $ref: "#/definitions/retrydef",
+          },
+          additionalItems: false,
+          minItems: 1,
+        },
+      ],
+    },
+    auth: {
+      oneOf: [
+        {
+          type: "string",
+          format: "uri",
+          description: "URI to a resource containing auth definitions (json or yaml)",
+        },
+        {
+          type: "array",
+          description: "Workflow auth definitions",
+          items: {
+            type: "object",
+            $ref: "#/definitions/authdef",
+          },
+          additionalItems: false,
+          minItems: 1,
+        },
+      ],
     },
   },
 };

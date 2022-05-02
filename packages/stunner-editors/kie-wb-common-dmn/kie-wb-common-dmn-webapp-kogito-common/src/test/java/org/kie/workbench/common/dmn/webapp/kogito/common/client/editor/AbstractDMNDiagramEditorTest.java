@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
 import org.kie.workbench.common.dmn.client.editors.search.DMNEditorSearchIndex;
@@ -55,7 +56,9 @@ import org.kie.workbench.common.stunner.kogito.client.docks.DiagramEditorPropert
 import org.kie.workbench.common.stunner.kogito.client.service.KogitoClientDiagramService;
 import org.kie.workbench.common.widgets.client.search.component.SearchBarComponent;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.uberfire.client.promise.Promises;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.Command;
@@ -151,6 +154,9 @@ public class AbstractDMNDiagramEditorTest {
     @Mock
     private ConfirmationDialog confirmationDialog;
 
+    @Mock
+    private DecisionNavigatorPresenter decisionNavigatorPresenter;
+
     private AbstractDMNDiagramEditor editor;
 
     @Before
@@ -179,7 +185,8 @@ public class AbstractDMNDiagramEditorTest {
                                                       kogitoChannelHelper,
                                                       guidedTourBridgeInitializer,
                                                       drdNameChanger,
-                                                      confirmationDialog));
+                                                      confirmationDialog,
+                                                      decisionNavigatorPresenter));
     }
 
     @Test
@@ -230,6 +237,7 @@ public class AbstractDMNDiagramEditorTest {
 
         editor.executeOpen(diagram, callback);
 
+        verify(decisionNavigatorPresenter).setIsRefreshComponentsViewSuspended(true);
         verify(stunnerEditor).open(diagram,
                                    expectedSessionPresenterCallback);
     }
@@ -304,6 +312,7 @@ public class AbstractDMNDiagramEditorTest {
                                                                                                             callback,
                                                                                                             currentSession);
 
+        final InOrder inOrder = Mockito.inOrder(decisionNavigatorPresenter);
         actualCallback.afterCanvasInitialized();
         verifyAfterCanvasInitialized(callback, diagram, currentSession);
         reset(editor, callback, currentSession);
@@ -319,8 +328,8 @@ public class AbstractDMNDiagramEditorTest {
         doNothing().when(editor).initialiseKieEditorForSession(diagram);
         doNothing().when(editor).setupSessionHeaderContainer();
         actualCallback.onSuccess();
-        verifyOnSuccess(callback, diagram, currentSession);
-        reset(editor, callback, currentSession);
+        verifyOnSuccess(callback, diagram, currentSession, inOrder);
+        reset(editor, callback, currentSession, decisionNavigatorPresenter);
 
         actualCallback.onError(clientRuntimeError);
         verifyOnError(callback, diagram, currentSession, clientRuntimeError);
@@ -381,11 +390,12 @@ public class AbstractDMNDiagramEditorTest {
         verify(callback, never()).onOpen(diagram);
         verify(callback, never()).afterSessionOpened();
         verify(callback).onError(error);
+        verify(decisionNavigatorPresenter).setIsRefreshComponentsViewSuspended(false);
     }
 
     private void verifyOnSuccess(final SessionPresenter.SessionPresenterCallback callback,
                                  final Diagram diagram,
-                                 final AbstractSession currentSession) {
+                                 final AbstractSession currentSession, InOrder inOrder) {
 
         verify(editor).initialiseKieEditorForSession(diagram);
         verify(editor).setupSessionHeaderContainer();
@@ -395,6 +405,8 @@ public class AbstractDMNDiagramEditorTest {
         verify(callback, never()).onOpen(diagram);
         verify(callback, never()).afterSessionOpened();
         verify(callback, never()).onError(any());
+        inOrder.verify(decisionNavigatorPresenter).setIsRefreshComponentsViewSuspended(false);
+        inOrder.verify(decisionNavigatorPresenter).refreshComponentsView();
     }
 
     private class AbstractDMNDiagramEditorMock extends AbstractDMNDiagramEditor {
@@ -423,7 +435,8 @@ public class AbstractDMNDiagramEditorTest {
                                                final KogitoChannelHelper kogitoChannelHelper,
                                                final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                                final DRDNameChanger drdNameChanger,
-                                               final ConfirmationDialog confirmationDialog) {
+                                               final ConfirmationDialog confirmationDialog,
+                                               final DecisionNavigatorPresenter decisionNavigatorPresenter) {
             super(view,
                   containerView,
                   stunnerEditor,
@@ -448,7 +461,8 @@ public class AbstractDMNDiagramEditorTest {
                   kogitoChannelHelper,
                   guidedTourBridgeInitializer,
                   drdNameChanger,
-                  confirmationDialog);
+                  confirmationDialog,
+                  decisionNavigatorPresenter);
         }
     }
 }

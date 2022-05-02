@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-import { setDiagnosticsOptions } from "monaco-yaml";
-import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { JSONSchema7 } from "json-schema";
+import { init } from "@kie-tools-core/editor/dist/envelope";
+import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor/dist/editor";
 
-export function initYamlSchemaDiagnostics() {
-  setDiagnosticsOptions({
-    hover: true,
-    completion: true,
-    validate: true,
-    format: true,
-    schemas: [
-      {
-        uri: "workflow.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_WORKFLOW_SCHEMA as JSONSchema7,
-      },
-    ],
-  });
-}
+init({
+  container: document.getElementById("envelope-app")!,
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
+  editorFactory: new ServerlessWorkflowEditorFactory(),
+});

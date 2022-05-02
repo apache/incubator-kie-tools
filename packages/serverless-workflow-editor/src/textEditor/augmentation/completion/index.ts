@@ -16,7 +16,7 @@
 
 import * as monaco from "monaco-editor";
 import { languages } from "monaco-editor";
-import { SwfMonacoEditorInstance } from "../../SwfTextEditorController";
+import { SwfTextEditorInstance } from "../../SwfTextEditorController";
 import { ServerlessWorkflowEditorChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as ls from "vscode-languageserver-types";
@@ -24,7 +24,7 @@ import { SwfLanguageServiceCommandTypes } from "@kie-tools/serverless-workflow-l
 import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 
 export function initJsonCompletion(
-  commandIds: SwfMonacoEditorInstance["commands"],
+  commandIds: SwfTextEditorInstance["commands"],
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
 ): void {
   monaco.languages.registerCompletionItemProvider("json", {

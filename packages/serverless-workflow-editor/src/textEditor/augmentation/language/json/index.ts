@@ -15,13 +15,7 @@
  */
 
 import * as monaco from "monaco-editor";
-import {
-  SW_SPEC_COMMON_SCHEMA,
-  SW_SPEC_EVENTS_SCHEMA,
-  SW_SPEC_FUNCTIONS_SCHEMA,
-  SW_SPEC_RETRIES_SCHEMA,
-  SW_SPEC_WORKFLOW_SCHEMA,
-} from "../schemas";
+import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 
 export function initJsonSchemaDiagnostics() {
   // Uncommenting this will disable syntax highlighting for JSON as well and stop using the JSON Schema for SWF.
@@ -33,27 +27,8 @@ export function initJsonSchemaDiagnostics() {
   monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     validate: true,
     allowComments: false,
+    schemaValidation: "error",
     schemas: [
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/common.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_COMMON_SCHEMA,
-      },
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/events.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_EVENTS_SCHEMA,
-      },
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/functions.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_FUNCTIONS_SCHEMA,
-      },
-      {
-        uri: "https://serverlessworkflow.io/schemas/0.8/retries.json",
-        fileMatch: ["*"],
-        schema: SW_SPEC_RETRIES_SCHEMA,
-      },
       {
         uri: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
         fileMatch: ["*"],

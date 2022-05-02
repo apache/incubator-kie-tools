@@ -16,43 +16,64 @@
 
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import {
-  DefaultSwfTextEditorController,
-  SwfTextEditorOperation,
-  SwfTextEditorController,
-} from "./SwfTextEditorController";
+import { SwfTextEditorController, SwfTextEditorApi } from "./SwfTextEditorController";
 import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { ServerlessWorkflowEditorChannelApi } from "../api";
+import { editor } from "monaco-editor";
 
 interface Props {
   content: string;
-  fileUri: string;
-  onContentChange: (content: string, operation: SwfTextEditorOperation, versionId?: number) => void;
+  fileName: string;
+  onContentChange: (content: string) => void;
   channelType: ChannelType;
+  setValidationErrors: (errors: editor.IMarker[]) => void;
+  isReadOnly: boolean;
 }
 
-const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorController | undefined, Props> = (
-  { content, fileUri, onContentChange, channelType },
+const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorApi | undefined, Props> = (
+  { content, fileName, onContentChange, channelType, isReadOnly, setValidationErrors },
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
-  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi.shared.kogitoEditor_theme);
+  const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
+  const [services] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_services);
+  const [user] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_user);
+  const [serviceRegistryUrl] = useSharedValue(
+    editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
+  );
 
-  const controller = useMemo<SwfTextEditorController>(() => {
-    if (fileUri.endsWith(".sw.json")) {
-      return new DefaultSwfTextEditorController(onContentChange, "json", editorEnvelopeCtx.operatingSystem, fileUri);
+  const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {
+    if (fileName.endsWith(".sw.json")) {
+      return new SwfTextEditorController(
+        content,
+        onContentChange,
+        "json",
+        editorEnvelopeCtx.operatingSystem,
+        isReadOnly,
+        setValidationErrors
+      );
     }
-    if (fileUri.endsWith(".sw.yaml") || fileUri.endsWith(".sw.yml")) {
-      return new DefaultSwfTextEditorController(onContentChange, "yaml", editorEnvelopeCtx.operatingSystem, fileUri);
+    if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
+      return new SwfTextEditorController(
+        content,
+        onContentChange,
+        "yaml",
+        editorEnvelopeCtx.operatingSystem,
+        isReadOnly,
+        setValidationErrors
+      );
     }
+    throw new Error(`Unsupported extension '${fileName}'`);
+  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
 
-    throw new Error(`Unsupported extension '${fileUri}'`);
-  }, [editorEnvelopeCtx.operatingSystem, fileUri, onContentChange]);
+  useEffect(() => {
+    controller.forceRedraw();
+  }, [services, user, serviceRegistryUrl, controller]);
 
   useEffect(() => {
     if (!container.current) {
@@ -69,14 +90,22 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorCo
     initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
     initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
-    // TODO: Add support to YAML
-    // initYamlCompletion(commands, editorEnvelopeCtx.channelApi);
-    // initYamlWidgets(commands, editorEnvelopeCtx.channelApi);
-  }, [controller, theme, editorEnvelopeCtx.channelApi, editorEnvelopeCtx.operatingSystem]);
+    return () => {
+      controller.dispose();
+    };
 
-  useEffect(() => {
-    controller.setContent(content);
-  }, [controller, content]);
+    // TODO: Add support to YAML
+    // initYamlCompletion(commands);
+    // initYamlWidgets(commands);
+  }, [
+    content,
+    fileName,
+    channelType,
+    controller,
+    theme,
+    editorEnvelopeCtx.channelApi,
+    editorEnvelopeCtx.operatingSystem,
+  ]);
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

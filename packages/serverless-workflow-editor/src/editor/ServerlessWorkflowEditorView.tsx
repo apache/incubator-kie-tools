@@ -28,15 +28,17 @@ import { ServerlessWorkflowEditorChannelApi } from "../api";
 
 export class ServerlessWorkflowEditorView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
+  private readonly initArgs: EditorInitArgs;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-editor";
   public af_componentTitle: "Serverless Workflow Editor";
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
+    this.initArgs = initArgs;
   }
 
   public async getElementPosition() {
@@ -65,6 +67,7 @@ export class ServerlessWorkflowEditorView implements Editor {
         }
         onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
         setNotifications={this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send}
+        isReadOnly={this.initArgs.isReadOnly}
       />
     );
   }
