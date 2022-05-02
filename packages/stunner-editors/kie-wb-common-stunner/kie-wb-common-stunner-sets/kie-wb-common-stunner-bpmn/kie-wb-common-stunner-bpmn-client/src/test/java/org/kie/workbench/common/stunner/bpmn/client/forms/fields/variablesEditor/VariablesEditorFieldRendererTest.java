@@ -31,8 +31,10 @@ import org.kie.workbench.common.forms.dynamic.client.rendering.formGroups.impl.d
 import org.kie.workbench.common.forms.dynamic.service.shared.RenderMode;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.Variable;
 import org.kie.workbench.common.stunner.bpmn.client.forms.fields.model.VariableRow;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.task.IsMultipleInstance;
@@ -64,6 +66,8 @@ import static org.mockito.Mockito.when;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class VariablesEditorFieldRendererTest {
+
+    private static final String PROCESS_ID = "process_ID";
 
     @Mock
     private VariablesEditorWidgetView variablesEditorWidgetView;
@@ -384,6 +388,34 @@ public class VariablesEditorFieldRendererTest {
         when(variablesEditorWidgetView.getVariableRows()).thenReturn(variableRows);
         assertTrue(variablesEditor.isDuplicateName("var2"));
         assertFalse(variablesEditor.isDuplicateName("var1"));
+    }
+
+    @Test
+    public void testIdDuplicateID() {
+        Id id = new Id(PROCESS_ID);
+        BPMNDiagramImpl bpmnDiagram = new BPMNDiagramImpl();
+        bpmnDiagram.getDiagramSet().setId(id);
+
+        Node node = mock(Node.class);
+        View view = mock(View.class);
+
+        List<Node> nodes = new ArrayList<>();
+        nodes.add(node);
+
+        when(node.getContent()).thenReturn(view);
+        when(view.getDefinition()).thenReturn(bpmnDiagram);
+        when(abstractClientSessionManager.getCurrentSession()).thenReturn(clientFullSession);
+        when(clientFullSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(graph);
+        when(graph.nodes()).thenReturn(nodes);
+        when(diagram.getMetadata()).thenReturn(metadata);
+        when(metadata.getPath()).thenReturn(path);
+
+        variablesEditor.getFormGroup(RenderMode.READ_ONLY_MODE);
+
+        assertTrue(variablesEditor.isDuplicateID(PROCESS_ID));
+        assertFalse(variablesEditor.isDuplicateID("NOT_PROCESS_ID"));
     }
 
     @Test

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseCatchingIntermediateEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseEndEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
@@ -50,6 +51,7 @@ import org.kie.workbench.common.stunner.bpmn.definition.StartSignalEvent;
 import org.kie.workbench.common.stunner.bpmn.definition.UserTask;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.AssignmentsInfo;
 import org.kie.workbench.common.stunner.bpmn.definition.property.dataio.DataIOSet;
+import org.kie.workbench.common.stunner.bpmn.definition.property.diagram.Id;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.BPMNGeneralSet;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.Name;
 import org.kie.workbench.common.stunner.bpmn.definition.property.general.TaskGeneralSet;
@@ -69,6 +71,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.FindVariableUsagesFlag;
 import static org.kie.workbench.common.stunner.bpmn.client.util.VariableUtils.findVariableUsages;
 import static org.mockito.Mockito.mock;
@@ -89,6 +93,7 @@ public class VariableUtilsTest {
     private static final String EVENT_OUTPUT_ASSIGNMENTS_INFO_VALUE_CFV = "||output1:var1||[dout]output1->" + CASE_FILE_VARIABLE_PREFIX + "var1";
     private static final String COLLECTION = "COLLECTION";
     private static final String COLLECTION_CFV = CASE_FILE_VARIABLE_PREFIX + COLLECTION;
+    private static final String PROCESS_ID = "process_ID";
 
     @Mock
     private Graph graph;
@@ -409,6 +414,32 @@ public class VariableUtilsTest {
         List<VariableUsage> expectedUsages = Arrays.asList(new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_INPUT_COLLECTION, nodes.get(0), NODE_NAME),
                                                            new VariableUsage(CASE_FILE_VARIABLE_PREFIX + "var1", VariableUsage.USAGE_TYPE.MULTIPLE_INSTANCE_OUTPUT_COLLECTION, nodes.get(0), NODE_NAME));
         testFindVariableUsages_caseFileVariable("var1", nodes, expectedUsages);
+    }
+
+    @Test
+    public void testMatchesProcessID() {
+        BPMNDiagramImpl bpmnDiagram = mockBpmnDiagram();
+        List<Node> nodes = mockNodeList(bpmnDiagram);
+        when(graph.nodes()).thenReturn(nodes);
+        boolean result1 = VariableUtils.matchesProcessID(graph, PROCESS_ID);
+        boolean result2 = VariableUtils.matchesProcessID(graph, "NOT_PROCESS_ID");
+        assertTrue(result1);
+        assertFalse(result2);
+    }
+
+    @Test
+    public void testIsBPMNDiagramImpl() {
+        BPMNDiagramImpl bpmnDiagram = mockBpmnDiagram();
+        BaseUserTask userTask = mockUserTask(NODE_NAME, ASSIGNMENTS_INFO_VALUE);
+
+        List<Node> nodes1 = mockNodeList(bpmnDiagram);
+        List<Node> nodes2 = mockNodeList(userTask);
+
+        boolean result1 = VariableUtils.isBPMNDiagramImpl(nodes1.get(0));
+        boolean result2 = VariableUtils.isBPMNDiagramImpl(nodes2.get(0));
+
+        assertTrue(result1);
+        assertFalse(result2);
     }
 
     private void testFindVariableUsages(String variableName, List<Node> nodes, List<VariableUsage> expectedUsages) {
@@ -754,5 +785,12 @@ public class VariableUtilsTest {
         Name result = mock(Name.class);
         when(result.getValue()).thenReturn(value);
         return result;
+    }
+
+    private BPMNDiagramImpl mockBpmnDiagram() {
+        Id id = new Id(PROCESS_ID);
+        BPMNDiagramImpl bpmnDiagram = new BPMNDiagramImpl();
+        bpmnDiagram.getDiagramSet().setId(id);
+        return bpmnDiagram;
     }
 }
