@@ -182,8 +182,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       if (isEnter) {
         if (event.ctrlKey) {
           feelInputRef.current?.insertNewLineToMonaco();
-        } else if (!FeelEditorService.isSuggestionsWidgetOpen()) {
-          console.log("go to lower cell");
+        } else if (!FeelEditorService.isSuggestWidgetOpen()) {
           triggerReadMode(newValue);
           setMode(READ_MODE);
           focusLowerCell(textarea.current);
