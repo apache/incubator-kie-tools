@@ -184,7 +184,9 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
-      <Showcase />
+      <PageSection isFilled={false}>
+        <Showcase />
+      </PageSection>
       <PageSection isFilled={true} variant={"light"} hasOverflowScroll={false}>
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
@@ -492,30 +494,6 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
           <Link to={isDashboard ? "" : { pathname: routes.newModel.path({ extension: props.extension }) }}>
             <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`} isDisabled={isDashboard}>
               New {props.title}
-            </Button>
-          </Link>
-          <Link
-            to={
-              isDashboard
-                ? ""
-                : {
-                    pathname: routes.importModel.path({}),
-                    search: routes.importModel.queryString({
-                      url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                        type: props.extension,
-                        name: "greetings",
-                      })}`,
-                    }),
-                  }
-            }
-          >
-            <Button
-              variant={ButtonVariant.link}
-              style={{ paddingLeft: "2px" }}
-              ouiaId={`try-${props.extension}-sample-button`}
-              isDisabled={isDashboard}
-            >
-              Try sample
             </Button>
           </Link>
         </Grid>
