@@ -19,7 +19,10 @@
       "@kie-tools/serverless-workflow-editor/monaco-editor/**",
       "vscode-extension-serverless-workflow-editor",
       "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
-      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**"
+      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**",
+      "chrome-extension-serverless-workflow-editor",
+      "chrome-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
+      "chrome-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**"
     ]
   },
   "scripts": {
