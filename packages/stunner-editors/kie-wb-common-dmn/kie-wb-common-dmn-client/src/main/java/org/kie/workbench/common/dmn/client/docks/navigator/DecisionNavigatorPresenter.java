@@ -63,6 +63,8 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
 
     private DMNDiagramsSession dmnDiagramsSession;
 
+    private boolean isRefreshComponentsViewSuspended;
+
     double latestDeferred = 0;
 
     @Inject
@@ -110,7 +112,9 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
     }
 
     public void onRefreshDecisionComponents(final @Observes RefreshDecisionComponents events) {
-        refreshComponentsView();
+        if (!isRefreshComponentsViewSuspended) {
+            refreshComponentsView();
+        }
     }
 
     public DecisionNavigatorTreePresenter getTreePresenter() {
@@ -145,7 +149,7 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
         treePresenter.setupItems(getItems());
     }
 
-    void refreshComponentsView() {
+    public void refreshComponentsView() {
         decisionComponents.refresh();
     }
 
@@ -178,6 +182,10 @@ public class DecisionNavigatorPresenter extends AbstractActivity {
 
     void clearTimeout(final double latestDeferred) {
         DomGlobal.clearTimeout(latestDeferred);
+    }
+
+    public void setIsRefreshComponentsViewSuspended(final boolean isRefreshComponentsViewSuspended) {
+        this.isRefreshComponentsViewSuspended = isRefreshComponentsViewSuspended;
     }
 
     public interface View extends UberElemental<DecisionNavigatorPresenter>,

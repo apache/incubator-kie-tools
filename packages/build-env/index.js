@@ -57,6 +57,16 @@ const ENV_VARS = {
     default: "",
     description: "",
   },
+  CHROME_EXTENSION__SW_routerTargetOrigin: {
+    name: "CHROME_EXTENSION__SW_routerTargetOrigin",
+    default: "https://localhost:9000",
+    description: "",
+  },
+  CHROME_EXTENSION__SW_routerRelativePath: {
+    name: "CHROME_EXTENSION__SW_routerRelativePath",
+    default: "",
+    description: "",
+  },
   CHROME_EXTENSION__onlineEditorUrl: {
     name: "CHROME_EXTENSION__onlineEditorUrl",
     default: "https://localhost:9001",
@@ -316,6 +326,8 @@ module.exports = {
     },
     routerTargetOrigin: getOrDefault(ENV_VARS.CHROME_EXTENSION__routerTargetOrigin),
     routerRelativePath: getOrDefault(ENV_VARS.CHROME_EXTENSION__routerRelativePath),
+    routerSWTargetOrigin: getOrDefault(ENV_VARS.CHROME_EXTENSION__SW_routerTargetOrigin),
+    routerSWRelativePath: getOrDefault(ENV_VARS.CHROME_EXTENSION__SW_routerRelativePath),
     onlineEditorUrl: getOrDefault(ENV_VARS.CHROME_EXTENSION__onlineEditorUrl),
     manifestFile: getOrDefault(ENV_VARS.CHROME_EXTENSION__manifestFile),
   },

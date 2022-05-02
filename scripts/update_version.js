@@ -21,11 +21,17 @@ const { getPackagesSync } = require("@lerna/project");
 const yaml = require("js-yaml");
 const buildEnv = require("@kie-tools/build-env");
 
-const CHROME_EXTENSION_MANIFEST_DEV_JSON = path.resolve(
+const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
 );
-const CHROME_EXTENSION_MANIFEST_PROD_JSON = path.resolve(
+const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_PROD_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.prod.json"
+);
+const CHROME_EXTENSION_SW_EDITOR_MANIFEST_DEV_JSON = path.resolve(
+  "./packages/chrome-extension-serverless-workflow-editor/manifest.dev.json"
+);
+const CHROME_EXTENSION_SW_EDITOR_MANIFEST_PROD_JSON = path.resolve(
+  "./packages/chrome-extension-serverless-workflow-editor/manifest.prod.json"
 );
 const EXTENDED_SERVICES_CONFIG_FILE = path.resolve("./packages/extended-services/pkg/config/config.yaml");
 const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
@@ -54,7 +60,8 @@ Promise.resolve()
   .then((version) => updateMvnPackages(version))
   .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
   .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
-  .then((version) => updateChromeExtensionManifestFiles(version))
+  .then((version) => updateChromeKieEditorsExtensionManifestFiles(version))
+  .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
   .then((version) => updateExtendedServicesConfigFile(version))
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
   .then(async (version) => {
@@ -131,11 +138,20 @@ async function updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version) {
   return version;
 }
 
-async function updateChromeExtensionManifestFiles(version) {
-  console.info("[update-version] Updating Chrome Extension manifest files...");
+async function updateChromeKieEditorsExtensionManifestFiles(version) {
+  console.info("[update-version] Updating Chrome Extension for kie editors manifest files...");
 
-  await updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_DEV_JSON);
-  await updateChromeExtensionManifest(version, CHROME_EXTENSION_MANIFEST_PROD_JSON);
+  await updateChromeExtensionManifest(version, CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON);
+  await updateChromeExtensionManifest(version, CHROME_EXTENSION_KIE_EDITORS_MANIFEST_PROD_JSON);
+
+  return version;
+}
+
+async function updateChromeSwEditorsExtensionManifestFiles(version) {
+  console.info("[update-version] Updating Chrome Extension for sw editor manifest files...");
+
+  await updateChromeExtensionManifest(version, CHROME_EXTENSION_SW_EDITOR_MANIFEST_DEV_JSON);
+  await updateChromeExtensionManifest(version, CHROME_EXTENSION_SW_EDITOR_MANIFEST_PROD_JSON);
 
   return version;
 }

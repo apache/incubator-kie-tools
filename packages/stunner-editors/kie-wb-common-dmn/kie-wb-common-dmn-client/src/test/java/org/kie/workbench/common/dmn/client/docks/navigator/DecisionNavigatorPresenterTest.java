@@ -218,6 +218,32 @@ public class DecisionNavigatorPresenterTest {
     }
 
     @Test
+    public void testOnRefreshDecisionComponents_WhenRefreshComponentsIsSuspended() {
+
+        presenter.setIsRefreshComponentsViewSuspended(true);
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+
+        verify(decisionComponents, never()).refresh();
+    }
+
+    @Test
+    public void testOnRefreshDecisionComponents_WhenSuspendAndResume() {
+
+        presenter.setIsRefreshComponentsViewSuspended(true);
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+
+        verify(decisionComponents, never()).refresh();
+
+        presenter.setIsRefreshComponentsViewSuspended(false);
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+        presenter.onRefreshDecisionComponents(mock(RefreshDecisionComponents.class));
+
+        verify(decisionComponents, times(2)).refresh();
+    }
+
+    @Test
     public void testDefer() {
 
         final Command cmd = mock(Command.class);

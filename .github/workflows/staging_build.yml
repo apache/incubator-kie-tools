@@ -130,6 +130,7 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
           CHROME_EXTENSION__routerRelativePath: "kogito-online-staging/${{ inputs.tag }}-prerelease/chrome-extension"
+          CHROME_EXTENSION__SW_routerRelativePath: "kogito-online-staging/${{ inputs.tag }}-prerelease/swf-chrome-extension"
           CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           CHROME_EXTENSION__manifestFile: "manifest.prod.json"
           ONLINE_EDITOR__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
@@ -244,11 +245,17 @@ jobs:
           echo "Copy Online Editor resources to the deployment dir"
           cp -r ${{ github.workspace }}/kie-tools/packages/online-editor/dist $DEPLOYMENT_DIR
 
-          echo "Create dir for deploying Chrome Extension resources"
+          echo "Create dir for deploying kie editors Chrome Extension resources"
           mkdir $DEPLOYMENT_DIR/chrome-extension
 
-          echo "Copy Chrome Extension resources to the right place"
+          echo "Create dir for deploying swf editor Chrome Extension resources"
+          mkdir $DEPLOYMENT_DIR/swf-chrome-extension
+
+          echo "Copy kie editors Chrome Extension resources to the deployment directory"
           cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{bpmn,dmn,scesim,fonts,*-envelope.*} $DEPLOYMENT_DIR/chrome-extension
+
+          echo "Copy swf editor Chrome Extension resources to the deployment directory"
+          cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} $DEPLOYMENT_DIR/swf-chrome-extension
 
           echo "Remove gwt-editors from the Online Editor deployment"
           rm -rf $DEPLOYMENT_DIR/gwt-editors
@@ -344,7 +351,7 @@ jobs:
           asset_name: STAGING__vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload Chrome Extension (Ubuntu only)"
+      - name: "STAGING: Upload Chrome Extension for kie editors (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -352,7 +359,18 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
-          asset_name: STAGING__chrome_extension_${{ inputs.tag }}.zip
+          asset_name: STAGING__chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
+          asset_content_type: application/zip
+
+      - name: "STAGING: Upload Chrome Extension for serverless workflow editors (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
+          asset_name: STAGING__chrome_extension_serverless_workflow_editor_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
       - name: "STAGING: Upload Desktop App for Linux (Ubuntu only)"

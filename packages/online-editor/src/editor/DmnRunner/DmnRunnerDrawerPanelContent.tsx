@@ -19,7 +19,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { DrawerCloseButton, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { InputRow, useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
+import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
@@ -30,8 +30,9 @@ import {
   DmnForm,
   DmnFormResult,
   DmnResult,
+  InputRow,
   extractDifferences,
-} from "@kie-tools/form/dist/dmn";
+} from "@kie-tools/form-dmn";
 import { Holder, useCancelableEffect, usePrevious } from "../../reactExt/Hooks";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -143,14 +144,14 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
   );
 
   const updateDmnRunnerResults = useCallback(
-    async (formData: object, canceled: Holder<boolean>) => {
+    async (formInputs: InputRow, canceled: Holder<boolean>) => {
       if (dmnRunnerState.status !== DmnRunnerStatus.AVAILABLE) {
         dmnRunnerDispatch.setDidUpdateOutputRows(true);
         return;
       }
 
       try {
-        const payload = await dmnRunnerDispatch.preparePayload(formData);
+        const payload = await dmnRunnerDispatch.preparePayload(formInputs);
         const result = await dmnRunnerState.service.result(payload);
         if (canceled.get()) {
           return;
@@ -275,7 +276,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     setDrawerError(false);
   }, [dmnRunnerState.jsonSchema]);
 
-  const setFormData = useCallback(
+  const setFormInputs = useCallback(
     (newFormData) => {
       dmnRunnerDispatch.setInputRows((previousData: Array<InputRow>) => {
         const newData = [...previousData];
@@ -310,7 +311,7 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
     [dmnRunnerState.inputRows]
   );
 
-  const formData = useMemo(() => {
+  const formInputs = useMemo(() => {
     return dmnRunnerState.inputRows[dmnRunnerState.currentInputRowIndex];
   }, [dmnRunnerState.inputRows, dmnRunnerState.currentInputRowIndex]);
 
@@ -436,16 +437,16 @@ export function DmnRunnerDrawerPanelContent(props: Props) {
                     <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-input"}>
                       <DmnForm
                         name={selectedRow}
-                        formData={formData}
-                        setFormData={setFormData}
+                        formInputs={formInputs}
+                        setFormInputs={setFormInputs}
                         formError={dmnRunnerState.error}
                         setFormError={dmnRunnerDispatch.setError}
                         formSchema={dmnRunnerState.jsonSchema}
                         id={"form"}
                         formRef={formRef}
                         showInlineError={true}
-                        autosave={true}
-                        autosaveDelay={AUTO_SAVE_DELAY}
+                        autoSave={true}
+                        autoSaveDelay={AUTO_SAVE_DELAY}
                         placeholder={true}
                         errorsField={() => <></>}
                         submitField={() => <></>}

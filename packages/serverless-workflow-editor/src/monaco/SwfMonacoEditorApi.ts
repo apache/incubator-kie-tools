@@ -31,6 +31,7 @@ export interface SwfMonacoEditorApi {
   getContent: () => string;
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
+  dispose: () => void;
 }
 
 export enum MonacoEditorOperation {
@@ -53,7 +54,9 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     content: string,
     private readonly onContentChange: (content: string, operation: MonacoEditorOperation) => void,
     private readonly language: string,
-    private readonly operatingSystem: OperatingSystem | undefined
+    private readonly operatingSystem: OperatingSystem | undefined,
+    private readonly isReadOnly: boolean,
+    private readonly setValidationErrors: (errors: editor.IMarker[]) => void
   ) {
     this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => {
@@ -61,6 +64,10 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
         this.editor?.pushUndoStop();
         onContentChange(this.model.getValue(), MonacoEditorOperation.EDIT);
       }
+    });
+
+    editor.onDidChangeMarkers(() => {
+      this.setValidationErrors(this.getValidationMarkers());
     });
   }
 
@@ -74,6 +81,10 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     this.editor?.trigger("editor", "undo", null);
   }
 
+  public getValidationMarkers = (): editor.IMarker[] => {
+    return editor.getModelMarkers({});
+  };
+
   public setTheme(theme: EditorTheme): void {
     editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
   }
@@ -82,7 +93,6 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
-
     if (this.editor !== undefined) {
       this.setTheme(theme);
       return this.editor;
@@ -95,6 +105,7 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       automaticLayout: true,
       fontSize: 12,
       theme: this.getMonacoThemeByEditorTheme(theme),
+      readOnly: this.isReadOnly,
     });
 
     this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
@@ -131,5 +142,9 @@ export class DefaultSwfMonacoEditorController implements SwfMonacoEditorApi {
       default:
         return "vs";
     }
+  }
+
+  public dispose(): void {
+    this.editor?.dispose();
   }
 }
