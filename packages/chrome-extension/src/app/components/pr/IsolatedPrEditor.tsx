@@ -48,7 +48,6 @@ export function IsolatedPrEditor(props: {
   prInfo: PrInfo;
   prFileContainer: HTMLElement;
   fileExtension: string;
-  contentPath: string;
   githubTextEditorToReplace: HTMLElement;
   unprocessedFilePath: string;
 }) {
@@ -179,7 +178,7 @@ export function IsolatedPrEditor(props: {
           ref={isolatedEditorRef}
           textMode={textMode}
           getFileContents={getFileContents}
-          contentPath={props.contentPath}
+          contentPath={props.unprocessedFilePath}
           openFileExtension={props.fileExtension}
           readonly={true}
           keepRenderedEditorInTextMode={false}

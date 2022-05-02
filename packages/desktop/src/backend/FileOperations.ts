@@ -118,7 +118,7 @@ export class FileOperations {
   public newFile(type: string) {
     this.window.webContents.send("openFile", {
       file: {
-        filePath: UNSAVED_FILE_NAME,
+        filePath: `${UNSAVED_FILE_NAME}.${type}`,
         fileType: type,
         fileContent: "",
       },

@@ -22,6 +22,7 @@
     "@kie-tools-core/notifications": "0.0.0",
     "@kie-tools/boxed-expression-component": "0.0.0",
     "@kie-tools/form": "0.0.0",
+    "@kie-tools/form-dmn": "0.0.0",
     "@kie-tools/unitables": "0.0.0",
     "@types/react-table": "^7.0.25",
     "ajv": "^6.12.6",

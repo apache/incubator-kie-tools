@@ -1,3 +1,4 @@
+//go:build !headless
 // +build !headless
 
 /*
@@ -31,10 +32,11 @@ import (
 )
 
 type KogitoSystray struct {
-	controller     *Proxy
-	runnerPortItem *systray.MenuItem
-	openModeler    *systray.MenuItem
-	StartStopItem  *systray.MenuItem
+	controller               *Proxy
+	runnerPortItem           *systray.MenuItem
+	openModeler              *systray.MenuItem
+	StartStopItem            *systray.MenuItem
+	ToggleInsecureSkipVerify *systray.MenuItem
 }
 
 func (self *KogitoSystray) Run() {
@@ -63,6 +65,14 @@ func (self *KogitoSystray) onReady() {
 				self.Stop()
 			} else {
 				self.Start()
+			}
+		case <-self.ToggleInsecureSkipVerify.ClickedCh:
+			if self.controller.InsecureSkipVerify {
+				self.controller.InsecureSkipVerify = false
+				self.ToggleInsecureSkipVerify.SetTitle(ALLOW_INSECURE_SKIP_VERIFY)
+			} else {
+				self.controller.InsecureSkipVerify = true
+				self.ToggleInsecureSkipVerify.SetTitle(DISALLOW_INSECURE_SKIP_VERIFY)
 			}
 		case <-quitItem.ClickedCh:
 			self.Stop()
@@ -104,6 +114,11 @@ func (self *KogitoSystray) mainSection() {
 }
 
 func (self *KogitoSystray) operationSection() {
+	if self.controller.InsecureSkipVerify {
+		self.ToggleInsecureSkipVerify = systray.AddMenuItem(DISALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of self-signed certificates")
+	} else {
+		self.ToggleInsecureSkipVerify = systray.AddMenuItem(ALLOW_INSECURE_SKIP_VERIFY, "Toggle InsecureSkipVerify allowing or not the use of self-signed certificates")
+	}
 	self.StartStopItem = systray.AddMenuItem(START, "")
 
 }

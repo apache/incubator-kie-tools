@@ -22,7 +22,7 @@ import { Dependencies } from "../../Dependencies";
 import { getOriginalFilePath, IsolatedPrEditor, PrInfo } from "./IsolatedPrEditor";
 import { Logger } from "../../../Logger";
 
-export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
+export function PrEditorsApp(props: { prInfo: PrInfo }) {
   const globals = useGlobals();
 
   const [prFileContainers, setPrFileContainers] = useState<HTMLElement[]>([]);
@@ -64,7 +64,6 @@ export function PrEditorsApp(props: { prInfo: PrInfo; contentPath: string }) {
         <IsolatedPrEditor
           key={getUnprocessedFilePath(container, globals.dependencies)}
           prInfo={props.prInfo}
-          contentPath={props.contentPath}
           prFileContainer={container}
           fileExtension={getFileExtension(container, globals.dependencies)}
           unprocessedFilePath={getUnprocessedFilePath(container, globals.dependencies)}

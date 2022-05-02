@@ -199,7 +199,7 @@ export function FilesPage(props: Props) {
           if (response.ok) {
             response.text().then((content) => {
               const file = {
-                filePath: UNSAVED_FILE_NAME,
+                filePath: `${UNSAVED_FILE_NAME}.${extractFileExtension(url)!}`,
                 fileType: extractFileExtension(url)!,
                 fileContent: content,
               };

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,4 +14,24 @@
  * limitations under the License.
  */
 
-export { SW_SPEC_SCHEMA } from "./workflow";
+export function extractFileExtension(fileName: string) {
+  return fileName
+    .split(".")
+    .pop()
+    ?.match(/[\w\d]+/)
+    ?.pop();
+}
+
+export function removeFileExtension(fileName: string) {
+  const fileExtension = extractFileExtension(fileName);
+
+  if (!fileExtension) {
+    return fileName;
+  }
+
+  return fileName.substr(0, fileName.length - fileExtension.length - 1);
+}
+
+export function removeDirectories(filePath: string) {
+  return filePath.split("/").pop();
+}
