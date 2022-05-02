@@ -80,7 +80,7 @@ export function readOpenShiftConfigCookie(): OpenShiftSettingsConfig {
   return {
     proxy:
       getCookie(OPENSHIFT_PROXY_COOKIE_NAME) ??
-      "https://kie-sandbox-extended-services-kie-sandbox.kie-tooling-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
+      "https://daily-dev-kie-sandbox-extended-services-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
     namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
     host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
     token: getCookie(OPENSHIFT_TOKEN_COOKIE_NAME) ?? "",
