@@ -24,10 +24,10 @@ import javax.inject.Inject;
 
 import com.google.gwt.core.client.GWT;
 import elemental2.dom.DomGlobal;
-import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.RuntimeCommunication;
 import org.dashbuilder.client.navbar.AppNavBar;
+import org.dashbuilder.client.perspective.ContentErrorPerspective;
 import org.dashbuilder.client.perspective.DashboardsListPerspective;
 import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.perspective.RuntimePerspective;
@@ -68,6 +68,9 @@ public class RouterScreen {
 
     @Inject
     DashboardsListScreen dashboardsListScreen;
+    
+    @Inject
+    ContentErrorScreen contentErrorScreen;
 
     @Inject
     RuntimeCommunication runtimeCommunication;
@@ -101,8 +104,8 @@ public class RouterScreen {
     public void doRoute() {
         clientLoader.load(this::route,
                 (a, t) -> {
-                    runtimeCommunication.showSuccess(i18n.clientMode(), t);
                     appNavBar.setClientOnly(true);
+                    appNavBar.hide(clientLoader.isOffline());
                     placeManager.goTo(EmptyPerspective.ID);
                 });
     }
@@ -125,8 +128,7 @@ public class RouterScreen {
             runtimeScreen.goToIndex(layoutTemplates);
 
             if (clientLoader.isOffline()) {
-                var navBarEl = (HTMLElement) appNavBar.getElement();
-                navBarEl.style.display = layoutTemplates.size() == 1 ? "none" : "block";
+               appNavBar.hide(layoutTemplates.size() == 1);
             }
             return;
         }
@@ -171,11 +173,16 @@ public class RouterScreen {
                 GWT.getHostPageBaseURL());
         doRoute();
     }
+    
+    public void goToContentError(Throwable contentException) {
+        contentErrorScreen.showContentError(contentException.getMessage());
+        placeManager.goTo(ContentErrorPerspective.ID);
+    }
 
     public void onUpdatedRuntimeModelEvent(@Observes UpdatedRuntimeModelEvent updatedRuntimeModelEvent) {
         String updatedModel = updatedRuntimeModelEvent.getRuntimeModelId();
 
-        if (updatedModel.equals(clientLoader.getImportId())) {
+        if (updatedModel.equals(clientLoader.getImportId()) || clientLoader.isOffline()) {
             doRoute();
             runtimeScreen.setKeepHistory(true);
         }

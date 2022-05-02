@@ -20,6 +20,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.perspective.EmptyPerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
@@ -28,6 +29,7 @@ import org.uberfire.client.annotations.WorkbenchPartView;
 import org.uberfire.client.annotations.WorkbenchScreen;
 import org.uberfire.client.mvp.PerspectiveManager;
 import org.uberfire.client.mvp.UberElemental;
+import org.uberfire.lifecycle.OnOpen;
 
 /**
  * Screen displayed when there's no dashboards available.
@@ -49,8 +51,13 @@ public class EmptyScreen {
 
     @Inject
     PerspectiveManager perspectiveManager;
+
+    @Inject
+    RuntimeClientLoader loader;
     
     public interface View extends UberElemental<EmptyScreen> {
+        
+        void editorMode();
         
     }
 
@@ -67,6 +74,13 @@ public class EmptyScreen {
     @WorkbenchPartView
     protected View getPart() {
         return view;
+    }
+    
+    @OnOpen
+    protected void onOpen() {
+        if (loader.isOffline()) {
+            view.editorMode();
+        }
     }
     
     public void onModelUpdated(@Observes UpdatedRuntimeModelEvent event) {

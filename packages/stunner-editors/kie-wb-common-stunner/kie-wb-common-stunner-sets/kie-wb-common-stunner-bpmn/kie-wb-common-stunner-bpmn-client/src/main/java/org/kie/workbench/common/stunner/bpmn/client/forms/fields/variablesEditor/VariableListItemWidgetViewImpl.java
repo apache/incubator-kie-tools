@@ -265,7 +265,12 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
 
         name.addChangeHandler(event -> {
             String value = name.getText();
-            if (isDuplicateName(value)) {
+            if (isDuplicateID(value)) {
+                notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DuplicatedVariableIDError(value),
+                                                        NotificationEvent.NotificationType.ERROR));
+                name.setValue(currentName);
+                ValueChangeEvent.fire(name, currentName);
+            } else if (isDuplicateName(value)) {
                 notification.fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DuplicatedVariableNameError(value),
                                                         NotificationEvent.NotificationType.ERROR));
                 name.setValue(currentName);
@@ -474,6 +479,10 @@ public class VariableListItemWidgetViewImpl implements VariableListItemWidgetVie
         deleteButton.setEnabled(!readOnly);
         dataTypeComboBox.setReadOnly(readOnly);
         name.setEnabled(!readOnly);
+    }
+
+    protected boolean isDuplicateID(final String id) {
+        return parentWidget.isDuplicateID(id);
     }
 
     private boolean isDuplicateName(final String name) {

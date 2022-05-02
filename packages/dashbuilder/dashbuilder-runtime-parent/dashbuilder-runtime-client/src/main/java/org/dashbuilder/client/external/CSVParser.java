@@ -17,6 +17,7 @@ package org.dashbuilder.client.external;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import javax.enterprise.context.ApplicationScoped;
 
@@ -28,7 +29,7 @@ import org.dashbuilder.json.JsonArray;
  *
  */
 @ApplicationScoped
-public class CSVParser {
+public class CSVParser implements Function<String, String> {
 
     final static char DELIMITER = ',';
     final static char QUOTE = '"';
@@ -83,4 +84,10 @@ public class CSVParser {
 
         return array;
     }
+
+    @Override
+    public String apply(String input) {
+        return toJsonArray(input).toJson();
+    }
+
 }

@@ -32,6 +32,7 @@ digraph G {
   "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -109,6 +110,8 @@ digraph G {
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];

@@ -28,6 +28,8 @@ import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
+import elemental2.dom.Headers;
+import elemental2.dom.RequestInit;
 import elemental2.dom.Response;
 import elemental2.promise.IThenable;
 import org.dashbuilder.client.external.transformer.JSONAtaInjector;
@@ -101,7 +103,14 @@ public class ExternalDataSetClientProvider {
     }
 
     private void fetch(ExternalDataSetDef def, DataSetLookup lookup, DataSetReadyCallback listener) {
-        DomGlobal.fetch(def.getUrl()).then((Response response) -> {
+        var req = RequestInit.create();
+        if (def.getHeaders() != null) {
+            var headers = new Headers();
+            def.getHeaders().forEach(headers::append);
+            req.setHeaders(headers);
+        }
+
+        DomGlobal.fetch(def.getUrl(), req).then((Response response) -> {
             var contentType = response.headers.get(HttpHeaders.CONTENT_TYPE);
             var mimeType = SupportedMimeType.byMimeTypeOrUrl(contentType, def.getUrl())
                     .orElse(DEFAULT_TYPE);
@@ -119,17 +128,17 @@ public class ExternalDataSetClientProvider {
         }).catch_(e -> notAbleToRetrieveDataSet(def, listener));
     }
 
-    private IThenable<Object> register(DataSetLookup lookup,
-                                       DataSetReadyCallback listener,
-                                       String responseText,
-                                       SupportedMimeType contentType) {
+    private IThenable<Object> register(final DataSetLookup lookup,
+                                       final DataSetReadyCallback listener,
+                                       final String responseText,
+                                       final SupportedMimeType contentType) {
         var uuid = lookup.getDataSetUUID();
         var def = externalDataSets.get(uuid);
-        var content = contentType == SupportedMimeType.CSV ? csvToJsonArray(responseText) : responseText;
+        var content = contentType.tranformer.apply(responseText);
 
         if (def.getExpression() != null && !def.getExpression().trim().isEmpty()) {
             try {
-                content = applyExpression(def.getExpression(), responseText);
+                content = applyExpression(def.getExpression(), content);
             } catch (Exception e) {
                 listener.onError(new ClientRuntimeError("Error evaluating dataset expression", e));
                 return null;
@@ -209,10 +218,4 @@ public class ExternalDataSetClientProvider {
     private void clearRegisteredDataSets() {
         externalDataSets.keySet().forEach(d -> clientDataSetManager.removeDataSet(d));
     }
-
-    private String csvToJsonArray(String responseText) {
-        var array = csvParser.toJsonArray(responseText);
-        return array.toJson();
-    }
-
 }
