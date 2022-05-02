@@ -93,7 +93,8 @@ for ctx in ${contextDir}; do
     cd ${KOGITO_APPS_REPO_NAME} && echo "working dir `pwd`"
     mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=/tmp/temp_maven/${ctx}"
     echo "Building component(s) ${contextDir} with the following maven command [${mvn_command}]"
-    export YARN_CACHE_FOLDER=/tmp/cache/${ctx} # Fix for building yarn apps in parallel
+    export YARN_CACHE_FOLDER=/tmp/cache/yarn/${ctx} # Fix for building yarn apps in parallel
+    export CYPRESS_CACHE_FOLDER=/tmp/cache/cypress/${ctx} # https://docs.cypress.io/guides/getting-started/installing-cypress#Advanced
     eval ${mvn_command}
     cd ${ctx}/target/
     zip -r $(basename ${ctx})-quarkus-app.zip quarkus-app
