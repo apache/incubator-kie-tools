@@ -23,9 +23,12 @@ import {
 import { COMMAND_IDS } from "./commandIds";
 import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
 
+function isSwf(textDocument: vscode.TextDocument) {
+  return /^.*\.sw\.(json|yml|yaml)$/.test(textDocument.fileName);
+}
+
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
-  const isSwf = /^.*\.sw\.(json|yml|yaml)$/.test(args.textEditor.document.fileName);
-  if (!isSwf) {
+  if (!isSwf(args.textEditor.document)) {
     return;
   }
 
@@ -114,6 +117,10 @@ export async function setupDiagramEditorControls(args: {
   );
 
   if (vscode.window.activeTextEditor) {
+    if (!isSwf(vscode.window.activeTextEditor.document)) {
+      return;
+    }
+
     await maybeOpenAsDiagramIfSwf({
       configuration: args.configuration,
       textEditor: vscode.window.activeTextEditor,
