@@ -96,7 +96,7 @@ The KIE Tools project contains several applications. To develop each one of them
 The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of KIE Tools.
 After cloning the repo, start with a fresh build.
 
-`pnpm -r -F @kie-tools/stunner-editors... build:dev`
+`pnpm -F @kie-tools/stunner-editors... build:dev`
 
 After that, you're ready to start developing the Editors individually.
 

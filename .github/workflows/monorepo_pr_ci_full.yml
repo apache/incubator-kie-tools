@@ -78,7 +78,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm run build:prod --stream --concurrency 1
+          pnpm -r --workspace-concurrency=1 build:prod
 
       - name: "Check generated resources (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'

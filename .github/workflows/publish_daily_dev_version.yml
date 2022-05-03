@@ -89,7 +89,7 @@ jobs:
           DISPLAY: ":99.0"
         run: |
           cd kie-tools
-          pnpm run build:prod --stream
+          pnpm -r build:prod
 
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'

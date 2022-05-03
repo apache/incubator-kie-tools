@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "bootstrap": "pnpm i",
+    "bootstrap": "pnpm install",
     "env:print": "build-env --print-env",
     "env:vars": "build-env --print-vars",
     "update-version-to": "node ./scripts/update_version.js",
