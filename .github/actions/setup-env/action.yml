@@ -48,9 +48,9 @@ runs:
       run: |
         echo "STEP: Setup default Maven args"
         cd ${{ inputs.path }}
-        pnpm -r exec -c 'bash' '-c' 'mkdir .mvn'
-        pnpm -r exec -c 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
-        pnpm -r exec -c 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
+        pnpm -r exec 'bash' '-c' 'mkdir .mvn'
+        pnpm -r exec 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
+        pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
     - name: "Bootstrap"
       shell: bash
