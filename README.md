@@ -24,7 +24,7 @@ To start building the KIE Tools project, you're going to need:
 
 - Node `>= 16.13.2` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - Yarn `1.22.10` _(To install, run `npm install -g yarn@1.22.10`)_
-- pnpm `7.0.0` _(To install, run `npm install -g pnpm@7.0.0`)_
+- pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.1`
 - Java `11`
 - Go `1.16`
@@ -96,7 +96,7 @@ The KIE Tools project contains several applications. To develop each one of them
 The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of KIE Tools.
 After cloning the repo, start with a fresh build.
 
-`lerna run build:dev --scope=@kie-tools/stunner-editors --include-dependencies --stream`
+`pnpm -r -F @kie-tools/stunner-editors... build:dev`
 
 After that, you're ready to start developing the Editors individually.
 

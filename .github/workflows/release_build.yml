@@ -156,7 +156,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/dmn-dev-sandbox-deployment-base-image --include-dependencies --stream
+          pnpm -F @kie-tools/dmn-dev-sandbox-deployment-base-image... build:prod
 
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -214,7 +214,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/kie-sandbox-image --include-dependencies --stream
+          pnpm -F @kie-tools/kie-sandbox-image... build:prod
 
       - name: "Push kie-sandbox-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -283,7 +283,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/kie-sandbox-extended-services-image --include-dependencies --stream
+          pnpm -F @kie-tools/kie-sandbox-extended-services-image... build:prod
 
       - name: "Push kie-sandbox-extended-services-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -344,7 +344,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/cors-proxy-image --include-dependencies --stream
+          pnpm -F @kie-tools/cors-proxy-image... build:prod
 
       - name: "Push cors-proxy-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -431,7 +431,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --scope=@kie-tools/online-editor --include-dependencies --stream
+          pnpm -F @kie-tools/online-editor... build:prod
 
       - name: "Deploy to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
@@ -511,9 +511,7 @@ jobs:
       - name: "Build Chrome Extensions"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --include-dependencies --stream \
-            --scope=chrome-extension-pack-kogito-kie-editors \
-            --scope=chrome-extension-serverless-workflow-editor
+          pnpm -F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor... build:prod
 
       - name: "Upload Chrome Extension for Kogito KIE Editors"
         if: ${{ !inputs.dry_run }}
@@ -656,7 +654,7 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --scope=vscode-extension-pack-kogito-kie-editors --scope=vscode-extension-backend --include-dependencies --stream
+          pnpm -F vscode-extension-pack-kogito-kie-editors... -F vscode-extension-backend... build:prod
 
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
         if: ${{ !inputs.dry_run }}
@@ -704,13 +702,14 @@ jobs:
 
       - name: "Build"
         run: |
-          lerna run build:prod --include-dependencies --stream \
-            --scope=vscode-extension-bpmn-editor \
-            --scope=vscode-extension-dmn-editor \
-            --scope=vscode-extension-pmml-editor \
-            --scope=vscode-extension-kogito-bundle \
-            --scope=vscode-extension-red-hat-business-automation-bundle\
-            --scope=vscode-extension-serverless-workflow-editor
+          pnpm \
+            -F vscode-extension-bpmn-editor \
+            -F vscode-extension-dmn-editor \
+            -F vscode-extension-pmml-editor \
+            -F vscode-extension-kogito-bundle \
+            -F vscode-extension-red-hat-business-automation-bundle \
+            -F vscode-extension-serverless-workflow-editor \
+            build:prod
 
       - name: "Upload VS Code Extension - BPMN Editor (prod)"
         if: ${{ !inputs.dry_run }}
@@ -810,7 +809,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/desktop --include-dependencies --stream
+          pnpm -F @kie-tools/desktop... build:prod
 
       - name: "Upload Desktop App for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -922,7 +921,7 @@ jobs:
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --scope=@kie-tools/kie-editors-standalone --include-dependencies --stream
+          pnpm -F @kie-tools/kie-editors-standalone... build:prod
 
       - name: "Deploy to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
@@ -974,7 +973,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/extended-services --include-dependencies --stream
+          pnpm -F @kie-tools/extended-services... build:prod
 
       - name: "Upload Extended Services for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -1034,7 +1033,7 @@ jobs:
       - name: "Build"
         shell: bash
         run: |
-          lerna run build:prod --scope=@kie-tools/dashbuilder --include-dependencies --stream
+          pnpm -F @kie-tools/dashbuilder... build:prod
 
       - name: "Upload DashBuilder Assets"
         if: ${{ !inputs.dry_run }}
@@ -1084,7 +1083,7 @@ jobs:
       - name: "Build Dashbuilder Images"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          lerna run build:prod --scope=@kie-tools/dashbuilder-images --include-dependencies --stream
+          pnpm -F @kie-tools/dashbuilder-images... build:prod
 
       - name: "Push dashbuilder-authoring image to quay.io"
         if: ${{ !inputs.dry_run }}
