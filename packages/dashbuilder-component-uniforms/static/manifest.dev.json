@@ -1,0 +1,12 @@
+{
+  "init": [
+    {
+      "key": "schema",
+      "value": "{\"title\":\"Guest\",\"type\":\"object\",\"properties\":{\"firstName\":{\"type\":\"string\"},\"lastName\":{\"type\":\"string\"},\"workExperience\":{\"description\":\"Work experience in years\",\"type\":\"integer\",\"minimum\":0,\"maximum\":100}},\"required\":[\"firstName\",\"lastName\"]}"
+    },
+    {
+      "key": "url",
+      "value": "test"
+    }
+  ]
+}

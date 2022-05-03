@@ -20,8 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,7 +34,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 import com.google.gson.Gson;
-import org.dashbuilder.components.internal.ProvidedComponentInfo;
 import org.dashbuilder.external.model.ExternalComponent;
 import org.dashbuilder.external.service.ComponentLoader;
 import org.slf4j.Logger;
@@ -52,7 +49,6 @@ public class ComponentLoaderImpl implements ComponentLoader {
 
     private static final String DEFAULT_COMPONENTS_PATH = "/tmp/dashbuilder/components/";
 
-    private ProvidedComponentInfo providedComponentsInfo;
 
     private String externalComponentsDir;
 
@@ -63,7 +59,6 @@ public class ComponentLoaderImpl implements ComponentLoader {
     @PostConstruct
     public void init() {
         gson = new Gson();
-        providedComponentsInfo = ProvidedComponentInfo.get();
         externalComponentEnabled = Boolean.parseBoolean(System.getProperty(EXTERNAL_COMP_ENABLE_PROP, Boolean.TRUE.toString()));
         externalComponentsDir = System.getProperty(EXTERNAL_COMP_DIR_PROP, DEFAULT_COMPONENTS_PATH);
         if (externalComponentEnabled) {
@@ -72,15 +67,6 @@ public class ComponentLoaderImpl implements ComponentLoader {
                 baseDirPath.toFile().mkdirs();
             }
         }
-    }
-
-    @Override
-    public List<ExternalComponent> loadProvided() {
-        return providedComponentsInfo.getInternalComponentsList()
-                                     .stream()
-                                     .map(this::readInternalComponent)
-                                     .filter(Objects::nonNull)
-                                     .collect(Collectors.toList());
     }
 
     @Override
@@ -105,22 +91,6 @@ public class ComponentLoaderImpl implements ComponentLoader {
     @Override
     public String getExternalComponentsDir() {
         return externalComponentsDir;
-    }
-
-    @Override
-    public String getProvidedComponentsPath() {
-        return providedComponentsInfo.getInternalComponentsRootPath();
-    }
-
-    private ExternalComponent readInternalComponent(String componentId) {
-        String internalComponentDescriptor = "/" + providedComponentsInfo.getInternalComponentsRootPath() + "/" + componentId + "/" + DESCRIPTOR_FILE;
-        InputStream is = this.getClass().getResourceAsStream(internalComponentDescriptor);
-
-        if (is == null) {
-            logger.error("Not able to read internal component manifest file for component {}", componentId);
-            return null;
-        }
-        return readComponent(componentId, new InputStreamReader(is));
     }
 
     private ExternalComponent readComponent(File file) {

@@ -54,7 +54,6 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutRow;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 
-import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_ID_KEY;
 import static org.dashbuilder.external.model.ExternalComponent.COMPONENT_PARTITION_KEY;
 import static org.dashbuilder.shared.model.ImportDefinitions.DATASET_DEF_PREFIX;
 import static org.dashbuilder.shared.model.ImportDefinitions.NAVIGATION_FILE;
@@ -210,12 +209,11 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
     private void partitionLayoutTemplate(String modelId, LayoutTemplate lt) {
         allComponentsStream(lt.getRows()).forEach(lc -> {
             var json = lc.getProperties().get("json");
-            var componentId = lc.getProperties().get(COMPONENT_ID_KEY);
             if (json != null) {
                 partitionDisplayer(lc, modelId, json);
             }
             // For components that does not use displayers (noData components)
-            if (options.isComponentPartition() && isExternalComponent(componentId)) {
+            if (options.isComponentPartition()) {
                 lc.getProperties().put(COMPONENT_PARTITION_KEY, modelId);
             }
         });
@@ -232,8 +230,7 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
         }
 
         if (options.isComponentPartition() &&
-            settings.getType() == DisplayerType.EXTERNAL_COMPONENT &&
-            isExternalComponent(componentId)) {
+            settings.getType() == DisplayerType.EXTERNAL_COMPONENT) {
             settings.setComponentPartition(modelId);
         }
 
@@ -245,10 +242,6 @@ public class RuntimeModelParserImpl implements RuntimeModelParser {
                 .flatMap(r -> r.getLayoutColumns().stream())
                 .flatMap(cl -> Stream.concat(cl.getLayoutComponents().stream(),
                         allComponentsStream(cl.getRows())));
-    }
-
-    private boolean isExternalComponent(String componentId) {
-        return externalComponentLoader.loadProvided().stream().noneMatch(c -> c.getId().equals(componentId));
     }
 
     private List<ExternalDataSetDef> getExternalDefs(ArrayList<DataSetContent> datasetContents) {

@@ -1,0 +1,39 @@
+{
+  "name": "@kie-tools/dashbuilder-component-assembler",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "dependencies": {
+    "@kie-tools/dashbuilder-component-api": "0.0.0",
+    "@kie-tools/dashbuilder-component-uniforms": "0.0.0",
+    "@kie-tools/dashbuilder-component-victory-charts": "0.0.0",
+    "@kie-tools/dashbuilder-component-filtered-table": "0.0.0"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0"
+  },
+  "scripts": {
+    "build:dev": "rimraf dist && webpack",
+    "build:prod": "yarn build:dev"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
+  }
+}

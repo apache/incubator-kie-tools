@@ -86,7 +86,7 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
                 .setColumnsTitle("Columns");
 
         return new DisplayerConstraints(lookupConstraints).supportsAttribute(DisplayerAttributeDef.TYPE)
-                .supportsAttribute(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID)
+                .supportsAttribute(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID_DEPRECATED)
                 .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
                 .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
                 .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)

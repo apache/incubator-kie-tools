@@ -26,6 +26,7 @@ import org.dashbuilder.dataset.json.DataSetJSONMarshaller;
 import org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller;
 import org.dashbuilder.displayer.ColumnSettings;
 import org.dashbuilder.displayer.DisplayerSettings;
+import org.dashbuilder.displayer.DisplayerType;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonArray;
 import org.dashbuilder.json.JsonObject;
@@ -114,6 +115,14 @@ public class DisplayerSettingsJSONMarshaller {
             // Now parse all other settings
             ds.setSettingsFlatMap( parseSettingsFromJson(jsonObject));
         }
+        // fix settings without a type
+        if (ds.getTypeString() == null) {
+            if (ds.getComponentId() != null) {
+                ds.setType(DisplayerType.EXTERNAL_COMPONENT);
+            } else {
+                ds.setType(DisplayerType.TABLE);
+            }
+        }
         return ds;
     }
 
@@ -122,12 +131,12 @@ public class DisplayerSettingsJSONMarshaller {
     }
 
     public JsonObject toJsonObject( DisplayerSettings displayerSettings ) {
-        JsonObject json = Json.createObject();
+        var json = Json.createObject();
 
         // UUID
         json.put(SETTINGS_UUID, displayerSettings.getUUID());
 
-        for (Map.Entry<String, String> entry : displayerSettings.getSettingsFlatMap().entrySet()) {
+        for (var entry : displayerSettings.getSettingsFlatMap().entrySet()) {
             setNodeValue(json, entry.getKey(), entry.getValue());
         }
 
