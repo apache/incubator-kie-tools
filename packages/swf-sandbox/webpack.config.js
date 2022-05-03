@@ -26,11 +26,24 @@ const { EnvironmentPlugin } = require("webpack");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
-module.exports = async (env) => {
+module.exports = async (env, argv) => {
   const buildInfo = getBuildInfo();
   const gtmResource = getGtmResource();
   const [swfSandbox_baseImageRegistry, swfSandbox_baseImageAccount, swfSandbox_baseImageName, swfSandbox_baseImageTag] =
     getSwfSandboxBaseImageArgs();
+  const [
+    kieSandboxExtendedServices_linuxDownloadUrl,
+    kieSandboxExtendedServices_macOsDownloadUrl,
+    kieSandboxExtendedServices_windowsDownloadUrl,
+    kieSandboxExtendedServices_compatibleVersion,
+  ] = getKieSandboxExtendedServicesArgs(argv);
+  const [
+    dmnDevSandbox_baseImageRegistry,
+    dmnDevSandbox_baseImageAccount,
+    dmnDevSandbox_baseImageName,
+    dmnDevSandbox_baseImageTag,
+    dmnDevSandbox_onlineEditorUrl,
+  ] = getDmnDevSandboxArgs(argv);
 
   return merge(common(env), {
     entry: {
@@ -58,6 +71,14 @@ module.exports = async (env) => {
       new EnvironmentPlugin({
         WEBPACK_REPLACE__buildInfo: buildInfo,
         WEBPACK_REPLACE__swfSandbox_baseImageFullUrl: `${swfSandbox_baseImageRegistry}/${swfSandbox_baseImageAccount}/${swfSandbox_baseImageName}:${swfSandbox_baseImageTag}`,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
+        WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
+        WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
+        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
+        WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
+        WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
       }),
       new CopyPlugin({
         patterns: [
@@ -177,4 +198,34 @@ function getBuildInfo() {
   const buildInfo = buildEnv.onlineEditor.buildInfo;
   console.info(`SWF Sandbox :: Build info: ${buildInfo}`);
   return buildInfo;
+}
+
+function getKieSandboxExtendedServicesArgs() {
+  const linuxDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.onlineEditor.kieSandboxExtendedServices.compatibleVersion;
+
+  console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
+  console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);
+  console.info("KIE Sandbox Extended Services :: Windows download URL: " + windowsDownloadUrl);
+  console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
+
+  return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
+}
+
+function getDmnDevSandboxArgs(argv) {
+  const baseImageRegistry = buildEnv.dmnDevSandbox.baseImage.registry;
+  const baseImageAccount = buildEnv.dmnDevSandbox.baseImage.account;
+  const baseImageName = buildEnv.dmnDevSandbox.baseImage.name;
+  const baseImageTag = buildEnv.dmnDevSandbox.baseImage.tag;
+  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
+
+  console.info("DMN Dev Sandbox :: Base Image Registry: " + baseImageRegistry);
+  console.info("DMN Dev Sandbox :: Base Image Account: " + baseImageAccount);
+  console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
+  console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
+  console.info("DMN Dev Sandbox :: Online Editor Url: " + onlineEditorUrl);
+
+  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
 }

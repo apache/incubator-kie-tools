@@ -99,12 +99,12 @@ export function OpenShiftContextProvider(props: Props) {
         artifactId: artifactId,
         groupId: DEFAULT_GROUP_ID,
         content: content,
-        proxyUrl: settings.openshift.config.proxy,
+        proxyUrl: settings.kieSandboxExtendedServices.config.buildUrl(),
         serviceAccountConfig: settings.serviceAccount.config,
         serviceRegistryConfig: settings.serviceRegistry.config,
       });
     },
-    [settings.serviceAccount.config, settings.serviceRegistry.config, settings.openshift.config.proxy]
+    [settings.serviceAccount.config, settings.serviceRegistry.config, settings.kieSandboxExtendedServices.config]
   );
 
   useEffect(() => {

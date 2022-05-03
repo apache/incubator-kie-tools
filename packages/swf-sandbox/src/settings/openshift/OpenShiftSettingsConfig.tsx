@@ -22,26 +22,19 @@ export const OPENSHIFT_HOST_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--connec
 export const OPENSHIFT_TOKEN_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--connection-token";
 
 export interface OpenShiftSettingsConfig {
-  proxy: string;
   namespace: string;
   host: string;
   token: string;
 }
 
 export const EMPTY_CONFIG: OpenShiftSettingsConfig = {
-  proxy: "",
   namespace: "",
   host: "",
   token: "",
 };
 
 export function isOpenShiftConfigValid(config: OpenShiftSettingsConfig): boolean {
-  return (
-    isProxyValid(config.proxy) &&
-    isNamespaceValid(config.namespace) &&
-    isHostValid(config.host) &&
-    isTokenValid(config.token)
-  );
+  return isNamespaceValid(config.namespace) && isHostValid(config.host) && isTokenValid(config.token);
 }
 
 export function isProxyValid(proxy: string): boolean {
@@ -78,9 +71,6 @@ export function isTokenValid(token: string): boolean {
 
 export function readOpenShiftConfigCookie(): OpenShiftSettingsConfig {
   return {
-    proxy:
-      getCookie(OPENSHIFT_PROXY_COOKIE_NAME) ??
-      "https://daily-dev-kie-sandbox-extended-services-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
     namespace: getCookie(OPENSHIFT_NAMESPACE_COOKIE_NAME) ?? "",
     host: getCookie(OPENSHIFT_HOST_COOKIE_NAME) ?? "",
     token: getCookie(OPENSHIFT_TOKEN_COOKIE_NAME) ?? "",
@@ -108,7 +98,6 @@ export function saveTokenCookie(token: string): void {
 }
 
 export function saveConfigCookie(config: OpenShiftSettingsConfig): void {
-  saveProxyCookie(config.proxy);
   saveNamespaceCookie(config.namespace);
   saveHostCookie(config.host);
   saveTokenCookie(config.token);

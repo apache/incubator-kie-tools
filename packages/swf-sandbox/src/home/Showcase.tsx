@@ -1,10 +1,10 @@
 import * as React from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Grid } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Sample, SampleCard } from "./SampleCard";
 import { ReactComponent as CheckInboxPeriodicalSvg } from "../../static/samples/check-inbox-periodical/check-inbox-periodical.svg";
 import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/greetings.svg";
 import { ReactComponent as FillGlassOfWaterSvg } from "../../static/samples/fill-glass-of-water/fill-glass-of-water.svg";
+import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 
 export const samples: Array<Sample> = [
   {
@@ -32,14 +32,14 @@ export function Showcase() {
   return (
     <>
       <TextContent>
-        <Text component="h1">Serverless Workflow Samples Showcase</Text>
+        <Text component="h1">Samples Showcase</Text>
       </TextContent>
       <br />
-      <Grid hasGutter={true}>
+      <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3 - 16px)", default: "100%" }}>
         {samples.map((sample) => (
           <SampleCard sample={sample} key={sample.fileName} />
         ))}
-      </Grid>
+      </Gallery>
     </>
   );
 }

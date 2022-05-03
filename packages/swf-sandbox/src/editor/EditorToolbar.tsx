@@ -85,7 +85,6 @@ import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { DeployToolbar } from "./DeployToolbar";
 import { FileSwitcher } from "./FileSwitcher";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
-
 export interface Props {
   alerts: AlertsController | undefined;
   alertsRef: (controller: AlertsController) => void;
@@ -1476,7 +1475,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         />
                       </Dropdown>
                     </ToolbarItem>
-                    <ToolbarItem visibility={hideWhenSmall}>
+                    <ToolbarItem>
                       <FlexItem>
                         <DeployToolbar
                           editor={props.editor}

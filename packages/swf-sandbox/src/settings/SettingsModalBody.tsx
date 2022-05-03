@@ -22,10 +22,12 @@ import { OpenShiftSettingsTab } from "./openshift/OpenShiftSettingsTab";
 import { ApacheKafkaSettingsTab } from "./kafka/ApacheKafkaSettingsTab";
 import { ServiceAccountSettingsTab } from "./serviceAccount/ServiceAccountSettingsTab";
 import { ServiceRegistrySettingsTab } from "./serviceRegistry/ServiceRegistrySettingsTab";
+import { KieSandboxExtendedServicesSettingsTab } from "./extendedServices/KieSandboxExtendedServicesSettingsTab";
 
 export enum SettingsTabs {
   GITHUB = "github",
   OPENSHIFT = "openshift",
+  KIE_SANDBOX_EXTENDED_SERVICES = "kie-sandbox-extended-services",
   SERVICE_ACCOUNT = "serviceAccount",
   SERVICE_REGISTRY = "serviceRegistry",
   KAFKA = "kafka",
@@ -55,6 +57,13 @@ export function SettingsModalBody() {
         title={<TabTitleText>OpenShift</TabTitleText>}
       >
         <OpenShiftSettingsTab />
+      </Tab>
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
+        title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
+      >
+        <KieSandboxExtendedServicesSettingsTab />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"

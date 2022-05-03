@@ -36,8 +36,7 @@ import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorServic
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-
-export const DEFAULT_CORS_PROXY_URL = "https://cors.isomorphic-git.org";
+import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";

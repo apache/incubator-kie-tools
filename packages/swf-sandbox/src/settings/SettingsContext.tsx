@@ -33,6 +33,8 @@ import {
   readServiceRegistryConfigCookie,
   ServiceRegistrySettingsConfig,
 } from "./serviceRegistry/ServiceRegistryConfig";
+import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -52,12 +54,26 @@ interface GithubUser {
   email: string;
 }
 
+export class ExtendedServicesConfig {
+  constructor(public readonly host: string, public readonly port: string) {}
+
+  public buildUrl(): string {
+    if (this.port.trim().length === 0) {
+      return this.host;
+    }
+    return `${this.host}:${this.port}`;
+  }
+}
+
 export interface SettingsContextType {
   isOpen: boolean;
   activeTab: SettingsTabs;
   openshift: {
     status: OpenShiftInstanceStatus;
     config: OpenShiftSettingsConfig;
+  };
+  kieSandboxExtendedServices: {
+    config: ExtendedServicesConfig;
   };
   github: {
     token?: string;
@@ -83,6 +99,9 @@ export interface SettingsDispatchContextType {
     service: OpenShiftService;
     setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
     setConfig: React.Dispatch<React.SetStateAction<OpenShiftSettingsConfig>>;
+  };
+  kieSandboxExtendedServices: {
+    setConfig: React.Dispatch<React.SetStateAction<ExtendedServicesConfig>>;
   };
   github: {
     authService: { reset: () => void; authenticate: (token: string) => Promise<void> };
@@ -186,6 +205,7 @@ export function SettingsContextProvider(props: any) {
     });
   }, [githubAuthService]);
 
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [openshiftConfig, setOpenShiftConfig] = useState(readOpenShiftConfigCookie());
   const [kafkaConfig, setKafkaConfig] = useState<KafkaSettingsConfig>(readKafkaConfigCookie());
   const [serviceAccountConfig, setServiceAccountConfig] = useState<ServiceAccountSettingsConfig>(
@@ -195,7 +215,11 @@ export function SettingsContextProvider(props: any) {
     readServiceRegistryConfigCookie()
   );
 
-  const [openshiftStatus, setOpenshiftStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
+  const [openshiftStatus, setOpenshiftStatus] = useState(
+    kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
+      ? OpenShiftInstanceStatus.DISCONNECTED
+      : OpenShiftInstanceStatus.UNAVAILABLE
+  );
 
   const openshiftService = useMemo(
     () =>
@@ -203,8 +227,9 @@ export function SettingsContextProvider(props: any) {
         openShift: openshiftConfig,
         kafka: kafkaConfig,
         serviceAccount: serviceAccountConfig,
+        extendedServicesConfig: kieSandboxExtendedServices.config,
       }),
-    [kafkaConfig, openshiftConfig, serviceAccountConfig]
+    [kafkaConfig, openshiftConfig, serviceAccountConfig, kieSandboxExtendedServices.config]
   );
 
   // Initial check for openshift status
@@ -243,6 +268,9 @@ export function SettingsContextProvider(props: any) {
         authService: githubAuthService,
         octokit: githubOctokit,
       },
+      kieSandboxExtendedServices: {
+        setConfig: kieSandboxExtendedServices.saveNewConfig,
+      },
       apacheKafka: {
         setConfig: setKafkaConfig,
       },
@@ -253,7 +281,7 @@ export function SettingsContextProvider(props: any) {
         setConfig: setServiceRegistryConfig,
       },
     };
-  }, [close, githubAuthService, githubOctokit, open, openshiftService]);
+  }, [close, githubAuthService, githubOctokit, open, openshiftService, kieSandboxExtendedServices.saveNewConfig]);
 
   const value = useMemo(() => {
     return {
@@ -268,6 +296,9 @@ export function SettingsContextProvider(props: any) {
         token: githubToken,
         user: githubUser,
         scopes: githubScopes,
+      },
+      kieSandboxExtendedServices: {
+        config: kieSandboxExtendedServices.config,
       },
       apacheKafka: {
         config: kafkaConfig,
@@ -291,6 +322,7 @@ export function SettingsContextProvider(props: any) {
     kafkaConfig,
     serviceAccountConfig,
     serviceRegistryConfig,
+    kieSandboxExtendedServices.config,
   ]);
 
   return (

@@ -73,7 +73,6 @@ import {
   DataListItemCells,
   DataListItemRow,
 } from "@patternfly/react-core/dist/js/components/DataList";
-import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { UploadCard } from "./UploadCard";
 import { ImportFromUrlCard } from "./ImportFromUrlCard";

@@ -133,6 +133,8 @@ export const routes = {
       vscodeLogoWhite: new Route<{}>(() => `images/vscode-alt.svg`),
       kogitoLogoWhite: new Route<{}>(() => `images/kogito_logo_white.png`),
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
+      dmnRunnerGif: new Route<{}>(() => `images/dmn-runner2.gif`),
+      dmnDevSandboxGif: new Route<{}>(() => `images/dmn-dev-sandbox.gif`),
     },
   },
 };

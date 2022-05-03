@@ -191,14 +191,14 @@ export function EditorPage(props: Props) {
 
   useEffect(() => {
     SwfServiceCatalogStore.refresh(
-      settings.openshift.config.proxy,
+      settings.kieSandboxExtendedServices.config.buildUrl(),
       settings.serviceRegistry.config,
       settings.serviceAccount.config
     ).then((services) => {
       swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
     });
   }, [
-    settings.openshift.config.proxy,
+    settings.kieSandboxExtendedServices.config,
     settings.serviceAccount.config,
     settings.serviceRegistry.config,
     swfServiceCatalogEnvelopeServer,

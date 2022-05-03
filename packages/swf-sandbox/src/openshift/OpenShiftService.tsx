@@ -20,6 +20,7 @@ import {
   isServiceAccountConfigValid,
   ServiceAccountSettingsConfig,
 } from "../settings/serviceAccount/ServiceAccountConfig";
+import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { DeploymentWorkflow } from "./OpenShiftContext";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
 import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
@@ -46,16 +47,19 @@ import {
 } from "./resources/Resource";
 import { CreateSecret, DeleteSecret } from "./resources/Secret";
 
+export const DEVELOPER_SANDBOX_URL = "https://developers.redhat.com/developer-sandbox";
+export const DEVELOPER_SANDBOX_GET_STARTED_URL = "https://developers.redhat.com/developer-sandbox/get-started";
 export const DEFAULT_CREATED_BY = "kie-tools-sandbox";
 
 export class OpenShiftService {
-  private readonly PROXY_ENDPOINT = `${this.configs.openShift.proxy}/devsandbox`;
+  private readonly PROXY_ENDPOINT = `${this.configs.extendedServicesConfig.buildUrl()}/devsandbox`;
 
   constructor(
     private readonly configs: {
       openShift: OpenShiftSettingsConfig;
       kafka: KafkaSettingsConfig;
       serviceAccount: ServiceAccountSettingsConfig;
+      extendedServicesConfig: ExtendedServicesConfig;
     }
   ) {}
 

@@ -20,6 +20,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import * as React from "react";
 import { useHistory } from "react-router";
+import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../openshift/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
@@ -38,7 +39,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>Serverless Workflow Sandbox</Text>
+                  <Text component={TextVariants.h1}>Serverless Logic Sandbox</Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>
@@ -51,6 +52,11 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
               <FlexItem>
                 <PageHeaderToolsItem>
                   <SettingsButton />
+                </PageHeaderToolsItem>
+              </FlexItem>
+              <FlexItem>
+                <PageHeaderToolsItem>
+                  <KieSandboxExtendedServicesIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
             </Flex>
