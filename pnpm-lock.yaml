@@ -480,14 +480,14 @@ importers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      axios: ^0.21.1
+      axios: ^0.27.2
       fast-xml-parser: ^3.17.4
       portfinder: ^1.0.27
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/workspace": link:../workspace
-      axios: 0.21.4
+      axios: registry.npmjs.org/axios/0.27.2
       fast-xml-parser: 3.17.4
       portfinder: 1.0.28
     devDependencies:
@@ -1582,12 +1582,12 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@types/js-yaml": ^4.0.5
       js-yaml: ^4.1.0
-      openapi-types: ^7.0.1
+      openapi-types: ^11.0.0
     dependencies:
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@types/js-yaml": 4.0.5
       js-yaml: 4.1.0
-      openapi-types: 7.2.3
+      openapi-types: registry.npmjs.org/openapi-types/11.0.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -6393,15 +6393,6 @@ packages:
       { integrity: sha512-xh1Rl34h6Fi1DC2WWKfxUTVqRsNnr6LsKz2+hfwDxQJWmrx8+c7ylaqBMcHfl1U1r2dsifOvKX3LQuLNZ+XSvA== }
     dev: true
 
-  /axios/0.21.4:
-    resolution:
-      { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
-    dependencies:
-      follow-redirects: 1.14.8
-    transitivePeerDependencies:
-      - debug
-    dev: false
-
   /axios/0.21.4_debug@4.3.1:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
@@ -11061,17 +11052,6 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.8:
-    resolution:
-      { integrity: sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: false
-
   /follow-redirects/1.14.8_debug@4.3.1:
     resolution:
       { integrity: sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA== }
@@ -15459,11 +15439,6 @@ packages:
   /openapi-types/11.0.0:
     resolution:
       { integrity: sha512-GB+QO6o1hAtKsb8tP3/FTD5jpkdKrf42L4Gel9UySngMurzr+Q9pO+dtnmySQCzoCEfJr39IH6bveEn71xNcVg== }
-    dev: false
-
-  /openapi-types/7.2.3:
-    resolution:
-      { integrity: sha512-olbaNxz12R27+mTyJ/ZAFEfUruauHH27AkeQHDHRq5AF0LdNkK1SSV7EourXQDK+4aX7dv2HtyirAGK06WMAsA== }
     dev: false
 
   /optionator/0.8.3:
@@ -21483,6 +21458,33 @@ packages:
       color-convert: registry.npmjs.org/color-convert/2.0.1
     dev: true
 
+  registry.npmjs.org/asynckit/0.4.0:
+    resolution:
+      {
+        integrity: sha1-x57Zf380y48robyXkLzDZkdLS3k=,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz,
+      }
+    name: asynckit
+    version: 0.4.0
+    dev: false
+
+  registry.npmjs.org/axios/0.27.2:
+    resolution:
+      {
+        integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/axios/-/axios-0.27.2.tgz,
+      }
+    name: axios
+    version: 0.27.2
+    dependencies:
+      follow-redirects: registry.npmjs.org/follow-redirects/1.14.9
+      form-data: registry.npmjs.org/form-data/4.0.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   registry.npmjs.org/big.js/5.2.2:
     resolution:
       {
@@ -21548,6 +21550,20 @@ packages:
     dev: true
     optional: true
 
+  registry.npmjs.org/combined-stream/1.0.8:
+    resolution:
+      {
+        integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/combined-stream/-/combined-stream-1.0.8.tgz,
+      }
+    name: combined-stream
+    version: 1.0.8
+    engines: { node: ">= 0.8" }
+    dependencies:
+      delayed-stream: registry.npmjs.org/delayed-stream/1.0.0
+    dev: false
+
   registry.npmjs.org/csstype/3.0.11:
     resolution:
       {
@@ -21557,6 +21573,18 @@ packages:
       }
     name: csstype
     version: 3.0.11
+    dev: false
+
+  registry.npmjs.org/delayed-stream/1.0.0:
+    resolution:
+      {
+        integrity: sha1-3zrhmayt+31ECqrgsp4icrJOxhk=,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/delayed-stream/-/delayed-stream-1.0.0.tgz,
+      }
+    name: delayed-stream
+    version: 1.0.0
+    engines: { node: ">=0.4.0" }
     dev: false
 
   registry.npmjs.org/diff-sequences/26.6.2:
@@ -21953,6 +21981,39 @@ packages:
     dev: true
     optional: true
 
+  registry.npmjs.org/follow-redirects/1.14.9:
+    resolution:
+      {
+        integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.9.tgz,
+      }
+    name: follow-redirects
+    version: 1.14.9
+    engines: { node: ">=4.0" }
+    peerDependencies:
+      debug: "*"
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
+
+  registry.npmjs.org/form-data/4.0.0:
+    resolution:
+      {
+        integrity: sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz,
+      }
+    name: form-data
+    version: 4.0.0
+    engines: { node: ">= 6" }
+    dependencies:
+      asynckit: registry.npmjs.org/asynckit/0.4.0
+      combined-stream: registry.npmjs.org/combined-stream/1.0.8
+      mime-types: registry.npmjs.org/mime-types/2.1.34
+    dev: false
+
   registry.npmjs.org/fsevents/2.3.2:
     resolution:
       {
@@ -22147,6 +22208,32 @@ packages:
     dev: true
     optional: true
 
+  registry.npmjs.org/mime-db/1.51.0:
+    resolution:
+      {
+        integrity: sha512-5y8A56jg7XVQx2mbv1lu49NR4dokRnhZYTtL+KGfaa27uq4pSTXkwQkFJl4pkRMyNFz/EtYDSkiiEHx3F7UN6g==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/mime-db/-/mime-db-1.51.0.tgz,
+      }
+    name: mime-db
+    version: 1.51.0
+    engines: { node: ">= 0.6" }
+    dev: false
+
+  registry.npmjs.org/mime-types/2.1.34:
+    resolution:
+      {
+        integrity: sha512-6cP692WwGIs9XXdOO4++N+7qjqv0rqxxVvJ3VHPh/Sc9mVZcQP+ZGhkKiTvWMQRr2tbHkJP/Yn7Y0npb3ZBs4A==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/mime-types/-/mime-types-2.1.34.tgz,
+      }
+    name: mime-types
+    version: 2.1.34
+    engines: { node: ">= 0.6" }
+    dependencies:
+      mime-db: registry.npmjs.org/mime-db/1.51.0
+    dev: false
+
   registry.npmjs.org/mime/1.6.0:
     resolution:
       {
@@ -22301,6 +22388,17 @@ packages:
       which: 2.0.2
     dev: true
     optional: true
+
+  registry.npmjs.org/openapi-types/11.0.0:
+    resolution:
+      {
+        integrity: sha512-GB+QO6o1hAtKsb8tP3/FTD5jpkdKrf42L4Gel9UySngMurzr+Q9pO+dtnmySQCzoCEfJr39IH6bveEn71xNcVg==,
+        registry: https://registry.yarnpkg.com/,
+        tarball: https://registry.npmjs.org/openapi-types/-/openapi-types-11.0.0.tgz,
+      }
+    name: openapi-types
+    version: 11.0.0
+    dev: false
 
   registry.npmjs.org/pretty-format/26.6.2:
     resolution:

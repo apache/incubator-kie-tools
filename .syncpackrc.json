@@ -2,7 +2,11 @@
   "versionGroups": [
     {
       "dependencies": ["monaco-editor"],
-      "packages": ["@kie-tools/serverless-workflow-editor", "vscode-extension-serverless-workflow-editor"]
+      "packages": [
+        "@kie-tools/serverless-workflow-editor",
+        "vscode-extension-serverless-workflow-editor",
+        "chrome-extension-serverless-workflow-editor"
+      ]
     }
   ]
 }
