@@ -3,6 +3,8 @@ lockfileVersion: 5.4
 overrides:
   react-monaco-editor@0.43.0>monaco-editor: ^0.23.0
 
+packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
+
 importers:
   .:
     specifiers:
@@ -640,7 +642,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
       monaco-editor: 0.33.0
-      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.33.0
+      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm
       monaco-yaml: 3.2.1_monaco-editor@0.33.0
 
   packages/cors-proxy-image:
@@ -699,7 +701,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.23.0
+      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_4era6pk35okdbgphw4rwgut7wu
       vscode-json-languageservice: 4.2.1
 
   packages/dashbuilder-images:
@@ -1555,7 +1557,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
       "@types/mermaid": 8.2.9
-      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.33.0
+      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm
       vscode-json-languageservice: 4.2.1
 
   packages/serverless-workflow-language-service:
@@ -1616,7 +1618,6 @@ importers:
       "@types/lodash": ^4.14.168
       lodash: ^4.17.21
       monaco-editor: ^0.23.0
-      monaco-editor-webpack-plugin: ^7.0.1
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1634,7 +1635,6 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
-      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.23.0
 
   packages/uniforms-bootstrap4-codegen:
     specifiers:
@@ -2017,7 +2017,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.33.0
+      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm
 
   packages/vscode-java-code-completion:
     specifiers:
@@ -22247,7 +22247,7 @@ packages:
     name: minimist
     version: 1.2.6
 
-  registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.23.0:
+  registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_4era6pk35okdbgphw4rwgut7wu:
     resolution:
       {
         integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw==,
@@ -22259,13 +22259,15 @@ packages:
     version: 7.0.1
     peerDependencies:
       monaco-editor: ">= 0.31.0"
+      monaco-yaml: "*"
       webpack: ^4.5.0 || 5.x
     dependencies:
       loader-utils: registry.npmjs.org/loader-utils/2.0.2
       monaco-editor: 0.23.0
+      monaco-yaml: 3.2.1_monaco-editor@0.23.0
     dev: true
 
-  registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_monaco-editor@0.33.0:
+  registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm:
     resolution:
       {
         integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw==,
@@ -22277,10 +22279,12 @@ packages:
     version: 7.0.1
     peerDependencies:
       monaco-editor: ">= 0.31.0"
+      monaco-yaml: "*"
       webpack: ^4.5.0 || 5.x
     dependencies:
       loader-utils: registry.npmjs.org/loader-utils/2.0.2
       monaco-editor: 0.33.0
+      monaco-yaml: 3.2.1_monaco-editor@0.33.0
     dev: true
 
   registry.npmjs.org/monaco-yaml/3.2.1_monaco-editor@0.33.0:
