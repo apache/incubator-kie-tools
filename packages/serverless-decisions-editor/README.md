@@ -1,3 +1,21 @@
-In order to run the development webapp:
+## serverless decisions editor
 
-`yarn start`
+###### An editor to manage serverless decisions assets, part of serverless logic for Red Hat OpenShift
+
+### Description
+
+This module contains the core implementation of the **serverless decision editor**, which allows the user
+to create and edit **serverless decisions** definition files _(\*.sd.json, \*.sd.yaml, \*.sd.yml)_.
+
+### Structure
+
+The module structure is composed of:
+
+- **dev-module-app**: This represents a showcase of the editor, useful for testing and demo purposes.
+  Here, the editor is wrapped in a static HTML page with a dedicated menu. The menu is necessary to
+  simulate functionality implemented by channel which integrate the editor _(eg. Undo / Redo / Validation)_
+- **src**: The project source code
+
+### Usage
+
+To run the development webapp: `yarn start`
