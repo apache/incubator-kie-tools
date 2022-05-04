@@ -31,6 +31,7 @@ import IpcRendererEvent = Electron.IpcRendererEvent;
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DesktopI18nContext, desktopI18nDefaults, desktopI18nDictionaries } from "./common/i18n";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { removeDirectories, removeFileExtension } from "../common/utils";
 
 enum Pages {
   HOME,
@@ -56,10 +57,11 @@ export function App() {
   const onFilenameChange = useCallback(
     (filePath: string) => {
       setFile({
-        fileName: filePath,
+        fileName: removeFileExtension(removeDirectories(filePath)!),
         fileExtension: file.fileExtension,
         getFileContents: file.getFileContents,
         isReadOnly: false,
+        path: filePath,
       });
     },
     [file]
@@ -85,10 +87,11 @@ export function App() {
       closeInvalidFileTypeErrorAlert();
       setPage(Pages.EDITOR);
       setFile({
-        fileName: fileToOpen.filePath,
+        fileName: removeFileExtension(removeDirectories(fileToOpen.filePath)!),
         fileExtension: fileToOpen.fileType,
         getFileContents: () => Promise.resolve(fileToOpen.fileContent),
         isReadOnly: false,
+        path: fileToOpen.filePath,
       });
     },
     [closeInvalidFileTypeErrorAlert]
