@@ -36,7 +36,7 @@
     "yaml": "^2.0.1",
     "monaco-editor": "^0.33.0",
     "vscode-languageserver-textdocument": "^1.0.4",
-    "openapi-types": "^11.0.0",
+    "openapi-types": "^7.0.1",
     "vscode-languageserver-types": "^3.16.0",
     "axios": "^0.27.2"
   },

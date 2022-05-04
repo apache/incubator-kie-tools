@@ -1582,12 +1582,12 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@types/js-yaml": ^4.0.5
       js-yaml: ^4.1.0
-      openapi-types: ^11.0.0
+      openapi-types: ^7.0.1
     dependencies:
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@types/js-yaml": 4.0.5
       js-yaml: 4.1.0
-      openapi-types: registry.npmjs.org/openapi-types/11.0.0
+      openapi-types: registry.npmjs.org/openapi-types/7.2.3
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -1989,7 +1989,7 @@ importers:
       axios: ^0.27.2
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      openapi-types: ^11.0.0
+      openapi-types: ^7.0.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       webpack: ^5.36.2
@@ -2010,7 +2010,7 @@ importers:
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
       axios: 0.27.2
       monaco-editor: 0.33.0
-      openapi-types: 11.0.0
+      openapi-types: registry.npmjs.org/openapi-types/7.2.3
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1
@@ -15436,11 +15436,6 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openapi-types/11.0.0:
-    resolution:
-      { integrity: sha512-GB+QO6o1hAtKsb8tP3/FTD5jpkdKrf42L4Gel9UySngMurzr+Q9pO+dtnmySQCzoCEfJr39IH6bveEn71xNcVg== }
-    dev: false
-
   /optionator/0.8.3:
     resolution:
       { integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA== }
@@ -22389,15 +22384,15 @@ packages:
     dev: true
     optional: true
 
-  registry.npmjs.org/openapi-types/11.0.0:
+  registry.npmjs.org/openapi-types/7.2.3:
     resolution:
       {
-        integrity: sha512-GB+QO6o1hAtKsb8tP3/FTD5jpkdKrf42L4Gel9UySngMurzr+Q9pO+dtnmySQCzoCEfJr39IH6bveEn71xNcVg==,
+        integrity: sha512-olbaNxz12R27+mTyJ/ZAFEfUruauHH27AkeQHDHRq5AF0LdNkK1SSV7EourXQDK+4aX7dv2HtyirAGK06WMAsA==,
         registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/openapi-types/-/openapi-types-11.0.0.tgz,
+        tarball: https://registry.npmjs.org/openapi-types/-/openapi-types-7.2.3.tgz,
       }
     name: openapi-types
-    version: 11.0.0
+    version: 7.2.3
     dev: false
 
   registry.npmjs.org/pretty-format/26.6.2:
