@@ -79,15 +79,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     useImperativeHandle(forwardRef, () => ({
       setMonacoValue: (newValue: string) => FeelEditorService.getStandaloneEditor()?.setValue(newValue),
-      insertNewLineToMonaco: () => {
-        const editor = FeelEditorService.getStandaloneEditor();
-
-        if (!editor) {
-          return;
-        }
-
-        editor.trigger("keyboard", "type", { text: "\n" });
-      },
+      insertNewLineToMonaco: () => FeelEditorService.getStandaloneEditor()?.trigger("keyboard", "type", { text: "\n" }),
       getMonacoValue: () => FeelEditorService.getStandaloneEditor()?.getValue(),
     }));
 
