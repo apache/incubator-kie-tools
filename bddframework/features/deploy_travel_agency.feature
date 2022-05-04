@@ -37,30 +37,31 @@ Feature: Deploy Travel agency service and verify its functionality
     And Service "visas" with process name "visaApplications" is available within 1 minutes
     When Start "travels" process on service "travels" with body:
       """json
-	{
-		"traveller" : {
-			"firstName" : "John6",
-			"lastName" : "Doe",
-			"email" : "john.doe@example.com",
-			"nationality" : "American",
-			"address" : {
-				"street" : "main street",
-				"city" : "Boston",
-				"zipCode" : "10005",
-				"country" : "US"
-			}
-		},
-		"trip" : {
-			"city" : "New York",
-			"country" : "US",
-			"begin" : "2019-12-10T00:00:00.000+02:00",
-			"end" : "2019-12-15T00:00:00.000+02:00"
-		}
-	}
+      {
+        "traveller" : {
+          "firstName" : "John",
+          "lastName" : "Doe",
+          "email" : "john.doe@example.com",
+          "nationality" : "American",
+          "passportNumber" : "N4379478",
+          "address" : {
+            "street" : "main street",
+            "city" : "Boston",
+            "zipCode" : "10005",
+            "country" : "US"
+          }
+        },
+        "trip" : {
+          "city" : "New York",
+          "country" : "US",
+          "begin" : "2019-12-10T00:00:00.000+02:00",
+          "end" : "2019-12-15T00:00:00.000+02:00"
+        }
+      }
       """
     And Service "travels" contains 1 instance of process with name "travels"
-    And Service "travels" contains 1 task of process with name "travels" and task name "ConfirmTravel"
-    And Complete "ConfirmTravel" task on service "travels" and process with name "travels" with body:
+    And Service "travels" contains 1 task of process with name "travels" and task name "ConfirmTravel" for user "jdoe"
+    And Complete "ConfirmTravel" task on service "travels" and process with name "travels" by user "jdoe" with body:
 	  """json
 	  {}
 	  """
@@ -96,65 +97,50 @@ Feature: Deploy Travel agency service and verify its functionality
     And Service "visas" with process name "visaApplications" is available within 1 minutes
     When Start "travels" process on service "travels" with body:
       """json
-	{
-		"traveller" : {
-			"firstName" : "Jan",
-			"lastName" : "Kowalski",
-			"email" : "jan.kowalski@example.com",
-			"nationality" : "Polish",
-			"address" : {
-				"street" : "polna",
-				"city" : "Krakow",
-				"zipCode" : "32000",
-				"country" : "Poland"
-			}
-		},
-		"trip" : {
-			"city" : "New York",
-			"country" : "US",
-			"begin" : "2019-12-10T00:00:00.000+02:00",
-			"end" : "2019-12-15T00:00:00.000+02:00"
-		}
-	}
+      {
+        "traveller" : {
+          "firstName" : "Jan",
+          "lastName" : "Kowalski",
+          "email" : "jan.kowalski@example.com",
+          "nationality" : "Polish",
+          "passportNumber" : "N4379478",
+          "address" : {
+            "street" : "polna",
+            "city" : "Krakow",
+            "zipCode" : "32000",
+            "country" : "Poland"
+          }
+        },
+        "trip" : {
+          "city" : "New York",
+          "country" : "US",
+          "begin" : "2019-12-05T00:00:00.000+02:00",
+          "end" : "2019-12-30T00:00:00.000+02:00"
+        }
+      }
       """
     And Service "travels" contains 1 instance of process with name "travels"
-    And Service "travels" contains 1 task of process with name "travels" and task name "VisaApplication"
-    And Complete "VisaApplication" task on service "travels" and process with name "travels" with body:
-	  """json
-	{
-		"visaApplication" : {
-			"firstName" : "Jan",
-			"lastName" : "Kowalski",
-			"nationality" : "Polish",
-			"city" : "New York",
-			"country" : "US",
-			"passportNumber" : "ABC09876",
-			"duration" : 25
-		}
-	}
-	  """
+    And Service "travels" contains 1 task of process with name "travels" and task name "VisaApplication" for user "jdoe"
+    And Complete "VisaApplication" task on service "travels" and process with name "travels" by user "jdoe" with body:
+      """json
+      {}
+      """
     And Service "visas" contains 1 instance of process with name "visaApplications" within 1 minutes
-    And Service "visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval"
-    And Complete "ApplicationApproval" task on service "visas" and process with name "visaApplications" with body:
-	  """json
-	{
-		"application" : {
-			"firstName" : "Jan",
-			"lastName" : "Kowalski",
-			"nationality" : "Polish",
-			"city" : "New York",
-			"country" : "US",
-			"passportNumber" : "ABC09876",
-			"duration" : 25,
-			"approved" : true
-		}
-	}
-	  """
-    And Service "travels" contains 1 task of process with name "travels" and task name "ConfirmTravel"
-    And Complete "ConfirmTravel" task on service "travels" and process with name "travels" with body:
-	  """json
-	  {}
-	  """
+    And Service "visas" contains 1 task of process with name "visaApplications" and task name "ApplicationApproval" for user "alice"
+    And Complete "ApplicationApproval" task on service "visas" and process with name "visaApplications" by user "alice" with body:
+      """json
+      {
+        "resolution":{
+          "approved":true,
+          "reason":"Manual approval"
+        }
+      }
+      """
+    And Service "travels" contains 1 task of process with name "travels" and task name "ConfirmTravel" for user "jdoe" within 1 minutes
+    And Complete "ConfirmTravel" task on service "travels" and process with name "travels" by user "jdoe" with body:
+      """json
+      {}
+      """
 
     Then Service "travels" with process name "travels" is available
 
