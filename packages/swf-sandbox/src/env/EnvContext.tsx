@@ -21,8 +21,9 @@ type EnvVarNames = "KIE_SANDBOX_EXTENDED_SERVICES_URL" | "CORS_PROXY_URL";
 
 export type EnvVars = Record<EnvVarNames, string>;
 
-export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST = "http://localhost";
-export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT = "21345";
+export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST =
+  "https://daily-dev-kie-sandbox-extended-services-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud";
+export const DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT = "";
 export const DEFAULT_CORS_PROXY_URL = "https://cors.isomorphic-git.org";
 
 export const DEFAULT_ENV_VARS: EnvVars = {
