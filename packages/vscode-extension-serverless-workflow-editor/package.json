@@ -10,10 +10,9 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "cleanup-wrong-nohoisted-dependencies": "rimraf ./node_modules/monaco-yaml/node_modules",
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "build:prod": "yarn cleanup-wrong-nohoisted-dependencies && rimraf dist && webpack && yarn pack:prod",
-    "build:dev": "yarn cleanup-wrong-nohoisted-dependencies && rimraf dist && webpack --env dev",
+    "build:prod": "rimraf dist && webpack && yarn pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
     "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
     "compile": "webpack --env dev",
     "watch": "webpack --env dev",
