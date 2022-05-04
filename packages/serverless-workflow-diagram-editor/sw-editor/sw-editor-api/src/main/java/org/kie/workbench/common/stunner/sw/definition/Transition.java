@@ -27,7 +27,6 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
@@ -54,7 +53,7 @@ public class Transition {
     @JsIgnore
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION).collect(Collectors.toSet());
 
-    @Property(meta = PropertyMetaTypes.NAME)
+    @Property
     public String name;
 
     @JsIgnore
