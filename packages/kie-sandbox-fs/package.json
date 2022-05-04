@@ -12,7 +12,7 @@
     "superblocktxt": "src/superblocktxt.js"
   },
   "scripts": {
-    "test": "karma start --single-run --watch",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"karma start --single-run --watch\"",
     "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
     "build:dev": "rimraf dist && yarn copy:src",
     "build:prod": "rimraf dist && yarn copy:src && yarn test"
