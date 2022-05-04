@@ -1,43 +1,32 @@
-import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.FolderUtils
+/*
+* This file is describing all the Jenkins jobs in the DSL format (see https://plugins.jenkins.io/job-dsl/)
+* needed by the Kogito pipelines.
+*
+* The main part of Jenkins job generation is defined into the https://github.com/kiegroup/kogito-pipelines repository.
+*
+* This file is making use of shared libraries defined in
+* https://github.com/kiegroup/kogito-pipelines/tree/main/dsl/seed/src/main/groovy/org/kie/jenkins/jobdsl.
+*/
+
+import org.kie.jenkins.jobdsl.model.Folder
+import org.kie.jenkins.jobdsl.KogitoJobTemplate
+import org.kie.jenkins.jobdsl.KogitoJobUtils
 import org.kie.jenkins.jobdsl.Utils
-import org.kie.jenkins.jobdsl.KogitoJobType
 
-JENKINSFILE_PATH = '.ci/jenkins'
+jenkins_path = '.ci/jenkins'
 
-def getDefaultJobParams() {
-    return KogitoJobTemplate.getDefaultJobParams(this, 'kogito-images')
-}
-
-def getJobParams(String jobName, String jobFolder, String jenkinsfileName, String jobDescription = '') {
-    def jobParams = getDefaultJobParams()
-    jobParams.job.name = jobName
-    jobParams.job.folder = jobFolder
-    jobParams.jenkinsfile = jenkinsfileName
-    if (jobDescription) {
-        jobParams.job.description = jobDescription
-    }
-    return jobParams
-}
-
-if (Utils.isMainBranch(this)) {
-    // For BDD runtimes PR job
-    setupDeployJob(FolderUtils.getPullRequestRuntimesBDDFolder(this), KogitoJobType.PR)
-}
-
+// PR checks
 setupPrJob()
+setupDeployJob(Folder.PULLREQUEST_RUNTIMES_BDD)
 
-// Branch jobs
-setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
-setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
+// Nightly jobs
+setupDeployJob(Folder.NIGHTLY)
 
-// No release directly on main branch
-if (!Utils.isMainBranch(this)) {
-    setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-    setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
-}
+// Release jobs
+setupDeployJob(Folder.RELEASE)
+setupPromoteJob(Folder.RELEASE)
 
-if (Utils.isLTSBranch(this)) {
+if (Utils.isProductizedBranch(this)) {
     setupProdUpdateVersionJob()
 }
 
@@ -45,29 +34,29 @@ if (Utils.isLTSBranch(this)) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupPrJob(String branch = "${GIT_BRANCH}") {
-    def jobParams = getDefaultJobParams()
+void setupPrJob() {
+    def jobParams = KogitoJobUtils.getDefaultJobParams(this)
     jobParams.pr.putAll([
-        run_only_for_branches: [ branch ],
+        run_only_for_branches: [ "${GIT_BRANCH}" ],
         disable_status_message_error: true,
         disable_status_message_failure: true,
     ])
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
-void setupDeployJob(String jobFolder, KogitoJobType jobType) {
-    def jobParams = getJobParams('kogito-images-deploy', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.deploy", 'Kogito Images Deploy')
-    if (jobType == KogitoJobType.PR) {
+void setupDeployJob(Folder jobFolder) {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images-deploy', jobFolder, "${jenkins_path}/Jenkinsfile.deploy", 'Kogito Images Deploy')
+    if (jobFolder.isPullRequest()) {
         jobParams.git.branch = '${BUILD_BRANCH_NAME}'
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
-    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
-            if (jobType == KogitoJobType.PR) {
+            if (jobFolder.isPullRequest()) {
                 // author can be changed as param only for PR behavior, due to source branch/target, else it is considered as an env
                 stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
             }
@@ -104,10 +93,9 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             env('CONTAINER_TLS_OPTIONS', '')
             env('MAX_REGISTRY_RETRIES', 3)
 
-            env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
 
-            if (jobType == KogitoJobType.PR) {
+            if (jobFolder.isPullRequest()) {
                 env('MAVEN_ARTIFACT_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
             } else {
                 env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
@@ -124,8 +112,8 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
     }
 }
 
-void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-promote', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.promote", 'Kogito Images Promote')).with {
+void setupPromoteJob(Folder jobFolder) {
+    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'kogito-images-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote'))?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -170,7 +158,6 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
             env('CONTAINER_TLS_OPTIONS', '--tls-verify=false')
             env('MAX_REGISTRY_RETRIES', 3)
 
-            env('RELEASE', jobType == KogitoJobType.RELEASE)
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
 
             env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
@@ -187,7 +174,7 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
 }
 
 void setupProdUpdateVersionJob() {
-    KogitoJobTemplate.createPipelineJob(this, getJobParams('kogito-images-update-prod-version', FolderUtils.getToolsFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')).with {
+    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'kogito-images-update-prod-version', Folder.TOOLS, "${jenkins_path}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images'))?.with {
         parameters {
             stringParam('JIRA_NUMBER', '', 'KIECLOUD-XXX or RHPAM-YYYY or else. This will be added to the commit and PR.')
             stringParam('PROD_PROJECT_VERSION', '', 'Which version to set ?')
