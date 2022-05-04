@@ -34,6 +34,7 @@ export interface FormHook<Input extends Record<string, any>, Schema extends Reco
   formSchema?: Schema;
   onSubmit?: (model: object) => void;
   onValidate?: (model: object, error: object) => void;
+  entryPath?: string;
   propertiesEntryPath?: string;
   validator?: Validator;
   removeRequired?: boolean;
@@ -41,7 +42,7 @@ export interface FormHook<Input extends Record<string, any>, Schema extends Reco
 }
 
 const getObjectByPath = (obj: Record<string, Record<string, object>>, path: string) =>
-  path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc[key], obj);
+  path.split(".").reduce((acc: Record<string, Record<string, object>>, key: string) => acc?.[key], obj);
 
 export function useForm<Input extends Record<string, any>, Schema extends Record<string, any>>({
   name,
@@ -52,6 +53,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   formSchema,
   onSubmit,
   onValidate,
+  entryPath = "definitions",
   propertiesEntryPath = "definitions",
   validator,
   removeRequired = false,
@@ -66,8 +68,8 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
   const removeDeletedPropertiesAndAddDefaultValues = useCallback(
     (model: object, bridge: FormJsonSchemaBridge, previousBridge?: FormJsonSchemaBridge) => {
       const propertiesDifference = diff(
-        getObjectByPath(previousBridge?.schema ?? {}, propertiesEntryPath) ?? {},
-        getObjectByPath(bridge.schema ?? {}, propertiesEntryPath) ?? {}
+        getObjectByPath(previousBridge?.schema ?? {}, entryPath) ?? {},
+        getObjectByPath(bridge.schema ?? {}, entryPath) ?? {}
       );
 
       const defaultFormValues = Object.keys(bridge?.schema?.properties ?? {}).reduce((acc, property) => {
@@ -92,7 +94,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
         { ...defaultFormValues, ...model }
       );
     },
-    [propertiesEntryPath]
+    [entryPath]
   );
 
   // When the schema is updated it's necessary to update the bridge and the model (remove deleted properties and
@@ -101,7 +103,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     try {
       const form = cloneDeep(formSchema ?? {}) as Record<string, Record<string, object>>;
       if (removeRequired) {
-        const entry = getObjectByPath(form, propertiesEntryPath);
+        const entry = getObjectByPath(form, entryPath);
         delete entry.required;
         delete form.required;
       }
@@ -122,14 +124,7 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
     } catch (err) {
       setFormStatus(FormStatus.VALIDATOR_ERROR);
     }
-  }, [
-    formModel,
-    formSchema,
-    formValidator,
-    propertiesEntryPath,
-    removeDeletedPropertiesAndAddDefaultValues,
-    removeRequired,
-  ]);
+  }, [formModel, formSchema, formValidator, entryPath, removeDeletedPropertiesAndAddDefaultValues, removeRequired]);
 
   // Manage form status
   useEffect(() => {
