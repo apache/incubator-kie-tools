@@ -71,7 +71,7 @@ export function EditorPage(props: Props) {
       editor?.getContent().then((content) => {
         electron.ipcRenderer.send("saveFile", {
           file: {
-            filePath: context.file.fileName,
+            filePath: context.file.path,
             fileType: context.file.fileExtension,
             fileContent: content,
           },
