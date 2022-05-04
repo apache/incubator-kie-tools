@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
+import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import {
   EditorContent,
   EditorTheme,
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
+import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
   KogitoEdit,
   ResourceContent,
@@ -31,24 +38,17 @@ import {
   ResourcesList,
   WorkspaceApi,
 } from "@kie-tools-core/workspace/dist/api";
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
-import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
-export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
+export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
 
   constructor(

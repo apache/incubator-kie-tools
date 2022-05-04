@@ -53,12 +53,13 @@ export async function activate(context: vscode.ExtensionContext) {
     configuration,
   });
 
-  await setupRhhccAuthenticationStore({
-    context,
-    configuration,
-    rhhccAuthenticationStore,
-    rhhccServiceRegistryServiceCatalogStore,
-  });
+  // FIXME: editor does not open with it
+  // await setupRhhccAuthenticationStore({
+  //   context,
+  //   configuration,
+  //   rhhccAuthenticationStore,
+  //   rhhccServiceRegistryServiceCatalogStore,
+  // });
 
   const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
   await swfServiceCatalogGlobalStore.init();
@@ -89,8 +90,8 @@ export async function activate(context: vscode.ExtensionContext) {
       new EnvelopeMapping(
         "sw",
         "**/*.sw.+(json|yml|yaml)",
-        "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
-        "dist/webview/editors/serverless-workflow"
+        "dist/webview/ServerlessWorkflowDiagramEditorEnvelopeApp.js",
+        "dist/webview/editors/serverless-workflow-diagram"
       ),
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({

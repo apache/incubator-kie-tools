@@ -423,6 +423,12 @@ module.exports = {
     },
   },
 
+  serverlessWorkflowCombinedEditor: {
+    dev: {
+      port: 9002,
+    },
+  },
+
   kogitoRuntime: {
     version: getOrDefault(ENV_VARS.KOGITO_RUNTIME_version),
   },

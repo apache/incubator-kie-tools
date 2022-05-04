@@ -47,7 +47,6 @@ The `kogito.sw.svgFilenameTemplate`, `kogito.sw.svgFilePath`, and `kogito.sw.spe
 Some Open Source projects were vital for the development of this extension, and we would like to thank all of them, with highlights to:
 
 - [CNCF Serverless Workflow SDK Typescript](https://github.com/serverlessworkflow/sdk-typescript): for workflow parsing;
-- [Mermaid](https://mermaid-js.github.io/): for workflow rendering and visualization;
 - [Apicurio](https://www.apicur.io/): for our service catalog integration;
 
 You can also checkout the [CNCF Serverless Workflow VSCode extension](https://marketplace.visualstudio.com/items?itemName=serverlessworkflow.serverless-workflow-vscode-extension) at VSCode Marketplace.

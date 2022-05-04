@@ -14,22 +14,13 @@
  * limitations under the License.
  */
 
-export const editors = {
-  dmn: {
-    id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp",
-  },
-  bpmn: {
-    id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor",
-  },
-  scesim: {
-    id: "ScenarioSimulationEditor",
-    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime",
-  },
-  // TODO: should swf entry be here?
-  swf: {
-    id: "SWDiagramEditor",
-    name: "org.kie.workbench.common.stunner.sw.KogitoSWEditor",
-  },
-};
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { VsCodeServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope/vscode";
+
+declare const acquireVsCodeApi: any;
+
+EditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  bus: acquireVsCodeApi(),
+  editorFactory: new VsCodeServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true }),
+});
