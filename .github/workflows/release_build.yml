@@ -703,12 +703,12 @@ jobs:
       - name: "Build"
         run: |
           pnpm \
-            -F vscode-extension-bpmn-editor \
-            -F vscode-extension-dmn-editor \
-            -F vscode-extension-pmml-editor \
-            -F vscode-extension-kogito-bundle \
-            -F vscode-extension-red-hat-business-automation-bundle \
-            -F vscode-extension-serverless-workflow-editor \
+            -F vscode-extension-bpmn-editor... \
+            -F vscode-extension-dmn-editor... \
+            -F vscode-extension-pmml-editor... \
+            -F vscode-extension-kogito-bundle... \
+            -F vscode-extension-red-hat-business-automation-bundle... \
+            -F vscode-extension-serverless-workflow-editor... \
             build:prod
 
       - name: "Upload VS Code Extension - BPMN Editor (prod)"
