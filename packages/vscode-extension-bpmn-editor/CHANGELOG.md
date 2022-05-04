@@ -1,3 +1,7 @@
+# 0.19.0 (alpha)
+
+- [KOGITO-6210](https://issues.redhat.com/browse/KOGITO-6210) - BPMN editor loses data assignment
+
 # 0.18.0 (alpha)
 
 - [KOGITO-5735](https://issues.redhat.com/browse/KOGITO-5735) - Stunner - Provide an initial JS / TS API to interact with nodes and connectors

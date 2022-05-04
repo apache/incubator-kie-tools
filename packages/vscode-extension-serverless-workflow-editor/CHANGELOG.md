@@ -1,3 +1,11 @@
+# 0.19.0 (alpha)
+
+- [KOGITO-6972](https://issues.redhat.com/browse/KOGITO-6972) - Add zoom control buttons to the mermaid generated SVG
+- [KOGITO-6780](https://issues.redhat.com/browse/KOGITO-6780) - [SWF Editor] Validation
+- [KOGITO-6787](https://issues.redhat.com/browse/KOGITO-6787) - Add validation errors to the VSCode Problems Tab
+- [KOGITO-6786](https://issues.redhat.com/browse/KOGITO-6786) - Implement a validation service for workflows
+- [KOGITO-6788](https://issues.redhat.com/browse/KOGITO-6788) - Add validation errors inline in the Monaco editor
+
 # 0.18.1 (alpha)
 
 - [KOGITO-6983](https://issues.redhat.com/browse/KOGITO-6983) - Update @severlessworkflow/sdk-typescript to 3.0.3

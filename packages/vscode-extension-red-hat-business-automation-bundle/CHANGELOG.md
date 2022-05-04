@@ -1,3 +1,17 @@
+# 0.19.0 (alpha)
+
+- [KOGITO-6210](https://issues.redhat.com/browse/KOGITO-6210) - BPMN editor loses data assignment
+- [KOGITO-6399](https://issues.redhat.com/browse/KOGITO-6399) - DMN Expression Editor - undo decision table annotation column
+- [KOGITO-6417](https://issues.redhat.com/browse/KOGITO-6417) - [DMN Designer] Undo/redo in Boxed Expression Editor for editable cells is not working properly
+- [KOGITO-6911](https://issues.redhat.com/browse/KOGITO-6911) - Adding a new DMN Runner input row using the Form '+' button is broken
+- [KOGITO-6932](https://issues.redhat.com/browse/KOGITO-6932) - DMN editor: text annotation is not saved correctly when creating it by copy and paste
+- [KOGITO-7067](https://issues.redhat.com/browse/KOGITO-7067) - [DMN Designer] DMN Editor: Slowness while opening large DMN file
+- [KOGITO-6859](https://issues.redhat.com/browse/KOGITO-6859) - [DMN Editor] Enabling Import Java Classes feature
+- [KOGITO-6608](https://issues.redhat.com/browse/KOGITO-6608) - Implement header cells keyboard navigation and editing on the Boxed Expression component
+- [KOGITO-6915](https://issues.redhat.com/browse/KOGITO-6915) - Add visual regression tests to Cypress
+- [KOGITO-6918](https://issues.redhat.com/browse/KOGITO-6918) - [DMN Designer] interaction with Name and Data Type popover with keyboard
+- [KOGITO-7040](https://issues.redhat.com/browse/KOGITO-7040) - [DMN Designer] Finalizing Import Java Classes
+
 # 0.18.0 (alpha)
 
 - [KOGITO-5735](https://issues.redhat.com/browse/KOGITO-5735) - Stunner - Provide an initial JS / TS API to interact with nodes and connectors
