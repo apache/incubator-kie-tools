@@ -417,7 +417,7 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
 ////////////////////////////////////////////////////////////////////////
 
 boolean isRelease() {
-    return env.RELEASE.toBoolean()
+    return env.RELEASE ? env.RELEASE.toBoolean() : false
 }
 
 String getRepoName() {
