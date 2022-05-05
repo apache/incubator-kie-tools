@@ -27,6 +27,12 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 
+/**
+ * Start definition explicitly defines how/when workflow instances should be created and what the workflow starting state is.
+ * Can be either string or object type. If type string, it defines the name of the workflow starting state.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Start-definition"> Start defintion </a>
+ */
 @Bindable
 @Definition
 @JsType
