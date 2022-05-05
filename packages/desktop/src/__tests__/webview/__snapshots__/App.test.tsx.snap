@@ -1166,7 +1166,7 @@ exports[`invalid file type alert alert is closed immediately after leaving the h
                     data-ouia-component-type="PF4/Title"
                     data-ouia-safe="true"
                   >
-                    a.dmn
+                    a
                   </h3>
                 </div>
               </div>
