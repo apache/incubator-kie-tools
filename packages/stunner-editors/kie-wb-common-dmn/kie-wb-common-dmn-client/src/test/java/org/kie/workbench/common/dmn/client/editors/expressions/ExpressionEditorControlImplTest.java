@@ -22,6 +22,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
@@ -99,6 +100,9 @@ public class ExpressionEditorControlImplTest {
     @Mock
     private DRDNameChanger drdNameChanger;
 
+    @Mock
+    private KogitoChannelHelper kogitoChannelHelperMock;
+
     @Captor
     private ArgumentCaptor<CanvasDomainObjectListener> domainObjectListenerCaptor;
 
@@ -114,7 +118,8 @@ public class ExpressionEditorControlImplTest {
                                                            dmnGraphUtils,
                                                            dmnDiagramsSession,
                                                            canvasElementUpdatedEvent,
-                                                           drdNameChanger));
+                                                           drdNameChanger,
+                                                           kogitoChannelHelperMock));
         doReturn(editor).when(control).makeExpressionEditor(any(ExpressionEditorView.class),
                                                             any(DecisionNavigatorPresenter.class),
                                                             any(DMNGraphUtils.class),

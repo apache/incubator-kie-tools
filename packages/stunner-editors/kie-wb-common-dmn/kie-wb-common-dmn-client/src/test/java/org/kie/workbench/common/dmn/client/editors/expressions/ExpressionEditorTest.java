@@ -29,6 +29,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
@@ -105,6 +106,9 @@ public class ExpressionEditorTest {
     @Mock
     private DRDNameChanger drdNameChanger;
 
+    @Mock
+    private KogitoChannelHelper kogitoChannelHelperMock;
+
     @Captor
     private ArgumentCaptor<Optional<HasName>> optionalHasNameCaptor;
 
@@ -128,7 +132,8 @@ public class ExpressionEditorTest {
                                                 decisionNavigator,
                                                 dmnGraphUtils,
                                                 dmnDiagramsSession,
-                                                drdNameChanger));
+                                                drdNameChanger,
+                                                kogitoChannelHelperMock));
         testedEditor.bind(dmnSession);
 
         when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
