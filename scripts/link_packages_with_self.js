@@ -19,7 +19,9 @@ getPackagesSync().forEach((pkg) => {
 
 function selfLink(pkg, selfLinkPath) {
   const relTargetPath = path.relative(path.dirname(selfLinkPath), pkg.location);
-  fs.unlinkSync(selfLinkPath);
+  if (fs.existsSync(selfLinkPath)) {
+    fs.unlinkSync(selfLinkPath);
+  }
   fs.symlinkSync(relTargetPath, selfLinkPath);
   console.info(`Self-linking '${pkg.name}'. ${path.relative(pkg.location, selfLinkPath)} -> ${relTargetPath}`);
 }
