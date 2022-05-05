@@ -80,7 +80,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           "sw-text",
           "**/*.sw.+(json|yml|yaml)",
           `${props.resourcesPathPrefix}gwt-editors/serverless-workflow`, // TODO: point to text editor
-          "serverless-workflow-text-envelope.html"
+          "serverless-workflow-text-editor-envelope.html"
         ),
         new EnvelopeMapping(
           "sw-diagram",
