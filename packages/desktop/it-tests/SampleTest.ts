@@ -83,7 +83,7 @@ test("BPMN example", async () => {
 
   // check editor title name
   const title = await client.$("[data-testid='toolbar-title'] > h3");
-  expect(await title.getText()).toEqual("sample.bpmn");
+  expect(await title.getText()).toEqual("sample");
 
   // check save and close buttons
   const saveButton = await client.$("[data-ouia-component-id='save-button']");
@@ -184,7 +184,7 @@ test("DMN example", async () => {
 
   // check editor title name
   const title = await client.$("[data-testid='toolbar-title'] > h3");
-  expect(await title.getText()).toEqual("sample.dmn");
+  expect(await title.getText()).toEqual("sample");
 
   // check save and close buttons
   const saveButton = await client.$("[data-ouia-component-id='save-button']");
