@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorEnvelopeLocator, EditorTheme, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -50,7 +50,7 @@ export const App = () => {
   const onGetContent = useCallback(async () => editor?.getContent() ?? "", [editor]);
 
   const onSetTheme = useCallback(
-    async (theme) => {
+    async (theme: EditorTheme) => {
       editor?.setTheme(theme);
     },
     [editor]

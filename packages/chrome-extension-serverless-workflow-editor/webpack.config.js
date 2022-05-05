@@ -24,6 +24,7 @@ const { EnvironmentPlugin } = require("webpack");
 const buildEnv = require("@kie-tools/build-env");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
 
 function getRouterArgs() {
   const targetOrigin = buildEnv.chromeExtension.routerSWTargetOrigin;
@@ -51,7 +52,9 @@ module.exports = async (env) => {
     entry: {
       "content_scripts/github": "./src/github-content-script.ts",
       background: "./src/background.ts",
-      "serverless-workflow-editor-envelope": "./src/envelope/ServerlessWorkflowEditorEnvelopeApp.ts",
+      "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+      "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+      "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
     },
     devServer: {
       static: [{ directory: path.join(__dirname, "./dist") }],
@@ -69,6 +72,12 @@ module.exports = async (env) => {
           { from: "./static", to: "." },
           { from: `./${manifestFile}`, to: "./manifest.json" },
           { from: `./rules.json`, to: "./rules.json" },
+          // This is used for development only.
+          {
+            from: swEditor.swEditorPath(),
+            to: "./gwt-editors/serverless-workflow",
+            globOptions: { ignore: ["WEB-INF/**/*"] },
+          },
         ],
       }),
       new ZipPlugin({

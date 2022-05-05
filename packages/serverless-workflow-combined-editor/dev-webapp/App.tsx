@@ -34,7 +34,7 @@ export const App = () => {
   const editorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", "", "serverless-workflow-combined-envelope.html"),
+        new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", "", "serverless-workflow-combined-editor-envelope.html"),
       ]),
     []
   );

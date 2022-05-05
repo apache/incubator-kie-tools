@@ -27,8 +27,8 @@ startExtension({
     new EnvelopeMapping(
       "sw",
       "**/*.sw.+(json|yml|yaml)",
-      `${resourcesPathPrefix}/sw`,
-      `${resourcesPathPrefix}/serverless-workflow-editor-envelope.html`
+      `${resourcesPathPrefix}/`,
+      `${resourcesPathPrefix}/serverless-workflow-combined-editor-envelope.html`
     ),
   ]),
 });

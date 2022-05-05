@@ -41,6 +41,7 @@ import {
   useEffect,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from "react";
 
@@ -72,21 +73,29 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const [embeddedDiagramEditorFile, setEmbeddedDiagramEditorFile] = useState<EmbeddedEditorFile>();
   const { editor: textEditor, editorRef: textEditorRef } = useEditorRef();
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
+  const lastContent = useRef<string>();
 
-  const editorEnvelopeLocator = useMemo(
+  const textEditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
         new EnvelopeMapping(
-          "sw-text",
+          "sw",
           "**/*.sw.+(json|yml|yaml)",
-          `${props.resourcesPathPrefix}gwt-editors/serverless-workflow`, // TODO: point to text editor
+          props.resourcesPathPrefix,
           "serverless-workflow-text-editor-envelope.html"
         ),
+      ]),
+    [props.resourcesPathPrefix]
+  );
+
+  const diagramEditorEnvelopeLocator = useMemo(
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
         new EnvelopeMapping(
-          "sw-diagram",
+          "sw",
           "**/*.sw.+(json|yml|yaml)",
           `${props.resourcesPathPrefix}gwt-editors/serverless-workflow`,
-          "serverless-workflow-diagram-envelope.html"
+          "serverless-workflow-diagram-editor-envelope.html"
         ),
       ]),
     [props.resourcesPathPrefix]
@@ -101,7 +110,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
             const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
             const dotExtension = match ? match[0] : extname(path);
             const extension = dotExtension.slice(1);
-            const fileName = basename(path, dotExtension);
+            const fileName = basename(path);
             const getFileContentsFn = async () => content;
 
             setFile({ content, path });
@@ -117,7 +126,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
             setEmbeddedDiagramEditorFile({
               path: path,
               getFileContents: getFileContentsFn,
-              isReadOnly: true, // props.isReadOnly,
+              isReadOnly: true,
               fileExtension: extension,
               fileName: fileName,
             });
@@ -192,7 +201,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         return;
       }
 
-      // TODO: uncomment when text editor is ready
+      // No need to update textEditor as long as diagramEditor is readonly
       // await textEditor.setContent(file.path, file.content);
       await diagramEditor.setContent(file.path, file.content);
     },
@@ -200,20 +209,19 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   );
 
   useEffect(() => {
-    if (file?.content === undefined) {
+    if (file?.content === undefined || file.content === lastContent.current) {
       return;
     }
 
+    lastContent.current = file.content;
     updateEditors(file);
-  }, [diagramEditor, file, textEditor, updateEditors]);
+  }, [file, updateEditors]);
 
   const onTextEditorReady = useCallback(() => {
-    // TODO: take some action here?
-    console.log("Text editor is ready");
+    console.debug("Text editor is ready");
   }, []);
 
   const onTextEditorSetContentError = useCallback(() => {
-    // TODO: take some action here?
     console.error("Error setting content on text editor");
   }, []);
 
@@ -226,12 +234,10 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   }, []);
 
   const onDiagramEditorReady = useCallback(() => {
-    // TODO: take some action here?
-    console.log("Diagram editor is ready");
+    console.debug("Diagram editor is ready");
   }, []);
 
   const onDiagramEditorSetContentError = useCallback(() => {
-    // TODO: take some action here?
     console.error("Error setting content on diagram editor");
   }, []);
 
@@ -258,7 +264,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
                   kogitoWorkspace_resourceContentRequest={onDiagramEditorResourceContentRequest}
                   kogitoWorkspace_resourceListRequest={onDiagramEditorResourceContentList}
                   kogitoEditor_setContentError={onDiagramEditorSetContentError}
-                  editorEnvelopeLocator={editorEnvelopeLocator}
+                  editorEnvelopeLocator={diagramEditorEnvelopeLocator}
                   locale={props.locale}
                 />
               )}
@@ -276,7 +282,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
               kogitoWorkspace_resourceContentRequest={onTextEditorResourceContentRequest}
               kogitoWorkspace_resourceListRequest={onTextEditorResourceContentList}
               kogitoEditor_setContentError={onTextEditorSetContentError}
-              editorEnvelopeLocator={editorEnvelopeLocator}
+              editorEnvelopeLocator={textEditorEnvelopeLocator}
               locale={props.locale}
             />
           )}

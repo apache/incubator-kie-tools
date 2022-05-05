@@ -22,7 +22,6 @@
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "deploy": "gh-pages -d dist",
     "cy:open": "pnpm cypress open --project it-tests",
     "cy:run": "pnpm cypress run -b chrome --project it-tests",
     "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowEditor.dev.port) cy:run\""

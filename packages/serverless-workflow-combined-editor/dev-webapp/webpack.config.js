@@ -28,15 +28,15 @@ module.exports = (env) =>
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
-      "serverless-workflow-text-envelope": path.resolve(
+      "serverless-workflow-text-editor-envelope": path.resolve(
         __dirname,
         "./envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts"
       ),
-      "serverless-workflow-diagram-envelope": path.resolve(
+      "serverless-workflow-diagram-editor-envelope": path.resolve(
         __dirname,
         "./envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts"
       ),
-      "serverless-workflow-combined-envelope": path.resolve(
+      "serverless-workflow-combined-editor-envelope": path.resolve(
         __dirname,
         "./envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts"
       ),
@@ -59,12 +59,12 @@ module.exports = (env) =>
             to: "./serverless-workflow-text-editor-envelope.html",
           },
           {
-            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-diagram-envelope.html"),
-            to: "./serverless-workflow-diagram-envelope.html",
+            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-diagram-editor-envelope.html"),
+            to: "./serverless-workflow-diagram-editor-envelope.html",
           },
           {
-            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-combined-envelope.html"),
-            to: "./serverless-workflow-combined-envelope.html",
+            from: path.resolve(__dirname, "./static/envelope/serverless-workflow-combined-editor-envelope.html"),
+            to: "./serverless-workflow-combined-editor-envelope.html",
           },
         ],
       }),

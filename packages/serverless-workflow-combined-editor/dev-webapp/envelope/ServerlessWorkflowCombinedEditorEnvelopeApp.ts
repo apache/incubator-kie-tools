@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { init } from "@kie-tools-core/editor/dist/envelope";
 import { ServerlessWorkflowCombinedEditorFactory } from "../../src";
 
-EditorEnvelope.init({
+init({
   container: document.getElementById("combined-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
   editorFactory: new ServerlessWorkflowCombinedEditorFactory(),

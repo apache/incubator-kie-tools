@@ -15,10 +15,10 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor/dist/editor";
+import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
 
 init({
-  container: document.getElementById("envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowEditorFactory(),
+  container: document.getElementById("combined-envelope-app")!,
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
+  editorFactory: new ServerlessWorkflowCombinedEditorFactory(),
 });

@@ -14,8 +14,8 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools/serverless-workflow-language-service": "0.0.0",
     "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools/serverless-workflow-language-service": "0.0.0",
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^3.2.1"
   },
@@ -28,16 +28,14 @@
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "deploy": "gh-pages -d dist",
     "cy:open": "yarn run cypress open --project it-tests",
     "cy:run": "yarn run cypress run -b chrome --project it-tests",
     "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowCombinedEditor.dev.port) cy:run\""
   },
   "devDependencies": {
-    "vscode-json-languageservice": "^4.2.1",
     "@kie-tools/build-env": "0.0.0",
-    "gh-pages": "^3.2.3",
-    "monaco-editor-webpack-plugin": "^7.0.1"
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "vscode-json-languageservice": "^4.2.1"
   },
   "babel": {
     "presets": [
