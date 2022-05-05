@@ -40,12 +40,12 @@ runs:
         cd ${{ inputs.path }}
         git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
-    - name: "Setup Yarn"
+    - name: "Setup Yarn and Lerna"
       shell: bash
       run: |
-        echo "STEP: Setup Yarn"
+        echo "STEP: Setup Yarn and Lerna"
         cd ${{ inputs.path }}
-        npm install -g yarn@1.22.10
+        npm install -g lerna@4.0.0 yarn@1.22.10
         yarn config set network-timeout 1000000
 
     - name: "Setup default Maven args"
