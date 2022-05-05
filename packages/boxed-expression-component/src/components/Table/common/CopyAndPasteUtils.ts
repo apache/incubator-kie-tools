@@ -22,6 +22,8 @@ const DASH_SYMBOL = "-";
 
 export const PASTE_OPERATION = "PASTE_OPERATION";
 
+export type CopyAndPasteType = string[][];
+
 /**
  * Triggers paste operation by using an Element as a reference. Example:
  * +-----+-----+-----+
@@ -124,14 +126,8 @@ export const pasteOnTable = (
  * Covert a string value into an iterable data structure, by following the
  * convention of other spreadsheet tools.
  */
-export const iterableValue = (value: string) => {
-  const iterable: string[][] = value
-    .trim()
-    .split("\n")
-    .map((strRow) => {
-      const trimedValue = strRow.trim();
-      return trimedValue === "" ? [] : trimedValue.split("\t");
-    });
+export const iterableValue = (value: string): CopyAndPasteType => {
+  const iterable: string[][] = value.length ? JSON.parse(value) : [[]];
 
   ensureSameNumberOfColumns(iterable);
 
