@@ -110,7 +110,7 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
     protected void enableNewBoxedExpressionBetaPreview() {
         /** New Boxed Expression Editor disabled in EMBEDDED and CHROME EXTENSION Channels */
         if (kogitoChannelHelper.isCurrentChannelEnabled(
-                Stream.of(Channel.EMBEDDED, Channel.GITHUB, Channel.DEFAULT).collect(Collectors.toList()))) {
+                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()))) {
             view.disableBetaBoxedExpressionToggle();
         }
     }
