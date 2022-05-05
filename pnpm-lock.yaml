@@ -1492,13 +1492,11 @@ importers:
 
   packages/run-script-if:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       yargs: ^17.0.1
     dependencies:
       yargs: 17.3.1
     devDependencies:
-      "@kie-tools-core/run-script-if": "link:"
       "@kie-tools/build-env": link:../build-env
 
   packages/serverless-workflow-diagram-editor:
