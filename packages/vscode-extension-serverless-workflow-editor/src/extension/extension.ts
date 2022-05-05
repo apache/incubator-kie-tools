@@ -53,13 +53,12 @@ export async function activate(context: vscode.ExtensionContext) {
     configuration,
   });
 
-  // FIXME: editor does not open with it
-  // await setupRhhccAuthenticationStore({
-  //   context,
-  //   configuration,
-  //   rhhccAuthenticationStore,
-  //   rhhccServiceRegistryServiceCatalogStore,
-  // });
+  await setupRhhccAuthenticationStore({
+    context,
+    configuration,
+    rhhccAuthenticationStore,
+    rhhccServiceRegistryServiceCatalogStore,
+  });
 
   const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
   await swfServiceCatalogGlobalStore.init();
