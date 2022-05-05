@@ -243,6 +243,15 @@ export function NewFileDropdownMenu(props: {
               <FileLabel style={{ marginBottom: "4px" }} extension={"db"} />
             </b>
           </MenuItem>
+          <MenuItem
+            itemId={"newSdItemId"}
+            onClick={() => addEmptyFile("sd.yml")}
+            description="Serverless Decision files are used to define decision logic for services."
+          >
+            <b>
+              <FileLabel style={{ marginBottom: "4px" }} extension={"sd.yml"} />
+            </b>
+          </MenuItem>
           <Divider />
           <MenuItem
             description={"Try sample models"}
@@ -271,6 +280,17 @@ export function NewFileDropdownMenu(props: {
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
                       <FileLabel extension={"db"} />
+                    </FlexItem>
+                  </Flex>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => addSample("sd.yml")}
+                  description="Serverless Decision files are used to define decision logic for services."
+                >
+                  <Flex>
+                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>
+                      <FileLabel extension={"sd.yml"} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>

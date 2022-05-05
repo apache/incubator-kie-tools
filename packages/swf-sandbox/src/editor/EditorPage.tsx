@@ -307,7 +307,10 @@ export function EditorPage(props: Props) {
                       )}
                     </div>
                   ) : (
-                    <TextEditor file={file} readonly />
+                    <TextEditor
+                      file={file}
+                      readonly={!["sd.yml", "decision.yml"].includes(file.extension)} // FIXME
+                    />
                   )}
                 </PageSection>
               </Page>

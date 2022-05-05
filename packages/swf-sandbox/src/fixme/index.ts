@@ -6,7 +6,7 @@ export function resolveExtension(path: string): string {
   if (fileName.startsWith(".")) {
     return fileName.slice(1);
   }
-  const regex = /(\.sw\.json|\.sw\.yaml|\.sw\.yml)$/;
+  const regex = /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.sd\.yml|\.decision\.yml)$/;
   const match = regex.exec(path.toLowerCase());
   const extension = match ? match[1] : extname(path);
   return extension ? extension.slice(1) : "";

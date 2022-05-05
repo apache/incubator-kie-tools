@@ -20,6 +20,7 @@ import * as React from "react";
 type LabelColorType = { color: LabelProps["color"]; label: string };
 
 const swfLabel: LabelColorType = { color: "green", label: "Serverless Workflow" };
+const sdLabel: LabelColorType = { color: "blue", label: "Serverless Decision" };
 const dashboardLabel: LabelColorType = { color: "purple", label: "Dashboard" };
 
 const labelColors = new Map<string, LabelColorType>([
@@ -30,6 +31,10 @@ const labelColors = new Map<string, LabelColorType>([
   ["sw.yml", swfLabel],
   ["SW.YML", swfLabel],
   ["db", dashboardLabel], //FIXME: db?
+  ["sd.yml", sdLabel],
+  ["SD.YML", sdLabel],
+  ["decision.yml", sdLabel],
+  ["DECISION.YML", sdLabel],
 ]);
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {

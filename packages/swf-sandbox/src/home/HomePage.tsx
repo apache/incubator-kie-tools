@@ -145,7 +145,7 @@ export function HomePage() {
               <Gallery
                 hasGutter={true}
                 // 16px is the "Gutter" width.
-                minWidths={{ sm: "calc(50% - 16px)", default: "100%" }}
+                minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
                 <NewModelCard
@@ -159,6 +159,11 @@ export function HomePage() {
                   description={
                     "Dashboard files are used to define data visualization extracted from business applications."
                   }
+                />
+                <NewModelCard
+                  title={"Decision"}
+                  extension={"sd.yml"}
+                  description={"Serverless Decision files are used to define decision logic for services."}
                 />
               </Gallery>
             </PageSection>

@@ -76,7 +76,6 @@ import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
-import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
@@ -140,12 +139,15 @@ export function EditorToolbar(props: Props) {
   const [gitHubGist, setGitHubGist] =
     useState<OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined>(undefined);
   const workspaceImportableUrl = useImportableUrl(workspacePromise.data?.descriptor.origin.url?.toString());
-  const workspaceOpenApiFilePromise = useWorkspaceFilePromise(props.workspaceFile.workspaceId, "./openapi.json");
-  const [swaggerModalOpen, setSwaggerModalOpen] = useState(false);
 
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
+
+  const isSupportedFile = useMemo(
+    () => editorEnvelopeLocator.hasMappingFor(props.workspaceFile.relativePath),
+    [editorEnvelopeLocator, props.workspaceFile.relativePath]
+  );
 
   useCancelableEffect(
     useCallback(
@@ -1475,15 +1477,16 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         />
                       </Dropdown>
                     </ToolbarItem>
-                    <ToolbarItem>
-                      <FlexItem>
-                        <DeployToolbar
-                          editor={props.editor}
-                          alerts={props.alerts}
-                          workspaceFile={props.workspaceFile}
-                        />
-                      </FlexItem>
-                      {/* <PromiseStateWrapper
+                    {isSupportedFile && (
+                      <ToolbarItem>
+                        <FlexItem>
+                          <DeployToolbar
+                            editor={props.editor}
+                            alerts={props.alerts}
+                            workspaceFile={props.workspaceFile}
+                          />
+                        </FlexItem>
+                        {/* <PromiseStateWrapper
                         promise={workspaceOpenApiFilePromise}
                         pending={<LoadingSpinner />}
                         resolved={(file) => (
@@ -1504,7 +1507,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           </FlexItem>
                         )}
                       /> */}
-                    </ToolbarItem>
+                      </ToolbarItem>
+                    )}
                     {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
                       <ToolbarItem>
                         <Dropdown
