@@ -33,19 +33,19 @@ public class MapIndexBuilder implements GraphIndexBuilder<MapIndex> {
     @Override
     public MapIndex build(final Graph<?, Node> graph) {
         assert graph != null;
-        return doWork(graph,
-                      null);
+        return populate(graph,
+                        null);
     }
 
     @Override
     public void update(final MapIndex index,
                        final Graph<?, Node> graph) {
-        doWork(graph,
-               index);
+        populate(graph,
+                 index);
     }
 
-    private MapIndex doWork(final Graph<?, Node> graph,
-                            final MapIndex current) {
+    public static MapIndex populate(final Graph<?, Node> graph,
+                              final MapIndex current) {
         final Map<String, Node> nodes = new HashMap<>();
         final Map<String, Edge> edges = new HashMap<>();
         Iterable<Node> nodesIter = graph.nodes();
@@ -70,7 +70,7 @@ public class MapIndexBuilder implements GraphIndexBuilder<MapIndex> {
     }
 
     @SuppressWarnings("unchecked")
-    private void processNode(final Map<String, Node> nodes,
+    private static void processNode(final Map<String, Node> nodes,
                              final Map<String, Edge> edges,
                              final Node node) {
         if (!nodes.containsKey(node.getUUID())) {
@@ -87,7 +87,7 @@ public class MapIndexBuilder implements GraphIndexBuilder<MapIndex> {
         }
     }
 
-    private void processEdge(final Map<String, Node> nodes,
+    private static void processEdge(final Map<String, Node> nodes,
                              final Map<String, Edge> edges,
                              final Edge edge) {
         if (!edges.containsKey(edge.getUUID())) {

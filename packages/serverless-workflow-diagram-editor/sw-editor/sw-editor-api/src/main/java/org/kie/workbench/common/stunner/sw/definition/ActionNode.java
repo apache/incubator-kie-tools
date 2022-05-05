@@ -30,6 +30,13 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
+/**
+ * Actions specify invocations of services or other workflows during workflow execution.
+ * Note that functionRef, eventRef, and subFlowRef are mutually exclusive, meaning that only one of them can be specified
+ * in a single action definition.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Action-Definition"> Action definition </a>
+ */
 @Bindable
 @Definition
 @MorphBase(defaultType = CallFunctionAction.class)
@@ -50,20 +57,33 @@ public class ActionNode {
     @Property
     public String id;
 
+    /**
+     * Unique action name.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
+    /**
+     * References to a reusable function definition.
+     */
     public String functionRef;
 
+    /**
+     * Reference to a trigger and result reusable event definition.
+     */
     public String eventRef;
 
+    /**
+     * Reference to a workflow to be invoked.
+     */
     public String subFlowRef;
 
     public ActionNode() {
     }
 
-    public void setName(String name) {
+    public ActionNode setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getName() {
@@ -74,32 +94,36 @@ public class ActionNode {
         return id;
     }
 
-    public void setId(String id) {
+    public ActionNode setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getFunctionRef() {
         return functionRef;
     }
 
-    public void setFunctionRef(String functionRef) {
+    public ActionNode setFunctionRef(String functionRef) {
         this.functionRef = functionRef;
+        return this;
     }
 
     public String getEventRef() {
         return eventRef;
     }
 
-    public void setEventRef(String eventRef) {
+    public ActionNode setEventRef(String eventRef) {
         this.eventRef = eventRef;
+        return this;
     }
 
     public String getSubFlowRef() {
         return subFlowRef;
     }
 
-    public void setSubFlowRef(String subFlowRef) {
+    public ActionNode setSubFlowRef(String subFlowRef) {
         this.subFlowRef = subFlowRef;
+        return this;
     }
 
     public Set<String> getLabels() {

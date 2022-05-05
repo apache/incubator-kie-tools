@@ -125,6 +125,32 @@
   opacity: 1;
   fill: #0758d9;
 }
+
+/*
+    ******************
+    Event Timeout.
+    ******************
+ */
+.event_timeout_background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+
+.event_timeout_inner {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+
+.event_timeout_icon {
+  opacity: 1;
+  fill: #e5a000;
+}
+
 /*
     ******************
     Action.
@@ -145,7 +171,7 @@
     ******************
  */
 .container_background {
-  fill: #ffffff;
+  fill: #d7dcf1;
 }
 
 .container_border {
