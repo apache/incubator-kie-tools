@@ -29,6 +29,7 @@ public interface ShapeViewFactory {
     String PATH_STATE = "images/shapes/state.svg";
     String PATH_START = "images/shapes/start.svg";
     String PATH_EVENT = "images/shapes/event.svg";
+    String PATH_EVENT_TIMEOUT = "images/shapes/event-timeout.svg";
     String PATH_ACTION = "images/shapes/action.svg";
     String PATH_CONTAINER = "images/shapes/container.svg";
     String PATH_END = "images/shapes/end.svg";
@@ -53,6 +54,9 @@ public interface ShapeViewFactory {
 
     @SVGSource(PATH_EVENT)
     SVGShapeViewResource event();
+
+    @SVGSource(PATH_EVENT_TIMEOUT)
+    SVGShapeViewResource eventTimeout();
 
     @SVGSource(PATH_ACTION)
     SVGShapeViewResource action();

@@ -16,6 +16,7 @@
 
 package org.dashbuilder.client;
 
+import java.util.Collections;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -31,7 +32,9 @@ import org.dashbuilder.client.parser.RuntimeModelClientParserFactory;
 import org.dashbuilder.client.perspective.generator.RuntimePerspectiveGenerator;
 import org.dashbuilder.client.plugins.RuntimePerspectivePluginManager;
 import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.client.screens.RouterScreen;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
+import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
@@ -43,8 +46,6 @@ public class RuntimeClientLoader {
     private static AppConstants i18n = AppConstants.INSTANCE;
 
     public static final String IMPORT_ID_PARAM = "import";
-
-    private static final String EDITOR_MODEL_ID = "editor";
 
     RuntimeModelResourceClient runtimeModelResourceClient;
 
@@ -64,7 +65,17 @@ public class RuntimeClientLoader {
 
     Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent;
 
+    RouterScreen router;
+
     boolean offline;
+
+    RuntimeModel clientModel;
+
+    enum RuntimeClientMode {
+        EDITOR,
+        CLIENT,
+        APP;
+    }
 
     public RuntimeClientLoader() {
         // do nothing
@@ -79,7 +90,8 @@ public class RuntimeClientLoader {
                                ExternalDataSetClientProvider externalDataSetRegister,
                                RuntimeModelClientParserFactory parserFactory,
                                RuntimeModelContentListener contentListener,
-                               Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent) {
+                               Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
+                               RouterScreen router) {
         this.runtimeModelResourceClient = runtimeModelResourceClient;
         this.perspectiveEditorGenerator = perspectiveEditorGenerator;
         this.runtimePerspectivePluginManager = runtimePerspectivePluginManager;
@@ -89,10 +101,16 @@ public class RuntimeClientLoader {
         this.contentListener = contentListener;
         this.loading = loading;
         this.updatedRuntimeModelEvent = updatedRuntimeModelEvent;
+        this.router = router;
     }
 
     public void load(Consumer<RuntimeServiceResponse> responseConsumer,
                      BiConsumer<Object, Throwable> error) {
+        if (isOffline()) {
+            responseConsumer.accept(buildClientResponse());
+            return;
+        }
+
         final var importID = getImportId();
         loading.showBusyIndicator(i18n.loadingDashboards());
 
@@ -129,31 +147,42 @@ public class RuntimeClientLoader {
                           Consumer<RuntimeModel> modelLoaded,
                           Command emptyModel,
                           BiConsumer<Object, Throwable> error) {
+        if (isOffline()) {
+            if (clientModel != null) {
+                modelLoaded.accept(clientModel);
+            } else {
+                emptyModel.execute();
+            }
+            return;
+        }
+
         loading.showBusyIndicator(i18n.loadingDashboards());
         runtimeModelResourceClient.getRuntimeModel(importId,
                 modelOp -> handleResponse(modelLoaded, emptyModel, modelOp),
                 errorMessage -> handleError(error,
                         errorMessage,
-                        new RuntimeException("Not able to retrieve Runtime Model"))
-        );
+                        new RuntimeException("Not able to retrieve Runtime Model")));
 
     }
 
     public String getImportId() {
-        if (isOffline()) {
-            return EDITOR_MODEL_ID;
-        } else {
-            return Window.Location.getParameter(IMPORT_ID_PARAM);
-        }
+        return Window.Location.getParameter(IMPORT_ID_PARAM);
     }
 
-    public void clientLoad(String fileName, String content) {
-        var parser = parserFactory.get(content)
-                .orElseThrow(() -> new IllegalArgumentException("Content is not supported or could not be parsed."));
-        var runtimeModel = parser.parse(content);
-        registerModel(runtimeModel);
-        runtimeModelResourceClient.setClientModel(runtimeModel);
-        updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(EDITOR_MODEL_ID));
+    public void clientLoad(String content) {
+        if (content == null) {
+            return;
+        }
+        if (content.trim().isEmpty()) {
+            clientModel = null;
+            router.doRoute();
+        } else {
+            var parser = parserFactory.getEditorParser(content);
+            var runtimeModel = parser.parse(content);
+            registerModel(runtimeModel);
+            this.clientModel = runtimeModel;
+            updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
+        }
     }
 
     public boolean isOffline() {
@@ -162,7 +191,7 @@ public class RuntimeClientLoader {
 
     private boolean handleError(BiConsumer<Object, Throwable> error, Object message, Throwable throwable) {
         offline = true;
-        contentListener.start(content -> this.clientLoad(EDITOR_MODEL_ID, content));
+        contentListener.start(content -> this.clientLoad(content));
         loading.hideBusyIndicator();
         error.accept(message, throwable);
         return false;
@@ -187,5 +216,12 @@ public class RuntimeClientLoader {
         runtimeModel.getClientDataSets().forEach(externalDataSetProvider::register);
         runtimePerspectivePluginManager.setTemplates(runtimeModel.getLayoutTemplates());
         navigationManager.setDefaultNavTree(runtimeModel.getNavTree());
+    }
+
+    private RuntimeServiceResponse buildClientResponse() {
+        return new RuntimeServiceResponse(DashbuilderRuntimeMode.STATIC,
+                Optional.ofNullable(clientModel),
+                Collections.emptyList(),
+                false);
     }
 }

@@ -51,12 +51,12 @@ public class ELKUtils {
     public static final double CONTAINER_TOPDOWN_RIGHT_PADDING = 10d;
 
     //LEFTTORIGHT container layout
-    public static final double CONTAINER_LEFTTORIGHT_BETWEEN_LAYERS_SPACING = 200d;
+    public static final double CONTAINER_LEFTTORIGHT_BETWEEN_LAYERS_SPACING = 100d;
     public static final double CONTAINER_LEFTTORIGHT_BASE_SPACING = 15d;
-    public static final double CONTAINER_LEFTTORIGHT_TOP_PADDING = 10d;
-    public static final double CONTAINER_LEFTTORIGHT_LEFT_PADDING = 10d;
-    public static final double CONTAINER_LEFTTORIGHT_BOTTOM_PADDING = 10d;
-    public static final double CONTAINER_LEFTTORIGHT_RIGHT_PADDING = 10d;
+    public static final double CONTAINER_LEFTTORIGHT_TOP_PADDING = 25d;
+    public static final double CONTAINER_LEFTTORIGHT_LEFT_PADDING = 25d;
+    public static final double CONTAINER_LEFTTORIGHT_BOTTOM_PADDING = 25d;
+    public static final double CONTAINER_LEFTTORIGHT_RIGHT_PADDING = 25d;
     ;
 
     public static Promise<Object> processGraph(final Object graph) {

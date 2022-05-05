@@ -75,4 +75,8 @@ public interface AppConstants extends Messages {
 
     String clientMode();
 
+    String emptyEditorMode();
+
+    String errorContentTitle();
+
 }

@@ -223,6 +223,16 @@ public class VariablesEditorFieldRenderer extends FieldRenderer<VariablesEditorF
     }
 
     /**
+     * Tests whether a Row ID is duplicate across the whole process
+     * @param id
+     * @return
+     */
+    @Override
+    public boolean isDuplicateID(final String id) {
+        return VariableUtils.matchesProcessID(graph, id);
+    }
+
+    /**
      * Tests whether a Row name occurs more than once in the list of rows
      * @param name
      * @return

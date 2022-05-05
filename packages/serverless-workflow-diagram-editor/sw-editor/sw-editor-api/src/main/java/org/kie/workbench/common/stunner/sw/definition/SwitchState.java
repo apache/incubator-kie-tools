@@ -20,9 +20,15 @@ import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
+/**
+ * Switch states can be viewed as workflow gateways.
+ * They can direct transitions of a workflow based on certain conditions.
+ * There are two exclusive types of conditions for switch states: DataBased & EventBased.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Switch-State"> Switch state </a>
+ */
 @Bindable
 @Definition
 @Morph(base = State.class)
@@ -32,18 +38,61 @@ public class SwitchState extends State {
     @JsIgnore
     public static final String TYPE_SWITCH = "switch";
 
-    @Property
-    public String defaultCondition;
+    /**
+     * Default transition of the workflow if there is no matching data conditions or event timeout is reached.
+     * Can be a transition or end definition
+     */
+    public DefaultConditionTransition defaultCondition;
+
+    /**
+     * Events, which the switch state must wait for before transitioning to another workflow state.
+     */
+    public EventConditionTransition[] eventConditions;
+
+    /**
+     * Data-based condition statement, which causes a transition to another workflow state if evaluated to true.
+     */
+    public DataConditionTransition[] dataConditions;
+
+    /**
+     * If true, this state is used to compensate another state. Default is "false".
+     */
+    public boolean usedForCompensation;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
+        this.usedForCompensation = false;
     }
 
-    public String getDefaultCondition() {
+    public DefaultConditionTransition getDefaultCondition() {
         return defaultCondition;
     }
 
-    public void setDefaultCondition(String defaultCondition) {
+    public void setDefaultCondition(DefaultConditionTransition defaultCondition) {
         this.defaultCondition = defaultCondition;
+    }
+
+    public EventConditionTransition[] getEventConditions() {
+        return eventConditions;
+    }
+
+    public void setEventConditions(EventConditionTransition[] eventConditions) {
+        this.eventConditions = eventConditions;
+    }
+
+    public DataConditionTransition[] getDataConditions() {
+        return dataConditions;
+    }
+
+    public void setDataConditions(DataConditionTransition[] dataConditions) {
+        this.dataConditions = dataConditions;
+    }
+
+    public boolean isUsedForCompensation() {
+        return usedForCompensation;
+    }
+
+    public void setUsedForCompensation(boolean usedForCompensation) {
+        this.usedForCompensation = usedForCompensation;
     }
 }
