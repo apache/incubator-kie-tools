@@ -50,8 +50,8 @@ export function EditorToolbar(props: Props) {
   }, [context]);
 
   const title = useMemo(() => {
-    return removeDirectories(fileName);
-  }, [fileName]);
+    return removeDirectories(`${fileName}.${fileExtension}`);
+  }, [fileName, fileExtension]);
 
   const fileNameTitle = (
     <div data-testid="toolbar-title" className={"kogito--editor__toolbar-title"}>

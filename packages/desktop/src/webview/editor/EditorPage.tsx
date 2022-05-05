@@ -97,7 +97,7 @@ export function EditorPage(props: Props) {
   const requestSavePreview = useCallback(() => {
     editor?.getPreview().then((previewSvg) => {
       electron.ipcRenderer.send("savePreview", {
-        filePath: context.file!.fileName,
+        filePath: context.file.path,
         fileType: "svg",
         fileContent: previewSvg,
       });
