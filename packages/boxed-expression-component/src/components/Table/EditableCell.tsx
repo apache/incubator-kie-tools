@@ -123,8 +123,7 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       const newValue: string = event.target.value.trim("") ?? "";
 
       if (textarea.current && event.nativeEvent.inputType === "insertFromPaste") {
-        const pasteValue = newValue.slice(value.length);
-        paste(pasteValue, textarea.current, boxedExpression.editorRef.current!);
+        paste(newValue, textarea.current, boxedExpression.editorRef.current!);
         triggerReadMode();
         return;
       }
@@ -135,21 +134,18 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
 
-  const onTextAreaKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLElement>) => {
-      const key = e.key;
-      const isFiredFromThis = e.currentTarget === e.target;
+  const onTextAreaKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement>) => {
+    const key = e.key;
+    const isFiredFromThis = e.currentTarget === e.target;
 
-      if (!isFiredFromThis) {
-        return;
-      }
+    if (!isFiredFromThis) {
+      return;
+    }
 
-      if (!NavigationKeysUtils.isEnter(key)) {
-        (e.target as HTMLTextAreaElement).value = "";
-      }
-    },
-    [value]
-  );
+    if (!NavigationKeysUtils.isEnter(key)) {
+      (e.target as HTMLTextAreaElement).value = "";
+    }
+  }, []);
 
   // Feel Handlers ===========================================================
 

@@ -127,7 +127,15 @@ export const pasteOnTable = (
  * convention of other spreadsheet tools.
  */
 export const iterableValue = (value: string): CopyAndPasteType => {
-  const iterable: string[][] = value.length ? JSON.parse(value) : [[]];
+  let iterable: string[][] = [[]];
+
+  if (value.length) {
+    try {
+      iterable = JSON.parse(value);
+    } catch (e) {
+      iterable = [[value]];
+    }
+  }
 
   ensureSameNumberOfColumns(iterable);
 
