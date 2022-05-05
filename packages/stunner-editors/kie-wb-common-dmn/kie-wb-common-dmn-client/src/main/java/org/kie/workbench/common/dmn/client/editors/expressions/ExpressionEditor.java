@@ -61,7 +61,6 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     private final KogitoChannelHelper kogitoChannelHelper;
 
-
     // When the current selection is the DRG, we return its name, otherwise the name of the selected DRD
     private final Supplier<String> returnToLinkTextSupplier = new Supplier<String>() {
         @Override
@@ -108,10 +107,11 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
         enableNewBoxedExpressionBetaPreview();
     }
 
-    private void enableNewBoxedExpressionBetaPreview() {
+    protected void enableNewBoxedExpressionBetaPreview() {
         /** New Boxed Expression Editor disabled in EMBEDDED and CHROME EXTENSION Channels */
-        if (kogitoChannelHelper.isCurrentChannelEnabled(
-                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()))) {
+        boolean asd = kogitoChannelHelper.isCurrentChannelEnabled(
+                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()));
+        if (asd) {
             view.disableBetaBoxedExpressionToggle();
         }
     }
