@@ -217,8 +217,8 @@ export function SettingsContextProvider(props: any) {
 
   const [openshiftStatus, setOpenshiftStatus] = useState(
     kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
-      ? OpenShiftInstanceStatus.DISCONNECTED
-      : OpenShiftInstanceStatus.UNAVAILABLE
+      ? OpenShiftInstanceStatus.CONNECTED
+      : OpenShiftInstanceStatus.DISCONNECTED
   );
 
   const openshiftService = useMemo(

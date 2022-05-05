@@ -21,7 +21,6 @@ import { KieSandboxExtendedServicesBridge } from "./KieSandboxExtendedServicesBr
 import { DependentFeature, KieSandboxExtendedServicesContext } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { KieSandboxExtendedServicesModal } from "./KieSandboxExtendedServicesModal";
 import {
   DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST,
   DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT,
@@ -136,7 +135,6 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
   return (
     <KieSandboxExtendedServicesContext.Provider value={value}>
       {props.children}
-      <KieSandboxExtendedServicesModal />
     </KieSandboxExtendedServicesContext.Provider>
   );
 }
