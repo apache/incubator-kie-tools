@@ -109,9 +109,8 @@ public class ExpressionEditor implements ExpressionEditorView.Presenter {
 
     protected void enableNewBoxedExpressionBetaPreview() {
         /** New Boxed Expression Editor disabled in EMBEDDED and CHROME EXTENSION Channels */
-        boolean asd = kogitoChannelHelper.isCurrentChannelEnabled(
-                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()));
-        if (asd) {
+        if (kogitoChannelHelper.isCurrentChannelEnabled(
+                Stream.of(Channel.EMBEDDED, Channel.GITHUB, Channel.DEFAULT).collect(Collectors.toList()))) {
             view.disableBetaBoxedExpressionToggle();
         }
     }
