@@ -66,7 +66,8 @@ export class VsCodeSwfLanguageService {
       },
       config: {
         shouldDisplayRhhccIntegration: async () => {
-          // FIXME: Tiago: This should take the OS into account as well. RHHCC integration only works on macOS.
+          // FIXME: This should take the OS into account as well. RHHCC integration only works on macOS.
+          // https://issues.redhat.com/browse/KOGITO-7105
           return vscode.env.uiKind === vscode.UIKind.Desktop;
         },
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => {

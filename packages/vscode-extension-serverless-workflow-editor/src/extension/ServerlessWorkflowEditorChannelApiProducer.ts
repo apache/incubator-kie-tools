@@ -58,6 +58,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
     // TODO: This casting to `unknown` first is a workaround
+    // See https://issues.redhat.com/browse/KOGITO-6824
     const swfServiceCatalogEnvelopeServer = editor.envelopeServer as unknown as EnvelopeServer<
       SwfServiceCatalogChannelApi,
       KogitoEditorEnvelopeApi

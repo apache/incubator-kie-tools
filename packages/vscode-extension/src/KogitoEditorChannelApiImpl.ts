@@ -72,6 +72,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
       const edit = new vscode.WorkspaceEdit();
 
       // TODO: This shouldn't be a replace all the time. More conscious changes lead to better undo/redo stack.
+      // See https://issues.redhat.com/browse/KOGITO-7106
       edit.replace(
         this.editor.document.document.uri,
         new vscode.Range(0, 0, this.editor.document.document.lineCount, 0),

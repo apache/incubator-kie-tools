@@ -57,5 +57,10 @@ export async function setupRhhccAuthenticationStore(args: {
 }
 
 async function getSession() {
-  return vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]);
+  try {
+    // This method, although returning a Thenable, can throw an error when there's no Authentication Provider registered.
+    return await vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]);
+  } catch (e) {
+    return undefined;
+  }
 }

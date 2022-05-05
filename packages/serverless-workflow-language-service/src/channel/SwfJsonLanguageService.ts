@@ -34,8 +34,8 @@ export class SwfJsonLanguageService {
         getServiceFileNameFromSwfServiceCatalogServiceId: (swfServiceCatalogServiceId: string) => Promise<string>;
       };
       config: {
-        getServiceRegistryUrl: () => string | undefined; //FIXME: tiago make async
-        getServiceRegistryAuthInfo: () => { username: string; token: string } | undefined; //FIXME: tiago make async
+        getServiceRegistryUrl: () => string | undefined; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
+        getServiceRegistryAuthInfo: () => { username: string; token: string } | undefined; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
         getSpecsDirPosixPaths: (
           textDocument: TextDocument
         ) => Promise<{ specsDirRelativePosixPath: string; specsDirAbsolutePosixPath: string }>;
