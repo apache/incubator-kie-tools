@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./ServerlessDecisionsEditorFactory";
-export * from "./ServerlessDecisionsEditorView";
+export * from "./ServerlessDecisionsEditorChannelApi";

@@ -1,7 +1,7 @@
 {
   "name": "@kie-tools/serverless-decisions-editor",
   "version": "0.0.0",
-  "description": "Core module of the serverless decisions editor, part of the serverless logic editors",
+  "description": "Core module of the YAML Rules editor, part of the serverless logic assets",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
   "types": "./dist/editor/index.d.ts",

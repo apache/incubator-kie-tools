@@ -1,6 +1,6 @@
-## serverless decisions editor
+## YAML rules editor
 
-###### An editor to manage serverless decisions assets, part of serverless logic for Red Hat OpenShift
+###### An editor to manage YAML rules assets, part of serverless logic for Red Hat OpenShift
 
 ### Description
 
@@ -17,5 +17,9 @@ The module structure is composed of:
 - **src**: The project source code
 
 ### Usage
+
+To build the module : `yarn build:prod`
+
+To build the module in dev mode (no tests): `yarn build:dev`
 
 To run the development webapp: `yarn start`

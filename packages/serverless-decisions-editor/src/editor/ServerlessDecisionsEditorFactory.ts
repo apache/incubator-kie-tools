@@ -14,5 +14,20 @@
  * limitations under the License.
  */
 
-export * from "./ServerlessDecisionsEditorFactory";
-export * from "./ServerlessDecisionsEditorView";
+import {
+  Editor,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
+import { ServerlessDecisionsEditorChannelApi } from "../api";
+import { ServerlessDecisionsEditorView } from "./ServerlessDecisionsEditorView";
+
+export class ServerlessDecisionsEditorFactory implements EditorFactory<Editor, ServerlessDecisionsEditorChannelApi> {
+  public async createEditor(
+    ctx: KogitoEditorEnvelopeContextType<ServerlessDecisionsEditorChannelApi>,
+    initArgs: EditorInitArgs
+  ) {
+    return new ServerlessDecisionsEditorView(ctx, initArgs);
+  }
+}
