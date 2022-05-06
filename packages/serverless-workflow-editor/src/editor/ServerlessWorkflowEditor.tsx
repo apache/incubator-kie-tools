@@ -148,9 +148,9 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           endColumn: error.endColumn,
         },
       }));
-      props.setNotifications(initialContent.path, notifications);
+      props.setNotifications.apply(undefined, initialContent.path, notifications);
     },
-    [initialContent, props]
+    [initialContent, props.setNotifications]
   );
 
   const updateDiagram = useCallback((newContent: string) => {
