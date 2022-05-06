@@ -26,7 +26,7 @@ export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Pa
     editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
       new EnvelopeMapping("dmn", "**/*.dmn", "", "envelope/envelope.html"),
     ]),
-    file: { fileName: "test.dmn", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
+    file: { fileName: "test", fileExtension: "dmn", getFileContents: () => Promise.resolve(""), isReadOnly: false },
     ...ctx,
   };
   return {

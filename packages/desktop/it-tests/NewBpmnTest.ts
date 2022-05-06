@@ -93,7 +93,7 @@ async function testEmptyBpmn() {
 
   // check editor title name
   const title = await client.$("[data-testid='toolbar-title'] > h3");
-  expect(await title.getText()).toEqual("unsaved file.bpmn");
+  expect(await title.getText()).toEqual("unsaved file");
 
   // check save and close buttons
   const saveButton = await client.$("[data-ouia-component-id='save-button']");
