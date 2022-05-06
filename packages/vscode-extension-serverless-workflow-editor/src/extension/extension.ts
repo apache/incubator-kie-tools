@@ -18,30 +18,73 @@ import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/ba
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode/VsCodeBackendProxy";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
+import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
-import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
+import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
-import { COMMAND_IDS } from "./commands";
+import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
+import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
+import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
+import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
+import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
+import { COMMAND_IDS } from "./commandIds";
+import { setupRhhccAuthenticationStore } from "./rhhcc/setupRhhccAuthenticationStore";
 
-let backendProxy: VsCodeBackendProxy;
-
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
   const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  backendProxy = new VsCodeBackendProxy(context, backendI18n);
+  const backendProxy = new VsCodeBackendProxy(context, backendI18n);
+  context.subscriptions.push(
+    new vscode.Disposable(() => {
+      return backendProxy.stopServices();
+    })
+  );
+
   const configuration = new SwfVsCodeExtensionConfiguration();
+
   const rhhccAuthenticationStore = new RhhccAuthenticationStore();
 
-  KogitoVsCode.startExtension({
+  const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
+    rhhccAuthenticationStore,
+    configuration,
+  });
+
+  await setupRhhccAuthenticationStore({
+    context,
+    configuration,
+    rhhccAuthenticationStore,
+    rhhccServiceRegistryServiceCatalogStore,
+  });
+
+  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
+  await swfServiceCatalogGlobalStore.init();
+  console.info(
+    `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
+  );
+
+  const vsCodeSwfLanguageService = new VsCodeSwfLanguageService({
+    configuration,
+    rhhccAuthenticationStore,
+    swfServiceCatalogGlobalStore,
+  });
+  context.subscriptions.push(vsCodeSwfLanguageService);
+
+  const swfServiceCatalogSupportActions = new SwfServiceCatalogSupportActions({
+    configuration,
+    swfServiceCatalogGlobalStore,
+  });
+
+  const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
+    editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
-    viewType: "kieKogitoWebviewEditorsServerlessWorkflow",
-    generateSvgCommandId: "extension.kogito.swf.getPreviewSvg",
-    silentlyGenerateSvgCommandId: "extension.kogito.swf.silentlyGenerateSvg",
+    viewType: WEBVIEW_EDITOR_VIEW_TYPE,
+    generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
+    silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "sw",
@@ -53,55 +96,30 @@ export function activate(context: vscode.ExtensionContext) {
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
       configuration,
       rhhccAuthenticationStore,
+      swfLanguageService: vsCodeSwfLanguageService.ls,
+      swfServiceCatalogSupportActions,
     }),
     backendProxy,
   });
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.loginToRhhcc, () => {
-      vscode.authentication.getSession("redhat-mas-account-auth", ["openid"], { createIfNone: true });
-    })
-  );
+  setupBuiltInVsCodeEditorSwfContributions({
+    context,
+    swfLanguageService: vsCodeSwfLanguageService.ls,
+    configuration,
+    swfServiceCatalogGlobalStore,
+    swfServiceCatalogSupportActions,
+  });
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.setupServiceRegistryUrl, async () => {
-      const serviceRegistryUrl = await askForServiceRegistryUrl({
-        currentValue: configuration.getConfiguredServiceRegistryUrl(),
-      });
+  setupServiceRegistryIntegrationCommands({
+    context,
+    configuration,
+  });
 
-      if (!serviceRegistryUrl) {
-        return;
-      }
-
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.removeServiceRegistryUrl, () => {
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, "");
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL removed.", 3000);
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.authentication.onDidChangeSessions(async (e) => {
-      if (e.provider.id === "redhat-mas-account-auth") {
-        await updateRhhccAuthenticationSession(rhhccAuthenticationStore);
-      }
-    })
-  );
-
-  updateRhhccAuthenticationSession(rhhccAuthenticationStore);
+  await setupDiagramEditorControls({
+    context,
+    configuration,
+    kieToolsEditorStore,
+  });
 
   console.info("Extension is successfully setup.");
-}
-
-async function updateRhhccAuthenticationSession(rhhccAuthenticationStore: RhhccAuthenticationStore) {
-  rhhccAuthenticationStore.setSession(await vscode.authentication.getSession("redhat-mas-account-auth", ["openid"]));
-}
-
-export function deactivate() {
-  backendProxy?.stopServices();
 }

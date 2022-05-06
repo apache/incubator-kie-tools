@@ -14,41 +14,41 @@
  * limitations under the License.
  */
 
-import { FsWatchingServiceCatalogStore } from "./fs";
 import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import * as vscode from "vscode";
 
 export class SwfServiceCatalogStore {
-  private fsSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
+  private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
   private rhhccServiceRegistriesSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
 
   constructor(
     private readonly args: {
-      fsWatchingServiceCatalogStore: FsWatchingServiceCatalogStore;
       rhhccServiceRegistryServiceCatalogStore: RhhccServiceRegistryServiceCatalogStore;
     }
   ) {}
 
-  public async init(args: {
-    onNewServices: (newSwfServiceCatalogServices: SwfServiceCatalogService[]) => Promise<any>;
-  }) {
-    await this.args.fsWatchingServiceCatalogStore.init({
-      onNewServices: (s) => {
-        this.fsSwfServiceCatalogServices = s;
-        return args.onNewServices(this.getCombinedSwfServiceCatalogServices());
-      },
-    });
-
-    await this.args.rhhccServiceRegistryServiceCatalogStore.init({
-      onNewServices: (s) => {
-        this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
-        return args.onNewServices(this.getCombinedSwfServiceCatalogServices());
-      },
+  public async init() {
+    await this.args.rhhccServiceRegistryServiceCatalogStore.init();
+    this.args.rhhccServiceRegistryServiceCatalogStore.subscribeToNewServices((s) => {
+      this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
+      return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription(this.storedServices)));
     });
   }
 
-  private getCombinedSwfServiceCatalogServices() {
-    return [...this.rhhccServiceRegistriesSwfServiceCatalogServices, ...this.fsSwfServiceCatalogServices];
+  public subscribeToNewServices(subs: (services: SwfServiceCatalogService[]) => Promise<any>) {
+    this.subscriptions.add(subs);
+    return new vscode.Disposable(() => {
+      this.unsubscribeToNewServices(subs);
+    });
+  }
+
+  public unsubscribeToNewServices(subs: (services: SwfServiceCatalogService[]) => Promise<any>) {
+    this.subscriptions.delete(subs);
+  }
+
+  public get storedServices() {
+    return this.rhhccServiceRegistriesSwfServiceCatalogServices;
   }
 
   public async refresh() {
@@ -56,7 +56,6 @@ export class SwfServiceCatalogStore {
   }
 
   public dispose() {
-    this.args.fsWatchingServiceCatalogStore.dispose();
     this.args.rhhccServiceRegistryServiceCatalogStore.dispose();
   }
 }

@@ -45,7 +45,7 @@ export interface EditorInitArgs {
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, GuidedTourEnvelopeApi, I18nEnvelopeApi {
-  kogitoEditor_contentChanged(content: EditorContent): Promise<void>;
+  kogitoEditor_contentChanged(content: EditorContent, args: { showLoadingOverlay: boolean }): Promise<void>;
   kogitoEditor_editorUndo(): void;
   kogitoEditor_editorRedo(): void;
   kogitoEditor_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
