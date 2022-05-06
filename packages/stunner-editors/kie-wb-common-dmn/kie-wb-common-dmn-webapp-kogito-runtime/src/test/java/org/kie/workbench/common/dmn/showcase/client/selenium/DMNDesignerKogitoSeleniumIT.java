@@ -1899,7 +1899,6 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
      * being ignored by the 'round-trip' comparison. These need investigating.
      */
     @Test
-    @Ignore
     public void testPaymentDateFile_KOGITO404() throws Exception {
         final String expected = loadResource("KOGITO-404 (Payment Date).xml");
         setContent(expected);
