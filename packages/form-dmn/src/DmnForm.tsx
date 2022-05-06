@@ -76,7 +76,8 @@ export function DmnForm(props: FormProps<InputRow, DmnSchema>) {
       i18n={i18n}
       validator={dmnValidator}
       removeRequired={true}
-      propertiesEntryPath={"definitions.InputSet"}
+      entryPath={"definitions.InputSet"}
+      propertiesEntryPath={"definitions.InputSet.properties"}
     >
       <DmnAutoFieldProvider />
     </FormComponent>
