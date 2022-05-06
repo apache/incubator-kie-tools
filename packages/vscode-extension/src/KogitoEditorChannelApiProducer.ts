@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { KogitoEditor } from "./KogitoEditor";
 import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
@@ -22,7 +22,6 @@ import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
-import { Uri } from "vscode";
 import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
 
 /**
@@ -40,7 +39,6 @@ export interface KogitoEditorChannelApiProducer {
    * @param javaCodeCompletionApi
    * @param viewType
    * @param i18n
-   * @param initialBackup
    */
   get(
     editor: KogitoEditor,
@@ -50,8 +48,7 @@ export interface KogitoEditorChannelApiProducer {
     notificationsApi: NotificationsApi,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
-    i18n: I18n<VsCodeI18n>,
-    initialBackup?: Uri
+    i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi;
 }
 
@@ -64,8 +61,7 @@ export class DefaultKogitoEditorChannelApiProducer implements KogitoEditorChanne
     notificationsApi: NotificationsApi,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
-    i18n: I18n<VsCodeI18n>,
-    initialBackup?: Uri
+    i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
     return new KogitoEditorChannelApiImpl(
       editor,
@@ -75,8 +71,7 @@ export class DefaultKogitoEditorChannelApiProducer implements KogitoEditorChanne
       notificationsApi,
       javaCodeCompletionApi,
       viewType,
-      i18n,
-      initialBackup
+      i18n
     );
   }
 }

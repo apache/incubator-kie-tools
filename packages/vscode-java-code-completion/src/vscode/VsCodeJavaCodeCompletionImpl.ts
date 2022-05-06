@@ -27,7 +27,7 @@ export class VsCodeJavaCodeCompletionImpl implements JavaCodeCompletionApi {
       query
     );
 
-    const thenable = command.then((res) => <JavaCodeCompletionAccessor[]>res);
+    const thenable = command.then((res) => res as JavaCodeCompletionAccessor[]);
     return Promise.resolve(thenable);
   }
   getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
@@ -37,7 +37,7 @@ export class VsCodeJavaCodeCompletionImpl implements JavaCodeCompletionApi {
       query
     );
 
-    const thenable = command.then((res) => <JavaCodeCompletionClass[]>res);
+    const thenable = command.then((res) => res as JavaCodeCompletionClass[]);
     return Promise.resolve(thenable);
   }
 
@@ -47,7 +47,7 @@ export class VsCodeJavaCodeCompletionImpl implements JavaCodeCompletionApi {
       JavaCodeCompletionConstants.IS_AVAILABLE
     );
 
-    const thenable = command.then((res) => <boolean>res);
+    const thenable = command.then((res) => res as boolean);
     return Promise.resolve(thenable);
   }
 }
