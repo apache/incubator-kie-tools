@@ -35,6 +35,7 @@ export interface SwfServiceCatalogService {
 export type SwfServiceCatalogServiceSource =
   | {
       id: string;
+      url: string;
       type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY;
     }
   | {
@@ -80,7 +81,6 @@ export type SwfServiceCatalogFunctionSource =
 export interface SwfServiceCatalogFunction {
   source: SwfServiceCatalogFunctionSource;
   name: string;
-  operation: string;
   arguments: Record<string, SwfServiceCatalogFunctionArgumentType>;
   type: SwfServiceCatalogFunctionType;
 }

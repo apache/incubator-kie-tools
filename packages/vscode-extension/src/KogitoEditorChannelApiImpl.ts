@@ -31,15 +31,13 @@ import { Notification, NotificationsApi } from "@kie-tools-core/notifications/di
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
-  JavaCodeCompletionApi,
   JavaCodeCompletionAccessor,
-  JavaCodeCompletionClass,
+  JavaCodeCompletionApi,
   JavaCodeCompletionChannelApi,
+  JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
-  private readonly decoder = new TextDecoder("utf-8");
-
   constructor(
     private readonly editor: KogitoEditor,
     private readonly resourceContentService: ResourceContentService,
@@ -48,33 +46,64 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
     private readonly notificationsApi: NotificationsApi,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
-    private readonly i18n: I18n<VsCodeI18n>,
-    private initialBackup = editor.document.initialBackup
+    private readonly i18n: I18n<VsCodeI18n>
   ) {}
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit) {
-    this.editor.document.notifyEdit(this.editor, edit);
+  public async kogitoWorkspace_newEdit(kogitoEdit: KogitoEdit) {
+    if (this.editor.document.type === "custom") {
+      this.editor.document.document.notifyEdit(this.editor, kogitoEdit);
+      return;
+    }
+
+    if (this.editor.document.type === "text") {
+      this.editor.stopListeningToDocumentChanges();
+
+      const changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
+        if (e.contentChanges.length <= 0) {
+          return;
+        }
+
+        this.editor.startListeningToDocumentChanges();
+        changeDocumentSubscription.dispose();
+      });
+
+      const { content } = await this.editor.envelopeServer.envelopeApi.requests.kogitoEditor_contentRequest();
+
+      const edit = new vscode.WorkspaceEdit();
+
+      // TODO: This shouldn't be a replace all the time. More conscious changes lead to better undo/redo stack.
+      // See https://issues.redhat.com/browse/KOGITO-7106
+      edit.replace(
+        this.editor.document.document.uri,
+        new vscode.Range(0, 0, this.editor.document.document.lineCount, 0),
+        content
+      );
+
+      vscode.workspace.applyEdit(edit);
+      return;
+    }
+
+    throw new Error("Document type not supported");
   }
 
   public kogitoWorkspace_openFile(path: string) {
     this.workspaceApi.kogitoWorkspace_openFile(
-      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.uri.path), path)
+      __path.isAbsolute(path) ? path : __path.join(__path.dirname(this.editor.document.document.uri.path), path)
     );
   }
 
   public async kogitoEditor_contentRequest() {
-    let contentArray: Uint8Array;
+    let content: string;
     try {
-      contentArray = await vscode.workspace.fs.readFile(this.initialBackup ?? this.editor.document.uri);
+      content = await this.editor.getDocumentContent();
     } catch (e) {
       // If file doesn't exist, we create an empty one.
       // This is important for the use-case where users type `code new-file.dmn` on a terminal.
-      await vscode.workspace.fs.writeFile(this.editor.document.uri, new Uint8Array());
-      return { content: "", path: this.editor.document.relativePath };
+      await vscode.workspace.fs.writeFile(this.editor.document.document.uri, new Uint8Array());
+      return { content: "", path: this.editor.document.document.uri.path };
     }
 
-    this.initialBackup = undefined;
-    return { content: this.decoder.decode(contentArray), path: this.editor.document.relativePath };
+    return { content, path: this.editor.document.document.uri.path };
   }
 
   public kogitoEditor_setContentError(editorContent: EditorContent) {
@@ -82,7 +111,7 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
 
     vscode.window
       .showErrorMessage(
-        i18n.errorOpeningFileText(this.editor.document.uri.fsPath.split("/").pop()!),
+        i18n.errorOpeningFileText(this.editor.document.document.uri.fsPath.split("/").pop()!),
         i18n.openAsTextButton
       )
       .then((s1) => {
@@ -91,17 +120,19 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
         }
 
         this.editor.close();
-        vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, "default");
+        vscode.commands.executeCommand("vscode.openWith", this.editor.document.document.uri, "default");
         vscode.window.showInformationMessage(i18n.reopenAsDiagramText, i18n.reopenAsDiagramButton).then((s2) => {
           if (s2 !== i18n.reopenAsDiagramButton) {
             return;
           }
 
           vscode.window
-            .showTextDocument(this.editor.document.uri)
+            .showTextDocument(this.editor.document.document.uri)
             .then((editor) => editor.document.save())
             .then(() => vscode.commands.executeCommand("workbench.action.closeActiveEditor"))
-            .then(() => vscode.commands.executeCommand("vscode.openWith", this.editor.document.uri, this.viewType));
+            .then(() =>
+              vscode.commands.executeCommand("vscode.openWith", this.editor.document.document.uri, this.viewType)
+            );
         });
       });
   }
@@ -153,9 +184,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   public kogitoJavaCodeCompletion__getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     return this.javaCodeCompletionApi.getAccessors(fqcn, query);
   }
+
   public kogitoJavaCodeCompletion__getClasses(query: string): Promise<JavaCodeCompletionClass[]> {
     return this.javaCodeCompletionApi.getClasses(query);
   }
+
   public kogitoJavaCodeCompletion__isLanguageServerAvailable(): Promise<boolean> {
     return this.javaCodeCompletionApi.isLanguageServerAvailable();
   }

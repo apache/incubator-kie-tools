@@ -23,6 +23,9 @@ export interface SwfServiceCatalogChannelApi {
   kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined>;
   kogitoSwfServiceCatalog_refresh(): void;
   kogitoSwfServiceCatalog_logInToRhhcc(): void;
-  kogitoSwfServiceCatalog_importFunctionFromCompletionItem(containingService: SwfServiceCatalogService): void;
+  kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void;
   kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void;
 }

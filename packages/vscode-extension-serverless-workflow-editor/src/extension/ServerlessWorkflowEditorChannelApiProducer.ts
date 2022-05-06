@@ -26,7 +26,6 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
-import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import {
@@ -35,15 +34,17 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
-import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
-import { FsWatchingServiceCatalogStore } from "./serviceCatalog/fs";
-import { askForServiceRegistryUrl } from "./serviceCatalog/rhhccServiceRegistry";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
+      swfLanguageService: SwfJsonLanguageService;
+      swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
   get(
@@ -54,54 +55,17 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     notificationsApi: NotificationsApi,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
-    i18n: I18n<VsCodeI18n>,
-    initialBackup?: Uri
+    i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
-    const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
-      baseFileAbsolutePosixPath: editor.document.uri.path,
-      rhhccAuthenticationStore: this.args.rhhccAuthenticationStore,
-      configuration: this.args.configuration,
-    });
-
-    const fsWatchingServiceCatalogStore = new FsWatchingServiceCatalogStore({
-      baseFileAbsolutePosixPath: editor.document.uri.path,
-      configuration: this.args.configuration,
-    });
-
-    const swfServiceCatalogStore = new SwfServiceCatalogStore({
-      fsWatchingServiceCatalogStore,
-      rhhccServiceRegistryServiceCatalogStore,
-    });
-
-    // TODO: This is a workaround
+    // TODO: This casting to `unknown` first is a workaround
+    // See https://issues.redhat.com/browse/KOGITO-6824
     const swfServiceCatalogEnvelopeServer = editor.envelopeServer as unknown as EnvelopeServer<
       SwfServiceCatalogChannelApi,
       KogitoEditorEnvelopeApi
     >;
 
-    swfServiceCatalogStore.init({
-      onNewServices: async (services) => {
-        swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_services.set(services);
-      },
-    });
-
     const rhhccSessionSubscription = this.args.rhhccAuthenticationStore.subscribeToSessionChange(async (session) => {
       swfServiceCatalogEnvelopeServer.shared.kogitoSwfServiceCatalog_user.set(getUser(session));
-
-      if (!session) {
-        return rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const configuredServiceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
-      if (configuredServiceRegistryUrl) {
-        return rhhccServiceRegistryServiceCatalogStore.refresh();
-      }
-
-      const serviceRegistryUrl = await askForServiceRegistryUrl({ currentValue: configuredServiceRegistryUrl });
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
-
-      return rhhccServiceRegistryServiceCatalogStore.refresh();
     });
 
     const rhhccServiceRegistryUrlSubscription = vscode.workspace.onDidChangeConfiguration(async (e) => {
@@ -113,9 +77,8 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     });
 
     editor.panel.onDidDispose(() => {
-      swfServiceCatalogStore.dispose();
       rhhccServiceRegistryUrlSubscription.dispose();
-      this.args.rhhccAuthenticationStore.unsubscribeToSessionChange(rhhccSessionSubscription);
+      rhhccSessionSubscription.dispose();
     });
 
     return new ServerlessWorkflowEditorChannelApiImpl(
@@ -127,13 +90,15 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
       javaCodeCompletionApi,
       viewType,
       i18n,
-      initialBackup,
       new SwfServiceCatalogChannelApiImpl({
-        swfServiceCatalogStore,
-        baseFileAbsolutePosixPath: editor.document.uri.path,
+        baseFileAbsolutePosixPath: editor.document.document.uri.path,
         configuration: this.args.configuration,
         defaultUser: getUser(this.args.rhhccAuthenticationStore.session),
         defaultServiceRegistryUrl: this.args.configuration.getConfiguredServiceRegistryUrl(),
+        swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
+      }),
+      new SwfLanguageServiceChannelApiImpl({
+        ls: this.args.swfLanguageService,
       })
     );
   }

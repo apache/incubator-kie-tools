@@ -15,7 +15,12 @@
  */
 
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
-import { EditorContent, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import {
+  EditorContent,
+  EditorTheme,
+  KogitoEditorChannelApi,
+  StateControlCommand,
+} from "@kie-tools-core/editor/dist/api";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
 import {
   KogitoEdit,
@@ -32,18 +37,19 @@ import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completi
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
-  SwfServiceCatalogFunction,
+  SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
-import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor";
+import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor/dist/api";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import * as vscode from "vscode";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
-  private readonly defaultApiImpl: KogitoEditorChannelApiImpl;
+  private readonly defaultApiImpl: KogitoEditorChannelApi;
 
   constructor(
     private readonly editor: KogitoEditor,
@@ -54,8 +60,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,
-    initialBackup = editor.document.initialBackup,
-    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApiImpl
+    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
+    private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
   ) {
     this.defaultApiImpl = new KogitoEditorChannelApiImpl(
       editor,
@@ -65,8 +71,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
       notificationsApi,
       javaCodeCompletionApi,
       viewType,
-      i18n,
-      initialBackup
+      i18n
     );
   }
 
@@ -75,7 +80,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   }
 
   public kogitoEditor_ready(): void {
-    this.defaultApiImpl.kogitoEditor_contentRequest();
+    this.defaultApiImpl.kogitoEditor_ready();
   }
 
   public kogitoEditor_setContentError(content: EditorContent): void {
@@ -160,11 +165,27 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInToRhhcc();
   }
 
-  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(containingService: SwfServiceCatalogService): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(containingService);
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
+  }
+
+  public async kogitoSwfLanguageService__getCompletionItems(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+  }): Promise<CompletionItem[]> {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCompletionItems(args);
+  }
+
+  public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
   }
 }

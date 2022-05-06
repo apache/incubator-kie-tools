@@ -33,7 +33,6 @@ function doParse(fileName: string): SwfServiceCatalogService {
     serviceFileName: fileName,
     serviceFileContent: content,
     specsDirAbsolutePosixPath: "/Users/tiago/open-api-tests/specs",
-    baseFileAbsolutePosixPath: "/Users/tiago/open-api-tests/myfile.txt",
   });
 }
 
@@ -53,7 +52,6 @@ describe("openapi parser", () => {
     const doGetOperation = result.functions[0];
     expect(doGetOperation.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(doGetOperation.name).toBe("doGetOperation");
-    expect(doGetOperation.operation).toBe("specs/multiplication.yaml#doGetOperation");
     expect(doGetOperation.arguments).not.toBeNull();
     expect(doGetOperation.arguments).toHaveProperty("leftElement", SwfServiceCatalogFunctionArgumentType.number);
     expect(doGetOperation.arguments).toHaveProperty("product", SwfServiceCatalogFunctionArgumentType.number);
@@ -62,7 +60,6 @@ describe("openapi parser", () => {
     const doPostOperation = result.functions[1];
     expect(doPostOperation.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(doPostOperation.name).toBe("doOperation");
-    expect(doPostOperation.operation).toBe("specs/multiplication.yaml#doOperation");
     expect(doPostOperation.arguments).not.toBeNull();
     expect(doPostOperation.arguments).toHaveProperty("leftElement", SwfServiceCatalogFunctionArgumentType.number);
     expect(doPostOperation.arguments).toHaveProperty("product", SwfServiceCatalogFunctionArgumentType.number);
@@ -83,7 +80,6 @@ describe("openapi parser", () => {
     const functionDef = result.functions[0];
     expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.rest);
     expect(functionDef.name).toBe("hiring");
-    expect(functionDef.operation).toBe("specs/hiring.yaml#hiring");
     expect(functionDef.arguments).not.toBeNull();
     expect(functionDef.arguments).toHaveProperty("candidate", SwfServiceCatalogFunctionArgumentType.object);
     expect(functionDef.arguments).toHaveProperty("hr_approval", SwfServiceCatalogFunctionArgumentType.boolean);
@@ -93,10 +89,10 @@ describe("openapi parser", () => {
   it("parse wrong format test", async () => {
     expect(() => {
       doParse("wrong.txt");
-    }).toThrowError("'specs/wrong.txt' is not an OpenAPI file");
+    }).toThrowError("'wrong.txt' is not an OpenAPI file");
 
     expect(() => {
       doParse("wrong.json");
-    }).toThrowError("'specs/wrong.json' is not an OpenAPI file");
+    }).toThrowError("'wrong.json' is not an OpenAPI file");
   });
 });

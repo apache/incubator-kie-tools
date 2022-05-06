@@ -21,7 +21,7 @@ import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
-import { getInterpolatedConfigurationValue, configurationTokenKeys } from "./ConfigurationInterpolation";
+import { configurationTokenKeys, getInterpolatedConfigurationValue } from "./ConfigurationInterpolation";
 
 const encoder = new TextEncoder();
 
@@ -42,11 +42,13 @@ export async function generateSvg(args: {
 
   const previewSvg = await editor.getPreview();
   if (!previewSvg) {
-    console.info(`Unable to create SVG for '${editor.document.uri.fsPath}'`);
+    console.info(`Unable to create SVG for '${editor.document.document.uri.fsPath}'`);
     return;
   }
 
-  const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(__path.parse(editor.document.uri.path).base)?.type;
+  const fileType = args.editorEnvelopeLocator.getEnvelopeMapping(
+    __path.parse(editor.document.document.uri.path).base
+  )?.type;
   const svgFilenameTemplateId = `kogito.${fileType}.svgFilenameTemplate`;
   const svgFilePathTemplateId = `kogito.${fileType}.svgFilePath`;
 
@@ -61,15 +63,15 @@ export async function generateSvg(args: {
   }
 
   const svgFileName = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.uri.path,
+    currentFileAbsolutePosixPath: editor.document.document.uri.path,
     value: svgFilenameTemplate || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
   });
   const svgFilePath = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.uri.path,
+    currentFileAbsolutePosixPath: editor.document.document.uri.path,
     value: svgFilePathTemplate || `${configurationTokenKeys["${fileDirname}"]}`,
   });
 
-  const svgUri = editor.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
+  const svgUri = editor.document.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
 
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 
