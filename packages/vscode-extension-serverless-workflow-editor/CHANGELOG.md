@@ -5,6 +5,7 @@
 - [KOGITO-6787](https://issues.redhat.com/browse/KOGITO-6787) - Add validation errors to the VSCode Problems Tab
 - [KOGITO-6786](https://issues.redhat.com/browse/KOGITO-6786) - Implement a validation service for workflows
 - [KOGITO-6788](https://issues.redhat.com/browse/KOGITO-6788) - Add validation errors inline in the Monaco editor
+- [KOGITO-6883](https://issues.redhat.com/browse/KOGITO-6883) - [SWF Editor] Create a Language Service for Serverless Workflow
 
 # 0.18.1 (alpha)
 

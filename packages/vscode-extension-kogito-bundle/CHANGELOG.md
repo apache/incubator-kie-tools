@@ -11,6 +11,8 @@
 - [KOGITO-6915](https://issues.redhat.com/browse/KOGITO-6915) - Add visual regression tests to Cypress
 - [KOGITO-6918](https://issues.redhat.com/browse/KOGITO-6918) - [DMN Designer] interaction with Name and Data Type popover with keyboard
 - [KOGITO-7040](https://issues.redhat.com/browse/KOGITO-7040) - [DMN Designer] Finalizing Import Java Classes
+- [KOGITO-7103](https://issues.redhat.com/browse/KOGITO-7103) - Wrong save behavior on desktop channel
+- [KOGITO-7096](https://issues.redhat.com/browse/KOGITO-7096) - DMN Runner - form empty state is not working
 
 # 0.18.0 (alpha)
 
