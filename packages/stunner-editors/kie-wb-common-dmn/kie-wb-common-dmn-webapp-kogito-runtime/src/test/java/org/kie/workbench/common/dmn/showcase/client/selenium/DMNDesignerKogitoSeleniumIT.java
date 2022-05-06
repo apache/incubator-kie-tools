@@ -24,7 +24,6 @@ import java.util.function.Supplier;
 
 import javax.xml.XMLConstants;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.workbench.common.dmn.api.definition.model.DMNModelInstrumentedBase;
 import org.kie.workbench.common.dmn.showcase.client.common.DMNDesignerBaseIT;
@@ -340,7 +339,6 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     }
 
     @Test
-    @Ignore
     public void testDiagramWithoutDMNDI() throws Exception {
 
         final String fixture = loadResource("single-diagram-without-dmndi.xml");
@@ -1701,7 +1699,6 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
     }
 
     @Test
-    @Ignore
     public void testDMNModelWithoutDMNDI_KOGITO3696() throws Exception {
         final String expected = loadResource("KOGITO-3696 (DMN model without DMNDI - expected).xml");
         final String fixture = loadResource("KOGITO-3696 (DMN model without DMNDI - fixture).xml");
