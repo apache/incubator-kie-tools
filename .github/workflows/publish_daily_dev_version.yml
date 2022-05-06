@@ -201,14 +201,14 @@ jobs:
           name: vscode-extension-backend
           path: kie-tools/packages/vscode-extension-backend/dist/vscode-extension-backend_${{ steps.version.outputs.version }}.vsix
 
-      - name: "Upload Chrome Extension for kie editors (Ubuntu only)"
+      - name: "Upload Chrome Extension for KIE Editors (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
           name: chrome-extension
           path: kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/chrome_extension_kogito_kie_editors_${{ steps.version.outputs.version }}.zip
 
-      - name: "Upload Chrome Extension for serverless workflow editor (Ubuntu only)"
+      - name: "Upload Chrome Extension for Serverless Workflow Editor (Ubuntu only)"
         if: matrix.os == 'ubuntu-latest'
         uses: actions/upload-artifact@v1
         with:
