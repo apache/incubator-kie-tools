@@ -51,6 +51,34 @@ void setupDeployJob(Folder jobFolder) {
         jobParams.git.author = '${GIT_AUTHOR}'
         jobParams.git.project_url = Utils.createProjectUrl("${GIT_AUTHOR_NAME}", jobParams.git.repository)
     }
+    jobParams.env.putAll([
+        CI: true,
+        REPO_NAME: 'kogito-images',
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+
+        CONTAINER_ENGINE: 'docker',
+        CONTAINER_TLS_OPTIONS: '',
+        MAX_REGISTRY_RETRIES: 3,
+
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+    ])
+    if (jobFolder.isPullRequest()) {
+        jobParams.env.putAll([
+            MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_PR_CHECKS_REPOSITORY_URL}",
+        ])
+    } else {
+        jobParams.env.putAll([
+            GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+            AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+            GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+            GIT_AUTHOR_BOT: "${GIT_BOT_AUTHOR_NAME}",
+            BOT_CREDENTIALS_ID: "${GIT_BOT_AUTHOR_CREDENTIALS_ID}",
+
+            MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+            DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+        ])
+    }
     KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
@@ -83,37 +111,33 @@ void setupDeployJob(Folder jobFolder) {
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
-
-        environmentVariables {
-            env('CI', true)
-            env('REPO_NAME', 'kogito-images')
-            env('PROPERTIES_FILE_NAME', 'deployment.properties')
-
-            env('CONTAINER_ENGINE', 'docker')
-            env('CONTAINER_TLS_OPTIONS', '')
-            env('MAX_REGISTRY_RETRIES', 3)
-
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-
-            if (jobFolder.isPullRequest()) {
-                env('MAVEN_ARTIFACT_REPOSITORY', "${MAVEN_PR_CHECKS_REPOSITORY_URL}")
-            } else {
-                env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-
-                env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-                env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-                env('GIT_AUTHOR_BOT', "${GIT_BOT_AUTHOR_NAME}")
-                env('BOT_CREDENTIALS_ID', "${GIT_BOT_AUTHOR_CREDENTIALS_ID}")
-
-                env('MAVEN_ARTIFACT_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-                env('DEFAULT_STAGING_REPOSITORY', "${MAVEN_NEXUS_STAGING_PROFILE_URL}")
-            }
-        }
     }
 }
 
 void setupPromoteJob(Folder jobFolder) {
-    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'kogito-images-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote'))?.with {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images-promote', jobFolder, "${jenkins_path}/Jenkinsfile.promote", 'Kogito Images Promote')
+    jobParams.env.putAll([
+        CI: true,
+        REPO_NAME: 'kogito-images',
+        PROPERTIES_FILE_NAME: 'deployment.properties',
+
+        CONTAINER_ENGINE: 'podman',
+        CONTAINER_TLS_OPTIONS: '--tls-verify=false',
+        MAX_REGISTRY_RETRIES: 3,
+
+        JENKINS_EMAIL_CREDS_ID: "${JENKINS_EMAIL_CREDS_ID}",
+
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+        GIT_AUTHOR_BOT: "${GIT_BOT_AUTHOR_NAME}",
+        BOT_CREDENTIALS_ID: "${GIT_BOT_AUTHOR_CREDENTIALS_ID}",
+
+        DEFAULT_STAGING_REPOSITORY: "${MAVEN_NEXUS_STAGING_PROFILE_URL}",
+        MAVEN_ARTIFACT_REPOSITORY: "${MAVEN_ARTIFACTS_REPOSITORY}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('DISPLAY_NAME', '', 'Setup a specific build display name')
 
@@ -148,47 +172,25 @@ void setupPromoteJob(Folder jobFolder) {
 
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
         }
-
-        environmentVariables {
-            env('CI', true)
-            env('REPO_NAME', 'kogito-images')
-            env('PROPERTIES_FILE_NAME', 'deployment.properties')
-
-            env('CONTAINER_ENGINE', 'podman')
-            env('CONTAINER_TLS_OPTIONS', '--tls-verify=false')
-            env('MAX_REGISTRY_RETRIES', 3)
-
-            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
-
-            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-
-            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-            env('GIT_AUTHOR_BOT', "${GIT_BOT_AUTHOR_NAME}")
-            env('BOT_CREDENTIALS_ID', "${GIT_BOT_AUTHOR_CREDENTIALS_ID}")
-
-            env('DEFAULT_STAGING_REPOSITORY', "${MAVEN_NEXUS_STAGING_PROFILE_URL}")
-            env('MAVEN_ARTIFACT_REPOSITORY', "${MAVEN_ARTIFACTS_REPOSITORY}")
-        }
     }
 }
 
 void setupProdUpdateVersionJob() {
-    KogitoJobTemplate.createPipelineJob(this, KogitoJobUtils.getBasicJobParams(this, 'kogito-images-update-prod-version', Folder.TOOLS, "${jenkins_path}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images'))?.with {
+    def jobParams = KogitoJobUtils.getBasicJobParams(this, 'kogito-images-update-prod-version', Folder.TOOLS, "${jenkins_path}/Jenkinsfile.update-prod-version", 'Update prod version for Kogito Images')
+    jobParams.env.putAll([
+        REPO_NAME: 'kogito-images',
+
+        BUILD_BRANCH_NAME: "${GIT_BRANCH}",
+        GIT_AUTHOR: "${GIT_AUTHOR_NAME}",
+        AUTHOR_CREDS_ID: "${GIT_AUTHOR_CREDENTIALS_ID}",
+        GITHUB_TOKEN_CREDS_ID: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}",
+        GIT_AUTHOR_BOT: "${GIT_BOT_AUTHOR_NAME}",
+        BOT_CREDENTIALS_ID: "${GIT_BOT_AUTHOR_CREDENTIALS_ID}",
+    ])
+    KogitoJobTemplate.createPipelineJob(this, jobParams)?.with {
         parameters {
             stringParam('JIRA_NUMBER', '', 'KIECLOUD-XXX or RHPAM-YYYY or else. This will be added to the commit and PR.')
             stringParam('PROD_PROJECT_VERSION', '', 'Which version to set ?')
-        }
-
-        environmentVariables {
-            env('REPO_NAME', 'kogito-images')
-
-            env('BUILD_BRANCH_NAME', "${GIT_BRANCH}")
-            env('GIT_AUTHOR', "${GIT_AUTHOR_NAME}")
-            env('AUTHOR_CREDS_ID', "${GIT_AUTHOR_CREDENTIALS_ID}")
-            env('GITHUB_TOKEN_CREDS_ID', "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}")
-            env('GIT_AUTHOR_BOT', "${GIT_BOT_AUTHOR_NAME}")
-            env('BOT_CREDENTIALS_ID', "${GIT_BOT_AUTHOR_CREDENTIALS_ID}")
         }
     }
 }
