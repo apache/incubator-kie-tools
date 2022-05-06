@@ -148,7 +148,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
           endColumn: error.endColumn,
         },
       }));
-      props.setNotifications.apply(undefined, initialContent.path, notifications);
+      props.setNotifications.apply(initialContent.path, notifications);
     },
     [initialContent, props.setNotifications]
   );
