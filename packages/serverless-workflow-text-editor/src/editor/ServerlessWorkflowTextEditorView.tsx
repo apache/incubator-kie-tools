@@ -24,7 +24,7 @@ import {
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { ServerlessWorkflowEditorChannelApi } from "../api";
+import { ServerlessWorkflowTextEditorChannelApi } from "../api";
 import { ServerlessWorkflowTextEditor } from "./ServerlessWorkflowTextEditor";
 
 export class ServerlessWorkflowTextEditorView implements Editor {
@@ -34,7 +34,7 @@ export class ServerlessWorkflowTextEditorView implements Editor {
   public af_componentTitle: "Serverless Workflow Text Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowTextEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();

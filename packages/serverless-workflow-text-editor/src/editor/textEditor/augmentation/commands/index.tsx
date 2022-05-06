@@ -1,7 +1,7 @@
 import { editor, Position } from "monaco-editor";
 import * as React from "react";
 import { openWidget } from "../widgets";
-import { ServerlessWorkflowEditorChannelApi } from "../../../../api";
+import { ServerlessWorkflowTextEditorChannelApi } from "../../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   SwfLanguageServiceCommandArgs,
@@ -21,7 +21,7 @@ import {
 
 export function initAugmentationCommands(
   editorInstance: editor.IStandaloneCodeEditor,
-  channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
+  channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>
 ): SwfLanguageServiceCommandIds {
   return {
     "swf.ls.commands.SetupServiceRegistryUrl": editorInstance.addCommand(

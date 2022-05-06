@@ -3,12 +3,12 @@ import {
   SwfLanguageServiceCommandIds,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { ServerlessWorkflowEditorChannelApi } from "../../../../api";
+import { ServerlessWorkflowTextEditorChannelApi } from "../../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export function initJsonCodeLenses(
   commandIds: SwfLanguageServiceCommandIds,
-  channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
+  channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>
 ): void {
   monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: async (model, cancellationToken) => {
