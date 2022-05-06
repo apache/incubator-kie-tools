@@ -766,7 +766,7 @@ function customEvent(container: HTMLElement) {
     detail: {
       x: 0,
       y: 0,
-      pasteValue: '[ ["A","A","A"  ] ]',
+      pasteValue: "A\tA\tA\n",
       type: PASTE_OPERATION,
     },
   });

@@ -19,7 +19,7 @@ import * as React from "react";
 import { useCallback, useMemo, useRef } from "react";
 import { SelectionBox, SelectionRect } from ".";
 import { CELL_CSS_SELECTOR } from "../Resizer";
-import { CopyAndPasteType, paste } from "../Table/common";
+import { paste } from "../Table/common";
 import "./CellSelectionBox.css";
 import { useBoxedExpression } from "../../context";
 
@@ -108,16 +108,23 @@ export const CellSelectionBox: React.FunctionComponent = () => {
 
       if (textarea.current) {
         highlightCells(selectedCells);
-        const rowsGroupedByY = _(selectedCells).groupBy((e: any) => e.getBoundingClientRect().y);
-        const selectedValue: CopyAndPasteType = [];
+        const rowsGroupedByY = _(selectedCells).groupBy((e) => e.getBoundingClientRect().y);
+        let selectedValue = "";
 
         rowsGroupedByY.forEach((row: HTMLElement[]) => {
-          selectedValue.push(row.map((cell: HTMLTextAreaElement) => cell.querySelector("textarea")!.textContent ?? ""));
+          for (let i = 0; i < row.length; i++) {
+            const value = row[i].querySelector("textarea")!.textContent;
+            selectedValue += `${value}`;
+            if (i < row.length - 1) {
+              selectedValue += "\t";
+            }
+          }
+          selectedValue += "\n";
         });
 
-        textarea.current.value = JSON.stringify(selectedValue);
+        textarea.current.value = selectedValue;
         textarea.current.focus();
-        textarea.current.setSelectionRange(0, textarea.current.value.length);
+        textarea.current.setSelectionRange(0, selectedValue.length);
       }
     },
     [findFirstCell, highlightCells, findLastCell, allEditableCells, textarea]

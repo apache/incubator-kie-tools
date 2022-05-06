@@ -62,7 +62,7 @@ describe("CopyAndPasteUtils", () => {
         let newRows;
 
         act(() => {
-          newRows = pasteOnTable('[["aaaa","bbbb"]]', rows, rowFactory);
+          newRows = pasteOnTable("aaaa\tbbbb", rows, rowFactory);
         });
 
         expect(newRows).not.toBe(rows);
@@ -81,7 +81,7 @@ describe("CopyAndPasteUtils", () => {
         let newRows;
 
         act(() => {
-          newRows = pasteOnTable('[["aaaa","bbbb"], ["cccc","dddd"]]', rows, rowFactory);
+          newRows = pasteOnTable("aaaa\tbbbb\ncccc\tdddd", rows, rowFactory);
         });
 
         expect(newRows).not.toBe(rows);
@@ -100,7 +100,7 @@ describe("CopyAndPasteUtils", () => {
         let newRows;
 
         act(() => {
-          newRows = pasteOnTable('[["aaaa","bbbb"], ["cccc","dddd"]]', rows, rowFactory, 1, 1);
+          newRows = pasteOnTable("aaaa\tbbbb\ncccc\tdddd", rows, rowFactory, 1, 1);
         });
 
         expect(newRows).not.toBe(rows);
@@ -119,7 +119,7 @@ describe("CopyAndPasteUtils", () => {
         let newRows;
 
         act(() => {
-          newRows = pasteOnTable('[["aaaa","bbbb"  ],["cccc","dddd"  ]]', rows, rowFactory);
+          newRows = pasteOnTable("aaaa\tbbbb\t\ncccc\tdddd\n", rows, rowFactory);
         });
 
         expect(newRows).not.toBe(rows);
@@ -143,13 +143,13 @@ describe("CopyAndPasteUtils", () => {
 
     describe("when the paste value has a single row", () => {
       test("returns an iterable data structure", () => {
-        expect(iterableValue('[["A", "B", "C"]]')).toEqual([["A", "B", "C"]]);
+        expect(iterableValue("A\tB\tC")).toEqual([["A", "B", "C"]]);
       });
     });
 
     describe("when the paste value has multiple rows", () => {
       test("returns an iterable data structure", () => {
-        expect(iterableValue('[ ["A", "B", "C"], ["D", "E", "F"] ]')).toEqual([
+        expect(iterableValue("A\tB\tC\nD\tE\tF")).toEqual([
           ["A", "B", "C"],
           ["D", "E", "F"],
         ]);

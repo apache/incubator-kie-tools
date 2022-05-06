@@ -121,9 +121,12 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
   const onTextAreaChange = useCallback(
     (event) => {
       const newValue: string = event.target.value.trim("") ?? "";
+      const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
 
-      if (textarea.current && event.nativeEvent.inputType === "insertFromPaste") {
-        paste(newValue, textarea.current, boxedExpression.editorRef.current!);
+      // event.nativeEvent.inputType==="insertFromPaste" ensure that this block is not executed on cells with newlines inside
+      if (textarea.current && isPastedValue && event.nativeEvent.inputType === "insertFromPaste") {
+        const pasteValue = newValue.slice(value.length);
+        paste(pasteValue, textarea.current, boxedExpression.editorRef.current!);
         triggerReadMode();
         return;
       }

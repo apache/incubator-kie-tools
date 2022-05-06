@@ -32,7 +32,7 @@ describe("CellSelectionBox", () => {
       const kieSelectionTextarea = container.querySelector(".kie-cell-selection-box textarea") as HTMLTextAreaElement;
       const selectionValue = kieSelectionTextarea!.value;
 
-      expect(selectionValue).toBe('[["Cell 1","Cell 2","Cell 3","Cell 4","Cell 5","Cell 6"]]');
+      expect(selectionValue).toMatch("Cell 1\tCell 2\tCell 3\tCell 4\tCell 5\tCell 6");
     });
   });
 });
