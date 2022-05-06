@@ -373,7 +373,8 @@
           <optimizationLevel>9</optimizationLevel>
           <draftCompile>false</draftCompile>
           <strict>true</strict>
-          <style>OBFUSCATED</style>
+          <!-- Do NOT change the style below, it must be PRETTY, otherwise JSON.stringify complains about circular references when having switch states. -->
+          <style>PRETTY</style>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <runTarget>test.html</runTarget>
@@ -467,5 +468,60 @@
 
   </build>
 
+  <profiles>
+    <profile>
+      <id>sources</id>
+      <activation>
+        <property>
+          <name>sources</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <configuration>
+              <module>org.kie.workbench.common.stunner.sw.KogitoSWEditorWithSourceMaps</module>
+              <saveSource>true</saveSource>
+              <logLevel>INFO</logLevel>
+              <optimizationLevel>0</optimizationLevel>
+              <draftCompile>true</draftCompile>
+              <style>PRETTY</style>
+              <generateJsInteropExports>true</generateJsInteropExports>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>add-source-maps</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>war</goal>
+                </goals>
+                <configuration>
+                  <webResources>
+                    <resource>
+                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/src</directory>
+                      <targetPath>sourcemaps</targetPath>
+                    </resource>
+                    <resource>
+                      <directory>${basedir}/target/extra/org.kie.workbench.common.stunner.sw.KogitoSWEditor/symbolMaps</directory>
+                      <includes>
+                        <include>*.json</include>
+                      </includes>
+                      <targetPath>sourcemaps</targetPath>
+                    </resource>
+                  </webResources>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

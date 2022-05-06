@@ -24,10 +24,18 @@ import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
 import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
+import org.kie.workbench.common.stunner.sw.definition.CallbackState;
+import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
+import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
+import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
+import org.kie.workbench.common.stunner.sw.definition.OperationState;
+import org.kie.workbench.common.stunner.sw.definition.ParallelState;
+import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -61,7 +69,17 @@ public class Parser {
         } else if (EventState.TYPE_EVENT.equals(jso.type)) {
             state = parseEventState(jso);
         } else if (SwitchState.TYPE_SWITCH.equals(jso.type)) {
-            state = parse(SwitchState.class, jso);
+            state = parseSwitchState(jso);
+        } else if (OperationState.TYPE_OPERATION.equals(jso.type)) {
+            state = parseOperationState(jso);
+        } else if (SleepState.TYPE_SLEEP.equals(jso.type)) {
+            state = parse(SleepState.class, jso);
+        } else if (ParallelState.TYPE_PARALLEL.equals(jso.type)) {
+            state = parse(ParallelState.class, jso);
+        } else if (ForEachState.TYPE_FOR_EACH.equals(jso.type)) {
+            state = parseForEachState(jso);
+        } else if (CallbackState.TYPE_CALLBACK.equals(jso.type)) {
+            state = parseCallbackState(jso);
         }
 
         if (null != state) {
@@ -77,6 +95,73 @@ public class Parser {
         }
 
         return state;
+    }
+
+    private SwitchState parseSwitchState(State jso) {
+        SwitchState state = (SwitchState) parse(SwitchState.class, jso);
+        DefaultConditionTransition defaultCondition = Js.uncheckedCast(Js.asPropertyMap(jso).get("defaultCondition"));
+        if (null != defaultCondition) {
+            state.defaultCondition = parse(DefaultConditionTransition.class, defaultCondition);
+        }
+        EventConditionTransition[] eventConditions = Js.uncheckedCast(Js.asPropertyMap(jso).get("eventConditions"));
+        if (null != eventConditions) {
+            state.eventConditions = new EventConditionTransition[eventConditions.length];
+            for (int i = 0; i < eventConditions.length; i++) {
+                EventConditionTransition eventConditionJSO = eventConditions[i];
+                EventConditionTransition eventCondition = parse(EventConditionTransition.class, eventConditionJSO);
+                state.eventConditions[i] = eventCondition;
+            }
+        }
+        DataConditionTransition[] dataConditions = Js.uncheckedCast(Js.asPropertyMap(jso).get("dataConditions"));
+        if (null != dataConditions) {
+            state.dataConditions = new DataConditionTransition[dataConditions.length];
+            for (int i = 0; i < dataConditions.length; i++) {
+                DataConditionTransition dataConditionJSO = dataConditions[i];
+                DataConditionTransition dataCondition = parse(DataConditionTransition.class, dataConditionJSO);
+                state.dataConditions[i] = dataCondition;
+            }
+        }
+        return state;
+    }
+
+    private CallbackState parseCallbackState(State jso) {
+        CallbackState state = (CallbackState) parse(CallbackState.class, jso);
+        if (null != state.action) {
+            state.action = parse(ActionNode.class, state.action);
+        }
+        return state;
+    }
+
+    private ForEachState parseForEachState(State jso) {
+        ForEachState state = (ForEachState) parse(ForEachState.class, jso);
+        ActionNode[] actions = parseActions(jso);
+        if (null != actions) {
+            state.actions = actions;
+        }
+        return state;
+    }
+
+    private OperationState parseOperationState(State jso) {
+        OperationState state = (OperationState) parse(OperationState.class, jso);
+        ActionNode[] actions = parseActions(jso);
+        if (null != actions) {
+            state.actions = actions;
+        }
+        return state;
+    }
+
+    private ActionNode[] parseActions(State jso) {
+        ActionNode[] actions = Js.uncheckedCast(Js.asPropertyMap(jso).get("actions"));
+        if (null != actions) {
+            ActionNode[] result = new ActionNode[actions.length];
+            for (int i = 0; i < actions.length; i++) {
+                ActionNode a = actions[i];
+                ActionNode action = parseAction(a);
+                result[i] = action;
+            }
+            return result;
+        }
+        return null;
     }
 
     private EventState parseEventState(State jso) {

@@ -145,6 +145,22 @@
     </dependency>
 
     <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-core-common</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
       <scope>test</scope>
