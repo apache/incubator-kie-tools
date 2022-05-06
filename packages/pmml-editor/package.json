@@ -66,7 +66,12 @@
     "@kie-tools-core/webpack-base": "0.0.0",
     "gh-pages": "^3.2.3",
     "@types/lodash": "^4.14.168",
-    "@types/uuid": "^8.3.0"
+    "@types/uuid": "^8.3.0",
+    "@kie-tools-core/keyboard-shortcuts": "0.0.0",
+    "@kie-tools-core/operating-system": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/envelope": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0"
   },
   "babel": {
     "presets": [

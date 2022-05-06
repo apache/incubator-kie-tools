@@ -12,8 +12,9 @@
   "scripts": {
     "install-dependencies": "pnpm install || echo 'Ignoring install errors'",
     "bootstrap": "yarn install-dependencies && node ./scripts/link_packages_with_self.js",
-    "env:print": "build-env --print-env",
-    "env:vars": "build-env --print-vars",
+    "build-env": "node packages/build-env/cli.js",
+    "env:print": "yarn build-env --print-env",
+    "env:vars": "yarn build-env --print-vars",
     "update-version-to": "node ./scripts/update_version.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

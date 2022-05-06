@@ -115,10 +115,10 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                 aria-label="Wizard Toggle"
                 class="pf-c-wizard__toggle"
               >
-                <ol
+                <span
                   class="pf-c-wizard__toggle-list"
                 >
-                  <li
+                  <span
                     class="pf-c-wizard__toggle-list-item"
                   >
                     <span
@@ -128,8 +128,8 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                     </span>
                      
                     Select fields
-                  </li>
-                </ol>
+                  </span>
+                </span>
                 <span
                   class="pf-c-wizard__toggle-icon"
                 >
@@ -174,7 +174,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                         class="pf-c-wizard__nav-item"
                       >
                         <button
-                          aria-current="page"
+                          aria-current="step"
                           class="pf-c-wizard__nav-link pf-m-current"
                         >
                           Select fields
@@ -225,7 +225,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-9"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
@@ -337,7 +337,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-10"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
@@ -559,7 +559,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
             aria-disabled="false"
             aria-label="Close"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Button-plain-9"
+            data-ouia-component-id="OUIA-Generated-Button-plain-11"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -611,10 +611,10 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                 aria-label="Wizard Toggle"
                 class="pf-c-wizard__toggle"
               >
-                <ol
+                <span
                   class="pf-c-wizard__toggle-list"
                 >
-                  <li
+                  <span
                     class="pf-c-wizard__toggle-list-item"
                   >
                     <span
@@ -624,8 +624,8 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                     </span>
                      
                     Select fields
-                  </li>
-                </ol>
+                  </span>
+                </span>
                 <span
                   class="pf-c-wizard__toggle-icon"
                 >
@@ -670,7 +670,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                         class="pf-c-wizard__nav-item"
                       >
                         <button
-                          aria-current="page"
+                          aria-current="step"
                           class="pf-c-wizard__nav-link pf-m-current"
                         >
                           Select fields
@@ -721,7 +721,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                                 aria-label="Details"
                                 aria-labelledby="simple-node0 expand-toggle0"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-5"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-15"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle0"
@@ -833,7 +833,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                                 aria-label="Details"
                                 aria-labelledby="simple-node1 expand-toggle1"
                                 class="pf-c-button pf-m-plain pf-m-expanded"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-6"
+                                data-ouia-component-id="OUIA-Generated-Button-plain-16"
                                 data-ouia-component-type="PF4/Button"
                                 data-ouia-safe="true"
                                 id="expand-toggle1"
@@ -1074,7 +1074,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
             aria-disabled="false"
             aria-label="Close"
             class="pf-c-button pf-m-plain"
-            data-ouia-component-id="OUIA-Generated-Button-plain-13"
+            data-ouia-component-id="OUIA-Generated-Button-plain-25"
             data-ouia-component-type="PF4/Button"
             data-ouia-safe="true"
             type="button"
@@ -1126,10 +1126,10 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                 aria-label="Wizard Toggle"
                 class="pf-c-wizard__toggle"
               >
-                <ol
+                <span
                   class="pf-c-wizard__toggle-list"
                 >
-                  <li
+                  <span
                     class="pf-c-wizard__toggle-list-item"
                   >
                     <span
@@ -1139,8 +1139,8 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                     </span>
                      
                     Review
-                  </li>
-                </ol>
+                  </span>
+                </span>
                 <span
                   class="pf-c-wizard__toggle-icon"
                 >
@@ -1195,7 +1195,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                         class="pf-c-wizard__nav-item"
                       >
                         <button
-                          aria-current="page"
+                          aria-current="step"
                           class="pf-c-wizard__nav-link pf-m-current"
                         >
                           Review
@@ -1239,7 +1239,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                   aria-label="Details"
                                   aria-labelledby="simple-node0 expand-toggle0"
                                   class="pf-c-button pf-m-plain pf-m-expanded"
-                                  data-ouia-component-id="OUIA-Generated-Button-plain-15"
+                                  data-ouia-component-id="OUIA-Generated-Button-plain-29"
                                   data-ouia-component-type="PF4/Button"
                                   data-ouia-safe="true"
                                   id="expand-toggle0"
@@ -1351,7 +1351,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                                   aria-label="Details"
                                   aria-labelledby="simple-node1 expand-toggle1"
                                   class="pf-c-button pf-m-plain pf-m-expanded"
-                                  data-ouia-component-id="OUIA-Generated-Button-plain-16"
+                                  data-ouia-component-id="OUIA-Generated-Button-plain-30"
                                   data-ouia-component-type="PF4/Button"
                                   data-ouia-safe="true"
                                   id="expand-toggle1"
@@ -1616,10 +1616,10 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                 aria-label="Wizard Toggle"
                 class="pf-c-wizard__toggle"
               >
-                <ol
+                <span
                   class="pf-c-wizard__toggle-list"
                 >
-                  <li
+                  <span
                     class="pf-c-wizard__toggle-list-item"
                   >
                     <span
@@ -1629,8 +1629,8 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                     </span>
                      
                     Select Java classes
-                  </li>
-                </ol>
+                  </span>
+                </span>
                 <span
                   class="pf-c-wizard__toggle-icon"
                 >
@@ -1665,7 +1665,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
                         class="pf-c-wizard__nav-item"
                       >
                         <button
-                          aria-current="page"
+                          aria-current="step"
                           class="pf-c-wizard__nav-link pf-m-current"
                         >
                           Select Java classes
@@ -1984,10 +1984,10 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                 aria-label="Wizard Toggle"
                 class="pf-c-wizard__toggle"
               >
-                <ol
+                <span
                   class="pf-c-wizard__toggle-list"
                 >
-                  <li
+                  <span
                     class="pf-c-wizard__toggle-list-item"
                   >
                     <span
@@ -1997,8 +1997,8 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                     </span>
                      
                     Select Java classes
-                  </li>
-                </ol>
+                  </span>
+                </span>
                 <span
                   class="pf-c-wizard__toggle-icon"
                 >
@@ -2033,7 +2033,7 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
                         class="pf-c-wizard__nav-item"
                       >
                         <button
-                          aria-current="page"
+                          aria-current="step"
                           class="pf-c-wizard__nav-link pf-m-current"
                         >
                           Select Java classes
