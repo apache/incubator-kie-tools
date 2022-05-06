@@ -179,8 +179,8 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
         // Asymmetric shapes such as rectangles
         if (!isSymmetric) {
             theSizeHandler = new SizeHandler.Builder<>()
-                    .maxWidth(o-> 100d)
-                    .maxHeight(o-> 100d)
+                    .maxWidth(o-> 90d)
+                    .maxHeight(o-> 90d)
                     .build();
             return Optional.of((BiConsumer<View<W>, SVGShapeView>) theSizeHandler::handle);
         }
@@ -216,7 +216,7 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.LEFT)
                     .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
-                    .textSizeConstraints(bean -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
                     .margin(HasTitle.HorizontalAlignment.LEFT, 85d)
                     .alpha(bean -> 1d);
@@ -227,7 +227,7 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
                     .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
-                    .textSizeConstraints(bean -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
                     .alpha(bean -> 0.4d);
         }
@@ -237,7 +237,7 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
                     .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
-                    .textSizeConstraints(bean -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
                     .alpha(bean -> 1d);
         }
@@ -247,7 +247,7 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
                     .referencePosition(bean -> HasTitle.ReferencePosition.OUTSIDE)
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
-                    .textSizeConstraints(bean -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
                     .alpha(bean -> 1d);
         }
