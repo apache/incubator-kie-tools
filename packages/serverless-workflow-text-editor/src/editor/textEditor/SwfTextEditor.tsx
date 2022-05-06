@@ -69,7 +69,7 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
       );
     }
     throw new Error(`Unsupported extension '${fileName}'`);
-  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange]);
+  }, [content, editorEnvelopeCtx.operatingSystem, fileName, onContentChange, isReadOnly, setValidationErrors]);
 
   useEffect(() => {
     controller.forceRedraw();

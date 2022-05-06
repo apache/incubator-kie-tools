@@ -108,24 +108,27 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
     []
   );
 
-  const setValidationErrors = (errors: editor.IMarker[]) => {
-    if (!initialContent) {
-      return;
-    }
-    const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
-      type: "PROBLEM",
-      path: initialContent.path,
-      severity: "ERROR",
-      message: `${error.message}`,
-      position: {
-        startLineNumber: error.startLineNumber,
-        startColumn: error.startColumn,
-        endLineNumber: error.endLineNumber,
-        endColumn: error.endColumn,
-      },
-    }));
-    props.setNotifications(initialContent.path, notifications);
-  };
+  const setValidationErrors = useCallback(
+    (errors: editor.IMarker[]) => {
+      if (!initialContent) {
+        return;
+      }
+      const notifications: Notification[] = errors.map((error: editor.IMarker) => ({
+        type: "PROBLEM",
+        path: initialContent.path,
+        severity: "ERROR",
+        message: `${error.message}`,
+        position: {
+          startLineNumber: error.startLineNumber,
+          startColumn: error.startColumn,
+          endLineNumber: error.endLineNumber,
+          endColumn: error.endColumn,
+        },
+      }));
+      props.setNotifications.apply(initialContent.path, notifications);
+    },
+    [initialContent, props.setNotifications]
+  );
 
   const isVscode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
