@@ -28,6 +28,7 @@ import static java.util.Arrays.asList;
 public class DMNBackwardCompatibilityIT extends DMNDesignerBaseIT {
 
     @Test
+    @Ignore
     public void testDMN11Assets() throws Exception {
         runAssets("dmn11", dmn11Assets());
     }
@@ -38,6 +39,7 @@ public class DMNBackwardCompatibilityIT extends DMNDesignerBaseIT {
     }
 
     @Test
+    @Ignore
     public void testDMN13Assets() throws Exception {
         runAssets("dmn13", dmn13Assets());
     }

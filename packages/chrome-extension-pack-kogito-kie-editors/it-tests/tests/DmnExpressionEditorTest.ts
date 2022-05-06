@@ -53,7 +53,6 @@ test(TEST_NAME, async () => {
   await decisionNavigator.selectNodeExpression(BKM_NODE_NAME);
 
   const expressionEditor: DmnExpressionEditor = await dmnEditor.getExpressionEditor();
-  await expressionEditor.activateBetaVersion();
   await expressionEditor.assertExpressionIsPresent("MyModel", "<Undefined>");
 
   await dmnEditor.leave();
