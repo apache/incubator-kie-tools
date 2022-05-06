@@ -1,0 +1,14 @@
+{
+  "name": "Uniforms",
+  "category": "Forms",
+  "icon": "pficon pficon-messages",
+  "noData": "true",
+  "parameters": [
+    {
+      "name": "schema",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Schema"
+    }
+  ]
+}
