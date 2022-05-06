@@ -206,7 +206,7 @@ public class TransitionShapeDef<W>
             return "#757575";
         }
         if (type == Type.ERROR) {
-            return "#c70039";
+            return "#c9190b";
         }
         if (type == Type.EVENT_CONDITION) {
             return "#828282";
@@ -215,13 +215,13 @@ public class TransitionShapeDef<W>
             return "#757575";
         }
         if (type == Type.DEFAULT_CONDITION) {
-            return "#37AB39";
+            return "#3e8635";
         }
         if (type == Type.ACTION) {
             return "#757575";
         }
         if (type == Type.COMPENSATION) {
-            return "#e8ac0c";
+            return "#f0ab00";
         }
         return "#757575";
     }
