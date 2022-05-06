@@ -10,7 +10,8 @@
     ]
   },
   "scripts": {
-    "bootstrap": "pnpm install && node ./scripts/link_packages_with_self.js",
+    "install-dependencies": "pnpm install || echo 'Ignoring install errors'",
+    "bootstrap": "yarn install-dependencies && node ./scripts/link_packages_with_self.js",
     "env:print": "build-env --print-env",
     "env:vars": "build-env --print-vars",
     "update-version-to": "node ./scripts/update_version.js",

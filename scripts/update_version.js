@@ -38,6 +38,8 @@ const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
   "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
 );
 
+const ORIGINAL_LERNA_JSON = require("../lerna.json");
+
 // MAIN
 
 const newVersion = process.argv[2];
@@ -48,10 +50,10 @@ if (!newVersion) {
 
 let execOpts = {};
 const opts = process.argv[3];
-if (opts === "--verbose") {
-  execOpts = { stdio: "inherit" };
-} else {
+if (opts === "--silent") {
   execOpts = { stdio: "pipe" };
+} else {
+  execOpts = { stdio: "inherit" };
 }
 
 Promise.resolve()
@@ -63,9 +65,10 @@ Promise.resolve()
   .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
   .then((version) => updateExtendedServicesConfigFile(version))
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
+  .then((version) => updateLockfile(version))
   .then(async (version) => {
     console.info(`[update-version] Formatting files...`);
-    execSync(`yarn format`, execOpts);
+    execSync(`yarn pretty-quick`, execOpts);
     return version;
   })
   .then((version) => {
@@ -174,8 +177,16 @@ async function updateExtendedServicesConfigFile(version) {
 async function updateJavaAutocompletionPluginManifestFile(version) {
   console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
   const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
-  const newManifestFile = manifestFile.replace("Bundle-Version: 0.0.0", "Bundle-Version: " + version);
+  const newManifestFile = manifestFile.replace(
+    `Bundle-Version: ${ORIGINAL_LERNA_JSON.version}`,
+    `Bundle-Version: ${version}`
+  );
   fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);
 
+  return version;
+}
+
+async function updateLockfile(version) {
+  execSync(`yarn bootstrap`, execOpts);
   return version;
 }
