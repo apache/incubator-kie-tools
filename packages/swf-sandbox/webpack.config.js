@@ -89,6 +89,7 @@ module.exports = async (env, argv) => {
           { from: "./static/envelope/swf-editor-envelope.html", to: "./swf-editor-envelope.html" },
           { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
+          { from: "./static/env.json", to: "./env.json" },
         ],
       }),
       new ProvidePlugin({
