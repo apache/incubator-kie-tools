@@ -52,7 +52,7 @@ module.exports = {
           // Limit at 50k. larger files emitted into separate files
           limit: 5000,
           outputPath: "fonts",
-          name: "[name].[ext]",
+          name: "[name]-[hash].[ext]", // workaround to avoid "Error: Multiple assets emit different content to the same filename fonts/codicon.ttf"
         },
       },
     },

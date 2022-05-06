@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
+import {
+  Editor,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
+import { TextEditorChannelApi } from "../api";
+import { TextEditorView } from "./TextEditorView";
 
-init({
-  container: document.getElementById("swf-editor-envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowEditorFactory(),
-});
+export class TextEditorFactory implements EditorFactory<Editor, TextEditorChannelApi> {
+  public async createEditor(ctx: KogitoEditorEnvelopeContextType<TextEditorChannelApi>, initArgs: EditorInitArgs) {
+    return new TextEditorView(ctx, initArgs);
+  }
+}

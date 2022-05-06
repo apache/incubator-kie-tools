@@ -14,11 +14,4 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
-
-init({
-  container: document.getElementById("swf-editor-envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowEditorFactory(),
-});
+import "@testing-library/jest-dom";

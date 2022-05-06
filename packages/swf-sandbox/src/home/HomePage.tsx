@@ -154,16 +154,16 @@ export function HomePage() {
                   description={"Serverless Workflow files are used to define orchestration logic for services."}
                 />
                 <NewModelCard
+                  title={"Decision"}
+                  extension={"sd.yml"}
+                  description={"Serverless Decision files are used to define decision logic for services."}
+                />
+                <NewModelCard
                   title={"Dashboard"}
                   extension={"db"}
                   description={
                     "Dashboard files are used to define data visualization extracted from business applications."
                   }
-                />
-                <NewModelCard
-                  title={"Decision"}
-                  extension={"sd.yml"}
-                  description={"Serverless Decision files are used to define decision logic for services."}
                 />
               </Gallery>
             </PageSection>

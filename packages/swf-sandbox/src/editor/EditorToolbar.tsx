@@ -60,6 +60,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
@@ -144,9 +145,9 @@ export function EditorToolbar(props: Props) {
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
-  const isSupportedFile = useMemo(
-    () => editorEnvelopeLocator.hasMappingFor(props.workspaceFile.relativePath),
-    [editorEnvelopeLocator, props.workspaceFile.relativePath]
+  const canBeDeployed = useMemo(
+    () => isServerlessWorkflow(props.workspaceFile.relativePath),
+    [props.workspaceFile.relativePath]
   );
 
   useCancelableEffect(
@@ -1477,7 +1478,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                         />
                       </Dropdown>
                     </ToolbarItem>
-                    {isSupportedFile && (
+                    {canBeDeployed && (
                       <ToolbarItem>
                         <FlexItem>
                           <DeployToolbar

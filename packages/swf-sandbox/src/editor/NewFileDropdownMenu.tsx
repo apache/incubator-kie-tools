@@ -235,21 +235,21 @@ export function NewFileDropdownMenu(props: {
             </b>
           </MenuItem>
           <MenuItem
-            itemId={"newDashboardItemId"}
-            onClick={() => addEmptyFile("db")}
-            description="Dashboard files are used to define data visualization extracted from business applications."
-          >
-            <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"db"} />
-            </b>
-          </MenuItem>
-          <MenuItem
             itemId={"newSdItemId"}
             onClick={() => addEmptyFile("sd.yml")}
             description="Serverless Decision files are used to define decision logic for services."
           >
             <b>
               <FileLabel style={{ marginBottom: "4px" }} extension={"sd.yml"} />
+            </b>
+          </MenuItem>
+          <MenuItem
+            itemId={"newDashboardItemId"}
+            onClick={() => addEmptyFile("db")}
+            description="Dashboard files are used to define data visualization extracted from business applications."
+          >
+            <b>
+              <FileLabel style={{ marginBottom: "4px" }} extension={"db"} />
             </b>
           </MenuItem>
           <Divider />
@@ -273,17 +273,6 @@ export function NewFileDropdownMenu(props: {
                   </Flex>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => addSample("db")}
-                  description="Dashboard files are used to define data visualization extracted from business applications."
-                >
-                  <Flex>
-                    <FlexItem>Sample</FlexItem>
-                    <FlexItem>
-                      <FileLabel extension={"db"} />
-                    </FlexItem>
-                  </Flex>
-                </MenuItem>
-                <MenuItem
                   onClick={() => addSample("sd.yml")}
                   description="Serverless Decision files are used to define decision logic for services."
                 >
@@ -291,6 +280,17 @@ export function NewFileDropdownMenu(props: {
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
                       <FileLabel extension={"sd.yml"} />
+                    </FlexItem>
+                  </Flex>
+                </MenuItem>
+                <MenuItem
+                  onClick={() => addSample("db")}
+                  description="Dashboard files are used to define data visualization extracted from business applications."
+                >
+                  <Flex>
+                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>
+                      <FileLabel extension={"db"} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>

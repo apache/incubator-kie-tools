@@ -25,16 +25,13 @@ const dashboardLabel: LabelColorType = { color: "purple", label: "Dashboard" };
 
 const labelColors = new Map<string, LabelColorType>([
   ["sw.json", swfLabel],
-  ["SW.JSON", swfLabel],
-  ["sw.yaml", swfLabel],
-  ["SW.YAML", swfLabel],
   ["sw.yml", swfLabel],
-  ["SW.YML", swfLabel],
-  ["db", dashboardLabel], //FIXME: db?
+  ["sw.yaml", swfLabel],
   ["sd.yml", sdLabel],
-  ["SD.YML", sdLabel],
+  ["sd.yaml", sdLabel],
   ["decision.yml", sdLabel],
-  ["DECISION.YML", sdLabel],
+  ["decision.yaml", sdLabel],
+  ["db", dashboardLabel], //FIXME: db?
 ]);
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {
@@ -42,7 +39,7 @@ export function FileLabel(props: { style?: LabelProps["style"]; extension: strin
     <>
       {props.extension && (
         <Label style={props.style ?? {}} color={labelColors.get(props.extension)?.color ?? "grey"}>
-          {labelColors.get(props.extension)?.label ?? props.extension.toUpperCase()}
+          {labelColors.get(props.extension.toLowerCase())?.label ?? props.extension.toUpperCase()}
         </Label>
       )}
     </>

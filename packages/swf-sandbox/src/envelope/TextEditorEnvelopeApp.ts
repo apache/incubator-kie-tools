@@ -15,10 +15,10 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
+import { TextEditorFactory } from "@kie-tools/text-editor";
 
 init({
-  container: document.getElementById("swf-editor-envelope-app")!,
+  container: document.getElementById("text-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowEditorFactory(),
+  editorFactory: new TextEditorFactory(),
 });

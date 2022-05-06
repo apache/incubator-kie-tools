@@ -31,6 +31,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { isServerlessDecision, isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -43,7 +44,6 @@ import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
-import { TextEditor } from "./TextEditor/TextEditor";
 
 export interface Props {
   workspaceId: string;
@@ -104,7 +104,10 @@ export function EditorPage(props: Props) {
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.relativePath,
             getFileContents: async () => content,
-            isReadOnly: false,
+            isReadOnly: !(
+              isServerlessWorkflow(workspaceFilePromise.data.relativePath) ||
+              isServerlessDecision(workspaceFilePromise.data.relativePath)
+            ),
             fileExtension: workspaceFilePromise.data.extension,
             fileName: workspaceFilePromise.data.relativePath, //FIXME
           });
@@ -275,48 +278,38 @@ export function EditorPage(props: Props) {
           </Bullseye>
         }
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
-        resolved={(file) => {
-          const isSupportedFile = editorEnvelopeLocator.hasMappingFor(file.relativePath);
-          return (
-            <>
-              <Page>
-                <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
-                <Divider />
-                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                  {isSupportedFile ? (
-                    <div style={{ height: "100%" }}>
-                      {!isEditorReady && <LoadingSpinner />}
-                      {embeddedEditorFile && (
-                        <div style={{ display: isEditorReady ? "inline" : "none" }}>
-                          <EmbeddedEditor
-                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                             */
-                            key={workspaces.getUniqueFileIdentifier(file)}
-                            ref={editorRef}
-                            file={embeddedEditorFile}
-                            kogitoWorkspace_openFile={handleOpenFile}
-                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                            kogitoEditor_setContentError={handleSetContentError}
-                            editorEnvelopeLocator={editorEnvelopeLocator}
-                            channelType={ChannelType.ONLINE_MULTI_FILE}
-                            locale={locale}
-                          />
-                        </div>
-                      )}
+        resolved={(file) => (
+          <>
+            <Page>
+              <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+              <Divider />
+              <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+                <div style={{ height: "100%" }}>
+                  {!isEditorReady && <LoadingSpinner />}
+                  {embeddedEditorFile && (
+                    <div style={{ display: isEditorReady ? "inline" : "none" }}>
+                      <EmbeddedEditor
+                        /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                         * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                         */
+                        key={workspaces.getUniqueFileIdentifier(file)}
+                        ref={editorRef}
+                        file={embeddedEditorFile}
+                        kogitoWorkspace_openFile={handleOpenFile}
+                        kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                        kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                        kogitoEditor_setContentError={handleSetContentError}
+                        editorEnvelopeLocator={editorEnvelopeLocator}
+                        channelType={ChannelType.ONLINE_MULTI_FILE}
+                        locale={locale}
+                      />
                     </div>
-                  ) : (
-                    <TextEditor
-                      file={file}
-                      readonly={!["sd.yml", "decision.yml"].includes(file.extension)} // FIXME
-                    />
                   )}
-                </PageSection>
-              </Page>
-            </>
-          );
-        }}
+                </div>
+              </PageSection>
+            </Page>
+          </>
+        )}
       />
     </OnlineEditorPage>
   );

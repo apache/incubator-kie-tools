@@ -25,7 +25,7 @@ export class EnvelopeMapping {
     public readonly resourcesPathPrefix: string,
     public readonly envelopePath: string
   ) {
-    this.matcher = new Minimatch(filePathGlob, { nocase: true });
+    this.matcher = new Minimatch(filePathGlob, { nocase: true, dot: true });
   }
 }
 

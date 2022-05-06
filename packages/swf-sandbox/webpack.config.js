@@ -48,7 +48,8 @@ module.exports = async (env, argv) => {
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
-      "swf-envelope": "./src/envelope/SwfEditorEnvelopeApp.ts",
+      "swf-editor-envelope": "./src/envelope/SwfEditorEnvelopeApp.ts",
+      "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
       "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
     },
     plugins: [
@@ -85,7 +86,8 @@ module.exports = async (env, argv) => {
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/envelope/swf-envelope.html", to: "./swf-envelope.html" },
+          { from: "./static/envelope/swf-editor-envelope.html", to: "./swf-editor-envelope.html" },
+          { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
       }),
@@ -106,14 +108,6 @@ module.exports = async (env, argv) => {
         ],
       }),
     ],
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
-        // "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
-      },
-    },
     module: {
       rules: [
         {
