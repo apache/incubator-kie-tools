@@ -37,8 +37,9 @@ digraph G {
   "@kie-tools/dashbuilder-component-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-uniforms" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-victory-charts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-dev" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-table" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dashbuilder-component-echarts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dashbuilder-component-dev" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -121,7 +122,11 @@ digraph G {
   "@kie-tools/dashbuilder-component-api" -> "@kie-tools/build-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-uniforms" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-victory-charts" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-table" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-echarts" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-dev" -> "@kie-tools/dashbuilder-component-api" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-component-echarts" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-component-echarts" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-table" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-table" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-uniforms" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];

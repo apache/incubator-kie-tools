@@ -17,40 +17,47 @@
 import * as React from "react";
 import { ComponentController, DataSet } from "@kie-tools/dashbuilder-component-api";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { EChartsType, init } from "echarts";
+import { EChartOption, EChartsType, init } from "echarts";
 
 interface Props {
   controller: ComponentController;
 }
+
+const OPTION_PARAM = "option";
+const NOT_MERGE_PARAM = "notMerge";
+const INIT_OPTIONS = {
+  tooltip: {},
+  xAxis: { type: "category" },
+  yAxis: {},
+  series: [],
+};
 
 export function EChartsComponent(props: Props) {
   const container = useRef<HTMLDivElement>(null);
   const [chart, setChart] = useState<EChartsType | undefined>();
 
   useEffect(() => {
-    props.controller.setOnInit((params: Map<string, any>) => {});
+    props.controller.setOnInit((params: Map<string, any>) => {
+      chart?.setOption(INIT_OPTIONS as EChartOption, true);
+    });
 
     props.controller.setOnDataSet((_dataset: DataSet, params: Map<string, any>) => {
       const options = fillProperties(params);
+      const notMerge = params.get(NOT_MERGE_PARAM) === true;
+      params.delete(NOT_MERGE_PARAM);
       options.dataset = { source: [_dataset.columns.map((c) => c.settings.columnName), ..._dataset.data] };
       // LIMITATION: have to set all series for the same type because the parameters is in a map
-      if (options.series && _dataset.columns.length > 1) {
+      if (options.series && !options.series.length && _dataset.columns.length > 1) {
         const series = Array(_dataset.columns.length - 1).fill(options.series);
         options.series = series;
       }
-      chart?.setOption(options, false);
+      chart?.setOption(options, notMerge);
     });
   }, [props.controller, chart]);
 
   useEffect(() => {
     if (container.current) {
       const chart = init(container.current);
-      chart.setOption({
-        tooltip: {},
-        xAxis: { type: "category" },
-        yAxis: {},
-        series: [],
-      });
       setChart(chart);
     }
   }, []);
@@ -67,14 +74,14 @@ export function EChartsComponent(props: Props) {
 
 const fillProperties = (props: Map<string, any>): any => {
   let option = {};
-  const optionStr = props.get("option");
+  const optionStr = props.get(OPTION_PARAM);
   if (optionStr) {
     try {
       option = JSON.parse(optionStr);
     } catch (e) {
       console.log("Not able to parse option property");
     }
-    props.delete("option");
+    props.delete(OPTION_PARAM);
   }
   props.forEach((value, key) => {
     if (key !== "dataSet") {

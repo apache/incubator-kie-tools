@@ -1,12 +1,12 @@
 {
   "init": [
     {
-      "key": "series.type",
-      "value": "funnel"
+      "key": "option",
+      "value": "{        \"series\": [            { \"type\": \"bar\"},            { \"type\": \"line\"}        ]    }"
     },
     {
-      "key": "series.areaStyle.color",
-      "value": "lightgray"
+      "key": "series.type",
+      "value": "line"
     }
   ],
   "dataSet": {
