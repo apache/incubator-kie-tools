@@ -106,7 +106,12 @@ jobs:
           token: ${{ secrets.kie_tools_bot_token }}
           repository: kiegroup/kogito-online-staging
 
-      - name: "Cache Maven packages"
+        # Skipped MacOS due to 120s timeout being reached while running hashFiles('**/pom.xml')
+        # Remove condition after timeout parameter is available
+        # https://github.com/actions/runner/issues/1840
+        # https://github.com/actions/runner/pull/1844
+      - name: "Cache Maven packages (MacOS skipped - see comments in source)"
+        if: ${{ matrix.os != 'macos-latest' }}
         uses: actions/cache@v2
         with:
           path: ~/.m2
