@@ -50,7 +50,7 @@ module.exports = {
           // Limit at 50k. larger files emitted into separate files
           limit: 5000,
           outputPath: "fonts",
-          name: "[name].[ext]",
+          name: "[name]-[hash].[ext]", // TODO: Remove `-[hash]` when pnpm comes in
         },
       },
     },

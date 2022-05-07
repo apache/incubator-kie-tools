@@ -15,10 +15,8 @@
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "copy:images": "cpr ./static/images ./dist/images",
-    "build:dev": "rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.prod.json && pnpm test",
+    "build:dev": "rimraf dist && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
     "test:clearCache": "jest --clearCache",
     "test:watch": "jest --watch",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
