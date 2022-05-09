@@ -245,16 +245,16 @@ jobs:
           echo "Copy Online Editor resources to the deployment dir"
           cp -r ${{ github.workspace }}/kie-tools/packages/online-editor/dist $DEPLOYMENT_DIR
 
-          echo "Create dir for deploying kie editors Chrome Extension resources"
+          echo "Create dir for deploying KIE Editors Chrome Extension resources"
           mkdir $DEPLOYMENT_DIR/chrome-extension
 
-          echo "Create dir for deploying swf editor Chrome Extension resources"
+          echo "Create dir for deploying SWF Editor Chrome Extension resources"
           mkdir $DEPLOYMENT_DIR/swf-chrome-extension
 
-          echo "Copy kie editors Chrome Extension resources to the deployment directory"
+          echo "Copy KIE Editors Chrome Extension resources to the deployment directory"
           cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{bpmn,dmn,scesim,fonts,*-envelope.*} $DEPLOYMENT_DIR/chrome-extension
 
-          echo "Copy swf editor Chrome Extension resources to the deployment directory"
+          echo "Copy SWF Editor Chrome Extension resources to the deployment directory"
           cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} $DEPLOYMENT_DIR/swf-chrome-extension
 
           echo "Remove gwt-editors from the Online Editor deployment"
@@ -351,7 +351,7 @@ jobs:
           asset_name: STAGING__vscode_extension_serverless_workflow_editor_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload Chrome Extension for kie editors (Ubuntu only)"
+      - name: "STAGING: Upload Chrome Extension for KIE Editors (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -362,7 +362,7 @@ jobs:
           asset_name: STAGING__chrome_extension_kogito_kie_editors_${{ inputs.tag }}.zip
           asset_content_type: application/zip
 
-      - name: "STAGING: Upload Chrome Extension for serverless workflow editors (Ubuntu only)"
+      - name: "STAGING: Upload Chrome Extension for Serverless Workflow Editor (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:

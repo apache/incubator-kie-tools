@@ -61,6 +61,7 @@ export function FormComponent(props: React.PropsWithChildren<FormComponentProps<
     onSubmit: props.onSubmit,
     onValidate: props.onValidate,
     removeRequired: props.removeRequired,
+    entryPath: props.entryPath,
     propertiesEntryPath: props.propertiesEntryPath,
     validator: props.validator,
   });
