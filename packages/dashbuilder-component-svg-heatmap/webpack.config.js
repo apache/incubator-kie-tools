@@ -14,31 +14,34 @@
  * limitations under the License.
  */
 
-const CopyPlugin = require("copy-webpack-plugin");
+const path = require("path");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
-  const components = ["victory-charts", "uniforms", "table", "echarts", "svg-heatmap"];
-  const copyResources = [];
-
-  components.forEach((component) => {
-    copyResources.push({
-      from: `../dashbuilder-component-${component}/dist/`,
-      to: `./${component}/`,
-    });
-  });
-
+  const isDev = env.WEBPACK_SERVE;
   return merge(common(env), {
-    entry: {},
+    mode: isDev ? "development" : "production",
+    entry: {
+      index: isDev ? "./src/index-dev.tsx" : "./src/index.tsx",
+    },
     plugins: [
-      new CopyPlugin({
-        patterns: [...copyResources],
+      new HtmlWebpackPlugin({
+        template: "./static/index.html",
+        minify: false,
       }),
     ],
+
     module: {
       rules: [...patternflyBase.webpackModuleRules],
+    },
+    devServer: {
+      historyApiFallback: false,
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+      compress: false,
+      port: 9001,
     },
   });
 };

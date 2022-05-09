@@ -15,7 +15,8 @@
     "@kie-tools/dashbuilder-component-uniforms": "0.0.0",
     "@kie-tools/dashbuilder-component-victory-charts": "0.0.0",
     "@kie-tools/dashbuilder-component-table": "0.0.0",
-    "@kie-tools/dashbuilder-component-echarts": "0.0.0"
+    "@kie-tools/dashbuilder-component-echarts": "0.0.0",
+    "@kie-tools/dashbuilder-component-svg-heatmap": "0.0.0"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0"

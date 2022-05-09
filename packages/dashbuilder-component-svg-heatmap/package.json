@@ -1,0 +1,41 @@
+{
+  "name": "@kie-tools/dashbuilder-component-svg-heatmap",
+  "version": "0.0.0",
+  "private": true,
+  "description": "",
+  "license": "Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "dependencies": {
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools/dashbuilder-component-api": "0.0.0"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools/dashbuilder-component-dev": "0.0.0"
+  },
+  "scripts": {
+    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
+    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
+    "start": "webpack serve --host 0.0.0.0 --env WEBPACK_SERVE"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/react"
+    ]
+  }
+}
