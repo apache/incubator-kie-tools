@@ -60,7 +60,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isServerlessWorkflow } from "../fixme";
+import { isServerlessDecision, isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
@@ -146,7 +146,8 @@ export function EditorToolbar(props: Props) {
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
   const canBeDeployed = useMemo(
-    () => isServerlessWorkflow(props.workspaceFile.relativePath),
+    () =>
+      isServerlessWorkflow(props.workspaceFile.relativePath) || isServerlessDecision(props.workspaceFile.relativePath),
     [props.workspaceFile.relativePath]
   );
 

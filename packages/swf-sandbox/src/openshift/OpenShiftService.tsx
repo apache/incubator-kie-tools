@@ -21,7 +21,7 @@ import {
   ServiceAccountSettingsConfig,
 } from "../settings/serviceAccount/ServiceAccountConfig";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { DeploymentWorkflow } from "./OpenShiftContext";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
 import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
 import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
@@ -119,8 +119,12 @@ export class OpenShiftService {
       });
   }
 
-  public async deploy(args: { workflow: DeploymentWorkflow; workspaceName: string }): Promise<string> {
-    const resourceName = `swf-${this.generateRandomId()}`;
+  public async deploy(args: {
+    workspaceFile: WorkspaceFile;
+    workspaceName: string;
+    preview?: string;
+  }): Promise<string> {
+    const resourceName = `sandbox-${this.generateRandomId()}`;
 
     const resourceArgs = {
       ...this.prepareCommonResourceArgs(),
@@ -144,7 +148,8 @@ export class OpenShiftService {
       rollbacks.slice(--rollbacksCount)
     );
 
-    const processedFileContent = (await args.workflow.workspaceFile.getFileContentsAsString())
+    // TODO: Support YAML content
+    const processedFileContent = (await args.workspaceFile.getFileContentsAsString())
       .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
       .replace(/"/g, '\\"') // Escape double quotes
       .replace(/'/g, "\\x27"); // Escape single quotes
@@ -154,9 +159,9 @@ export class OpenShiftService {
         ...resourceArgs,
         buildConfigUid: buildConfig.metadata.uid,
         file: {
-          path: args.workflow.workspaceFile.relativePath,
+          path: args.workspaceFile.relativePath,
           content: processedFileContent,
-          preview: args.workflow.preview ?? "",
+          preview: args.preview ?? "",
         },
       }),
       rollbacks.slice(--rollbacksCount)
@@ -165,7 +170,7 @@ export class OpenShiftService {
     await this.fetchResource(
       new CreateKNativeService({
         ...resourceArgs,
-        uri: args.workflow.workspaceFile.relativePath,
+        uri: args.workspaceFile.relativePath,
         workspaceName: args.workspaceName,
       }),
       rollbacks.slice(--rollbacksCount)
@@ -224,7 +229,7 @@ export class OpenShiftService {
   }
 
   private generateRandomId(): string {
-    const randomPart = Math.random().toString(36).substring(2, 11);
+    const randomPart = Math.random().toString(36).substring(2, 9);
     const milliseconds = new Date().getMilliseconds();
     return `${randomPart}${milliseconds}`;
   }

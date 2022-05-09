@@ -22,8 +22,8 @@ import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceA
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
-import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { DeploymentWorkflow, OpenShiftContext } from "./OpenShiftContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 
@@ -42,18 +42,19 @@ export function OpenShiftContextProvider(props: Props) {
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
 
   const deploy = useCallback(
-    async (workflow: DeploymentWorkflow) => {
+    async (args: { workspaceFile: WorkspaceFile; preview?: string }) => {
       if (!isOpenShiftConfigValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
 
-      const descriptorService = await workspaces.descriptorService.get(workflow.workspaceFile.workspaceId);
+      const descriptorService = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
       const workspaceName =
-        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workflow.workspaceFile.name;
+        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : args.workspaceFile.name;
 
       return settingsDispatch.openshift.service.deploy({
-        workflow: workflow,
+        workspaceFile: args.workspaceFile,
         workspaceName: workspaceName,
+        preview: args.preview,
       });
     },
     [settings.openshift.config, settingsDispatch.openshift.service, workspaces.descriptorService]

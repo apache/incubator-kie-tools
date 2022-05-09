@@ -94,7 +94,7 @@ export class CreateBuild extends ResourceFetch {
             kind: ImageStreamTag
             name: ${this.args.resourceName}:latest
         triggeredBy:
-          - message: Triggered by KIE Tools - SWF Sandbox (REST API)
+          - message: Triggered by KIE Tools Sandbox (REST API)
         strategy:
           dockerStrategy:
               noCache: true
