@@ -4,8 +4,8 @@
 
 ### Description
 
-This module contains the core implementation of the **serverless decision editor**, which allows the user
-to create and edit **serverless decisions** definition files _(\*.sd.json, \*.sd.yaml, \*.sd.yml)_.
+This module contains the core implementation of the **yard editor**, which allows the user
+to create and edit **yard** definition files _(\*.yard.json, \*.yard.yaml, \*.yard.yml)_.
 
 ### Structure
 

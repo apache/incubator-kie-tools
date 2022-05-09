@@ -64,10 +64,6 @@ module.exports = (env) =>
           enforce: "pre",
           use: ["source-map-loader"],
         },
-        /*{
-          test: /node_modules[\\|/]@severlessworkflow[\\|/]sdk-typescript[\\|/]umd[\\|/]index\.umd\.js$/,
-          use: ["umd-compat-loader"]
-        },*/
         ...patternflyBase.webpackModuleRules,
       ],
     },
@@ -76,6 +72,6 @@ module.exports = (env) =>
       historyApiFallback: true,
       static: [{ directory: path.join(__dirname) }],
       compress: true,
-      port: buildEnv.serverlessWorkflowEditor.dev.port,
+      port: buildEnv.yardEditor.dev.port,
     },
   });
