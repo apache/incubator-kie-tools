@@ -1,6 +1,6 @@
-## YAML rules editor
+## YARD editor
 
-###### An editor to manage YAML rules assets, part of serverless logic for Red Hat OpenShift
+###### An editor to manage YARD (Yet Another Rule Definition) assets, part of serverless logic for Red Hat OpenShift
 
 ### Description
 
