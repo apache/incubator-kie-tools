@@ -36,7 +36,7 @@ import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
-import { resolveExtension } from "../fixme";
+import { isSandboxAsset, resolveExtension } from "../fixme";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -201,12 +201,12 @@ export function NewFileDropdownMenu(props: {
         })
       );
 
-      const fileToGoTo = uploadedFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)).pop();
+      const fileToGoTo = uploadedFiles.filter((file) => isSandboxAsset(file.relativePath)).pop();
 
       await props.onAddFile(fileToGoTo);
       successfullyUploadedAlert.show({ qtt: uploadedFiles.length });
     },
-    [editorEnvelopeLocator, workspaces, props, successfullyUploadedAlert]
+    [workspaces, props, successfullyUploadedAlert]
   );
 
   const [url, setUrl] = useState("");

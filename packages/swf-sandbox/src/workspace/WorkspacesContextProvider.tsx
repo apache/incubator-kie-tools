@@ -37,6 +37,7 @@ import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
+import { isSandboxAsset } from "../fixme";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -90,7 +91,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const suggestedFirstFile = files
-        .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
+        .filter((file) => isSandboxAsset(file.relativePath))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
       if (!suggestedFirstFile) {
@@ -100,7 +101,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       return { workspace, suggestedFirstFile };
     },
-    [editorEnvelopeLocator, service]
+    [service]
   );
 
   const hasLocalChanges = useCallback(

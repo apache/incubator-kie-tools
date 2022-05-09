@@ -87,6 +87,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
+import { isSandboxAsset } from "../fixme";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -307,7 +308,6 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
 }
 
 export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean; onSelect: () => void }) {
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const routes = useRoutes();
   const history = useHistory();
   const workspaces = useWorkspaces();
@@ -315,8 +315,8 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const editableFiles = useMemo(() => {
-    return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
-  }, [editorEnvelopeLocator, workspacePromise.data?.files]);
+    return workspacePromise.data?.files.filter((file) => isSandboxAsset(file.relativePath)) ?? [];
+  }, [workspacePromise.data?.files]);
 
   const workspaceName = useMemo(() => {
     return workspacePromise.data ? workspacePromise.data.descriptor.name : null;
@@ -515,16 +515,16 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => !editorEnvelopeLocator.hasMappingFor(file.relativePath)),
-    [editorEnvelopeLocator, workspacePromise.data?.files]
+        .filter((file) => !isSandboxAsset(file.relativePath)),
+    [workspacePromise.data?.files]
   );
 
   const models = useMemo(
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
-        .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)),
-    [editorEnvelopeLocator, workspacePromise.data?.files]
+        .filter((file) => isSandboxAsset(file.relativePath)),
+    [workspacePromise.data?.files]
   );
 
   const [isNewFileDropdownMenuOpen, setNewFileDropdownMenuOpen] = useState(false);

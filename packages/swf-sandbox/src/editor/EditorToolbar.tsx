@@ -766,9 +766,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
     const nextFile = workspacePromise.data.files
       .filter((f) => {
-        return (
-          f.relativePath !== props.workspaceFile.relativePath && editorEnvelopeLocator.hasMappingFor(f.relativePath)
-        );
+        return f.relativePath !== props.workspaceFile.relativePath;
       })
       .pop();
 
@@ -789,7 +787,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         extension: nextFile.extension,
       }),
     });
-  }, [routes, history, workspacePromise.data, props.workspaceFile, workspaces, editorEnvelopeLocator]);
+  }, [routes, history, workspacePromise.data, props.workspaceFile, workspaces]);
 
   const workspaceNameRef = useRef<HTMLInputElement>(null);
 

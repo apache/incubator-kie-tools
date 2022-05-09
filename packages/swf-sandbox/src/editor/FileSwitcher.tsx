@@ -59,10 +59,8 @@ import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
-import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
-import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { isSandboxAsset } from "../fixme";
 
 const ROOT_MENU_ID = "rootMenu";
 
@@ -378,7 +376,6 @@ export function WorkspacesMenuItems(props: {
   filesDropdownMode: FilesDropdownMode;
   setFilesDropdownMode: React.Dispatch<React.SetStateAction<FilesDropdownMode>>;
 }) {
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const workspaceFilesPromise = useWorkspacesFilesPromise(workspaceDescriptorsPromise.data);
   const combined = useCombinedPromiseState({
@@ -423,9 +420,7 @@ export function WorkspacesMenuItems(props: {
                     <MenuItem
                       itemId={descriptor.workspaceId}
                       description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
-                        workspaceFiles
-                          .get(descriptor.workspaceId)!
-                          .filter((f) => editorEnvelopeLocator.hasMappingFor(f.relativePath)).length
+                        workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isSandboxAsset(f.relativePath)).length
                       } models`}
                       direction={"down"}
                       drilldownMenu={
@@ -577,7 +572,6 @@ export function FilesMenuItems(props: {
 }) {
   const history = useHistory();
   const routes = useRoutes();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   const sortedAndFilteredFiles = useMemo(
     () =>
@@ -588,13 +582,13 @@ export function FilesMenuItems(props: {
   );
 
   const models = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)),
-    [editorEnvelopeLocator, sortedAndFilteredFiles]
+    () => sortedAndFilteredFiles.filter((file) => isSandboxAsset(file.relativePath)),
+    [sortedAndFilteredFiles]
   );
 
   const otherFiles = useMemo(
-    () => sortedAndFilteredFiles.filter((file) => !editorEnvelopeLocator.hasMappingFor(file.relativePath)),
-    [editorEnvelopeLocator, sortedAndFilteredFiles]
+    () => sortedAndFilteredFiles.filter((file) => !isSandboxAsset(file.relativePath)),
+    [sortedAndFilteredFiles]
   );
 
   return (

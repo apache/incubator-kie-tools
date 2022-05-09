@@ -19,3 +19,7 @@ export function isServerlessWorkflow(path: string): boolean {
 export function isServerlessDecision(path: string): boolean {
   return /^.*\.yard\.(json|yml|yaml)$/.test(path);
 }
+
+export function isSandboxAsset(path: string): boolean {
+  return isServerlessWorkflow(path) || isServerlessDecision(path);
+}

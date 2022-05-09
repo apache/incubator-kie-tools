@@ -229,10 +229,10 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return ifAllowed({ type: UrlType.GIT, url });
     }
 
-    if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
+    /*if (!editorEnvelopeLocator.hasMappingFor(url.pathname)) {
       return { type: UrlType.INVALID, error: `Unsupported extension for '${url.pathname}'`, url: urlString };
-    }
+    }*/
 
     return ifAllowed({ type: UrlType.FILE, url });
-  }, [editorEnvelopeLocator, urlString, allowedUrlTypes]);
+  }, [urlString, allowedUrlTypes]);
 }
