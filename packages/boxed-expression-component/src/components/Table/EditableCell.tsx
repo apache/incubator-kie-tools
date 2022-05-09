@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
+import { FeelInput, FeelInputRef, FeelEditorService } from "@kie-tools/feel-input-component";
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -22,6 +22,7 @@ import { CellProps } from "../../api";
 import {
   blurActiveElement,
   focusCurrentCell,
+  focusLowerCell,
   focusNextCellByTabKey,
   focusPrevCellByTabKey,
   focusTextInput,
@@ -29,6 +30,7 @@ import {
 } from "./common";
 import "./EditableCell.css";
 import { useBoxedExpression } from "../../context";
+import { NavigationKeysUtils } from "../common";
 
 const CELL_LINE_HEIGHT = 20;
 const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -121,7 +123,8 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
       const newValue: string = event.target.value.trim("") ?? "";
       const isPastedValue = newValue.includes("\t") || newValue.includes("\n");
 
-      if (textarea.current && isPastedValue) {
+      // event.nativeEvent.inputType==="insertFromPaste" ensure that this block is not executed on cells with newlines inside
+      if (textarea.current && isPastedValue && event.nativeEvent.inputType === "insertFromPaste") {
         const pasteValue = newValue.slice(value.length);
         paste(pasteValue, textarea.current, boxedExpression.editorRef.current!);
         triggerReadMode();
@@ -134,21 +137,18 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
     [triggerEditMode, value, triggerReadMode, onCellUpdate, rowIndex, columnId, boxedExpression.editorRef]
   );
 
-  const onTextAreaKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLElement>) => {
-      const key = e.key;
-      const isFiredFromThis = e.currentTarget === e.target;
+  const onTextAreaKeyDown = useCallback((e: React.KeyboardEvent<HTMLElement>) => {
+    const key = e.key;
+    const isFiredFromThis = e.currentTarget === e.target;
 
-      if (!isFiredFromThis) {
-        return;
-      }
+    if (!isFiredFromThis) {
+      return;
+    }
 
-      if (key !== "Enter") {
-        (e.target as HTMLTextAreaElement).value = "";
-      }
-    },
-    [value]
-  );
+    if (!NavigationKeysUtils.isEnter(key)) {
+      (e.target as HTMLTextAreaElement).value = "";
+    }
+  }, []);
 
   // Feel Handlers ===========================================================
 
@@ -162,19 +162,28 @@ export function EditableCell({ value, rowIndex, columnId, onCellUpdate, readOnly
 
   const onFeelKeyDown = useCallback(
     (event: Monaco.IKeyboardEvent, newValue: string) => {
-      const key = event?.code.toLowerCase() ?? "";
-      const isModKey = event.altKey || event.ctrlKey || event.shiftKey;
-      const isEnter = isModKey && key === "enter";
-      const isTab = key === "tab";
-      const isEsc = !!key.match("esc");
+      const key = event?.code ?? "";
+      const isEnter = NavigationKeysUtils.isEnter(key);
+      const isTab = NavigationKeysUtils.isTab(key);
+      const isEsc = NavigationKeysUtils.isEscape(key);
 
       if (isEnter || isTab || isEsc) {
         event.preventDefault();
       }
 
-      if (isEnter || isTab) {
+      if (isTab) {
         triggerReadMode(newValue);
         setMode(READ_MODE);
+      }
+
+      if (isEnter) {
+        if (event.ctrlKey) {
+          feelInputRef.current?.insertNewLineToMonaco();
+        } else if (!FeelEditorService.isSuggestWidgetOpen()) {
+          triggerReadMode(newValue);
+          setMode(READ_MODE);
+          focusLowerCell(textarea.current);
+        }
       }
 
       if (isEsc) {

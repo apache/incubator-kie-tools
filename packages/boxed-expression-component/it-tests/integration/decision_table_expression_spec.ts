@@ -170,7 +170,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
 
     // write some text in the table
     cy.get(".data-cell").each((cell, cellIndex) => {
-      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`);
+      cy.wrap(cell).type(`{enter}cell ${cellIndex + 1}`, { delay: 0, waitForAnimations: false });
     });
     // click outside to finish editing
     cy.get("body").click();
@@ -288,20 +288,31 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.contains("td", /cell 12/).should("be.focused");
   });
 
-  it("Edit cells appending text selecting Td", () => {
-    // from the cell 1, enter edit mode and write TestInput
+  it("Edit cells appending text selecting the Td", () => {
+    // from the cell 1, enter edit mode, write TestInput and press enter to save
     cy.contains("td", /cell 1/)
       .as("cell-1")
-      .type("{enter}TestAppend");
+      .type("{enter}TestAppend{enter}");
 
-    // click on cell 2
-    cy.contains("td", /cell 2/).click({ force: true });
+    // cell 5 should be focused
+    cy.contains("td", /cell 5/).should("be.focused");
 
     // check the cell 1 now has "TestInput" text
     cy.get("@cell-1").find(".editable-cell-textarea").should("have.text", "cell 1TestAppend");
   });
 
-  it("Edit cells appending text selecting TextArea", () => {
+  it("Edit a cell in the last row appending text selecting the Td", () => {
+    // from the cell 9, enter edit mode, write TestInput and press enter to save
+    cy.contains("td", /cell 9/)
+      .type("{enter}TestLastRowAppend{enter}")
+      // cell 9 should be focused
+      .should("be.focused")
+      // check the cell 9 now has "TestInput" text
+      .find(".editable-cell-textarea")
+      .should("contain.text", "cell 9TestLastRowAppend");
+  });
+
+  it("Edit cells appending text selecting the TextArea", () => {
     // from the cell 5, enter edit mode and write TestInput
     cy.contains(".editable-cell ", /cell 5/)
       .as("textarea-5")
@@ -315,7 +326,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-5").find(".editable-cell-textarea").should("have.text", "-cell 5TestAppend");
   });
 
-  it("Edit cells overwriting text selecting Td", () => {
+  it("Edit cells overwriting text selecting the Td", () => {
     // from the cell 2, enter edit mode and write TestInput
     cy.contains("td", /cell 2/)
       .as("cell-2")
@@ -328,7 +339,7 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@cell-2").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
-  it("Edit cells overwriting text selecting TextArea", () => {
+  it("Edit cells overwriting text selecting the TextArea", () => {
     // from the cell 6, enter edit mode and write TestInput
     cy.contains(".editable-cell ", /cell 6/)
       .as("textarea-6")
@@ -341,10 +352,40 @@ describe("Decision Table Keyboard Navigation Tests", () => {
     cy.get("@textarea-6").find(".editable-cell-textarea").should("have.text", "TestOverwrite");
   });
 
+  it("Insert a newline in a cell pressing Ctrl+Enter", () => {
+    // from the cell 3, enter edit mode and write TestInput
+    cy.contains(".editable-cell ", /cell 3/)
+      .as("textarea-3")
+      .type("{enter}{ctrl+enter}newline");
+
+    // click on cell 7
+    cy.contains("td", /cell 7/).click({ force: true });
+
+    // check the cell 1 now has "TestInput" text
+    cy.get("@textarea-3").find(".editable-cell-textarea").should("have.text", "cell 3\nnewline");
+  });
+
+  it("Edit a cell using the suggestions", () => {
+    // from the cell 4, write sum, press enter to accept the suggestion
+    cy.contains("td", /cell 4/)
+      .as("cell-4")
+      .type("sum{enter}")
+      .prev()
+      .click();
+
+    cy.get("@cell-4")
+      // cell 4 should be focused
+      .should("not.be.focused")
+      // check the cell 4 now has "TestInput" text
+      .find(".editable-cell-textarea")
+      .should("contain.text", "sum()");
+  });
+
   it("Keyboard interaction with contextMenu", () => {
-    // rightclick on cell 3
+    // select cell 3 and open the contextMenu with rightclick
     cy.contains("td", /cell 3/)
       .as("cell-3")
+      .click()
       .rightclick();
 
     // check the contextMenu is open
