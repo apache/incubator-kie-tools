@@ -68,11 +68,12 @@ module.exports = async (env) => {
         patterns: [
           { from: "./static", to: "." },
           { from: `./${manifestFile}`, to: "./manifest.json" },
+          { from: `./rules.json`, to: "./rules.json" },
         ],
       }),
       new ZipPlugin({
         filename: "chrome_extension_serverless_workflow_editor_" + packageJson.version + ".zip",
-        include: ["manifest.json", "background.js", "content_scripts", "resources"],
+        include: ["manifest.json", "background.js", "content_scripts", "resources", "rules.json"],
       }),
       new MonacoWebpackPlugin({
         languages: ["json"],
