@@ -190,11 +190,13 @@ export function NewFileDropdownMenu(props: {
 
       const uploadedFiles = await Promise.all(
         filesToUpload.map(async (file) => {
+          const extension = resolveExtension(file.path);
+          const name = decodeURIComponent(basename(file.path, `.${extension}`));
           return workspaces.addFile({
             fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
             workspaceId: props.workspaceId,
-            name: file.path,
-            extension: extname(file.path).replace(".", ""),
+            name: name,
+            extension: extension,
             content: file.content,
             destinationDirRelativePath: props.destinationDirPath,
           });
