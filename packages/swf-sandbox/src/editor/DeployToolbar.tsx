@@ -135,8 +135,8 @@ export function DeployToolbar(props: DeployToolbarProps) {
   return (
     <Flex>
       <FlexItem>
-        <Toolbar>
-          <ToolbarContent style={{ paddingLeft: 0 }}>
+        <Toolbar style={{ padding: 0 }}>
+          <ToolbarContent>
             <ToolbarItem>
               <Button
                 isDisabled={settings.openshift.status !== OpenShiftInstanceStatus.CONNECTED}
