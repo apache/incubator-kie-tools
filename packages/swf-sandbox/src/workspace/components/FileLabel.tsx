@@ -27,10 +27,9 @@ const labelColors = new Map<string, LabelColorType>([
   ["sw.json", swfLabel],
   ["sw.yml", swfLabel],
   ["sw.yaml", swfLabel],
-  ["sd.yml", sdLabel],
-  ["sd.yaml", sdLabel],
-  ["decision.yml", sdLabel],
-  ["decision.yaml", sdLabel],
+  ["yard.json", sdLabel],
+  ["yard.yml", sdLabel],
+  ["yard.yaml", sdLabel],
   ["db", dashboardLabel], //FIXME: db?
 ]);
 

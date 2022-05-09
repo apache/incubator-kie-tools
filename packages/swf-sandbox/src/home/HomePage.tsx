@@ -155,7 +155,7 @@ export function HomePage() {
                 />
                 <NewModelCard
                   title={"Decision"}
-                  extension={"sd.yml"}
+                  extension={"yard.json"}
                   description={"Serverless Decision files are used to define decision logic for services."}
                 />
                 <NewModelCard

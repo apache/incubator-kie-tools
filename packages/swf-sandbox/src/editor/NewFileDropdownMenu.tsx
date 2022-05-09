@@ -236,11 +236,11 @@ export function NewFileDropdownMenu(props: {
           </MenuItem>
           <MenuItem
             itemId={"newSdItemId"}
-            onClick={() => addEmptyFile("sd.yml")}
+            onClick={() => addEmptyFile("yard.json")}
             description="Serverless Decision files are used to define decision logic for services."
           >
             <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"sd.yml"} />
+              <FileLabel style={{ marginBottom: "4px" }} extension={"yard.json"} />
             </b>
           </MenuItem>
           <MenuItem
@@ -273,13 +273,13 @@ export function NewFileDropdownMenu(props: {
                   </Flex>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => addSample("sd.yml")}
+                  onClick={() => addSample("yard.json")}
                   description="Serverless Decision files are used to define decision logic for services."
                 >
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
-                      <FileLabel extension={"sd.yml"} />
+                      <FileLabel extension={"yard.json"} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>
