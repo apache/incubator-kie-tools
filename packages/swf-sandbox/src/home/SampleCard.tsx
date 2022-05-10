@@ -11,13 +11,13 @@ export type Sample = {
   fileName: string;
   svg: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   description: string;
+  repoUrl?: string;
 };
 
 export function SampleCard({ sample }: { sample: Sample }) {
   const routes = useRoutes();
 
   return (
-    // <GridItem md={4}>
     <Card isCompact={true} isFullHeight={true}>
       <Grid style={{ height: "100%" }}>
         <GridItem md={6} style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle" }}>
@@ -33,10 +33,13 @@ export function SampleCard({ sample }: { sample: Sample }) {
               to={{
                 pathname: routes.importModel.path({}),
                 search: routes.importModel.queryString({
-                  url: `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                    type: "sw.json",
-                    name: sample.fileName,
-                  })}`,
+                  url:
+                    sample.repoUrl ??
+                    `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
+                      type: "sw.json",
+                      name: sample.fileName,
+                    })}`,
+                  ...(sample.repoUrl ? { removeRemote: "true" } : {}),
                 }),
               }}
             >
@@ -48,6 +51,5 @@ export function SampleCard({ sample }: { sample: Sample }) {
         </GridItem>
       </Grid>
     </Card>
-    // </GridItem>
   );
 }

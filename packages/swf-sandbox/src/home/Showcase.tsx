@@ -3,7 +3,9 @@ import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Tex
 import { Sample, SampleCard } from "./SampleCard";
 import { ReactComponent as CheckInboxPeriodicalSvg } from "../../static/samples/check-inbox-periodical/check-inbox-periodical.svg";
 import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/greetings.svg";
+import { ReactComponent as GreetingsKafkaSvg } from "../../static/samples/greetings-kafka/greetings-kafka.svg";
 import { ReactComponent as FillGlassOfWaterSvg } from "../../static/samples/fill-glass-of-water/fill-glass-of-water.svg";
+import { ReactComponent as TemperatureConversionSvg } from "../../static/samples/temperature-conversion/temperature-conversion.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 
 export const samples: Array<Sample> = [
@@ -12,6 +14,19 @@ export const samples: Array<Sample> = [
     fileName: "greetings",
     svg: GreetingsSvg,
     description: `This example shows a single Operation State with one action that calls the "greeting" function. The workflow data input is assumed to be the name of the person to greet. The results of the action is assumed to be the greeting for the provided persons name, which is added to the states data and becomes the workflow data output.`,
+  },
+  {
+    name: "Greetings with Kafka events",
+    fileName: "greetings-kafka",
+    svg: GreetingsKafkaSvg,
+    description: `This example is similar to the Greetings sample, but this time the "greeting" function is triggered via an Apache Kafka event. The event payload is assumed to be the name of the person to greet and in which language. The results of the action is assumed to be the greeting for the provided persons name, which is added to the states data and becomes the workflow data output.`,
+  },
+  {
+    name: "Temperature conversion",
+    fileName: "temperature-conversion",
+    svg: TemperatureConversionSvg,
+    description: `In this example we demonstrate a simple workflow that calls two distinct services via REST. The workflow aims to solve an equation that converts a given Fahrenheit temperature value into Celsius.`,
+    repoUrl: "https://github.com/thiagoelg/serverless-workflow-temperature-conversion.git",
   },
   {
     name: "Check Inbox Periodical",
@@ -35,7 +50,16 @@ export function Showcase() {
         <Text component="h1">Samples Showcase</Text>
       </TextContent>
       <br />
-      <Gallery hasGutter={true} minWidths={{ sm: "calc(100%/3 - 16px)", default: "100%" }}>
+      <Gallery
+        hasGutter={true}
+        minWidths={{ sm: "calc(100%/3 - 16px)", default: "100%" }}
+        style={{
+          overflowX: "auto",
+          gridAutoFlow: "column",
+          gridAutoColumns: "minmax(calc(100%/3 - 16px),1fr)",
+          paddingBottom: "8px",
+        }}
+      >
         {samples.map((sample) => (
           <SampleCard sample={sample} key={sample.fileName} />
         ))}
