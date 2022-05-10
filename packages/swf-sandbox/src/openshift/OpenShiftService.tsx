@@ -148,7 +148,6 @@ export class OpenShiftService {
       rollbacks.slice(--rollbacksCount)
     );
 
-    // TODO: Support YAML content
     const processedFileContent = (await args.workspaceFile.getFileContentsAsString())
       .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
       .replace(/"/g, '\\"') // Escape double quotes
