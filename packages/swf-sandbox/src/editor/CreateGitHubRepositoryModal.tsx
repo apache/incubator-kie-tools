@@ -44,6 +44,14 @@ const getSuggestedRepositoryName = (name: string) =>
     .toLocaleLowerCase()
     .replace(/[^._\-\w\d]/g, "");
 
+const KOGITO_QUARKUS_TEMPLATE = {
+  url: "https://github.com/caponetto/quarkus-template",
+  remoteName: "KOGITO_QUARKUS_SKELETON",
+  branch: "swf-template",
+};
+
+const RESOURCES_FOLDER = "/src/main/resources";
+
 export function CreateGitHubRepositoryModal(props: {
   workspace: WorkspaceDescriptor;
   isOpen: boolean;
@@ -85,14 +93,6 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
-      const kogitoQuarkusTemplate = {
-        url: "https://github.com/caponetto/quarkus-template",
-        remoteName: "KOGITO_QUARKUS_SKELETON",
-        branch: "swf-template",
-      };
-
-      const resourcesFolder = "/src/main/resources";
-
       const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.workspaceId);
       const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.workspaceId });
 
@@ -101,53 +101,58 @@ export function CreateGitHubRepositoryModal(props: {
         workspaceId: props.workspace.workspaceId,
       });
 
-      await workspaces.gitService.addRemote({
-        fs: fs,
-        dir: workspaceRootDirPath,
-        url: kogitoQuarkusTemplate.url,
-        name: kogitoQuarkusTemplate.remoteName,
-        force: true,
-      });
-
-      await workspaces.gitService.fetch({
-        fs: fs,
-        dir: workspaceRootDirPath,
-        remote: kogitoQuarkusTemplate.remoteName,
-        ref: kogitoQuarkusTemplate.branch,
-      });
-
+      // TODO: What should be considered a project?
+      const isAlreadyAProject = !!files.find((file) => file.name === "pom.xml");
       let currentFileAfterMoving: WorkspaceFile | undefined;
-      for (const file of files) {
-        const movedFile = await workspaces.service.moveFile({
+
+      if (!isAlreadyAProject) {
+        await workspaces.gitService.addRemote({
           fs: fs,
-          file: file,
-          newDirPath: join(resourcesFolder, dirname(file.relativePath)),
-          broadcastArgs: {
-            broadcast: false,
-          },
+          dir: workspaceRootDirPath,
+          url: KOGITO_QUARKUS_TEMPLATE.url,
+          name: KOGITO_QUARKUS_TEMPLATE.remoteName,
+          force: true,
         });
 
-        if (file.relativePath === props.currentFile.relativePath) {
-          currentFileAfterMoving = movedFile;
+        await workspaces.gitService.fetch({
+          fs: fs,
+          dir: workspaceRootDirPath,
+          remote: KOGITO_QUARKUS_TEMPLATE.remoteName,
+          ref: KOGITO_QUARKUS_TEMPLATE.branch,
+        });
+
+        for (const file of files) {
+          const movedFile = await workspaces.service.moveFile({
+            fs: fs,
+            file: file,
+            newDirPath: join(RESOURCES_FOLDER, dirname(file.relativePath)),
+            broadcastArgs: {
+              broadcast: false,
+            },
+          });
+
+          if (file.relativePath === props.currentFile.relativePath) {
+            currentFileAfterMoving = movedFile;
+          }
         }
+
+        if (!currentFileAfterMoving) {
+          throw new Error("Failed to find current file after moving.");
+        }
+
+        await workspaces.gitService.checkout({
+          fs: fs,
+          dir: workspaceRootDirPath,
+          ref: KOGITO_QUARKUS_TEMPLATE.branch,
+          remote: KOGITO_QUARKUS_TEMPLATE.remoteName,
+        });
+
+        await workspaces.gitService.deleteRemote({
+          fs,
+          dir: workspaceRootDirPath,
+          name: KOGITO_QUARKUS_TEMPLATE.remoteName,
+        });
       }
-
-      if (!currentFileAfterMoving) {
-        throw new Error("Failed to find current file after moving.");
-      }
-
-      await workspaces.gitService.checkout({
-        fs: fs,
-        dir: workspaceRootDirPath,
-        ref: kogitoQuarkusTemplate.branch,
-        remote: kogitoQuarkusTemplate.remoteName,
-      });
-
-      await workspaces.gitService.deleteRemote({
-        fs,
-        dir: workspaceRootDirPath,
-        name: kogitoQuarkusTemplate.remoteName,
-      });
 
       await workspaces.gitService.addRemote({
         fs,
@@ -185,13 +190,15 @@ export function CreateGitHubRepositoryModal(props: {
       props.onClose();
       props.onSuccess({ url: repo.data.html_url });
 
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          workspaceId: props.workspace.workspaceId,
-          fileRelativePath: currentFileAfterMoving.relativePathWithoutExtension,
-          extension: currentFileAfterMoving.extension,
-        }),
-      });
+      if (currentFileAfterMoving) {
+        history.replace({
+          pathname: routes.workspaceWithFilePath.path({
+            workspaceId: props.workspace.workspaceId,
+            fileRelativePath: currentFileAfterMoving.relativePathWithoutExtension,
+            extension: currentFileAfterMoving.extension,
+          }),
+        });
+      }
     } catch (err) {
       setError(err);
       throw err;
