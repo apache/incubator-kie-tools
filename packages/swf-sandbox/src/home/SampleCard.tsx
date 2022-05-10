@@ -39,6 +39,7 @@ export function SampleCard({ sample }: { sample: Sample }) {
                       type: "sw.json",
                       name: sample.fileName,
                     })}`,
+                  renameWorkspace: sample.name,
                   ...(sample.repoUrl ? { removeRemote: "true" } : {}),
                 }),
               }}

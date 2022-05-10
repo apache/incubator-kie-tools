@@ -130,6 +130,19 @@ export class WorkspaceDescriptorService {
     );
   }
 
+  public async turnIntoLocal(workspaceId: string) {
+    await this.storageService.updateFile(
+      this.descriptorsFs,
+      this.toStorageFile({
+        ...(await this.get(workspaceId)),
+        origin: {
+          kind: WorkspaceKind.LOCAL,
+          branch: GIT_DEFAULT_BRANCH,
+        },
+      })
+    );
+  }
+
   private toStorageFile(descriptor: WorkspaceDescriptor) {
     return new StorageFile({
       path: `/${descriptor.workspaceId}`,

@@ -22,6 +22,7 @@ export enum QueryParams {
   BRANCH = "branch",
   EXPAND = "expand",
   REMOVE_REMOTE = "removeRemote",
+  RENAME_WORKSPACE = "renameWorkspace",
 }
 
 export enum PathParams {
@@ -117,7 +118,7 @@ export const routes = {
   }>(({ extension }) => `/new/${extension}`),
 
   importModel: new Route<{
-    queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.REMOVE_REMOTE;
+    queryParams: QueryParams.URL | QueryParams.BRANCH | QueryParams.REMOVE_REMOTE | QueryParams.RENAME_WORKSPACE;
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{

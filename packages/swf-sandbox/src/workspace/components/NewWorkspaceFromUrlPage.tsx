@@ -44,6 +44,8 @@ export function NewWorkspaceFromUrlPage() {
 
   const queryParamUrl = useQueryParam(QueryParams.URL);
   const queryParamBranch = useQueryParam(QueryParams.BRANCH);
+  const removeRemote = useQueryParam(QueryParams.REMOVE_REMOTE);
+  const renameWorkspace = useQueryParam(QueryParams.RENAME_WORKSPACE);
 
   const importGitWorkspace: typeof workspaces.createWorkspaceFromGitRepository = useCallback(
     async (args) => {
@@ -68,6 +70,20 @@ export function NewWorkspaceFromUrlPage() {
 
       const { workspace, suggestedFirstFile } = res;
 
+      if (removeRemote) {
+        workspaces.gitService.deleteRemote({
+          fs: await workspaces.fsService.getWorkspaceFs(workspace.workspaceId),
+          dir: workspaces.getAbsolutePath({ workspaceId: workspace.workspaceId }),
+          name: "origin",
+        });
+
+        await workspaces.descriptorService.turnIntoLocal(workspace.workspaceId);
+      }
+
+      if (renameWorkspace) {
+        await workspaces.descriptorService.rename(workspace.workspaceId, renameWorkspace);
+      }
+
       if (!suggestedFirstFile) {
         history.replace({ pathname: routes.home.path({}) });
         return res;
@@ -82,7 +98,7 @@ export function NewWorkspaceFromUrlPage() {
       });
       return res;
     },
-    [routes, history, workspaces, queryParamBranch]
+    [removeRemote, renameWorkspace, history, routes.workspaceWithFilePath, routes.home, workspaces, queryParamBranch]
   );
 
   const createWorkspaceForFile = useCallback(
