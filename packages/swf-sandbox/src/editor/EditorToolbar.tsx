@@ -274,7 +274,7 @@ export function EditorToolbar(props: Props) {
   );
 
   const shouldIncludeDownloadSvgDropdownItem = useMemo(() => {
-    return props.workspaceFile.extension.toLowerCase() !== "pmml";
+    return isServerlessWorkflow(props.workspaceFile.relativePath);
   }, [props.workspaceFile]);
 
   const onDownload = useCallback(() => {

@@ -13,11 +13,11 @@ export function resolveExtension(path: string): string {
 }
 
 export function isServerlessWorkflow(path: string): boolean {
-  return /^.*\.sw\.(json|yml|yaml)$/.test(path);
+  return /^.*\.sw\.(json|yml|yaml)$/.test(path.toLowerCase());
 }
 
 export function isServerlessDecision(path: string): boolean {
-  return /^.*\.yard\.(json|yml|yaml)$/.test(path);
+  return /^.*\.yard\.(json|yml|yaml)$/.test(path.toLowerCase());
 }
 
 export function isSandboxAsset(path: string): boolean {
