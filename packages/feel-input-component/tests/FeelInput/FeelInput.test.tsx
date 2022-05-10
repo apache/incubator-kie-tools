@@ -16,7 +16,8 @@
 
 import { render } from "@testing-library/react";
 import * as React from "react";
-import { FeelInput } from "@kie-tools/feel-input-component";
+import { RefObject } from "react";
+import { FeelInput, FeelInputRef, FeelEditorService } from "@kie-tools/feel-input-component";
 
 describe("FeelInput", () => {
   describe("when it's not enabled", () => {
@@ -30,6 +31,15 @@ describe("FeelInput", () => {
     it("should render the FEEL input component", () => {
       const { container } = render(<FeelInput enabled={true} />);
       expect(container).toMatchSnapshot();
+    });
+
+    it("should insert a newline", () => {
+      const feelInputRef = { current: {} } as RefObject<FeelInputRef>;
+      const editorTrigger = jest.fn();
+      FeelEditorService.getStandaloneEditor = jest.fn().mockReturnValue({ trigger: editorTrigger });
+      render(<FeelInput ref={feelInputRef} enabled={true} />);
+      feelInputRef.current?.insertNewLineToMonaco();
+      expect(editorTrigger).toHaveBeenCalledWith("keyboard", "type", { text: "\n" });
     });
   });
 });

@@ -17,6 +17,8 @@ package org.dashbuilder.client.navbar;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style.Display;
+import com.google.gwt.user.client.ui.HeaderPanel;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
@@ -25,6 +27,7 @@ import org.jboss.errai.ioc.client.api.AfterInitialization;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.client.workbench.Header;
+import org.uberfire.client.workbench.WorkbenchLayout;
 import org.uberfire.client.workbench.widgets.menu.megamenu.WorkbenchMegaMenuPresenter;
 import org.uberfire.workbench.model.menu.MenuFactory;
 import org.uberfire.workbench.model.menu.Menus;
@@ -36,6 +39,9 @@ public class AppNavBar implements Header {
     @Inject
     @DataField
     HTMLDivElement header;
+
+    @Inject
+    WorkbenchLayout wbLayout;
 
     @Inject
     WorkbenchMegaMenuPresenter menuBarPresenter;
@@ -79,10 +85,10 @@ public class AppNavBar implements Header {
     public void setExternalMenuEnabled(boolean isExternalMenuEnabled) {
         this.isGoToDashboardMenuEnabled = isExternalMenuEnabled;
     }
-    
+
     public void setClientOnly(boolean clientOnly) {
         this.clientOnly = clientOnly;
-    }    
+    }
 
     public void setupMenus() {
         menuBarPresenter.clear();
@@ -93,7 +99,6 @@ public class AppNavBar implements Header {
         if (isDashboardListEnabled) {
             menuBarPresenter.addMenus(MenuFactory.newTopLevelCustomMenu(dashboardsListMenu).endMenu().build());
         }
-
         header.innerHTML = "";
         header.appendChild(Js.cast(menuBarPresenter.getView().getElement()));
     }
@@ -105,4 +110,19 @@ public class AppNavBar implements Header {
             menuElement.style.display = display ? "block" : "none";
         }
     }
+
+    public void hide(boolean hide) {
+        var header = (HeaderPanel) wbLayout.getRoot();
+        var headerParent =
+                header.getHeaderWidget()
+                        .asWidget()
+                        .getElement()
+                        .getParentElement();
+        headerParent.getStyle()
+                .setDisplay(hide ? Display.NONE : Display.BLOCK);
+        // workaround for header still showing a white space
+        headerParent.getStyle()
+                .setProperty("min-height", hide ? "0px" : "20px");
+    }
+
 }

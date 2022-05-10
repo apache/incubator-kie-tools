@@ -40,8 +40,8 @@ public class End {
 
     @Labels
     @JsIgnore
-    private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                        LABEL_END).collect(Collectors.toSet());
+    public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
+                                                       LABEL_END).collect(Collectors.toSet());
 
     public End() {
     }

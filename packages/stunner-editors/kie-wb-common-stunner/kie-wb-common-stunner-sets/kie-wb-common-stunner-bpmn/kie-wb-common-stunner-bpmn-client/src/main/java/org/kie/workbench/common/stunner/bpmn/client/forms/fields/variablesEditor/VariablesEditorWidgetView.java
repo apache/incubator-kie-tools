@@ -41,6 +41,8 @@ public interface VariablesEditorWidgetView extends IsWidget {
 
         void addVariable();
 
+        boolean isDuplicateID(final String id);
+
         boolean isDuplicateName(final String name);
 
         boolean isBoundToNodes(final String name);

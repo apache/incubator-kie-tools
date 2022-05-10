@@ -15,7 +15,7 @@
  */
 
 import * as vscode from "vscode";
-import { ColorThemeKind, UIKind } from "vscode";
+import { ColorThemeKind, TextDocument, UIKind } from "vscode";
 import {
   ChannelType,
   EditorApi,
@@ -26,16 +26,39 @@ import {
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { KogitoEditableDocument } from "./KogitoEditableDocument";
+
+function fileExtension(documentUri: vscode.Uri) {
+  const lastSlashIndex = documentUri.fsPath.lastIndexOf("/");
+  const fileName = documentUri.fsPath.substring(lastSlashIndex + 1);
+
+  const firstDotIndex = fileName.indexOf(".");
+  const fileExtension = fileName.substring(firstDotIndex + 1);
+
+  return fileExtension;
+}
+
+export type KogitoEditorDocument =
+  | {
+      type: "text";
+      document: TextDocument;
+    }
+  | {
+      type: "custom";
+      document: KogitoEditableDocument;
+    };
+
+const decoder = new TextDecoder("utf-8");
 
 export class KogitoEditor implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
+  private changeDocumentSubscription: vscode.Disposable | undefined;
 
   public constructor(
-    public readonly document: KogitoEditableDocument,
+    public readonly document: KogitoEditorDocument,
     public readonly panel: vscode.WebviewPanel,
     private readonly context: vscode.ExtensionContext,
     private readonly editorStore: KogitoEditorStore,
@@ -57,7 +80,7 @@ export class KogitoEditor implements EditorApi {
         self.envelopeApi.requests.kogitoEditor_initRequest(
           { origin: self.origin, envelopeServerId: self.id },
           {
-            fileExtension: document.fileExtension,
+            fileExtension: fileExtension(document.document.uri),
             resourcesPathPrefix: envelopeMapping.resourcesPathPrefix,
             initialLocale: vscode.env.language,
             isReadOnly: false,
@@ -91,7 +114,10 @@ export class KogitoEditor implements EditorApi {
   }
 
   public setContent(path: string, content: string) {
-    return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged({ path: path, content: content });
+    return this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+      { path, content },
+      { showLoadingOverlay: true }
+    );
   }
 
   public async undo() {
@@ -165,7 +191,7 @@ export class KogitoEditor implements EditorApi {
   }
 
   public hasUri(uri: vscode.Uri) {
-    return this.document.uri === uri;
+    return this.document.document.uri === uri;
   }
 
   public isActive() {
@@ -207,8 +233,57 @@ export class KogitoEditor implements EditorApi {
   }
 
   public startListeningToThemeChanges() {
-    vscode.window.onDidChangeActiveColorTheme((colorTheme) => {
+    const changeThemeSubscription = vscode.window.onDidChangeActiveColorTheme((colorTheme) => {
       return this.setTheme(this.getEditorThemeByVscodeTheme(colorTheme.kind));
     });
+
+    // Make sure we get rid of the listener when our editor is closed.
+    this.panel.onDidDispose(() => {
+      changeThemeSubscription.dispose();
+    });
+  }
+
+  public stopListeningToDocumentChanges() {
+    this.changeDocumentSubscription?.dispose();
+    this.changeDocumentSubscription = undefined;
+  }
+
+  public startListeningToDocumentChanges() {
+    this.changeDocumentSubscription?.dispose();
+    this.changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
+      if (e.document.uri.toString() !== this.document.document.uri.toString()) {
+        return;
+      }
+
+      if (e.contentChanges.length <= 0) {
+        return;
+      }
+
+      this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+        {
+          content: e.document.getText(),
+          path: e.document.uri.path,
+        },
+        { showLoadingOverlay: false }
+      );
+    });
+
+    this.panel.onDidDispose(() => {
+      this.changeDocumentSubscription?.dispose();
+    });
+  }
+
+  public async getDocumentContent() {
+    if (this.document.type === "custom") {
+      const fileUri = this.document.document.initialBackup ?? this.document.document.uri;
+      const contentArray = await vscode.workspace.fs.readFile(fileUri);
+      return decoder.decode(contentArray);
+    }
+
+    if (this.document.type === "text") {
+      return this.document.document.getText();
+    }
+
+    throw new Error("Document type not supported");
   }
 }

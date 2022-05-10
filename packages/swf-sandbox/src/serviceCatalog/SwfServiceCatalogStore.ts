@@ -1,4 +1,5 @@
 import {
+  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
@@ -7,7 +8,6 @@ import {
 import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
-import { posix as posixPath } from "path";
 import * as yaml from "yaml";
 import { ServiceRegistrySettingsConfig } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
@@ -25,7 +25,6 @@ export class SwfServiceCatalogStore {
     serviceAccountConfig: ServiceAccountSettingsConfig
   ) {
     const serviceRegistryUrl = serviceRegistryConfig.coreRegistryApi;
-    const shouldReferenceFunctionsWithUrls = true;
 
     const serviceRegistryRestApi = {
       getArtifactContentUrl: (params: { groupId: string; id: string }) => {
@@ -68,21 +67,11 @@ export class SwfServiceCatalogStore {
     SwfServiceCatalogStore.services = artifactsWithContent.map((artifact) => {
       const serviceId = artifact.metadata.id;
       const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
-      const specsDirRelativePosixPath = "./";
-      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
 
-      let swfFunctions = extractFunctions(artifact.content, serviceFileRelativePosixPath, {
+      const swfFunctions: SwfServiceCatalogFunction[] = extractFunctions(artifact.content, {
         type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
         serviceId: serviceId,
       });
-
-      if (shouldReferenceFunctionsWithUrls) {
-        // TODO tiago: I believe we should be doing that in a better way
-        swfFunctions = swfFunctions.map((swfFunction) => ({
-          ...swfFunction,
-          operation: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
-        }));
-      }
 
       return {
         name: serviceFileName,
@@ -90,6 +79,7 @@ export class SwfServiceCatalogStore {
         type: SwfServiceCatalogServiceType.rest,
         functions: swfFunctions,
         source: {
+          url: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
           type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY,
           id: serviceId,
         },

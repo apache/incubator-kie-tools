@@ -1,4 +1,21 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import {
+  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
@@ -10,27 +27,24 @@ import { OpenAPIV3 } from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 import * as vscode from "vscode";
-import { posix as posixPath } from "path";
 import * as yaml from "yaml";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./index";
+import { getServiceRegistryRestApi } from "../apicurio";
 
 export class RhhccServiceRegistryServiceCatalogStore {
-  private onChangeCallback: undefined | ((services: SwfServiceCatalogService[]) => Promise<any>);
+  private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
   private urlVsPathConfigurationChangeCallback: vscode.Disposable;
   private specsStoragePathConfigurationChangeCallback: vscode.Disposable;
   private serviceRegistryUrlConfigurationChangeCallback: vscode.Disposable;
 
   constructor(
     private readonly args: {
-      baseFileAbsolutePosixPath: string;
       rhhccAuthenticationStore: RhhccAuthenticationStore;
       configuration: SwfVsCodeExtensionConfiguration;
     }
   ) {}
 
-  public async init(args: { onNewServices: (swfServices: SwfServiceCatalogService[]) => Promise<any> }) {
-    this.onChangeCallback = args.onNewServices;
-
+  public async init() {
     this.urlVsPathConfigurationChangeCallback = vscode.workspace.onDidChangeConfiguration(async (e) => {
       if (e.affectsConfiguration(CONFIGURATION_SECTIONS.shouldReferenceServiceRegistryFunctionsWithUrls)) {
         return this.refresh();
@@ -52,32 +66,33 @@ export class RhhccServiceRegistryServiceCatalogStore {
     return this.refresh();
   }
 
+  public subscribeToNewServices(subs: (services: SwfServiceCatalogService[]) => Promise<any>) {
+    this.subscriptions.add(subs);
+    return new vscode.Disposable(() => {
+      this.unsubscribeToNewServices(subs);
+    });
+  }
+
+  public unsubscribeToNewServices(subs: (services: SwfServiceCatalogService[]) => Promise<any>) {
+    this.subscriptions.delete(subs);
+  }
+
   public async refresh() {
-    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
     const serviceRegistryUrl = this.args.configuration.getConfiguredServiceRegistryUrl();
-    const shouldReferenceFunctionsWithUrls =
-      this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
 
     if (!this.args.rhhccAuthenticationStore.session) {
-      return this.onChangeCallback?.([]);
+      return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription([])));
     }
 
     if (!serviceRegistryUrl) {
-      return this.onChangeCallback?.([]);
+      return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription([])));
     }
 
     const requestHeaders = {
       headers: { Authorization: "Bearer " + this.args.rhhccAuthenticationStore.session.accessToken },
     };
 
-    const serviceRegistryRestApi = {
-      getArtifactContentUrl: (params: { groupId: string; id: string }) => {
-        return `${serviceRegistryUrl.toString()}/groups/${params.groupId}/artifacts/${params.id}`;
-      },
-      getArtifactsUrl: () => {
-        return `${serviceRegistryUrl?.toString()}/search/artifacts`;
-      },
-    };
+    const serviceRegistryRestApi = getServiceRegistryRestApi(serviceRegistryUrl);
 
     const artifactsMetadata: ServiceRegistryArtifactSearchResponse = (
       await axios.get(serviceRegistryRestApi.getArtifactsUrl(), requestHeaders)
@@ -97,24 +112,11 @@ export class RhhccServiceRegistryServiceCatalogStore {
     const services: SwfServiceCatalogService[] = artifactsWithContent.map((artifact) => {
       const serviceId = artifact.metadata.id;
       const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
-      const specsDirRelativePosixPath = posixPath.relative(
-        posixPath.dirname(this.args.baseFileAbsolutePosixPath),
-        specsDirAbsolutePosixPath
-      );
-      const serviceFileRelativePosixPath = posixPath.join(specsDirRelativePosixPath, serviceFileName);
 
-      let swfFunctions = extractFunctions(artifact.content, serviceFileRelativePosixPath, {
+      const swfFunctions: SwfServiceCatalogFunction[] = extractFunctions(artifact.content, {
         type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
         serviceId: serviceId,
       });
-
-      if (shouldReferenceFunctionsWithUrls) {
-        // TODO tiago: I believe we should be doing that in a better way
-        swfFunctions = swfFunctions.map((swfFunction) => ({
-          ...swfFunction,
-          operation: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
-        }));
-      }
 
       return {
         name: serviceFileName,
@@ -122,13 +124,14 @@ export class RhhccServiceRegistryServiceCatalogStore {
         type: SwfServiceCatalogServiceType.rest,
         functions: swfFunctions,
         source: {
+          url: serviceRegistryRestApi.getArtifactContentUrl(artifact.metadata),
           type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY,
           id: serviceId,
         },
       };
     });
 
-    return this.onChangeCallback?.(services);
+    return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription(services)));
   }
 
   public dispose() {

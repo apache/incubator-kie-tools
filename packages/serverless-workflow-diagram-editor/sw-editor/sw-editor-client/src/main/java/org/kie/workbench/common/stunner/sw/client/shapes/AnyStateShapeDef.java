@@ -16,12 +16,10 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import java.util.AbstractMap;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
@@ -38,13 +36,20 @@ import org.kie.workbench.common.stunner.svg.client.shape.factory.SVGShapeViewRes
 import org.kie.workbench.common.stunner.svg.client.shape.view.SVGShapeView;
 import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;
 import org.kie.workbench.common.stunner.sw.client.resources.ShapeViewFactory;
+import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
 import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
+import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
+import org.kie.workbench.common.stunner.sw.definition.EventTimeout;
+import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
+import org.kie.workbench.common.stunner.sw.definition.OperationState;
+import org.kie.workbench.common.stunner.sw.definition.ParallelState;
+import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
@@ -76,32 +81,54 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .put(InjectState.class, ShapeViewFactory::injectState)
                     .put(SwitchState.class, ShapeViewFactory::switchState)
                     .put(EventState.class, ShapeViewFactory::eventState)
-                    // TODO: Why need for workflow here?
+                    .put(OperationState.class, ShapeViewFactory::switchState)
+                    .put(SleepState.class, ShapeViewFactory::switchState)
+                    .put(ParallelState.class, ShapeViewFactory::switchState)
+                    .put(ForEachState.class, ShapeViewFactory::switchState)
+                    .put(CallbackState.class, ShapeViewFactory::switchState)
                     .put(Workflow.class, ShapeViewFactory::container)
                     .put(Start.class, ShapeViewFactory::startState)
                     .put(End.class, ShapeViewFactory::endState)
+                    .put(ActionsContainer.class, ShapeViewFactory::container)
                     .put(OnEvent.class, ShapeViewFactory::container)
                     .put(EventRef.class, ShapeViewFactory::event)
+                    .put(EventTimeout.class, ShapeViewFactory::eventTimeout)
                     .put(CallFunctionAction.class, ShapeViewFactory::action)
                     .put(CallSubflowAction.class, ShapeViewFactory::action);
 
     // TODO: Refactor this, no need for storing state...
     public static final Map<Class<?>, Glyph> GLYPHS =
-            Stream.of(new AbstractMap.SimpleEntry<>(InjectState.class, GlyphFactory.STATE_INJECT),
-                      new AbstractMap.SimpleEntry<>(SwitchState.class, GlyphFactory.STATE_SWITCH),
-                      new AbstractMap.SimpleEntry<>(EventState.class, GlyphFactory.STATE_EVENT),
-                      // TODO: Why need for workflow here?
-                      new AbstractMap.SimpleEntry<>(Workflow.class, GlyphFactory.TRANSITION),
-                      new AbstractMap.SimpleEntry<>(Start.class, GlyphFactory.START),
-                      new AbstractMap.SimpleEntry<>(End.class, GlyphFactory.END),
-                      new AbstractMap.SimpleEntry<>(OnEvent.class, GlyphFactory.EVENTS),
-                      new AbstractMap.SimpleEntry<>(EventRef.class, GlyphFactory.EVENT),
-                      new AbstractMap.SimpleEntry<>(CallFunctionAction.class, GlyphFactory.CALL_FUNCTION),
-                      new AbstractMap.SimpleEntry<>(CallSubflowAction.class, GlyphFactory.CALL_SUBFLOW))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+            new HashMap<Class<?>, Glyph>() {{
+                put(InjectState.class, GlyphFactory.STATE_INJECT);
+                put(SwitchState.class, GlyphFactory.STATE_SWITCH);
+                put(EventState.class, GlyphFactory.STATE_EVENT);
+                put(OperationState.class, GlyphFactory.STATE_OPERATION);
+                put(SleepState.class, GlyphFactory.STATE_INJECT);
+                put(ParallelState.class, GlyphFactory.STATE_INJECT);
+                put(ForEachState.class, GlyphFactory.STATE_INJECT);
+                put(CallbackState.class, GlyphFactory.STATE_INJECT);
+                put(Workflow.class, GlyphFactory.TRANSITION);
+                put(Start.class, GlyphFactory.START);
+                put(End.class, GlyphFactory.END);
+                put(ActionsContainer.class, GlyphFactory.CALL_FUNCTION);
+                put(OnEvent.class, GlyphFactory.EVENTS);
+                put(EventRef.class, GlyphFactory.EVENT);
+                put(EventTimeout.class, GlyphFactory.EVENT_TIMEOUT);
+                put(CallFunctionAction.class, GlyphFactory.CALL_FUNCTION);
+                put(CallSubflowAction.class, GlyphFactory.CALL_SUBFLOW);
+            }};
 
     @Override
     public SVGShapeView<?> newViewInstance(ShapeViewFactory factory, W instance) {
+        /*if (instance instanceof OnEvent) {
+            return VIEW_RESOURCES.getResource(factory, instance).build(295d,100d, false);
+        }
+        if (instance instanceof ActionsContainer) {
+            return VIEW_RESOURCES.getResource(factory, instance).build(185d, 160d, false);
+        }
+        if (instance instanceof Timeout) {
+            return VIEW_RESOURCES.getResource(factory, instance).build(28d, 28d, false);
+        }*/
         return VIEW_RESOURCES.getResource(factory, instance).build(false);
     }
 

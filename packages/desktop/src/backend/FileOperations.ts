@@ -41,8 +41,8 @@ export class FileOperations {
     ipcMain.on("saveFile", (event: IpcMainEvent, data: { action: FileSaveActions; file: ElectronFile }) => {
       if (
         data.action !== FileSaveActions.SAVE_AS &&
-        data.file.filePath !== UNSAVED_FILE_NAME &&
-        data.file.filePath !== SAMPLE
+        data.file.filePath !== `${UNSAVED_FILE_NAME}.${data.file.fileType}` &&
+        data.file.filePath !== `${SAMPLE}.${data.file.fileType}`
       ) {
         this.writeFile(data.file.filePath, data.file.fileContent);
         return;
@@ -82,7 +82,7 @@ export class FileOperations {
     ipcMain.on(
       "saveThumbnail",
       (event: IpcMainEvent, data: { filePath: string; fileType: string; fileContent: string }) => {
-        if (data.filePath !== UNSAVED_FILE_NAME) {
+        if (data.filePath !== `${UNSAVED_FILE_NAME}.${data.fileType}`) {
           this.userData.saveFileThumbnail(data.filePath, data.fileType, data.fileContent);
         }
       }
@@ -118,7 +118,7 @@ export class FileOperations {
   public newFile(type: string) {
     this.window.webContents.send("openFile", {
       file: {
-        filePath: UNSAVED_FILE_NAME,
+        filePath: `${UNSAVED_FILE_NAME}.${type}`,
         fileType: type,
         fileContent: "",
       },

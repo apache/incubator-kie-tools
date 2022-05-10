@@ -92,7 +92,7 @@ public class ClientDiagramService {
     }
 
     public Promise<String> transform(final Diagram diagram) {
-        return marshaller.marshall(diagram.getGraph());
+        return marshaller.marshallGraph(diagram.getGraph());
     }
 
     public Marshaller getMarshaller() {
@@ -137,7 +137,13 @@ public class ClientDiagramService {
         }, new IThenable.ThenOnRejectedCallbackFn<Object>() {
             @Override
             public IThenable<Object> onInvoke(Object o) {
-                serviceCallback.onError(new ClientRuntimeError((Throwable) o));
+                final ClientRuntimeError e;
+                if (o instanceof ClientRuntimeError) {
+                    e = (ClientRuntimeError) o;
+                } else {
+                    e = new ClientRuntimeError((Throwable) o);
+                }
+                serviceCallback.onError(e);
                 return null;
             }
         });
@@ -145,7 +151,7 @@ public class ClientDiagramService {
 
     private Promise<Graph> unmarshall(final Metadata metadata,
                                       final String raw) {
-        return marshaller.unmarshall(raw);
+        return marshaller.unmarshallGraph(raw);
     }
 
     private Metadata createMetadata() {

@@ -31,8 +31,9 @@ type Config struct {
 		Version string `yaml:"version"`
 	} `yaml:"app"`
 	Proxy struct {
-		IP   string `yaml:"ip"`
-		Port int    `yaml:"port"`
+		IP                 string `yaml:"ip"`
+		Port               int    `yaml:"port"`
+		InsecureSkipVerify bool   `yaml:"insecureSkipVerify"`
 	} `yaml:"proxy"`
 	Modeler struct {
 		Link string `yaml:"link"`

@@ -17,19 +17,26 @@ package org.dashbuilder.client.external;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 
 enum SupportedMimeType {
 
-    JSON("application/json", "json"),
-    CSV("text/csv", "csv");
+    // JSON is a no-op transformer
+    JSON("application/json", "json", v -> v),
+    CSV("text/csv", "csv", new CSVParser()),
+    // metrics is only matched by URL, otherwise it takes precedence on CSV when it is text/plain
+    METRIC("", "metrics", new MetricsParser());
 
     String mimeType;
 
     String extension;
 
-    private SupportedMimeType(String type, String extension) {
+    Function<String, String> tranformer;
+
+    private SupportedMimeType(String type, String extension, Function<String, String> tranformer) {
         this.mimeType = type;
         this.extension = extension;
+        this.tranformer = tranformer;
     }
 
     public String getMimeType() {
@@ -51,16 +58,16 @@ enum SupportedMimeType {
     }
 
     public static Optional<SupportedMimeType> byMimeType(String mimeType) {
-        if (mimeType == null) {
+        if (mimeType == null || mimeType.trim().isEmpty()) {
             return Optional.empty();
         }
         return Arrays.stream(values())
-                .filter(t -> mimeType.toLowerCase().startsWith(t.getMimeType()))
+                .filter(t -> !t.getMimeType().isEmpty() && mimeType.toLowerCase().startsWith(t.getMimeType()))
                 .findFirst();
     }
 
     public static Optional<SupportedMimeType> byUrl(String url) {
-        if (url == null) {
+        if (url == null || url.trim().isEmpty()) {
             return Optional.empty();
         }
         return Arrays.stream(values())

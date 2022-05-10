@@ -129,6 +129,19 @@ public class LayoutTemplateJSONMarshallerTest {
             "    }\n" +
             "  ]\n" +
             "}";
+    
+    String LT_JSON_HTML_SHORTCUT = "{\n" +
+            "  \"style\": \"PAGE\",\n" +
+            "  \"name\": \"test Layout Template\",\n" +
+            "  \"properties\": {\n" +
+            "    \"LTPROPERTY\": \"LTVALUE\"\n" +
+            "  },\n" +
+            "  \"components\": [\n" +
+            "    {\n" +
+            "        \"html\": \"Hello World\"\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
 
     @Test
     public void toJsonTest() {
@@ -179,6 +192,16 @@ public class LayoutTemplateJSONMarshallerTest {
         LayoutComponent layoutComponent = layoutColumn.getLayoutComponents().get(0);
         assertEquals(LCOMP_DRAG_TYPE, layoutComponent.getDragTypeName());
         assertEquals(PROP_VAL, layoutComponent.getProperties().get(PROP_KEY));
+    }
+
+    @Test
+    public void htmlShortcutTest() {
+        var lt = LayoutTemplateJSONMarshaller.get().fromJson(LT_JSON_HTML_SHORTCUT);
+        var layoutRow = lt.getRows().get(0);
+        var layoutColumn = layoutRow.getLayoutColumns().get(0);
+        var layoutComponent = layoutColumn.getLayoutComponents().get(0);
+        assertEquals(LayoutTemplateJSONMarshaller.HTML_DRAG_TYPE, layoutComponent.getDragTypeName());
+        assertEquals("Hello World", layoutComponent.getProperties().get(LayoutTemplateJSONMarshaller.HTML_CODE_PROP));
     }
 
     public void checkLayoutTemplate(LayoutTemplate lt) {

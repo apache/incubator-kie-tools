@@ -94,9 +94,6 @@ export const App = () => {
           <ServerlessWorkflowEditor
             channelType={ChannelType.ONLINE}
             ref={editor}
-            onReady={() => {
-              /*NOP*/
-            }}
             onNewEdit={() => {
               /*NOP*/
             }}
@@ -112,6 +109,7 @@ export const App = () => {
                 console.log("Nothing to do.");
               }
             }}
+            isReadOnly={false}
           />
         </div>
       </PageSection>
