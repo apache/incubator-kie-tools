@@ -7,51 +7,33 @@
     "packages": [
       "packages/*",
       "examples/*"
-    ],
-    "nohoist": [
-      "@kie-tools/serverless-workflow-editor",
-      "@kie-tools/serverless-workflow-editor/mermaid",
-      "@kie-tools/serverless-workflow-editor/mermaid/**",
-      "@kie-tools/serverless-workflow-editor/@types/mermaid",
-      "@kie-tools/serverless-workflow-editor/@types/mermaid/**",
-      "@kie-tools/serverless-workflow-editor/monaco-editor",
-      "@kie-tools/serverless-workflow-editor/monaco-editor/**",
-      "@kie-tools/serverless-workflow-editor/monaco-yaml",
-      "@kie-tools/serverless-workflow-editor/monaco-yaml/**",
-      "vscode-extension-serverless-workflow-editor",
-      "vscode-extension-serverless-workflow-editor/monaco-yaml",
-      "vscode-extension-serverless-workflow-editor/monaco-yaml/**",
-      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
-      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**",
-      "chrome-extension-serverless-workflow-editor",
-      "chrome-extension-serverless-workflow-editor/monaco-yaml",
-      "chrome-extension-serverless-workflow-editor/monaco-yaml/**",
-      "chrome-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
-      "chrome-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**"
     ]
   },
   "scripts": {
-    "bootstrap": "yarn",
-    "env:print": "build-env --print-env",
-    "env:vars": "build-env --print-vars",
-    "build:dev:until": "lerna run build:dev --stream --include-dependencies --scope",
-    "build:prod:until": "lerna run build:prod --stream --include-dependencies --scope",
+    "install-dependencies": "pnpm install || echo 'Ignoring install errors'",
+    "bootstrap": "yarn install-dependencies && node ./scripts/link_packages_with_self.js",
+    "build-env": "node packages/build-env/cli.js",
+    "env:print": "yarn build-env --print-env",
+    "env:vars": "yarn build-env --print-vars",
     "update-version-to": "node ./scripts/update_version.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky install",
-    "postinstall": "patch-package"
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@kie/npm-treatment-tool": "^1.1.1",
+    "@lerna/project": "^4.0.0",
     "@severlessworkflow/sdk-typescript": "^3.0.3",
     "@simbathesailor/use-what-changed": "^2.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.2",
+    "@types/testing-library__jest-dom": "^5.9.1",
+    "@types/testing-library__react": "^9.1.2",
+    "@types/testing-library__react-hooks": "^3.4.0",
     "@types/chai": "^4.2.17",
     "@types/chrome": "^0.0.143",
     "@types/filesystem": "^0.0.32",
@@ -111,14 +93,12 @@
     "jest-when": "^3.5.0",
     "js-yaml": "^4.1.0",
     "junit-report-merger": "^2.2.2",
-    "lerna": "^4.0.0",
     "mocha": "^9.2.0",
     "mocha-jenkins-reporter": "^0.4.5",
     "mocha-multi-reporters": "^1.5.1",
     "npm-run-all": "^4.1.5",
     "null-loader": "^4.0.1",
     "os-browserify": "^0.3.0",
-    "patch-package": "^6.4.7",
     "path-browserify": "^1.0.1",
     "pkg": "^5.5.2",
     "postinstall-postinstall": "^2.1.0",
@@ -161,5 +141,17 @@
   "resolutions": {
     "react-dropzone": "^11.4.2",
     "@types/react": "^17.0.6"
+  },
+  "pnpm": {
+    "overrides": {
+      "react-monaco-editor@0.43.0>monaco-editor": "^0.23.0"
+    },
+    "packageExtensions": {
+      "monaco-editor-webpack-plugin": {
+        "peerDependencies": {
+          "monaco-yaml": "*"
+        }
+      }
+    }
   }
 }

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React, { useCallback, useRef, useState } from "react";
+import * as React from "react";
+import { useCallback, useRef, useState } from "react";
 import { useCancelableEffect, usePreviousRef } from "../reactExt/Hooks";
 import { decoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { InputRow } from "@kie-tools/form-dmn";

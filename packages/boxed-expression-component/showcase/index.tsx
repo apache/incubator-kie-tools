@@ -33,7 +33,7 @@ import {
   RelationProps,
 } from "../src";
 import { Button, Modal } from "@patternfly/react-core";
-import { PenIcon } from "@patternfly/react-icons";
+import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
 import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
 import ReactJson from "react-json-view";
 

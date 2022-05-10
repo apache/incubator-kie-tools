@@ -40,6 +40,7 @@
     "@angular-devkit/build-angular": "^13.1.2",
     "@angular/cli": "^13.1.2",
     "@angular/compiler-cli": "^13.1.1",
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0"
   }
 }

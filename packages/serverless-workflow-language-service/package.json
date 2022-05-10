@@ -24,7 +24,10 @@
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
-    "vscode-languageserver-types": "^3.16.0"
+    "@kie-tools-core/run-script-if": "0.0.0",
+    "vscode-languageserver-types": "^3.16.0",
+    "jsonc-parser": "^3.0.0",
+    "vscode-languageserver-textdocument": "^1.0.4"
   },
   "babel": {
     "presets": [

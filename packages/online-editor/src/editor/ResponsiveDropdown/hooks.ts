@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import global_breakpoint_xs from "@patternfly/react-tokens/dist/esm/global_breakpoint_xs";
 import global_breakpoint_sm from "@patternfly/react-tokens/dist/esm/global_breakpoint_sm";

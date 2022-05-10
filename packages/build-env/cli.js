@@ -33,7 +33,7 @@ async function main() {
       ...checkCliTool("node", ["-v"]),
       ...checkCliTool("npm", ["-v"]),
       ...checkCliTool("yarn", ["-v"]),
-      ...checkCliTool("lerna", ["-v"]),
+      ...checkCliTool("pnpm", ["-v"]),
       ...checkCliTool("go", ["version"]),
       ...checkCliTool("mvn", ["-v"]),
     };
@@ -86,6 +86,7 @@ async function main() {
     g.set("ranksep", "2");
     g.set("splines", "polyline");
     g.set("rankdir", "TB");
+    g.set("ordering", "out");
 
     g.setNodeAttribut("shape", "box");
 

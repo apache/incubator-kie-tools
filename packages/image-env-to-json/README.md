@@ -9,7 +9,7 @@ It is designed mainly to be used by container images.
 Run the following in the root folder of the repository to build the package:
 
 ```bash
-$ lerna run build:prod --scope=@kie-tools/image-env-to-json --include-dependencies --stream
+$ yarn run build:prod @kie-tools/image-env-to-json...
 ```
 
 The output artifacts will be a JS version and a standalone executable in the `packages/image-env-to-json/dist` directory.

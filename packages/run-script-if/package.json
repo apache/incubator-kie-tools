@@ -12,7 +12,7 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "write-readme:darwin:linux": "echo '```' > README.md && run-script-if --help >> README.md && echo '```' >> README.md",
+    "write-readme:darwin:linux": "echo '```' > README.md && ./index.js --help >> README.md && echo '```' >> README.md",
     "write-readme:win32": "echo 'Nothing to do.'",
     "write-readme": "run-script-os",
     "build:dev": "yarn write-readme",

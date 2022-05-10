@@ -26,7 +26,7 @@ export function ResponsiveDropdownToggle(props: DropdownToggleProps) {
       {isModal ? (
         <Button
           variant={ButtonVariant.plain}
-          onClick={() => props.onToggle?.(props.isOpen || false)}
+          onClick={(e) => props.onToggle?.(props.isOpen || false, e)}
           className={props.className}
         >
           {props.children}
