@@ -38,7 +38,7 @@ export enum PropertiesPanelSection {
   PROCESS = "Process",
   PROCESS_DATA = "Process Data",
   IMPLEMENTATION_EXECUTION = "Implementation/Execution",
-  Advanced = "Advanced",
+  ADVANCED = "Advanced",
   DATA_ASSIGNMENTS = "Data Assignments",
 }
 
@@ -54,6 +54,7 @@ export default class PropertiesPanelHelper {
 
   /**
    * Expand desired section of property panel.
+   * When desired section is already open, collapse the section instead.
    *
    * @param sectionName
    */
@@ -89,7 +90,7 @@ export default class PropertiesPanelHelper {
       const customDataTypeInput = await this.root.findElement(By.xpath("//input[@data-field='customDataType']"));
       await customDataTypeInput.sendKeys(dataType);
     } else {
-      const dataTypeOption = await this.root.findElement(By.xpath(`//select/option[@value='${dataType}']`));
+      const dataTypeOption = await this.root.findElement(By.xpath("//td/select/option[@value='" + dataType + "']"));
       await dataTypeOption.click();
     }
 
@@ -131,6 +132,50 @@ export default class PropertiesPanelHelper {
   }
 
   /**
+   * Select desired property value in Implementation/Execution section
+   * @param name
+   * @param value
+   */
+  public async selectImplementationExecutionValue(name: string, value: string): Promise<PropertiesPanelHelper> {
+    const selectInput = await this.getProperty(name, "/select");
+    selectInput.click();
+    const customProcessMIExecutionOption = await selectInput.findElement(
+      By.xpath(
+        "//label[contains(.,'" +
+          name +
+          "')]/following-sibling::div[@data-field='fieldContainer']//select/option[@value='" +
+          value +
+          "']"
+      )
+    );
+    await customProcessMIExecutionOption.click();
+
+    return this;
+  }
+
+  /**
+   * Select desired programming language of On Entry/On Exit action.
+   * @param name
+   * @param value
+   * @returns
+   */
+  public async selectOnAction(name: string, value: string): Promise<PropertiesPanelHelper> {
+    const selectInput = await this.getProperty(name, "/select");
+    const customProcessMIExecutionOption = await selectInput.findElement(
+      By.xpath(
+        "//label[contains(.,'" +
+          name +
+          "')]/following-sibling::div[@data-field='fieldContainer']//select/option[@value='" +
+          value +
+          "']"
+      )
+    );
+    await customProcessMIExecutionOption.click();
+
+    return this;
+  }
+
+  /**
    * Scrolls desired property element into view.
    *
    * @param propertyElement element that si to be scrolled into view
@@ -149,6 +194,8 @@ export default class PropertiesPanelHelper {
    *
    * @param propertyName
    * @param propertyValue
+   * @param propertyType Type of property (select, textarea etc.). When desired property is in a widget,
+   *                     use "/" before property type for searching inside widget (/select, /textarea etc.).
    */
   public async changeProperty(
     propertyName: string,
@@ -167,6 +214,8 @@ export default class PropertiesPanelHelper {
    *
    * @param propertyName
    * @param expectedValue
+   * @param propertyType Type of property (select, textarea etc.). When desired property is in a widget,
+   *                     use "/" before property type for searching inside widget (/select, /textarea etc.).
    */
   public async assertPropertyValue(propertyName: string, expectedValue: string, propertyType?: string): Promise<void> {
     const property = await this.getProperty(propertyName, propertyType);
