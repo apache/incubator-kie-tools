@@ -19,7 +19,7 @@ import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "re
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
-import { DmnRunnerDispatchContext, DmnRunnerStateContext, InputRow } from "./DmnRunnerContext";
+import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { QueryParams } from "../../navigation/Routes";
@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { useRoutes } from "../../navigation/Hooks";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { DmnSchema } from "@kie-tools/form/dist/dmn";
+import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
 

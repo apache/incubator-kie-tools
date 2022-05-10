@@ -62,17 +62,23 @@ public class LayoutTemplateJSONMarshaller {
     static final String DEFAULT_SPAN = "12";
     static final String DEFAULT_DRAG_TYPE = "org.dashbuilder.client.editor.DisplayerDragComponent";
 
+    // Drag types constants
+    static final String HTML_DRAG_TYPE = "org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent";
+    static final String HTML = "HTML";
+    static final String HTML_CODE_PROP = "HTML_CODE";
+
     // to make the json more user friendly
     // replacement for Drag type
     private static final String TYPE = "type";
 
     private static final Map<String, String> TYPES_DRAG;
 
-    private static LayoutTemplateJSONMarshaller instance;
+    private static LayoutTemplateJSONMarshaller instance;   
+
 
     static {
         TYPES_DRAG = new HashMap<>();
-        TYPES_DRAG.put("HTML","org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent");
+        TYPES_DRAG.put(HTML, HTML_DRAG_TYPE);
         TYPES_DRAG.put("Displayer", "org.dashbuilder.client.editor.DisplayerDragComponent");
         TYPES_DRAG.put("External", "org.dashbuilder.client.editor.external.ExternalDragComponent");
         TYPES_DRAG.put("TABS", "org.dashbuilder.client.navigation.layout.editor.NavTabListDragComponent");
@@ -171,7 +177,7 @@ public class LayoutTemplateJSONMarshaller {
 
     private LayoutComponent extractComponent(JsonObject object) {
         var dragTypeName = findDragComponent(object);
-        var component = new LayoutComponent(dragTypeName);
+        var component = findComponentByShortcut(object).orElse(new LayoutComponent(dragTypeName));
         var propertiesObject = object.getObject(PROPERTIES);
         var settings = object.getObject(SETTINGS);
         extractProperties(propertiesObject, component::addProperty);
@@ -180,7 +186,6 @@ public class LayoutTemplateJSONMarshaller {
 
         if (settings != null) {
             component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
-
         }
         return component;
     }
@@ -295,6 +300,20 @@ public class LayoutTemplateJSONMarshaller {
             return type;
         }
         return DEFAULT_DRAG_TYPE;
+    }
+
+    /**
+     * Shortcut to easily use some components
+     */
+    protected Optional<LayoutComponent> findComponentByShortcut(JsonObject object) {
+        // check HTML shortcut
+        var html = object.getString(HTML) == null ? object.getString(HTML.toLowerCase()) : object.getString(HTML);
+        if (html != null) {
+            var layoutComponent = new LayoutComponent(HTML_DRAG_TYPE);
+            layoutComponent.getProperties().put(HTML_CODE_PROP, html);
+            return Optional.of(layoutComponent);
+        }
+        return Optional.empty();
     }
 
 }

@@ -30,6 +30,7 @@ import org.jboss.errai.common.client.ui.ElementWrapperWidget;
 import org.kie.workbench.common.dmn.client.commands.general.NavigateToExpressionEditorCommand;
 import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorDock;
+import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
 import org.kie.workbench.common.dmn.client.editors.expressions.ExpressionEditorView;
 import org.kie.workbench.common.dmn.client.editors.included.IncludedModelsPage;
@@ -113,6 +114,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
     protected final DRDNameChanger drdNameChanger;
 
     private final ConfirmationDialog confirmationDialog;
+    private final DecisionNavigatorPresenter decisionNavigatorPresenter;
 
     protected AbstractDMNDiagramEditor(final View view,
                                        final MultiPageEditorContainerView containerView,
@@ -138,7 +140,8 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                                        final KogitoChannelHelper kogitoChannelHelper,
                                        final GuidedTourBridgeInitializer guidedTourBridgeInitializer,
                                        final DRDNameChanger drdNameChanger,
-                                       final ConfirmationDialog confirmationDialog) {
+                                       final ConfirmationDialog confirmationDialog,
+                                       final DecisionNavigatorPresenter decisionNavigatorPresenter) {
         super(view, containerView);
         this.stunnerEditor = stunnerEditor;
         this.sessionManager = sessionManager;
@@ -163,6 +166,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         this.guidedTourBridgeInitializer = guidedTourBridgeInitializer;
         this.drdNameChanger = drdNameChanger;
         this.confirmationDialog = confirmationDialog;
+        this.decisionNavigatorPresenter = decisionNavigatorPresenter;
     }
 
     public void onStartup(final PlaceRequest place) {
@@ -251,6 +255,7 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
         final AbstractSession currentSession = stunnerEditor.isClosed()
                 ? null
                 : (AbstractSession) stunnerEditor.getSession();
+        decisionNavigatorPresenter.setIsRefreshComponentsViewSuspended(true);
         stunnerEditor.open(diagram, getSessionPresenterCallback(diagram, callback, currentSession));
     }
 
@@ -281,10 +286,13 @@ public abstract class AbstractDMNDiagramEditor extends MultiPageEditorContainerP
                 if (null != currentSession) {
                     currentSession.close();
                 }
+                decisionNavigatorPresenter.setIsRefreshComponentsViewSuspended(false);
+                decisionNavigatorPresenter.refreshComponentsView();
             }
 
             @Override
             public void onError(final ClientRuntimeError error) {
+                decisionNavigatorPresenter.setIsRefreshComponentsViewSuspended(false);
                 callback.onError(error);
             }
         };

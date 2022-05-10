@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, EnvelopeMapping, ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
@@ -78,7 +78,10 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     editorRef.current?.setContent("path", "content");
 
-    expect(spyOnContentChangedNotification).toBeCalledWith({ content: "content", path: "path" });
+    expect(spyOnContentChangedNotification).toBeCalledWith(
+      { content: "content", path: "path" },
+      { showLoadingOverlay: true }
+    );
   });
 
   test("EmbeddedEditor::requestContent", () => {

@@ -1,0 +1,8 @@
+{
+  "versionGroups": [
+    {
+      "dependencies": ["monaco-editor"],
+      "packages": ["@kie-tools/serverless-workflow-editor"]
+    }
+  ]
+}

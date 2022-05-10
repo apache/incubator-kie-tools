@@ -161,6 +161,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
       .each((el, index) => {
         cy.wrap(el).type("nested " + (index + 1));
       });
+
     //click outside to finish editing
     cy.get("body").click();
 

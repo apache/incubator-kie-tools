@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DecisionResult } from "@kie-tools/form/dist/dmn";
+import { DecisionResult } from "@kie-tools/form-dmn";
 import { routes } from "./Routes";
 
 export interface FetchDmnResultArgs {

@@ -9,11 +9,25 @@
       "examples/*"
     ],
     "nohoist": [
-      "@kogito-tooling/serverless-workflow-editor",
-      "@kogito-tooling/serverless-workflow-editor/mermaid",
-      "@kogito-tooling/serverless-workflow-editor/mermaid/**",
-      "@kogito-tooling/serverless-workflow-editor/@types/mermaid",
-      "@kogito-tooling/serverless-workflow-editor/@types/mermaid/**"
+      "@kie-tools/serverless-workflow-editor",
+      "@kie-tools/serverless-workflow-editor/mermaid",
+      "@kie-tools/serverless-workflow-editor/mermaid/**",
+      "@kie-tools/serverless-workflow-editor/@types/mermaid",
+      "@kie-tools/serverless-workflow-editor/@types/mermaid/**",
+      "@kie-tools/serverless-workflow-editor/monaco-editor",
+      "@kie-tools/serverless-workflow-editor/monaco-editor/**",
+      "@kie-tools/serverless-workflow-editor/monaco-yaml",
+      "@kie-tools/serverless-workflow-editor/monaco-yaml/**",
+      "vscode-extension-serverless-workflow-editor",
+      "vscode-extension-serverless-workflow-editor/monaco-yaml",
+      "vscode-extension-serverless-workflow-editor/monaco-yaml/**",
+      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
+      "vscode-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**",
+      "chrome-extension-serverless-workflow-editor",
+      "chrome-extension-serverless-workflow-editor/monaco-yaml",
+      "chrome-extension-serverless-workflow-editor/monaco-yaml/**",
+      "chrome-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor",
+      "chrome-extension-serverless-workflow-editor/@kie-tools/serverless-workflow-editor/**"
     ]
   },
   "scripts": {
@@ -58,7 +72,7 @@
     "@types/sinon": "^10.0.2",
     "@types/svg-pan-zoom": "^3.4.0",
     "@types/underscore": "^1.11.2",
-    "@types/vscode": "^1.56.0",
+    "@types/vscode": "^1.66.0",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "@vscode/test-web": "^0.0.22",

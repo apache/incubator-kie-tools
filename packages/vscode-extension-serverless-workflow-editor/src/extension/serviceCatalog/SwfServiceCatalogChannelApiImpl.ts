@@ -17,19 +17,13 @@
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import * as vscode from "vscode";
-import { Uri } from "vscode";
-import { posix as posixPath } from "path";
-import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
-import { COMMAND_IDS } from "../commands";
-import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./rhhccServiceRegistry";
+import { COMMAND_IDS } from "../commandIds";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
-
-const encoder = new TextEncoder();
+import { SwfServiceCatalogSupportActions } from "./SwfServiceCatalogSupportActions";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
@@ -38,7 +32,7 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
       baseFileAbsolutePosixPath: string;
       defaultUser: SwfServiceCatalogUser | undefined;
       defaultServiceRegistryUrl: string | undefined;
-      swfServiceCatalogStore: SwfServiceCatalogStore;
+      swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
 
@@ -59,24 +53,14 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    vscode.window.setStatusBarMessage("Serverless Workflow Editor: Refreshing...");
-    this.args.swfServiceCatalogStore.refresh().then(() => vscode.window.setStatusBarMessage(""));
+    this.args.swfServiceCatalogSupportActions.refresh();
   }
 
-  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(containingService: SwfServiceCatalogService): void {
-    if (containingService.source.type === SwfServiceCatalogServiceSourceType.LOCAL_FS) {
-      return;
-    }
-
-    const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(containingService.source.id);
-    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath(this.args);
-
-    const serviceFileAbsolutePosixPath = posixPath.join(specsDirAbsolutePosixPath, serviceFileName);
-    vscode.workspace.fs.writeFile(
-      Uri.parse(serviceFileAbsolutePosixPath),
-      encoder.encode(containingService.rawContent)
-    );
-    vscode.window.showInformationMessage(`Wrote ${serviceFileAbsolutePosixPath}.`);
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(args);
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {

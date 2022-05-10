@@ -15,7 +15,6 @@
  */
 package org.dashbuilder.client;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -30,7 +29,6 @@ import elemental2.dom.URLSearchParams;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
 import org.dashbuilder.shared.marshalling.RuntimeModelJSONMarshaller;
 import org.dashbuilder.shared.marshalling.RuntimeServiceResponseJSONMarshaller;
-import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.dashbuilder.shared.service.RuntimeModelService;
@@ -48,15 +46,9 @@ public class RuntimeModelResourceClient {
     @Inject
     ErrorResponseVerifier verifier;
 
-    RuntimeModel clientModel;
-
     public void getRuntimeModel(String runtimeModelId,
                                 Consumer<Optional<RuntimeModel>> runtimeModelConsumer,
                                 Consumer<String> onError) {
-        if (clientModel != null) {
-            runtimeModelConsumer.accept(Optional.of(clientModel));
-            return;
-        }
         String url = "/rest/runtime-model/" + runtimeModelId;
         fetch(url).then(response -> {
             if (response.status == HttpResponseCodes.SC_NOT_FOUND) {
@@ -86,12 +78,6 @@ public class RuntimeModelResourceClient {
     public void getRuntimeModelInfo(final String runtimeModelId,
                                     final Consumer<RuntimeServiceResponse> runtimeModelInfoConsumer,
                                     final BiConsumer<Object, Throwable> onError) {
-        if (clientModel != null) {
-            var clientResponse = buildClientResponse();
-            runtimeModelInfoConsumer.accept(clientResponse);
-            return;
-        }
-
         var params = new URLSearchParams();
         if (runtimeModelId != null) {
             String modelId = runtimeModelId;
@@ -128,10 +114,6 @@ public class RuntimeModelResourceClient {
         });
     }
 
-    public void setClientModel(RuntimeModel clientModel) {
-        this.clientModel = clientModel;
-    }
-
     private void handleErrorResponse(Response response, BiConsumer<Object, Throwable> onError) {
         handleErrorResponse(response, error -> onError.accept(error, new RuntimeException(error)));
     }
@@ -147,13 +129,6 @@ public class RuntimeModelResourceClient {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private RuntimeServiceResponse buildClientResponse() {
-        return new RuntimeServiceResponse(DashbuilderRuntimeMode.STATIC,
-                Optional.of(clientModel),
-                Collections.emptyList(),
-                false);
     }
 
 }

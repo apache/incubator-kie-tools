@@ -16,6 +16,7 @@
 
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 
 interface OnlineDictionary extends ReferenceDictionary {
   editorPage: {
@@ -264,6 +265,7 @@ interface OnlineDictionary extends ReferenceDictionary {
         message: Array<string | Wrapped<"jira">>;
       };
     };
+    table: DmnUnitablesI18n;
     modal: {
       initial: {
         runDmnModels: string;

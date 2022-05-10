@@ -24,19 +24,21 @@ import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowEditor } from "./ServerlessWorkflowEditor";
-import { ServerlessWorkflowEditorChannelApi } from "./ServerlessWorkflowEditorChannelApi";
+import { ServerlessWorkflowEditorChannelApi } from "../api";
 
 export class ServerlessWorkflowEditorView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
+  private readonly initArgs: EditorInitArgs;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-editor";
   public af_componentTitle: "Serverless Workflow Editor";
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
+    this.initArgs = initArgs;
   }
 
   public async getElementPosition() {
@@ -60,14 +62,12 @@ export class ServerlessWorkflowEditorView implements Editor {
       <ServerlessWorkflowEditor
         ref={this.editorRef}
         channelType={this.initArgs.channel}
-        onReady={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
-        onStateControlCommandUpdate={(command) =>
-          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(command)
+        onStateControlCommandUpdate={
+          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send
         }
-        onNewEdit={(edit) => this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(edit)}
-        setNotifications={(path, notifications) =>
-          this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)
-        }
+        onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
+        setNotifications={this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send}
+        isReadOnly={this.initArgs.isReadOnly}
       />
     );
   }

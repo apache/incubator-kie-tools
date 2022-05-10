@@ -64,6 +64,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -169,6 +170,7 @@ public class VariableListItemWidgetViewImplTest {
         doCallRealMethod().when(view).getModel();
         doCallRealMethod().when(view).setModel(any(VariableRow.class));
         doCallRealMethod().when(view).getModelValue(any());
+        doCallRealMethod().when(view).isDuplicateID(anyString());
         doCallRealMethod().when(view).setTextBoxModelValue(any(TextBox.class),
                                                            any());
         doCallRealMethod().when(view).setListBoxModelValue(any(),
@@ -370,7 +372,17 @@ public class VariableListItemWidgetViewImplTest {
     }
 
     @Test
-    public void testNameChangeHandlerWhenDuplicate() {
+    public void testNameChangeHandlerWhenDuplicateID() {
+        when(parent.isDuplicateID(VARIABLE_NEW_NAME)).thenReturn(true);
+        prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
+        verify(parent).isDuplicateID(VARIABLE_NEW_NAME);
+        verify(notification).fire(new NotificationEvent(StunnerFormsClientFieldsConstants.CONSTANTS.DuplicatedVariableIDError(VARIABLE_NEW_NAME),
+                                                        NotificationEvent.NotificationType.ERROR));
+        verify(name).setValue(VARIABLE_NAME);
+    }
+
+    @Test
+    public void testNameChangeHandlerWhenDuplicateName() {
         when(parent.isDuplicateName(VARIABLE_NEW_NAME)).thenReturn(true);
         prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
         verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
@@ -382,9 +394,11 @@ public class VariableListItemWidgetViewImplTest {
     @Test
     public void testNameChangeHandlerWhenNotDuplicateAndNotBoundToNodes() {
         when(parent.isDuplicateName(VARIABLE_NEW_NAME)).thenReturn(false);
+        when(parent.isDuplicateID(VARIABLE_NEW_NAME)).thenReturn(false);
         when(parent.isBoundToNodes(VARIABLE_NAME)).thenReturn(false);
         prepareNameChange(VARIABLE_NEW_NAME, MODEL_NEW_TO_STRING);
         verify(parent).isDuplicateName(VARIABLE_NEW_NAME);
+        verify(parent).isDuplicateID(VARIABLE_NEW_NAME);
         verify(parent).isBoundToNodes(VARIABLE_NAME);
         verify(parent).notifyModelChanged();
     }
@@ -514,5 +528,12 @@ public class VariableListItemWidgetViewImplTest {
                times(1)).setReadOnly(false);
         verify(name,
                times(1)).setEnabled(true);
+    }
+
+    @Test
+    public void testIsDuplicateID() {
+        String id = "expected_id";
+        view.isDuplicateID(id);
+        verify(parent).isDuplicateID(id);
     }
 }

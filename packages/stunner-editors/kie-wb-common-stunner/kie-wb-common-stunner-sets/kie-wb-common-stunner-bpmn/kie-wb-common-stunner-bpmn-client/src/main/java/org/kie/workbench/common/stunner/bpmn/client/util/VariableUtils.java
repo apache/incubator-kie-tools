@@ -33,6 +33,7 @@ import java.util.stream.StreamSupport;
 
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDefinition;
 import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagram;
+import org.kie.workbench.common.stunner.bpmn.definition.BPMNDiagramImpl;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseAdHocSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseReusableSubprocess;
 import org.kie.workbench.common.stunner.bpmn.definition.BaseUserTask;
@@ -96,6 +97,18 @@ public class VariableUtils {
 
     public static Collection<VariableUsage> findVariableUsages(Node node, String variableName) {
         return findVariableUsages(Collections.singletonList(node), variableName);
+    }
+
+    public static boolean matchesProcessID(Graph graph, String variableName) {
+        if (StringUtils.isEmpty(variableName)) {
+            return false;
+        }
+        Iterable<Node> nodes = graph.nodes();
+        return StreamSupport.stream(nodes.spliterator(), false)
+                .filter(VariableUtils::isBPMNDiagramImpl)
+                .map(node -> ((View) node.getContent()))
+                .map(view -> (BPMNDiagramImpl) view.getDefinition())
+                .anyMatch(bpmnDiagram -> Objects.equals(bpmnDiagram.getDiagramSet().getId().getValue(), variableName));
     }
 
     @SuppressWarnings("unchecked")
@@ -172,6 +185,11 @@ public class VariableUtils {
     private static boolean isBPMNDefinition(Node node) {
         return node.getContent() instanceof View &&
                 ((View) node.getContent()).getDefinition() instanceof BPMNDefinition;
+    }
+
+    protected static boolean isBPMNDiagramImpl(Node node) {
+        return node.getContent() instanceof View &&
+                ((View) node.getContent()).getDefinition() instanceof BPMNDiagramImpl;
     }
 
     private static String getDisplayName(BPMNDefinition definition) {

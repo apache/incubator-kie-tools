@@ -73,15 +73,6 @@ module.exports = (env) =>
       ],
     },
     ignoreWarnings: [/Failed to parse source map/],
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
-        //"monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
-        //"@severlessworkflow/sdk-typescript/lib/definitions/workflow": require.resolve("@severlessworkflow/sdk-typescript")
-      },
-    },
     devServer: {
       historyApiFallback: true,
       static: [{ directory: path.join(__dirname) }],

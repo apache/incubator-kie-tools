@@ -15,6 +15,7 @@
  */
 package org.dashbuilder.dataset.def;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
@@ -34,6 +35,8 @@ public class ExternalDataSetDef extends DataSetDef {
     private String expression;
     
     private String content;
+    
+    private Map<String, String> headers;
 
     public ExternalDataSetDef() {
         super.setProvider(DataSetProviderType.EXTERNAL);
@@ -78,12 +81,22 @@ public class ExternalDataSetDef extends DataSetDef {
                 dynamic);
     }
     
+    
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+    
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
+    }
+
     @Override
     public DataSetDef clone() {
         var def = new ExternalDataSetDef();
         clone(def);
         def.setUrl(getUrl());
         def.setDynamic(isDynamic());
+        def.setHeaders(getHeaders());
         return def;
     }
 
@@ -97,10 +110,9 @@ public class ExternalDataSetDef extends DataSetDef {
         out.append("URL=").append(url).append("\n");
         out.append("Dynamic=").append(dynamic).append("\n");
         out.append("Expression=").append(expression).append("\n");
-        out.append("Content=").append(content);
+        out.append("Content=").append(content).append("\n");
+        out.append("Headers=").append(headers);
         return out.toString();
     }
-    
-    
 
 }

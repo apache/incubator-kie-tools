@@ -1,10 +1,12 @@
-import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
+
+import org.kie.jenkins.jobdsl.model.Folder
+import org.kie.jenkins.jobdsl.KogitoJobTemplate
 import org.kie.jenkins.jobdsl.Utils
 
 /////////////////////////////////////////////////////////////////
 // This file is used for generating Jenkins jobs
 // Its placement and structure is a "convention" in kiegroup
-// For kogito-editors-java we currently generate just pullrequest job,
+// For kie-tools we currently generate just pullrequest job,
 // to run sonar with each pull request, see: .ci/jenkins/Jenkinsfile
 //
 // For more details see:
@@ -13,26 +15,20 @@ import org.kie.jenkins.jobdsl.Utils
 //  - https://github.com/kiegroup/kogito-runtimes/tree/main/.ci/jenkins/dsl
 /////////////////////////////////////////////////////////////////
 
-def getDefaultJobParams() {
-    def jobParams = KogitoJobTemplate.getDefaultJobParams(this, 'kie-tools')
-    jobParams.pr.excluded_regions.add('docsimg/.*')
-    return jobParams
-}
-
 Map getMultijobPRConfig() {
     return [
-            parallel: true,
-            jobs : [
-                    [
-                            id: 'kie-tools-stunner-editors',
-                            primary: true,
-                            env : [
-                                // Sonarcloud analysis only on main branch
-                                // As we have only Community edition
-                                ENABLE_SONARCLOUD: Utils.isMainBranch(this),
-                            ]
-                    ]
+        parallel: true,
+        jobs : [
+            [
+                id: 'kie-tools-stunner-editors',
+                primary: true,
+                env : [
+                    // Sonarcloud analysis only on main branch
+                    // As we have only Community edition
+                    ENABLE_SONARCLOUD: Utils.isMainBranch(this),
+                ]
             ]
+        ]
     ]
 }
 
@@ -44,5 +40,5 @@ setupMultijobPrDefaultChecks()
 /////////////////////////////////////////////////////////////////
 
 void setupMultijobPrDefaultChecks() {
-    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
+    KogitoJobTemplate.createPerRepoPRJobs(this, Folder.PULLREQUEST) { jobFolder -> return getMultijobPRConfig() }
 }

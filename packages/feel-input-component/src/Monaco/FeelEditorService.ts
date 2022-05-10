@@ -76,6 +76,14 @@ export class FeelEditorService {
     return this.getEditorBuilder().standaloneEditor !== undefined;
   }
 
+  /**
+   * Check If Suggest Widget is open. NOTE: you may need to call it with a setTimeout to 100, to wait for the animation to complete.
+   * @returns true if Suggest Widget is open, false otherwise.
+   */
+  static isSuggestWidgetOpen(): boolean {
+    return !!(this.getStandaloneEditor() as any)?._contentWidgets["editor.widget.suggestWidget"]?.position;
+  }
+
   withDomElement(domElement: HTMLElement) {
     this.domElement = domElement;
     return this;

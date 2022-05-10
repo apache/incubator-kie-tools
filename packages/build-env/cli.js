@@ -49,12 +49,14 @@ async function main() {
     const adjMatrix = {};
     for (const pkg of packages) {
       adjMatrix[pkg.name] = adjMatrix[pkg.name] ?? {};
-      for (const depName of Object.keys(pkg.dependencies ?? {})) {
+      const dependencies = Object.keys(pkg.dependencies ?? {}).sort();
+      for (const depName of dependencies) {
         if (packageNames.has(depName)) {
           adjMatrix[pkg.name][depName] = "dependency";
         }
       }
-      for (const depName of Object.keys(pkg.devDependencies ?? {})) {
+      const devDependencies = Object.keys(pkg.devDependencies ?? {}).sort();
+      for (const depName of devDependencies) {
         if (packageNames.has(depName)) {
           adjMatrix[pkg.name][depName] = "devDependency";
         }

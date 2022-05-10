@@ -18,8 +18,10 @@ package org.dashbuilder.client.screens.view;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.dom.client.Style.Display;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
+import elemental2.dom.HTMLParagraphElement;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.EmptyScreen;
 import org.dashbuilder.client.widgets.UploadWidget;
@@ -39,6 +41,10 @@ public class EmptyScreenView implements EmptyScreen.View {
     @Inject
     @DataField
     HTMLDivElement uploadContainer;
+    
+    @Inject
+    @DataField
+    HTMLParagraphElement subTitleParagraph;
 
     @Inject
     UploadWidget uploadWidget;
@@ -51,6 +57,12 @@ public class EmptyScreenView implements EmptyScreen.View {
     @Override
     public void init(EmptyScreen presenter) {
         uploadContainer.appendChild(uploadWidget.getElement());
+    }
+
+    @Override
+    public void editorMode() {
+        uploadContainer.style.display = Display.NONE.getCssName();
+        subTitleParagraph.textContent = AppConstants.INSTANCE.emptyEditorMode();
     }
 
 }

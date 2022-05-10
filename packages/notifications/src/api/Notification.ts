@@ -22,4 +22,12 @@ export interface Notification {
   severity: NotificationSeverity;
   message: string;
   type: NotificationType;
+  position?: Position;
+}
+
+export interface Position {
+  startLineNumber: number;
+  startColumn: number;
+  endLineNumber: number;
+  endColumn: number;
 }
