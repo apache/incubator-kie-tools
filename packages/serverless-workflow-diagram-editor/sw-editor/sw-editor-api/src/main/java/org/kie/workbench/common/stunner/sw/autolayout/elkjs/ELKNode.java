@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.autolayout.elkjs;
 
-import elemental2.core.Global;
 import elemental2.core.JsArray;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsProperty;
@@ -47,7 +46,7 @@ public class ELKNode {
                    double width,
                    double height) {
         this(id,
-             Global.JSON.parse("{}"),
+             new JsArray<>(),
              0d,
              0d,
              width,
@@ -217,5 +216,11 @@ public class ELKNode {
             }
         }
         return null;
+    }
+
+    @JsIgnore
+    public ELKNode sortEdges() {
+        edges.sort((a, b) -> a.getPriority() - b.getPriority());
+        return this;
     }
 }

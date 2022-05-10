@@ -81,10 +81,17 @@ public class TransitionShapeDef<W>
                                    .build()::handle);
     }
 
-    private static final DashArray DASH_ARRAY = DashArray.create(2, 6);
+    private static final DashArray DASH_ARRAY = DashArray.create(8, 8);
+    private static final DashArray DOT_ARRAY = DashArray.create(4, 6);
 
     public DashArray getDashArray(Object bean) {
-        return bean instanceof ActionTransition ? DASH_ARRAY : null;
+        if (bean instanceof ErrorTransition) {
+            return DASH_ARRAY;
+        } else if (bean instanceof ActionTransition || bean instanceof CompensationTransition) {
+            return DOT_ARRAY;
+        }
+
+        return null;
     }
 
     @Override
@@ -131,7 +138,7 @@ public class TransitionShapeDef<W>
         public ViewAttributesHandlerBuilder() {
             this.fillColor(TransitionShapeDef::getColor)
                     .strokeColor(TransitionShapeDef::getColor)
-                    .strokeWidth(bean -> 1d);
+                    .strokeWidth(bean -> 1.5d);
         }
     }
 
@@ -196,26 +203,26 @@ public class TransitionShapeDef<W>
     private static String getColor(Object transition) {
         Type type = getType(transition);
         if (type == Type.START) {
-            return "#0000FF";
+            return "#757575";
         }
         if (type == Type.ERROR) {
-            return "#FF0000";
+            return "#c9190b";
         }
         if (type == Type.EVENT_CONDITION) {
-            return "#00FF00";
+            return "#828282";
         }
         if (type == Type.DATA_CONDITION) {
-            return "#00FF00";
+            return "#757575";
         }
         if (type == Type.DEFAULT_CONDITION) {
-            return "#00FF00";
+            return "#3e8635";
         }
         if (type == Type.ACTION) {
-            return "#323232";
+            return "#757575";
         }
         if (type == Type.COMPENSATION) {
-            return "#A87575";
+            return "#f0ab00";
         }
-        return "#000000";
+        return "#757575";
     }
 }

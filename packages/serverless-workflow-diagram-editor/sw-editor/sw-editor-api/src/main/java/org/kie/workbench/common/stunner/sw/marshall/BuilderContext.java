@@ -184,27 +184,27 @@ public class BuilderContext {
     private static double[] getBeanSize(Object bean) {
         Class<?> type = bean.getClass();
         if (Start.class.equals(type)) {
-            return new double[]{20d, 20d};
+            return new double[]{50d, 50d};
         } else if (End.class.equals(type)) {
-            return new double[]{20d, 20d};
+            return new double[]{49d, 47d};
         } else if (EventRef.class.equals(type)) {
             return new double[]{56d, 56d};
         } else if (EventState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (InjectState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (SwitchState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (OperationState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (SleepState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (ParallelState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (ForEachState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (CallbackState.class.equals(type)) {
-            return new double[]{154d, 102d};
+            return new double[]{254d, 92d};
         } else if (ActionsContainer.class.equals(type)) {
             return new double[]{450d, 150d};
         } else if (ActionNode[].class.equals(type)) {

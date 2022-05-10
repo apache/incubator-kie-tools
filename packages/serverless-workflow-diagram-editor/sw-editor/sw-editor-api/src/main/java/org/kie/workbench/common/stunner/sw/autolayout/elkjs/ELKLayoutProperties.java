@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.sw.autolayout.elkjs;
 
 public class ELKLayoutProperties {
+
     public enum algorithmType {
         BOX {
             public String getValue() {
@@ -172,6 +173,71 @@ public class ELKLayoutProperties {
         public abstract String getValue();
     }
 
+    public enum layeringStrategyType {
+        NETWORK_SIMPLEX {
+            public String getValue() {
+                return "\"elk.layered.layering.strategy\": \"NETWORK_SIMPLEX\"";
+            }
+        },
+        LONGEST_PATH {
+            public String getValue() {
+                return "\"elk.layered.layering.strategy\": \"LONGEST_PATH\"";
+            }
+        },
+        COFFMAN_GRAHAM {
+            public String getValue() {
+                return "\"elk.layered.layering.strategy\": \"COFFMAN_GRAHAM\"";
+            }
+        },
+        INTERACTIVE {
+            public String getValue() {
+                return "\"elk.layered.layering.strategy\": \"INTERACTIVE\"";
+            }
+        },
+        STRETCH_WIDTH {
+            public String getValue() {
+                return "\"elk.layered.layering.strategy\": \"STRETCH_WIDTH\"";
+            }
+        },
+        MIN_WIDTH {
+            public String getValue() {
+                return "\"elk.layered.layering.strategy\": \"MIN_WIDTH\"";
+            }
+        };
+
+        public abstract String getValue();
+    }
+
+    public enum nodePlacementStrategyType {
+        SIMPLE {
+            public String getValue() {
+                return "\"elk.layered.nodePlacement.strategy\": \"SIMPLE\"";
+            }
+        },
+        INTERACTIVE {
+            public String getValue() {
+                return "\"elk.layered.nodePlacement.strategy\": \"INTERACTIVE\"";
+            }
+        },
+        LINEAR_SEGMENTS {
+            public String getValue() {
+                return "\"elk.layered.nodePlacement.strategy\": \"LINEAR_SEGMENTS\"";
+            }
+        },
+        BRANDES_KOEPF {
+            public String getValue() {
+                return "\"elk.layered.nodePlacement.strategy\": \"BRANDES_KOEPF\"";
+            }
+        },
+        NETWORK_SIMPLEX {
+            public String getValue() {
+                return "\"elk.layered.nodePlacement.strategy\": \"NETWORK_SIMPLEX\"";
+            }
+        };
+
+        public abstract String getValue();
+    }
+
     public static String getNodeNodeBetweenLayersSpacing(final double nodeHorizontalSpacing) {
         return "\"spacing.nodeNodeBetweenLayers\": " + nodeHorizontalSpacing;
     }
@@ -185,9 +251,9 @@ public class ELKLayoutProperties {
     }
 
     public static String getPadding(final double topPadding,
-                                     final double leftPadding,
-                                     final double bottomPadding,
-                                     final double rightPadding) {
+                                    final double leftPadding,
+                                    final double bottomPadding,
+                                    final double rightPadding) {
         return "\"elk.padding\": "
                 + "\"[top=" + topPadding
                 + ",left=" + leftPadding
