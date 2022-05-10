@@ -149,14 +149,16 @@ export function HomePage() {
                 minWidths={{ sm: "calc(33% - 16px)", default: "100%" }}
                 style={{ height: "calc(100% - 32px)" }}
               >
-                <NewModelCard
+                <NewServerlessModelCard
                   title={"Workflow"}
-                  extension={"sw.json"}
+                  jsonExtension={"sw.json"}
+                  yamlExtension={"sw.yaml"}
                   description={"Serverless Workflow files are used to define orchestration logic for services."}
                 />
-                <NewModelCard
+                <NewServerlessModelCard
                   title={"Decision"}
-                  extension={"yard.json"}
+                  jsonExtension={"yard.json"}
+                  yamlExtension={"yard.yaml"}
                   description={"Serverless Decision files are used to define decision logic for services."}
                 />
                 <NewModelCard
@@ -506,9 +508,49 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
   );
 }
 
+export function NewServerlessModelCard(props: {
+  title: string;
+  jsonExtension: SupportedFileExtensions;
+  yamlExtension: SupportedFileExtensions;
+  description: string;
+}) {
+  const routes = useRoutes();
+
+  return (
+    <Card isFullHeight={true} isPlain={true} isLarge={true}>
+      <CardTitle>
+        <FileLabel style={{ fontSize: "0.8em" }} extension={props.jsonExtension} />
+      </CardTitle>
+      <CardBody>
+        <TextContent>
+          <Text component={TextVariants.p}>{props.description}</Text>
+        </TextContent>
+      </CardBody>
+      <CardFooter>
+        <Grid hasGutter>
+          <GridItem span={12}>New {props.title}</GridItem>
+          <GridItem span={6}>
+            <Link to={{ pathname: routes.newModel.path({ extension: props.jsonExtension }) }}>
+              <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.jsonExtension}-button`}>
+                JSON
+              </Button>
+            </Link>
+          </GridItem>
+          <GridItem span={6}>
+            <Link to={{ pathname: routes.newModel.path({ extension: props.yamlExtension }) }}>
+              <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.yamlExtension}-button`}>
+                YAML
+              </Button>
+            </Link>
+          </GridItem>
+        </Grid>
+      </CardFooter>
+    </Card>
+  );
+}
+
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
   const routes = useRoutes();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
   const otherFiles = useMemo(
