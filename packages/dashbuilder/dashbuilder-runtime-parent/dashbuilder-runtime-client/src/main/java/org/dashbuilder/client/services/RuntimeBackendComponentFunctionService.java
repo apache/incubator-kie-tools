@@ -29,6 +29,7 @@ import elemental2.core.Global;
 import elemental2.dom.DomGlobal;
 import elemental2.dom.XMLHttpRequest;
 import jsinterop.base.Js;
+import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.client.error.ErrorResponseVerifier;
 import org.dashbuilder.external.service.BackendComponentFunctionService;
 import org.dashbuilder.json.Json;
@@ -44,8 +45,14 @@ public class RuntimeBackendComponentFunctionService implements BackendComponentF
     @Inject
     ErrorResponseVerifier verifier;
 
+    @Inject
+    RuntimeClientLoader loader;
+
     @Override
     public List<String> listFunctions() {
+        if (!loader.hasBackend()) {
+            return Collections.emptyList();
+        }
         try {
             var xhr = new XMLHttpRequest();
             xhr.open("GET", "/rest/function", false);

@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import elemental2.dom.EventSource;
 import elemental2.dom.MessageEvent;
 import jsinterop.base.Js;
+import org.dashbuilder.client.RuntimeClientLoader;
 import org.dashbuilder.shared.event.RemovedRuntimeModelEvent;
 import org.dashbuilder.shared.event.SSEType;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
@@ -34,15 +35,20 @@ public class RuntimeChannelClient {
     private EventSource eventSource;
 
     @Inject
+    RuntimeClientLoader loader;
+
+    @Inject
     Event<UpdatedRuntimeModelEvent> updatedModelEvent;
 
     @Inject
     Event<RemovedRuntimeModelEvent> removedModelEvent;
 
     public void subscribe() {
-        eventSource = new EventSource(RUNTIME_CHANNEL_URL);
-        eventSource.addEventListener(SSEType.MODEL_UPDATED.name(), this::modelUpdated);
-        eventSource.addEventListener(SSEType.MODEL_REMOVED.name(), this::modelRemoved);
+        if (loader.hasBackend()) {
+            eventSource = new EventSource(RUNTIME_CHANNEL_URL);
+            eventSource.addEventListener(SSEType.MODEL_UPDATED.name(), this::modelUpdated);
+            eventSource.addEventListener(SSEType.MODEL_REMOVED.name(), this::modelRemoved);
+        }
     }
 
     private void modelUpdated(elemental2.dom.Event e) {

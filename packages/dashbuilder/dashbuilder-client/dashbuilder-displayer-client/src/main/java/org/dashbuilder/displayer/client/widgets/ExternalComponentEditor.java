@@ -57,7 +57,7 @@ public class ExternalComponentEditor implements IsWidget {
 
     public void withComponent(String componentId, Map<String, String> properties) {
         propertiesEditor.init(componentId, properties, this::propertiesChange);
-        externalComponentPresenter.withComponent(componentId);
+        externalComponentPresenter.withComponentId(componentId);
         propertiesChange(properties);
     }
 

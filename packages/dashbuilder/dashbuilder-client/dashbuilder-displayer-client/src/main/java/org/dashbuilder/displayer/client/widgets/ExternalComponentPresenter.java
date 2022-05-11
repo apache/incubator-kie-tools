@@ -35,6 +35,7 @@ import org.uberfire.client.mvp.UberView;
 @Dependent
 public class ExternalComponentPresenter implements ExternalComponentListener {
 
+    private static final String URL_SEPARATOR = "/";
     /**
      * The base URL for components server. It should match the 
      */
@@ -45,6 +46,8 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
     final String componentRuntimeId = DOM.createUniqueId();
 
     private Consumer<ExternalFilterRequest> filterConsumer;
+
+    String hostPageUrl;
 
     public interface View extends UberView<ExternalComponentPresenter> {
 
@@ -73,6 +76,7 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
     public void init() {
         view.init(this);
         dispatcher.register(this);
+        hostPageUrl = GWT.getHostPageBaseURL();
     }
 
     @PreDestroy
@@ -107,13 +111,21 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
         view.configurationOk();
     }
 
-    public void withComponent(String componentId) {
-        String url = buildUrl(componentId);
-        view.setComponentURL(url);
+    public void withComponentId(String componentId) {
+        withComponentBaseUrlIdAndPartition(null, componentId, null);
     }
 
-    public void withComponent(String componentId, String partition) {
-        String url = buildUrl(componentId, partition);
+    public void withComponentIdAndPartition(String componentId, String partition) {
+        withComponentBaseUrlIdAndPartition(null, componentId, partition);
+    }
+
+    public void withComponentBaseUrlIdAndPartition(String baseUrl, String componentId, String partition) {
+        var url = "";
+        if (baseUrl == null) {
+            url = buildUrl(hostPageUrl, COMPONENT_SERVER_PATH, componentId, partition);
+        } else {
+            url = buildUrl(baseUrl, null, componentId, partition);
+        }
         view.setComponentURL(url);
     }
 
@@ -134,26 +146,25 @@ public class ExternalComponentPresenter implements ExternalComponentListener {
         return componentRuntimeId;
     }
 
-    private String buildUrl(String componentId) {
-        return buildUrl(componentId, "");
-    }
-
-    private String buildUrl(String componentId, String partition) {
-        return buildUrl(GWT.getHostPageBaseURL(), componentId, partition);
-    }
-
-    String buildUrl(String baseUrl, String componentId, String partition) {
+    String buildUrl(String baseUrl, String componentsPath, String componentId, String partition) {
         String url = baseUrl;
-        if (!url.endsWith("/")) {
-            url += "/";
+        if (!url.endsWith(URL_SEPARATOR)) {
+            url += URL_SEPARATOR;
         }
-        url += COMPONENT_SERVER_PATH;
+        if (componentsPath != null && componentsPath != null) {
+            if (componentsPath.startsWith(URL_SEPARATOR)) {
+                componentsPath = componentsPath.substring(1);
+            }
+            if (!componentsPath.endsWith(URL_SEPARATOR)) {
+                componentsPath = componentsPath + URL_SEPARATOR;
+            }
+            url += componentsPath;
+        }
         if (partition != null && !partition.trim().isEmpty()) {
-            url += "/" + partition;
+            url += partition + URL_SEPARATOR;
         }
-        url += "/" + componentId;
-        url += "/" + "index.html";
-        return url;
+        url += componentId + URL_SEPARATOR + "index.html";
+        return url.toLowerCase();
     }
 
 }

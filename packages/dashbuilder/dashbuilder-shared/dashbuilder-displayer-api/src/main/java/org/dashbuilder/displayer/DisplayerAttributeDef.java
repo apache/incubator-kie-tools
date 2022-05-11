@@ -100,8 +100,11 @@ public class DisplayerAttributeDef {
 
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID = new DisplayerAttributeDef("external_component_id");
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_PARTITION = new DisplayerAttributeDef("external_component_partition");
-    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_WIDTH = new DisplayerAttributeDef("external_component_width", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
-    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_HEIGHT = new DisplayerAttributeDef("external_component_height", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_WIDTH_DEPRECATED = new DisplayerAttributeDef("external_component_width", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_HEIGHT_DEPRECATED = new DisplayerAttributeDef("external_component_height", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_WIDTH = new DisplayerAttributeDef("width", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_HEIGHT = new DisplayerAttributeDef("height", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_BASE_URL = new DisplayerAttributeDef("baseUrl", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
 
     protected String id;
     protected DisplayerAttributeGroupDef parent;

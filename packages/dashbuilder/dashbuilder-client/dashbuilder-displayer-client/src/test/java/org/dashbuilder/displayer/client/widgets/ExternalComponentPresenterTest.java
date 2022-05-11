@@ -26,12 +26,13 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 
 @RunWith(GwtMockitoTestRunner.class)
 public class ExternalComponentPresenterTest {
+
+    private static final String TEST_URL = "http://acme.com/";
 
     @Mock
     View view;
@@ -54,30 +55,30 @@ public class ExternalComponentPresenterTest {
         verify(messageHelper).withId(eq(message), eq(externalComponentPresenter.getId()));
         verify(view).postMessage(eq(message));
     }
-    
+
     @Test
     public void testBuildUrlWithoutPartition() {
-        String expectedUrl ="http://acme.com/" + ExternalComponentPresenter.COMPONENT_SERVER_PATH + "/mycomp/index.html"; 
-        
-        String url = externalComponentPresenter.buildUrl("http://acme.com", "mycomp", null);
-        assertEquals(expectedUrl, url);
-
-        url = externalComponentPresenter.buildUrl("http://acme.com", "mycomp", "");
-        assertEquals(expectedUrl, url);
+        var expectedUrl = TEST_URL + ExternalComponentPresenter.COMPONENT_SERVER_PATH + "/mycomp/index.html";
+        externalComponentPresenter.hostPageUrl = TEST_URL;
+        externalComponentPresenter.withComponentId("myComp");
+        verify(view).setComponentURL(eq(expectedUrl));
     }
-    
+
     @Test
     public void testBuildUrlPartition() {
-        String expectedUrl ="http://acme.com/" + ExternalComponentPresenter.COMPONENT_SERVER_PATH + "/partition/mycomp/index.html"; 
-        String url = externalComponentPresenter.buildUrl("http://acme.com", "mycomp", "partition");
-        assertEquals(expectedUrl, url);
+        String expectedUrl = TEST_URL + ExternalComponentPresenter.COMPONENT_SERVER_PATH +
+                "/partition/mycomp/index.html";
+        externalComponentPresenter.hostPageUrl = TEST_URL;
+        externalComponentPresenter.withComponentIdAndPartition("myComp", "partition");
+        verify(view).setComponentURL(eq(expectedUrl));
     }
-    
+
     @Test
-    public void testBuildAdditionalSlash() {
-        String expectedUrl ="http://acme.com/" + ExternalComponentPresenter.COMPONENT_SERVER_PATH + "/partition/mycomp/index.html"; 
-        String url = externalComponentPresenter.buildUrl("http://acme.com/", "mycomp", "partition");
-        assertEquals(expectedUrl, url);
+    public void testBuildUrlWithCustomHostTest() {
+        String expectedUrl = "http://custom.com/partition/mycomp/index.html";
+        externalComponentPresenter.withComponentBaseUrlIdAndPartition("http://custom.com/", "myComp", "partition");
+        verify(view).setComponentURL(eq(expectedUrl));
+
     }
 
 }
