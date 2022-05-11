@@ -15,8 +15,8 @@
   "action": { "default_icon": "resources/icon_16.png" },
   "web_accessible_resources": [
     {
-      "resources": ["resources/*"],
-      "extension_ids": ["ijamhkegfogkfnmfnfkjdiadomlphfej"]
+      "resources": ["resources/*", "scripts/*"],
+      "matches": ["https://*/*", "http://*/*"]
     }
   ],
   "declarative_net_request": {

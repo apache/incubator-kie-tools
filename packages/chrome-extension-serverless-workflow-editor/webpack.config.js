@@ -73,7 +73,7 @@ module.exports = async (env) => {
       }),
       new ZipPlugin({
         filename: "chrome_extension_serverless_workflow_editor_" + packageJson.version + ".zip",
-        include: ["manifest.json", "background.js", "content_scripts", "resources", "rules.json"],
+        include: ["manifest.json", "background.js", "content_scripts", "resources", "scripts", "rules.json"],
       }),
       new MonacoWebpackPlugin({
         languages: ["json"],

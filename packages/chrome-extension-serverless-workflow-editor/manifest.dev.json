@@ -15,7 +15,7 @@
   "action": { "default_icon": "resources/icon_16.png" },
   "web_accessible_resources": [
     {
-      "resources": ["resources/*"],
+      "resources": ["resources/*", "scripts/*"],
       "matches": ["https://*/*", "http://*/*"]
     }
   ],

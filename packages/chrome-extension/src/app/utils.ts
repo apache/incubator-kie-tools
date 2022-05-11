@@ -22,10 +22,10 @@ import {
 } from "./constants";
 import { Logger } from "../Logger";
 
-export function runScriptOnPage(scriptString: string) {
+export function runScriptOnPage(script: string) {
   const scriptTag = document.createElement("script");
-  scriptTag.setAttribute("type", "text/javascript");
-  scriptTag.innerText = scriptString;
+  scriptTag.setAttribute("src", script);
+  scriptTag.innerText = script;
   document.body.appendChild(scriptTag);
   scriptTag.remove();
 }
@@ -45,18 +45,7 @@ export function runAfterUriChange(logger: Logger, callback: () => void) {
     callback();
   };
 
-  runScriptOnPage(`
-  var _wr = function(type) {
-      var orig = history[type];
-      return function() {
-          var rv = orig.apply(this, arguments);
-          var e = new Event(type);
-          e.arguments = arguments;
-          window.dispatchEvent(e);
-          return rv;
-      };
-  };
-  history.replaceState = _wr('replaceState');`);
+  runScriptOnPage(chrome.runtime.getURL("scripts/check_url_change.js"));
 
   window.addEventListener("replaceState", () => {
     logger.log("replaceState event happened");
