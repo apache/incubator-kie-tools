@@ -20,4 +20,4 @@ More suitable for running `it-tests` completely.
 > Before test development, you may need to build `online-editor` as:
 >
 > - `kie-tools$ yarn bootstrap`
-> - `kie-tools$ yarn build:dev:until @kie-tools/online-editor`
+> - `kie-tools$ pnpm -r -F @kie-tools/online-editor... build:dev`
