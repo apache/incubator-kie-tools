@@ -701,6 +701,10 @@ public class DisplayerSettings {
     }
 
     public String getComponentWidth() {
+        var legacyWidth = settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_WIDTH_DEPRECATED));
+        if (legacyWidth != null) {
+            return parseString(legacyWidth);
+        }
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_WIDTH)));
     }
 
@@ -709,6 +713,10 @@ public class DisplayerSettings {
     }
 
     public String getComponentHeight() {
+        var legacyHeight = settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_HEIGHT_DEPRECATED));
+        if (legacyHeight != null) {
+            return parseString(legacyHeight);
+        }
         return parseString(settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_HEIGHT)));
     }
 
@@ -746,6 +754,10 @@ public class DisplayerSettings {
 
     public String getComponentPartition() {
         return settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_PARTITION));
+    }
+
+    public String getComponentBaseUrl() {
+        return settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_BASE_URL));
     }
 
     public String setComponentPartition(String componentPartition) {

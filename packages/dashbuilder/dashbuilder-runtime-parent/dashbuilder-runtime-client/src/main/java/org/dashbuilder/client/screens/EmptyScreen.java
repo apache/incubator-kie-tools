@@ -78,7 +78,7 @@ public class EmptyScreen {
     
     @OnOpen
     protected void onOpen() {
-        if (loader.isOffline()) {
+        if (loader.isEditor()) {
             view.editorMode();
         }
     }
