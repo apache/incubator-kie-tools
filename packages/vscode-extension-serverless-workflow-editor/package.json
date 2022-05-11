@@ -3,7 +3,7 @@
   "publisher": "redhat",
   "displayName": "Serverless Workflow Editor",
   "description": "Edit Serverless Workflow definitions",
-  "version": "0.19.0",
+  "version": "0.19.1",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -20,15 +20,15 @@
     "run:webmode": "yarn vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.19.0",
-    "@kie-tools-core/i18n": "0.19.0",
-    "@kie-tools-core/patternfly-base": "0.19.0",
-    "@kie-tools-core/vscode-extension": "0.19.0",
-    "@kie-tools-core/workspace": "0.19.0",
-    "@kie-tools/serverless-workflow-editor": "0.19.0"
+    "@kie-tools-core/editor": "0.19.1",
+    "@kie-tools-core/i18n": "0.19.1",
+    "@kie-tools-core/patternfly-base": "0.19.1",
+    "@kie-tools-core/vscode-extension": "0.19.1",
+    "@kie-tools-core/workspace": "0.19.1",
+    "@kie-tools/serverless-workflow-editor": "0.19.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0",
+    "@kie-tools/build-env": "0.19.1",
     "monaco-editor-webpack-plugin": "^7.0.1"
   },
   "icon": "icon.png",

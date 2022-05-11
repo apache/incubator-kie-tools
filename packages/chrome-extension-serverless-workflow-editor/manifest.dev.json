@@ -1,7 +1,7 @@
 {
   "name": "Serverless Workflow Editor for GitHub",
-  "version": "0.19.0",
-  "manifest_version": 2,
+  "version": "0.19.1",
+  "manifest_version": 3,
   "description": "Visualize and edit Serverless Workflow files using a graphical editor on GitHub",
   "content_scripts": [
     {
@@ -13,28 +13,11 @@
   ],
   "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },
   "action": { "default_icon": "resources/icon_16.png" },
-  "web_accessible_resources": [
-    {
-      "resources": ["resources/*", "scripts/*"],
-      "matches": ["https://*/*", "http://*/*"]
-    }
-  ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "rulesset_1",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  },
+  "web_accessible_resources": [{ "resources": ["resources/*", "scripts/*"], "matches": ["https://*/*", "http://*/*"] }],
+  "declarative_net_request": { "rule_resources": [{ "id": "rulesset_1", "enabled": true, "path": "rules.json" }] },
   "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback"],
   "host_permissions": ["https://*.github.com/*", "http://*.github.com/*"],
-  "sandbox": {
-    "pages": ["https://raw.githubusercontent.com"]
-  },
-  "content_security_policy": {
-    "sandbox": "sandbox allow-scripts; object-src 'self'"
-  },
+  "sandbox": { "pages": ["https://raw.githubusercontent.com"] },
+  "content_security_policy": { "sandbox": "sandbox allow-scripts; object-src 'self'" },
   "externally_connectable": { "matches": ["https://*.github.com/*", "http://*.github.com/*", "http://localhost/*"] }
 }
