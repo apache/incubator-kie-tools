@@ -61,18 +61,32 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
     private final ViewAttributesHandler<W, SVGShapeView> viewHandler;
     private final FontHandler<W, SVGShapeView> fontHandler;
 
-    private final boolean isRectangularShape;
+    private final boolean isSymmetric;
 
-    public AnyStateShapeDef() {
-        this(true);
+    private final FontStyle fontStyle;
+
+    public enum FontStyle {
+        INSIDE_CENTER_WITH_AlPHA,
+        INSIDE_CENTER,
+        OUTSIDE_CENTER_BOTTOM,
+        INSIDE_LEFT_WITH_MARGIN
     }
 
-    public AnyStateShapeDef(boolean isRectangularShape) {
-        this.isRectangularShape = isRectangularShape;
+    public AnyStateShapeDef() {
+        this(FontStyle.INSIDE_LEFT_WITH_MARGIN, false);
+    }
+
+    public AnyStateShapeDef(FontStyle fontStyle) {
+        this(fontStyle, false);
+    }
+
+    public AnyStateShapeDef(FontStyle fontStyle, boolean isSymmetric) {
+        this.isSymmetric = isSymmetric;
+        this.fontStyle = fontStyle;
         viewHandler =
                 new ViewAttributesHandler.Builder<W, SVGShapeView>().build();
         fontHandler =
-                new DefaultFontHandlerBuilder<W, SVGShapeView>(isRectangularShape).build();
+                new DefaultFontHandlerBuilder<W, SVGShapeView>(this.fontStyle).build();
     }
 
     // TODO: Refactor this, no need for storing state...
@@ -81,11 +95,11 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .put(InjectState.class, ShapeViewFactory::injectState)
                     .put(SwitchState.class, ShapeViewFactory::switchState)
                     .put(EventState.class, ShapeViewFactory::eventState)
-                    .put(OperationState.class, ShapeViewFactory::switchState)
-                    .put(SleepState.class, ShapeViewFactory::switchState)
-                    .put(ParallelState.class, ShapeViewFactory::switchState)
-                    .put(ForEachState.class, ShapeViewFactory::switchState)
-                    .put(CallbackState.class, ShapeViewFactory::switchState)
+                    .put(OperationState.class, ShapeViewFactory::operationState)
+                    .put(SleepState.class, ShapeViewFactory::sleepState)
+                    .put(ParallelState.class, ShapeViewFactory::parallelState)
+                    .put(ForEachState.class, ShapeViewFactory::forEachState)
+                    .put(CallbackState.class, ShapeViewFactory::callbackState)
                     .put(Workflow.class, ShapeViewFactory::container)
                     .put(Start.class, ShapeViewFactory::startState)
                     .put(End.class, ShapeViewFactory::endState)
@@ -160,10 +174,19 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
 
     @Override
     public Optional<BiConsumer<View<W>, SVGShapeView>> sizeHandler() {
-        if (isRectangularShape) {
-            return Optional.empty();
+        final SizeHandler theSizeHandler;
+
+        // Asymmetric shapes such as rectangles
+        if (!isSymmetric) {
+            theSizeHandler = new SizeHandler.Builder<>()
+                    .maxWidth(o-> 90d)
+                    .maxHeight(o-> 90d)
+                    .build();
+            return Optional.of((BiConsumer<View<W>, SVGShapeView>) theSizeHandler::handle);
         }
-        SizeHandler theSizeHandler = new SizeHandler.Builder<>()
+
+        // Symmetric shapes such as a perfect square or circle
+        theSizeHandler = new SizeHandler.Builder<>()
                 .radius(o -> 23d)
                 .build();
         return Optional.of((BiConsumer<View<W>, SVGShapeView>) theSizeHandler::handle);
@@ -172,38 +195,61 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
     private static class DefaultFontHandlerBuilder<W, V extends ShapeView>
             extends FontHandler.Builder<W, V> {
 
-        public DefaultFontHandlerBuilder(boolean isRectangularShape) {
-            if (isRectangularShape) {
-                initDefaultForRectangularShapes();
-            } else {
-                initDefaultForCircularShapes();
+        public DefaultFontHandlerBuilder(FontStyle fontStyle) {
+            switch (fontStyle){
+                case INSIDE_CENTER_WITH_AlPHA:
+                    initInsideCenterWithAlpha();
+                    break;
+                case INSIDE_CENTER:
+                    initInsideCenter();
+                    break;
+                case OUTSIDE_CENTER_BOTTOM:
+                    initOutsideCenterBottom();
+                    break;
+                default:
+                    initInsideLeftWithMargin();
             }
         }
 
-        private void initDefaultForRectangularShapes() {
+        private void initInsideLeftWithMargin() {
+            this.verticalAlignment(bean -> HasTitle.VerticalAlignment.MIDDLE)
+                    .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.LEFT)
+                    .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
+                    .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
+                    .margin(HasTitle.HorizontalAlignment.LEFT, 85d)
+                    .alpha(bean -> 1d);
+        }
+
+        private void initInsideCenterWithAlpha() {
             this.verticalAlignment(bean -> HasTitle.VerticalAlignment.MIDDLE)
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
                     .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
-                    .textSizeConstraints(bean -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
-                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK);
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
+                    .alpha(bean -> 0.4d);
         }
 
-        private void initDefaultForCircularShapes() {
+        private void initInsideCenter() {
+            this.verticalAlignment(bean -> HasTitle.VerticalAlignment.MIDDLE)
+                    .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
+                    .referencePosition(bean -> HasTitle.ReferencePosition.INSIDE)
+                    .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
+                    .alpha(bean -> 1d);
+        }
+
+        private void initOutsideCenterBottom() {
             this.verticalAlignment(bean -> HasTitle.VerticalAlignment.BOTTOM)
                     .horizontalAlignment(bean -> HasTitle.HorizontalAlignment.CENTER)
                     .referencePosition(bean -> HasTitle.ReferencePosition.OUTSIDE)
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
-                    .textSizeConstraints(bean -> new HasTitle.Size(100, 100, HasTitle.Size.SizeType.PERCENTAGE))
-                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK);
-        }
-
-        // TODO: If this method not present, why not text algin on bottom works?
-        public static Double getStrokeAlpha(Double strokeWidth) {
-            return Optional.ofNullable(strokeWidth)
-                    .filter(value -> value > 0)
-                    .map(value -> 1.0)
-                    .orElse(0.0);
+                    .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
+                    .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
+                    .alpha(bean -> 1d);
         }
     }
 }

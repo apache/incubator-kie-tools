@@ -32,7 +32,7 @@ exports[`AttributesTable Attribute:Render 1`] = `
             </span>
             <button
               aria-disabled="false"
-              aria-label="label-close-button"
+              aria-label="Close [object Object]"
               class="pf-c-button pf-m-plain"
               data-ouia-component-id="OUIA-Generated-Button-plain-1"
               data-ouia-component-type="PF4/Button"
@@ -75,7 +75,7 @@ exports[`AttributesTable Attribute:Render 1`] = `
             </span>
             <button
               aria-disabled="false"
-              aria-label="label-close-button"
+              aria-label="Close [object Object], ,[object Object]"
               class="pf-c-button pf-m-plain"
               data-ouia-component-id="OUIA-Generated-Button-plain-2"
               data-ouia-component-type="PF4/Button"
@@ -166,7 +166,7 @@ exports[`AttributesTable Attribute:Render 1`] = `
             </span>
             <button
               aria-disabled="false"
-              aria-label="label-close-button"
+              aria-label="Close [object Object]"
               class="pf-c-button pf-m-plain"
               data-ouia-component-id="OUIA-Generated-Button-plain-3"
               data-ouia-component-type="PF4/Button"
@@ -209,7 +209,7 @@ exports[`AttributesTable Attribute:Render 1`] = `
             </span>
             <button
               aria-disabled="false"
-              aria-label="label-close-button"
+              aria-label="Close [object Object], ,[object Object]"
               class="pf-c-button pf-m-plain"
               data-ouia-component-id="OUIA-Generated-Button-plain-4"
               data-ouia-component-type="PF4/Button"

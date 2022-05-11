@@ -17,8 +17,11 @@
 package org.kie.workbench.common.dmn.client.editors.expressions;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import org.appformer.client.context.Channel;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +32,7 @@ import org.kie.workbench.common.dmn.api.definition.model.DMNDiagramElement;
 import org.kie.workbench.common.dmn.api.definition.model.Decision;
 import org.kie.workbench.common.dmn.api.definition.model.Definitions;
 import org.kie.workbench.common.dmn.api.property.dmn.Name;
+import org.kie.workbench.common.dmn.client.common.KogitoChannelHelper;
 import org.kie.workbench.common.dmn.client.docks.navigator.DecisionNavigatorPresenter;
 import org.kie.workbench.common.dmn.client.docks.navigator.drds.DMNDiagramsSession;
 import org.kie.workbench.common.dmn.client.editors.drd.DRDNameChanger;
@@ -51,10 +55,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -105,6 +111,9 @@ public class ExpressionEditorTest {
     @Mock
     private DRDNameChanger drdNameChanger;
 
+    @Mock
+    private KogitoChannelHelper kogitoChannelHelperMock;
+
     @Captor
     private ArgumentCaptor<Optional<HasName>> optionalHasNameCaptor;
 
@@ -117,8 +126,7 @@ public class ExpressionEditorTest {
     private Definitions definitions;
 
     @Before
-    @SuppressWarnings("unchecked")
-    public void setUp() throws Exception {
+    public void setUp() {
         this.decision = new Decision();
         this.expressionGridCache = new ExpressionGridCacheImpl();
         this.definitions = new Definitions();
@@ -128,12 +136,29 @@ public class ExpressionEditorTest {
                                                 decisionNavigator,
                                                 dmnGraphUtils,
                                                 dmnDiagramsSession,
-                                                drdNameChanger));
+                                                drdNameChanger,
+                                                kogitoChannelHelperMock));
         testedEditor.bind(dmnSession);
 
         when(session.getCanvasControl(eq(ExpressionGridCache.class))).thenReturn(expressionGridCache);
         when(dmnGraphUtils.getModelDefinitions()).thenReturn(definitions);
         when(dmnDiagramsSession.getCurrentDMNDiagramElement()).thenReturn(Optional.of(dmnDiagramElement));
+
+        verify(kogitoChannelHelperMock, times(1)).isCurrentChannelEnabled(
+                Stream.of(Channel.EMBEDDED, Channel.GITHUB).collect(Collectors.toList()));
+    }
+
+    @Test
+    public void disableNewBoxedExpression() {
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(anyList())).thenReturn(true);
+        testedEditor.enableNewBoxedExpressionBetaPreview();
+        verify(view, times(1)).disableBetaBoxedExpressionToggle();
+    }
+
+    @Test
+    public void enableNewBoxedExpression() {
+        when(kogitoChannelHelperMock.isCurrentChannelEnabled(anyList())).thenReturn(false);
+        verify(view, never()).disableBetaBoxedExpressionToggle();
     }
 
     @Test

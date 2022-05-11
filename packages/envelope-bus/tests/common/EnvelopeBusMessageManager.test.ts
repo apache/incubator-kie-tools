@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
-import { EnvelopeBusMessagePurpose, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { EnvelopeBusMessageManager } from "../../dist/common";
+import { EnvelopeBusMessagePurpose, SharedValueProvider } from "../../dist/api";
 
 interface ApiToProvide {
   setText(text: string): void;

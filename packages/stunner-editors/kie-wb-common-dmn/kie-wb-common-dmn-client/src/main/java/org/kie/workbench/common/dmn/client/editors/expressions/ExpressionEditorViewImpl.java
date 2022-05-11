@@ -322,6 +322,11 @@ public class ExpressionEditorViewImpl implements ExpressionEditorView {
     }
 
     @Override
+    public void disableBetaBoxedExpressionToggle() {
+        betaBoxedExpressionToggle.classList.toggle("hidden", true);
+    }
+
+    @Override
     public void setReturnToLinkText(final String text) {
         returnToLink.setTextContent(translationService.format(DMNEditorConstants.ExpressionEditor_ReturnToLink, text));
     }

@@ -15,8 +15,11 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "print-build-env": "rimraf dist && build-env --print-cli-tools-check && build-env --print-env && build-env --print-config && build-env --build-graph",
+    "print-build-env": "rimraf dist && node ./cli.js --print-cli-tools-check && node ./cli.js --print-env && node ./cli.js --print-config && node ./cli.js --build-graph",
     "build:dev": "yarn print-build-env",
     "build:prod": "yarn print-build-env"
+  },
+  "dependencies": {
+    "@lerna/project": "^4.0.0"
   }
 }
