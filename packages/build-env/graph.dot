@@ -33,16 +33,6 @@ digraph G {
   "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/dashbuilder-component-uniforms" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-victory-charts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-table" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-echarts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-svg-heatmap" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-timeseries" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dashbuilder-component-dev" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/dashbuilder-component-echarts-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
