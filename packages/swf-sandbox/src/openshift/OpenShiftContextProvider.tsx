@@ -17,7 +17,7 @@
 import { load } from "js-yaml";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
+import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsConfig";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";

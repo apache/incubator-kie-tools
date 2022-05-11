@@ -9,8 +9,8 @@ import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import * as yaml from "yaml";
-import { ServiceRegistrySettingsConfig } from "../settings/serviceRegistry/ServiceRegistryConfig";
-import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
+import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
+import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
 
 export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatalogServiceId: string) {
   return `${swfServiceCatalogServiceId}__latest.yaml`;
@@ -18,7 +18,7 @@ export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatal
 
 // TODO: refactor and remove duplicated code
 export class SwfServiceCatalogStore {
-  public static services: SwfServiceCatalogService[];
+  public static storedServices: SwfServiceCatalogService[];
   public static async refresh(
     proxyUrl: string,
     serviceRegistryConfig: ServiceRegistrySettingsConfig,
@@ -64,7 +64,7 @@ export class SwfServiceCatalogStore {
         }))
     );
 
-    SwfServiceCatalogStore.services = artifactsWithContent.map((artifact) => {
+    SwfServiceCatalogStore.storedServices = artifactsWithContent.map((artifact) => {
       const serviceId = artifact.metadata.id;
       const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(serviceId);
 
@@ -86,7 +86,9 @@ export class SwfServiceCatalogStore {
       };
     });
 
-    return SwfServiceCatalogStore.services;
+    console.log(SwfServiceCatalogStore.storedServices);
+
+    return SwfServiceCatalogStore.storedServices;
   }
 
   public static async uploadArtifact(args: {

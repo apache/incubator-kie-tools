@@ -16,10 +16,15 @@
 
 import { ChannelType, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
-import { EmbeddedEditor, EmbeddedEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
+import {
+  EmbeddedEditor,
+  EmbeddedEditorRef,
+  KogitoEditorChannelApiImpl,
+  useStateControlSubscription,
+} from "@kie-tools-core/editor/dist/embedded";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { ServerlessWorkflowEditorChannelApi } from "@kie-tools/serverless-workflow-editor/dist/api";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -37,13 +42,17 @@ import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
-import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
+import { SwfServiceCatalogStore } from "./api/SwfServiceCatalogStore";
 import { useSettings } from "../settings/SettingsContext";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
+import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflowEditorChannelApiImpl";
+import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
+import { EditorSwfLanguageService } from "./api/EditorSwfLanguageService";
+import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
 
 export interface Props {
   workspaceId: string;
@@ -169,40 +178,56 @@ export function EditorPage(props: Props) {
 
   const swfServiceCatalogEnvelopeServer = useMemo(
     () =>
-      editor?.getEnvelopeServer() as unknown as EnvelopeServer<SwfServiceCatalogChannelApi, KogitoEditorEnvelopeApi>,
+      editor?.getEnvelopeServer() as unknown as EnvelopeServer<
+        ServerlessWorkflowEditorChannelApi,
+        KogitoEditorEnvelopeApi
+      >,
     [editor]
   );
 
   useEffect(() => {
-    swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
-      settings.serviceRegistry.config.coreRegistryApi
-    );
-  }, [settings.serviceRegistry.config.coreRegistryApi, swfServiceCatalogEnvelopeServer]);
+    if (editor && embeddedEditorFile && swfServiceCatalogEnvelopeServer) {
+      const apiImpl = new ServerlessWorkflowEditorChannelApiImpl(
+        new KogitoEditorChannelApiImpl(editor.getStateControl(), embeddedEditorFile, navigator.language, {}),
+        new SwfServiceCatalogChannelApiImpl({ settings }),
+        new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings))
+      );
+      swfServiceCatalogEnvelopeServer.startInitPolling(apiImpl);
+      console.log(apiImpl);
+    }
+    return () => swfServiceCatalogEnvelopeServer && swfServiceCatalogEnvelopeServer.stopInitPolling();
+  }, [editor, embeddedEditorFile, settings, swfServiceCatalogEnvelopeServer]);
 
-  useEffect(() => {
-    swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_user.set({
-      username: settings.serviceAccount.config.clientId,
-    });
-  }, [
-    settings.serviceAccount.config.clientId,
-    settings.serviceRegistry.config.coreRegistryApi,
-    swfServiceCatalogEnvelopeServer,
-  ]);
+  // useEffect(() => {
+  //   swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
+  //     settings.serviceRegistry.config.coreRegistryApi
+  //   );
+  // }, [settings.serviceRegistry.config.coreRegistryApi, swfServiceCatalogEnvelopeServer]);
 
-  useEffect(() => {
-    SwfServiceCatalogStore.refresh(
-      settings.kieSandboxExtendedServices.config.buildUrl(),
-      settings.serviceRegistry.config,
-      settings.serviceAccount.config
-    ).then((services) => {
-      swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
-    });
-  }, [
-    settings.kieSandboxExtendedServices.config,
-    settings.serviceAccount.config,
-    settings.serviceRegistry.config,
-    swfServiceCatalogEnvelopeServer,
-  ]);
+  // useEffect(() => {
+  //   swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_user.set({
+  //     username: settings.serviceAccount.config.clientId,
+  //   });
+  // }, [
+  //   settings.serviceAccount.config.clientId,
+  //   settings.serviceRegistry.config.coreRegistryApi,
+  //   swfServiceCatalogEnvelopeServer,
+  // ]);
+
+  // useEffect(() => {
+  //   SwfServiceCatalogStore.refresh(
+  //     settings.kieSandboxExtendedServices.config.buildUrl(),
+  //     settings.serviceRegistry.config,
+  //     settings.serviceAccount.config
+  //   ).then((services) => {
+  //     swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
+  //   });
+  // }, [
+  //   settings.kieSandboxExtendedServices.config,
+  //   settings.serviceAccount.config,
+  //   settings.serviceRegistry.config,
+  //   swfServiceCatalogEnvelopeServer,
+  // ]);
 
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
