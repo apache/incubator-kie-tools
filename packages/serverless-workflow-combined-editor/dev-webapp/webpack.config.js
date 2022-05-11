@@ -89,12 +89,13 @@ module.exports = (env) =>
           enforce: "pre",
           use: ["source-map-loader"],
         },
-        /*{
-          test: /node_modules[\\|/]@severlessworkflow[\\|/]sdk-typescript[\\|/]umd[\\|/]index\.umd\.js$/,
-          use: ["umd-compat-loader"]
-        },*/
         ...patternflyBase.webpackModuleRules,
       ],
+    },
+    resolve: {
+      alias: {
+        react: path.resolve(__dirname, "../node_modules/react"),
+      },
     },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
