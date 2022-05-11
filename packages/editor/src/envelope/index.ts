@@ -81,3 +81,4 @@ export function initCustom<
 }
 export { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 export * from "./KogitoEditorEnvelopeApiImpl";
+export * from "./LoadingScreen";

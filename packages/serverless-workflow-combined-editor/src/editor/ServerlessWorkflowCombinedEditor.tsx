@@ -23,8 +23,15 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
+import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { KogitoEdit, ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
+import {
+  KogitoEdit,
+  ResourceContent,
+  ResourceContentRequest,
+  ResourceListRequest,
+  ResourcesList,
+} from "@kie-tools-core/workspace/dist/api";
 import {
   Drawer,
   DrawerContent,
@@ -53,6 +60,8 @@ interface Props {
   onNewEdit: (edit: KogitoEdit) => void;
   onStateControlCommandUpdate: (command: StateControlCommand) => void;
   setNotifications: (path: string, notifications: Notification[]) => void;
+  kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
+  kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
@@ -63,6 +72,9 @@ interface File {
   path: string;
   content: string;
 }
+
+const ENVELOPE_LOCATOR_TYPE = "sw";
+const ENVELOPE_LOCATOR_FILE_PATH_GLOB = "**/*.sw.+(json|yml|yaml)";
 
 const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,
@@ -75,12 +87,20 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
   const lastContent = useRef<string>();
 
+  const [isTextEditorReady, setTextEditorReady] = useState(false);
+  const [isDiagramEditorReady, setDiagramEditorReady] = useState(false);
+
+  const isCombinedEditorReady = useMemo(
+    () => isTextEditorReady && isDiagramEditorReady,
+    [isDiagramEditorReady, isTextEditorReady]
+  );
+
   const textEditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
         new EnvelopeMapping(
-          "sw",
-          "**/*.sw.+(json|yml|yaml)",
+          ENVELOPE_LOCATOR_TYPE,
+          ENVELOPE_LOCATOR_FILE_PATH_GLOB,
           props.resourcesPathPrefix,
           "serverless-workflow-text-editor-envelope.html"
         ),
@@ -92,8 +112,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
         new EnvelopeMapping(
-          "sw",
-          "**/*.sw.+(json|yml|yaml)",
+          ENVELOPE_LOCATOR_TYPE,
+          ENVELOPE_LOCATOR_FILE_PATH_GLOB,
           `${props.resourcesPathPrefix}gwt-editors/serverless-workflow`,
           "serverless-workflow-diagram-editor-envelope.html"
         ),
@@ -218,77 +238,64 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   }, [file, updateEditors]);
 
   const onTextEditorReady = useCallback(() => {
-    console.debug("Text editor is ready");
+    setTextEditorReady(true);
   }, []);
 
   const onTextEditorSetContentError = useCallback(() => {
     console.error("Error setting content on text editor");
   }, []);
 
-  const onTextEditorResourceContentRequest = useCallback((request: ResourceContentRequest) => {
-    throw new Error("Method not implemented for text editor.");
-  }, []);
-
-  const onTextEditorResourceContentList = useCallback((request: ResourceListRequest) => {
-    throw new Error("Method not implemented for text editor.");
-  }, []);
-
   const onDiagramEditorReady = useCallback(() => {
-    console.debug("Diagram editor is ready");
+    setDiagramEditorReady(true);
   }, []);
 
   const onDiagramEditorSetContentError = useCallback(() => {
     console.error("Error setting content on diagram editor");
   }, []);
 
-  const onDiagramEditorResourceContentRequest = useCallback((request: ResourceContentRequest) => {
-    throw new Error("Method not implemented for diagram editor.");
-  }, []);
-
-  const onDiagramEditorResourceContentList = useCallback((request: ResourceListRequest) => {
-    throw new Error("Method not implemented for diagram editor.");
-  }, []);
-
   return (
-    <Drawer isExpanded={true} isInline={true}>
-      <DrawerContent
-        panelContent={
-          <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-            <DrawerPanelBody style={{ padding: 0 }}>
-              {embeddedDiagramEditorFile && (
-                <EmbeddedEditor
-                  ref={diagramEditorRef}
-                  file={embeddedDiagramEditorFile}
-                  channelType={props.channelType}
-                  kogitoEditor_ready={onDiagramEditorReady}
-                  kogitoWorkspace_resourceContentRequest={onDiagramEditorResourceContentRequest}
-                  kogitoWorkspace_resourceListRequest={onDiagramEditorResourceContentList}
-                  kogitoEditor_setContentError={onDiagramEditorSetContentError}
-                  editorEnvelopeLocator={diagramEditorEnvelopeLocator}
-                  locale={props.locale}
-                />
-              )}
-            </DrawerPanelBody>
-          </DrawerPanelContent>
-        }
-      >
-        <DrawerContentBody>
-          {embeddedTextEditorFile && (
-            <EmbeddedEditor
-              ref={textEditorRef}
-              file={embeddedTextEditorFile}
-              channelType={props.channelType}
-              kogitoEditor_ready={onTextEditorReady}
-              kogitoWorkspace_resourceContentRequest={onTextEditorResourceContentRequest}
-              kogitoWorkspace_resourceListRequest={onTextEditorResourceContentList}
-              kogitoEditor_setContentError={onTextEditorSetContentError}
-              editorEnvelopeLocator={textEditorEnvelopeLocator}
-              locale={props.locale}
-            />
-          )}
-        </DrawerContentBody>
-      </DrawerContent>
-    </Drawer>
+    <div style={{ height: "100%" }}>
+      <LoadingScreen loading={!isCombinedEditorReady} />
+      <Drawer isExpanded={true} isInline={true}>
+        <DrawerContent
+          panelContent={
+            <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
+              <DrawerPanelBody style={{ padding: 0 }}>
+                {embeddedDiagramEditorFile && (
+                  <EmbeddedEditor
+                    ref={diagramEditorRef}
+                    file={embeddedDiagramEditorFile}
+                    channelType={props.channelType}
+                    kogitoEditor_ready={onDiagramEditorReady}
+                    kogitoWorkspace_resourceContentRequest={props.kogitoWorkspace_resourceContentRequest}
+                    kogitoWorkspace_resourceListRequest={props.kogitoWorkspace_resourceListRequest}
+                    kogitoEditor_setContentError={onDiagramEditorSetContentError}
+                    editorEnvelopeLocator={diagramEditorEnvelopeLocator}
+                    locale={props.locale}
+                  />
+                )}
+              </DrawerPanelBody>
+            </DrawerPanelContent>
+          }
+        >
+          <DrawerContentBody>
+            {embeddedTextEditorFile && (
+              <EmbeddedEditor
+                ref={textEditorRef}
+                file={embeddedTextEditorFile}
+                channelType={props.channelType}
+                kogitoEditor_ready={onTextEditorReady}
+                kogitoWorkspace_resourceContentRequest={props.kogitoWorkspace_resourceContentRequest}
+                kogitoWorkspace_resourceListRequest={props.kogitoWorkspace_resourceListRequest}
+                kogitoEditor_setContentError={onTextEditorSetContentError}
+                editorEnvelopeLocator={textEditorEnvelopeLocator}
+                locale={props.locale}
+              />
+            )}
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
+    </div>
   );
 };
 
