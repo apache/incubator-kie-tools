@@ -26,7 +26,7 @@ const { EnvironmentPlugin } = require("webpack");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 
-module.exports = async (env, argv) => {
+module.exports = async (env) => {
   const buildInfo = getBuildInfo();
   const gtmResource = getGtmResource();
   const [swfSandbox_baseImageRegistry, swfSandbox_baseImageAccount, swfSandbox_baseImageName, swfSandbox_baseImageTag] =
@@ -36,14 +36,7 @@ module.exports = async (env, argv) => {
     kieSandboxExtendedServices_macOsDownloadUrl,
     kieSandboxExtendedServices_windowsDownloadUrl,
     kieSandboxExtendedServices_compatibleVersion,
-  ] = getKieSandboxExtendedServicesArgs(argv);
-  const [
-    dmnDevSandbox_baseImageRegistry,
-    dmnDevSandbox_baseImageAccount,
-    dmnDevSandbox_baseImageName,
-    dmnDevSandbox_baseImageTag,
-    dmnDevSandbox_onlineEditorUrl,
-  ] = getDmnDevSandboxArgs(argv);
+  ] = getKieSandboxExtendedServicesArgs();
 
   return merge(common(env), {
     entry: {
@@ -76,8 +69,6 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
         WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
         WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-        WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
-        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
         WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
         WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
       }),
@@ -130,6 +121,11 @@ module.exports = async (env, argv) => {
         },
         ...patternflyBase.webpackModuleRules,
       ],
+    },
+    resolve: {
+      alias: {
+        react: path.resolve(__dirname, "./node_modules/react"),
+      },
     },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
@@ -207,20 +203,4 @@ function getKieSandboxExtendedServicesArgs() {
   console.info("KIE Sandbox Extended Services :: Compatible version: " + compatibleVersion);
 
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
-}
-
-function getDmnDevSandboxArgs(argv) {
-  const baseImageRegistry = buildEnv.dmnDevSandbox.baseImage.registry;
-  const baseImageAccount = buildEnv.dmnDevSandbox.baseImage.account;
-  const baseImageName = buildEnv.dmnDevSandbox.baseImage.name;
-  const baseImageTag = buildEnv.dmnDevSandbox.baseImage.tag;
-  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
-
-  console.info("DMN Dev Sandbox :: Base Image Registry: " + baseImageRegistry);
-  console.info("DMN Dev Sandbox :: Base Image Account: " + baseImageAccount);
-  console.info("DMN Dev Sandbox :: Base Image Name: " + baseImageName);
-  console.info("DMN Dev Sandbox :: Base Image Tag: " + baseImageTag);
-  console.info("DMN Dev Sandbox :: Online Editor Url: " + onlineEditorUrl);
-
-  return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag, onlineEditorUrl];
 }
