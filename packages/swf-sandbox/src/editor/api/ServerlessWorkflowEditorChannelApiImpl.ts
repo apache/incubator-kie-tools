@@ -46,9 +46,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     private readonly defaultApiImpl: KogitoEditorChannelApi,
     private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
-  ) {
-    console.log(this.defaultApiImpl);
-  }
+  ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
     return this.defaultApiImpl.kogitoEditor_contentRequest();

@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
-import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
 import {
   EmbeddedEditor,
   EmbeddedEditorRef,
@@ -72,6 +72,7 @@ export function EditorPage(props: Props) {
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
+  const [isReady, setReady] = useState(false);
 
   const queryParams = useQueryParams();
 
@@ -176,58 +177,14 @@ export function EditorPage(props: Props) {
     alerts?.closeAll();
   }, [alerts]);
 
-  const swfServiceCatalogEnvelopeServer = useMemo(
-    () =>
-      editor?.getEnvelopeServer() as unknown as EnvelopeServer<
-        ServerlessWorkflowEditorChannelApi,
-        KogitoEditorEnvelopeApi
-      >,
-    [editor]
-  );
-
-  useEffect(() => {
-    if (editor && embeddedEditorFile && swfServiceCatalogEnvelopeServer) {
-      const apiImpl = new ServerlessWorkflowEditorChannelApiImpl(
-        new KogitoEditorChannelApiImpl(editor.getStateControl(), embeddedEditorFile, navigator.language, {}),
-        new SwfServiceCatalogChannelApiImpl({ settings }),
-        new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings))
-      );
-      swfServiceCatalogEnvelopeServer.startInitPolling(apiImpl);
-      console.log(apiImpl);
-    }
-    return () => swfServiceCatalogEnvelopeServer && swfServiceCatalogEnvelopeServer.stopInitPolling();
-  }, [editor, embeddedEditorFile, settings, swfServiceCatalogEnvelopeServer]);
-
-  // useEffect(() => {
-  //   swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
-  //     settings.serviceRegistry.config.coreRegistryApi
-  //   );
-  // }, [settings.serviceRegistry.config.coreRegistryApi, swfServiceCatalogEnvelopeServer]);
-
-  // useEffect(() => {
-  //   swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_user.set({
-  //     username: settings.serviceAccount.config.clientId,
-  //   });
-  // }, [
-  //   settings.serviceAccount.config.clientId,
-  //   settings.serviceRegistry.config.coreRegistryApi,
-  //   swfServiceCatalogEnvelopeServer,
-  // ]);
-
-  // useEffect(() => {
-  //   SwfServiceCatalogStore.refresh(
-  //     settings.kieSandboxExtendedServices.config.buildUrl(),
-  //     settings.serviceRegistry.config,
-  //     settings.serviceAccount.config
-  //   ).then((services) => {
-  //     swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
-  //   });
-  // }, [
-  //   settings.kieSandboxExtendedServices.config,
-  //   settings.serviceAccount.config,
-  //   settings.serviceRegistry.config,
-  //   swfServiceCatalogEnvelopeServer,
-  // ]);
+  // const swfServiceCatalogEnvelopeServer = useMemo(
+  //   () =>
+  //     editor?.getEnvelopeServer() as unknown as EnvelopeServer<
+  //       ServerlessWorkflowEditorChannelApi,
+  //       KogitoEditorEnvelopeApi
+  //     >,
+  //   [editor]
+  // );
 
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
@@ -280,9 +237,81 @@ export function EditorPage(props: Props) {
     [workspaceFilePromise, workspaces, history, routes]
   );
 
-  const handleSetContentError = useCallback(() => {
+  const handleSetContentError = useCallback((e) => {
     // Nothing to do for now
+    console.log(e);
   }, []);
+
+  const stateControl = useMemo(() => new StateControl(), []);
+
+  const apiImpl = useMemo(
+    () =>
+      embeddedEditorFile &&
+      new ServerlessWorkflowEditorChannelApiImpl(
+        new KogitoEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {
+          kogitoEditor_ready: () => {
+            setReady(true);
+          },
+          kogitoWorkspace_openFile: handleOpenFile,
+          kogitoWorkspace_resourceContentRequest: handleResourceContentRequest,
+          kogitoWorkspace_resourceListRequest: handleResourceListRequest,
+          kogitoEditor_setContentError: handleSetContentError,
+        }),
+        new SwfServiceCatalogChannelApiImpl(settings),
+        new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings))
+      ),
+    [
+      embeddedEditorFile,
+      handleOpenFile,
+      handleResourceContentRequest,
+      handleResourceListRequest,
+      handleSetContentError,
+      locale,
+      settings,
+      stateControl,
+    ]
+  );
+
+  // const apiImpl = useMemo(() => embeddedEditorFile ? new KogitoEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {
+  //   kogitoEditor_ready: () => {
+  //     setReady(true);
+  //   },
+  //   kogitoWorkspace_openFile: handleOpenFile,
+  //   kogitoWorkspace_resourceContentRequest: handleResourceContentRequest,
+  //   kogitoWorkspace_resourceListRequest: handleResourceListRequest,
+  //   kogitoEditor_setContentError: handleSetContentError,
+  // }) : undefined, [embeddedEditorFile, handleOpenFile, handleResourceContentRequest, handleResourceListRequest, handleSetContentError, locale, stateControl]);
+
+  // useEffect(() => {
+  //   swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_serviceRegistryUrl.set(
+  //     settings.serviceRegistry.config.coreRegistryApi
+  //   );
+  // }, [settings.serviceRegistry.config.coreRegistryApi, swfServiceCatalogEnvelopeServer]);
+
+  // useEffect(() => {
+  //   swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_user.set({
+  //     username: settings.serviceAccount.config.clientId,
+  //   });
+  // }, [
+  //   settings.serviceAccount.config.clientId,
+  //   settings.serviceRegistry.config.coreRegistryApi,
+  //   swfServiceCatalogEnvelopeServer,
+  // ]);
+
+  // useEffect(() => {
+  //   SwfServiceCatalogStore.refresh(
+  //     settings.kieSandboxExtendedServices.config.buildUrl(),
+  //     settings.serviceRegistry.config,
+  //     settings.serviceAccount.config
+  //   ).then((services) => {
+  //     swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfServiceCatalog_services.set(services);
+  //   });
+  // }, [
+  //   settings.kieSandboxExtendedServices.config,
+  //   settings.serviceAccount.config,
+  //   settings.serviceRegistry.config,
+  //   swfServiceCatalogEnvelopeServer,
+  // ]);
 
   return (
     <OnlineEditorPage>
@@ -308,7 +337,7 @@ export function EditorPage(props: Props) {
               <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
                 <div style={{ height: "100%" }}>
                   {!isEditorReady && <LoadingSpinner />}
-                  {embeddedEditorFile && (
+                  {embeddedEditorFile && apiImpl && (
                     <div style={{ display: isEditorReady ? "inline" : "none" }}>
                       <EmbeddedEditor
                         /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
@@ -317,13 +346,12 @@ export function EditorPage(props: Props) {
                         key={workspaces.getUniqueFileIdentifier(file)}
                         ref={editorRef}
                         file={embeddedEditorFile}
-                        kogitoWorkspace_openFile={handleOpenFile}
-                        kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                        kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                        kogitoEditor_setContentError={handleSetContentError}
                         editorEnvelopeLocator={editorEnvelopeLocator}
                         channelType={ChannelType.ONLINE_MULTI_FILE}
                         locale={locale}
+                        customChannelApiImpl={apiImpl}
+                        stateControl={stateControl}
+                        isReady={isReady}
                       />
                     </div>
                   )}

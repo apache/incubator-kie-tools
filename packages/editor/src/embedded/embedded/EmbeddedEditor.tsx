@@ -48,6 +48,9 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
   locale: string;
+  customChannelApiImpl?: KogitoEditorChannelApi;
+  stateControl?: StateControl;
+  isReady?: boolean;
 };
 
 /**
@@ -86,13 +89,16 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
-      ...props,
-      kogitoEditor_ready: () => {
-        setReady(true);
-        props.kogitoEditor_ready?.();
-      },
-    });
+    return (
+      props.customChannelApiImpl ??
+      new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
+        ...props,
+        kogitoEditor_ready: () => {
+          setReady(true);
+          props.kogitoEditor_ready?.();
+        },
+      })
+    );
   }, [stateControl, props]);
 
   const envelopeServer = useMemo(() => {
@@ -151,8 +157,8 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
       return {
         iframeRef,
-        isReady: isReady,
-        getStateControl: () => stateControl,
+        isReady: props.isReady ?? isReady,
+        getStateControl: () => props.stateControl ?? stateControl,
         getEnvelopeServer: () => envelopeServer,
         getElementPosition: (s) =>
           envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
@@ -169,7 +175,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       };
     },
-    [envelopeServer, stateControl, isReady]
+    [props.isReady, props.stateControl, isReady, stateControl, envelopeServer]
   );
 
   return (

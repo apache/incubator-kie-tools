@@ -28,11 +28,7 @@ export class EditorSwfLanguageService {
       serviceCatalog: {
         global: {
           getServices: async () => {
-            return SwfServiceCatalogStore.refresh(
-              settings.kieSandboxExtendedServices.config.buildUrl(),
-              settings.serviceRegistry.config,
-              settings.serviceAccount.config
-            );
+            return SwfServiceCatalogStore.storedServices;
           },
         },
         relative: {
@@ -51,12 +47,7 @@ export class EditorSwfLanguageService {
             // await swfServiceCatalogRelativeStore.init();
             // this.fsWatchingSwfServiceCatalogStore.set(specsDirAbsolutePosixPath, swfServiceCatalogRelativeStore);
             // return swfServiceCatalogRelativeStore.getServices();
-            return SwfServiceCatalogStore.refresh(
-              settings.kieSandboxExtendedServices.config.buildUrl(),
-              settings.serviceRegistry.config,
-              settings.serviceAccount.config
-            );
-            // return SwfServiceCatalogStore.storedServices;
+            return SwfServiceCatalogStore.storedServices;
           },
         },
         getServiceFileNameFromSwfServiceCatalogServiceId: async (swfServiceCatalogServiceId) => {
@@ -65,10 +56,10 @@ export class EditorSwfLanguageService {
       },
       config: {
         shouldDisplayRhhccIntegration: async () => {
-          return false;
+          return Promise.resolve(false);
         },
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => {
-          return true;
+          return Promise.resolve(true);
         },
         getServiceRegistryUrl: () => {
           return settings.serviceRegistry.config.coreRegistryApi;
@@ -80,7 +71,10 @@ export class EditorSwfLanguageService {
           };
         },
         getSpecsDirPosixPaths: async (textDocument) => {
-          return this.getSpecsDirPosixPaths(textDocument);
+          return {
+            specsDirRelativePosixPath: "",
+            specsDirAbsolutePosixPath: "",
+          };
         },
       },
     });
@@ -101,6 +95,7 @@ export class EditorSwfLanguageService {
 
   public dispose() {
     this.ls.dispose();
+    return [];
     // return Array.from(this.fsWatchingSwfServiceCatalogStore.values()).forEach((f) => f.dispose());
   }
 }

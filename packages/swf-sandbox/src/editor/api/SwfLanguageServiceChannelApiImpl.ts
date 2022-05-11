@@ -35,7 +35,6 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    console.log(this.args);
     return this.args.ls.getCodeLenses(args);
   }
 }

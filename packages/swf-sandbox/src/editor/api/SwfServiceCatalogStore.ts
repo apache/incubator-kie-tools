@@ -18,7 +18,7 @@ export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatal
 
 // TODO: refactor and remove duplicated code
 export class SwfServiceCatalogStore {
-  public static storedServices: SwfServiceCatalogService[];
+  public static storedServices: SwfServiceCatalogService[] = [];
   public static async refresh(
     proxyUrl: string,
     serviceRegistryConfig: ServiceRegistrySettingsConfig,

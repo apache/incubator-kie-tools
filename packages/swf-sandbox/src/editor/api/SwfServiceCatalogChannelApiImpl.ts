@@ -24,18 +24,16 @@ import { SettingsContextType } from "../../settings/SettingsContext";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor(
-    private readonly args: {
-      settings: SettingsContextType;
-    }
-  ) {}
+  constructor(private readonly settings: SettingsContextType) {
+    this.kogitoSwfServiceCatalog_refresh();
+  }
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return { defaultValue: { username: this.args.settings.serviceAccount.config.clientId } };
+    return { defaultValue: { username: this.settings.serviceAccount.config.clientId } };
   }
 
   public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return { defaultValue: this.args.settings.serviceRegistry.config.coreRegistryApi };
+    return { defaultValue: this.settings.serviceRegistry.config.coreRegistryApi };
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
@@ -46,9 +44,9 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
 
   public kogitoSwfServiceCatalog_refresh(): void {
     SwfServiceCatalogStore.refresh(
-      this.args.settings.kieSandboxExtendedServices.config.buildUrl(),
-      this.args.settings.serviceRegistry.config,
-      this.args.settings.serviceAccount.config
+      this.settings.kieSandboxExtendedServices.config.buildUrl(),
+      this.settings.serviceRegistry.config,
+      this.settings.serviceAccount.config
     );
   }
 
