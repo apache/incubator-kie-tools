@@ -70,7 +70,7 @@ public class WiresUtils {
                                                       new MultiPathDecorator(head),
                                                       new MultiPathDecorator(tail));
         wiresManager.register(connector);
-
+        wiresManager.addHandlers(connector);
         head.setStrokeWidth(5).setStrokeColor("#0000CC");
         tail.setStrokeWidth(5).setStrokeColor("#0000CC");
         line.setStrokeWidth(5).setStrokeColor("#0000CC");

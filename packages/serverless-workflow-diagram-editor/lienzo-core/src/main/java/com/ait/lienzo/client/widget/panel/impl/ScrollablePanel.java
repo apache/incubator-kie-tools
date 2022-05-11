@@ -33,7 +33,6 @@ import com.ait.lienzo.client.widget.panel.ResizeCallback;
 import com.ait.lienzo.client.widget.panel.ResizeObserver;
 import com.ait.lienzo.client.widget.panel.impl.LienzoPanelDragLimitEventDetail.LimitDirections;
 import elemental2.dom.CSSProperties;
-import elemental2.dom.DomGlobal;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
 import elemental2.dom.HTMLDivElement;
@@ -380,7 +379,6 @@ public class ScrollablePanel extends LienzoBoundsPanel {
     }
 
     private void onScroll() {
-        DomGlobal.console.debug("ScrollablePanel::onScroll");
         if (!isDragging) {
             // Prevent DOMElements scrolling into view when they receive the focus
             domElementContainer.scrollTop = 0;
