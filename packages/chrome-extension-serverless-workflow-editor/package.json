@@ -8,22 +8,23 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@kie-tools-core/chrome-extension": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools/serverless-workflow-editor": "0.0.0"
-  },
   "devDependencies": {
+    "@kie-tools-core/chrome-extension": "0.0.0",
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools/serverless-workflow-editor": "0.0.0",
     "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
-    "monaco-editor-webpack-plugin": "^7.0.1"
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "monaco-editor": "^0.33.0",
+    "monaco-yaml": "^3.2.1"
   },
   "scripts": {
-    "cleanup-wrong-nohoisted-dependencies": "rimraf ./node_modules/monaco-yaml/node_modules",
     "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
     "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "build:dev": "yarn cleanup-wrong-nohoisted-dependencies && rimraf dist && webpack --env dev",
-    "build:prod": "yarn cleanup-wrong-nohoisted-dependencies && yarn lint && yarn test && rimraf dist && webpack",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
     "start": "webpack serve --env dev",
     "test:it:start": "yarn start",
     "test:it:run": "jest --runInBand -c ./jest.it.config.js",

@@ -63,4 +63,16 @@ public interface ShapeViewFactory {
 
     @SVGSource(PATH_CONTAINER)
     SVGShapeViewResource container();
+
+    @SVGSource(PATH_STATE)
+    SVGShapeViewResource callbackState();
+
+    @SVGSource(PATH_STATE)
+    SVGShapeViewResource forEachState();
+
+    @SVGSource(PATH_STATE)
+    SVGShapeViewResource parallelState();
+
+    @SVGSource(PATH_STATE)
+    SVGShapeViewResource sleepState();
 }

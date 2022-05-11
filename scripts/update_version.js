@@ -19,7 +19,7 @@ const path = require("path");
 const execSync = require("child_process").execSync;
 const { getPackagesSync } = require("@lerna/project");
 const yaml = require("js-yaml");
-const buildEnv = require("@kie-tools/build-env");
+const buildEnv = require("../packages/build-env");
 
 const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
@@ -37,7 +37,8 @@ const EXTENDED_SERVICES_CONFIG_FILE = path.resolve("./packages/extended-services
 const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
   "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
 );
-const LERNA_JSON = path.resolve("./lerna.json");
+
+const ORIGINAL_LERNA_JSON = require("../lerna.json");
 
 // MAIN
 
@@ -49,10 +50,10 @@ if (!newVersion) {
 
 let execOpts = {};
 const opts = process.argv[3];
-if (opts === "--verbose") {
-  execOpts = { stdio: "inherit" };
-} else {
+if (opts === "--silent") {
   execOpts = { stdio: "pipe" };
+} else {
+  execOpts = { stdio: "inherit" };
 }
 
 Promise.resolve()
@@ -64,9 +65,10 @@ Promise.resolve()
   .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
   .then((version) => updateExtendedServicesConfigFile(version))
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
+  .then((version) => updateLockfile(version))
   .then(async (version) => {
     console.info(`[update-version] Formatting files...`);
-    execSync(`yarn format`, execOpts);
+    execSync(`yarn pretty-quick`, execOpts);
     return version;
   })
   .then((version) => {
@@ -84,16 +86,16 @@ async function updateNpmPackages(version) {
   console.info("[update-version] Updating NPM packages...");
 
   execSync(`lerna version ${version} --no-push --no-git-tag-version --exact --yes`, execOpts);
-  return require(LERNA_JSON).version;
+  return version;
 }
 
 async function updateMvnPackages(version) {
   console.info("[update-version] Updating Maven packages...");
 
   const mvnPackages = getPackagesSync().filter((pkg) => fs.existsSync(path.resolve(pkg.location, "pom.xml")));
-  const mvnPackagesLernaScope = mvnPackages.map((pkg) => `--scope="${pkg.name}"`).join(" ");
+  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.name}"`).join(" ");
   execSync(
-    `lerna exec 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}' ${mvnPackagesLernaScope} --concurrency 1`,
+    `pnpm -r ${mvnPackagesPnpmFilters} --workspace-concurrency=1 exec 'bash' '-c' 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}'`,
     execOpts
   );
   return version;
@@ -175,8 +177,16 @@ async function updateExtendedServicesConfigFile(version) {
 async function updateJavaAutocompletionPluginManifestFile(version) {
   console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
   const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
-  const newManifestFile = manifestFile.replace("Bundle-Version: 0.0.0", "Bundle-Version: " + version);
+  const newManifestFile = manifestFile.replace(
+    `Bundle-Version: ${ORIGINAL_LERNA_JSON.version}`,
+    `Bundle-Version: ${version}`
+  );
   fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);
 
+  return version;
+}
+
+async function updateLockfile(version) {
+  execSync(`yarn bootstrap`, execOpts);
   return version;
 }

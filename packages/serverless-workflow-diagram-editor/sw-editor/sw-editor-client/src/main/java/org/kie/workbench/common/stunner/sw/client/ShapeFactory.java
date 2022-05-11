@@ -64,15 +64,15 @@ public class ShapeFactory
         implements org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory<Object, Shape> {
 
     // TODO: Refactor this, no need for storing state...
-    private static final Map<Class<?>, ShapeViewDef> typeViewDefinitions = new HashMap<Class<?>, ShapeViewDef>() {{
+    private final Map<Class<?>, ShapeViewDef> typeViewDefinitions = new HashMap<Class<?>, ShapeViewDef>() {{
         put(Workflow.class, new AnyStateShapeDef());
-        put(Start.class, new AnyStateShapeDef(false));
-        put(End.class, new AnyStateShapeDef(false));
-        put(ActionsContainer.class, new AnyStateShapeDef());
-        put(OnEvent.class, new AnyStateShapeDef());
-        put(EventRef.class, new AnyStateShapeDef(false));
-        put(CallFunctionAction.class, new AnyStateShapeDef());
-        put(CallSubflowAction.class, new AnyStateShapeDef());
+        put(Start.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER_WITH_AlPHA, true));
+        put(End.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER_WITH_AlPHA, true));
+        put(ActionsContainer.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
+        put(OnEvent.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER, true));
+        put(EventRef.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.OUTSIDE_CENTER_BOTTOM, true));
+        put(CallFunctionAction.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
+        put(CallSubflowAction.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
         put(InjectState.class, new AnyStateShapeDef());
         put(SwitchState.class, new AnyStateShapeDef());
         put(OperationState.class, new AnyStateShapeDef());
@@ -89,7 +89,7 @@ public class ShapeFactory
         put(DefaultConditionTransition.class, new TransitionShapeDef());
         put(ActionTransition.class, new TransitionShapeDef());
         put(CompensationTransition.class, new TransitionShapeDef());
-        put(EventTimeout.class, new AnyStateShapeDef(false));
+        put(EventTimeout.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.OUTSIDE_CENTER_BOTTOM, true));
     }};
 
     private final SVGShapeFactory svgShapeFactory;

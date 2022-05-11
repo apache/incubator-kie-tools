@@ -18,7 +18,8 @@
     "monaco-editor": "^0.23.0"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0"
   },
   "keywords": [
     "monaco"

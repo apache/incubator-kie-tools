@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ApiDefinition, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { ApiDefinition, MessageBusClientApi } from "../../dist/api";
 
 export function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClientApi<T> {
   const mocks = new Map<any, any>();

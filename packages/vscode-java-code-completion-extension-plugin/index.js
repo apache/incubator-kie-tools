@@ -17,14 +17,11 @@
 const nodePath = require("path");
 const nodeFs = require("fs");
 
-const nodeModulesDir = "../.." + (__dirname.includes("node_modules") ? "" : "/node_modules");
-
 module.exports = {
   path: () => {
-    const path = nodePath.resolve(
+    const path = nodePath.join(
       __dirname,
-      nodeModulesDir +
-        "/@kie-tools/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/target/vscode-java-code-completion-extension-plugin-core.jar"
+      "vscode-java-code-completion-extension-plugin-core/target/vscode-java-code-completion-extension-plugin-core.jar"
     );
 
     if (!nodeFs.existsSync(path)) {
