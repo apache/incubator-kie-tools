@@ -22,4 +22,6 @@ To build the module : `yarn build:prod`
 
 To build the module in dev mode (no tests): `yarn build:dev`
 
+To build the module and its parent modules in dev mode (no tests) : `yarn build:full-dev`
+
 To run the development webapp: `yarn start`
