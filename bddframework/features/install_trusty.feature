@@ -107,26 +107,26 @@ Feature: Kogito Trusty
 
     And Scale Infinispan instance "kogito-infinispan" to 1 pods within 2 minutes
     
-    And HTTP GET request on service "trusty" with path "/executions" should not contain a string "DECISION" within 3 minutes
+    And HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
 
-    And HTTP POST request on service "dmn-tracing-quarkus" is successful within 2 minutes with path "LoanEligibility" and body:
-      """json
-      {
-      "Bribe": 100,
-      "Client": {
-        "age": 45,
-        "existing payments": 2000,
-        "salary": 2000
-      },
-      "Loan": {
-        "duration": 40,
-        "installment": 1000
-      },
-      "SupremeDirector": "yes"
-      }
-      """
+    # And HTTP POST request on service "dmn-tracing-quarkus" is successful within 2 minutes with path "LoanEligibility" and body:
+    #   """json
+    #   {
+    #   "Bribe": 100,
+    #   "Client": {
+    #     "age": 45,
+    #     "existing payments": 2000,
+    #     "salary": 2000
+    #   },
+    #   "Loan": {
+    #     "duration": 40,
+    #     "installment": 1000
+    #   },
+    #   "SupremeDirector": "yes"
+    #   }
+    #   """
     
-    Then HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
+    # Then HTTP GET request on service "trusty" with path "/executions" should contain a string "DECISION" within 3 minutes
     
 
 ## Trusty tests will be implemented as part of https://issues.redhat.com/browse/KOGITO-6156
