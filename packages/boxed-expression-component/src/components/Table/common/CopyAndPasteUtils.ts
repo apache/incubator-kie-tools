@@ -125,6 +125,7 @@ export const pasteOnTable = (
  * convention of other spreadsheet tools.
  */
 export const iterableValue = (value: string) => {
+  /* TODO: CopyAndPasteUtils: use the quotes to enable newlines */
   const iterable: string[][] = value
     .trim()
     .split("\n")
