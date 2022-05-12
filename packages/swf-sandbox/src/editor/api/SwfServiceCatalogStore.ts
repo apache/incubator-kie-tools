@@ -86,8 +86,6 @@ export class SwfServiceCatalogStore {
       };
     });
 
-    console.log(SwfServiceCatalogStore.storedServices);
-
     return SwfServiceCatalogStore.storedServices;
   }
 
