@@ -1,7 +1,7 @@
 {
   "name": "Serverless Workflow Editor for GitHub",
   "version": "0.19.2",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "description": "Visualize and edit Serverless Workflow files using a graphical editor on GitHub",
   "content_scripts": [
     {
