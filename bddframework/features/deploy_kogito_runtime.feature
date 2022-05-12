@@ -550,44 +550,6 @@ Feature: Deploy Kogito Runtime
 
 #####
 
-  Scenario Outline: Deploy process-optaplanner-quarkus service with native <native> and without persistence
-    Given Kogito Operator is deployed
-    And Clone Kogito examples into local directory
-    And Local example service "kogito-<runtime>-examples/<example-service>" is built by Maven and deployed to runtime registry with Maven configuration:
-      | native | <native> |
-
-    When Deploy <runtime> example service "<example-service>" from runtime registry
-
-    Then Kogito Runtime "<example-service>" has 1 pods running within 10 minutes
-    And HTTP POST request on service "<example-service>" is successful within 2 minutes with path "rest/flights" and body:
-      """json
-      {
-        "params" : {
-          "origin" : "A",
-          "destination" : "B",
-          "departureDateTime" : "2020-05-30T17:30:43.873968",
-          "seatRowSize" : 6,
-          "seatColumnSize" : 10
-        }
-      }
-      """
-
-    @rhpam
-    @quarkus
-    Examples:
-      | runtime    | example-service             | native   |
-      | quarkus    | process-optaplanner-quarkus | disabled |
-
-    # Disabled due to https://issues.redhat.com/browse/PLANNER-2084
-    @disabled
-    @quarkus
-    @native
-    Examples:
-      | runtime    | example-service             | native   |
-      | quarkus    | process-optaplanner-quarkus | enabled  |
-
-#####
-
   @usertasks
   @rhpam
   Scenario Outline: Deploy <example-service> service to complete user tasks with native <native>
