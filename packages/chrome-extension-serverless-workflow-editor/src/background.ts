@@ -14,36 +14,6 @@
  * limitations under the License.
  */
 
-import HttpHeader = chrome.webRequest.HttpHeader;
-import { extractFileExtension, removeDirectories } from "./utils";
-
 chrome.runtime.onInstalled.addListener(() => {
   console.log("KIE Tools extension is running.");
-});
-
-function removeHeader(headers: HttpHeader[], name: string) {
-  for (let i = 0; i < headers.length; i++) {
-    if (headers[i].name.toLowerCase() === name) {
-      headers.splice(i, 1);
-      break;
-    }
-  }
-}
-
-chrome.webRequest.onHeadersReceived.addListener(
-  (details) => {
-    removeHeader(details.responseHeaders!, "content-security-policy");
-    removeHeader(details.responseHeaders!, "x-frame-options");
-    return { responseHeaders: details.responseHeaders };
-  },
-  { urls: ["https://github.com/*"] },
-  ["blocking", "responseHeaders"]
-);
-
-/* Active tab management */
-
-let activeTabId: number;
-
-chrome.tabs.onActivated.addListener((activeInfo) => {
-  activeTabId = activeInfo.tabId;
 });
