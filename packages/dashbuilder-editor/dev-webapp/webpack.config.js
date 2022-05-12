@@ -28,6 +28,7 @@ module.exports = (env) =>
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
+      "dashbuilder-editor-envelope": path.resolve(__dirname, "./envelope/DashbuilderEditorEnvelopeApp.ts"),
     },
     output: {
       path: path.resolve("../dist-dev"),
@@ -45,6 +46,10 @@ module.exports = (env) =>
               "../../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client"
             ),
             to: "./dashbuilder-runtime-client",
+          },
+          {
+            from: path.resolve(__dirname, "./static/envelope/dashbuilder-editor-envelope.html"),
+            to: "./dashbuilder-editor-envelope.html",
           },
         ],
       }),

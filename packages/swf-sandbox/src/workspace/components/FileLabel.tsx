@@ -30,7 +30,8 @@ const labelColors = new Map<string, LabelColorType>([
   ["yard.json", sdLabel],
   ["yard.yml", sdLabel],
   ["yard.yaml", sdLabel],
-  ["db", dashboardLabel], //FIXME: db?
+  ["dash.yaml", dashboardLabel],
+  ["dash.yml", dashboardLabel],
 ]);
 
 export function FileLabel(props: { style?: LabelProps["style"]; extension: string }) {

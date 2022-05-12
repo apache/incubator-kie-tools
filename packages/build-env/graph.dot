@@ -186,6 +186,7 @@ digraph G {
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-sandbox" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
   "@kie-tools/swf-sandbox" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kie-tools/swf-sandbox" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "black" ];
   "@kie-tools/swf-sandbox" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "black" ];

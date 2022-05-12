@@ -25,6 +25,7 @@
     "@kie-tools/serverless-workflow-editor": "0.0.0",
     "@kie-tools/serverless-workflow-service-catalog": "0.0.0",
     "@kie-tools/serverless-workflow-language-service": "0.0.0",
+    "@kie-tools/dashbuilder-editor": "0.0.0",
     "@kie-tools/text-editor": "0.0.0",
     "@octokit/rest": "^18.5.3",
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",

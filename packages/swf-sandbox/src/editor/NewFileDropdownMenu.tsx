@@ -74,11 +74,6 @@ export function NewFileDropdownMenu(props: {
 
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
-      if (extension === "db") {
-        //FIXME: remove it
-        return;
-      }
-
       const file = await workspaces.addEmptyFile({
         fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
@@ -144,10 +139,6 @@ export function NewFileDropdownMenu(props: {
 
   const addSample = useCallback(
     (extension: SupportedFileExtensions) => {
-      if (extension === "db") {
-        //FIXME: remove it
-        return;
-      }
       importFromUrl(
         `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
           type: extension,
@@ -247,11 +238,11 @@ export function NewFileDropdownMenu(props: {
           </MenuItem>
           <MenuItem
             itemId={"newDashboardItemId"}
-            onClick={() => addEmptyFile("db")}
-            description="Dashboard files are used to define data visualization extracted from business applications."
+            onClick={() => addEmptyFile("dash.yml")}
+            description="Dashboard files are used to define data visualization from data extracted from applications."
           >
             <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"db"} />
+              <FileLabel style={{ marginBottom: "4px" }} extension={"dash.yaml"} />
             </b>
           </MenuItem>
           <Divider />
@@ -286,8 +277,8 @@ export function NewFileDropdownMenu(props: {
                   </Flex>
                 </MenuItem>
                 <MenuItem
-                  onClick={() => addSample("db")}
-                  description="Dashboard files are used to define data visualization extracted from business applications."
+                  onClick={() => addSample("dash.yml")}
+                  description="Dashboard files are used to define data visualization from data extracted from applications."
                 >
                   <Flex>
                     <FlexItem>Sample</FlexItem>

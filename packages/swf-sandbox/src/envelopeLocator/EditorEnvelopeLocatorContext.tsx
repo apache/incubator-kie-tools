@@ -18,7 +18,15 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import * as React from "react";
 import { useContext, useMemo } from "react";
 
-export type SupportedFileExtensions = "sw.json" | "sw.yaml" | "sw.yml" | "yard.json" | "yard.yaml" | "yard.yml" | "db"; //FIXME db?
+export type SupportedFileExtensions =
+  | "sw.json"
+  | "sw.yaml"
+  | "sw.yml"
+  | "yard.json"
+  | "yard.yaml"
+  | "yard.yml"
+  | "dash.yml"
+  | "dash.yaml"; //FIXME db?
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
@@ -27,6 +35,7 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
         new EnvelopeMapping("sw", "**/*.sw.+(json|yml|yaml)", "", "swf-editor-envelope.html"),
+        new EnvelopeMapping("dash", "**/*.dash.+(yml|yaml)", "", "dashbuilder-editor-envelope.html"),
         new EnvelopeMapping("text", "**/*", "", "text-editor-envelope.html"),
       ]),
     []

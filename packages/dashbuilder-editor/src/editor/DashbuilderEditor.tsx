@@ -107,11 +107,6 @@ interface Props {
    * ChannelType where the component is running.
    */
   channelType: ChannelType;
-  /**
-   * Preview/edit state
-   */
-  showEditor?: boolean;
-  onShowPreviewChange?: (v: boolean) => void;
 }
 
 const UPDATE_TIME = 1000;
@@ -124,26 +119,21 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   props,
   forwardedRef
 ) => {
-  const [initialContent, setInitialContent] = useState({ originalContent: INITIAL_CONTENT, path: "" });
-  const [content, setContent] = useState("");
-  const [showPreview, setShowPreview] = useState<boolean>(props.showEditor!);
-  const newContentRef = useRef<string>("");
-  const oldContentRef = useRef<string>("");
+  const [initialContent, setInitialContent] = useState({ originalContent: INITIAL_CONTENT, path: "empty.dash.yml" });
+  const [renderContent, setRenderContent] = useState("");
+  const [showPreview, setShowPreview] = useState<boolean>(false);
   const dashbuilderMonacoEditorRef = useRef<DashbuilderMonacoEditorApi>(null);
-
-  useEffect(() => props.onShowPreviewChange!(showPreview), [props, showPreview]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (newContentRef.current !== oldContentRef.current) {
-        oldContentRef.current = newContentRef.current;
-        setContent(newContentRef.current);
-      } else if (content !== oldContentRef.current) {
-        setContent(oldContentRef.current);
-      }
+      setRenderContent(dashbuilderMonacoEditorRef.current?.getContent() || "");
     }, UPDATE_TIME);
     return () => clearTimeout(timer);
-  }, [content]);
+  }, [renderContent]);
+
+  const isVSCode = useCallback(() => {
+    return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
+  }, [props]);
 
   useImperativeHandle(
     forwardedRef,
@@ -152,7 +142,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
         setContent: (path: string, newContent: string): Promise<void> => {
           try {
             setInitialContent({
-              originalContent: INITIAL_CONTENT,
+              originalContent: newContent,
               path: path,
             });
             return Promise.resolve();
@@ -162,28 +152,17 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
           }
         },
         getContent: (): Promise<string> => {
-          if (dashbuilderMonacoEditorRef.current) {
-            Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent());
-          }
-          return Promise.resolve("");
+          return Promise.resolve(Promise.resolve(dashbuilderMonacoEditorRef.current?.getContent() || ""));
         },
         getPreview: (): Promise<string> => {
           // TODO: implement it on Dashbuilder
           return Promise.resolve("");
         },
         undo: (): Promise<void> => {
-          if (dashbuilderMonacoEditorRef.current) {
-            dashbuilderMonacoEditorRef.current.undo();
-            newContentRef.current = dashbuilderMonacoEditorRef.current.getContent()!;
-          }
-          return Promise.resolve();
+          return dashbuilderMonacoEditorRef.current?.undo() || Promise.resolve();
         },
         redo: (): Promise<void> => {
-          if (dashbuilderMonacoEditorRef.current) {
-            dashbuilderMonacoEditorRef.current.redo();
-            newContentRef.current = dashbuilderMonacoEditorRef.current.getContent()!;
-          }
-          return Promise.resolve();
+          return dashbuilderMonacoEditorRef.current?.redo() || Promise.resolve();
         },
         validate: (): Notification[] => {
           return [];
@@ -201,13 +180,18 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
       if (operation === MonacoEditorOperation.EDIT) {
         props.onNewEdit(new KogitoEdit(newContent));
       } else if (operation === MonacoEditorOperation.UNDO) {
+        if (!isVSCode()) {
+          dashbuilderMonacoEditorRef.current?.undo();
+        }
         props.onStateControlCommandUpdate(StateControlCommand.UNDO);
       } else if (operation === MonacoEditorOperation.REDO) {
+        if (!isVSCode()) {
+          dashbuilderMonacoEditorRef.current?.redo();
+        }
         props.onStateControlCommandUpdate(StateControlCommand.REDO);
       }
-      newContentRef.current = newContent;
     },
-    [props]
+    [props, isVSCode]
   );
 
   useEffect(() => {
@@ -218,7 +202,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   const panelContent = (
     <DrawerPanelContent isResizable={true} defaultSize={showPreview ? "100%" : "50%"}>
       <DrawerPanelBody hasNoPadding={true}>
-        <Dashbuilder content={content} />
+        <Dashbuilder content={renderContent} />
       </DrawerPanelBody>
     </DrawerPanelContent>
   );

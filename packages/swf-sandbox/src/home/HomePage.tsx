@@ -163,9 +163,9 @@ export function HomePage() {
                 />
                 <NewModelCard
                   title={"Dashboard"}
-                  extension={"db"}
+                  extension={"dash.yml"}
                   description={
-                    "Dashboard files are used to define data visualization extracted from business applications."
+                    "Dashboard files are used to define data visualization from data extracted from applications."
                   }
                 />
               </Gallery>
@@ -483,8 +483,6 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
 export function NewModelCard(props: { title: string; extension: SupportedFileExtensions; description: string }) {
   const routes = useRoutes();
 
-  const isDashboard = useMemo(() => props.extension === "db", [props.extension]); // FIXME: remove it
-
   return (
     <Card isFullHeight={true} isPlain={true} isLarge={true}>
       <CardTitle>
@@ -497,8 +495,8 @@ export function NewModelCard(props: { title: string; extension: SupportedFileExt
       </CardBody>
       <CardFooter>
         <Grid>
-          <Link to={isDashboard ? "" : { pathname: routes.newModel.path({ extension: props.extension }) }}>
-            <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`} isDisabled={isDashboard}>
+          <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
+            <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
               New {props.title}
             </Button>
           </Link>

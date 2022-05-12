@@ -25,6 +25,7 @@ const LANGUAGE = "yaml";
 
 export interface DashbuilderMonacoEditorApi {
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
+  dispose: () => void;
   undo: () => void;
   redo: () => void;
   getContent: () => string;
@@ -61,6 +62,10 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
     });
   }
 
+  public dispose(): void {
+    this.editor?.dispose();
+  }
+
   public redo(): void {
     this.editor?.focus();
     this.editor?.trigger("editor", "redo", null);
@@ -90,7 +95,7 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       language: LANGUAGE,
       scrollBeyondLastLine: false,
       automaticLayout: true,
-      fontSize: 12,
+      fontSize: 14,
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
