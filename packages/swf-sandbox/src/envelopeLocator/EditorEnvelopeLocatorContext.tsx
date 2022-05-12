@@ -26,7 +26,7 @@ export type SupportedFileExtensions =
   | "yard.yaml"
   | "yard.yml"
   | "dash.yml"
-  | "dash.yaml"; //FIXME db?
+  | "dash.yaml";
 
 export const EditorEnvelopeLocatorContext = React.createContext<EditorEnvelopeLocator>({} as any);
 
