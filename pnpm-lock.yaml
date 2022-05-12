@@ -1711,6 +1711,8 @@ importers:
       swagger-ui: ^4.9.0
       swagger-ui-react: ^4.8.1
       uuid: ^8.3.2
+      vscode-languageserver-textdocument: ^1.0.4
+      vscode-languageserver-types: ^3.16.0
       yaml: ^2.0.1
     dependencies:
       "@kie-tools-core/editor": link:../editor
@@ -1754,6 +1756,8 @@ importers:
       swagger-ui: registry.npmjs.org/swagger-ui/4.11.0
       swagger-ui-react: registry.npmjs.org/swagger-ui-react/4.11.0_sfoxds7t5ydpegc3knd667wn6m
       uuid: registry.npmjs.org/uuid/8.3.2
+      vscode-languageserver-textdocument: registry.npmjs.org/vscode-languageserver-textdocument/1.0.4
+      vscode-languageserver-types: registry.npmjs.org/vscode-languageserver-types/3.16.0
       yaml: registry.npmjs.org/yaml/2.0.1
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
