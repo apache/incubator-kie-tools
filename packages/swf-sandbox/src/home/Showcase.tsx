@@ -52,12 +52,13 @@ export function Showcase() {
       <br />
       <Gallery
         hasGutter={true}
-        minWidths={{ sm: "calc(100%/3 - 16px)", default: "100%" }}
+        minWidths={{ sm: "calc(100%/3.1 - 16px)", default: "100%" }}
         style={{
           overflowX: "auto",
           gridAutoFlow: "column",
-          gridAutoColumns: "minmax(calc(100%/3 - 16px),1fr)",
+          gridAutoColumns: "minmax(calc(100%/3.1 - 16px),1fr)",
           paddingBottom: "8px",
+          paddingRight: "var(--pf-c-page__main-section--xl--PaddingRight)",
         }}
       >
         {samples.map((sample) => (

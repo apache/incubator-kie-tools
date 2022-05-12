@@ -191,7 +191,7 @@ export function HomePage() {
           </GridItem>
         </Grid>
       </PageSection>
-      <PageSection isFilled={false}>
+      <PageSection isFilled={false} style={{ paddingRight: 0 }}>
         <Showcase />
       </PageSection>
       <PageSection isFilled={true} variant={"light"} hasOverflowScroll={false}>

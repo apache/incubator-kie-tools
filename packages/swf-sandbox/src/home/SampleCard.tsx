@@ -4,7 +4,9 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "../navigation/Hooks";
 import { Link } from "react-router-dom";
-import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 
 export type Sample = {
   name: string;
@@ -20,7 +22,18 @@ export function SampleCard({ sample }: { sample: Sample }) {
   return (
     <Card isCompact={true} isFullHeight={true}>
       <Grid style={{ height: "100%" }}>
-        <GridItem md={6} style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle" }}>
+        <GridItem
+          md={6}
+          style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle", position: "relative" }}
+        >
+          {sample.repoUrl && (
+            <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
+              <Label>
+                <FolderIcon />
+                &nbsp;&nbsp;Project
+              </Label>
+            </div>
+          )}
           <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
