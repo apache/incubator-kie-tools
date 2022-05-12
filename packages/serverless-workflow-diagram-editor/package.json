@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/serverless-workflow-diagram-editor",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "description": "",
   "private": true,
   "license": "Apache-2.0",
@@ -14,7 +14,7 @@
     "**/dist/*"
   ],
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0"
+    "@kie-tools/build-env": "0.19.2"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",

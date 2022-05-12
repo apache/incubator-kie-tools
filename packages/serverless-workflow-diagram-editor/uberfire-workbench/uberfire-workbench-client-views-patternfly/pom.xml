@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
     <artifactId>uberfire-workbench</artifactId>
-    <version>0.19.0</version>
+    <version>0.19.2</version>
   </parent>
 
   <artifactId>uberfire-workbench-client-views-patternfly</artifactId>

@@ -3,7 +3,7 @@
     "access": "public"
   },
   "name": "@kie-tools/kie-sandbox-fs",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "description": "In-browser FS based on KieSandboxFs",
   "main": "dist/index.js",
   "unpkg": "dist/index.js",
@@ -25,7 +25,7 @@
     "just-once": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0",
+    "@kie-tools/build-env": "0.19.2",
     "karma": "^6.3.9",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",

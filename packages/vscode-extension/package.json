@@ -2,7 +2,7 @@
   "name": "@kie-tools-core/vscode-extension",
   "displayName": "KIE :: Kogito Editors",
   "description": "",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -24,15 +24,15 @@
     "build:prod": "rimraf dist && yarn lint && tsc -p tsconfig.prod.json && yarn test"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "0.19.0",
-    "@kie-tools-core/editor": "0.19.0",
-    "@kie-tools-core/i18n": "0.19.0",
-    "@kie-tools-core/keyboard-shortcuts": "0.19.0",
-    "@kie-tools-core/vscode-java-code-completion": "0.19.0",
-    "@kie-tools-core/workspace": "0.19.0",
+    "@kie-tools-core/backend": "0.19.2",
+    "@kie-tools-core/editor": "0.19.2",
+    "@kie-tools-core/i18n": "0.19.2",
+    "@kie-tools-core/keyboard-shortcuts": "0.19.2",
+    "@kie-tools-core/vscode-java-code-completion": "0.19.2",
+    "@kie-tools-core/workspace": "0.19.2",
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0"
+    "@kie-tools/build-env": "0.19.2"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-examples/todo-list-view",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "license": "Apache-2.0",
   "private": true,
   "files": [
@@ -17,10 +17,10 @@
     "build:prod": "yarn run run-script-if --bool \"$(build-env global.build.examples)\" --then \"yarn run build\""
   },
   "dependencies": {
-    "@kie-tools-core/envelope": "0.19.0",
-    "@kie-tools-core/envelope-bus": "0.19.0"
+    "@kie-tools-core/envelope": "0.19.2",
+    "@kie-tools-core/envelope-bus": "0.19.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0"
+    "@kie-tools/build-env": "0.19.2"
   }
 }

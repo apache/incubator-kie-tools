@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>appformer-bom</artifactId>
-  <version>0.19.0</version>
+  <version>0.19.2</version>
   <packaging>pom</packaging>
 
   <name>Appformer BOM</name>

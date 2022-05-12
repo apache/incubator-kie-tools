@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/dashbuilder-editor",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
@@ -13,9 +13,9 @@
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.19.0",
-    "@kie-tools-core/patternfly-base": "0.19.0",
-    "@kie-tools/dashbuilder": "0.19.0",
+    "@kie-tools-core/editor": "0.19.2",
+    "@kie-tools-core/patternfly-base": "0.19.2",
+    "@kie-tools/dashbuilder": "0.19.2",
     "monaco-editor": "^0.23.0",
     "monaco-yaml": "^3.2.1"
   },
@@ -36,7 +36,7 @@
     "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env dashbuilderEditor.dev.port) cy:run\""
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0",
+    "@kie-tools/build-env": "0.19.2",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "vscode-json-languageservice": "^4.2.1"
   },

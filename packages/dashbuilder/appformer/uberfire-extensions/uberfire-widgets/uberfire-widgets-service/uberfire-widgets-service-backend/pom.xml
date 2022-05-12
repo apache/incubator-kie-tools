@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-widgets-service</artifactId>
-    <version>0.19.0</version>
+    <version>0.19.2</version>
   </parent>
   <name>Uberfire Widgets Commons Services Backend</name>
   <description>Uberfire Widgets Commons Services Backend</description>

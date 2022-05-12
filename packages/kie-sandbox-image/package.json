@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/kie-sandbox-image",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -20,8 +20,8 @@
     "build:prod": "yarn cleanup && run-script-os"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.19.0",
-    "@kie-tools/image-env-to-json": "0.19.0",
-    "@kie-tools/online-editor": "0.19.0"
+    "@kie-tools/build-env": "0.19.2",
+    "@kie-tools/image-env-to-json": "0.19.2",
+    "@kie-tools/online-editor": "0.19.2"
   }
 }

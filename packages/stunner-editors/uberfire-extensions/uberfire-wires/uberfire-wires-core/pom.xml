@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>uberfire-wires</artifactId>
-    <version>0.19.0</version>
+    <version>0.19.2</version>
   </parent>
 
   <artifactId>uberfire-wires-core</artifactId>
