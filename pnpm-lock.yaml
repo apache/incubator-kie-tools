@@ -1668,9 +1668,11 @@ importers:
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/operating-system": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-editor": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/kie-sandbox-fs": 0.0.0
       "@kie-tools/serverless-workflow-editor": 0.0.0
@@ -1724,6 +1726,7 @@ importers:
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
@@ -1760,6 +1763,7 @@ importers:
       vscode-languageserver-types: registry.npmjs.org/vscode-languageserver-types/3.16.0
       yaml: registry.npmjs.org/yaml/2.0.1
     devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@svgr/webpack": registry.npmjs.org/@svgr/webpack/6.2.1
