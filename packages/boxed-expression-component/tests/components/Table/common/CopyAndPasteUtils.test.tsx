@@ -18,7 +18,12 @@ import { render } from "@testing-library/react";
 import * as React from "react";
 import { act } from "react-dom/test-utils";
 import { DataRecord } from "react-table";
-import { iterableValue, paste, pasteOnTable } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
+import {
+  iterableValue,
+  paste,
+  pasteOnTable,
+  parseTableRows,
+} from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { wrapComponentInContext } from "../../test-utils";
 
 describe("CopyAndPasteUtils", () => {
@@ -130,6 +135,44 @@ describe("CopyAndPasteUtils", () => {
           { "column-1": "0000", "column-2": "0000", "column-3": "0000" },
           { "column-1": "0000", "column-2": "0000", "column-3": "0000" },
         ]);
+      });
+    });
+  });
+
+  describe("parseTableRows", () => {
+    describe("when the string is empty or null", () => {
+      test("returns an iterable data structure", () => {
+        // @ts-ignore
+        expect(parseTableRows(null)).toEqual([]);
+        expect(parseTableRows("")).toEqual([]);
+      });
+    });
+
+    describe("when the string has a single row", () => {
+      test("returns an iterable data structure", () => {
+        expect(parseTableRows("A\tB\tC")).toEqual(["A\tB\tC"]);
+        expect(parseTableRows('"Cell 1\n newline"')).toEqual(['"Cell 1\n newline"']);
+      });
+    });
+
+    describe("when the string has multiple rows", () => {
+      test.each([
+        ["A\tB\tC\nD\tE\tF", ["A\tB\tC", "D\tE\tF"]],
+        [
+          '"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nnewline"',
+          ['"Cell 1\nnewline"\tCell 2', "Cell 3\tCell 4", 'Cell 5\t"Cell 6\n\nnewline"'],
+        ],
+        [
+          "Cell 1\tCell 2\nCell 3\tCell 4\nCell 4\tCell 5\nCell 6\tCell 7",
+          ["Cell 1	Cell 2", "Cell 3	Cell 4", "Cell 4	Cell 5", "Cell 6	Cell 7"],
+        ],
+        ["Cell 1\tCell 2\n\t\nCell 3\tCell 4\nCell 5\tCell 6", ["Cell 1	Cell 2", "", "Cell 3	Cell 4", "Cell 5	Cell 6"]],
+        [
+          'Cell 1\tCell 2\nCell 3\t"Cell 4\n\nnewline with ""quotes"""\nCell 4\tCell 5\nCell 6\tCell 7',
+          ["Cell 1	Cell 2", 'Cell 3	"Cell 4\n\nnewline with ""quotes"""', "Cell 4	Cell 5", "Cell 6	Cell 7"],
+        ],
+      ])("returns an iterable data structure with input: %j", (input, expected) => {
+        expect(parseTableRows(input)).toEqual(expected);
       });
     });
   });

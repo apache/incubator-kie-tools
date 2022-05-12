@@ -121,6 +121,19 @@ export const pasteOnTable = (
 };
 
 /**
+ * Parses the Table Rows from a string using the Spreadsheets format.
+ *
+ * @param value the string to parse
+ * @returns the rows as array of strings
+ */
+export const parseTableRows = (value: string): Array<string> => {
+  if (!value) {
+    return [];
+  }
+  return value.match(/((("[^"]+")|([^\t\n]+))\t?)+/g) || [];
+};
+
+/**
  * Covert a string value into an iterable data structure, by following the
  * convention of other spreadsheet tools.
  */
