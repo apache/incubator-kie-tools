@@ -6,6 +6,8 @@ import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/g
 import { ReactComponent as GreetingsKafkaSvg } from "../../static/samples/greetings-kafka/greetings-kafka.svg";
 import { ReactComponent as FillGlassOfWaterSvg } from "../../static/samples/fill-glass-of-water/fill-glass-of-water.svg";
 import { ReactComponent as TemperatureConversionSvg } from "../../static/samples/temperature-conversion/temperature-conversion.svg";
+import { ReactComponent as ProductsDashboardSvg } from "../../static/samples/products-dashboard/products-dashboard.svg";
+import { ReactComponent as SwfReportSvg } from "../../static/samples/swf-report/swf-report.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 
 export const samples: Array<Sample> = [
@@ -40,6 +42,22 @@ export const samples: Array<Sample> = [
     fileName: "fill-glass-of-water",
     svg: FillGlassOfWaterSvg,
     description: `Our workflow simulates filling up a glass of water one "count" at a time until "max" count is reached which represents our glass is full. Each time we increment the current count, the workflow checks if we need to keep refilling the glass. If the current count reaches the max count, the workflow execution ends.`,
+  },
+  {
+    name: "Products Dashboard",
+    fileName: "products-dashboard",
+    type: "dash.yml",
+    svg: ProductsDashboardSvg,
+    description:
+      'In this example we show a dashboard from a "products" dataset. It displays the dataset information in a bar chart grouping products by counting them. At the end we have a table listing all products.',
+  },
+  {
+    name: "Serverless Workflow Report",
+    fileName: "swf-report",
+    type: "dash.yml",
+    svg: SwfReportSvg,
+    description:
+      "This example is for Serverless Workflow Data Index. It connects to data index to retrieve information about running and completed workflows. The top row shows a general overview of workflow states, the middle row contains charts to compare workflows execution. This information can be filtered using the small combo box on right side. Finally a table shows all the workflows details.",
   },
 ];
 

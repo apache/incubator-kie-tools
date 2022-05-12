@@ -41,10 +41,7 @@ module.exports = (env) =>
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
           { from: path.resolve(__dirname, "../static/images"), to: "./images" },
           {
-            from: path.resolve(
-              __dirname,
-              "../../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client"
-            ),
+            from: path.resolve(__dirname, "../dist/dashbuilder-runtime-client"),
             to: "./dashbuilder-runtime-client",
           },
           {

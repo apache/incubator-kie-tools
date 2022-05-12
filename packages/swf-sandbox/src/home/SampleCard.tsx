@@ -14,6 +14,7 @@ export type Sample = {
   svg: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   description: string;
   repoUrl?: string;
+  type?: string;
 };
 
 export function SampleCard({ sample }: { sample: Sample }) {
@@ -49,7 +50,7 @@ export function SampleCard({ sample }: { sample: Sample }) {
                   url:
                     sample.repoUrl ??
                     `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                      type: "sw.json",
+                      type: sample.type || "sw.json",
                       name: sample.fileName,
                     })}`,
                   renameWorkspace: sample.name,

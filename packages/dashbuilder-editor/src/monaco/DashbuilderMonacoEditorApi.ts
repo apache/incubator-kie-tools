@@ -99,16 +99,16 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Z, () => {
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KEY_Z, () => {
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyY, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
     });
 
     if (this.operatingSystem !== OperatingSystem.MACOS) {
-      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_Y, () => {
+      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
         this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
       });
     }
