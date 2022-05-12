@@ -29,7 +29,6 @@
     "@kie-tools/text-editor": "0.0.0",
     "@octokit/rest": "^18.5.3",
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",
-    "@patternfly/patternfly": "^4.192.1",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "@patternfly/react-tokens": "^4.33.1",

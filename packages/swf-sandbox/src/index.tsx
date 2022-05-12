@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "@patternfly/patternfly/patternfly-addons.scss";
 import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";

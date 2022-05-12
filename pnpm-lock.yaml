@@ -1681,7 +1681,6 @@ importers:
       "@kie-tools/text-editor": 0.0.0
       "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
-      "@patternfly/patternfly": ^4.192.1
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@patternfly/react-tokens": ^4.33.1
@@ -1735,7 +1734,6 @@ importers:
       "@kie-tools/text-editor": link:../text-editor
       "@octokit/plugin-rest-endpoint-methods": registry.npmjs.org/@octokit/plugin-rest-endpoint-methods/5.0.1
       "@octokit/rest": registry.npmjs.org/@octokit/rest/18.5.3
-      "@patternfly/patternfly": registry.npmjs.org/@patternfly/patternfly/4.192.1
       "@patternfly/react-core": registry.npmjs.org/@patternfly/react-core/4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": registry.npmjs.org/@patternfly/react-icons/4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-tokens": registry.npmjs.org/@patternfly/react-tokens/4.33.1
@@ -23935,17 +23933,6 @@ packages:
     version: 6.14.2
     dependencies:
       "@octokit/openapi-types": registry.npmjs.org/@octokit/openapi-types/7.0.0
-    dev: false
-
-  registry.npmjs.org/@patternfly/patternfly/4.192.1:
-    resolution:
-      {
-        integrity: sha512-eNJ3aI9mGfvwMtBwkI+CBJHPhZx1FoNN6QY36iYEvrEOIL5xuuKRDG2tbOzeucQOzNqZ1PO1Eoock5xTcCG86Q==,
-        registry: https://registry.yarnpkg.com/,
-        tarball: https://registry.npmjs.org/@patternfly/patternfly/-/patternfly-4.192.1.tgz,
-      }
-    name: "@patternfly/patternfly"
-    version: 4.192.1
     dev: false
 
   registry.npmjs.org/@patternfly/react-core/4.168.8_sfoxds7t5ydpegc3knd667wn6m:
