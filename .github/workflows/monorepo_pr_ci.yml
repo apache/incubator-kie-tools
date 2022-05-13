@@ -66,8 +66,11 @@ jobs:
         env:
           KIE_TOOLS_BUILD_examples: "true"
         run: |
-          export FILTER=$(pnpm -F "...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F $(jq --raw-output .name package.json)^..."')
-          pnpm $FILTER build:dev
+          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
+          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
+          echo $ALL_DEPENDENCIES_FILTER
+          echo $CHANGED_PKGS_EXCLUSION_FILTER
+          eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
 
       - name: "Build changed and dependents"
         if: steps.check_diff_paths.outputs.should_run == 'true'
