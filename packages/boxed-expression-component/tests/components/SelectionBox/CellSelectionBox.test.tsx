@@ -59,7 +59,9 @@ describe("CellSelectionBox", () => {
       const kieSelectionTextarea = container.querySelector(".kie-cell-selection-box textarea") as HTMLTextAreaElement;
       const selectionValue = kieSelectionTextarea!.value;
 
-      expect(selectionValue).toMatch('"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nnewline"');
+      expect(selectionValue).toMatch(
+        '"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nindex of("list", "match")"'
+      );
     });
   });
 });
@@ -143,7 +145,7 @@ function renderTableWithNewLines() {
               </td>
               <td className="uuid-fb97017a react-resizable">
                 <div className="editable-cell">
-                  <textarea defaultValue={"Cell 6\n\nnewline"} />
+                  <textarea defaultValue={'Cell 6\n\nindex of("list", "match")'} />
                 </div>
               </td>
             </tr>

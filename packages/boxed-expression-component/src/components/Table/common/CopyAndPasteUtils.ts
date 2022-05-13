@@ -130,7 +130,7 @@ export const parseTableRows = (value: string): Array<string> => {
   if (!value) {
     return [];
   }
-  return value.match(/((("[^"]+")|([^\t\n]+))\t?)+/g) || [];
+  return value.match(/^((("[^"]+")|([^\t\n]+))?\t?)+$/gm) || [];
 };
 
 /**
@@ -138,14 +138,10 @@ export const parseTableRows = (value: string): Array<string> => {
  * convention of other spreadsheet tools.
  */
 export const iterableValue = (value: string) => {
-  /* TODO: CopyAndPasteUtils: use the quotes to enable newlines */
-  const iterable: string[][] = value
-    .trim()
-    .split("\n")
-    .map((strRow) => {
-      const trimedValue = strRow.trim();
-      return trimedValue === "" ? [] : trimedValue.split("\t");
-    });
+  const iterable: string[][] = parseTableRows(value.trim()).map((strRow) => {
+    const trimedValue = strRow.trim();
+    return trimedValue === "" ? [] : trimedValue.split("\t");
+  });
 
   ensureSameNumberOfColumns(iterable);
 
