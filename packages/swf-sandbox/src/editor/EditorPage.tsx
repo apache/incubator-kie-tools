@@ -230,24 +230,20 @@ export function EditorPage(props: Props) {
     console.log(e);
   }, []);
 
-  const stateControl = useMemo(() => new StateControl(), []);
+  const stateControl = useMemo(() => new StateControl(), [embeddedEditorFile?.getFileContents]);
 
-  const apiImpl = useMemo(
+  const kogitoEditorChannelApiImpl = useMemo(
     () =>
       embeddedEditorFile &&
-      new ServerlessWorkflowEditorChannelApiImpl(
-        new KogitoEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {
-          kogitoEditor_ready: () => {
-            setReady(true);
-          },
-          kogitoWorkspace_openFile: handleOpenFile,
-          kogitoWorkspace_resourceContentRequest: handleResourceContentRequest,
-          kogitoWorkspace_resourceListRequest: handleResourceListRequest,
-          kogitoEditor_setContentError: handleSetContentError,
-        }),
-        new SwfServiceCatalogChannelApiImpl(settings),
-        new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings))
-      ),
+      new KogitoEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {
+        kogitoEditor_ready: () => {
+          setReady(true);
+        },
+        kogitoWorkspace_openFile: handleOpenFile,
+        kogitoWorkspace_resourceContentRequest: handleResourceContentRequest,
+        kogitoWorkspace_resourceListRequest: handleResourceListRequest,
+        kogitoEditor_setContentError: handleSetContentError,
+      }),
     [
       embeddedEditorFile,
       handleOpenFile,
@@ -255,9 +251,26 @@ export function EditorPage(props: Props) {
       handleResourceListRequest,
       handleSetContentError,
       locale,
-      settings,
       stateControl,
     ]
+  );
+  const swfServiceCatalogChannelApiImpl = useMemo(() => new SwfServiceCatalogChannelApiImpl(settings), [settings]);
+  const swfLanguageServiceChannelApiImpl = useMemo(
+    () => new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings)),
+    [settings]
+  );
+
+  const apiImpl = useMemo(
+    () =>
+      kogitoEditorChannelApiImpl &&
+      swfServiceCatalogChannelApiImpl &&
+      swfLanguageServiceChannelApiImpl &&
+      new ServerlessWorkflowEditorChannelApiImpl(
+        kogitoEditorChannelApiImpl,
+        swfServiceCatalogChannelApiImpl,
+        swfLanguageServiceChannelApiImpl
+      ),
+    [kogitoEditorChannelApiImpl, swfLanguageServiceChannelApiImpl, swfServiceCatalogChannelApiImpl]
   );
 
   return (

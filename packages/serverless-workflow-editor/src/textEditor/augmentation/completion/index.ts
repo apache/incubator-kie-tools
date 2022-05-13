@@ -26,8 +26,8 @@ import CompletionItemInsertTextRule = languages.CompletionItemInsertTextRule;
 export function initJsonCompletion(
   commandIds: SwfTextEditorInstance["commands"],
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
-): void {
-  monaco.languages.registerCompletionItemProvider("json", {
+): monaco.IDisposable {
+  return monaco.languages.registerCompletionItemProvider("json", {
     triggerCharacters: [" ", ":", '"'],
     provideCompletionItems: async (
       model: monaco.editor.ITextModel,

@@ -9,8 +9,8 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 export function initJsonCodeLenses(
   commandIds: SwfLanguageServiceCommandIds,
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
-): void {
-  monaco.languages.registerCodeLensProvider("json", {
+): monaco.IDisposable {
+  return monaco.languages.registerCodeLensProvider("json", {
     provideCodeLenses: async (model, cancellationToken) => {
       const lsCodeLenses = await channelApi.requests.kogitoSwfLanguageService__getCodeLenses({
         uri: model.uri.toString(),

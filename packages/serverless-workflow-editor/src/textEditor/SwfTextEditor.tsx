@@ -87,11 +87,13 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
-    initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
-    initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
+    const jsonCompletion = initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
+    const codeLenses = initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
     return () => {
       controller.dispose();
+      codeLenses.dispose();
+      jsonCompletion.dispose();
     };
 
     // TODO: Add support to YAML

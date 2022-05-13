@@ -96,7 +96,6 @@ export class EditorSwfLanguageService {
 
   public dispose() {
     this.ls.dispose();
-    return [];
     // return Array.from(this.fsWatchingSwfServiceCatalogStore.values()).forEach((f) => f.dispose());
   }
 }
