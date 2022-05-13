@@ -63,12 +63,12 @@ export const en: AppI18n = {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to deploy decision models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+        "When you set up the required information, you are able to deploy projects on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
       saving: "Saving ...",
-      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your models`,
+      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your projects`,
     },
     configWizard: {
       header: {
@@ -80,10 +80,9 @@ export const en: AppI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the Decision Model deployed to.`,
-          inputReason:
-            "This information is necessary for deploying your Decision Model into the right project namespace.",
-          namespacePlaceholder: `The namespace (project) you want to deploy the Decision Model.`,
+          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the project deployed to.`,
+          inputReason: "This information is necessary for deploying your project into the right project namespace.",
+          namespacePlaceholder: `The namespace (project) you want to deploy the project.`,
         },
         second: {
           name: "Set credentials",

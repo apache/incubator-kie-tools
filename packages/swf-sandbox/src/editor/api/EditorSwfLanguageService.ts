@@ -47,7 +47,8 @@ export class EditorSwfLanguageService {
             // await swfServiceCatalogRelativeStore.init();
             // this.fsWatchingSwfServiceCatalogStore.set(specsDirAbsolutePosixPath, swfServiceCatalogRelativeStore);
             // return swfServiceCatalogRelativeStore.getServices();
-            return SwfServiceCatalogStore.storedServices;
+            return [];
+            // return SwfServiceCatalogStore.storedServices;
           },
         },
         getServiceFileNameFromSwfServiceCatalogServiceId: async (swfServiceCatalogServiceId) => {
