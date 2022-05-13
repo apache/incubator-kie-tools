@@ -16,7 +16,7 @@
 import * as React from "react";
 import { TableComposable, Thead, Tbody, Tr, Th, Td, selectable } from "@patternfly/react-table";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Flex, FlexItem, Pagination, SearchInput } from "@patternfly/react-core";
 
 const DEFAULT_PAGE = 1;
@@ -159,8 +159,8 @@ export const FilteredTable = (props: Props) => {
             itemCount={rows.length}
             perPage={perPage}
             page={page}
-            onSetPage={(evt, _page) => setPage(_page)}
-            onPerPageSelect={(evt, _perPage) => setPerPage(_perPage)}
+            onSetPage={(evt: any, _page: any) => setPage(_page)}
+            onPerPageSelect={(evt: any, _perPage: any) => setPerPage(_perPage)}
             widgetId="pagination-options-menu-top"
           />
         </FlexItem>

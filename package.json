@@ -86,7 +86,6 @@
     "file-loader": "^6.2.0",
     "glob": "^7.1.6",
     "graphviz": "^0.0.9",
-    "heatmap.js": "2.0.5",
     "html-replace-webpack-plugin": "^2.6.0",
     "html-webpack-plugin": "^5.3.2",
     "husky": "^6.0.0",

@@ -18,17 +18,20 @@ const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const { stylePaths } = require("./stylePaths");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kie-tools/stunner-editors");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
-module.exports = async (env) => {
+module.exports = (env) => {
   const devResources = [];
   const isDev = env.WEBPACK_SERVE;
 
   if (isDev) {
     devResources.push({ from: "./static/manifest.dev.json", to: "./manifest.dev.json" });
   }
+
+  console.log(stylePaths);
   return merge(common(env), {
     entry: {
       index: isDev ? "./src/index-dev.tsx" : "./src/index.tsx",
@@ -40,7 +43,9 @@ module.exports = async (env) => {
       }),
       new CopyPlugin({
         patterns: [
+          { from: path.resolve(__dirname, "./static/resources"), to: "./resources" },
           { from: "./static/manifest.json", to: "manifest.json" },
+          /*
           // main
           { from: "../../node_modules/@patternfly/patternfly/patternfly.min.css", to: "patternfly.min.css" },
           // fonts
@@ -51,17 +56,26 @@ module.exports = async (env) => {
           {
             from: "../../node_modules/@patternfly/react-core/dist/styles/assets/fonts/RedHatText/RedHatText-Medium.woff2",
             to: "assets/fonts/RedHatText/RedHatText-Medium.woff2",
-          },
+          },*/
           ...devResources,
         ],
       }),
+      new MiniCssExtractPlugin({
+        filename: "[name].css",
+        chunkFilename: "[name].bundle.css",
+      }),
     ],
-
     module: {
-      rules: [...patternflyBase.webpackModuleRules],
+      rules: [
+        {
+          test: /\.css$/,
+          include: [...stylePaths],
+          use: ["style-loader", "css-loader"],
+        },
+        ...patternflyBase.webpackModuleRules,
+      ],
     },
     devServer: {
-      https: true,
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,

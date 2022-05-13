@@ -19,7 +19,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const stunnerEditors = require("@kie-tools/stunner-editors");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
