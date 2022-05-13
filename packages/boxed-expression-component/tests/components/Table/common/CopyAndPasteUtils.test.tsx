@@ -25,6 +25,7 @@ import {
   parseTableRows,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { wrapComponentInContext } from "../../test-utils";
+import { parseTableCell } from "../../../../src/components/Table/common";
 
 describe("CopyAndPasteUtils", () => {
   describe("pasteOnTable", () => {
@@ -139,6 +140,29 @@ describe("CopyAndPasteUtils", () => {
     });
   });
 
+  describe("parseTableCell", () => {
+    describe("when the string is empty or null", () => {
+      test("returns an empty string", () => {
+        // @ts-ignore
+        expect(parseTableCell(null)).toEqual("");
+        expect(parseTableCell("")).toEqual("");
+      });
+    });
+
+    describe("when the string is a valid cell", () => {
+      test.each([
+        ["A", "A"],
+        ["Cell 1", "Cell 1"],
+        ['"Cell without newline"', "Cell without newline"],
+        ['"Cell 1\nnewline"', "Cell 1\nnewline"],
+        [`"Cell 6\n\nnewline"`, "Cell 6\n\nnewline"],
+        ['"cell 2 \nindex of("list", "match")"', 'cell 2 \nindex of("list", "match")'],
+      ])("returns an iterable data structure with input: %j", (input, expected) => {
+        expect(parseTableCell(input)).toEqual(expected);
+      });
+    });
+  });
+
   describe("parseTableRows", () => {
     describe("when the string is empty or null", () => {
       test("returns an iterable data structure", () => {
@@ -195,15 +219,6 @@ describe("CopyAndPasteUtils", () => {
     });
 
     describe("when the paste value has multiple rows", () => {
-      test("returns an iterable data structure", () => {
-        expect(iterableValue("A\tB\tC\nD\tE\tF")).toEqual([
-          ["A", "B", "C"],
-          ["D", "E", "F"],
-        ]);
-      });
-    });
-
-    describe("when the paste value has multiple rows", () => {
       test.each([
         [
           "A\tB\tC\nD\tE\tF",
@@ -215,9 +230,9 @@ describe("CopyAndPasteUtils", () => {
         [
           '"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nnewline"',
           [
-            ['"Cell 1\nnewline"', "Cell 2"],
+            ["Cell 1\nnewline", "Cell 2"],
             ["Cell 3", "Cell 4"],
-            ["Cell 5", '"Cell 6\n\nnewline"'],
+            ["Cell 5", "Cell 6\n\nnewline"],
           ],
         ],
         [
@@ -242,7 +257,7 @@ describe("CopyAndPasteUtils", () => {
           'Cell 1\tCell 2\nCell 3\t"Cell 4\n\nnewline with ""quotes"""\nCell 4\tCell 5\nCell 6\tCell 7',
           [
             ["Cell 1", "Cell 2"],
-            ["Cell 3", '"Cell 4\n\nnewline with ""quotes"""'],
+            ["Cell 3", 'Cell 4\n\nnewline with ""quotes""'],
             ["Cell 4", "Cell 5"],
             ["Cell 6", "Cell 7"],
           ],
@@ -250,8 +265,8 @@ describe("CopyAndPasteUtils", () => {
         [
           '"cell 1 \nnewline"\t"cell 2 \nindex of("list", "match")"\ncell 3\t"cell 4\n \nnewline"',
           [
-            ['"cell 1 \nnewline"', '"cell 2 \nindex of("list", "match")"'],
-            ["cell 3", '"cell 4\n \nnewline"'],
+            ["cell 1 \nnewline", 'cell 2 \nindex of("list", "match")'],
+            ["cell 3", "cell 4\n \nnewline"],
           ],
         ],
       ])("returns an iterable data structure with input: %j", (input, expected) => {

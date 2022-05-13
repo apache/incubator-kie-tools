@@ -134,13 +134,26 @@ export const parseTableRows = (value: string): Array<string> => {
 };
 
 /**
+ * Parses a Table Cell from a string using the Spreadsheets format.
+ *
+ * @param value the string to parse
+ * @returns the cell parsed
+ */
+export const parseTableCell = (value: string): string => {
+  if (value === null) {
+    return "";
+  }
+  return value.replace(/^"((.*\n?)+)"|([^\t\n]+)$/gm, `$1$3`);
+};
+
+/**
  * Covert a string value into an iterable data structure, by following the
  * convention of other spreadsheet tools.
  */
 export const iterableValue = (value: string) => {
   const iterable: string[][] = parseTableRows(value.trim()).map((strRow) => {
     const trimedValue = strRow.trim();
-    return trimedValue === "" ? [] : trimedValue.split("\t");
+    return trimedValue === "" ? [] : trimedValue.split("\t").map((cell) => parseTableCell(cell));
   });
 
   ensureSameNumberOfColumns(iterable);
