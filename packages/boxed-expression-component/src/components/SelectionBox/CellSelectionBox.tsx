@@ -124,7 +124,6 @@ export const CellSelectionBox: React.FunctionComponent = () => {
           }
           selectedValue += "\n";
         });
-        console.log("selectedValue:", selectedValue);
 
         textarea.current.value = selectedValue;
         textarea.current.focus();

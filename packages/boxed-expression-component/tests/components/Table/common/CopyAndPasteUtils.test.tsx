@@ -23,9 +23,9 @@ import {
   paste,
   pasteOnTable,
   parseTableRows,
+  parseTableCell,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { wrapComponentInContext } from "../../test-utils";
-import { parseTableCell } from "../../../../src/components/Table/common";
 
 describe("CopyAndPasteUtils", () => {
   describe("pasteOnTable", () => {
