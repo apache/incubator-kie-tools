@@ -21,6 +21,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Typed;
 import javax.inject.Inject;
 
+import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
 import com.ait.lienzo.client.widget.panel.impl.ScalablePanel;
 
 @Dependent
@@ -37,7 +38,7 @@ public class ScalableLienzoPanel
 
     @PostConstruct
     public void init() {
-        panel.setPanelBuilder(() -> new ScalablePanel(StunnerBoundsProviderFactory.newProvider()));
+        panel.setPanelBuilder(() -> new ScalablePanel(new BoundsProviderFactory.WiresBoundsProvider()));
     }
 
     @Override

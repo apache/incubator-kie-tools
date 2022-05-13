@@ -33,7 +33,7 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
 
 @RunWith(LienzoMockitoTestRunner.class)
-public class StunnerBoundsProviderFactoryTest {
+public class BoundsProviderFactoryTest {
 
     private Layer layer;
     private WiresLayer wiresLayer;
@@ -45,9 +45,9 @@ public class StunnerBoundsProviderFactoryTest {
         layer = new Layer();
         wiresLayer = new WiresLayer(layer);
         shape1 = spy(new WiresShape(new MultiPath().circle(50))
-                .setLocation(new Point2D(100, 33)));
+                             .setLocation(new Point2D(100, 33)));
         shape2 = spy(new WiresShape(new MultiPath().circle(230))
-                .setLocation(new Point2D(15, 120)));
+                             .setLocation(new Point2D(15, 120)));
         doNothing().when(shape1).shapeMoved();
         doNothing().when(shape2).shapeMoved();
         wiresLayer.add(shape1);
@@ -56,21 +56,11 @@ public class StunnerBoundsProviderFactoryTest {
 
     @Test
     public void testNewProvider() {
-        BoundsProviderFactory.WiresBoundsProvider provider = StunnerBoundsProviderFactory.newProvider();
+        BoundsProviderFactory.WiresBoundsProvider provider = new BoundsProviderFactory.WiresBoundsProvider();
         Bounds bounds = provider.build(provider.getAll(wiresLayer));
         assertEquals(0d, bounds.getX(), 0d);
         assertEquals(0d, bounds.getY(), 0d);
-        assertEquals(1260d, bounds.getWidth(), 0d);
-        assertEquals(580d + StunnerBoundsProviderFactory.PADDING, bounds.getHeight(), 0d);
-    }
-
-    @Test
-    public void testComputeSizesPreservingRatio() {
-        final int width = 330;
-        final int height = 110;
-        final int computeWidth = StunnerBoundsProviderFactory.computeWidth(height);
-        final int computeHeight = StunnerBoundsProviderFactory.computeHeight(width);
-        assertEquals(220, computeWidth);
-        assertEquals(165, computeHeight);
+        assertEquals(500d, bounds.getWidth(), 0d);
+        assertEquals(605d, bounds.getHeight(), 0d);
     }
 }

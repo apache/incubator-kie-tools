@@ -79,7 +79,7 @@ public class PanelTransformUtilsTests {
         Bounds layerBounds = Bounds.build(0d, 0d, 1600, 1200);
         when(panel.getLayerBounds()).thenReturn(layerBounds);
         double level = PanelTransformUtils.computeZoomLevelFitToWidth(panel);
-        assertEquals(0.5d, level, 0d);
+        assertEquals(0.475d, level, 0d);
     }
 
     @Test

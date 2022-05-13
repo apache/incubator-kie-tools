@@ -87,16 +87,17 @@ public class PanelPreviewMediatorTest {
 
         tested = new PanelPreviewMediator(() -> panel,
                                           new Consumer<HTMLDivElement>() {
-            @Override
-            public void accept(HTMLDivElement htmlDivElement) {
-                panelContainer.appendChild(htmlDivElement);
-            }
+                                              @Override
+                                              public void accept(HTMLDivElement htmlDivElement) {
+                                                  panelContainer.appendChild(htmlDivElement);
+                                              }
 
-            @Override
-            public Consumer<HTMLDivElement> andThen(Consumer<? super HTMLDivElement> after) {
-                return null;
-            }
-        }, ()-> previewPanel);
+                                              @Override
+                                              public Consumer<HTMLDivElement> andThen(Consumer<? super HTMLDivElement> after) {
+                                                  return null;
+                                              }
+                                          },
+                                          () -> previewPanel);
         tested.setMaxScale(MAX_SCALE);
     }
 
@@ -147,8 +148,8 @@ public class PanelPreviewMediatorTest {
         assertEquals(PanelPreviewMediator.PREVIEW_BG_COLOR, previewPanelStyle.backgroundColor);
         verify(previewPanel, times(1)).setPixelSize(WIDTH, HEIGHT);
         Transform previewTransform = tested.getPreviewLayer().getViewport().getTransform();
-        assertEquals(0.5833333333333334d, previewTransform.getScaleX(), 0d);
-        assertEquals(0.5833333333333334d, previewTransform.getScaleY(), 0d);
+        assertEquals(0.5333333333333333d, previewTransform.getScaleX(), 0d);
+        assertEquals(0.5333333333333333d, previewTransform.getScaleY(), 0d);
         assertEquals(250d, previewTransform.getTranslateX(), 0d);
         assertEquals(250d, previewTransform.getTranslateY(), 0d);
         ArgumentCaptor<Supplier> transformCaptor = ArgumentCaptor.forClass(Supplier.class);
