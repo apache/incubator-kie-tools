@@ -9,8 +9,7 @@ This package is the Chrome Extension, which runs the Base64 PNG Editor.
 Install all dependencies and build the project on the **root** folder of this repository
 
 ```shell script
-yarn run init
-yarn build:prod
+pnpm build:prod
 ```
 
 Open your Chrome browser on the `chrome://extension`, choose to Load Unpacked, and select this package `dist/` folder

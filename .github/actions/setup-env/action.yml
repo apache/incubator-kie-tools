@@ -62,7 +62,7 @@ runs:
       run: |
         echo "STEP: Bootstrap"
         cd ${{ inputs.path }}
-        yarn bootstrap --frozen-lockfile
+        pnpm bootstrap --frozen-lockfile
 
     - name: "Check dependencies mismatches"
       shell: bash
