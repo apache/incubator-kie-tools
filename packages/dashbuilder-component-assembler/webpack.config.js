@@ -20,7 +20,7 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
 module.exports = async (env) => {
-  const components = ["victory-charts", "uniforms", "table", "echarts", "svg-heatmap", "timeseries"];
+  const components = ["uniforms", "table", "echarts", "svg-heatmap", "timeseries"];
   const copyResources = [];
 
   components.forEach((component) => {

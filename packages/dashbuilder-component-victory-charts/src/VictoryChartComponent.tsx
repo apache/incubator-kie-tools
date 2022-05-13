@@ -19,7 +19,7 @@ import { ComponentController, DataSet } from "@kie-tools/dashbuilder-component-a
 import { useState, useEffect } from "react";
 import { VictoryChart, VictoryChartProps } from "./VictoryChart";
 import { Alert } from "@patternfly/react-core";
-import { AnimationEasingType, ChartType, ThemeColorType, ThemeVariantType } from "./charts/BaseChart";
+import { ChartType, ThemeColorType, ThemeVariantType } from "./charts/BaseChart";
 
 interface Props {
   controller: ComponentController;
@@ -66,7 +66,7 @@ export function VictoryChartComponent(props: Props) {
 
           animate: params.get("animate") === "true",
           animationDuration: +params.get("animationDuration") || 200,
-          animationEasing: (params.get("animationEasing") as AnimationEasingType) || "linear",
+          animationEasing: params.get("animationEasing") || "linear",
 
           donutTitle: (params.get("donutTitle") as string) || "",
           donutSubTitle: (params.get("donutSubTitle") as string) || "",

@@ -38,21 +38,7 @@ module.exports = async (env) => {
         minify: false,
       }),
       new CopyPlugin({
-        patterns: [
-          { from: "./static/manifest.json", to: "manifest.json" },
-          // main
-          { from: "../../node_modules/@patternfly/patternfly/patternfly.min.css", to: "patternfly.min.css" },
-          // fonts
-          {
-            from: "../../node_modules/@patternfly/react-core/dist/styles/assets/fonts/RedHatText/RedHatText-Regular.woff2",
-            to: "assets/fonts/RedHatText/RedHatText-Regular.woff2",
-          },
-          {
-            from: "../../node_modules/@patternfly/react-core/dist/styles/assets/fonts/RedHatText/RedHatText-Medium.woff2",
-            to: "assets/fonts/RedHatText/RedHatText-Medium.woff2",
-          },
-          ...devResources,
-        ],
+        patterns: [{ from: "./static/manifest.json", to: "manifest.json" }, ...devResources],
       }),
     ],
 

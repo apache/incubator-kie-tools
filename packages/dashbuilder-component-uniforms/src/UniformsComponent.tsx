@@ -93,7 +93,7 @@ export function UniformsComponent(props: Props) {
   );
 
   useEffect(() => {
-    props.controller.setOnInit((params: Map<string, any>) => {
+    props.controller.setOnInit(async (params: Map<string, any>) => {
       // get params
       let validation: string = "";
       const schemaStr = params.get("schema");
@@ -103,8 +103,14 @@ export function UniformsComponent(props: Props) {
       if (!schemaStr || schemaStr === "") {
         validation = (validation ? validation + " " : "") + "Schema is missing.";
       } else {
+        let schemaContent: string = schemaStr;
+        if (!schemaStr.trim().startsWith("{")) {
+          schemaContent = await fetch(schemaStr)
+            .then((r) => r.text())
+            .catch((e) => "Error loading schema from URL");
+        }
         try {
-          _schema = JSON.parse(schemaStr);
+          _schema = JSON.parse(schemaContent);
         } catch (e) {
           validation = "Error parsing schema: " + e + ".";
         }

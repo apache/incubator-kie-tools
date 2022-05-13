@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import * as React from "react";
 import { useState, useEffect, useCallback } from "react";
 import { AreaChart } from "./charts/AreaChart";
@@ -6,14 +21,7 @@ import { LineChart } from "./charts/LineChart";
 import { DonutChart } from "./charts/DonutChart";
 import { PieChart } from "./charts/PieChart";
 import { StackChart } from "./charts/StackChart";
-import {
-  ThemeColorType,
-  ChartType,
-  LegendPosition,
-  AnimationEasingType,
-  ThemeVariantType,
-  ChartProps,
-} from "./charts/BaseChart";
+import { ThemeColorType, ChartType, LegendPosition, ThemeVariantType, ChartProps } from "./charts/BaseChart";
 import { validateDataSetForChart } from "./charts/PropsValidation";
 import { UtilizationDonut } from "./charts/UtilizationDonut";
 import { DataSet } from "@kie-tools/dashbuilder-component-api";
@@ -31,7 +39,7 @@ export interface VictoryChartProps {
 
   animate?: boolean;
   animationDuration?: number;
-  animationEasing?: AnimationEasingType;
+  animationEasing?: any;
 
   paddingTop?: number;
   paddingLeft?: number;
@@ -96,7 +104,6 @@ export const VictoryChart = (props: VictoryChartProps) => {
           top: props.paddingTop || 0,
           right: props.paddingRight || 0,
         },
-        zoom: props.zoom!,
         grid: {
           x: props.gridX!,
           y: props.gridY!,

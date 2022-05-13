@@ -1,3 +1,18 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import * as React from "react";
 import * as Numeral from "numeral";
 import { BaseChart, XYChartSeries, XYChartDataLine, XYChartData } from "./BaseChart";
@@ -28,7 +43,7 @@ export abstract class XYChart extends BaseChart {
         <ChartAxis
           dependentAxis
           showGrid={this.props.grid.x}
-          tickFormat={(t) => Numeral(t).format(this.pattern())}
+          tickFormat={(t: any) => Numeral(t).format(this.pattern())}
           fixLabelOverlap={this.props.fixLabelsOverlap}
         />
         {this.buildChartGroup()}
@@ -39,11 +54,11 @@ export abstract class XYChart extends BaseChart {
   abstract buildChartGroup(): ChartGroupType;
 
   categories() {
-    return this.props.dataSet.columns.slice(1).map((column) => column.settings["columnName"]);
+    return this.props.dataSet.columns.slice(1).map((column: any) => column.settings["columnName"]);
   }
 
   pattern() {
-    const pattern = this.props.dataSet.columns.slice(1).map((column) => column.settings.valuePattern)[0];
+    const pattern = this.props.dataSet.columns.slice(1).map((column: any) => column.settings.valuePattern)[0];
     return pattern?.replace(/#/g, "0");
   }
 
@@ -53,14 +68,16 @@ export abstract class XYChart extends BaseChart {
     const ds = this.props.dataSet;
     const rows = ds.data.length;
     const cols = ds.columns.length;
-    const getcolumnExpression = this.props.dataSet.columns.slice(0).map((column) => column.settings["valueExpression"]);
-    const getcolumn1Expression = Object.values(getcolumnExpression)[0].toString();
-    const getExpression = this.props.dataSet.columns.slice(1).map((column) => column.settings["valueExpression"]);
-    const expression = Object.values(getExpression)[0].toString();
+    const getcolumnExpression = this.props.dataSet.columns
+      .slice(0)
+      .map((column: any) => column.settings["valueExpression"]);
+    const getcolumn1Expression = (Object as any).values(getcolumnExpression)[0].toString();
+    const getExpression = this.props.dataSet.columns.slice(1).map((column: any) => column.settings["valueExpression"]);
+    const expression = (Object as any).values(getExpression)[0].toString();
     const exp = expression.replace("value", "1");
     const series: XYChartSeries[] = [];
 
-    categories.forEach((name) => groupedLines.set(name, []));
+    categories.forEach((name: any) => groupedLines.set(name, []));
 
     for (let i = 0; i < rows; i++) {
       const name = ds.data[i][0];

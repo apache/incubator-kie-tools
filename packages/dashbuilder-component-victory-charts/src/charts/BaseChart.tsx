@@ -1,6 +1,19 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import * as React from "react";
-import { PaddingProps, AnimationEasing, AnimatePropTypeInterface } from "victory-core";
-import { VictoryZoomContainer } from "victory-zoom-container";
 import { ChartVoronoiContainer } from "@patternfly/react-charts";
 import { DataSet } from "@kie-tools/dashbuilder-component-api";
 
@@ -47,12 +60,10 @@ export interface Grid {
   y: boolean;
 }
 
-export type AnimationEasingType = AnimationEasing;
-
 export interface AnimationProp {
   enabled: boolean;
   duration?: number;
-  easing?: AnimationEasing;
+  easing?: any;
 }
 
 export interface LegendData {
@@ -64,14 +75,13 @@ export interface ChartProps {
   height: number;
   themeColor: ThemeColorType;
   themeVariant: ThemeVariantType;
-  zoom: boolean;
   dataSet: DataSet;
   legendPosition: LegendPosition;
   animation: AnimationProp;
   ariaTitle: string;
   ariaDescription: string;
   grid: Grid;
-  padding: PaddingProps;
+  padding: any;
 
   donutTitle?: string;
   donutSubTitle?: string;
@@ -83,20 +93,17 @@ export interface ChartProps {
 export abstract class BaseChart extends React.Component<ChartProps, any> {
   legendOrientation: LegendOrientation = "horizontal";
   legendData: LegendData[] = [];
-  animationProp: boolean | AnimatePropTypeInterface = false;
+  animationProp: any = false;
 
   containerComponent: React.ReactElement<any> = (
     // TODO: Explore options from CursorVoronoiContainer
-    <ChartVoronoiContainer labels={({ datum }) => `${datum.x}: ${datum.y}`} constrainToVisibleArea={true} />
+    <ChartVoronoiContainer labels={({ datum }: any) => `${datum.x}: ${datum.y}`} constrainToVisibleArea={true} />
   );
 
   constructor(props: ChartProps) {
     super(props);
     this.buildLegendData();
     this.legendOrientation = this.props.legendPosition === "right" ? "vertical" : "horizontal";
-    if (props.zoom) {
-      this.containerComponent = <VictoryZoomContainer />;
-    }
     if (props.animation.enabled) {
       this.animationProp = {
         duration: props.animation.duration,
