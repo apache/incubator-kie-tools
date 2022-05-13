@@ -17,7 +17,7 @@ Open your Chrome browser on the `chrome://extension`, choose to Load Unpacked, a
 **Important**: In order to the extension works, it's necessary to run the command after you have build the application:
 
 ```
-yarn serve-envelope
+pnpm serve-envelope
 ```
 
 It will run a server exposing your `dist/` folder on the `localhost:9000`. It's necessary to access your `localhost:9000`, and enable access to it.

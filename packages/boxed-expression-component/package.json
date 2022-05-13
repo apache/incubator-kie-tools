@@ -6,17 +6,17 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
-    "build:prod": "rimraf dist && yarn copy:css && yarn lint && tsc -p tsconfig.prod.json && yarn test && yarn test:it",
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.prod.json && pnpm test && pnpm test:it",
     "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
     "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
     "deploy": "gh-pages -d dist-dev",
-    "cy:open": "yarn run cypress open --project it-tests",
-    "cy:run": "yarn run cypress run -b chrome --project it-tests --config watchForFileChanges=false",
-    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env boxedExpressionComponent.dev.port) cy:run\""
+    "cy:open": "pnpm cypress open --project it-tests",
+    "cy:run": "pnpm cypress run -b chrome --project it-tests --config watchForFileChanges=false",
+    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env boxedExpressionComponent.dev.port) cy:run\""
   },
   "dependencies": {
     "@kie-tools-core/i18n": "0.0.0",

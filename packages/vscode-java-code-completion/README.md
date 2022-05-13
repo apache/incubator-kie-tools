@@ -4,9 +4,6 @@ This package provides a type-safe Java Code Completion library for a Typescript 
 
 ## Install
 
-Can be installed with `yarn` or `npm`:
-
-- `yarn add @kie-tools-core/vscode-java-code-completion`
 - `npm install @kie-tools-core/vscode-java-code-completion`
 
 ## Usage

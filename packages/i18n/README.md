@@ -4,9 +4,6 @@ This package provides a type-safe i18n library for a Typescript project.
 
 ## Install
 
-Can be installed with `yarn` or `npm`:
-
-- `yarn add @kie-tools-core/i18n`
 - `npm install @kie-tools-core/i18n`
 
 ## Usage

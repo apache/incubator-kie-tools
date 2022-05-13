@@ -5,4 +5,4 @@ Forked from @peterschussheim/monaco-editor.
 
 ## Installation
 
-`yarn add @kiegroup/monaco-editor`
+`pnpm add @kiegroup/monaco-editor`

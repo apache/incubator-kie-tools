@@ -15,8 +15,8 @@
     "write-readme:darwin:linux": "echo '```' > README.md && ./index.js --help >> README.md && echo '```' >> README.md",
     "write-readme:win32": "echo 'Nothing to do.'",
     "write-readme": "run-script-os",
-    "build:dev": "yarn write-readme",
-    "build:prod": "yarn write-readme"
+    "build:dev": "pnpm write-readme",
+    "build:prod": "pnpm write-readme"
   },
   "dependencies": {
     "yargs": "^17.0.1"

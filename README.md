@@ -23,7 +23,6 @@ This repository contains all the tooling artifacts of the Kogito project.
 To start building the KIE Tools project, you're going to need:
 
 - Node `>= 16.13.2` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
-- Yarn `1.22.10` _(To install, run `npm install -g yarn@1.22.10`)_
 - pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.1`
 - Java `11`

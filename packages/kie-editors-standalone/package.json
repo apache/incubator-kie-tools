@@ -34,22 +34,22 @@
     "react-router-dom": "^5.2.1"
   },
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:preprocessor": "node dist/preprocessor/preprocessor.js",
-    "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack --config webpack.build-resources.config.js && yarn run build:preprocessor && webpack --config webpack.package-resources.config.js && yarn test:it",
-    "build:productization": "yarn run build:prod",
+    "build:dev": "rimraf dist && webpack --env dev --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --env dev --config webpack.package-resources.config.js",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack --config webpack.build-resources.config.js && pnpm build:preprocessor && webpack --config webpack.package-resources.config.js && pnpm test:it",
+    "build:productization": "pnpm build:prod",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "cy:run": "run-script-os",
-    "cy:run:darwin:linux": "yarn cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
-    "cy:run:win32": "yarn powershell yarn cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
+    "cy:run:darwin:linux": "pnpm cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
+    "cy:run:win32": "pnpm powershell pnpm cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
     "cy:open": "run-script-os",
-    "cy:open:darwin:linux": "yarn cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
-    "cy:open:win32": "yarn powershell yarn cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
+    "cy:open:darwin:linux": "pnpm cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
+    "cy:open:win32": "pnpm powershell pnpm cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
     "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
-    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
+    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
   },
   "babel": {
     "presets": [

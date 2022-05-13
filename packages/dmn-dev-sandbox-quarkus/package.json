@@ -19,13 +19,13 @@
     "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "install:mvnw": "run-script-os",
-    "install:mvnw:win32": "yarn powershell mvn wrapper:wrapper `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "install:mvnw:win32": "pnpm powershell mvn wrapper:wrapper `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "install:mvnw:darwin:linux": "mvn wrapper:wrapper -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
-    "build:dev:win32": "yarn install:mvnw && yarn powershell mvn clean install `-DskipTests `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
-    "build:dev:darwin:linux": "yarn install:mvnw && mvn clean install -DskipTests -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev:win32": "pnpm install:mvnw && pnpm powershell mvn clean install `-DskipTests `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:dev:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "build:dev": "run-script-os",
-    "build:prod:win32": "yarn install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
-    "build:prod:darwin:linux": "yarn install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not) -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
-    "build:prod": "yarn lint && run-script-os"
+    "build:prod:win32": "pnpm install:mvnw && pnpm powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not) -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "build:prod": "pnpm lint && run-script-os"
   }
 }
