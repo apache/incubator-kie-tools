@@ -41,6 +41,10 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
         var content = json.getString(CONTENT);
         var expression = json.getString(EXPRESSION);
         var headers = json.getObject(HEADERS);
+        
+        if (isBlank(url) && isBlank(content)) {
+            throw new IllegalArgumentException("External Data Sets must have \"url\" or \"content\" field");
+        }
 
         if (!isBlank(url)) {
             def.setUrl(url);
@@ -48,8 +52,8 @@ public class ExternalDefJSONMarshaller implements DataSetDefJSONMarshallerExt<Ex
 
         if (!isBlank(content)) {
             def.setContent(content);
-        }
-
+        }       
+        
         if (!isBlank(expression)) {
             def.setExpression(expression);
         }

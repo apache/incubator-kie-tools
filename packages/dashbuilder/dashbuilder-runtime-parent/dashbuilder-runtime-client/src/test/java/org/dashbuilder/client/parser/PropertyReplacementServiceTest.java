@@ -17,22 +17,21 @@ package org.dashbuilder.client.parser;
 
 import java.util.Collections;
 
-import org.junit.Before;
+import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(GwtMockitoTestRunner.class)
 public class PropertyReplacementServiceTest {
 
     private String TEXT_WITH_PROPERTY = "Property: ${prop}";
 
+    @InjectMocks
     PropertyReplacementService replaceService;
-
-    @Before
-    public void setup() {
-        replaceService = new PropertyReplacementService();
-    }
-
+    
     @Test
     public void testPropertiesReplacement() {
         var result = replaceService.replace(TEXT_WITH_PROPERTY, Collections.singletonMap("prop", "value"));
@@ -41,7 +40,9 @@ public class PropertyReplacementServiceTest {
 
     @Test
     public void testPropertiesReplacementWithoutProperty() {
-        assertEquals(TEXT_WITH_PROPERTY, TEXT_WITH_PROPERTY);
+        var result = replaceService.replace(TEXT_WITH_PROPERTY, Collections.emptyMap());
+        assertEquals(TEXT_WITH_PROPERTY, result);
     }
+
 
 }

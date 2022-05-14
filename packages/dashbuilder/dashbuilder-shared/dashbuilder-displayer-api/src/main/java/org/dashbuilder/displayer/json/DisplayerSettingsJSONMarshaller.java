@@ -16,6 +16,7 @@
 package org.dashbuilder.displayer.json;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonArray;
 import org.dashbuilder.json.JsonObject;
 import org.dashbuilder.json.JsonString;
+import org.dashbuilder.json.JsonType;
 import org.dashbuilder.json.JsonValue;
 
 public class DisplayerSettingsJSONMarshaller {
@@ -58,53 +60,63 @@ public class DisplayerSettingsJSONMarshaller {
         this(DataSetJSONMarshaller.get(), DataSetLookupJSONMarshaller.get());
     }
 
-    public DisplayerSettingsJSONMarshaller(DataSetJSONMarshaller dataSetJsonMarshaller, DataSetLookupJSONMarshaller dataSetLookupJsonMarshaller) {
+    public DisplayerSettingsJSONMarshaller(DataSetJSONMarshaller dataSetJsonMarshaller,
+                                           DataSetLookupJSONMarshaller dataSetLookupJsonMarshaller) {
         this.dataSetJsonMarshaller = dataSetJsonMarshaller;
         this.dataSetLookupJsonMarshaller = dataSetLookupJsonMarshaller;
     }
 
-    public DisplayerSettings fromJsonString( String jsonString ) {
+    public DisplayerSettings fromJsonString(String jsonString) {
         DisplayerSettings ds = new DisplayerSettings();
-        
+
         if (!isBlank(jsonString)) {
             var parseResult = Json.parse(jsonString);
             return fromJsonObject(parseResult);
+
         }
         return ds;
     }
 
     public DisplayerSettings fromJsonObject(JsonObject jsonObject) {
         var ds = new DisplayerSettings();
-        if ( jsonObject != null ) {
+
+        if (jsonObject == null ||
+            jsonObject.getType() != JsonType.OBJECT) {
+            throw new IllegalArgumentException("Displayer Settings are not a valid object");
+        }
+
+        try {
 
             // UUID
             ds.setUUID(jsonObject.getString(SETTINGS_UUID));
             jsonObject.put(SETTINGS_UUID, (String) null);
 
             // First look if a dataset 'on-the-fly' has been specified
-            JsonObject data = jsonObject.getObject(DATASET_PREFIX);
+            var lookupNames = Arrays.asList(DATASET_LOOKUP_PREFIX,
+                    DATASET_LOOKUP_PREFIX.toLowerCase(),
+                    DATASET_LOOKUP_PREFIX.toUpperCase(),
+                    "datasetLookup");
+            var data = jsonObject.getObject(DATASET_PREFIX);
+            var lookup = dataSetLookupJsonMarshaller.fromJson(jsonObject.getObject(lookupNames));
             if (data != null) {
-                DataSet dataSet = dataSetJsonMarshaller.fromJson(data);
+                var dataSet = dataSetJsonMarshaller.fromJson(data);
                 ds.setDataSet(dataSet);
 
                 // Remove from the json input so that it doesn't end up in the settings map.
                 jsonObject.put(DATASET_PREFIX, (JsonValue) null);
 
-            // If none was found, look for a dataset lookup definition
-            } else if ((data = jsonObject.getObject(DATASET_LOOKUP_PREFIX)) != null) {
-                DataSetLookup dataSetLookup = dataSetLookupJsonMarshaller.fromJson(data);
-                ds.setDataSetLookup(dataSetLookup);
-
+                // If none was found, look for a dataset lookup definition
+            } else if (lookup != null) {
+                ds.setDataSetLookup(lookup);
                 // Remove from the json input so that it doesn't end up in the settings map.
                 jsonObject.put(DATASET_LOOKUP_PREFIX, (JsonValue) null);
-            }
-            else {
+            } else {
                 throw new RuntimeException("Displayer settings dataset lookup not specified");
             }
 
             // Parse the columns settings
-            JsonArray columns = jsonObject.getArray(COLUMNS_PREFIX);
-            if (columns != null) {
+            var columns = jsonObject.getArray(COLUMNS_PREFIX);
+            if (columns != null && columns.getType() == JsonType.ARRAY) {
                 List<ColumnSettings> columnSettingsList = parseColumnsFromJson(columns);
                 ds.setColumnSettingsList(columnSettingsList);
 
@@ -113,15 +125,22 @@ public class DisplayerSettingsJSONMarshaller {
             }
 
             // Now parse all other settings
-            ds.setSettingsFlatMap( parseSettingsFromJson(jsonObject));
-        }
-        // fix settings without a type
-        if (ds.getTypeString() == null) {
-            if (ds.getComponentId() != null) {
-                ds.setType(DisplayerType.EXTERNAL_COMPONENT);
-            } else {
-                ds.setType(DisplayerType.TABLE);
+            ds.setSettingsFlatMap(parseSettingsFromJson(jsonObject));
+
+            // fix settings without a type
+            if (ds.getTypeString() == null) {
+                if (ds.getComponentId() != null) {
+                    ds.setType(DisplayerType.EXTERNAL_COMPONENT);
+                } else {
+                    ds.setType(DisplayerType.TABLE);
+                }
             }
+            if (ds.getTypeString() != null && ds.getType() == null) {
+                throw new IllegalArgumentException("Unknown settings type. These are the valids types: " +
+                        Arrays.toString(DisplayerType.values()));
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error reading displayer settings:\n" + e.getMessage());
         }
         return ds;
     }
@@ -130,7 +149,7 @@ public class DisplayerSettingsJSONMarshaller {
         return toJsonObject(displayerSettings).toString();
     }
 
-    public JsonObject toJsonObject( DisplayerSettings displayerSettings ) {
+    public JsonObject toJsonObject(DisplayerSettings displayerSettings) {
         var json = Json.createObject();
 
         // UUID
@@ -145,11 +164,9 @@ public class DisplayerSettingsJSONMarshaller {
         DataSet dataSet = displayerSettings.getDataSet();
         if (dataSet != null) {
             json.put(DATASET_PREFIX, dataSetJsonMarshaller.toJson(dataSet));
-        }
-        else if (dataSetLookup != null) {
+        } else if (dataSetLookup != null) {
             json.put(DATASET_LOOKUP_PREFIX, dataSetLookupJsonMarshaller.toJson(dataSetLookup));
-        }
-        else {
+        } else {
             throw new RuntimeException("Displayer settings data set lookup not specified or data set is empty.");
         }
 
@@ -197,7 +214,7 @@ public class DisplayerSettingsJSONMarshaller {
 
     private JsonArray formatColumnSettings(List<ColumnSettings> columnSettingsList) {
         JsonArray jsonArray = Json.createArray();
-        for (int i=0; i<columnSettingsList.size(); i++) {
+        for (int i = 0; i < columnSettingsList.size(); i++) {
             ColumnSettings columnSettings = columnSettingsList.get(i);
             String id = columnSettings.getColumnId();
             String name = columnSettings.getColumnName();
@@ -208,10 +225,14 @@ public class DisplayerSettingsJSONMarshaller {
             JsonObject columnJson = Json.createObject();
             if (!isBlank(id)) {
                 columnJson.put(COLUMN_ID, id);
-                if (!isBlank(name)) columnJson.put(COLUMN_NAME, name);
-                if (!isBlank(expression)) columnJson.put(COLUMN_EXPRESSION, expression);
-                if (!isBlank(pattern)) columnJson.put(COLUMN_PATTERN, pattern);
-                if (!isBlank(empty)) columnJson.put(COLUMN_EMPTY, empty);
+                if (!isBlank(name))
+                    columnJson.put(COLUMN_NAME, name);
+                if (!isBlank(expression))
+                    columnJson.put(COLUMN_EXPRESSION, expression);
+                if (!isBlank(pattern))
+                    columnJson.put(COLUMN_PATTERN, pattern);
+                if (!isBlank(empty))
+                    columnJson.put(COLUMN_EMPTY, empty);
                 jsonArray.set(i, columnJson);
             }
         }
@@ -219,19 +240,19 @@ public class DisplayerSettingsJSONMarshaller {
     }
 
     private List<ColumnSettings> parseColumnsFromJson(JsonArray columnsJsonArray) {
-        List<ColumnSettings> columnSettingsList = new ArrayList<ColumnSettings>();
+        var columnSettingsList = new ArrayList<ColumnSettings>();
         if (columnsJsonArray == null) {
             return columnSettingsList;
         }
 
         for (int i = 0; i < columnsJsonArray.length(); i++) {
-            JsonObject columnJson = columnsJsonArray.getObject(i);
-            ColumnSettings columnSettings = new ColumnSettings();
+            var columnJson = columnsJsonArray.getObject(i);
+            var columnSettings = new ColumnSettings();
             columnSettingsList.add(columnSettings);
-
-            String columndId = columnJson.getString(COLUMN_ID);
+            var columndId = columnJson.getString(COLUMN_ID);
             if (columndId == null) {
-                throw new RuntimeException("Column settings null column id");
+                throw new RuntimeException(
+                        "Column settings has an invalid column id. Use the field \"id\" to configure a column.");
             }
             columnSettings.setColumnId(columndId);
             columnSettings.setColumnName(columnJson.getString(COLUMN_NAME));
@@ -255,11 +276,10 @@ public class DisplayerSettingsJSONMarshaller {
         String sb = isBlank(parentPath) ? "" : parentPath + ".";
         for (String key : json.keys()) {
             String path = sb + key;
-            JsonValue value = json.get( key );
+            JsonValue value = json.get(key);
             if (value instanceof JsonObject) {
                 fillRecursive(path, (JsonObject) value, settings);
-            }
-            else if (value instanceof JsonString) {
+            } else if (value instanceof JsonString) {
                 settings.put(path, ((JsonString) value).getString());
             }
         }

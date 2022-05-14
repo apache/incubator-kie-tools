@@ -160,15 +160,18 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     public String[][] buildData(DataSet ds) {
         var columns = ds.getColumns();
-        int rows = columns.get(0).getValues().size();
+        var result = new String[0][0];
         int cols = columns.size();
-        var result = new String[rows][];
-        for (int i = 0; i < rows; i++) {
-            var line = new String[cols];
-            for (int j = 0; j < cols; j++) {
-                line[j] = getEvaluatedValue(ds, i, j);
+        if (cols > 0) {
+            int rows = columns.get(0).getValues().size();
+            result = new String[rows][];
+            for (int i = 0; i < rows; i++) {
+                var line = new String[cols];
+                for (int j = 0; j < cols; j++) {
+                    line[j] = getEvaluatedValue(ds, i, j);
+                }
+                result[i] = line;
             }
-            result[i] = line;
         }
         return result;
     }
