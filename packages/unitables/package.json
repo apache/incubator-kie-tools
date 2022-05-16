@@ -8,9 +8,9 @@
   "scripts": {
     "lint": "echo 'Linting....'",
     "test": "run-script-if --env KIE_TOOLS_BUILD_test -c 'jest --silent --verbose'",
-    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
-    "build:prod": "yarn build:dev",
-    "build:watch": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json --watch",
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "pnpm build:dev",
+    "build:watch": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json --watch",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/"
   },
   "repository": {
