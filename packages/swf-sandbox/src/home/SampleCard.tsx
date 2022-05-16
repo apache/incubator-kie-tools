@@ -1,12 +1,23 @@
 import * as React from "react";
+import { useMemo } from "react";
 import { Card, CardTitle, CardFooter, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "../navigation/Hooks";
 import { Link } from "react-router-dom";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
+import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
+import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
+import { SVGIconProps } from "@patternfly/react-icons/dist/js/createIcon";
+import { FileTypes, labelColors } from "../workspace/components/FileLabel";
+
+export enum SampleType {
+  SW_YML = "sw.yml",
+  SW_YAML = "sw.yaml",
+  SW_JSON = "sw.json",
+  SW_PROJECT = "sw.project",
+  DASH_YML = "dash.yml",
+}
 
 export type Sample = {
   name: string;
@@ -14,11 +25,41 @@ export type Sample = {
   svg: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   description: string;
   repoUrl?: string;
-  type?: string;
+  type: SampleType;
+};
+
+const tagMap: Record<SampleType, { label: string; icon: React.ComponentClass; color: LabelProps["color"] }> = {
+  [SampleType.SW_YML]: {
+    label: labelColors[SampleType.SW_YML].label,
+    icon: FileIcon,
+    color: labelColors[SampleType.SW_YML].color,
+  },
+  [SampleType.SW_YAML]: {
+    label: labelColors[SampleType.SW_YAML].label,
+    icon: FileIcon,
+    color: labelColors[SampleType.SW_YAML].color,
+  },
+  [SampleType.SW_JSON]: {
+    label: labelColors[SampleType.SW_JSON].label,
+    icon: FileIcon,
+    color: labelColors[SampleType.SW_JSON].color,
+  },
+  [SampleType.SW_PROJECT]: {
+    label: "Serverless Project",
+    icon: FolderIcon,
+    color: "orange",
+  },
+  [SampleType.DASH_YML]: {
+    label: labelColors[SampleType.DASH_YML].label,
+    icon: MonitoringIcon,
+    color: labelColors[SampleType.DASH_YML].color,
+  },
 };
 
 export function SampleCard({ sample }: { sample: Sample }) {
   const routes = useRoutes();
+
+  const tag = useMemo(() => tagMap[sample.type], [sample.type]);
 
   return (
     <Card isCompact={true} isFullHeight={true}>
@@ -27,14 +68,12 @@ export function SampleCard({ sample }: { sample: Sample }) {
           md={6}
           style={{ overflow: "hidden", textAlign: "center", verticalAlign: "middle", position: "relative" }}
         >
-          {sample.repoUrl && (
-            <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
-              <Label>
-                <FolderIcon />
-                &nbsp;&nbsp;Project
-              </Label>
-            </div>
-          )}
+          <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
+            <Label color={tag.color}>
+              <tag.icon />
+              &nbsp;&nbsp;{tag.label}
+            </Label>
+          </div>
           <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
         </GridItem>
         <GridItem md={6} style={{ display: "flex", flexDirection: "column" }}>
