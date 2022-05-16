@@ -46,7 +46,7 @@ export enum PropertiesPanelSection {
  * Class for accessing expanded BPMN Properties panel
  */
 export default class PropertiesPanelHelper {
-  constructor(private readonly root: WebElement) {}
+  constructor(protected readonly root: WebElement) {}
 
   public get rootElement() {
     return this.root;
@@ -132,50 +132,6 @@ export default class PropertiesPanelHelper {
   }
 
   /**
-   * Select desired property value in Implementation/Execution section
-   * @param name
-   * @param value
-   */
-  public async selectImplementationExecutionValue(name: string, value: string): Promise<PropertiesPanelHelper> {
-    const selectInput = await this.getProperty(name, "/select");
-    selectInput.click();
-    const customProcessMIExecutionOption = await selectInput.findElement(
-      By.xpath(
-        "//label[contains(.,'" +
-          name +
-          "')]/following-sibling::div[@data-field='fieldContainer']//select/option[@value='" +
-          value +
-          "']"
-      )
-    );
-    await customProcessMIExecutionOption.click();
-
-    return this;
-  }
-
-  /**
-   * Select desired programming language of On Entry/On Exit action.
-   * @param name
-   * @param value
-   * @returns
-   */
-  public async selectOnAction(name: string, value: string): Promise<PropertiesPanelHelper> {
-    const selectInput = await this.getProperty(name, "/select");
-    const customProcessMIExecutionOption = await selectInput.findElement(
-      By.xpath(
-        "//label[contains(.,'" +
-          name +
-          "')]/following-sibling::div[@data-field='fieldContainer']//select/option[@value='" +
-          value +
-          "']"
-      )
-    );
-    await customProcessMIExecutionOption.click();
-
-    return this;
-  }
-
-  /**
    * Scrolls desired property element into view.
    *
    * @param propertyElement element that si to be scrolled into view
@@ -194,8 +150,7 @@ export default class PropertiesPanelHelper {
    *
    * @param propertyName
    * @param propertyValue
-   * @param propertyType Type of property (select, textarea etc.). When desired property is in a widget,
-   *                     use "/" before property type for searching inside widget (/select, /textarea etc.).
+   * @param propertyType Type of property (select, textarea etc.).
    */
   public async changeProperty(
     propertyName: string,
@@ -203,8 +158,55 @@ export default class PropertiesPanelHelper {
     propertyType?: string
   ): Promise<PropertiesPanelHelper> {
     const property = await this.getProperty(propertyName, propertyType);
-    await property.clear();
-    await property.sendKeys(propertyValue);
+    if (propertyType == "select") {
+      property.click();
+      const propertyOption = await property.findElement(
+        By.xpath(
+          "//label[contains(.,'" +
+            propertyName +
+            "')]/following-sibling::div[@data-field='fieldContainer']/select/option[@value='" +
+            propertyValue +
+            "']"
+        )
+      );
+      await propertyOption.click();
+    } else {
+      await property.clear();
+      await property.sendKeys(propertyValue);
+    }
+
+    return this;
+  }
+
+  /**
+   * Change a widgeted property to a provided value. The Original value is replaced by the new value completely.
+   * Just visible properties are assumed. Accordion view hidden content can not be changed by this method.
+   *
+   * @param propertyName
+   * @param propertyValue
+   * @param propertyType Type of property (select, textarea etc.).
+   */
+  public async changeWidgetedProperty(
+    propertyName: string,
+    propertyValue: string,
+    propertyType?: string
+  ): Promise<PropertiesPanelHelper> {
+    const property = await this.getProperty(propertyName, "/" + propertyType);
+    if (propertyType == "select") {
+      const propertyOption = await property.findElement(
+        By.xpath(
+          "//label[contains(.,'" +
+            propertyName +
+            "')]/following-sibling::div[@data-field='fieldContainer']//select/option[@value='" +
+            propertyValue +
+            "']"
+        )
+      );
+      await propertyOption.click();
+    } else {
+      await property.clear();
+      await property.sendKeys(propertyValue);
+    }
 
     return this;
   }
@@ -214,11 +216,37 @@ export default class PropertiesPanelHelper {
    *
    * @param propertyName
    * @param expectedValue
-   * @param propertyType Type of property (select, textarea etc.). When desired property is in a widget,
-   *                     use "/" before property type for searching inside widget (/select, /textarea etc.).
+   * @param propertyType Type of property (select, textarea etc.).
    */
   public async assertPropertyValue(propertyName: string, expectedValue: string, propertyType?: string): Promise<void> {
     const property = await this.getProperty(propertyName, propertyType);
+    const actualValue = await property.getAttribute("value");
+    assert.equal(
+      actualValue,
+      expectedValue,
+      "Value of " +
+        propertyName +
+        " property did not match the expected value. Actual value is [" +
+        actualValue +
+        "]. Expected value is [" +
+        expectedValue +
+        "]"
+    );
+  }
+
+  /**
+   * Asserts that value of a widgeted property matches expectedValue provided as argument.
+   *
+   * @param propertyName
+   * @param expectedValue
+   * @param propertyType Type of property (select, textarea etc.).
+   */
+  public async assertWidgetedPropertyValue(
+    propertyName: string,
+    expectedValue: string,
+    propertyType?: string
+  ): Promise<void> {
+    const property = await this.getProperty(propertyName, "/" + propertyType);
     const actualValue = await property.getAttribute("value");
     assert.equal(
       actualValue,
