@@ -27,7 +27,7 @@
     "lint": "echo 'Linting'",
     "install:mvnw": "mvn wrapper:wrapper -f ./",
     "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
-    "build:prod:win32": "pnpm install:mvnw && pnpm powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:win32": "pnpm install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
     "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
     "build:prod": "pnpm lint && run-script-os"
   }

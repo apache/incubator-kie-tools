@@ -44,10 +44,10 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "cy:run": "run-script-os",
     "cy:run:darwin:linux": "pnpm cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
-    "cy:run:win32": "pnpm powershell pnpm cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
+    "cy:run:win32": "yarn powershell pnpm cypress run -b chrome --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
     "cy:open": "run-script-os",
     "cy:open:darwin:linux": "pnpm cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
-    "cy:open:win32": "pnpm powershell pnpm cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
+    "cy:open:win32": "yarn powershell pnpm cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
     "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
     "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
   },
