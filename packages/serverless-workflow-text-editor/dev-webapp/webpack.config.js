@@ -70,11 +70,6 @@ module.exports = (env) =>
         ...patternflyBase.webpackModuleRules,
       ],
     },
-    resolve: {
-      alias: {
-        react: path.resolve(__dirname, "../node_modules/react"),
-      },
-    },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
       historyApiFallback: true,

@@ -2397,8 +2397,6 @@ importers:
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^3.2.1
       openapi-types: ^7.0.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       yaml: ^2.0.1
@@ -2422,8 +2420,6 @@ importers:
       monaco-editor: 0.33.0
       monaco-yaml: 3.2.1_monaco-editor@0.33.0
       openapi-types: 7.2.3
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1

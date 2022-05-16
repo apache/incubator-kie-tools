@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const swfEditor = require("@kie-tools/serverless-workflow-diagram-editor");
@@ -66,11 +65,6 @@ module.exports = async (env) => [
         ],
       }),
     ],
-    resolve: {
-      alias: {
-        react: path.resolve(__dirname, "./node_modules/react"),
-      },
-    },
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },
