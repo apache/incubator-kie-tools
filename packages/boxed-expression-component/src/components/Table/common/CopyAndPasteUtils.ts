@@ -143,7 +143,7 @@ export const parseTableCell = (value: string): string => {
   if (value === null) {
     return "";
   }
-  return value.replace(/^"((.*\n?)+)"|([^\t\n]+)$/gm, `$1$3`);
+  return value.replace(/^"(.+)"|(.+)$/gms, `$1$2`);
 };
 
 /**
