@@ -640,6 +640,7 @@ importers:
     specifiers:
       '@kie-tools-core/chrome-extension': 0.0.0
       '@kie-tools-core/editor': 0.0.0
+      '@kie-tools-core/keyboard-shortcuts': 0.0.0
       '@kie-tools-core/patternfly-base': 0.0.0
       '@kie-tools-core/run-script-if': 0.0.0
       '@kie-tools-core/webpack-base': 0.0.0
@@ -657,6 +658,7 @@ importers:
     devDependencies:
       '@kie-tools-core/chrome-extension': link:../chrome-extension
       '@kie-tools-core/editor': link:../editor
+      '@kie-tools-core/keyboard-shortcuts': link:../keyboard-shortcuts
       '@kie-tools-core/patternfly-base': link:../patternfly-base
       '@kie-tools-core/run-script-if': link:../run-script-if
       '@kie-tools-core/webpack-base': link:../webpack-base
@@ -1774,6 +1776,7 @@ importers:
       '@kie-tools-core/editor': 0.0.0
       '@kie-tools-core/envelope-bus': 0.0.0
       '@kie-tools-core/guided-tour': 0.0.0
+      '@kie-tools-core/keyboard-shortcuts': 0.0.0
       '@kie-tools-core/notifications': 0.0.0
       '@kie-tools-core/operating-system': 0.0.0
       '@kie-tools-core/patternfly-base': 0.0.0
@@ -1802,6 +1805,7 @@ importers:
       '@kie-tools-core/editor': link:../editor
       '@kie-tools-core/envelope-bus': link:../envelope-bus
       '@kie-tools-core/guided-tour': link:../guided-tour
+      '@kie-tools-core/keyboard-shortcuts': link:../keyboard-shortcuts
       '@kie-tools-core/notifications': link:../notifications
       '@kie-tools-core/operating-system': link:../operating-system
       '@kie-tools-core/patternfly-base': link:../patternfly-base
@@ -1893,6 +1897,7 @@ importers:
       '@kie-tools-core/editor': 0.0.0
       '@kie-tools-core/envelope-bus': 0.0.0
       '@kie-tools-core/guided-tour': 0.0.0
+      '@kie-tools-core/keyboard-shortcuts': 0.0.0
       '@kie-tools-core/notifications': 0.0.0
       '@kie-tools-core/operating-system': 0.0.0
       '@kie-tools-core/patternfly-base': 0.0.0
@@ -1910,6 +1915,7 @@ importers:
       '@kie-tools-core/editor': link:../editor
       '@kie-tools-core/envelope-bus': link:../envelope-bus
       '@kie-tools-core/guided-tour': link:../guided-tour
+      '@kie-tools-core/keyboard-shortcuts': link:../keyboard-shortcuts
       '@kie-tools-core/notifications': link:../notifications
       '@kie-tools-core/operating-system': link:../operating-system
       '@kie-tools-core/patternfly-base': link:../patternfly-base
@@ -2372,6 +2378,7 @@ importers:
       '@kie-tools-core/envelope-bus': 0.0.0
       '@kie-tools-core/guided-tour': 0.0.0
       '@kie-tools-core/i18n': 0.0.0
+      '@kie-tools-core/keyboard-shortcuts': 0.0.0
       '@kie-tools-core/notifications': 0.0.0
       '@kie-tools-core/patternfly-base': 0.0.0
       '@kie-tools-core/run-script-if': 0.0.0
@@ -2401,6 +2408,7 @@ importers:
       '@kie-tools-core/envelope-bus': link:../envelope-bus
       '@kie-tools-core/guided-tour': link:../guided-tour
       '@kie-tools-core/i18n': link:../i18n
+      '@kie-tools-core/keyboard-shortcuts': link:../keyboard-shortcuts
       '@kie-tools-core/notifications': link:../notifications
       '@kie-tools-core/patternfly-base': link:../patternfly-base
       '@kie-tools-core/vscode-extension': link:../vscode-extension

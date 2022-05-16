@@ -15,10 +15,12 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
+import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
 
 init({
   container: document.getElementById("combined-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
   editorFactory: new ServerlessWorkflowCombinedEditorFactory(),
+  keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });

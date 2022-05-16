@@ -15,6 +15,7 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
+import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import { ServerlessWorkflowMermaidViewerFactory } from "@kie-tools/serverless-workflow-mermaid-viewer/dist/viewer";
 
 declare const acquireVsCodeApi: any;
@@ -23,4 +24,5 @@ init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new ServerlessWorkflowMermaidViewerFactory(),
+  keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });
