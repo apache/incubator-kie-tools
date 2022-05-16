@@ -46,7 +46,7 @@ runs:
         echo "STEP: Setup Yarn and Lerna"
         cd ${{ inputs.path }}
         npm install -g lerna@4.0.0 yarn@1.22.10
-        yarn config set network-timeout 1000000
+        pnpm config set network-timeout 1000000
 
     - name: "Setup default Maven args"
       shell: bash
@@ -62,7 +62,7 @@ runs:
       run: |
         echo "STEP: Bootstrap"
         cd ${{ inputs.path }}
-        yarn bootstrap --frozen-lockfile
+        pnpm bootstrap --frozen-lockfile
 
     - name: "Check dependencies mismatches"
       shell: bash
@@ -76,7 +76,7 @@ runs:
       run: |
         echo "STEP: Check format"
         cd ${{ inputs.path }}
-        yarn format:check
+        pnpm format:check
 
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash

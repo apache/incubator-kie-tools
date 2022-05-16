@@ -14,7 +14,7 @@
 ### 2. Start the DMN Loader build watcher
 
 1. Go to `packages/stunner-editors-dmn-loader`
-2. Run `DMN_LOADER__outputPath=/tmp/webapp/kogito-editors-js yarn watch`
+2. Run `DMN_LOADER__outputPath=/tmp/webapp/kogito-editors-js pnpm watch`
 
 > **Notice**:
 >

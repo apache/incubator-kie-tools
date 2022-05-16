@@ -32,7 +32,6 @@ async function main() {
     const checks = {
       ...checkCliTool("node", ["-v"]),
       ...checkCliTool("npm", ["-v"]),
-      ...checkCliTool("yarn", ["-v"]),
       ...checkCliTool("pnpm", ["-v"]),
       ...checkCliTool("go", ["version"]),
       ...checkCliTool("mvn", ["-v"]),

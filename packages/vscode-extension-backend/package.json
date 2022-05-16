@@ -64,15 +64,15 @@
     ]
   },
   "scripts": {
-    "package:prod": "cross-var \"vsce package --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix\"",
+    "package:prod": "cross-var \"vsce package  --yarn -o ./dist/vscode-extension-backend_$npm_package_version.vsix\"",
     "compile": "webpack",
     "watch": "webpack",
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:it": "echo 'No tests to run.'",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod:linux:darwin": "rimraf dist && yarn lint && webpack && yarn run test && yarn run test:it && yarn run package:prod",
-    "build:prod:windows": "rimraf dist && yarn lint && webpack && yarn run test && yarn run package:prod",
+    "build:prod:linux:darwin": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm test:it && pnpm package:prod",
+    "build:prod:windows": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm package:prod",
     "build:prod": "run-script-os"
   },
   "dependencies": {

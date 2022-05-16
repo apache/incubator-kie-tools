@@ -4,9 +4,6 @@ This package provides a type-safe Notifications library for a Typescript project
 
 ## Install
 
-Can be installed with `yarn` or `npm`:
-
-- `yarn add @kie-tools-core/notifications`
 - `npm install @kie-tools-core/notifications`
 
 ## Usage
