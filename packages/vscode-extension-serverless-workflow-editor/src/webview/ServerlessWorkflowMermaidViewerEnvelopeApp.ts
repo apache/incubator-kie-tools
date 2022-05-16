@@ -15,10 +15,12 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
+import { ServerlessWorkflowMermaidViewerFactory } from "@kie-tools/serverless-workflow-mermaid-viewer/dist/viewer";
+
+declare const acquireVsCodeApi: any;
 
 init({
-  container: document.getElementById("diagram-envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  editorFactory: new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true }),
+  container: document.getElementById("envelope-app")!,
+  bus: acquireVsCodeApi(),
+  editorFactory: new ServerlessWorkflowMermaidViewerFactory(),
 });

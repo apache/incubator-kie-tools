@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+const path = require("path");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const swfEditor = require("@kie-tools/serverless-workflow-diagram-editor");
@@ -49,20 +50,27 @@ module.exports = async (env) => [
   merge(commonConfig(env), {
     target: "web",
     entry: {
-      "webview/ServerlessWorkflowDiagramEditorEnvelopeApp":
+      "webview/editors/serverless-workflow/serverless-workflow-diagram-editor-envelope":
         "./src/webview/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+      "webview/editors/serverless-workflow/serverless-workflow-mermaid-viewer-envelope":
+        "./src/webview/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
     },
     plugins: [
       new CopyWebpackPlugin({
         patterns: [
           {
             from: swfEditor.swEditorPath(),
-            to: "webview/editors/serverless-workflow-diagram",
+            to: "webview/editors/serverless-workflow/diagram",
             globOptions: { ignore: ["WEB-INF/**/*"] },
           },
         ],
       }),
     ],
+    resolve: {
+      alias: {
+        react: path.resolve(__dirname, "./node_modules/react"),
+      },
+    },
     module: {
       rules: [...patternflyBase.webpackModuleRules],
     },

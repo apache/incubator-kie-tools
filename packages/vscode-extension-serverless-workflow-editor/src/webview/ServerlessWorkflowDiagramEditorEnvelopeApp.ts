@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { init } from "@kie-tools-core/editor/dist/envelope";
 import { VsCodeServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope/vscode";
 
 declare const acquireVsCodeApi: any;
 
-EditorEnvelope.init({
+init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new VsCodeServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true }),

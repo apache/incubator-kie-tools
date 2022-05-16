@@ -88,9 +88,15 @@ export async function activate(context: vscode.ExtensionContext) {
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "sw",
-        "**/*.sw.+(json|yml|yaml)",
-        "dist/webview/ServerlessWorkflowDiagramEditorEnvelopeApp.js",
-        "dist/webview/editors/serverless-workflow-diagram"
+        "**/*.sw.json",
+        "dist/webview/editors/serverless-workflow/serverless-workflow-diagram-editor-envelope.js",
+        "dist/webview/editors/serverless-workflow/diagram"
+      ),
+      new EnvelopeMapping(
+        "sw",
+        "**/*.sw.+(yml|yaml)",
+        "dist/webview/editors/serverless-workflow/serverless-workflow-mermaid-viewer-envelope.js",
+        "dist/webview/editors/serverless-workflow"
       ),
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({

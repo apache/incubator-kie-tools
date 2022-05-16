@@ -13,6 +13,7 @@
     "@kie-tools/serverless-workflow-diagram-editor": "0.0.0",
     "@kie-tools/serverless-workflow-combined-editor": "0.0.0",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "0.0.0",
+    "@kie-tools/serverless-workflow-mermaid-viewer": "0.0.0",
     "@kie-tools/serverless-workflow-text-editor": "0.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "@kie-tools-core/chrome-extension": "0.0.0",

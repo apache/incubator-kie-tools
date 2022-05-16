@@ -435,6 +435,12 @@ module.exports = {
     },
   },
 
+  serverlessWorkflowMermaidViewer: {
+    dev: {
+      port: 9004,
+    },
+  },
+
   kogitoRuntime: {
     version: getOrDefault(ENV_VARS.KOGITO_RUNTIME_version),
   },

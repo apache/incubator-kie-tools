@@ -159,18 +159,17 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
 
   return (
     <>
-      {isVscode() ||
-        (initialContent && (
-          <SwfTextEditor
-            channelType={props.channelType}
-            content={initialContent.originalContent}
-            fileName={initialContent.path}
-            onContentChange={onContentChanged}
-            setValidationErrors={setValidationErrors}
-            ref={swfTextEditorRef}
-            isReadOnly={props.isReadOnly}
-          />
-        ))}
+      {initialContent && (
+        <SwfTextEditor
+          channelType={props.channelType}
+          content={initialContent.originalContent}
+          fileName={initialContent.path}
+          onContentChange={onContentChanged}
+          setValidationErrors={setValidationErrors}
+          ref={swfTextEditorRef}
+          isReadOnly={props.isReadOnly}
+        />
+      )}
     </>
   );
 };

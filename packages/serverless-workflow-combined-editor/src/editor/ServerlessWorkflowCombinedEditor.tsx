@@ -74,7 +74,6 @@ interface File {
 }
 
 const ENVELOPE_LOCATOR_TYPE = "sw";
-const ENVELOPE_LOCATOR_FILE_PATH_GLOB = "**/*.sw.+(json|yml|yaml)";
 
 const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,
@@ -90,6 +89,13 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const [isTextEditorReady, setTextEditorReady] = useState(false);
   const [isDiagramEditorReady, setDiagramEditorReady] = useState(false);
 
+  const isVscode = useMemo(
+    () => props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB,
+    [props.channelType]
+  );
+
+  const targetOrigin = useMemo(() => (isVscode ? "vscode" : window.location.origin), [isVscode]);
+
   const isCombinedEditorReady = useMemo(
     () => isTextEditorReady && isDiagramEditorReady,
     [isDiagramEditorReady, isTextEditorReady]
@@ -97,28 +103,34 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
 
   const textEditorEnvelopeLocator = useMemo(
     () =>
-      new EditorEnvelopeLocator(window.location.origin, [
+      new EditorEnvelopeLocator(targetOrigin, [
         new EnvelopeMapping(
           ENVELOPE_LOCATOR_TYPE,
-          ENVELOPE_LOCATOR_FILE_PATH_GLOB,
-          props.resourcesPathPrefix,
-          "serverless-workflow-text-editor-envelope.html"
+          "**/*.sw.+(json|yml|yaml)",
+          props.resourcesPathPrefix + "/text",
+          props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html"
         ),
       ]),
-    [props.resourcesPathPrefix]
+    [props.resourcesPathPrefix, targetOrigin]
   );
 
   const diagramEditorEnvelopeLocator = useMemo(
     () =>
-      new EditorEnvelopeLocator(window.location.origin, [
+      new EditorEnvelopeLocator(targetOrigin, [
         new EnvelopeMapping(
           ENVELOPE_LOCATOR_TYPE,
-          ENVELOPE_LOCATOR_FILE_PATH_GLOB,
-          `${props.resourcesPathPrefix}gwt-editors/serverless-workflow`,
-          "serverless-workflow-diagram-editor-envelope.html"
+          "**/*.sw.json",
+          props.resourcesPathPrefix + "/diagram",
+          props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html"
+        ),
+        new EnvelopeMapping(
+          ENVELOPE_LOCATOR_TYPE,
+          "**/*.sw.+(yml|yaml)",
+          props.resourcesPathPrefix + "/mermaid",
+          props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
         ),
       ]),
-    [props.resourcesPathPrefix]
+    [props.resourcesPathPrefix, targetOrigin]
   );
 
   useImperativeHandle(

@@ -14,11 +14,4 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
-
-init({
-  container: document.getElementById("diagram-envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  editorFactory: new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true }),
-});
+module.exports = {};

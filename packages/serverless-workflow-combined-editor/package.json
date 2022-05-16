@@ -39,6 +39,7 @@
     "@kie-tools/serverless-workflow-diagram-editor": "0.0.0",
     "@kie-tools/serverless-workflow-diagram-editor-envelope": "0.0.0",
     "@kie-tools/serverless-workflow-text-editor": "0.0.0",
+    "@kie-tools/serverless-workflow-mermaid-viewer": "0.0.0",
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^3.2.1",
     "react": "^17.0.2",
