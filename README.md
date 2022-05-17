@@ -43,8 +43,8 @@ After installing the tools above, you'll need to download the dependencies and l
 
 To build it, you'll have two choices. Note that you always need to specify which package you want to build, so replace `[pkg-name]` with the name of the desired package.
 
-- `yarn build:dev:until [pkg-name]` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
-- `yarn build:prod:until [pkg-name]` - The default command to build production-ready packages. Use that to make sure your changes are correct.
+- `pnpm -r -F [pkg-name]... build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
+- `pnpm -r -F [pkg-name]... build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
 **NOTE:** The KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see `packages/build-env/README.md` ([link](/packages/build-env/index.js#L24)).
 
