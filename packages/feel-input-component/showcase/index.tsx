@@ -28,7 +28,7 @@ if (!REACT_APP_FEEL_SERVER) {
     "" +
       "--------------------------------------------------------------------------------------------\n" +
       "The FEEL server is not enabled. You may enable it by starting your development web app with:\n" +
-      "`REACT_APP_FEEL_SERVER=http://your-feel-server-url yarn start`.\n" +
+      "`REACT_APP_FEEL_SERVER=http://your-feel-server-url pnpm start`.\n" +
       "--------------------------------------------------------------------------------------------"
   );
 }

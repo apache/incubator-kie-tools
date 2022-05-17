@@ -6,11 +6,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
-    "build:prod": "rimraf dist && yarn copy:css && yarn lint && tsc -p tsconfig.prod.json && yarn test",
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.prod.json && pnpm test",
     "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
     "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
     "deploy": "gh-pages -d dist-dev"

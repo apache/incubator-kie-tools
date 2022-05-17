@@ -22,7 +22,7 @@ const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 
 startExtension({
   name: "Kogito :: BPMN and DMN editors",
-  extensionIconUrl: chrome.extension.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
+  extensionIconUrl: chrome.runtime.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   externalEditorManager: {
     name: "KIE Sandbox",

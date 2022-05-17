@@ -26,8 +26,6 @@ import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
 import { useChromeExtensionI18n } from "../../i18n";
 
-const GITHUB_CODEMIRROR_EDITOR_SELECTOR = `.file-editor-textarea + .CodeMirror`;
-
 interface Props {
   openFileExtension: string;
   contentPath: string;
@@ -86,11 +84,12 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
 
     const stateControlSubscription = editor.getStateControl().subscribe(() => {
       editor.getContent().then((content) => {
-        runScriptOnPage(
-          `document.querySelector("${GITHUB_CODEMIRROR_EDITOR_SELECTOR}")
-            .CodeMirror
-            .setValue('${content.split("\n").join("\\n")}')` //keep line breaks
-        );
+        const pre = (document.getElementById("kogito-content") ?? document.createElement("pre")) as HTMLPreElement;
+        pre.textContent = content;
+        pre.style.display = "none";
+        pre.id = "kogito-content";
+        document.body.appendChild(pre);
+        runScriptOnPage(chrome.runtime.getURL(`scripts/update_content.js`));
       });
     });
     return () => editor.getStateControl().unsubscribe(stateControlSubscription);

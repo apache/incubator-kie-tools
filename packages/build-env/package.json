@@ -16,8 +16,8 @@
   },
   "scripts": {
     "print-build-env": "rimraf dist && node ./cli.js --print-cli-tools-check && node ./cli.js --print-env && node ./cli.js --print-config && node ./cli.js --build-graph",
-    "build:dev": "yarn print-build-env",
-    "build:prod": "yarn print-build-env"
+    "build:dev": "pnpm print-build-env",
+    "build:prod": "pnpm print-build-env"
   },
   "dependencies": {
     "@lerna/project": "^4.0.0"
