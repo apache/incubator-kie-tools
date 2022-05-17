@@ -140,71 +140,6 @@ describe("CopyAndPasteUtils", () => {
     });
   });
 
-  describe("parseTableCell", () => {
-    describe("when the string is empty or null", () => {
-      test("returns an empty string", () => {
-        // @ts-ignore
-        expect(parseTableCell(null)).toEqual("");
-        expect(parseTableCell("")).toEqual("");
-      });
-    });
-
-    describe("when the string is a valid cell", () => {
-      test.each([
-        ["A", "A"],
-        ["Cell 1", "Cell 1"],
-        ['"Cell without newline"', "Cell without newline"],
-        ['"Cell 1\nnewline"', "Cell 1\nnewline"],
-        [`"Cell 6\n\nnewline"`, "Cell 6\n\nnewline"],
-        ['"cell 2 \nindex of("list", "match")"', 'cell 2 \nindex of("list", "match")'],
-      ])("returns an iterable data structure with input: %j", (input, expected) => {
-        expect(parseTableCell(input)).toEqual(expected);
-      });
-    });
-  });
-
-  describe("parseTableRows", () => {
-    describe("when the string is empty or null", () => {
-      test("returns an iterable data structure", () => {
-        // @ts-ignore
-        expect(parseTableRows(null)).toEqual([]);
-        expect(parseTableRows("")).toEqual([]);
-      });
-    });
-
-    describe("when the string has a single row", () => {
-      test("returns an iterable data structure", () => {
-        expect(parseTableRows("A\tB\tC")).toEqual(["A\tB\tC"]);
-        expect(parseTableRows('"Cell 1\n newline"')).toEqual(['"Cell 1\n newline"']);
-      });
-    });
-
-    describe("when the string has multiple rows", () => {
-      test.each([
-        ["A\tB\tC\nD\tE\tF", ["A\tB\tC", "D\tE\tF"]],
-        [
-          '"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nnewline"',
-          ['"Cell 1\nnewline"\tCell 2', "Cell 3\tCell 4", 'Cell 5\t"Cell 6\n\nnewline"'],
-        ],
-        [
-          "Cell 1\tCell 2\nCell 3\tCell 4\nCell 5\tCell 6\nCell 7\tCell 8",
-          ["Cell 1	Cell 2", "Cell 3	Cell 4", "Cell 5	Cell 6", "Cell 7	Cell 8"],
-        ],
-        ["Cell 1\tCell 2\n\t\nCell 3\tCell 4\nCell 5\tCell 6", ["Cell 1	Cell 2", "	", "Cell 3	Cell 4", "Cell 5	Cell 6"]],
-        [
-          'Cell 1\tCell 2\nCell 3\t"Cell 4\n\nnewline with ""quotes"""\nCell 4\tCell 5\nCell 6\tCell 7',
-          ["Cell 1	Cell 2", 'Cell 3	"Cell 4\n\nnewline with ""quotes"""', "Cell 4	Cell 5", "Cell 6	Cell 7"],
-        ],
-        [
-          '"cell 1 \nnewline"\t"cell 2 \nindex of("list", "match")"\ncell 3\t"cell 4\n \nnewline"',
-          ['"cell 1 \nnewline"\t"cell 2 \nindex of("list", "match")"', 'cell 3\t"cell 4\n \nnewline"'],
-        ],
-      ])("returns an iterable data structure with input: %j", (input, expected) => {
-        expect(parseTableRows(input)).toEqual(expected);
-      });
-    });
-  });
-
   describe("iterableValue", () => {
     describe("when the paste value is empty", () => {
       test("returns an iterable data structure", () => {
@@ -257,7 +192,7 @@ describe("CopyAndPasteUtils", () => {
           'Cell 1\tCell 2\nCell 3\t"Cell 4\n\nnewline with ""quotes"""\nCell 4\tCell 5\nCell 6\tCell 7',
           [
             ["Cell 1", "Cell 2"],
-            ["Cell 3", 'Cell 4\n\nnewline with ""quotes""'],
+            ["Cell 3", 'Cell 4\n\nnewline with "quotes"'],
             ["Cell 4", "Cell 5"],
             ["Cell 6", "Cell 7"],
           ],

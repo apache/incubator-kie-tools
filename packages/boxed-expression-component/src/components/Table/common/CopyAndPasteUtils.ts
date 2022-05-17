@@ -15,6 +15,7 @@
  */
 
 import { DataRecord } from "react-table";
+import { parse } from "papaparse";
 import { getCellCoordinates, getCellTableId } from ".";
 import { LogicType } from "../../../api";
 
@@ -121,40 +122,13 @@ export const pasteOnTable = (
 };
 
 /**
- * Parses the Table Rows from a string using the Spreadsheets format.
- *
- * @param value the string to parse
- * @returns the rows as array of strings
- */
-export const parseTableRows = (value: string): Array<string> => {
-  if (!value) {
-    return [];
-  }
-  return value.match(/^((("[^"]+")|([^\t\n]+))?\t?)+$/gm) || [];
-};
-
-/**
- * Parses a Table Cell from a string using the Spreadsheets format.
- *
- * @param value the string to parse
- * @returns the cell parsed
- */
-export const parseTableCell = (value: string): string => {
-  if (value === null) {
-    return "";
-  }
-  return value.replace(/^"(.+)"|(.+)$/gms, `$1$2`);
-};
-
-/**
  * Covert a string value into an iterable data structure, by following the
  * convention of other spreadsheet tools.
  */
-export const iterableValue = (value: string) => {
-  const iterable: string[][] = parseTableRows(value.trim()).map((strRow) => {
-    const trimedValue = strRow.trim();
-    return trimedValue === "" ? [] : trimedValue.split("\t").map((cell) => parseTableCell(cell));
-  });
+export const iterableValue = (value: string): string[][] => {
+  const iterable = parse<string[]>(value, { delimiter: "\t", skipEmptyLines: true }).data.map((row) =>
+    row.filter((cell) => cell)
+  );
 
   ensureSameNumberOfColumns(iterable);
 
