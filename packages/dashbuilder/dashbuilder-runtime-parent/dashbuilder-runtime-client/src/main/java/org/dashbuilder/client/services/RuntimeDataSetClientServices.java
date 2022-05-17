@@ -149,7 +149,7 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
 
                     @Override
                     public boolean onError(ClientRuntimeError error) {
-                        if (loader.isOffline()) {
+                        if (loader.isEditor()) {
                             listener.onError(error);
                         } else {
                             DomGlobal.console.debug("Error retrieving dataset from client, trying from backend");

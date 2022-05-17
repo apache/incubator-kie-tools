@@ -21,7 +21,7 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 const resourcesPathPrefix = new ChromeRouter().getResourcesPathPrefix();
 startExtension({
   name: "Kogito :: Serverless workflow editor",
-  extensionIconUrl: chrome.extension.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
+  extensionIconUrl: chrome.runtime.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
     new EnvelopeMapping(

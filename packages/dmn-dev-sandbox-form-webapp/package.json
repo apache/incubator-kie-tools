@@ -30,10 +30,10 @@
     "@kie-tools-core/webpack-base": "0.0.0"
   },
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "yarn lint && yarn test && rimraf dist && webpack",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "start": "webpack serve --host 0.0.0.0 --env dev"
   },
   "babel": {

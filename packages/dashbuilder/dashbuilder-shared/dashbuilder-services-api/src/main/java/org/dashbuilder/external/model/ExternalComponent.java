@@ -26,6 +26,7 @@ public class ExternalComponent {
 
     public static final String COMPONENT_ID_KEY = "componentId";
     public static final String COMPONENT_PARTITION_KEY = "componentPartition";
+    public static final String COMPONENT_BASE_URL_KEY = "baseUrl";
 
     private String id;
     private String name;

@@ -37,8 +37,12 @@ import org.jboss.resteasy.util.HttpResponseCodes;
 
 import static elemental2.dom.DomGlobal.fetch;
 
+/**
+ * Loads Runtime Models from backend
+ *
+ */
 @ApplicationScoped
-public class RuntimeModelResourceClient {
+public class RuntimeModelBackendAppLoader {
 
     @Inject
     Caller<RuntimeModelService> runtimeModelServiceCaller;

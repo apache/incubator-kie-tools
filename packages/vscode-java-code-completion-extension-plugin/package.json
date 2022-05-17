@@ -26,9 +26,9 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "install:mvnw": "mvn wrapper:wrapper -f ./",
-    "build:dev": "yarn install:mvnw && mvn clean install -DskipTests",
-    "build:prod:win32": "yarn install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
-    "build:prod:darwin:linux": "yarn install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
-    "build:prod": "yarn lint && run-script-os"
+    "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
+    "build:prod:win32": "pnpm install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
+    "build:prod": "pnpm lint && run-script-os"
   }
 }

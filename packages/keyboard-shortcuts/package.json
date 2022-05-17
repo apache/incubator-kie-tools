@@ -22,10 +22,10 @@
     "@kie-tools-core/run-script-if": "0.0.0"
   },
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
-    "build:prod": "yarn lint && rimraf dist && tsc -p tsconfig.prod.json && yarn test"
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test"
   },
   "babel": {
     "presets": [

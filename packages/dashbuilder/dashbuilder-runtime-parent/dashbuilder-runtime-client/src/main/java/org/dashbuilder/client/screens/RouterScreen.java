@@ -16,8 +16,6 @@
 
 package org.dashbuilder.client.screens;
 
-import java.util.Optional;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -34,7 +32,6 @@ import org.dashbuilder.client.perspective.RuntimePerspective;
 import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
-import org.dashbuilder.shared.model.RuntimeModel;
 import org.dashbuilder.shared.model.RuntimeServiceResponse;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -104,32 +101,30 @@ public class RouterScreen {
     public void doRoute() {
         clientLoader.load(this::route,
                 (a, t) -> {
-                    appNavBar.setClientOnly(true);
-                    appNavBar.hide(clientLoader.isOffline());
+                    appNavBar.hide(true);
                     placeManager.goTo(EmptyPerspective.ID);
                 });
     }
 
     protected void route(RuntimeServiceResponse response) {
-        this.mode = response.getMode();
-        Optional<RuntimeModel> runtimeModelOp = response.getRuntimeModelOp();
-
+        mode = response.getMode();
+        var runtimeModelOp = response.getRuntimeModelOp();
         if (mode == DashbuilderRuntimeMode.MULTIPLE_IMPORT) {
+            appNavBar.hide(false);
             appNavBar.setDashboardListEnabled(true);
             appNavBar.setup();
+        } else {
+            appNavBar.hide(true);
         }
 
         if (runtimeModelOp.isPresent()) {
             var runtimeModel = runtimeModelOp.get();
             var layoutTemplates = runtimeModel.getLayoutTemplates();
-            appNavBar.setDisplayMainMenu(true);
             placeManager.goTo(RuntimePerspective.ID);
             runtimeScreen.loadDashboards(runtimeModel);
             runtimeScreen.goToIndex(layoutTemplates);
-
-            if (clientLoader.isOffline()) {
-               appNavBar.hide(layoutTemplates.size() == 1);
-            }
+            appNavBar.hide(mode != DashbuilderRuntimeMode.MULTIPLE_IMPORT && layoutTemplates.size() == 1);
+            appNavBar.setDisplayMainMenu(layoutTemplates.size() > 1);
             return;
         }
 
@@ -182,7 +177,7 @@ public class RouterScreen {
     public void onUpdatedRuntimeModelEvent(@Observes UpdatedRuntimeModelEvent updatedRuntimeModelEvent) {
         String updatedModel = updatedRuntimeModelEvent.getRuntimeModelId();
 
-        if (updatedModel.equals(clientLoader.getImportId()) || clientLoader.isOffline()) {
+        if (updatedModel.equals(clientLoader.getImportId()) || clientLoader.isEditor()) {
             doRoute();
             runtimeScreen.setKeepHistory(true);
         }

@@ -23,38 +23,36 @@ Consider that the showcase app is able to display the most updated JSON represen
 
 ## Scripts
 
-In the main project (where the components actually live), it is possible to execute, from the root folder, the following scripts (`yarn` is recommended):
+In the main project (where the components actually live), it is possible to execute, from the root folder, the following scripts (`pnpm` is recommended):
 
 ```sh
-# Collect and build dependencies
-yarn
 
 # Remove 'dist' folder (such script is automatically called when the build is executed)
-yarn prebuild
+pnpm prebuild
 
 # Build a production-ready artifact to be deployed
-yarn build:prod
+pnpm build:prod
 
 # Execute all tests
-yarn test
+pnpm test
 
 # Trigger static code analysis
-yarn lint
+pnpm lint
 
 # Trigger type checking
-yarn type-check
+pnpm type-check
 
 # Perform all the three checks above (tests, lint and type checking)
-yarn quality-checks
+pnpm quality-checks
 ```
 
 In the showcase project, these scripts are available:
 
 ```sh
 # Start a local server to see the 'BoxedExpressionEditor' in action
-yarn start
+pnpm start
 # Compiles a production ready showcase application
-yarn build
+pnpm build
 # Run cypress 'BoxedExpressionEditor' tests. To update the Cypress Snapshot files, used for the regression, remove the related png and rerun the tests to regenerate it.
-yarn test:it
+pnpm test:it
 ```
