@@ -68,7 +68,7 @@ Promise.resolve()
   .then((version) => updateLockfile(version))
   .then(async (version) => {
     console.info(`[update-version] Formatting files...`);
-    execSync(`yarn pretty-quick`, execOpts);
+    execSync(`pnpm pretty-quick`, execOpts);
     return version;
   })
   .then((version) => {
@@ -187,6 +187,6 @@ async function updateJavaAutocompletionPluginManifestFile(version) {
 }
 
 async function updateLockfile(version) {
-  execSync(`yarn bootstrap`, execOpts);
+  execSync(`pnpm bootstrap`, execOpts);
   return version;
 }

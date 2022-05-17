@@ -2,7 +2,7 @@ Release workflow (post 0.13.0)
 
 1. Update the `CHANGELOG.md` files and send a PR to `main`.
 1. Create a `{version}-prerelease` branch from the commit you just made with the CHANGELOG updates.
-1. Update version from `0.0.0` to `{version}` -- `yarn update-version-to {version}`.
+1. Update version from `0.0.0` to `{version}` -- `pnpm update-version-to {version}`.
 1. Push `{version}-prerelease` branch to `origin`.
 1. 🔨(automatic) WORKFLOW (`staging.yml`).
    - Create new draft release on GitHub.
