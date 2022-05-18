@@ -77,6 +77,7 @@ digraph G {
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-red-hat-business-automation-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
@@ -217,4 +218,5 @@ digraph G {
   "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/webpack-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools-core/workspace" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
+  "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
 }
