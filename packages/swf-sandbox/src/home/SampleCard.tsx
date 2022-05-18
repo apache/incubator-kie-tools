@@ -71,7 +71,7 @@ export function SampleCard({ sample }: { sample: Sample }) {
           <div style={{ position: "absolute", bottom: "16px", right: 0, left: 0, margin: "auto" }}>
             <Label color={tag.color}>
               <tag.icon />
-              &nbsp;&nbsp;{tag.label}
+              &nbsp;&nbsp;<b>{tag.label}</b>
             </Label>
           </div>
           <sample.svg style={{ height: "100%", maxWidth: "100%", maxHeight: "400px" }} />
