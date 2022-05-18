@@ -23,6 +23,9 @@ import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 
 public class PanelTransformUtils {
 
+    public final static double HORIZONTAL_OFFSET = 30d;
+    public final static double VERTICAL_OFFSET = 30d;
+
     private PanelTransformUtils() {
 
     }
@@ -53,9 +56,9 @@ public class PanelTransformUtils {
         final Bounds layerBounds = panel.getLayerBounds();
         final double layerWidth = layerBounds.getWidth();
         final double layerHeight = layerBounds.getHeight();
-        double widthRatio = width / layerWidth;
-        double heightRatio = height / layerHeight;
-        final double level = widthRatio < heightRatio ? widthRatio : heightRatio;
+        double widthRatio = (width - HORIZONTAL_OFFSET) / layerWidth;
+        double heightRatio = (height - VERTICAL_OFFSET) / layerHeight;
+        final double level = Math.min(widthRatio, heightRatio);
         return level < 1 ? level : 1;
     }
 
