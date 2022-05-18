@@ -32,7 +32,7 @@
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:images": "cpr ./static/images ./dist/images",
-    "copy:dashbuilder": "copyfiles -u 5 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/ && copyfiles src/setup.js ./dist/dashbuilder-runtime-client/",
+    "copy:dashbuilder": "copyfiles -u 5 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/ && copyfiles -u 1 src/setup.js ./dist/dashbuilder-runtime-client/",
     "build:dev": "rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.prod.json && pnpm test",
     "test:clearCache": "jest --clearCache",
