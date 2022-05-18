@@ -29,6 +29,7 @@ import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.BoundsProvider;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
+import com.ait.lienzo.client.widget.panel.PostResizeCallback;
 import com.ait.lienzo.client.widget.panel.ResizeCallback;
 import com.ait.lienzo.client.widget.panel.ResizeObserver;
 import com.ait.lienzo.client.widget.panel.impl.LienzoPanelDragLimitEventDetail.LimitDirections;
@@ -65,6 +66,7 @@ public class ScrollablePanel extends LienzoBoundsPanel {
     private double lastPrimitiveY;
     private ResizeObserver resizeObserver;
     private ResizeCallback m_resizeCallback;
+    private PostResizeCallback m_postResizeCallback = null;
 
     public static ScrollablePanel newPanel(final BoundsProvider layerBoundsProvider) {
         return new ScrollablePanel(layerBoundsProvider);
@@ -271,6 +273,11 @@ public class ScrollablePanel extends LienzoBoundsPanel {
             if (isContainerStillOpened()) {
                 onScroll();
                 fitToParentSize();
+
+                if (null != m_postResizeCallback) {
+                    m_postResizeCallback.execute(this);
+                }
+
                 refresh();
             }
         };
@@ -404,6 +411,14 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         final double ry = currentRelativeY();
         setHorizontalScrollRate(rx);
         setVerticalScrollRate(ry);
+    }
+
+    public void setPostResizeCallback(PostResizeCallback postResizeCallback) {
+        this.m_postResizeCallback = postResizeCallback;
+    }
+
+    public PostResizeCallback getPostResizeCallback() {
+        return m_postResizeCallback;
     }
 
     private void setHorizontalScrollRate(final double rx) {

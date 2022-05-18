@@ -196,6 +196,13 @@ public class BoundsProviderFactory {
 
     public static Bounds computeBoundsAspectRatio(final double ratio,
                                                   final BoundingBox box) {
+        if (ratio == 1) {
+            return Bounds.build(box.getX(),
+                                box.getY(),
+                                box.getWidth(),
+                                box.getHeight());
+        }
+
         final double x = box.getX();
         final double y = box.getY();
         final double width = box.getWidth();

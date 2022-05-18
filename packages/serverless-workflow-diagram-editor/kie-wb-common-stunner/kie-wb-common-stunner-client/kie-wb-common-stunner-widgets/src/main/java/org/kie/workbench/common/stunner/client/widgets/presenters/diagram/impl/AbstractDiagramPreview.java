@@ -39,7 +39,7 @@ public abstract class AbstractDiagramPreview<D extends Diagram, H extends Abstra
                       final int height) {
         getViewerOrNothing(() -> getViewer().scale(width,
                                                    height,
-                                                   true));
+                                                   false));
     }
 
     @Override
