@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-//import { ServerlessWorkflowEditor } from "../src";
+import { YardEditor } from "../src";
 import * as React from "react";
 import { useRef, useState } from "react";
 import { ServerlessWorkflowEmptyState } from "./EmptyState";
@@ -40,6 +40,10 @@ export const App = () => {
 
   const redo = (): void => {
     editor.current!.redo().finally();
+  };
+
+  const back = (): void => {
+    setContent(undefined);
   };
 
   const validate = () => {
@@ -69,6 +73,7 @@ export const App = () => {
 
       <PageSection padding={{ default: "noPadding" }} style={{ display: displayServerlessWorkflowEditor() }}>
         <HistoryButtons
+          back={back}
           undo={undo}
           redo={redo}
           get={() => editor.current!.getContent()}
@@ -90,7 +95,28 @@ export const App = () => {
         isFilled={true}
         hasOverflowScroll={false}
       >
-        <div ref={container} className="editor-container"></div>
+        <div ref={container} className="editor-container">
+          <YardEditor
+            channelType={ChannelType.ONLINE}
+            ref={editor}
+            onNewEdit={() => {
+              /*NOP*/
+            }}
+            setNotifications={() => {
+              /*NOP*/
+            }}
+            onStateControlCommandUpdate={(command) => {
+              if (command === StateControlCommand.UNDO) {
+                editor.current?.undo();
+              } else if (command === StateControlCommand.REDO) {
+                editor.current?.redo();
+              } else {
+                console.log("Nothing to do.");
+              }
+            }}
+            isReadOnly={false}
+          />
+        </div>
       </PageSection>
     </Page>
   );

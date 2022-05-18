@@ -15,10 +15,9 @@
  */
 
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import "./HistoryButtons.scss";
 
@@ -33,6 +32,7 @@ interface HistoryButtonsProps {
   get: () => Promise<string>;
   setTheme: (theme: Theme) => void;
   validate: () => void;
+  back: () => void;
 }
 
 export const HistoryButtons = (props: HistoryButtonsProps) => {
@@ -52,11 +52,13 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
           </Button>
         </SplitItem>
         <SplitItem>
-          <ServerlessWorkflowModal get={props.get} />
-        </SplitItem>
-        <SplitItem>
           <Button variant="secondary" onClick={props.validate} ouiaId="validate-button">
             Validate
+          </Button>
+        </SplitItem>
+        <SplitItem>
+          <Button variant="secondary" onClick={props.back} ouiaId="back-button">
+            Back to file selection
           </Button>
         </SplitItem>
         <SplitItem className="history-buttons__theme-switch">
@@ -74,50 +76,5 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
       </Split>
       <hr className="history-buttons__divider" />
     </div>
-  );
-};
-
-const ServerlessWorkflowModal = (props: { get: () => Promise<string> }) => {
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const textRef = useRef<HTMLDivElement | null>(null);
-
-  const handleModalToggle = () => {
-    setModalOpen(!isModalOpen);
-  };
-
-  useEffect(() => {
-    if (isModalOpen) {
-      props.get().then((content: string) => {
-        if (textRef.current) {
-          textRef.current.innerText = content;
-        }
-      });
-    }
-  }, [isModalOpen]);
-
-  return (
-    <React.Fragment>
-      <Button variant="secondary" onClick={handleModalToggle} ouiaId="serverless-workflow-button">
-        Serverless Workflow
-      </Button>
-      <Modal
-        variant={ModalVariant.large}
-        title="ServerlessWorkflow"
-        isOpen={isModalOpen}
-        onClose={handleModalToggle}
-        actions={[
-          <Button key="ok" variant="primary" onClick={handleModalToggle} ouiaId="serverless-workflow-modal-confirm">
-            OK
-          </Button>,
-        ]}
-        style={{ overflowX: "scroll" }}
-        appendTo={() => document.querySelector(".history-buttons") as HTMLElement}
-      >
-        <pre data-ouia-component-type="source-code">
-          <div ref={textRef} />
-        </pre>
-      </Modal>
-    </React.Fragment>
   );
 };

@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-
-export interface ServerlessDecisionsEditorChannelApi extends KogitoEditorChannelApi {}
+export * from "./YardEditorChannelApi";

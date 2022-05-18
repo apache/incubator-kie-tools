@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const buildEnv = require("@kie-tools/build-env");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const webpack = require("webpack");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -52,9 +51,6 @@ module.exports = (env) =>
             },
           },
         ],
-      }),
-      new webpack.ProvidePlugin({
-        mermaid: "mermaid",
       }),
     ],
     module: {

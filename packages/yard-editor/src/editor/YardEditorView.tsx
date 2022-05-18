@@ -21,58 +21,70 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
-import * as React from "react";
-import { ServerlessDecisionsEditorChannelApi } from "../api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import * as React from "react";
+import { YardEditor } from "./YardEditor";
+import { YardEditorChannelApi } from "../api";
 
-export class ServerlessDecisionsEditorView implements Editor {
+export class YardEditorView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
   private readonly initArgs: EditorInitArgs;
-  public af_componentId: "serverless-decisions-editor";
-  public af_componentTitle: "YAML Rules Editor";
   public af_isReact = true;
+  public af_componentId: "yard-editor";
+  public af_componentTitle: "Yard Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessDecisionsEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
     this.initArgs = initArgs;
   }
 
-  public af_componentRoot() {
-    return <div></div>;
-  }
-
-  public getContent(): Promise<string> {
-    return this.editorRef.current!.getContent();
-  }
-
   public async getElementPosition() {
     return DEFAULT_RECT;
-  }
-
-  public getPreview(): Promise<string | undefined> {
-    return this.editorRef.current!.getPreview();
-  }
-
-  public async redo(): Promise<void> {
-    return this.editorRef.current!.redo();
   }
 
   public setContent(path: string, content: string): Promise<void> {
     return this.editorRef.current!.setContent(path, content);
   }
 
-  public async setTheme(theme: EditorTheme) {
-    return this.editorRef.current!.setTheme(theme);
+  public getContent(): Promise<string> {
+    return this.editorRef.current!.getContent();
+  }
+
+  public getPreview(): Promise<string | undefined> {
+    return this.editorRef.current!.getPreview();
+  }
+
+  public af_componentRoot() {
+    return (
+      <YardEditor
+        ref={this.editorRef}
+        channelType={this.initArgs.channel}
+        onStateControlCommandUpdate={
+          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send
+        }
+        onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
+        setNotifications={this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send}
+        isReadOnly={this.initArgs.isReadOnly}
+      />
+    );
   }
 
   public async undo(): Promise<void> {
     return this.editorRef.current!.undo();
   }
 
+  public async redo(): Promise<void> {
+    return this.editorRef.current!.redo();
+  }
+
   public async validate(): Promise<Notification[]> {
     return this.editorRef.current!.validate();
+  }
+
+  public async setTheme(theme: EditorTheme) {
+    return this.editorRef.current!.setTheme(theme);
   }
 }

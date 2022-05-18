@@ -41,18 +41,22 @@ export const ServerlessWorkflowEmptyState = (props: AllProps) => (
   <EmptyState variant={EmptyStateVariant.small}>
     <EmptyStateIcon icon={CubesIcon} />
     <Title headingLevel="h4" size="lg">
-      No serverless workflow document
+      No YARD document
     </Title>
     <EmptyStateBody>
-      No serverless workflow document has been selected. Please either upload an existing document or create a new one.
+      A YARD Document is required to enable the editor. Please either upload an existing document or create a new one or
+      select a sample.
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
     <EmptyStateSecondaryActions>
+      <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
+        New YAML
+      </Button>
       <Button variant="link" onClick={(e) => props.newContent("json")} ouiaId="new-button">
         New JSON
       </Button>
-      <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
-        New YAML
+      <Button variant="link" ouiaId="new-button" isDisabled={true}>
+        Try YAML sample (not yet available)
       </Button>
     </EmptyStateSecondaryActions>
   </EmptyState>
@@ -87,7 +91,7 @@ const FileChooser = (props: UploadProps) => {
         id="file-upload"
         style={{ display: "none" }}
         type="file"
-        accept={".json,.yaml,.yml"}
+        accept={"yard.yaml,yard.yml,yard.json"}
         onChange={(e) => showFile(e)}
       />
     </div>

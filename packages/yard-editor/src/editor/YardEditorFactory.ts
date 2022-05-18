@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { YardEditorView } from "./YardEditorView";
 import {
   Editor,
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { ServerlessDecisionsEditorChannelApi } from "../api";
-import { ServerlessDecisionsEditorView } from "./ServerlessDecisionsEditorView";
+import { YardEditorChannelApi } from "../api";
 
-export class ServerlessDecisionsEditorFactory implements EditorFactory<Editor, ServerlessDecisionsEditorChannelApi> {
-  public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<ServerlessDecisionsEditorChannelApi>,
-    initArgs: EditorInitArgs
-  ) {
-    return new ServerlessDecisionsEditorView(ctx, initArgs);
+export class YardEditorFactory implements EditorFactory<Editor, YardEditorChannelApi> {
+  public async createEditor(ctx: KogitoEditorEnvelopeContextType<YardEditorChannelApi>, initArgs: EditorInitArgs) {
+    return new YardEditorView(ctx, initArgs);
   }
 }

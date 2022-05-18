@@ -1,7 +1,7 @@
 {
-  "name": "@kie-tools/serverless-decisions-editor",
+  "name": "@kie-tools/yard-editor",
   "version": "0.0.0",
-  "description": "Core module of the YARD editor, part of the serverless logic assets",
+  "description": "Core module of the YARD editor, Yet Another Rule Definition editor",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
   "types": "./dist/editor/index.d.ts",
@@ -13,19 +13,20 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "lint": "yarn run run-script-if --bool \"$(build-env global.build.lint)\" --then \"yarn eslint ./src --ext .ts,.tsx\"",
-    "test": "yarn run run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "build:dev": "rimraf dist && yarn copy:css && tsc -p tsconfig.dev.json",
-    "build:prod": "yarn lint && rimraf dist && yarn copy:css && tsc -p tsconfig.prod.json && yarn test",
-    "build:full-dev": "pnpm -r -F @kie-tools/serverless-decisions-editor... build:dev",
-    "test:clearCache": "jest --clearCache",
-    "test:watch": "jest --watch",
+    "copy:images": "cpr ./static/images ./dist/images",
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test",
+    "build:full:dev": "pnpm -r -F @kie-tools/yard-editor... build:dev",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "deploy": "gh-pages -d dist",
-    "cy:open": "yarn run cypress open --project it-tests",
-    "cy:run": "yarn run cypress run -b chrome --project it-tests",
-    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start http-get://0.0.0.0:$(build-env yarnEditor.dev.port) cy:run\""
+    "cy:open": "pnpm cypress open --project it-tests",
+    "cy:run": "pnpm cypress run -b chrome --project it-tests",
+    "test:clearCache": "jest --clearCache",
+    "test:watch": "jest --watch",
+    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowEditor.dev.port) cy:run\""
   },
   "dependencies": {
     "@kie-tools-core/envelope-bus": "0.0.0",
