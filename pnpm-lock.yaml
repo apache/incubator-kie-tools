@@ -1853,10 +1853,6 @@ importers:
       '@kie-tools-core/workspace': 0.0.0
       '@kie-tools/build-env': 0.0.0
       '@kie-tools/kie-bc-editors': 0.0.0
-      monaco-editor: ^0.33.0
-      monaco-yaml: ^3.2.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
     dependencies:
       '@kie-tools-core/editor': link:../editor
       '@kie-tools-core/envelope': link:../envelope
@@ -1868,10 +1864,6 @@ importers:
       '@kie-tools-core/vscode-java-code-completion': link:../vscode-java-code-completion
       '@kie-tools-core/workspace': link:../workspace
       '@kie-tools/kie-bc-editors': link:../kie-bc-editors
-      monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
     devDependencies:
       '@kie-tools/build-env': link:../build-env
 
