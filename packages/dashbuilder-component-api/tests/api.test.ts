@@ -13,12 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ComponentBus } from "../src/controller";
-import { ComponentApi } from "../src/ComponentApi";
-import { ColumnType, DataSet, FilterRequest } from "../src/dataset";
-import { FunctionCallRequest, FunctionResponse, FunctionResultType } from "../src/function";
-import { ComponentMessage, MessageType } from "../src/message";
-import { MessageProperty } from "../src/message/MessageProperty";
+import {
+  ColumnType,
+  DataSet,
+  FilterRequest,
+  FunctionCallRequest,
+  FunctionResponse,
+  FunctionResultType,
+  ComponentMessage,
+  MessageType,
+  MessageProperty,
+  ComponentApi,
+  ComponentBus,
+} from "../src/index";
+
 import { DashbuilderComponentController } from "../src/controller/DashbuilderComponentController";
 
 const controller = new ComponentApi().getComponentController() as DashbuilderComponentController;
