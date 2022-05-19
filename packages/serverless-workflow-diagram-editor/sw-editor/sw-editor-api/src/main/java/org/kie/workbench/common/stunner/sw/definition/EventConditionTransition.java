@@ -16,8 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -52,9 +50,6 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 public class EventConditionTransition {
 
     @JsIgnore
-    public final String LABEL_TRANSITION_EVENT_CONDITION2 = "transition_event_condition2";
-
-    @JsIgnore
     public static final String LABEL_TRANSITION_EVENT_CONDITION = "transition_event_condition";
 
     @Category
@@ -63,7 +58,7 @@ public class EventConditionTransition {
 
     @Labels
     @JsIgnore
-    private static final Set<String> labels = new HashSet<>(Arrays.asList(LABEL_TRANSITION_EVENT_CONDITION));
+    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT_CONDITION).collect(Collectors.toSet());
 
     /**
      * Event condition name.
