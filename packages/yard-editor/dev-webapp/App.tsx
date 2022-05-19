@@ -19,7 +19,7 @@ import * as React from "react";
 import { useRef, useState } from "react";
 import { ServerlessWorkflowEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
-import { HistoryButtons, Theme } from "./HistoryButtons";
+import { MenuButtons, Theme } from "./MenuButtons";
 import "./App.scss";
 import { ChannelType, EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -72,7 +72,7 @@ export const App = () => {
       )}
 
       <PageSection padding={{ default: "noPadding" }} style={{ display: displayServerlessWorkflowEditor() }}>
-        <HistoryButtons
+        <MenuButtons
           back={back}
           undo={undo}
           redo={redo}

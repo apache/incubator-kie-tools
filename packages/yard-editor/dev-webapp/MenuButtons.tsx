@@ -19,14 +19,14 @@ import { useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
-import "./HistoryButtons.scss";
+import "./MenuButtons.scss";
 
 export enum Theme {
   LIGHT,
   DARK,
 }
 
-interface HistoryButtonsProps {
+interface MenuButtonsProps {
   undo: () => void;
   redo: () => void;
   get: () => Promise<string>;
@@ -35,11 +35,11 @@ interface HistoryButtonsProps {
   back: () => void;
 }
 
-export const HistoryButtons = (props: HistoryButtonsProps) => {
+export const MenuButtons = (props: MenuButtonsProps) => {
   const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
 
   return (
-    <div className="history-buttons ignore-onclickoutside">
+    <div className="menu-buttons ignore-onclickoutside">
       <Split hasGutter={true}>
         <SplitItem>
           <Button variant="primary" onClick={props.undo} ouiaId="undo-button">
@@ -61,7 +61,7 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
             Back to file selection
           </Button>
         </SplitItem>
-        <SplitItem className="history-buttons__theme-switch">
+        <SplitItem className="menu-buttons__theme-switch">
           <Switch
             id="theme"
             label="Dark"
@@ -74,7 +74,7 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
           />
         </SplitItem>
       </Split>
-      <hr className="history-buttons__divider" />
+      <hr className="menu-buttons__divider" />
     </div>
   );
 };
