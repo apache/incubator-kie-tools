@@ -379,7 +379,7 @@
           <draftCompile>false</draftCompile>
           <strict>true</strict>
           <!-- Do NOT change the style below, it must be PRETTY, otherwise JSON.stringify complains about circular references when having switch states. -->
-          <style>PRETTY</style>
+          <style>OBFUSCATED</style>
           <deploy>${project.build.directory}/gwt-symbols-deploy</deploy>
           <hostedWebapp>src/main/webapp</hostedWebapp>
           <runTarget>test.html</runTarget>
@@ -490,9 +490,9 @@
               <module>org.kie.workbench.common.stunner.sw.KogitoSWEditorWithSourceMaps</module>
               <saveSource>true</saveSource>
               <logLevel>INFO</logLevel>
-              <optimizationLevel>0</optimizationLevel>
+              <optimizationLevel>9</optimizationLevel>
               <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
+              <style>OBFUSCATED</style>
               <generateJsInteropExports>true</generateJsInteropExports>
             </configuration>
           </plugin>

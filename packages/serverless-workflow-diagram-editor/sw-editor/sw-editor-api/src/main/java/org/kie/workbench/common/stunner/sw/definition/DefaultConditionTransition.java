@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,6 +45,9 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 public class DefaultConditionTransition {
 
     @JsIgnore
+    public final String LABEL_TRANSITION_DEFAULT_CONDITION2 = "transition_default_condition2";
+
+    @JsIgnore
     public static final String LABEL_TRANSITION_DEFAULT_CONDITION = "transition_default_condition";
 
     @Category
@@ -51,7 +56,7 @@ public class DefaultConditionTransition {
 
     @Labels
     @JsIgnore
-    private final Set<String> labels = Stream.of(LABEL_TRANSITION_DEFAULT_CONDITION).collect(Collectors.toSet());
+    private static final Set<String> labels = new HashSet<>(Arrays.asList(LABEL_TRANSITION_DEFAULT_CONDITION));
 
     public String transition;
 
