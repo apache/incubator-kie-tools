@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
+import "@patternfly/patternfly/patternfly-charts.css";
 import { ChartVoronoiContainer } from "@patternfly/react-charts";
 import { DataSet } from "@kie-tools/dashbuilder-component-api";
 

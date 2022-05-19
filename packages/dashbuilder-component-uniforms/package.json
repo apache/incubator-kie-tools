@@ -34,7 +34,7 @@
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
-    "start": "webpack serve --host 0.0.0.0 --env WEBPACK_SERVE"
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev"
   },
   "babel": {
     "presets": [

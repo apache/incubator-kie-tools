@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ComponentDev } from "@kie-tools/dashbuilder-component-dev";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
-import { VictoryChartComponent } from "./VictoryChartComponent";
+import { SVGHeatmapComponent } from "../src/SVGHeatmapComponent";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<VictoryChartComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+ReactDOM.render(<SVGHeatmapComponent controller={api.getComponentController()} />, document.getElementById("app")!);
 
 new ComponentDev().start();

@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ComponentDev } from "@kie-tools/dashbuilder-component-dev";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
-import { TimeSeriesComponent } from "./TimeSeriesComponent";
+import { VictoryChartComponent } from "../src/VictoryChartComponent";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<TimeSeriesComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+ReactDOM.render(<VictoryChartComponent controller={api.getComponentController()} />, document.getElementById("app")!);
 
 new ComponentDev().start();

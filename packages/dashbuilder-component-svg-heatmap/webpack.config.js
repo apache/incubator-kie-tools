@@ -21,11 +21,9 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
-  const isDev = env.WEBPACK_SERVE;
   return merge(common(env), {
-    mode: isDev ? "development" : "production",
     entry: {
-      index: isDev ? "./src/index-dev.tsx" : "./src/index.tsx",
+      index: "./src/index.tsx",
     },
     plugins: [
       new HtmlWebpackPlugin({

@@ -30,7 +30,7 @@
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "build:dev": "rimraf dist && pnpm copy:css && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && pnpm copy:css && webpack",
-    "start": "webpack serve --host 0.0.0.0 --env WEBPACK_SERVE"
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev"
   },
   "babel": {
     "presets": [

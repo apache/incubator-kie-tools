@@ -17,18 +17,29 @@
 const path = require("path");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
+const CopyPlugin = require("copy-webpack-plugin");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
   return merge(common(env), {
+    mode: "development",
     entry: {
-      index: "./src/index.tsx",
+      index: path.resolve(__dirname, "./index.tsx"),
+    },
+    output: {
+      path: path.resolve("../dist-dev"),
     },
     plugins: [
       new HtmlWebpackPlugin({
         template: "./static/index.html",
         minify: false,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: path.resolve(__dirname, "manifest.dev.json"), to: "." },
+          { from: path.resolve(__dirname, "sampleSchema.json"), to: "." },
+        ],
       }),
     ],
 
@@ -37,7 +48,7 @@ module.exports = async (env) => {
     },
     devServer: {
       historyApiFallback: false,
-      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "../static") }],
       compress: false,
       port: 9001,
     },

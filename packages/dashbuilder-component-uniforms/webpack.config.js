@@ -15,30 +15,20 @@
  */
 
 const path = require("path");
-const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (env) => {
-  const devResources = [];
-  const isDev = env.WEBPACK_SERVE;
-
-  if (isDev) {
-    devResources.push({ from: "./static/manifest.dev.json", to: "./manifest.dev.json" });
-  }
   return merge(common(env), {
     entry: {
-      index: isDev ? "./src/index-dev.tsx" : "./src/index.tsx",
+      index: "./src/index.tsx",
     },
     plugins: [
       new HtmlWebpackPlugin({
         template: "./static/index.html",
         minify: false,
-      }),
-      new CopyPlugin({
-        patterns: [{ from: "./static/manifest.json", to: "manifest.json" }, ...devResources],
       }),
     ],
 
@@ -48,7 +38,7 @@ module.exports = async (env) => {
     devServer: {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
-      compress: true,
+      compress: false,
       port: 9001,
     },
   });

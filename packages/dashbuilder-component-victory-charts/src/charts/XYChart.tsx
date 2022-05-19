@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
+
 import * as Numeral from "numeral";
 import { BaseChart, XYChartSeries, XYChartDataLine, XYChartData } from "./BaseChart";
 import { Chart, ChartAxis, ChartGroup } from "@patternfly/react-charts";

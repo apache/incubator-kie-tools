@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { ComponentDev } from "@kie-tools/dashbuilder-component-dev";
 import { ComponentApi } from "@kie-tools/dashbuilder-component-api";
-import { FilteredTableComponent } from "./FilteredTableComponent";
+import { EChartsComponent } from "../src/EChartsComponent";
 
 const api = new ComponentApi();
 
-ReactDOM.render(<FilteredTableComponent controller={api.getComponentController()} />, document.getElementById("app")!);
+ReactDOM.render(<EChartsComponent controller={api.getComponentController()} />, document.getElementById("app")!);
 
 new ComponentDev().start();

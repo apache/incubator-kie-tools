@@ -28,11 +28,11 @@
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "build:dev-skip": "rimraf dist && webpack --env dev",
-    "build:prod-skip": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "build:dev-skipped": "rimraf dist && webpack --env dev",
+    "build:prod-skipped": "pnpm lint && pnpm test && rimraf dist && webpack",
     "build:dev": "echo \"skipped\"",
     "build:prod": "echo \"skipped\"",
-    "start": "webpack serve --host 0.0.0.0 --env WEBPACK_SERVE"
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev"
   },
   "babel": {
     "presets": [
