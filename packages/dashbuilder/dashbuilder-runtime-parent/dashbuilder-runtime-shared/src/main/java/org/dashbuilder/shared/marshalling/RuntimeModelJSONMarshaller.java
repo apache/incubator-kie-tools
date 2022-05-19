@@ -168,7 +168,7 @@ public class RuntimeModelJSONMarshaller {
                 try {
                     layoutTemplates.add(LayoutTemplateJSONMarshaller.get().fromJson(ltJson));
                 } catch (Exception e) {
-                    throw new RuntimeException("Error reading page " + (i + 1) + "\n" + e.getMessage(), e);
+                    throw new RuntimeException("Error reading page " + (i+1) + "\n" + e.getMessage(), e);
                 }
             }
         }
@@ -184,7 +184,7 @@ public class RuntimeModelJSONMarshaller {
                     var defJson = externalDefsArray.getObject(i).toJson();
                     externalDefs.add((ExternalDataSetDef) defMarshaller.fromJson(defJson));
                 } catch (Exception e) {
-                    throw new RuntimeException("Error reading data set definition " + i + "\n" + e.getMessage(), e);
+                    throw new RuntimeException("Error reading data set definition " + (i+1) + "\n" + e.getMessage(), e);
                 }
             }
         }
@@ -206,13 +206,15 @@ public class RuntimeModelJSONMarshaller {
 
     private HashMap<String, String> extractProperties(JsonObject jsonObject) {
         var properties = new HashMap<String, String>();
-        var propertiesObject = jsonObject.getObject(PROPERTIES);
-        if (propertiesObject != null &&
-            propertiesObject.getType() == JsonType.OBJECT &&
-            propertiesObject.keys() != null) {
-            for (String key : propertiesObject.keys()) {
-                properties.put(key, propertiesObject.getString(key));
+        try {
+            var propertiesObject = jsonObject.getObject(PROPERTIES);
+            if (propertiesObject != null && propertiesObject.getType() == JsonType.OBJECT) {
+                for (String key : propertiesObject.keys()) {
+                    properties.put(key, propertiesObject.getString(key));
+                }
             }
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Properties are invalid.", e);
         }
         return properties;
     }
