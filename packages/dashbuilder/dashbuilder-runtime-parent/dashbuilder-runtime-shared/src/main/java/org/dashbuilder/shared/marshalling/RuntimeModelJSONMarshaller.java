@@ -214,7 +214,8 @@ public class RuntimeModelJSONMarshaller {
                 }
             }
         } catch (Exception e) {
-            throw new IllegalArgumentException("Properties are invalid.", e);
+            DomGlobal.console.debug(e);
+            DomGlobal.console.log("Invalid properties");
         }
         return properties;
     }
