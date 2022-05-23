@@ -25,8 +25,6 @@ import org.jboss.errai.bus.server.annotations.Remote;
 @Remote
 public interface ComponentService {
 
-    List<ExternalComponent> listProvidedComponents();
-
     List<ExternalComponent> listExternalComponents();
     
     List<ExternalComponent> listAllComponents();

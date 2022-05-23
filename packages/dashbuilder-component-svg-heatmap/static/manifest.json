@@ -1,0 +1,35 @@
+{
+  "name": "Card",
+  "category": "Patternfly 4",
+  "icon": "pficon pficon-messages",
+  "parameters": [
+    {
+      "name": "color",
+      "type": "text",
+      "defaultValue": "black",
+      "label": "Color",
+      "category": "Card"
+    },
+    {
+      "name": "title",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Title",
+      "category": "Card"
+    },
+    {
+      "name": "subtitle",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Subtitle",
+      "category": "Card"
+    },
+    {
+      "name": "allowEmpty",
+      "type": "boolean",
+      "defaultValue": "true",
+      "label": "Allow Empty Data Sets",
+      "category": "Card"
+    }
+  ]
+}

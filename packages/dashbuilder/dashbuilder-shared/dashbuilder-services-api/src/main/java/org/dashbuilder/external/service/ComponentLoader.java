@@ -33,25 +33,11 @@ public interface ComponentLoader {
     List<ExternalComponent> loadExternal();
 
     /**
-     * Load external components that are provided (built-in) by Dashbuilder.
-     * @return
-     * The list of provided external components
-     */
-    List<ExternalComponent> loadProvided();
-
-    /**
      * The filesystem directory for external components.
      * 
      * @return
      */
     String getExternalComponentsDir();
-
-    /**
-     * The internal path for provided components.
-     * 
-     * @return
-     */
-    String getProvidedComponentsPath();
 
     boolean isExternalComponentsEnabled();
 

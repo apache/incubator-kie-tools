@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Should test LineChart component with different props 1`] = `"<div type=\\"line\\" options=\\"[object Object]\\" series=\\"[object Object]\\" width=\\"100%\\" height=\\"auto\\"></div>"`;
-
-exports[`Should test LineChart component with different props 2`] = `"<div type=\\"line\\" options=\\"[object Object]\\" series=\\"[object Object]\\" width=\\"100%\\" height=\\"auto\\"></div>"`;
-
-exports[`Should test LineChart component with different props 3`] = `"<div type=\\"area\\" options=\\"[object Object]\\" series=\\"[object Object]\\" width=\\"100%\\" height=\\"auto\\"></div>"`;

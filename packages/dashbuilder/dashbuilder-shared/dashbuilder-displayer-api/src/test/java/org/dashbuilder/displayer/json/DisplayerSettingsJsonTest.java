@@ -170,7 +170,6 @@ public class DisplayerSettingsJsonTest {
 
     @Test
     public void testSettingsMarshalling() {
-
         DisplayerSettingsJSONMarshaller displayerJsonMarshaller = DisplayerSettingsJSONMarshaller.get();
         JsonObject _jsonObj = displayerJsonMarshaller.toJsonObject(displayerSettings);
         assertNotNull(_jsonObj.toString());

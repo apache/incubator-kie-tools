@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,72 +14,58 @@
  * limitations under the License.
  */
 
-import { DashbuilderEditor } from "../src";
-import * as React from "react";
-import { useRef } from "react";
-import "./App.scss";
-import { ChannelType, EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorEnvelopeLocator, EditorTheme, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { isEmpty } from "underscore";
+import * as React from "react";
+import { useMemo, useState, useEffect } from "react";
+import "./App.scss";
 
-type State = string | undefined;
+export type ServerlessWorkflowType = "yml" | "yaml";
 
-const IMPORT_PARAM = "import";
-const PREVIEW_PARAM = "preview";
-const DEFAULT_DASHBOARD_NAME = "new-dashboard.yml";
+const FILE = {
+  fileName: "test.dash.yaml",
+  fileExtension: "dash.yaml",
+  getFileContents: function (): Promise<string | undefined> {
+    return Promise.resolve("");
+  },
+  isReadOnly: false,
+};
 
 export const App = () => {
-  const editor = useRef<EditorApi>();
+  const { editor, editorRef } = useEditorRef();
+  const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>(FILE);
 
-  const urlQueryParams = new URLSearchParams(window.location.search);
-  const importUrl = urlQueryParams.get(IMPORT_PARAM) || "";
-
-  const urlHashParams = new URLSearchParams(window.location.hash.replace(/#/, "?"));
-  const showPreviewParam = urlHashParams.get(PREVIEW_PARAM) === "true";
-
-  React.useEffect(() => {
-    if (importUrl !== null && !isEmpty(importUrl)) {
-      fetch(importUrl)
-        .then((req) => req.text())
-        .then((data) => editor.current!.setContent(DEFAULT_DASHBOARD_NAME, data).finally())
-        .catch((e) => editor.current!.setContent(DEFAULT_DASHBOARD_NAME, "").finally());
-    } else {
-      editor.current!.setContent(DEFAULT_DASHBOARD_NAME, "").finally();
-    }
+  useEffect(() => {
+    setEmbeddedEditorFile(FILE);
   }, []);
 
-  const container = useRef<HTMLDivElement | null>(null);
+  const editorEnvelopeLocator = useMemo(
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("sw", "**/*.dash.+(yml|yaml)", "", "dashbuilder-editor-envelope.html"),
+      ]),
+    []
+  );
 
   return (
     <Page>
-      <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
-        <div ref={container} className="editor-container">
-          <DashbuilderEditor
-            channelType={ChannelType.ONLINE}
-            showEditor={showPreviewParam}
-            ref={editor}
-            onShowPreviewChange={(v) => (window.location.hash = `${PREVIEW_PARAM}=${v}`)}
-            onReady={() => {
-              /*NOP*/
-            }}
-            onNewEdit={() => {
-              /*NOP*/
-            }}
-            setNotifications={() => {
-              /*NOP*/
-            }}
-            onStateControlCommandUpdate={(command) => {
-              if (command === StateControlCommand.UNDO) {
-                editor.current?.undo();
-              } else if (command === StateControlCommand.REDO) {
-                editor.current?.redo();
-              } else {
-                console.log("Nothing to do.");
-              }
-            }}
-          />
-        </div>
-      </PageSection>
+      {
+        <>
+          <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
+            <div className="editor-container">
+              <EmbeddedEditor
+                channelType={ChannelType.ONLINE}
+                editorEnvelopeLocator={editorEnvelopeLocator}
+                locale={"en"}
+                ref={editorRef}
+                file={embeddedEditorFile}
+              />
+            </div>
+          </PageSection>
+        </>
+      }
     </Page>
   );
 };

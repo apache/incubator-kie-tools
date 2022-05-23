@@ -271,8 +271,12 @@ public class DisplayerSettings {
     }
 
     public DisplayerType getType() {
-        String strType = settings.get(getSettingPath(DisplayerAttributeDef.TYPE));
+        var strType = settings.get(getSettingPath(DisplayerAttributeDef.TYPE));
         return DisplayerType.getByName(strType);
+    }
+
+    public String getTypeString() {
+        return settings.get(getSettingPath(DisplayerAttributeDef.TYPE));
     }
 
     public void setType(DisplayerType displayerType) {
@@ -693,11 +697,15 @@ public class DisplayerSettings {
     }
 
     public String getComponentId() {
+        var legacyComponentId = settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID_DEPRECATED));
+        if (legacyComponentId != null) {
+            return legacyComponentId;
+        }
         return settings.get(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID));
     }
 
     public String setComponentId(String componentId) {
-        return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID), componentId);
+        return settings.put(getSettingPath(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID_DEPRECATED), componentId);
     }
 
     public String getComponentWidth() {

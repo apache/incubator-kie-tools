@@ -16,10 +16,8 @@
 
 package org.dashbuilder.external.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -42,30 +40,15 @@ public class ComponentServiceImpl implements ComponentService {
     }
 
     @Override
-    public List<ExternalComponent> listProvidedComponents() {
-        return loader.loadProvided();
-    }
-
-    @Override
     public Optional<ExternalComponent> byId(String componentId) {
-        return Stream.concat(loader.loadProvided().stream(),
-                             loader.loadExternal().stream())
+        return loader.loadExternal().stream()
                      .filter(c -> componentId.equals(c.getId()))
                      .findFirst();
     }
     
     @Override
     public List<ExternalComponent> listAllComponents() {
-        List<ExternalComponent> allComponents = new ArrayList<>();
-        List<ExternalComponent> external = loader.loadExternal();
-        List<ExternalComponent> provided = loader.loadProvided();
-
-        external.forEach(c -> c.setProvided(false));
-        provided.forEach(c -> c.setProvided(true));
-        
-        allComponents.addAll(provided);
-        allComponents.addAll(external);
-        return allComponents;
+        return loader.loadExternal();
     }
 
 }

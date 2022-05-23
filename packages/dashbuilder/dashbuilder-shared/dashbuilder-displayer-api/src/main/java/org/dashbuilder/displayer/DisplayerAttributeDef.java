@@ -98,7 +98,8 @@ public class DisplayerAttributeDef {
     
     public static final DisplayerAttributeDef MAP_COLOR_SCHEME = new DisplayerAttributeDef("color_scheme", DisplayerAttributeGroupDef.MAP_GROUP);
 
-    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID = new DisplayerAttributeDef("external_component_id");
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID_DEPRECATED = new DisplayerAttributeDef("external_component_id");
+    public static final DisplayerAttributeDef EXTERNAL_COMPONENT_ID = new DisplayerAttributeDef("component");
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_PARTITION = new DisplayerAttributeDef("external_component_partition");
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_WIDTH_DEPRECATED = new DisplayerAttributeDef("external_component_width", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
     public static final DisplayerAttributeDef EXTERNAL_COMPONENT_HEIGHT_DEPRECATED = new DisplayerAttributeDef("external_component_height", DisplayerAttributeGroupDef.EXTERNAL_COMPONENT_GROUP);
