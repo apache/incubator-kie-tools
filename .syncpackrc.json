@@ -3,7 +3,10 @@
     {
       "dependencies": ["monaco-editor"],
       "packages": [
+        "@kie-tools/dashbuilder-editor",
         "@kie-tools/serverless-workflow-editor",
+        "@kie-tools/swf-sandbox",
+        "@kie-tools/text-editor",
         "vscode-extension-serverless-workflow-editor",
         "chrome-extension-serverless-workflow-editor"
       ]

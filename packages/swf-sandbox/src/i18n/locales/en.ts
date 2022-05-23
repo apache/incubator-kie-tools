@@ -157,6 +157,13 @@ export const en: AppI18n = {
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },
   },
+  notificationsPanel: {
+    name: "Notifications Panel",
+    tooltip: {
+      retractAll: "Retract All",
+      expandAll: "Expand All",
+    },
+  },
   kieSandboxExtendedServices: {
     dropdown: {
       shortConnected: (port: string) => `Connected to port ${port}`,

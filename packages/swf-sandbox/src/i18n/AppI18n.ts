@@ -151,6 +151,13 @@ interface AppDictionary extends ReferenceDictionary {
       note: string;
     };
   };
+  notificationsPanel: {
+    name: string;
+    tooltip: {
+      retractAll: string;
+      expandAll: string;
+    };
+  };
   kieSandboxExtendedServices: {
     dropdown: {
       shortConnected: (port: string) => string;

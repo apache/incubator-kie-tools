@@ -34,7 +34,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset } from "../fixme";
+import { isSandboxAsset, isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -50,6 +50,7 @@ import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflow
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { EditorSwfLanguageService } from "./api/EditorSwfLanguageService";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
+import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 
 export interface Props {
   workspaceId: string;
@@ -62,9 +63,10 @@ export function EditorPage(props: Props) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
-  const { locale } = useAppI18n();
+  const { locale, i18n } = useAppI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
+  const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
   const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
@@ -198,6 +200,25 @@ export function EditorPage(props: Props) {
     [workspaces, props.workspaceId]
   );
 
+  // validate
+  useEffect(() => {
+    if (!editor?.isReady) {
+      return;
+    }
+
+    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
+    setTimeout(() => {
+      editor?.validate().then((notifications) => {
+        editorPageDock?.setNotifications(
+          i18n.terms.validation,
+          "",
+          // Removing the notification path so that we don't group it by path, as we're only validating one file.
+          Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
+        );
+      });
+    }, 200);
+  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
+
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
       if (!workspaceFilePromise.data) {
@@ -294,29 +315,31 @@ export function EditorPage(props: Props) {
             <Page>
               <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
               <Divider />
-              <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                <div style={{ height: "100%" }}>
-                  {!isEditorReady && <LoadingSpinner />}
-                  {embeddedEditorFile && apiImpl && (
+              <EditorPageDockDrawer ref={editorPageDockRef} isEditorReady={editor?.isReady} workspaceFile={file}>
+                <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
+                  <div style={{ height: "100%" }}>
+                    {!isEditorReady && <LoadingSpinner />}
                     <div style={{ display: isEditorReady ? "inline" : "none" }}>
-                      <EmbeddedEditor
-                        /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                         * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                         */
-                        key={workspaces.getUniqueFileIdentifier(file)}
-                        ref={editorRef}
-                        file={embeddedEditorFile}
-                        editorEnvelopeLocator={editorEnvelopeLocator}
-                        channelType={ChannelType.ONLINE_MULTI_FILE}
-                        locale={locale}
-                        customChannelApiImpl={apiImpl}
-                        stateControl={stateControl}
-                        isReady={isReady}
-                      />
+                      {embeddedEditorFile && apiImpl && (
+                        <EmbeddedEditor
+                          /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                           * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                           */
+                          key={workspaces.getUniqueFileIdentifier(file)}
+                          ref={editorRef}
+                          file={embeddedEditorFile}
+                          editorEnvelopeLocator={editorEnvelopeLocator}
+                          channelType={ChannelType.ONLINE_MULTI_FILE}
+                          locale={locale}
+                          customChannelApiImpl={apiImpl}
+                          stateControl={stateControl}
+                          isReady={isReady}
+                        />
+                      )}
                     </div>
-                  )}
-                </div>
-              </PageSection>
+                  </div>
+                </PageSection>
+              </EditorPageDockDrawer>
             </Page>
           </>
         )}
