@@ -20,14 +20,17 @@ importers:
       "@testing-library/react-hooks": ^5.1.2
       "@types/chai": ^4.2.17
       "@types/chrome": ^0.0.143
+      "@types/echarts": ^4.9.15
       "@types/filesystem": ^0.0.32
       "@types/glob": ^7.1.3
+      "@types/heatmap.js": ^2.0.36
       "@types/inquirer": ^7.3.2
       "@types/invariant": ^2.2.34
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
       "@types/mocha": ^8.2.2
       "@types/node": ^15.0.2
+      "@types/numeral": ^2.0.2
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
@@ -60,6 +63,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       decompress: ^4.2.1
+      echarts: ^5.3.2
       electron-packager: ^15.2.0
       electron-rebuild: ^2.3.5
       eslint: ^7.26.0
@@ -85,6 +89,7 @@ importers:
       mocha-multi-reporters: ^1.5.1
       npm-run-all: ^4.1.5
       null-loader: ^4.0.1
+      numeral: ^2.0.6
       os-browserify: ^0.3.0
       path-browserify: ^1.0.1
       pkg: ^5.5.2
@@ -137,14 +142,17 @@ importers:
       "@testing-library/react-hooks": 5.1.3_react-test-renderer@17.0.2
       "@types/chai": 4.2.18
       "@types/chrome": 0.0.143
+      "@types/echarts": 4.9.15
       "@types/filesystem": 0.0.32
       "@types/glob": 7.1.3
+      "@types/heatmap.js": 2.0.37
       "@types/inquirer": 7.3.3
       "@types/invariant": 2.2.34
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
       "@types/mocha": 8.2.2
       "@types/node": 15.6.0
+      "@types/numeral": 2.0.2
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
@@ -177,6 +185,7 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       decompress: 4.2.1
+      echarts: 5.3.2
       electron-packager: 15.2.0
       electron-rebuild: 2.3.5
       eslint: 7.26.0
@@ -202,6 +211,7 @@ importers:
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       npm-run-all: 4.1.5
       null-loader: 4.0.1_webpack@5.70.0
+      numeral: 2.0.6
       os-browserify: 0.3.0
       path-browserify: 1.0.1
       pkg: 5.5.2
@@ -661,9 +671,232 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-assembler": 0.0.0
+    dependencies:
+      "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+
+  packages/dashbuilder-component-api:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
+  packages/dashbuilder-component-assembler:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-echarts": 0.0.0
+      "@kie-tools/dashbuilder-component-svg-heatmap": 0.0.0
+      "@kie-tools/dashbuilder-component-table": 0.0.0
+      "@kie-tools/dashbuilder-component-timeseries": 0.0.0
+      "@kie-tools/dashbuilder-component-uniforms": 0.0.0
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      "@kie-tools/dashbuilder-component-echarts": link:../dashbuilder-component-echarts
+      "@kie-tools/dashbuilder-component-svg-heatmap": link:../dashbuilder-component-svg-heatmap
+      "@kie-tools/dashbuilder-component-table": link:../dashbuilder-component-table
+      "@kie-tools/dashbuilder-component-timeseries": link:../dashbuilder-component-timeseries
+      "@kie-tools/dashbuilder-component-uniforms": link:../dashbuilder-component-uniforms
+    devDependencies:
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+
+  packages/dashbuilder-component-dev:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
+  packages/dashbuilder-component-echarts:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools/dashbuilder-component-echarts-base": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      "@kie-tools/dashbuilder-component-echarts-base": link:../dashbuilder-component-echarts-base
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+
+  packages/dashbuilder-component-echarts-base:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
+  packages/dashbuilder-component-svg-heatmap:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      heatmap.js: ^2.0.5
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      heatmap.js: 2.0.5
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+
+  packages/dashbuilder-component-table:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-table": ^4.27.15
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-table": 4.37.8_sfoxds7t5ydpegc3knd667wn6m
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+
+  packages/dashbuilder-component-timeseries:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools/dashbuilder-component-echarts-base": 0.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      "@kie-tools/dashbuilder-component-echarts-base": link:../dashbuilder-component-echarts-base
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+
+  packages/dashbuilder-component-uniforms:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-table": ^4.27.15
+      ajv: ^6.12.6
+      lodash: ^4.17.21
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      uniforms: ^3.5.5
+      uniforms-bridge-json-schema: ^3.5.5
+      uniforms-patternfly: ^4.7.5
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-table": 4.37.8_sfoxds7t5ydpegc3knd667wn6m
+      ajv: 6.12.6
+      lodash: 4.17.21
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      uniforms: 3.6.2_react@17.0.2
+      uniforms-bridge-json-schema: 3.6.2_react@17.0.2
+      uniforms-patternfly: 4.7.5_e4ekuclhs2oi3rmlncbxp5md3y
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+
+  packages/dashbuilder-component-victory-charts:
+    specifiers:
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@patternfly/react-charts": ^6.15.23
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-table": ^4.27.15
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
+      "@patternfly/react-charts": 6.15.23_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-table": 4.37.8_sfoxds7t5ydpegc3knd667wn6m
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
 
   packages/dashbuilder-editor:
     specifiers:
@@ -5370,6 +5603,13 @@ packages:
       { integrity: sha512-N3aUkw/yWPtdV5Ilze3UskxHjkM4mHjvQ8w9o0RK7Y6IvRkdwNyZhzGacYceCx9RTQsyw6sa1DXBHx4toDR8tQ== }
     dev: true
 
+  /@types/echarts/4.9.15:
+    resolution:
+      { integrity: sha512-C+GhOl8jYjpZrPE9JPYgI8pH8+mIfsib2WoE5E+WpM2wRWZDQhaIy6ZZ1HhaZOT1h+QkrHvDVWUoGvXCzcb0rw== }
+    dependencies:
+      "@types/zrender": 4.0.2
+    dev: true
+
   /@types/eslint-scope/3.7.3:
     resolution:
       { integrity: sha512-PB3ldyrcnAicT35TWPs5IcwKD8S333HMaa2VVv4+wdvebJkjWuW/xESoB8IwRcog8HYVYamb1g/R31Qv5Bx03g== }
@@ -5421,6 +5661,11 @@ packages:
     resolution: { integrity: sha1-wFTor02d11205jq8dviFFocU1LM= }
     dev: true
 
+  /@types/geojson/7946.0.8:
+    resolution:
+      { integrity: sha512-1rkryxURpr6aWP7R786/UQOkJ3PcpQiWkAXBmdWc7ryFWqN6a4xfK7BtjXvFBKO9LjQ+MWQSWxYeZX1OApnArA== }
+    dev: true
+
   /@types/glob/7.1.3:
     resolution:
       { integrity: sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w== }
@@ -5440,12 +5685,12 @@ packages:
       { integrity: sha512-IG8AE1m2pWtPqQ7wXhFhy6Q59bwwnLwO36v5Rit2FrbXCIp8Sk8E2PfUCreyrdo17STwFSKDAkitVuVYbpEHvQ== }
     dev: true
 
-  /@types/hast/2.3.4:
+  /@types/heatmap.js/2.0.37:
     resolution:
-      { integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g== }
+      { integrity: sha512-Zd1m6WaRSPnXcR1fETGnIvyRSE2rcQK21S0zIU/LWjwsrNyKBA3xdckrQhQpIdG+UTeu7WODv237s30Ky7IVXg== }
     dependencies:
-      "@types/unist": 2.0.6
-    dev: false
+      "@types/leaflet": 0.7.35
+    dev: true
 
   /@types/history/4.7.5:
     resolution:
@@ -5551,6 +5796,13 @@ packages:
     dependencies:
       "@types/node": 17.0.12
 
+  /@types/leaflet/0.7.35:
+    resolution:
+      { integrity: sha512-BK+pa9a9dYC1qJyYQulqkRI9N+ZnV4ycAmNSOUmom7C6xaAdmrhOoiCiDMhSQklyjPpasy3KWRTkTRTJuDbBSw== }
+    dependencies:
+      "@types/geojson": 7946.0.8
+    dev: true
+
   /@types/lodash/4.14.169:
     resolution:
       { integrity: sha512-DvmZHoHTFJ8zhVYwCLWbQ7uAbYQEk52Ev2/ZiQ7Y7gQGeV9pjBqjnQpECMHfKS1rCYAhMI7LHVxwyZLZinJgdw== }
@@ -5608,6 +5860,11 @@ packages:
   /@types/normalize-package-data/2.4.0:
     resolution:
       { integrity: sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA== }
+    dev: true
+
+  /@types/numeral/2.0.2:
+    resolution:
+      { integrity: sha512-A8F30k2gYJ/6e07spSCPpkuZu79LCnkPTvqmIWQzNGcrzwFKpVOydG41lNt5wZXjSI149qjyzC2L1+F2PD/NUA== }
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -5899,6 +6156,11 @@ packages:
       "@types/node": 17.0.12
     dev: true
     optional: true
+
+  /@types/zrender/4.0.2:
+    resolution:
+      { integrity: sha512-Y/3hGzYeFdJUD4yWV0a+jkk3kIjtrbjzxwqkAWRjXLGm6lpL2tckg3vgopkn9KKPK1QyzwGH+JSDvzbKJO59+Q== }
+    dev: true
 
   /@typescript-eslint/eslint-plugin/4.24.0_geldymnpyfy2fejyq4g6bajrxq:
     resolution:
@@ -10574,6 +10836,14 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
+  /echarts/5.3.2:
+    resolution:
+      { integrity: sha512-LWCt7ohOKdJqyiBJ0OGBmE9szLdfA9sGcsMEi+GGoc6+Xo75C+BkcT/6NNGRHAWtnQl2fNow05AQjznpap28TQ== }
+    dependencies:
+      tslib: 2.3.0
+      zrender: 5.3.1
+    dev: true
+
   /edge-launcher/1.2.2:
     resolution: { integrity: sha1-60Cq+9Bnpup27/+rBke81VCbN7I= }
     dev: true
@@ -12682,9 +12952,8 @@ packages:
     hasBin: true
     dev: true
 
-  /highlight.js/10.7.3:
-    resolution:
-      { integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A== }
+  /heatmap.js/2.0.5:
+    resolution: { integrity: sha1-Rm07hlE/XUkRKknSVwCrJzAUkVM= }
     dev: false
 
   /history/4.10.1:
@@ -16423,6 +16692,10 @@ packages:
   /number-is-nan/1.0.1:
     resolution: { integrity: sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0= }
     engines: { node: ">=0.10.0" }
+
+  /numeral/2.0.6:
+    resolution: { integrity: sha1-StCAk21EPCVhrtnyGX7//iX05QY= }
+    dev: true
 
   /nwsapi/2.2.0:
     resolution:
@@ -20946,6 +21219,11 @@ packages:
       { integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg== }
     dev: true
 
+  /tslib/2.3.0:
+    resolution:
+      { integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg== }
+    dev: true
+
   /tslib/2.3.1:
     resolution:
       { integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw== }
@@ -21182,6 +21460,24 @@ packages:
     dependencies:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      classnames: 2.3.1
+      invariant: 2.2.4
+      lodash: 4.17.21
+      react: 17.0.2
+      tslib: 2.3.1
+      uniforms: 3.6.2_react@17.0.2
+    dev: false
+
+  /uniforms-patternfly/4.7.5_e4ekuclhs2oi3rmlncbxp5md3y:
+    resolution:
+      { integrity: sha512-ntK+Yv9ZeORm3uvcX9xga/9SdXoNH3p26YSmBIcnapfDy2D6IyDXDBphCcpD4FvodL5UOlx13rC5nUk4GPtMvA== }
+    engines: { npm: ">=5.0.0" }
+    peerDependencies:
+      "@patternfly/react-core": ^4.135.0
+      "@patternfly/react-icons": ^4.11.0
+      react: ^17.0.0 || ^16.8.0
+    dependencies:
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       classnames: 2.3.1
       invariant: 2.2.4
       lodash: 4.17.21
@@ -22766,3 +23062,10 @@ packages:
     dependencies:
       tslib: 2.3.1
     dev: false
+
+  /zrender/5.3.1:
+    resolution:
+      { integrity: sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw== }
+    dependencies:
+      tslib: 2.3.0
+    dev: true

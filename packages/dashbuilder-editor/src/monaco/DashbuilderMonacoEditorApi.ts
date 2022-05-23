@@ -103,7 +103,7 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyY, () => {
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyZ, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.REDO);
     });
 

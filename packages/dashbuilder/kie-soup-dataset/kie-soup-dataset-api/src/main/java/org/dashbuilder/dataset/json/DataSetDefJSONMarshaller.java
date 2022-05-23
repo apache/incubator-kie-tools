@@ -133,6 +133,8 @@ public class DataSetDefJSONMarshaller {
 
         if (!isBlank(uuid)) {
             def.setUUID(uuid);
+        } else {
+            throw new IllegalArgumentException("Data Sets require the uuid field.");
         }
         if (!isBlank(name)) {
             def.setName(name);

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import com.ait.lienzo.client.core.shape.wires.layout.direction.DirectionLayout;
 import org.kie.workbench.common.stunner.core.client.shape.TextWrapperStrategy;
 import org.kie.workbench.common.stunner.core.client.shape.view.HasTitle;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
@@ -179,8 +180,8 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
         // Asymmetric shapes such as rectangles
         if (!isSymmetric) {
             theSizeHandler = new SizeHandler.Builder<>()
-                    .maxWidth(o-> 90d)
-                    .maxHeight(o-> 90d)
+                    .maxWidth(o -> 90d)
+                    .maxHeight(o -> 90d)
                     .build();
             return Optional.of((BiConsumer<View<W>, SVGShapeView>) theSizeHandler::handle);
         }
@@ -196,7 +197,7 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
             extends FontHandler.Builder<W, V> {
 
         public DefaultFontHandlerBuilder(FontStyle fontStyle) {
-            switch (fontStyle){
+            switch (fontStyle) {
                 case INSIDE_CENTER_WITH_AlPHA:
                     initInsideCenterWithAlpha();
                     break;
@@ -218,7 +219,9 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
                     .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
-                    .margin(HasTitle.HorizontalAlignment.LEFT, 85d)
+                    .margins(o -> new HashMap<Enum, Double>() {{
+                        put(DirectionLayout.HorizontalAlignment.LEFT, 85d);
+                    }})
                     .alpha(bean -> 1d);
         }
 

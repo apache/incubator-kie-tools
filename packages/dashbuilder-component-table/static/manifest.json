@@ -1,0 +1,35 @@
+{
+  "name": "Filtered Table",
+  "category": "Patternfly 4",
+  "icon": "pficon pficon-messages",
+  "parameters": [
+    {
+      "name": "alertColumn",
+      "type": "number",
+      "defaultValue": "",
+      "label": "Column",
+      "category": "Alert"
+    },
+    {
+      "name": "alertDanger",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Danger",
+      "category": "Alert"
+    },
+    {
+      "name": "alertGood",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Good",
+      "category": "Alert"
+    },
+    {
+      "name": "alertGreat",
+      "type": "text",
+      "defaultValue": "",
+      "label": "Great",
+      "category": "Alert"
+    }
+  ]
+}

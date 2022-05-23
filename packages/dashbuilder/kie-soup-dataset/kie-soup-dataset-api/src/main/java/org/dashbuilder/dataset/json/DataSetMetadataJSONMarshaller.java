@@ -75,7 +75,7 @@ public class DataSetMetadataJSONMarshaller {
             try {
                 definition = dataSetDefJSONMarshaller.fromJsonObj(definitionObj);
             } catch (Exception e) {
-                throw new RuntimeException("Error parsing data set definition");
+                throw new RuntimeException("Error parsing data set definition", e);
             }
         }
         return new DataSetMetadataImpl(definition, uuid, numberOfRows, numberOfColumns, columnIds, columnTypes, estimatedSize);

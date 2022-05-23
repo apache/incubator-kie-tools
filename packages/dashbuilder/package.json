@@ -11,6 +11,9 @@
   "files": [
     "**/dist/*"
   ],
+  "dependencies": {
+    "@kie-tools/dashbuilder-component-assembler": "0.0.0"
+  },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0"
@@ -18,15 +21,18 @@
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
-    "install:mvnw": "mvn wrapper:wrapper",
+    "build:prod:authoring": "cd ./dashbuilder-authoring/ && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not) && cd -",
+    "build:prod:runtime": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not) && cd -",
+    "delete:components": "rimraf ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
+    "copy:components": "pnpm delete:components && copyfiles -u 3 \"../dashbuilder-component-assembler/dist/**/*\" ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
     "dist": "rimraf dist/ && mkdir dist && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
-    "build:dev:linux": "pnpm install:mvnw && mvn clean install -DskipTests",
+    "build:dev:linux": "mvn clean install -DskipTests -Dgwt.compiler.skip=true",
     "build:dev:win32": "echo \"Build not supported on Windows\"",
     "build:dev:darwin": "echo \"Build not supported on macOS\"",
     "build:dev": "run-script-os",
-    "build:prod:linux": "pnpm lint && pnpm install:mvnw && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not) && pnpm dist",
+    "build:prod:linux": "pnpm lint && mvn clean install -Dgwt.compiler.skip=true -DskipTests=$(build-env global.build.test --not) && pnpm build:prod:authoring && pnpm build:prod:runtime && pnpm dist",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "build:prod:darwin": "echo \"Build not supported on macOS\"",
-    "build:prod": "run-script-os"
+    "build:prod": "pnpm copy:components && run-script-os && pnpm delete:components"
   }
 }

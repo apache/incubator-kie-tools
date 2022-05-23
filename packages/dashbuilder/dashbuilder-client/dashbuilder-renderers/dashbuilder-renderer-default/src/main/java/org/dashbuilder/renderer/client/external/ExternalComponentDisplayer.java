@@ -86,7 +86,7 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
                 .setColumnsTitle("Columns");
 
         return new DisplayerConstraints(lookupConstraints).supportsAttribute(DisplayerAttributeDef.TYPE)
-                .supportsAttribute(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID)
+                .supportsAttribute(DisplayerAttributeDef.EXTERNAL_COMPONENT_ID_DEPRECATED)
                 .supportsAttribute(DisplayerAttributeGroupDef.COLUMNS_GROUP)
                 .supportsAttribute(DisplayerAttributeGroupDef.FILTER_GROUP)
                 .supportsAttribute(DisplayerAttributeGroupDef.REFRESH_GROUP)
@@ -160,15 +160,18 @@ public class ExternalComponentDisplayer extends AbstractErraiDisplayer<ExternalC
 
     public String[][] buildData(DataSet ds) {
         var columns = ds.getColumns();
-        int rows = columns.get(0).getValues().size();
+        var result = new String[0][0];
         int cols = columns.size();
-        var result = new String[rows][];
-        for (int i = 0; i < rows; i++) {
-            var line = new String[cols];
-            for (int j = 0; j < cols; j++) {
-                line[j] = getEvaluatedValue(ds, i, j);
+        if (cols > 0) {
+            int rows = columns.get(0).getValues().size();
+            result = new String[rows][];
+            for (int i = 0; i < rows; i++) {
+                var line = new String[cols];
+                for (int j = 0; j < cols; j++) {
+                    line[j] = getEvaluatedValue(ds, i, j);
+                }
+                result[i] = line;
             }
-            result[i] = line;
         }
         return result;
     }

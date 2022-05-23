@@ -16,12 +16,13 @@
 
 package org.kie.workbench.common.stunner.client.widgets.canvas;
 
+import com.ait.lienzo.client.widget.panel.impl.BoundsProviderFactory;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 
 public class ScrollableLienzoPanelView
         extends ScrollablePanel {
 
     public ScrollableLienzoPanelView() {
-        super(StunnerBoundsProviderFactory.newProvider());
+        super(new BoundsProviderFactory.WiresBoundsProvider());
     }
 }

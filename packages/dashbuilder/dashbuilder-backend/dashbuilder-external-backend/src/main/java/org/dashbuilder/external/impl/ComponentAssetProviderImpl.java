@@ -21,7 +21,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,7 +44,7 @@ public class ComponentAssetProviderImpl implements ComponentAssetProvider {
         if (componentAssetPath != null) {
             String normalizedAssetPath = FilenameUtils.normalizeNoEndSeparator(componentAssetPath);
             if (normalizedAssetPath != null) {
-                return getInternalComponentAsset(normalizedAssetPath).orElseGet(() -> getExternalComponentAsset(normalizedAssetPath));
+                return getExternalComponentAsset(normalizedAssetPath);
             }
         }
         throw new IllegalArgumentException("Invalid Asset Path.");
@@ -53,12 +52,6 @@ public class ComponentAssetProviderImpl implements ComponentAssetProvider {
 
     String fixSlashes(String componentAssetPath) {
         return componentAssetPath == null ? "" : componentAssetPath.replaceAll("\\\\", "/");
-    }
-
-    private Optional<InputStream> getInternalComponentAsset(String componentAssetPath) {
-        String internalComponentsBaseDir = componentsLoader.getProvidedComponentsPath();
-        String fullPath = "/" + internalComponentsBaseDir + "/" + fixSlashes(componentAssetPath);
-        return Optional.ofNullable(this.getClass().getResourceAsStream(fullPath));
     }
 
     private InputStream getExternalComponentAsset(String componentAssetPath) {
