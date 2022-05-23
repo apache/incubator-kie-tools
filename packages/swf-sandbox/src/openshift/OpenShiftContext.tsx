@@ -22,8 +22,14 @@ import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
 export interface OpenShiftContextType {
   deployments: OpenShiftDeployedModel[];
 
+  isDeployDropdownOpen: boolean;
+  setDeployDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
   isDeploymentsDropdownOpen: boolean;
   setDeploymentsDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+
+  isConfirmDeployModalOpen: boolean;
+  setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
   deploy(args: { workspaceFile: WorkspaceFile; preview?: string }): Promise<string>;
   uploadArtifactToServiceRegistry(artifactId: string, content: string): Promise<void>;

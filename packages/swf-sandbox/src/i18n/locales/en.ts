@@ -169,7 +169,7 @@ export const en: AppI18n = {
       shortConnected: (port: string) => `Connected to port ${port}`,
       tooltip: {
         connected: `${en_common.names.kieSandboxExtendedServices} is connected.`,
-        install: `Setup ${en_common.names.kieSandboxExtendedServices} to use this feature. Click to install.`,
+        install: `Setup ${en_common.names.kieSandboxExtendedServices} to use this feature.`,
         outdated: `${en_common.names.kieSandboxExtendedServices} is outdated. Click to update.`,
         disconnected: `${en_common.names.kieSandboxExtendedServices} is disconnected.`,
       },

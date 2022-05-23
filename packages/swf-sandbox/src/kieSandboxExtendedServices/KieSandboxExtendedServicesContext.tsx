@@ -20,8 +20,7 @@ import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
 
 export enum DependentFeature {
-  DMN_RUNNER = "DMN_RUNNER",
-  DMN_DEV_SANDBOX = "DMN_DEV_SANDBOX",
+  OPENSHIFT = "OPENSHIFT",
 }
 
 export interface KieSandboxExtendedServicesContextType {

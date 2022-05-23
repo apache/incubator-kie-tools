@@ -59,7 +59,6 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { isServerlessDecision, isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import {
@@ -82,14 +81,17 @@ import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
-import { DeployToolbar } from "./DeployToolbar";
+import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { FileSwitcher } from "./FileSwitcher";
+import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
+import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 export interface Props {
   alerts: AlertsController | undefined;
   alertsRef: (controller: AlertsController) => void;
   editor: EmbeddedEditorRef | undefined;
   workspaceFile: WorkspaceFile;
+  editorPageDock: EditorPageDockDrawerRef | undefined;
 }
 
 const showWhenSmall: ToolbarItemProps["visibility"] = {
@@ -118,7 +120,6 @@ const hideWhenTiny: ToolbarItemProps["visibility"] = {
 
 export function EditorToolbar(props: Props) {
   const routes = useRoutes();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const history = useHistory();
@@ -1478,35 +1479,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       </Dropdown>
                     </ToolbarItem>
                     {canBeDeployed && (
-                      <ToolbarItem>
-                        <FlexItem>
-                          <DeployToolbar
-                            editor={props.editor}
-                            alerts={props.alerts}
-                            workspaceFile={props.workspaceFile}
-                          />
-                        </FlexItem>
-                        {/* <PromiseStateWrapper
-                        promise={workspaceOpenApiFilePromise}
-                        pending={<LoadingSpinner />}
-                        resolved={(file) => (
-                          <FlexItem>
-                            <Button
-                              isInline={true}
-                              variant={ButtonVariant.link}
-                              onClick={() => setSwaggerModalOpen(true)}
-                            >
-                              OpenAPI spec
-                            </Button>
-                            <SwaggerEditorModal
-                              workspaceFile={file}
-                              isOpen={swaggerModalOpen}
-                              workspaceName={workspace.descriptor.name}
-                              onClose={() => setSwaggerModalOpen(false)}
-                            />
-                          </FlexItem>
-                        )}
-                      /> */}
+                      <ToolbarItem visibility={hideWhenSmall}>
+                        <KieSandboxExtendedServicesButtons
+                          workspace={workspace}
+                          workspaceFile={props.workspaceFile}
+                          editorPageDock={props.editorPageDock}
+                        />
                       </ToolbarItem>
                     )}
                     {workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST && (
@@ -1672,6 +1650,16 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                           createSavePointDropdownItem,
                           <Divider key={"divider-1"} />,
                           ...shareDropdownItems,
+                          ...(!canBeDeployed
+                            ? []
+                            : [
+                                <Divider key={"divider-2"} />,
+                                <KieSandboxExtendedServicesDropdownGroup
+                                  workspace={workspace}
+                                  workspaceFile={props.workspaceFile}
+                                  key="kie-sandbox-extended-services-group"
+                                />,
+                              ]),
                         ]}
                       />
                     </ToolbarItem>

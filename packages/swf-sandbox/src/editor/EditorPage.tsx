@@ -34,7 +34,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflow } from "../fixme";
+import { isSandboxAsset } from "../fixme";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -45,12 +45,13 @@ import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
-import { EditorToolbar } from "./EditorToolbar";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflowEditorChannelApiImpl";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { EditorSwfLanguageService } from "./api/EditorSwfLanguageService";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
+import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
+import { EditorToolbar } from "./EditorToolbar";
 
 export interface Props {
   workspaceId: string;
@@ -200,24 +201,25 @@ export function EditorPage(props: Props) {
     [workspaces, props.workspaceId]
   );
 
+  // TODO: uncomment when notification is available
   // validate
-  useEffect(() => {
-    if (!editor?.isReady) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (!editor?.isReady) {
+  //     return;
+  //   }
 
-    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
-    setTimeout(() => {
-      editor?.validate().then((notifications) => {
-        editorPageDock?.setNotifications(
-          i18n.terms.validation,
-          "",
-          // Removing the notification path so that we don't group it by path, as we're only validating one file.
-          Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
-        );
-      });
-    }, 200);
-  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
+  //   //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
+  //   setTimeout(() => {
+  //     editor?.validate().then((notifications) => {
+  //       editorPageDock?.setNotifications(
+  //         i18n.terms.validation,
+  //         "",
+  //         // Removing the notification path so that we don't group it by path, as we're only validating one file.
+  //         Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
+  //       );
+  //     });
+  //   }, 200);
+  // }, [workspaceFilePromise, editor, i18n, editorPageDock]);
 
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
@@ -313,7 +315,13 @@ export function EditorPage(props: Props) {
         resolved={(file) => (
           <>
             <Page>
-              <EditorToolbar workspaceFile={file} editor={editor} alerts={alerts} alertsRef={alertsRef} />
+              <EditorToolbar
+                workspaceFile={file}
+                editor={editor}
+                alerts={alerts}
+                alertsRef={alertsRef}
+                editorPageDock={editorPageDock}
+              />
               <Divider />
               <EditorPageDockDrawer ref={editorPageDockRef} isEditorReady={editor?.isReady} workspaceFile={file}>
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
@@ -341,6 +349,7 @@ export function EditorPage(props: Props) {
                 </PageSection>
               </EditorPageDockDrawer>
             </Page>
+            <ConfirmDeployModal workspaceFile={file} alerts={alerts} editor={editor} />
           </>
         )}
       />

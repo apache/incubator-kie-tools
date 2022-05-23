@@ -40,7 +40,9 @@ export function OpenShiftContextProvider(props: Props) {
   const settingsDispatch = useSettingsDispatch();
   const workspaces = useWorkspaces();
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
+  const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
+  const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
 
   const deploy = useCallback(
     async (args: { workspaceFile: WorkspaceFile; preview?: string }) => {
@@ -170,13 +172,25 @@ export function OpenShiftContextProvider(props: Props) {
   const value = useMemo(
     () => ({
       deployments,
+      isDeployDropdownOpen,
+      setDeployDropdownOpen,
       isDeploymentsDropdownOpen,
       setDeploymentsDropdownOpen,
+      isConfirmDeployModalOpen,
+      setConfirmDeployModalOpen,
       deploy,
       uploadArtifactToServiceRegistry,
       fetchOpenApiFile,
     }),
-    [deployments, isDeploymentsDropdownOpen, deploy, uploadArtifactToServiceRegistry, fetchOpenApiFile]
+    [
+      deployments,
+      isDeployDropdownOpen,
+      isDeploymentsDropdownOpen,
+      isConfirmDeployModalOpen,
+      deploy,
+      uploadArtifactToServiceRegistry,
+      fetchOpenApiFile,
+    ]
   );
 
   return <OpenShiftContext.Provider value={value}>{props.children}</OpenShiftContext.Provider>;
