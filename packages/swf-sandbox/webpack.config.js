@@ -84,7 +84,11 @@ module.exports = async (env) => {
           { from: "./static/favicon.svg", to: "./favicon.svg" },
           { from: "./static/env.json", to: "./env.json" },
           // dashbuilder bundle
-          { from: "../dashbuilder-editor/dist/dashbuilder-runtime-client", to: "./dashbuilder-runtime-client" },
+          {
+            from: "../dashbuilder-editor/dist/dashbuilder-runtime-client",
+            to: "./dashbuilder-runtime-client",
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
+          },
         ],
       }),
       new ProvidePlugin({
