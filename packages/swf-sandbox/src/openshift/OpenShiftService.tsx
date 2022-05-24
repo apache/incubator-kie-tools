@@ -119,11 +119,7 @@ export class OpenShiftService {
       });
   }
 
-  public async deploy(args: {
-    workspaceFile: WorkspaceFile;
-    workspaceName: string;
-    preview?: string;
-  }): Promise<string> {
+  public async deploy(args: { workspaceFile: WorkspaceFile; workspaceName: string }): Promise<string> {
     const resourceName = `sandbox-${this.generateRandomId()}`;
 
     const resourceArgs = {
@@ -160,7 +156,6 @@ export class OpenShiftService {
         file: {
           path: args.workspaceFile.relativePath,
           content: processedFileContent,
-          preview: args.preview ?? "",
         },
       }),
       rollbacks.slice(--rollbacksCount)

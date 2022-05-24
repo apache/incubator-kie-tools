@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
@@ -26,13 +25,7 @@ import { useAppI18n } from "../../i18n";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
-interface Props {
-  workspaceFile: WorkspaceFile;
-  alerts: AlertsController | undefined;
-  editor?: EmbeddedEditorRef;
-}
-
-export function ConfirmDeployModal(props: Props) {
+export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts: AlertsController | undefined }) {
   const openshift = useOpenShift();
   const { i18n } = useAppI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
@@ -118,7 +111,6 @@ export function ConfirmDeployModal(props: Props) {
     setConfirmLoading(true);
     const resourceName = await openshift.deploy({
       workspaceFile: props.workspaceFile,
-      preview: await props.editor?.getPreview(),
     });
     setConfirmLoading(false);
 
@@ -145,7 +137,6 @@ export function ConfirmDeployModal(props: Props) {
     isConfirmLoading,
     openshift,
     props.workspaceFile,
-    props.editor,
     setDeploySuccess,
     fetchOpenApiSpec,
     openApiUploadSuccess,

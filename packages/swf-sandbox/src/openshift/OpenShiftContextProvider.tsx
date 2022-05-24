@@ -45,7 +45,7 @@ export function OpenShiftContextProvider(props: Props) {
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
 
   const deploy = useCallback(
-    async (args: { workspaceFile: WorkspaceFile; preview?: string }) => {
+    async (args: { workspaceFile: WorkspaceFile }) => {
       if (!isOpenShiftConfigValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
@@ -72,7 +72,6 @@ export function OpenShiftContextProvider(props: Props) {
       return settingsDispatch.openshift.service.deploy({
         workspaceName: workspaceName,
         workspaceFile: jsonFile,
-        preview: args.preview,
       });
     },
     [settings.openshift.config, settingsDispatch.openshift.service, workspaces.descriptorService]

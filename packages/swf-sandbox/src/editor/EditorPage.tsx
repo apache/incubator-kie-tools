@@ -349,7 +349,7 @@ export function EditorPage(props: Props) {
                 </PageSection>
               </EditorPageDockDrawer>
             </Page>
-            <ConfirmDeployModal workspaceFile={file} alerts={alerts} editor={editor} />
+            <ConfirmDeployModal workspaceFile={file} alerts={alerts} />
           </>
         )}
       />
