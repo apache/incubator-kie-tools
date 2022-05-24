@@ -23,14 +23,18 @@ import { useCallback, useState } from "react";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useAppI18n } from "../../i18n";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
+import { isServiceAccountConfigValid } from "../../settings/serviceAccount/ServiceAccountConfig";
+import { isServiceRegistryConfigValid } from "../../settings/serviceRegistry/ServiceRegistryConfig";
+import { useSettings } from "../../settings/SettingsContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts: AlertsController | undefined }) {
   const openshift = useOpenShift();
+  const settings = useSettings();
   const { i18n } = useAppI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
 
-  const setDeployError = useAlert(
+  const setDeployStartedError = useAlert(
     props.alerts,
     useCallback(({ close }) => {
       return (
@@ -46,9 +50,9 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     }, [])
   );
 
-  const setDeploySuccess = useAlert(
+  const setDeployStartedSuccess = useAlert(
     props.alerts,
-    useCallback(({ close }) => {
+    useCallback(({ close }, staticArgs: { shouldUploadOpenApi: boolean }) => {
       return (
         <Alert
           className="pf-u-mb-md"
@@ -56,13 +60,31 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
           title={
             <>
               <Spinner size={"sm"} />
-              &nbsp;&nbsp; A new deployment has been started. Its associated OpenAPI spec will be uploaded to Service
-              Registry as soon as the deployment is up and running. Please do not close this browser tab until the
-              operation is completed.
+              &nbsp;&nbsp;
+              {staticArgs.shouldUploadOpenApi
+                ? "A new deployment has been started. Its associated OpenAPI spec will be uploaded to Service Registry as soon as the deployment is up and running."
+                : "Your deployment has been successfully started and will be available shortly."}
+              &nbsp;Please do not close this browser tab until the operation is completed.
             </>
           }
           aria-live="polite"
           data-testid="alert-deploy-success"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
+  const deployEndSuccess = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-u-mb-md"
+          variant="success"
+          title={"Your deployment is up and running."}
+          aria-live="polite"
+          data-testid="alert-upload-success"
           actionClose={<AlertActionCloseButton onClose={close} />}
         />
       );
@@ -86,17 +108,19 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
   );
 
   const fetchOpenApiSpec = useCallback(
-    async (deploymentResourceName: string) => {
+    async (deploymentResourceName: string, shouldUploadOpenApi: boolean) => {
       const openApiContents = await openshift.fetchOpenApiFile(deploymentResourceName);
 
       if (!openApiContents) {
         return false;
       }
 
-      await openshift.uploadArtifactToServiceRegistry(
-        `${props.workspaceFile.nameWithoutExtension} ${deploymentResourceName}`,
-        openApiContents
-      );
+      if (shouldUploadOpenApi) {
+        await openshift.uploadArtifactToServiceRegistry(
+          `${props.workspaceFile.nameWithoutExtension} ${deploymentResourceName}`,
+          openApiContents
+        );
+      }
 
       return true;
     },
@@ -117,30 +141,41 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     openshift.setConfirmDeployModalOpen(false);
 
     if (resourceName) {
+      const shouldUploadOpenApi =
+        isServiceAccountConfigValid(settings.serviceAccount.config) &&
+        isServiceRegistryConfigValid(settings.serviceRegistry.config);
+
       openshift.setDeploymentsDropdownOpen(true);
-      setDeploySuccess.show();
+      setDeployStartedSuccess.show({ shouldUploadOpenApi });
 
       const fetchOpenApiTask = window.setInterval(async () => {
-        const success = await fetchOpenApiSpec(resourceName);
+        const success = await fetchOpenApiSpec(resourceName, shouldUploadOpenApi);
         if (!success) {
           return;
         }
 
         window.clearInterval(fetchOpenApiTask);
-        setDeploySuccess.close();
-        openApiUploadSuccess.show();
+        setDeployStartedSuccess.close();
+        if (shouldUploadOpenApi) {
+          openApiUploadSuccess.show();
+        } else {
+          deployEndSuccess.show();
+        }
       }, 5000);
     } else {
-      setDeployError.show();
+      setDeployStartedError.show();
     }
   }, [
     isConfirmLoading,
     openshift,
     props.workspaceFile,
-    setDeploySuccess,
+    settings.serviceAccount.config,
+    settings.serviceRegistry.config,
+    setDeployStartedSuccess,
     fetchOpenApiSpec,
     openApiUploadSuccess,
-    setDeployError,
+    deployEndSuccess,
+    setDeployStartedError,
   ]);
 
   const onCancel = useCallback(() => {
