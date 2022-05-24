@@ -298,6 +298,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  SWF_SANDBOX__baseImageBuildTags: {
+    name: "SWF_SANDBOX__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
 };
 
 module.exports = {
@@ -473,6 +478,7 @@ module.exports = {
       account: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageAccount),
       name: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageName),
       tag: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageTag),
+      buildTags: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageBuildTags),
     },
   },
 

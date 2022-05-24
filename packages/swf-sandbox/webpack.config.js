@@ -185,7 +185,7 @@ function getGtmResource() {
 }
 
 function getBuildInfo() {
-  const buildInfo = buildEnv.onlineEditor.buildInfo;
+  const buildInfo = buildEnv.swfSandbox.buildInfo;
   console.info(`SWF Sandbox :: Build info: ${buildInfo}`);
   return buildInfo;
 }
