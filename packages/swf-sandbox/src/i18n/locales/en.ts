@@ -98,7 +98,7 @@ export const en: AppI18n = {
           name: "Connect",
           connectionSuccess: "Connection successfully established.",
           connectionError: "Connection refused.",
-          introduction: "Now you are able to deploy DMN decisions to your OpenShift instance.",
+          introduction: "Now you are able to deploy models to your OpenShift instance.",
           configNote: "Your configuration will be stored as browser cookies after the operations above.",
           connectionErrorLong: `A connection with your ${en_common.names.shortDevSandbox} instance could not be established.`,
           checkInfo: "Please check the information provided and try again.",
@@ -114,7 +114,7 @@ export const en: AppI18n = {
     },
     configModal: {
       hostInfo: `The hostname associated with your instance.`,
-      namespaceInfo: `The namespace (project) you want to deploy the Decision Model.`,
+      namespaceInfo: `The namespace (project) you want to deploy models.`,
       tokenInfo: `The token associated with your instance.`,
       validationError: "You must fill out all required fields before you can proceed.",
       connectionError: "Connection refused. Please check the information provided.",

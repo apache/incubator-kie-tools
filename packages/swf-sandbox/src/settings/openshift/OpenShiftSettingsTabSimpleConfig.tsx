@@ -174,8 +174,8 @@ export function OpenShiftSettingsTabSimpleConfig() {
         </TextContent>
         <TextContent>
           <Text component={TextVariants.small}>
-            Data you provide here is necessary for deploying Serverless Workflows you design to your OpenShift instance.
-            All information is locally stored in your browser and never shared with anyone.
+            Data you provide here is necessary for deploying models you design to your OpenShift instance. All
+            information is locally stored in your browser and never shared with anyone.
           </Text>
         </TextContent>
         <FormGroup

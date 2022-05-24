@@ -103,7 +103,7 @@ export const EditorPageDockDrawer = React.forwardRef<
 
   const notificationsPanelDisabledReason = useMemo(() => {
     if (notificationsPanelIsDisabled) {
-      return "This tab is not supported for this editor yet";
+      return "This tab is not supported for this editor";
     }
     return "";
   }, [notificationsPanelIsDisabled]);

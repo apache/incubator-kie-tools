@@ -159,9 +159,8 @@ export function GitHubSettingsTab() {
             </TextContent>
             <TextContent>
               <Text component={TextVariants.small}>
-                Data you provide here is necessary for creating repositories containing Serverless Workflows you design,
-                and syncing changes with GitHub. All information is locally stored in your browser and never shared with
-                anyone.
+                Data you provide here is necessary for creating repositories containing models you design, and syncing
+                changes with GitHub. All information is locally stored in your browser and never shared with anyone.
               </Text>
             </TextContent>
             <h3>
