@@ -146,15 +146,14 @@ public class LayoutTemplateJSONMarshallerTest {
     @Test
     public void toJsonTest() {
 
-        LayoutTemplate lt = new LayoutTemplate(LT_NAME);
-
+        var lt = new LayoutTemplate(LT_NAME);
+        var lr = new LayoutRow(LR_HEIGHT, Collections.singletonMap(PROP_KEY, PROP_VAL));
+        var lc = new LayoutColumn(LC_SPAN, LC_HEIGHT, Collections.singletonMap(PROP_KEY, PROP_VAL));
+        var lcr = new LayoutRow(LCR_HEIGHT, Collections.emptyMap());
+        var comp = new LayoutComponent(LCOMP_DRAG_TYPE);
         lt.setStyle(Style.PAGE);
         lt.addLayoutProperty(PROP_KEY, PROP_VAL);
-        LayoutRow lr = new LayoutRow(LR_HEIGHT, Collections.singletonMap(PROP_KEY, PROP_VAL));
-        LayoutColumn lc = new LayoutColumn(LC_SPAN, LC_HEIGHT, Collections.singletonMap(PROP_KEY, PROP_VAL));
-        LayoutRow lcr = new LayoutRow(LCR_HEIGHT, Collections.emptyMap());
         lc.addRow(lcr);
-        LayoutComponent comp = new LayoutComponent(LCOMP_DRAG_TYPE);
         comp.addProperty(PROP_KEY, PROP_VAL);
         lc.add(comp);
 
@@ -183,10 +182,10 @@ public class LayoutTemplateJSONMarshallerTest {
         assertEquals(LT_NAME, lt.getName());
         assertEquals(PROP_VAL, lt.getLayoutProperties().get(PROP_KEY));
 
-        LayoutRow layoutRow = lt.getRows().get(0);
+        var layoutRow = lt.getRows().get(0);
         assertEquals(LayoutTemplateJSONMarshaller.DEFAULT_HEIGHT, layoutRow.getHeight());
 
-        LayoutColumn layoutColumn = layoutRow.getLayoutColumns().get(0);
+        var layoutColumn = layoutRow.getLayoutColumns().get(0);
         assertEquals(LayoutTemplateJSONMarshaller.DEFAULT_SPAN, layoutColumn.getSpan());
 
         LayoutComponent layoutComponent = layoutColumn.getLayoutComponents().get(0);
@@ -208,18 +207,18 @@ public class LayoutTemplateJSONMarshallerTest {
         assertEquals(LT_NAME, lt.getName());
         assertEquals(PROP_VAL, lt.getLayoutProperties().get(PROP_KEY));
 
-        LayoutRow layoutRow = lt.getRows().get(0);
+        var layoutRow = lt.getRows().get(0);
         assertEquals(LR_HEIGHT, layoutRow.getHeight());
         assertEquals(PROP_VAL, layoutRow.getProperties().get(PROP_KEY));
 
-        LayoutColumn layoutColumn = layoutRow.getLayoutColumns().get(0);
+        var layoutColumn = layoutRow.getLayoutColumns().get(0);
         assertEquals(LC_HEIGHT, layoutColumn.getHeight());
         assertEquals(PROP_VAL, layoutColumn.getProperties().get(PROP_KEY));
 
-        LayoutRow lcr = layoutColumn.getRows().get(0);
+        var lcr = layoutColumn.getRows().get(0);
         assertEquals(LCR_HEIGHT, lcr.getHeight());
 
-        LayoutComponent layoutComponent = layoutColumn.getLayoutComponents().get(0);
+        var layoutComponent = layoutColumn.getLayoutComponents().get(0);
         assertEquals(LCOMP_DRAG_TYPE, layoutComponent.getDragTypeName());
         assertEquals(PROP_VAL, layoutComponent.getProperties().get(PROP_KEY));
     }
@@ -227,9 +226,9 @@ public class LayoutTemplateJSONMarshallerTest {
     @Test
     public void dragComponentReplacementTest() {
         var object = Json.createObject();
-
         object.set("type", Json.create("HtmL"));
         var dragType = LayoutTemplateJSONMarshaller.get().findDragComponent(object);
+
         assertEquals("org.uberfire.ext.plugin.client.perspective.editor.layout.editor.HTMLLayoutDragComponent",
                 dragType);
 

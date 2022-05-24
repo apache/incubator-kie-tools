@@ -36,8 +36,6 @@ public class DataSetJSONMarshaller {
     private static final String DATASET_COLUMN_VALUES = "values";
     
     
-    private static final String NULL_VALUE = "";
-
     private static DataSetJSONMarshaller SINGLETON = new DataSetJSONMarshaller();
 
     public static DataSetJSONMarshaller get() {

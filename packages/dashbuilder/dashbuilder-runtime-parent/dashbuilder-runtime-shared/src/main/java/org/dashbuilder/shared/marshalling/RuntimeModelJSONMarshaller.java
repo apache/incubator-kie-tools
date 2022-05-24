@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import elemental2.dom.DomGlobal;
 import org.dashbuilder.dataprovider.DataSetProvider;
 import org.dashbuilder.dataprovider.DataSetProviderRegistry;
 import org.dashbuilder.dataprovider.DataSetProviderType;
@@ -31,6 +32,7 @@ import org.dashbuilder.dataset.def.ExternalDataSetDef;
 import org.dashbuilder.dataset.json.DataSetDefJSONMarshaller;
 import org.dashbuilder.json.Json;
 import org.dashbuilder.json.JsonObject;
+import org.dashbuilder.json.JsonType;
 import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.navigation.impl.NavTreeBuilder;
 import org.dashbuilder.navigation.json.NavTreeJSONMarshaller;
@@ -112,11 +114,26 @@ public class RuntimeModelJSONMarshaller {
     }
 
     public RuntimeModel fromJson(String json) {
-        return fromJson(Json.parse(json));
+        return fromJson(toJsonObject(json));
     }
 
     public Map<String, String> retrieveProperties(String json) {
-        return extractProperties(Json.parse(json));
+        return extractProperties(toJsonObject(json));
+    }
+
+    private JsonObject toJsonObject(String json) {
+        JsonObject object = null;
+        try {
+            object = Json.parse(json);
+        } catch (Exception e) {
+            DomGlobal.console.debug(e);
+            throw new IllegalArgumentException("Error parsing Content");
+        }
+
+        if (object == null || object.getType() != JsonType.OBJECT) {
+            throw new IllegalArgumentException("Content is not valid");
+        }
+        return object;
     }
 
     public RuntimeModel fromJson(JsonObject jsonObject) {
@@ -126,22 +143,49 @@ public class RuntimeModelJSONMarshaller {
         var lastModified = jsonObject.getNumber(LAST_MODIFIED);
         var layoutTemplates = new ArrayList<LayoutTemplate>();
         var externalDefs = new ArrayList<ExternalDataSetDef>();
-
+        var nPages = 0;
         if (ltArray == null) {
             ltArray = jsonObject.getArray(PAGES);
         }
 
-        for (int i = 0; i < ltArray.length(); i++) {
-            var ltJson = ltArray.getObject(i);
-            layoutTemplates.add(LayoutTemplateJSONMarshaller.get().fromJson(ltJson));
+        if (ltArray == null || ltArray.length() == 0) {
+            throw new IllegalArgumentException("At least one page is required");
         }
 
-        for (int i = 0; externalDefsArray != null && i < externalDefsArray.length(); i++) {
-            var defJson = externalDefsArray.getObject(i).toJson();
+        if (JsonType.ARRAY != ltArray.getType()) {
+            throw new IllegalArgumentException("Pages must be a list");
+        }
+
+        try {
+            nPages = ltArray.length();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Pages must be a list", e);
+        }
+
+        for (int i = 0; i < nPages; i++) {
+            var ltJson = ltArray.getObject(i);
+            if (ltJson != null && ltJson.getType() == JsonType.OBJECT) {
+                try {
+                    layoutTemplates.add(LayoutTemplateJSONMarshaller.get().fromJson(ltJson));
+                } catch (Exception e) {
+                    throw new RuntimeException("Error reading page " + (i+1) + "\n" + e.getMessage(), e);
+                }
+            }
+        }
+        if (externalDefsArray != null) {
+            var nDatasets = 0;
             try {
-                externalDefs.add((ExternalDataSetDef) defMarshaller.fromJson(defJson));
+                nDatasets = externalDefsArray.length();
             } catch (Exception e) {
-                throw new RuntimeException("Error parsing external def ", e);
+                throw new RuntimeException("Data sets must be a list of data set definitions", e);
+            }
+            for (int i = 0; i < nDatasets; i++) {
+                try {
+                    var defJson = externalDefsArray.getObject(i).toJson();
+                    externalDefs.add((ExternalDataSetDef) defMarshaller.fromJson(defJson));
+                } catch (Exception e) {
+                    throw new RuntimeException("Error reading data set definition " + (i+1) + "\n" + e.getMessage(), e);
+                }
             }
         }
 
@@ -162,11 +206,16 @@ public class RuntimeModelJSONMarshaller {
 
     private HashMap<String, String> extractProperties(JsonObject jsonObject) {
         var properties = new HashMap<String, String>();
-        var propertiesObject = jsonObject.getObject(PROPERTIES);
-        if (propertiesObject != null) {
-            for (String key : propertiesObject.keys()) {
-                properties.put(key, propertiesObject.getString(key));
+        try {
+            var propertiesObject = jsonObject.getObject(PROPERTIES);
+            if (propertiesObject != null && propertiesObject.getType() == JsonType.OBJECT) {
+                for (String key : propertiesObject.keys()) {
+                    properties.put(key, propertiesObject.getString(key));
+                }
             }
+        } catch (Exception e) {
+            DomGlobal.console.debug(e);
+            DomGlobal.console.log("Invalid properties");
         }
         return properties;
     }

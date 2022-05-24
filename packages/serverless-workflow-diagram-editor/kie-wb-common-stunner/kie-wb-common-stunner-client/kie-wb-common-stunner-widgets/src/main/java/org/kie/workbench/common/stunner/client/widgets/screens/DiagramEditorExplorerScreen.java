@@ -29,7 +29,6 @@ import javax.inject.Named;
 
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
-import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;
@@ -61,7 +60,7 @@ public class DiagramEditorExplorerScreen extends AbstractActivity {
     public static final String SCREEN_ID = "ProjectDiagramExplorerScreen";
     public static final String TITLE = "Explore";
     public static final int PREVIEW_WIDTH = 420;
-    public static final int PREVIEW_HEIGHT = StunnerBoundsProviderFactory.computeHeight(PREVIEW_WIDTH);
+    public static final int PREVIEW_HEIGHT = 420;
 
     private final SessionManager clientSessionManager;
     private final ManagedInstance<TreeExplorer> treeExplorers;

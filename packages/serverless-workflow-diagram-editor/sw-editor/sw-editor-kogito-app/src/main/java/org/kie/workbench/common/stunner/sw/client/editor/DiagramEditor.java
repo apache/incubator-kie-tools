@@ -22,6 +22,8 @@ import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
+import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
@@ -114,6 +116,7 @@ public class DiagramEditor {
                                                          @Override
                                                          public void onSuccess() {
                                                              onDiagramOpenSuccess();
+                                                             scaleToFitWorkflow(stunnerEditor);
                                                              success.onInvoke((Void) null);
                                                          }
 
@@ -149,6 +152,19 @@ public class DiagramEditor {
                                              failure.onInvoke(error);
                                          }
                                      });
+        });
+    }
+
+    static void scaleToFitWorkflow(StunnerEditor stunnerEditor) {
+        WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
+        ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
+
+        lienzoPanel.setPostResizeCallback((panel) -> {
+            double scale = PanelTransformUtils.computeZoomLevelFitToWidth(panel);
+            if (scale > 0) {
+                PanelTransformUtils.setScaleLevel(panel.getViewport(), scale);
+            }
+            panel.setPostResizeCallback(null);
         });
     }
 

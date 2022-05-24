@@ -23,7 +23,6 @@ import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.dashbuilder.components.internal.ProvidedComponentInfo;
 import org.dashbuilder.external.service.ComponentLoader;
 import org.junit.After;
 import org.junit.Before;
@@ -53,7 +52,6 @@ public class ComponentAssetProviderImplTest {
         componentsDir = Files.createTempDirectory("components");
         when(componentLoader.getExternalComponentsDir()).thenReturn(componentsDir.toString());
 
-        when(componentLoader.getProvidedComponentsPath()).thenReturn(ProvidedComponentInfo.get().getInternalComponentsRootPath());
     }
 
     @After
@@ -104,18 +102,6 @@ public class ComponentAssetProviderImplTest {
         } finally {
             FileUtils.deleteQuietly(shouldNotBeAccessible.toFile());
         }
-    }
-
-    @Test
-    public void testInternalComponentAsset() throws Exception {
-        String logoImage = "logo-provided/images/dashbuilder-logo.png";
-        String logoIndexJs = "logo-provided/index.js";
-        String logoIndexHtml = "logo-provided/index.html";
-
-        assertNotNull(componentAssetProviderImpl.openAsset(logoImage));
-        assertNotNull(componentAssetProviderImpl.openAsset(logoIndexJs));
-        assertNotNull(componentAssetProviderImpl.openAsset(logoIndexHtml));
-
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -99,7 +99,6 @@ public class ZoomLevelSelectorPresenterTest {
     @Mock
     private Element selectorElement;
 
-
     @Mock
     private com.google.gwt.user.client.Element gwtElement;
 
@@ -134,11 +133,10 @@ public class ZoomLevelSelectorPresenterTest {
         tested = new ZoomLevelSelectorPresenter(translationService,
                                                 floatingView,
                                                 selector,
-                                                    selectorElement);
+                                                selectorElement);
         tested.init(() -> canvas);
         tested.show();
     }
-
 
     @Test
     public void testInit() {
@@ -261,7 +259,7 @@ public class ZoomLevelSelectorPresenterTest {
         when(panelView.getWidePx()).thenReturn(300);
         when(panelView.getHighPx()).thenReturn(600);
         when(panelView.getLayerBounds()).thenReturn(Bounds.build(0, 0, 600, 900));
-        verifyApplyLevel(CoreTranslationMessages.FIT, 0.5d);
+        verifyApplyLevel(CoreTranslationMessages.FIT, 0.45d);
     }
 
     private void verifyApplyLevel(final String text,

@@ -42,6 +42,7 @@ public class DataSetMetadataJSONMarshallerTest {
                            "  ],\n" +
                            "  \"estimatedSize\": 10,\n" +
                            "  \"definition\": {\n" +
+                           "    \"uuid\": \"test\",\n" +
                            "    \"provider\": \"BEAN\",\n" +
                            "    \"isPublic\": true,\n" +
                            "    \"cacheEnabled\": false,\n" +
@@ -54,6 +55,7 @@ public class DataSetMetadataJSONMarshallerTest {
 
     String METADATA_JSON_WITH_NULL_VALUES = "{\n" +
                                            "  \"definition\": {\n" +
+                                           "    \"uuid\": \"test\",\n" +
                                            "    \"provider\": \"BEAN\",\n" +
                                            "    \"isPublic\": true,\n" +
                                            "    \"cacheEnabled\": false,\n" +
@@ -73,7 +75,9 @@ public class DataSetMetadataJSONMarshallerTest {
 
     @Test
     public void toJsonTest() {
-        DataSetMetadataImpl meta = new DataSetMetadataImpl(new BeanDataSetDef(),
+        var def = new BeanDataSetDef();
+        def.setUUID("test");
+        DataSetMetadataImpl meta = new DataSetMetadataImpl(def,
                                                            "abc",
                                                            2,
                                                            1,
