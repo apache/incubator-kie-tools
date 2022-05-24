@@ -530,6 +530,7 @@ importers:
       "@patternfly/react-table": ^4.27.15
       "@types/cypress-image-snapshot": ^3.1.6
       "@types/lodash": ^4.14.168
+      "@types/papaparse": ^5.3.2
       "@types/react-resizable": ^1.7.2
       "@types/react-table": ^7.0.25
       "@types/uuid": ^8.3.0
@@ -537,6 +538,7 @@ importers:
       cypress-real-events: ^1.7.0
       gh-pages: ^3.2.3
       lodash: ^4.17.21
+      papaparse: ^5.3.2
       react: ^17.0.2
       react-dom: ^17.0.2
       react-id-generator: ^3.0.1
@@ -555,6 +557,7 @@ importers:
       "@patternfly/react-styles": 4.18.8
       "@patternfly/react-table": 4.37.8_sfoxds7t5ydpegc3knd667wn6m
       lodash: 4.17.21
+      papaparse: 5.3.2
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-id-generator: 3.0.2_react@17.0.2
@@ -567,6 +570,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@types/cypress-image-snapshot": 3.1.6
       "@types/lodash": 4.14.169
+      "@types/papaparse": 5.3.2
       "@types/react-resizable": 1.7.4
       "@types/react-table": 7.7.7
       "@types/uuid": 8.3.0
@@ -5479,6 +5483,13 @@ packages:
   /@types/numeral/2.0.2:
     resolution:
       { integrity: sha512-A8F30k2gYJ/6e07spSCPpkuZu79LCnkPTvqmIWQzNGcrzwFKpVOydG41lNt5wZXjSI149qjyzC2L1+F2PD/NUA== }
+    dev: true
+
+  /@types/papaparse/5.3.2:
+    resolution:
+      { integrity: sha512-BNbCHJkTE4RwmAFkCxEalET4mDvGr/1ld7ZtQ4i/laWI/iiVt+GL07stdvufle4KfywyvloqqpIiJscXNCrKxA== }
+    dependencies:
+      "@types/node": 17.0.12
     dev: true
 
   /@types/parse-json/4.0.0:
@@ -16468,6 +16479,11 @@ packages:
   /pako/1.0.11:
     resolution:
       { integrity: sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw== }
+
+  /papaparse/5.3.2:
+    resolution:
+      { integrity: sha512-6dNZu0Ki+gyV0eBsFKJhYr+MdQYAzFUGlBMNj3GNrmHxmz1lfRa24CjFObPXtjcetlOv5Ad299MhIK0znp3afw== }
+    dev: false
 
   /param-case/3.0.4:
     resolution:
