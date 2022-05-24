@@ -256,7 +256,7 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody style={{ overflowY: "hidden" }}>{swfTextEditor}</DrawerContentBody>
+            <DrawerContentBody style={{ overflow: "hidden" }}>{swfTextEditor}</DrawerContentBody>
           </DrawerContent>
         </Drawer>
       )}
