@@ -58,7 +58,7 @@ public class DataConditionTransition {
 
     @Labels
     @JsIgnore
-    private final Set<String> labels = Stream.of(LABEL_TRANSITION_DATA_CONDITION).collect(Collectors.toSet());
+    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_DATA_CONDITION).collect(Collectors.toSet());
 
     /**
      * Unique data condition name.
