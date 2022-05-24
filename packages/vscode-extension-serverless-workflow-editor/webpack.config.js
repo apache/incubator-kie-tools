@@ -16,7 +16,7 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
-const swfEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 
@@ -58,9 +58,9 @@ module.exports = async (env) => [
       new CopyWebpackPlugin({
         patterns: [
           {
-            from: swfEditor.swEditorPath(),
+            from: swEditor.swEditorPath(),
             to: "webview/editors/serverless-workflow/diagram",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
         ],
       }),

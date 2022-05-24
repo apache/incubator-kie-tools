@@ -77,7 +77,7 @@ module.exports = async (env) => {
           {
             from: swEditor.swEditorPath(),
             to: "./diagram",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
         ],
       }),

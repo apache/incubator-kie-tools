@@ -56,7 +56,7 @@ module.exports = (env) =>
           {
             from: swEditor.swEditorPath(),
             to: "./diagram",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
           {
             from: path.resolve(__dirname, "./static/envelope/serverless-workflow-text-editor-envelope.html"),
