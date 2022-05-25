@@ -32,6 +32,7 @@ import {
   CardHeaderMain,
   CardTitle,
 } from "@patternfly/react-core/dist/js/components/Card";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
@@ -331,7 +332,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
       rejected={() => <>ERROR</>}
       resolved={(workspace) => (
         <>
-          {(workspace.files.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
+          {(editableFiles.length === 1 && workspace.descriptor.origin.kind === WorkspaceKind.LOCAL && (
             <Card
               isSelected={props.isSelected}
               isSelectable={true}
@@ -343,9 +344,9 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               onClick={() => {
                 history.push({
                   pathname: routes.workspaceWithFilePath.path({
-                    workspaceId: workspace.files[0].workspaceId,
-                    fileRelativePath: workspace.files[0].relativePathWithoutExtension,
-                    extension: workspace.files[0].extension,
+                    workspaceId: editableFiles[0].workspaceId,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+                    extension: editableFiles[0].extension,
                   }),
                 });
               }}
@@ -353,9 +354,9 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
               <CardHeader>
                 <Link
                   to={routes.workspaceWithFilePath.path({
-                    workspaceId: workspace.files[0].workspaceId,
-                    fileRelativePath: workspace.files[0].relativePathWithoutExtension,
-                    extension: workspace.files[0].extension,
+                    workspaceId: editableFiles[0].workspaceId,
+                    fileRelativePath: editableFiles[0].relativePathWithoutExtension,
+                    extension: editableFiles[0].extension,
                   })}
                 >
                   <CardHeaderMain style={{ width: "100%" }}>
@@ -366,14 +367,14 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                             <Text component={TextVariants.h3} style={{ textOverflow: "ellipsis", overflow: "hidden" }}>
                               <TaskIcon />
                               &nbsp;&nbsp;
-                              {workspace.files[0].nameWithoutExtension}
+                              {editableFiles[0].nameWithoutExtension}
                             </Text>
                           </TextContent>
                         </CardTitle>
                       </FlexItem>
                       <FlexItem>
                         <b>
-                          <FileLabel extension={workspace.files[0].extension} />
+                          <FileLabel extension={editableFiles[0].extension} />
                         </b>
                       </FlexItem>
                     </Flex>
@@ -388,11 +389,11 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                       item={
                         <Flex flexWrap={{ default: "nowrap" }}>
                           <FlexItem>
-                            Delete <b>{`"${workspace.files[0].nameWithoutExtension}"`}</b>
+                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
                           </FlexItem>
                           <FlexItem>
                             <b>
-                              <FileLabel extension={workspace.files[0].extension} />
+                              <FileLabel extension={editableFiles[0].extension} />
                             </b>
                           </FlexItem>
                         </Flex>
@@ -588,7 +589,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
               <Flex>
                 <FlexItem>
                   <TextContent>
-                    <Text component={TextVariants.h3}>{`Files in '${workspacePromise.data?.descriptor.name}'`}</Text>
+                    <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
                   </TextContent>
                 </FlexItem>
                 <FlexItem>
@@ -629,7 +630,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
             </DrawerHead>
             <DrawerPanelBody>
               <DataList aria-label="models-data-list">
-                {[...models, ...otherFiles].map((file) => (
+                {models.map((file) => (
                   <Link
                     key={file.relativePath}
                     to={routes.workspaceWithFilePath.path({
@@ -643,6 +644,28 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                 ))}
               </DataList>
               <br />
+              {otherFiles.length > 0 && (
+                <ExpandableSection
+                  toggleTextCollapsed="View other files"
+                  toggleTextExpanded="Hide other files"
+                  className={"plain"}
+                >
+                  <DataList aria-label="other-files-data-list">
+                    {otherFiles.map((file) => (
+                      <Link
+                        key={file.relativePath}
+                        to={routes.workspaceWithFilePath.path({
+                          workspaceId: workspace.descriptor.workspaceId ?? "",
+                          fileRelativePath: file.relativePathWithoutExtension,
+                          extension: file.extension,
+                        })}
+                      >
+                        <FileDataListItem key={file.relativePath} file={file} />
+                      </Link>
+                    ))}
+                  </DataList>
+                </ExpandableSection>
+              )}
             </DrawerPanelBody>
           </>
         )}

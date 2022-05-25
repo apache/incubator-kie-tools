@@ -59,6 +59,8 @@ import { useHistory } from "react-router";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
+import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { isSandboxAsset } from "../fixme";
 
@@ -619,8 +621,8 @@ export function FilesMenuItems(props: {
                 maxHeight={"500px"}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
-                label={`Files in '${props.workspaceDescriptor.name}'`}
-                allFiles={[...models, ...otherFiles]}
+                label={`Models in '${props.workspaceDescriptor.name}'`}
+                allFiles={models}
               >
                 {({ filteredFiles }) =>
                   filteredFiles.map((file) => (
@@ -628,7 +630,54 @@ export function FilesMenuItems(props: {
                   ))
                 }
               </SearchableFilesMenuGroup>
+              {otherFiles.length > 0 && (
+                <>
+                  <Divider component={"li"} />
+                  <MenuGroup>
+                    <MenuList>
+                      <MenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          props.setFilesDropdownMode((prev) =>
+                            prev === FilesDropdownMode.LIST_MODELS
+                              ? FilesDropdownMode.LIST_MODELS_AND_OTHERS
+                              : FilesDropdownMode.LIST_MODELS
+                          );
+                        }}
+                      >
+                        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS
+                          ? "View other files"
+                          : "Hide other files"}
+                        &nbsp;&nbsp;
+                        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ? (
+                          <ArrowRightIcon />
+                        ) : (
+                          <ArrowLeftIcon />
+                        )}
+                      </MenuItem>
+                    </MenuList>
+                  </MenuGroup>
+                </>
+              )}
             </>
+          </SplitItem>
+        )}
+
+        {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS_AND_OTHERS && (
+          <SplitItem isFilled={true} style={{ minWidth: `${MIN_FILE_SWITCHER_PANEL_WIDTH_IN_PX}px` }}>
+            <SearchableFilesMenuGroup
+              maxHeight={"500px"}
+              filesDropdownMode={props.filesDropdownMode}
+              shouldFocusOnSearch={props.shouldFocusOnSearch}
+              label={`Other files in '${props.workspaceDescriptor.name}'`}
+              allFiles={otherFiles}
+            >
+              {({ filteredFiles }) =>
+                filteredFiles.map((file) => (
+                  <FileMenuItem key={file.relativePath} file={file} onSelectFile={props.onSelectFile} />
+                ))
+              }
+            </SearchableFilesMenuGroup>
           </SplitItem>
         )}
 
@@ -639,7 +688,7 @@ export function FilesMenuItems(props: {
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
               label={`Models in '${props.workspaceDescriptor.name}'`}
-              allFiles={[...models, ...otherFiles]}
+              allFiles={models}
             >
               {({ filteredFiles }) => (
                 <Gallery hasGutter={true} style={{ padding: "8px" }}>
