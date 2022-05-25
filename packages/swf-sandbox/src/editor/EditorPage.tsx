@@ -34,7 +34,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset } from "../fixme";
+import { isSandboxAsset, isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -52,6 +52,8 @@ import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelA
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { EditorToolbar } from "./EditorToolbar";
+import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
+import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 
 export interface Props {
   workspaceId: string;
@@ -277,24 +279,27 @@ export function EditorPage(props: Props) {
       stateControl,
     ]
   );
-  const swfServiceCatalogChannelApiImpl = useMemo(() => new SwfServiceCatalogChannelApiImpl(settings), [settings]);
-  const swfLanguageServiceChannelApiImpl = useMemo(
-    () => new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings)),
-    [settings]
-  );
 
-  const apiImpl = useMemo(
-    () =>
+  const apiImpl = useMemo(() => {
+    let swfServiceCatalogChannelApiImpl;
+    let swfLanguageServiceChannelApiImpl;
+    if (
+      isServerlessWorkflow(props.fileRelativePath) &&
+      isServiceAccountConfigValid(settings.serviceAccount.config) &&
+      isServiceRegistryConfigValid(settings.serviceRegistry.config)
+    ) {
+      swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(settings);
+      swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings));
+    }
+    return (
       kogitoEditorChannelApiImpl &&
-      swfServiceCatalogChannelApiImpl &&
-      swfLanguageServiceChannelApiImpl &&
       new ServerlessWorkflowEditorChannelApiImpl(
         kogitoEditorChannelApiImpl,
         swfServiceCatalogChannelApiImpl,
         swfLanguageServiceChannelApiImpl
-      ),
-    [kogitoEditorChannelApiImpl, swfLanguageServiceChannelApiImpl, swfServiceCatalogChannelApiImpl]
-  );
+      )
+    );
+  }, [kogitoEditorChannelApiImpl, props.fileRelativePath, settings]);
 
   return (
     <OnlineEditorPage>

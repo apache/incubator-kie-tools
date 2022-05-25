@@ -24,10 +24,8 @@ import {
   KogitoEdit,
   ResourceContent,
   ResourceContentRequest,
-  ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
@@ -44,8 +42,8 @@ import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
+    private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
+    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -109,34 +107,34 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
+    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_services() ?? { defaultValue: [] };
   }
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_user();
+    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_user() ?? { defaultValue: undefined };
   }
 
   public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistryUrl();
+    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistryUrl() ?? { defaultValue: undefined };
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_refresh();
+    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_refresh();
   }
 
   public kogitoSwfServiceCatalog_logInToRhhcc(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInToRhhcc();
+    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_logInToRhhcc();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
+    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
+    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
   }
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
@@ -145,10 +143,10 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCompletionItems(args);
+    return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCompletionItems(args) ?? [];
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
+    return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
   }
 }
