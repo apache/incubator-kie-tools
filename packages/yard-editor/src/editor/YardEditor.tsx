@@ -24,8 +24,8 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { SwfTextEditorApi, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";
-import { SwfTextEditor } from "../textEditor/SwfTextEditor";
+import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTextEditorController";
+import { YardTextEditor } from "../textEditor/YardTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
 import "../../static/css/editor.css";
@@ -75,7 +75,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   forwardedRef
 ) => {
   const [initialContent, setInitialContent] = useState<YardEditorContent | undefined>(undefined);
-  const yardTextEditorRef = useRef<SwfTextEditorApi>(null);
+  const yardTextEditorRef = useRef<YardTextEditorApi>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -143,18 +143,18 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   }, [props.channelType]);
 
   const onContentChanged = useCallback(
-    (newContent: string, operation?: SwfTextEditorOperation) => {
+    (newContent: string, operation?: YardTextEditorOperation) => {
       switch (operation) {
-        case SwfTextEditorOperation.EDIT:
+        case YardTextEditorOperation.EDIT:
           props.onNewEdit(new KogitoEdit(newContent));
           break;
-        case SwfTextEditorOperation.UNDO:
+        case YardTextEditorOperation.UNDO:
           if (!isVscode()) {
             yardTextEditorRef.current?.undo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.UNDO);
           break;
-        case SwfTextEditorOperation.REDO:
+        case YardTextEditorOperation.REDO:
           if (!isVscode()) {
             yardTextEditorRef.current?.redo();
           }
@@ -172,7 +172,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   const yardTextEditor = useMemo(
     () =>
       initialContent && (
-        <SwfTextEditor
+        <YardTextEditor
           channelType={props.channelType}
           content={initialContent.originalContent}
           fileName={initialContent.path}
