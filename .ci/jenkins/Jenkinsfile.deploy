@@ -178,6 +178,7 @@ pipeline {
 
                     // Debug purpose in case of issue
                     sh 'cat tests/test-apps/clone-repo.sh'
+                    sh 'cat scripts/setup-maven.sh'
                     sh 'cat tests/features/kogito-builder.feature'
 
                     // Prepare local examples
@@ -382,11 +383,20 @@ void cleanImages() {
 }
 
 void buildImage(String imageName) {
-    sh "make build-image image_name=${imageName} ignore_test=true cekit_option='--work-dir .'"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true"
 }
 
 void testImage(String imageName) {
-    sh "make build-image image_name=${imageName} ignore_build=true cekit_option='--work-dir .'"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true"
+}
+
+String getMakeBuildImageArgs() {
+    List args = [ "cekit_option='--work-dir .'" ]
+    args.add("KOGITO_APPS_TARGET_BRANCH=${getKogitoAppsRef()}")
+    if (getKogitoAppsUri()) {
+        args.add("KOGITO_APPS_TARGET_URI=${getKogitoAppsUri()}")
+    }
+    return args.join(' ')
 }
 
 void registerBuiltImage(String imageName) {
@@ -603,6 +613,14 @@ boolean isCreateChangesPR() {
 
 String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
+}
+
+String getKogitoAppsRef() {
+    return params.APPS_REF ?: getBuildBranch()
+}
+
+String getKogitoAppsUri() {
+    return params.APPS_URI
 }
 
 String getGitAuthor() {

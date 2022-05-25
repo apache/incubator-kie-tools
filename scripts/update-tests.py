@@ -25,7 +25,7 @@ if __name__ == "__main__":
 
     if args.repo_url:
         common.update_maven_repo_in_behave_tests(args.repo_url, args.replace_jboss_repo)
-        common.update_maven_repo_in_clone_repo(args.repo_url, args.replace_jboss_repo)
+        common.update_maven_repo_in_setup_maven(args.repo_url, args.replace_jboss_repo)
 
     if args.examples_uri:
         common.update_examples_uri_in_behave_tests(args.examples_uri)
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     
     if args.ignore_self_signed_cert:
         common.ignore_maven_self_signed_certificate_in_behave_tests()
-        common.ignore_maven_self_signed_certificate_in_clone_repo()
+        common.ignore_maven_self_signed_certificate_in_setup_maven()
     
     if args.runtime_image_jvm:
         common.update_runtime_image_in_behave_tests(args.runtime_image_jvm, 'jvm')

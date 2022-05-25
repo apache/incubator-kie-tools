@@ -30,6 +30,10 @@ function configure() {
     ignore_maven_self_signed_certificates
     set_kogito_maven_repo
     add_maven_repo
+
+    if [ "${SCRIPT_DEBUG}" = "true" ] ; then
+        cat "${MAVEN_SETTINGS_PATH}"
+    fi
 }
 
 # insert settings for HTTP proxy into maven settings.xml if supplied
@@ -73,7 +77,7 @@ function configure_proxy() {
         fi
         xml="$xml\
        </proxy>"
-        sed -i "s|<!-- ### configured http proxy ### -->|${xml}|" "${HOME}"/.m2/settings.xml
+        sed -i "s|<!-- ### configured http proxy ### -->|${xml}|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 
@@ -85,7 +89,7 @@ function configure_mirrors() {
       <url>$MAVEN_MIRROR_URL</url>\
       <mirrorOf>external:*</mirrorOf>\
     </mirror>"
-        sed -i "s|<!-- ### configured mirrors ### -->|$xml|" "${HOME}"/.m2/settings.xml
+        sed -i "s|<!-- ### configured mirrors ### -->|$xml|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 
@@ -104,7 +108,7 @@ function ignore_maven_self_signed_certificates() {
 function set_kogito_maven_repo() {
     local kogito_maven_repo_url="${JBOSS_MAVEN_REPO_URL}"
     if [ -n "${kogito_maven_repo_url}" ]; then
-        sed -i "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" "${HOME}"/.m2/settings.xml
+        sed -i "s|https://repository.jboss.org/nexus/content/groups/public/|${kogito_maven_repo_url}|" "${MAVEN_SETTINGS_PATH}"
     fi
 }
 
@@ -163,7 +167,7 @@ function _add_maven_repo() {
                     </snapshots>\n\
                 </repository>\n\
                 <!-- ### configured repositories ### -->"
-    sed -i "s|<!-- ### configured repositories ### -->|${repo}|" "${HOME}"/.m2/settings.xml
+    sed -i "s|<!-- ### configured repositories ### -->|${repo}|" "${MAVEN_SETTINGS_PATH}"
 
     local pluginRepo="\n\
                 <pluginRepository>\n\
@@ -184,10 +188,10 @@ function _add_maven_repo() {
                 </pluginRepository>\n\
                 <!-- ### configured plugin repositories ### -->"
 
-    sed -i "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" "${HOME}"/.m2/settings.xml
+    sed -i "s|<!-- ### configured plugin repositories ### -->|${pluginRepo}|" "${MAVEN_SETTINGS_PATH}"
 
     # new repo should be skipped by mirror if exists
-    sed -i "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" "${HOME}"/.m2/settings.xml
+    sed -i "s|</mirrorOf>|,!${repo_id}</mirrorOf>|g" "${MAVEN_SETTINGS_PATH}"
 }
 
 # Finds the environment variable  and returns its value if found.

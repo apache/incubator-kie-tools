@@ -94,11 +94,13 @@ function build_kogito_app() {
 
     if [ "${SCRIPT_DEBUG}" != "true" ]; then
         export MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND} --batch-mode"
+    else 
+        set -x
     fi
 
     if [ -f "pom.xml" ]; then
         log_info "---> Building application from source..."
-        $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${KOGITO_HOME}"/.m2/settings.xml \
+        $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${MAVEN_SETTINGS_PATH}" \
 	    -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
 	    -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
 
@@ -124,7 +126,7 @@ function build_kogito_app() {
 
             log_info "----> Using Quarkus version ${quarkus_version} to bootstrap the application."
 
-            $MAVEN_HOME/bin/mvn -U -B ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml $(get_quarkus_platform_properties) \
+            $MAVEN_HOME/bin/mvn -U -B ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
                 "${quarkus_plugin}":"${quarkus_version}":create  \
                     -DprojectGroupId=$PROJECT_GROUP_ID \
                     -DprojectArtifactId=$PROJECT_ARTIFACT_ID \
@@ -136,7 +138,7 @@ function build_kogito_app() {
             $MAVEN_HOME/bin/mvn archetype:generate -U -B -DinteractiveMode=false -DarchetypeGroupId=org.kie.kogito \
                 -DarchetypeArtifactId=kogito-spring-boot-archetype -DarchetypeVersion=$KOGITO_VERSION \
                 -DgroupId=$PROJECT_GROUP_ID -DartifactId=$PROJECT_ARTIFACT_ID -Dversion=$PROJECT_VERSION \
-                ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml
+                ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}"
         else
             log_error "---> Invalid RUNTIME_TYPE(${RUNTIME_TYPE}) provided, failing build..."
             exit 1
@@ -180,12 +182,12 @@ function build_kogito_app() {
             quarkus_version=$(get_quarkus_version) || exit 1
             log_info "--> Quarkus version is '$quarkus_version'"
 
-            $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml $(get_quarkus_platform_properties) \
+            $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
                 "${quarkus_plugin}":"${quarkus_version}":add-extension \
                 -Dextensions="org.kie.kogito:kogito-quarkus-serverless-workflow"
         fi
 
-        $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${KOGITO_HOME}"/.m2/settings.xml \
+        $MAVEN_HOME/bin/mvn clean package ${MAVEN_ARGS_APPEND} ${KOGITO_OPTS} ${nativeBuild} -s "${MAVEN_SETTINGS_PATH}" \
             -DskipTests -Dmaven.test.skip -Dmaven.javadoc.skip=true -Dmaven.site.skip=true -Dmaven.source.skip=true \
             -Djacoco.skip=true -Dcheckstyle.skip=true -Dfindbugs.skip=true -Dpmd.skip=true -Dfabric8.skip=true
     fi
@@ -272,7 +274,7 @@ function get_quarkus_version() {
     local quarkus_version="${QUARKUS_VERSION}"
     if [ "${QUARKUS_VERSION}x" = "x" ]; then
         log_info "----> Trying to retrieve Quarkus version from org.kie.kogito:kogito-build-parent:${KOGITO_VERSION}"
-        ver=$($MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${KOGITO_HOME}"/.m2/settings.xml help:evaluate -q \
+        ver=$($MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" help:evaluate -q \
             -Dartifact=org.kie.kogito:kogito-build-parent:"${KOGITO_VERSION}" \
             -Dexpression=version.io.quarkus \
             -DforceStdout)

@@ -1,8 +1,8 @@
 @Library('jenkins-pipeline-shared-libraries')_
 
-def changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
-def changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
-def changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
+changeAuthor = env.ghprbAuthorRepoGitUrl ? util.getGroup(env.ghprbAuthorRepoGitUrl) : (env.ghprbPullAuthorLogin ?: CHANGE_AUTHOR)
+changeBranch = env.ghprbSourceBranch ?: CHANGE_BRANCH
+changeTarget = env.ghprbTargetBranch ?: CHANGE_TARGET
 
 BUILD_FAILED_IMAGES = []
 
@@ -145,11 +145,17 @@ void launchParallelForEachImage(stageNamePrefix, executeOnImage) {
 }
 
 void buildImage(String imageName) {
-    sh "make build-image image_name=${imageName} ignore_test=true cekit_option='--work-dir .'"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_test=true"
 }
 
 void testImage(String imageName) {
-    sh "make build-image image_name=${imageName} ignore_build=true cekit_option='--work-dir .'"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true"
+}
+
+String getMakeBuildImageArgs() {
+    List args = [ "cekit_option='--work-dir .'" ]
+    args.add("KOGITO_APPS_TARGET_BRANCH=${changeTarget}")
+    return args.join(' ')
 }
 
 void registerBuildFailedImage(String imageName) {

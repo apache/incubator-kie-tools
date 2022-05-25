@@ -89,6 +89,9 @@ void setupDeployJob(Folder jobFolder) {
                 stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
             }
 
+            stringParam('APPS_URI', '', 'Git uri to the kogito-apps repository to use for tests.')
+            stringParam('APPS_REF', '', 'Git reference (branch/tag) to the kogito-apps repository to use for building. Default to BUILD_BRANCH_NAME.')
+
             // Build&Test information
             booleanParam('SKIP_TESTS', false, 'Skip tests')
             stringParam('EXAMPLES_URI', '', 'Git uri to the kogito-examples repository to use for tests.')

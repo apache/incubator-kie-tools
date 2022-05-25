@@ -24,6 +24,7 @@ ARTIFACTS_VERSION_ENV_KEY = "KOGITO_VERSION"
 BEHAVE_BASE_DIR = 'tests/features'
 
 CLONE_REPO_SCRIPT = 'tests/test-apps/clone-repo.sh'
+SETUP_MAVEN_SCRIPT = 'scripts/setup-maven.sh'
 
 
 def yaml_loader():
@@ -354,13 +355,13 @@ def update_examples_uri_in_clone_repo(examples_uri):
     update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
 
 
-def update_maven_repo_in_clone_repo(repo_url, replace_jboss_repository):
+def update_maven_repo_in_setup_maven(repo_url, replace_jboss_repository):
     """
-    Update maven repository into clone-repo.sh script
+    Update maven repository into setup-maven.sh script
     :param repo_url: Maven repository url
     :param replace_jboss_repository: Set to true if default Jboss repository needs to be overridden
     """
-    print("Set maven repo {} in clone-repo script".format(repo_url))
+    print("Set maven repo {} in setup-maven script".format(repo_url))
     pattern = ""
     replacement = ""
     if replace_jboss_repository:
@@ -369,16 +370,16 @@ def update_maven_repo_in_clone_repo(repo_url, replace_jboss_repository):
     else:
         pattern = re.compile(r'(# export MAVEN_REPO_URL=.*)')
         replacement = 'export MAVEN_REPO_URL="{}"'.format(repo_url)
-    update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
+    update_in_file(SETUP_MAVEN_SCRIPT, pattern, replacement)
 
-def ignore_maven_self_signed_certificate_in_clone_repo():
+def ignore_maven_self_signed_certificate_in_setup_maven():
     """
     Sets the environment variable to ignore the self-signed certificates in maven
     """
-    print("Setting MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE env in clone repo")
+    print("Setting MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE env in setup maven")
     pattern = re.compile(r'(# MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE=.*)')
     replacement = "MAVEN_IGNORE_SELF_SIGNED_CERTIFICATE=true"
-    update_in_file(CLONE_REPO_SCRIPT, pattern, replacement)
+    update_in_file(SETUP_MAVEN_SCRIPT, pattern, replacement)
 
 
 def update_in_file(file, pattern, replacement):

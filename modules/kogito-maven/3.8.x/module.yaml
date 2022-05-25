@@ -7,6 +7,9 @@ envs:
     value: "3.8.1"
   - name: " MAVEN_HOME"
     value: "/usr/share/maven"
+  - name: "MAVEN_SETTINGS_PATH"
+    description: "The location of the settings.xml file"
+    value: '${KOGITO_HOME}/.m2/settings.xml'
   - name: "HTTP_PROXY"
     description: "The location of the http proxy, will be used for both Maven builds and Java runtime."
     example: "http://127.0.0.1:8080"
