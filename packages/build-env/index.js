@@ -303,6 +303,26 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
+    name: "SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux",
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
+    description: "",
+  },
+  SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
+    name: "SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs",
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
+    description: "",
+  },
+  SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
+    name: "SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows",
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
+    description: "",
+  },
+  SWF_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
+    name: "SWF_SANDBOX__kieSandboxExtendedServicesCompatibleVersion",
+    default: version,
+    description: "",
+  },
 };
 
 module.exports = {
@@ -479,6 +499,14 @@ module.exports = {
       name: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageName),
       tag: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageTag),
       buildTags: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageBuildTags),
+    },
+    kieSandboxExtendedServices: {
+      compatibleVersion: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesCompatibleVersion),
+      downloadUrl: {
+        linux: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
+        macOs: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
+        windows: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
+      },
     },
   },
 

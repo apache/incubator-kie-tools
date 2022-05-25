@@ -67,6 +67,21 @@ interface AppDictionary extends ReferenceDictionary {
       saving: string;
       setupFirst: string;
     };
+    introduction: {
+      explanation: string;
+    };
+    configModal: {
+      hostInfo: string;
+      namespaceInfo: string;
+      tokenInfo: string;
+      validationError: string;
+      connectionError: string;
+      configExpiredWarning: string;
+    };
+    confirmModal: {
+      title: string;
+      body: string;
+    };
     configWizard: {
       header: {
         provider: string;
@@ -108,15 +123,6 @@ interface AppDictionary extends ReferenceDictionary {
         };
       };
     };
-    configModal: {
-      hostInfo: string;
-      namespaceInfo: string;
-      tokenInfo: string;
-      validationError: string;
-      connectionError: string;
-      configExpiredWarning: string;
-      useWizard: string;
-    };
   };
   embedModal: {
     title: string;
@@ -151,15 +157,108 @@ interface AppDictionary extends ReferenceDictionary {
       note: string;
     };
   };
-  notificationsPanel: {
-    name: string;
-    tooltip: {
-      retractAll: string;
-      expandAll: string;
-    };
-  };
   kieSandboxExtendedServices: {
+    modal: {
+      wizard: {
+        title: string;
+        description: string;
+        outdatedAlert: {
+          title: string;
+          message: string;
+        };
+        stoppedAlert: {
+          title: string;
+          message: string;
+        };
+        macos: {
+          install: {
+            download: string;
+            openFile: Array<string | Wrapped<"file">>;
+            dragFileToApplicationsFolder: Array<string | Wrapped<"file" | "folder">>;
+          };
+          start: {
+            stopped: {
+              startInstruction: string;
+              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            };
+            firstTime: {
+              title: string;
+              openApplicationsFolder: Array<string | Wrapped<"folder">>;
+              openAndCancel: Array<string | Wrapped<"file">>;
+              again: string;
+              openInstruction: Array<string | Wrapped<"file" | "again">>;
+            };
+            alreadyRanBefore: string;
+            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            advanced: {
+              title: string;
+              runFollowingCommand: string;
+            };
+          };
+        };
+        windows: {
+          install: {
+            keepDownload: string;
+            moveTheFile: Array<string | Wrapped<"file">>;
+          };
+          start: {
+            stopped: {
+              startInstruction: string;
+              launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            };
+            firstTime: {
+              title: string;
+              openFolder: Array<string | Wrapped<"file">>;
+              runAnyway: string;
+            };
+            alreadyRanBefore: string;
+            launchKieSandboxExtendedServices: Array<string | Wrapped<"file">>;
+            advanced: {
+              title: string;
+              runFollowingCommand: string;
+            };
+          };
+        };
+        linux: {
+          install: {
+            download: string;
+            installAppIndicator: string;
+            ubuntuDependency: Array<string | Wrapped<"package">>;
+            fedoraDependency: Array<string | Wrapped<"package">>;
+            extractContent: Array<string | Wrapped<"file">>;
+            binaryExplanation: Array<string | Wrapped<"file">>;
+          };
+          start: {
+            openTerminal: string;
+            goToFolder: Array<string | Wrapped<"file">>;
+            runCommand: string;
+            advanced: {
+              title: string;
+              runFollowingCommand: Array<string | Wrapped<"file">>;
+            };
+          };
+        };
+        footerWaitingToConnect: string;
+        advancedSettings: {
+          title: Array<string | Wrapped<"port">>;
+          label: string;
+          helperTextInvalid: string;
+        };
+      };
+      use: {
+        title: string;
+        connected: string;
+        backToEditor: string;
+      };
+    };
+    button: {
+      available: string;
+    };
     dropdown: {
+      label: string;
+      setup: string;
+      open: string;
+      close: string;
       shortConnected: (port: string) => string;
       tooltip: {
         connected: string;
@@ -168,10 +267,12 @@ interface AppDictionary extends ReferenceDictionary {
         disconnected: string;
       };
     };
-    modal: {
-      initial: {
-        subHeader: string;
-      };
+  };
+  notificationsPanel: {
+    name: string;
+    tooltip: {
+      retractAll: string;
+      expandAll: string;
     };
   };
 }

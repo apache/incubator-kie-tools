@@ -187,7 +187,7 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     <Modal
       data-testid={"confirm-deploy-modal"}
       variant={ModalVariant.small}
-      title={"Deploy"}
+      title={i18n.openshift.confirmModal.title}
       isOpen={openshift.isConfirmDeployModalOpen}
       aria-label={"Confirm deploy modal"}
       onClose={onCancel}
@@ -207,9 +207,7 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
         </Button>,
       ]}
     >
-      {
-        "Are you sure you want to deploy your model to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model."
-      }
+      {i18n.openshift.confirmModal.body}
     </Modal>
   );
 }

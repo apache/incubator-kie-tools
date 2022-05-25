@@ -195,10 +195,10 @@ function getBuildInfo() {
 }
 
 function getKieSandboxExtendedServicesArgs() {
-  const linuxDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.linux;
-  const macOsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.macOs;
-  const windowsDownloadUrl = buildEnv.onlineEditor.kieSandboxExtendedServices.downloadUrl.windows;
-  const compatibleVersion = buildEnv.onlineEditor.kieSandboxExtendedServices.compatibleVersion;
+  const linuxDownloadUrl = buildEnv.swfSandbox.kieSandboxExtendedServices.downloadUrl.linux;
+  const macOsDownloadUrl = buildEnv.swfSandbox.kieSandboxExtendedServices.downloadUrl.macOs;
+  const windowsDownloadUrl = buildEnv.swfSandbox.kieSandboxExtendedServices.downloadUrl.windows;
+  const compatibleVersion = buildEnv.swfSandbox.kieSandboxExtendedServices.compatibleVersion;
 
   console.info("KIE Sandbox Extended Services :: Linux download URL: " + linuxDownloadUrl);
   console.info("KIE Sandbox Extended Services :: macOS download URL: " + macOsDownloadUrl);

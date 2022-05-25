@@ -63,12 +63,29 @@ export const en: AppI18n = {
       deployYourModel: "Deploy",
       deployInstanceInfo: "Deploy instance information",
       disclaimer:
-        "When you set up the required information, you are able to deploy projects on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
+        "When you set up the required information, you are able to deploy models on your configured instance. All the information you provide is locally stored as browser cookies and they are never shared with anyone.",
       learnMore: "Learn more",
       requiredField: "This field cannot be empty.",
       deploying: "Deploying ...",
       saving: "Saving ...",
-      setupFirst: `Set up your ${en_common.names.dmnDevSandbox} to be able to deploy your projects`,
+      setupFirst: `Set up your ${en_common.names.devSandbox} to be able to deploy your models`,
+    },
+    configModal: {
+      hostInfo: `The hostname associated with your instance.`,
+      namespaceInfo: `The namespace (project) you want to deploy the model.`,
+      tokenInfo: `The token associated with your instance.`,
+      validationError: "You must fill out all required fields before you can proceed.",
+      connectionError: "Connection refused. Please check the information provided.",
+      configExpiredWarning: "Token or account expired. Please update your configuration.",
+    },
+    confirmModal: {
+      title: "Deploy",
+      body: "Are you sure you want to deploy this model as standalone to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+    },
+    introduction: {
+      explanation: `Deploy your models to a cloud instance on ${
+        en_common.names.devSandbox
+      } and share with others. This tool is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
     },
     configWizard: {
       header: {
@@ -80,9 +97,9 @@ export const en: AppI18n = {
           introduction: `In order to create your ${en_common.names.shortDevSandbox} instance:`,
           goToGetStartedPage: "Go to the Get Started page",
           followSteps: `Follow the steps to launch your instance. You will be asked to log in with your ${en_common.names.redHat} account.`,
-          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the project deployed to.`,
-          inputReason: "This information is necessary for deploying your project into the right project namespace.",
-          namespacePlaceholder: `The namespace (project) you want to deploy the project.`,
+          informNamespace: `Once your instance is up and running, inform the namespace (project) in your cluster you want to have the model deployed to.`,
+          inputReason: "This information is necessary for deploying your models into the right project namespace.",
+          namespacePlaceholder: `The namespace (project) you want to deploy the models.`,
         },
         second: {
           name: "Set credentials",
@@ -111,15 +128,6 @@ export const en: AppI18n = {
           },
         },
       },
-    },
-    configModal: {
-      hostInfo: `The hostname associated with your instance.`,
-      namespaceInfo: `The namespace (project) you want to deploy models.`,
-      tokenInfo: `The token associated with your instance.`,
-      validationError: "You must fill out all required fields before you can proceed.",
-      connectionError: "Connection refused. Please check the information provided.",
-      configExpiredWarning: "Token or account expired. Please update your configuration.",
-      useWizard: "Configure through the guided wizard instead",
     },
   },
   embedModal: {
@@ -157,27 +165,152 @@ export const en: AppI18n = {
       note: `You should provide a token with the ${"'gist'".bold()} permission.`,
     },
   },
+  kieSandboxExtendedServices: {
+    modal: {
+      wizard: {
+        title: `${en_common.names.kieSandboxExtendedServices} ${en_common.terms.setup}`,
+        description: `Choose your ${en_common.terms.os.full} and follow the instructions to install and start the ${en_common.names.kieSandboxExtendedServices}.`,
+        outdatedAlert: {
+          title: `${en_common.names.kieSandboxExtendedServices} is outdated!`,
+          message: `It looks like you're using an incompatible version of the ${en_common.names.kieSandboxExtendedServices}. Follow the instructions below to update.`,
+        },
+        stoppedAlert: {
+          title: `${en_common.names.kieSandboxExtendedServices} has stopped!`,
+          message: `It looks like the ${en_common.names.kieSandboxExtendedServices} has suddenly stopped, please follow these instructions to start it again.`,
+        },
+        macos: {
+          install: {
+            download: ` ${en_common.names.kieSandboxExtendedServices}.`,
+            openFile: ["Open the ", wrapped("file"), " file."],
+            dragFileToApplicationsFolder: ["Drag ", wrapped("file"), " to the ", wrapped("folder"), " folder."],
+          },
+          start: {
+            stopped: {
+              startInstruction: `If you see the ${en_common.names.kieSandboxExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchKieSandboxExtendedServices: [
+                `If not, start the ${en_common.names.kieSandboxExtendedServices} app by launching `,
+                wrapped("file"),
+                ".",
+              ],
+            },
+            firstTime: {
+              title: `If you just installed ${en_common.names.kieSandboxExtendedServices}:`,
+              openApplicationsFolder: ["Open the ", wrapped("folder"), " folder."],
+              again: "again",
+              openAndCancel: [
+                "Right-click on ",
+                wrapped("file"),
+                ` select "${en_common.terms.open}" and then "${en_common.terms.cancel}".`,
+              ],
+              openInstruction: [
+                "Right-click on ",
+                wrapped("file"),
+                " ",
+                wrapped("again"),
+                ` and then select "${en_common.terms.open}".`,
+              ],
+            },
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieSandboxExtendedServices} before:`,
+            launchKieSandboxExtendedServices: ["Launch the ", wrapped("file")],
+            advanced: {
+              title: "Advanced Settings",
+              runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.kieSandboxExtendedServices} on a different port:`,
+            },
+          },
+        },
+        windows: {
+          install: {
+            keepDownload: ` ${en_common.names.kieSandboxExtendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
+            moveTheFile: ["Move the ", wrapped("file"), " file to your preferred folder."],
+          },
+          start: {
+            stopped: {
+              startInstruction: `If you see the ${en_common.names.kieSandboxExtendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
+              launchKieSandboxExtendedServices: [
+                `If not, start the ${en_common.names.kieSandboxExtendedServices} by opening the `,
+                wrapped("file"),
+                "file.",
+              ],
+            },
+            firstTime: {
+              title: `If you just installed ${en_common.names.kieSandboxExtendedServices}:`,
+              openFolder: ["Open folder where you placed the ", wrapped("file"), " file."],
+              runAnyway: `Double-click it and select "More info" then click on the "Run anyway" button.`,
+            },
+            alreadyRanBefore: `If you already installed and ran the ${en_common.names.kieSandboxExtendedServices} before:`,
+            launchKieSandboxExtendedServices: ["Open the ", wrapped("file"), " file."],
+            advanced: {
+              title: "Advanced Settings",
+              runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.kieSandboxExtendedServices} on a different port:`,
+            },
+          },
+        },
+        linux: {
+          install: {
+            download: ` ${en_common.names.kieSandboxExtendedServices}.`,
+            installAppIndicator: "Install the AppIndicator lib for your system:",
+            ubuntuDependency: [`${en_common.names.ubuntu}: `, wrapped("package")],
+            fedoraDependency: [`${en_common.names.fedora}: `, wrapped("package")],
+            extractContent: ["Extract the contents of ", wrapped("file"), " to your location of choice."],
+            binaryExplanation: [
+              `The ${en_common.names.kieSandboxExtendedServices} binary, `,
+              wrapped("file"),
+              ", is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.",
+            ],
+          },
+          start: {
+            openTerminal: "Open a Terminal window.",
+            goToFolder: ["Go to the folder where you placed the ", wrapped("file"), " binary."],
+            runCommand: "Run ",
+            advanced: {
+              title: "Advanced Settings",
+              runFollowingCommand: [
+                "Open a Terminal window and run the following command on the directory where you placed the ",
+                wrapped("file"),
+                " binary:",
+              ],
+            },
+          },
+        },
+        footerWaitingToConnect: `Waiting to connect to ${en_common.names.kieSandboxExtendedServices}`,
+        advancedSettings: {
+          title: [
+            `The default ${en_common.names.kieSandboxExtendedServices} port is `,
+            wrapped("port"),
+            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.kieSandboxExtendedServices}.`,
+          ],
+          label: "Port",
+          helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
+        },
+      },
+      use: {
+        title: "All set! 🎉",
+        connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
+        backToEditor: "Back to Editor",
+      },
+    },
+    button: {
+      available: `This is only available in ${en_common.names.chrome} at the moment`,
+    },
+    dropdown: {
+      label: `${en_common.names.kieSandboxExtendedServices}`,
+      setup: `${en_common.terms.setup} ${en_common.names.kieSandboxExtendedServices}`,
+      open: `${en_common.terms.open} ${en_common.names.kieSandboxExtendedServices} panel`,
+      close: `${en_common.terms.close} ${en_common.names.kieSandboxExtendedServices} panel`,
+      shortConnected: (port: string) => `Connected to port ${port}`,
+      tooltip: {
+        connected: `${en_common.names.kieSandboxExtendedServices} is connected.`,
+        install: `Setup ${en_common.names.kieSandboxExtendedServices} to use this feature. Click to install.`,
+        outdated: `${en_common.names.kieSandboxExtendedServices} is outdated. Click to update.`,
+        disconnected: `${en_common.names.kieSandboxExtendedServices} is disconnected.`,
+      },
+    },
+  },
   notificationsPanel: {
     name: "Notifications Panel",
     tooltip: {
       retractAll: "Retract All",
       expandAll: "Expand All",
-    },
-  },
-  kieSandboxExtendedServices: {
-    dropdown: {
-      shortConnected: (port: string) => `Connected to port ${port}`,
-      tooltip: {
-        connected: `${en_common.names.kieSandboxExtendedServices} is connected.`,
-        install: `Setup ${en_common.names.kieSandboxExtendedServices} to use this feature.`,
-        outdated: `${en_common.names.kieSandboxExtendedServices} is outdated. Click to update.`,
-        disconnected: `${en_common.names.kieSandboxExtendedServices} is disconnected.`,
-      },
-    },
-    modal: {
-      initial: {
-        subHeader: `Augment the ${en_common.names.dmn} editor`,
-      },
     },
   },
 };
