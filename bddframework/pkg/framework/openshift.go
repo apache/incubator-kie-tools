@@ -22,7 +22,7 @@ import (
 	"github.com/kiegroup/kogito-operator/test/pkg/meta"
 	"time"
 
-	"github.com/kiegroup/kogito-operator/apis"
+	api "github.com/kiegroup/kogito-operator/apis"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -223,8 +223,8 @@ func GetRouteURI(namespace, serviceName string) (string, error) {
 }
 
 // CreateInsecureImageStream creates insecure ImageStream pointing to the passed image tag
-func CreateInsecureImageStream(namespace, imageStreamName, imageTagName, imageTag string) error {
-	GetLogger(namespace).Info("Creating insecure ImageStream", "name", imageStreamName, "imageTagName", imageTagName, "imageTag", imageTag)
+func CreateInsecureImageStream(namespace, imageStreamName, imageTag, imageFullName string) error {
+	GetLogger(namespace).Info("Creating insecure ImageStream", "name", imageStreamName, "imageTag", imageTag, "imageFullName", imageFullName)
 
 	imageStream := &imagev1.ImageStream{
 		ObjectMeta: metav1.ObjectMeta{
@@ -234,7 +234,7 @@ func CreateInsecureImageStream(namespace, imageStreamName, imageTagName, imageTa
 		Spec: imagev1.ImageStreamSpec{
 			Tags: []imagev1.TagReference{
 				{
-					Name: imageTagName,
+					Name: imageTag,
 					ImportPolicy: imagev1.TagImportPolicy{
 						Insecure: true,
 					},
@@ -243,7 +243,7 @@ func CreateInsecureImageStream(namespace, imageStreamName, imageTagName, imageTa
 					},
 					From: &corev1.ObjectReference{
 						Kind: dockerImageKind,
-						Name: imageTag,
+						Name: imageFullName,
 					},
 				},
 			},
