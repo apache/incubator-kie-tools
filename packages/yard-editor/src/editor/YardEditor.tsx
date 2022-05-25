@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
   Drawer,
   DrawerContent,
@@ -24,9 +24,6 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { MermaidDiagram, Specification } from "@severlessworkflow/sdk-typescript";
-import svgPanZoom from "svg-pan-zoom";
-import mermaid from "mermaid";
 import { SwfTextEditorApi, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";
 import { SwfTextEditor } from "../textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
@@ -78,10 +75,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   forwardedRef
 ) => {
   const [initialContent, setInitialContent] = useState<YardEditorContent | undefined>(undefined);
-  const [isYardDiagramEditorOutOfSync, setYardDiagramEditorOutOfSync] = useState<boolean>(false);
-  const swfDiagramEditorContainerRef = useRef<HTMLDivElement>(null);
-  const swfDiagramEditorHiddenContainerRef = useRef<HTMLDivElement>(null);
-  const swfTextEditorRef = useRef<SwfTextEditorApi>(null);
+  const yardTextEditorRef = useRef<SwfTextEditorApi>(null);
 
   useImperativeHandle(
     forwardedRef,
@@ -100,31 +94,22 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           }
         },
         getContent: (): Promise<string> => {
-          return Promise.resolve(swfTextEditorRef.current?.getContent() || "");
+          return Promise.resolve(yardTextEditorRef.current?.getContent() || "");
         },
         getPreview: (): Promise<string> => {
-          swfDiagramEditorHiddenContainerRef.current!.innerHTML = swfDiagramEditorContainerRef.current!.innerHTML;
-          swfDiagramEditorHiddenContainerRef.current!.getElementsByTagName("svg")[0].removeAttribute("style");
-
-          // Remove zoom controls from SVG
-          swfDiagramEditorHiddenContainerRef.current!.getElementsByTagName("svg")[0].lastChild?.remove();
-
-          // Line breaks replaced due to https://github.com/mermaid-js/mermaid/issues/1766
-          const svgContent = swfDiagramEditorHiddenContainerRef.current!.innerHTML.replaceAll("<br>", "<br/>");
-
-          return Promise.resolve(svgContent);
+          return Promise.resolve(""); // Should we define a preview here ?
         },
         undo: (): Promise<void> => {
-          return swfTextEditorRef.current?.undo() || Promise.resolve();
+          return yardTextEditorRef.current?.undo() || Promise.resolve();
         },
         redo: (): Promise<void> => {
-          return swfTextEditorRef.current?.redo() || Promise.resolve();
+          return yardTextEditorRef.current?.redo() || Promise.resolve();
         },
         validate: (): Notification[] => {
           return [];
         },
         setTheme: (theme: EditorTheme): Promise<void> => {
-          return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
+          return yardTextEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
       };
     },
@@ -153,31 +138,6 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
     [initialContent, props.setNotifications]
   );
 
-  const updateDiagram = useCallback((newContent: string) => {
-    try {
-      const workflow: Specification.Workflow = Specification.Workflow.fromSource(newContent);
-      const mermaidSourceCode = workflow.states ? new MermaidDiagram(workflow).sourceCode() : "";
-
-      if (mermaidSourceCode?.length > 0) {
-        swfDiagramEditorContainerRef.current!.innerHTML = mermaidSourceCode;
-        swfDiagramEditorContainerRef.current!.removeAttribute("data-processed");
-        mermaid.init(swfDiagramEditorContainerRef.current!);
-        svgPanZoom(swfDiagramEditorContainerRef.current!.getElementsByTagName("svg")[0], {
-          controlIconsEnabled: true,
-        });
-        swfDiagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.maxWidth = "";
-        swfDiagramEditorContainerRef.current!.getElementsByTagName("svg")[0].style.height = "100%";
-        setYardDiagramEditorOutOfSync(false);
-      } else {
-        swfDiagramEditorContainerRef.current!.innerHTML = "Create a workflow to see its preview here.";
-        setYardDiagramEditorOutOfSync(true);
-      }
-    } catch (e) {
-      console.error(e);
-      setYardDiagramEditorOutOfSync(true);
-    }
-  }, []);
-
   const isVscode = useCallback(() => {
     return props.channelType === ChannelType.VSCODE_DESKTOP || props.channelType === ChannelType.VSCODE_WEB;
   }, [props.channelType]);
@@ -190,32 +150,26 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           break;
         case SwfTextEditorOperation.UNDO:
           if (!isVscode()) {
-            swfTextEditorRef.current?.undo();
+            yardTextEditorRef.current?.undo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.UNDO);
           break;
         case SwfTextEditorOperation.REDO:
           if (!isVscode()) {
-            swfTextEditorRef.current?.redo();
+            yardTextEditorRef.current?.redo();
           }
           props.onStateControlCommandUpdate(StateControlCommand.REDO);
           break;
       }
-      // setTimeout necessary for now because monaco does not have a callback for the undo/redo methods
+      // Necessary because monaco does not have a callback for the undo/redo methods
       setTimeout(() => {
-        updateDiagram(swfTextEditorRef.current!.getContent());
+        // FUTURE CALL TO UPDATE YARD UI HERE
       }, 100);
     },
-    [props, isVscode, updateDiagram]
+    [props, isVscode]
   );
 
-  useEffect(() => {
-    if (initialContent !== undefined) {
-      updateDiagram(initialContent.originalContent);
-    }
-  }, [initialContent, updateDiagram]);
-
-  const swfTextEditor = useMemo(
+  const yardTextEditor = useMemo(
     () =>
       initialContent && (
         <SwfTextEditor
@@ -224,36 +178,31 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           fileName={initialContent.path}
           onContentChange={onContentChanged}
           setValidationErrors={setValidationErrors}
-          ref={swfTextEditorRef}
+          ref={yardTextEditorRef}
           isReadOnly={props.isReadOnly}
         />
       ),
     [initialContent, props.channelType, onContentChanged, setValidationErrors, props.isReadOnly]
   );
 
-  const swfDiagramEditorContainer = (
+  const yardUIContainer = (
     <>
-      <div
-        style={{ height: "100%", textAlign: "center", opacity: isYardDiagramEditorOutOfSync ? 0.5 : 1 }}
-        ref={swfDiagramEditorContainerRef}
-        className={"mermaid"}
-      />
-      <div ref={swfDiagramEditorHiddenContainerRef} className={"hidden"} />
+      <p>Future UI here</p>
     </>
   );
 
   return (
     <>
-      {(isVscode() && swfDiagramEditorContainer) || (
+      {(isVscode() && yardUIContainer) || (
         <Drawer isExpanded={true} isInline={true}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody>{swfDiagramEditorContainer}</DrawerPanelBody>
+                <DrawerPanelBody>{yardUIContainer}</DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody style={{ overflowY: "hidden" }}>{swfTextEditor}</DrawerContentBody>
+            <DrawerContentBody style={{ overflowY: "hidden" }}>{yardTextEditor}</DrawerContentBody>
           </DrawerContent>
         </Drawer>
       )}
