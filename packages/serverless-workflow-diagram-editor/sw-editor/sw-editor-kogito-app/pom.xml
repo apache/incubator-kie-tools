@@ -342,6 +342,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <scope>test</scope>
+      <classifier>
+        tests
+      </classifier>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <scope>test</scope>
