@@ -22,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 
 import org.dashbuilder.external.model.ComponentParameter;
 import org.dashbuilder.external.model.ExternalComponent;
@@ -148,56 +147,6 @@ public class ComponentLoaderImplTest {
         createComponentsFiles();
 
         assertTrue(externalComponentLoaderImpl.loadExternal().isEmpty());
-    }
-
-    @Test
-    public void testLoadInternalComponents() throws IOException {
-        externalComponentLoaderImpl.init();
-        List<ExternalComponent> internalComponents = externalComponentLoaderImpl.loadProvided();
-
-        assertEquals(4, internalComponents.size());
-
-        ExternalComponent component = internalComponents.get(0);
-        assertEquals("logo-provided", component.getId());
-
-        List<ComponentParameter> parameters = component.getParameters();
-        assertEquals(3, parameters.size());
-
-        Optional<ComponentParameter> srcParamOp = component.getParameters()
-                                                           .stream()
-                                                           .filter(p -> p.getName().equals("src"))
-                                                           .findFirst();
-
-        assertTrue(srcParamOp.isPresent());
-
-        ComponentParameter srcParam = srcParamOp.get();
-        assertEquals("src", srcParam.getName());
-        assertEquals("Logo URL", srcParam.getLabel());
-        assertEquals("text", srcParam.getType());
-
-        Optional<ComponentParameter> widthParamOp = component.getParameters()
-                                                             .stream()
-                                                             .filter(p -> p.getName().equals("width"))
-                                                             .findFirst();
-
-        assertTrue(widthParamOp.isPresent());
-
-        ComponentParameter widthParam = widthParamOp.get();
-        assertEquals("width", widthParam.getName());
-        assertEquals("Width", widthParam.getLabel());
-        assertEquals("text", widthParam.getType());
-
-        Optional<ComponentParameter> heightParamOp = component.getParameters()
-                                                              .stream()
-                                                              .filter(p -> p.getName().equals("height"))
-                                                              .findFirst();
-
-        assertTrue(heightParamOp.isPresent());
-
-        ComponentParameter heightParam = heightParamOp.get();
-        assertEquals("height", heightParam.getName());
-        assertEquals("Height", heightParam.getLabel());
-        assertEquals("text", heightParam.getType());
     }
 
     private ExternalComponent getComponent(List<ExternalComponent> components, String id) {

@@ -46,6 +46,9 @@ const RefForwardingDashbuilderMonacoEditor: React.ForwardRefRenderFunction<
       return;
     }
     controller.show(container.current, theme);
+    return () => {
+      controller.dispose();
+    };
   }, [
     content,
     fileName,

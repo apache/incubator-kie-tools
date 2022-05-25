@@ -84,8 +84,11 @@ public class ExternalDataSetClientProvider {
     }
 
     public void register(ExternalDataSetDef def) {
-        clientDataSetManager.removeDataSet(def.getUUID());
-        externalDataSets.put(def.getUUID(), def);
+        var existingDef = externalDataSets.get(def.getUUID());
+        if (existingDef == null || !def.equals(existingDef)) {
+            clientDataSetManager.removeDataSet(def.getUUID());
+            externalDataSets.put(def.getUUID(), def);
+        }
     }
 
     public Optional<ExternalDataSetDef> get(String uuid) {

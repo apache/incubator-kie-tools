@@ -51,7 +51,7 @@ public class DefaultConditionTransition {
 
     @Labels
     @JsIgnore
-    private final Set<String> labels = Stream.of(LABEL_TRANSITION_DEFAULT_CONDITION).collect(Collectors.toSet());
+    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_DEFAULT_CONDITION).collect(Collectors.toSet());
 
     public String transition;
 

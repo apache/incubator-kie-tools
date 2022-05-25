@@ -17,8 +17,12 @@
 package org.dashbuilder.client.parser;
 
 import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import elemental2.dom.DomGlobal;
+import elemental2.dom.URLSearchParams;
 
 @ApplicationScoped
 public class PropertyReplacementService {
@@ -29,14 +33,21 @@ public class PropertyReplacementService {
     public String replace(String content, Map<String, String> properties) {
         var contentSb = new StringBuffer(content);
         properties.forEach((k, v) -> {
-
-            // V must be escaped to be a JSON String
+            var value = getExternalPropertyValue(k, v);
             var replaceToken = PROPERTY_REPLACEMENT_PATTERN.replace(PROPERTY_KEY, k);
-            var replacedContent = contentSb.toString().replaceAll(replaceToken, v);
+            var replacedContent = contentSb.toString().replaceAll(replaceToken, value);
             contentSb.replace(0, contentSb.length(), replacedContent);
         });
-
         return contentSb.toString();
+    }
+
+    public String getExternalPropertyValue(String key, String v) {
+        if (DomGlobal.window != null) {
+            var params = new URLSearchParams(DomGlobal.window.location.search);
+            return Optional.ofNullable(params.get(key)).orElse(v);
+        } else {
+            return v;
+        }
     }
 
 }

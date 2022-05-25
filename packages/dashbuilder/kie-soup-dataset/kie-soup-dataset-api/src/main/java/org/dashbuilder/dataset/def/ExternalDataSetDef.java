@@ -31,11 +31,11 @@ public class ExternalDataSetDef extends DataSetDef {
     private String url;
 
     private boolean dynamic;
-    
+
     private String expression;
-    
+
     private String content;
-    
+
     private Map<String, String> headers;
 
     public ExternalDataSetDef() {
@@ -65,11 +65,11 @@ public class ExternalDataSetDef extends DataSetDef {
     public void setExpression(String expression) {
         this.expression = expression;
     }
-    
+
     public String getContent() {
         return content;
     }
-    
+
     public void setContent(String content) {
         this.content = content;
     }
@@ -80,12 +80,11 @@ public class ExternalDataSetDef extends DataSetDef {
                 url,
                 dynamic);
     }
-    
-    
+
     public Map<String, String> getHeaders() {
         return headers;
     }
-    
+
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
@@ -98,6 +97,22 @@ public class ExternalDataSetDef extends DataSetDef {
         def.setDynamic(isDynamic());
         def.setHeaders(getHeaders());
         return def;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        var other = (ExternalDataSetDef) obj;
+        return Objects.equals(content, other.content) &&
+               dynamic == other.dynamic &&
+               Objects.equals(expression, other.expression) &&
+               Objects.equals(headers, other.headers) &&
+               Objects.equals(url, other.url);
     }
 
     public String toString() {
