@@ -44,6 +44,8 @@ import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeUnmarshaller;
 
+import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
+import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.marshallEdge;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallEdge;
@@ -51,6 +53,9 @@ import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getEl
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.isValidString;
 
 public interface StateMarshalling {
+
+    NodeMarshaller<Object> ANY_NODE_MARSHALLER =
+            (context, node) -> node.getContent().getDefinition();
 
     NodeUnmarshaller<State> STATE_UNMARSHALLER =
             (context, state) -> {
@@ -61,14 +66,15 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                if (state.isEnd()) {
+                boolean end = getEnd(state.isEnd());
+                if (end) {
                     final Transition tend = new Transition();
                     tend.setTo(STATE_END);
                     Edge tendEdge = unmarshallEdge(context, tend);
                 }
 
                 // Parse transition.
-                String transition = state.getTransition();
+                String transition = getTransition(state.transition);
                 if (isValidString(transition)) {
                     final Transition t = new Transition();
                     t.setTo(transition);
@@ -105,9 +111,6 @@ public interface StateMarshalling {
 
                 return stateNode;
             };
-
-    NodeMarshaller<Object> ANY_NODE_MARSHALLER =
-            (context, node) -> node.getContent().getDefinition();
 
     NodeMarshaller<State> STATE_MARSHALLER =
             (context, stateNode) -> {

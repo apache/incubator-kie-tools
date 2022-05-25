@@ -77,7 +77,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertEquals(1, workflow.states.length);
         State state1 = workflow.states[0];
         assertNull(state1.transition);
-        assertFalse(state1.end);
+        assertFalse(DefinitionTypeUtils.getEnd(state1.end));
         assertNull(state1.compensatedBy);
         assertNull(state1.eventTimeout);
         assertNull(state1.onErrors);
@@ -88,22 +88,22 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         // Unmarshall the graph for the workflow example.
         unmarshallWorkflow();
         // Create an error transition from State1 to end.
-        graphHandler.addEdgeTo(graphHandler.newEdge("error1",
-                                                    Optional.of(new ErrorTransition()
-                                                                        .setErrorRef("error1"))),
+        ErrorTransition errorTransition = new ErrorTransition();
+        errorTransition.setErrorRef("error1");
+        graphHandler.addEdgeTo(graphHandler.newEdge("error1", Optional.of(errorTransition)),
                                getNodeByName("State1"),
                                graphHandler.newNode(Marshaller.STATE_END, Optional.of(new End())));
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
         State state1 = workflow.states[0];
         assertNull(state1.transition);
-        assertFalse(state1.end);
+        assertFalse(DefinitionTypeUtils.getEnd(state1.end));
         assertNull(state1.compensatedBy);
         assertNull(state1.eventTimeout);
         assertNotNull(state1.onErrors);
         assertEquals(1, state1.onErrors.length);
         ErrorTransition onError = state1.onErrors[0];
         assertNull(onError.transition);
-        assertTrue(onError.end);
+        assertTrue(DefinitionTypeUtils.getEnd(onError.end));
     }
 }
