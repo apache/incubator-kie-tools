@@ -53,7 +53,7 @@ export function OpenShiftSettingsTab() {
             </TextContent>
             <EmptyStateBody>
               <TextContent>
-                Deploying Serverless Workflows is <b>enabled</b>.
+                Deploying models is <b>enabled</b>.
               </TextContent>
               <br />
               <TextContent>
@@ -76,7 +76,11 @@ export function OpenShiftSettingsTab() {
           </EmptyState>
         )}
         {(settings.openshift.status === OpenShiftInstanceStatus.DISCONNECTED ||
-          settings.openshift.status === OpenShiftInstanceStatus.EXPIRED) && <OpenShiftSettingsTabSimpleConfig />}
+          settings.openshift.status === OpenShiftInstanceStatus.EXPIRED) && (
+          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+            <OpenShiftSettingsTabSimpleConfig />
+          </PageSection>
+        )}
       </PageSection>
     </Page>
   );

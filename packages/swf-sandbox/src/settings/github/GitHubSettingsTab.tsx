@@ -153,45 +153,47 @@ export function GitHubSettingsTab() {
       )}
       {settings.github.authStatus === AuthStatus.SIGNED_OUT && (
         <PageSection>
-          <Form>
-            <TextContent>
-              <Text component={TextVariants.h3}>GitHub</Text>
-            </TextContent>
-            <TextContent>
-              <Text component={TextVariants.small}>
-                Data you provide here is necessary for creating repositories containing models you design, and syncing
-                changes with GitHub. All information is locally stored in your browser and never shared with anyone.
-              </Text>
-            </TextContent>
-            <h3>
-              <a href={GITHUB_TOKENS_URL} target={"_blank"}>
-                Create a new token
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
-              </a>
-            </h3>
-            <FormGroup
-              isRequired={true}
-              helperTextInvalid={githubTokenHelperText}
-              validated={githubTokenValidated}
-              label={"Token"}
-              fieldId={"github-pat"}
-              helperText={"Your token must include the 'repo' scope."}
-            >
-              <InputGroup>
-                <TextInput
-                  autoComplete={"off"}
-                  id="token-input"
-                  name="tokenInput"
-                  aria-describedby="token-text-input-helper"
-                  placeholder={"Paste your GitHub token here"}
-                  maxLength={GITHUB_OAUTH_TOKEN_SIZE}
-                  validated={githubTokenValidated}
-                  value={githubTokenToDisplay}
-                  onPaste={onPasteGitHubToken}
-                />
-              </InputGroup>
-            </FormGroup>
-          </Form>
+          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+            <Form>
+              <TextContent>
+                <Text component={TextVariants.h3}>GitHub</Text>
+              </TextContent>
+              <TextContent>
+                <Text component={TextVariants.small}>
+                  Data you provide here is necessary for creating repositories containing models you design, and syncing
+                  changes with GitHub. All information is locally stored in your browser and never shared with anyone.
+                </Text>
+              </TextContent>
+              <h3>
+                <a href={GITHUB_TOKENS_URL} target={"_blank"}>
+                  Create a new token&nbsp;&nbsp;
+                  <ExternalLinkAltIcon />
+                </a>
+              </h3>
+              <FormGroup
+                isRequired={true}
+                helperTextInvalid={githubTokenHelperText}
+                validated={githubTokenValidated}
+                label={"Token"}
+                fieldId={"github-pat"}
+                helperText={"Your token must include the 'repo' scope."}
+              >
+                <InputGroup>
+                  <TextInput
+                    autoComplete={"off"}
+                    id="token-input"
+                    name="tokenInput"
+                    aria-describedby="token-text-input-helper"
+                    placeholder={"Paste your GitHub token here"}
+                    maxLength={GITHUB_OAUTH_TOKEN_SIZE}
+                    validated={githubTokenValidated}
+                    value={githubTokenToDisplay}
+                    onPaste={onPasteGitHubToken}
+                  />
+                </InputGroup>
+              </FormGroup>
+            </Form>
+          </PageSection>
         </PageSection>
       )}
     </Page>

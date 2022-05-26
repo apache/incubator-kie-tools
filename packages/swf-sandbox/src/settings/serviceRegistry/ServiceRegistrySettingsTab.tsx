@@ -14,89 +14,153 @@
  * limitations under the License.
  */
 
-import * as React from "react";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { useCallback } from "react";
-import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { saveCoreRegistryApiCookie } from "./ServiceRegistryConfig";
+import * as React from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import {
+  EMPTY_CONFIG,
+  isServiceRegistryConfigValid,
+  resetConfigCookie,
+  saveConfigCookie,
+} from "./ServiceRegistryConfig";
 
 export function ServiceRegistrySettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
+  const [config, setConfig] = useState(settings.serviceRegistry.config);
 
-  const onClearCoreRegistryApi = useCallback(
-    () => settingsDispatch.serviceRegistry.setConfig({ ...settings.serviceRegistry.config, coreRegistryApi: "" }),
-    [settings.serviceRegistry.config, settingsDispatch.serviceRegistry]
+  const isStoredConfigValid = useMemo(
+    () => isServiceRegistryConfigValid(settings.serviceRegistry.config),
+    [settings.serviceRegistry.config]
   );
+
+  const isCurrentConfigValid = useMemo(() => isServiceRegistryConfigValid(config), [config]);
+
+  const onClearCoreRegistryApi = useCallback(() => setConfig({ ...config, coreRegistryApi: "" }), [config]);
 
   const onCoreRegistryApiChanged = useCallback(
-    (newValue: string) => {
-      settingsDispatch.serviceRegistry.setConfig({ ...settings.serviceRegistry.config, coreRegistryApi: newValue });
-      saveCoreRegistryApiCookie(newValue);
-    },
-    [settings.serviceRegistry.config, settingsDispatch.serviceRegistry]
+    (newValue: string) => setConfig({ ...config, coreRegistryApi: newValue }),
+    [config]
   );
+
+  const onReset = useCallback(() => {
+    setConfig(EMPTY_CONFIG);
+    settingsDispatch.serviceRegistry.setConfig(EMPTY_CONFIG);
+    resetConfigCookie();
+  }, [settingsDispatch.serviceRegistry]);
+
+  const onApply = useCallback(() => {
+    settingsDispatch.serviceRegistry.setConfig(config);
+    saveConfigCookie(config);
+  }, [config, settingsDispatch.serviceRegistry]);
+
   return (
     <Page>
       <PageSection>
-        <Form>
-          <TextContent>
-            <Text component={TextVariants.h3}>Service Registry</Text>
-          </TextContent>
-          <TextContent>
-            <Text component={TextVariants.small}>
-              Data you provide here is necessary for uploading Open API specs associated with models you design to your
-              Service Registry instance. All information is locally stored in your browser and never shared with anyone.
-            </Text>
-          </TextContent>
-          <FormGroup
-            label={"Core Registry Api"}
-            labelIcon={
-              <Popover bodyContent={"Core Registry Api"}>
-                <button
-                  type="button"
-                  aria-label="More info for core registry api field"
-                  onClick={(e) => e.preventDefault()}
-                  aria-describedby="core-registry-api-field"
-                  className="pf-c-form__group-label-help"
-                >
-                  <HelpIcon noVerticalAlign />
-                </button>
-              </Popover>
-            }
-            isRequired
-            fieldId="core-registry-api-field"
-          >
-            <InputGroup className="pf-u-mt-sm">
-              <TextInput
-                autoComplete={"off"}
+        {isStoredConfigValid ? (
+          <EmptyState>
+            <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+            <TextContent>
+              <Text component={"h2"}>{"Your Service Registry information is set."}</Text>
+            </TextContent>
+            <EmptyStateBody>
+              <TextContent>
+                Uploading OpenAPI specs when deploying models is <b>enabled</b>.
+              </TextContent>
+              <br />
+              <TextContent>
+                <b>Core Registry Api: </b>
+                <i>{config.coreRegistryApi}</i>
+              </TextContent>
+              <br />
+              <Button variant={ButtonVariant.tertiary} onClick={onReset}>
+                Reset
+              </Button>
+            </EmptyStateBody>
+          </EmptyState>
+        ) : (
+          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
+            <Form>
+              <TextContent>
+                <Text component={TextVariants.h3}>Service Registry</Text>
+              </TextContent>
+              <TextContent>
+                <Text component={TextVariants.small}>
+                  Data you provide here is necessary for uploading Open API specs associated with models you design to
+                  your Service Registry instance. All information is locally stored in your browser and never shared
+                  with anyone.
+                </Text>
+              </TextContent>
+              <FormGroup
+                label={"Core Registry API"}
+                labelIcon={
+                  <Popover bodyContent={"Core Registry API URL associated with your Service Registry instance."}>
+                    <button
+                      type="button"
+                      aria-label="More info for core registry api field"
+                      onClick={(e) => e.preventDefault()}
+                      aria-describedby="core-registry-api-field"
+                      className="pf-c-form__group-label-help"
+                    >
+                      <HelpIcon noVerticalAlign />
+                    </button>
+                  </Popover>
+                }
                 isRequired
-                type="text"
-                id="core-registry-api-field"
-                name="core-registry-api-field"
-                aria-label="Core Registry API field"
-                aria-describedby="core-registry-api-field-helper"
-                value={settings.serviceRegistry.config.coreRegistryApi}
-                onChange={onCoreRegistryApiChanged}
-                tabIndex={6}
-                data-testid="core-registry-api-text-field"
-              />
-              <InputGroupText>
-                <Button isSmall variant="plain" aria-label="Clear client id button" onClick={onClearCoreRegistryApi}>
-                  <TimesIcon />
+                fieldId="core-registry-api-field"
+              >
+                <InputGroup className="pf-u-mt-sm">
+                  <TextInput
+                    autoComplete={"off"}
+                    isRequired
+                    type="text"
+                    id="core-registry-api-field"
+                    name="core-registry-api-field"
+                    aria-label="Core Registry API field"
+                    aria-describedby="core-registry-api-field-helper"
+                    value={config.coreRegistryApi}
+                    onChange={onCoreRegistryApiChanged}
+                    tabIndex={6}
+                    data-testid="core-registry-api-text-field"
+                  />
+                  <InputGroupText>
+                    <Button
+                      isSmall
+                      variant="plain"
+                      aria-label="Clear client id button"
+                      onClick={onClearCoreRegistryApi}
+                    >
+                      <TimesIcon />
+                    </Button>
+                  </InputGroupText>
+                </InputGroup>
+              </FormGroup>
+              <ActionGroup>
+                <Button
+                  isDisabled={!isCurrentConfigValid}
+                  id="service-registry-config-apply-button"
+                  key="save"
+                  variant="primary"
+                  onClick={onApply}
+                  data-testid="apply-config-button"
+                >
+                  Apply
                 </Button>
-              </InputGroupText>
-            </InputGroup>
-          </FormGroup>
-        </Form>
+              </ActionGroup>
+            </Form>
+          </PageSection>
+        )}
       </PageSection>
     </Page>
   );

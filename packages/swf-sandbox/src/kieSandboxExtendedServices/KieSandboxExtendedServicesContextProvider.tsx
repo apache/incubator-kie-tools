@@ -55,6 +55,7 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
     setConfig(newConfig);
     setCookie(KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME, newConfig.host);
     setCookie(KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME, newConfig.port);
+    setStatus(KieSandboxExtendedServicesStatus.AVAILABLE);
   }, []);
 
   useEffect(() => {

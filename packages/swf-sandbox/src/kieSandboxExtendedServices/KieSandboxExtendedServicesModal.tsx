@@ -623,7 +623,11 @@ export function KieSandboxExtendedServicesModal() {
   }, [operatingSystem, macOsWizardSteps, windowsWizardSteps, linuxWizardSteps]);
 
   useEffect(() => {
-    if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.NOT_RUNNING) {
+    if (
+      [KieSandboxExtendedServicesStatus.NOT_RUNNING, KieSandboxExtendedServicesStatus.AVAILABLE].includes(
+        kieSandboxExtendedServices.status
+      )
+    ) {
       setModalPage(ModalPage.INITIAL);
     } else if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.STOPPED) {
       setModalPage(ModalPage.WIZARD);
