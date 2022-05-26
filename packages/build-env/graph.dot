@@ -116,7 +116,6 @@ digraph G {
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/chrome-extension" [ style = "dashed", color = "black" ];
-  "chrome-extension-serverless-workflow-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
@@ -214,6 +213,7 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-service-catalog" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
@@ -250,7 +250,6 @@ digraph G {
   "vscode-extension-red-hat-business-automation-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "blue" ];
-  "vscode-extension-serverless-workflow-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/webpack-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];

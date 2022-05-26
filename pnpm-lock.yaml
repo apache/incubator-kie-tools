@@ -1773,13 +1773,16 @@ importers:
       "@kie-tools-core/operating-system": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
       "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
       "@types/mermaid": ^8.2.9
+      csstype: ^3.0.11
       json-schema: ^0.4.0
       mermaid: ^9.0.0
       monaco-editor: ^0.33.0
@@ -1800,6 +1803,8 @@ importers:
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      csstype: 3.0.11
       json-schema: 0.4.0
       mermaid: 9.0.0
       monaco-editor: 0.33.0
@@ -1809,6 +1814,7 @@ importers:
       vscode-languageserver-types: 3.16.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
       "@types/mermaid": 8.2.9
@@ -21431,7 +21437,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:
