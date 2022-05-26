@@ -17,7 +17,7 @@
 import { YardEditor } from "../src";
 import * as React from "react";
 import { useRef, useState } from "react";
-import { ServerlessWorkflowEmptyState } from "./EmptyState";
+import { YardEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
 import { MenuButtons, Theme } from "./MenuButtons";
 import "./App.scss";
@@ -30,7 +30,7 @@ export const App = () => {
   const [content, setContent] = useState<State>(undefined);
   const editor = useRef<EditorApi>();
 
-  const displayServerlessWorkflowEditor = (): Property.Display => {
+  const displayYardEditor = (): Property.Display => {
     return content === undefined ? "none" : "block";
   };
 
@@ -58,7 +58,7 @@ export const App = () => {
     <Page>
       {content === undefined && (
         <PageSection isFilled={true}>
-          <ServerlessWorkflowEmptyState
+          <YardEmptyState
             newContent={(type: string) => {
               setContent("");
               editor.current!.setContent(`new-document.yard.${type}`, "").finally();
@@ -71,7 +71,7 @@ export const App = () => {
         </PageSection>
       )}
 
-      <PageSection padding={{ default: "noPadding" }} style={{ display: displayServerlessWorkflowEditor() }}>
+      <PageSection padding={{ default: "noPadding" }} style={{ display: displayYardEditor() }}>
         <MenuButtons
           back={back}
           undo={undo}
@@ -91,7 +91,7 @@ export const App = () => {
       </PageSection>
       <PageSection
         padding={{ default: "noPadding" }}
-        style={{ display: displayServerlessWorkflowEditor() }}
+        style={{ display: displayYardEditor() }}
         isFilled={true}
         hasOverflowScroll={false}
       >

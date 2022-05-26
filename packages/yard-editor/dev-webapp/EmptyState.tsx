@@ -15,7 +15,6 @@
  */
 import * as React from "react";
 import { ChangeEvent } from "react";
-
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
@@ -37,7 +36,7 @@ interface UploadProps {
 
 interface AllProps extends NewProps, UploadProps {}
 
-export const ServerlessWorkflowEmptyState = (props: AllProps) => (
+export const YardEmptyState = (props: AllProps) => (
   <EmptyState variant={EmptyStateVariant.small}>
     <EmptyStateIcon icon={CubesIcon} />
     <Title headingLevel="h4" size="lg">
@@ -91,7 +90,7 @@ const FileChooser = (props: UploadProps) => {
         id="file-upload"
         style={{ display: "none" }}
         type="file"
-        accept={"yard.yaml,yard.yml,yard.json"}
+        accept={"yaml,yml,json"}
         onChange={(e) => showFile(e)}
       />
     </div>
