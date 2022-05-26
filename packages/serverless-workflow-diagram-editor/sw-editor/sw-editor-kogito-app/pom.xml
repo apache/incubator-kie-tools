@@ -46,6 +46,13 @@
   </repository>
   </repositories>
 
+  <properties>
+    <skipITs>false</skipITs>
+    <org.kie.sw.editor.browser.headless>true</org.kie.sw.editor.browser.headless>
+    <!-- We do not want to run selenium tests in default profile -->
+    <sw.editor.it.tests.excludes>**/*IT.java</sw.editor.it.tests.excludes>
+  </properties>
+
   <dependencies>
     <!--Logs-->
     <dependency>
@@ -366,6 +373,36 @@
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.github.bonigarcia</groupId>
+      <artifactId>webdrivermanager</artifactId>
+      <scope>test</scope>
+    </dependency>   
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-fluent</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.javacrumbs.json-unit</groupId>
+      <artifactId>json-unit-assertj</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -477,6 +514,21 @@
           </filesets>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <exclude>${sw.editor.it.tests.excludes}</exclude>
+          </excludes>
+          <systemPropertyVariables>
+            <org.kie.sw.editor.browser.headless>${org.kie.sw.editor.browser.headless}</org.kie.sw.editor.browser.headless>
+            <org.kie.sw.editor.screenshots.dir>${project.build.directory}/screenshots</org.kie.sw.editor.screenshots.dir>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+
     </plugins>
 
   </build>
@@ -534,6 +586,19 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>sw-editor-it-tests</id>
+      <activation>
+        <property>
+          <name>integration-tests</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <properties>
+        <!-- We want to run selenium tests in sw-editor-it-tests profile -->
+        <sw.editor.it.tests.excludes></sw.editor.it.tests.excludes>
+      </properties>
     </profile>
   </profiles>
 
