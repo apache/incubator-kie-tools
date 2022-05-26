@@ -38,7 +38,6 @@ public class PanelTransformUtils {
         transform.translate(viewportTransform.getTranslateX(),
                             viewportTransform.getTranslateY());
         transform.scale(level);
-        System.out.println("Scale Level: " + level);
         viewport.setTransform(transform);
     }
 
