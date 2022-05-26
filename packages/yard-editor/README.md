@@ -15,10 +15,14 @@ The module structure is composed of:
   Here, the editor is wrapped in a static HTML page with a dedicated menu. The menu is necessary to
   simulate functionality implemented by channel which integrate the editor _(eg. Undo / Redo / Validation)_
 - **src**: The project source code
+- **static**: The project static assets (css, images)
+- **test**: The project tests assets
 
 ### Usage
 
-To build the module : `pnpm build:prod`
+To build the module: `pnpm build:prod`
+
+To build the module and its parent modules: `pnpm build:full:prod`
 
 To build the module in dev mode (no tests): `pnpm build:dev`
 
