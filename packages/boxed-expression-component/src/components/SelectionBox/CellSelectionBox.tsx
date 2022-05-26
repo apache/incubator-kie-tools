@@ -108,13 +108,16 @@ export const CellSelectionBox: React.FunctionComponent = () => {
 
       if (textarea.current) {
         highlightCells(selectedCells);
-        const rowsGroupedByY = _(selectedCells).groupBy((e) => e.getBoundingClientRect().y);
+        const rowsGroupedByY = _(selectedCells).groupBy((e: HTMLElement) => e.getBoundingClientRect().y);
         let selectedValue = "";
 
         rowsGroupedByY.forEach((row: HTMLElement[]) => {
           for (let i = 0; i < row.length; i++) {
             const value = row[i].querySelector("textarea")!.textContent;
-            selectedValue += `${value}`;
+            const containsNewline = /\n/.test(value || "");
+
+            selectedValue += containsNewline ? `"${value}"` : `${value}`;
+
             if (i < row.length - 1) {
               selectedValue += "\t";
             }

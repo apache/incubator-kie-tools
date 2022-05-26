@@ -137,7 +137,7 @@ describe("CopyAndPasteUtils", () => {
   describe("iterableValue", () => {
     describe("when the paste value is empty", () => {
       test("returns an iterable data structure", () => {
-        expect(iterableValue("")).toEqual([[]]);
+        expect(iterableValue("")).toEqual([]);
       });
     });
 
@@ -148,11 +148,58 @@ describe("CopyAndPasteUtils", () => {
     });
 
     describe("when the paste value has multiple rows", () => {
-      test("returns an iterable data structure", () => {
-        expect(iterableValue("A\tB\tC\nD\tE\tF")).toEqual([
-          ["A", "B", "C"],
-          ["D", "E", "F"],
-        ]);
+      test.each([
+        [
+          "A\tB\tC\nD\tE\tF",
+          [
+            ["A", "B", "C"],
+            ["D", "E", "F"],
+          ],
+        ],
+        [
+          '"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nnewline"',
+          [
+            ["Cell 1\nnewline", "Cell 2"],
+            ["Cell 3", "Cell 4"],
+            ["Cell 5", "Cell 6\n\nnewline"],
+          ],
+        ],
+        [
+          "Cell 1\tCell 2\nCell 3\tCell 4\nCell 5\tCell 6\nCell 7\tCell 8",
+          [
+            ["Cell 1", "Cell 2"],
+            ["Cell 3", "Cell 4"],
+            ["Cell 5", "Cell 6"],
+            ["Cell 7", "Cell 8"],
+          ],
+        ],
+        [
+          "Cell 1\tCell 2\n\t\nCell 3\tCell 4\nCell 5\tCell 6",
+          [
+            ["Cell 1", "Cell 2"],
+            ["-", "-"],
+            ["Cell 3", "Cell 4"],
+            ["Cell 5", "Cell 6"],
+          ],
+        ],
+        [
+          'Cell 1\tCell 2\nCell 3\t"Cell 4\n\nnewline with ""quotes"""\nCell 4\tCell 5\nCell 6\tCell 7',
+          [
+            ["Cell 1", "Cell 2"],
+            ["Cell 3", 'Cell 4\n\nnewline with "quotes"'],
+            ["Cell 4", "Cell 5"],
+            ["Cell 6", "Cell 7"],
+          ],
+        ],
+        [
+          '"cell 1 \nnewline"\t"cell 2 \nindex of("list", "match")"\ncell 3\t"cell 4\n \nnewline"',
+          [
+            ["cell 1 \nnewline", 'cell 2 \nindex of("list", "match")'],
+            ["cell 3", "cell 4\n \nnewline"],
+          ],
+        ],
+      ])("returns an iterable data structure with input: %j", (input, expected) => {
+        expect(iterableValue(input)).toEqual(expected);
       });
     });
   });

@@ -21,9 +21,9 @@ import "../../__mocks__/ReactWithSupervisor";
 import { wrapComponentInContext } from "../test-utils";
 
 describe("CellSelectionBox", () => {
-  describe("when users select elements", () => {
+  describe("when users select elements in a simple table", () => {
     it("stores element values in the text area element", async () => {
-      const container = renderTable();
+      const container = renderSimpleTable();
 
       fireEvent.mouseDown(container, { clientX: -1, clientY: -1 });
       fireEvent.mouseMove(container, { clientX: 1000, clientY: 1000 });
@@ -35,9 +35,38 @@ describe("CellSelectionBox", () => {
       expect(selectionValue).toMatch("Cell 1\tCell 2\tCell 3\tCell 4\tCell 5\tCell 6");
     });
   });
+
+  describe("when users select elements in a table with newlines in cells", () => {
+    it("stores element values in the text area element", async () => {
+      const container = renderTableWithNewLines();
+
+      container.querySelectorAll("tr").forEach((tr: HTMLTableRowElement, rowIndex: number) =>
+        tr.querySelectorAll("td").forEach(
+          (td: HTMLTableCellElement) =>
+            (td.getBoundingClientRect = jest.fn(
+              () =>
+                ({
+                  y: rowIndex,
+                } as DOMRect)
+            ))
+        )
+      );
+
+      fireEvent.mouseDown(container, { clientX: -1, clientY: -1 });
+      fireEvent.mouseMove(container, { clientX: 1000, clientY: 1000 });
+      fireEvent.mouseUp(container);
+
+      const kieSelectionTextarea = container.querySelector(".kie-cell-selection-box textarea") as HTMLTextAreaElement;
+      const selectionValue = kieSelectionTextarea!.value;
+
+      expect(selectionValue).toMatch(
+        '"Cell 1\nnewline"\tCell 2\nCell 3\tCell 4\nCell 5\t"Cell 6\n\nindex of("list", "match")"'
+      );
+    });
+  });
 });
 
-function renderTable() {
+function renderSimpleTable() {
   return render(
     wrapComponentInContext(
       <>
@@ -72,6 +101,56 @@ function renderTable() {
             <textarea defaultValue="Cell 6" />
           </div>
         </div>
+      </>
+    )
+  ).container;
+}
+
+function renderTableWithNewLines() {
+  return render(
+    wrapComponentInContext(
+      <>
+        <CellSelectionBox />
+        <table>
+          <tbody>
+            <tr>
+              <td className="uuid-f1f0b02e react-resizable">
+                <div className="editable-cell">
+                  <textarea defaultValue={"Cell 1\nnewline"} />
+                </div>
+              </td>
+              <td className="uuid-56cabb83 react-resizable">
+                <div className="editable-cell">
+                  <textarea defaultValue={"Cell 2"} />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="uuid-3daf1136 react-resizable">
+                <div className="editable-cell">
+                  <textarea defaultValue={"Cell 3"} />
+                </div>
+              </td>
+              <td className="uuid-d45c5153 react-resizable">
+                <div className="editable-cell">
+                  <textarea defaultValue={"Cell 4"} />
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td className="uuid-8265fa47 react-resizable">
+                <div className="editable-cell">
+                  <textarea defaultValue={"Cell 5"} />
+                </div>
+              </td>
+              <td className="uuid-fb97017a react-resizable">
+                <div className="editable-cell">
+                  <textarea defaultValue={'Cell 6\n\nindex of("list", "match")'} />
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </>
     )
   ).container;
