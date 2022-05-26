@@ -15,6 +15,7 @@
  */
 
 import { DataRecord } from "react-table";
+import { parse } from "papaparse";
 import { getCellCoordinates, getCellTableId } from ".";
 import { LogicType } from "../../../api";
 
@@ -124,14 +125,10 @@ export const pasteOnTable = (
  * Covert a string value into an iterable data structure, by following the
  * convention of other spreadsheet tools.
  */
-export const iterableValue = (value: string) => {
-  const iterable: string[][] = value
-    .trim()
-    .split("\n")
-    .map((strRow) => {
-      const trimedValue = strRow.trim();
-      return trimedValue === "" ? [] : trimedValue.split("\t");
-    });
+export const iterableValue = (value: string): string[][] => {
+  const iterable = parse<string[]>(value, { delimiter: "\t", skipEmptyLines: true }).data.map((row) =>
+    row.filter((cell) => cell)
+  );
 
   ensureSameNumberOfColumns(iterable);
 
