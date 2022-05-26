@@ -46,14 +46,14 @@ public class ZoomLevelSelector implements IsWidget {
     }
 
     private final View view;
-    private Command onReset;
+    private Command onScaleToFit;
     private Command onDecreaseLevel;
     private Command onIncreaseLevel;
 
     @Inject
     public ZoomLevelSelector(final View view) {
         this.view = view;
-        this.onReset = () -> {
+        this.onScaleToFit = () -> {
         };
         this.onIncreaseLevel = () -> {
         };
@@ -78,9 +78,9 @@ public class ZoomLevelSelector implements IsWidget {
         return this;
     }
 
-    public ZoomLevelSelector onReset(final Command onReset) {
-        checkNotNull("onReset", onReset);
-        this.onReset = onReset;
+    public ZoomLevelSelector onScaleToFitSize(final Command onScaleToFit) {
+        checkNotNull("onScaleToFit", onScaleToFit);
+        this.onScaleToFit = onScaleToFit;
         return this;
     }
 
@@ -119,8 +119,8 @@ public class ZoomLevelSelector implements IsWidget {
         return view.asWidget();
     }
 
-    void onReset() {
-        onReset.execute();
+    void onScaleToFitSize() {
+        onScaleToFit.execute();
     }
 
     void onIncreaseLevel() {

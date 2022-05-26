@@ -160,7 +160,7 @@ public class ZoomLevelSelectorViewTest {
     public void testOnReset() {
         tested.init(presenter);
         tested.onReset(mock(ClickEvent.class));
-        verify(presenter, times(1)).onReset();
+        verify(presenter, times(1)).onScaleToFitSize();
     }
 
     @Test

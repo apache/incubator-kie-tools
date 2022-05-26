@@ -62,7 +62,6 @@ public class DiagramEditor {
     private final IncrementalMarshaller incrementalMarshaller;
     private final CanvasFileExport canvasFileExport;
 
-
     @Inject
     public DiagramEditor(Promises promises,
                          StunnerEditor stunnerEditor,
@@ -169,14 +168,10 @@ public class DiagramEditor {
     static void scaleToFitWorkflow(StunnerEditor stunnerEditor) {
         WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
         ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
-
-        lienzoPanel.setPostResizeCallback((panel) -> {
-            double scale = PanelTransformUtils.computeZoomLevelFitToWidth(panel);
-            if (scale > 0) {
-                PanelTransformUtils.setScaleLevel(panel.getViewport(), scale);
-            }
-            panel.setPostResizeCallback(null);
-        });
+        lienzoPanel.setPostResizeCallback((panel -> {
+            PanelTransformUtils.scaleToFitPanel(lienzoPanel);
+            lienzoPanel.setPostResizeCallback(null);
+        }));
     }
 
     private void onDiagramOpenSuccess() {
