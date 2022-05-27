@@ -303,8 +303,8 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const getFiles = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string }) => {
-      return service.getFilesWithLazyContent(args.fs, args.workspaceId);
+    async (args: { fs: KieSandboxFs; workspaceId: string; globPattern?: string }) => {
+      return service.getFilesWithLazyContent(args.fs, args.workspaceId, args.globPattern);
     },
     [service]
   );
@@ -379,8 +379,13 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const prepareZip = useCallback(
-    (args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }) =>
-      service.prepareZip(args.fs, args.workspaceId, args.onlyExtensions),
+    (args: { fs: KieSandboxFs; workspaceId: string }) => service.prepareZip(args.fs, args.workspaceId),
+    [service]
+  );
+
+  const prepareZipWithFiles = useCallback(
+    (args: { workspaceId: string; files: WorkspaceFile[] }) =>
+      service.prepareZipWithFiles(args.workspaceId, args.files),
     [service]
   );
 
@@ -448,6 +453,7 @@ export function WorkspacesContextProvider(props: Props) {
       renameWorkspace,
       deleteWorkspace,
       prepareZip,
+      prepareZipWithFiles,
       getAbsolutePath,
       getUniqueFileIdentifier,
       createSavePoint,
@@ -482,6 +488,7 @@ export function WorkspacesContextProvider(props: Props) {
       gitService,
       hasLocalChanges,
       prepareZip,
+      prepareZipWithFiles,
       pull,
       renameFile,
       renameWorkspace,

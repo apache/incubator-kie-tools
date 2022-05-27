@@ -21,15 +21,15 @@ import {
   ServiceAccountSettingsConfig,
 } from "../settings/serviceAccount/ServiceAccountConfig";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
-import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
-import { Build, Builds, CreateBuild, DeleteBuild, ListBuilds } from "./resources/Build";
-import { CreateBuildConfig, DeleteBuildConfig } from "./resources/BuildConfig";
+import { Build, Builds, ListBuilds } from "./resources/Build";
+import { CreateBuildConfig, DeleteBuildConfig, InstantiateBinary } from "./resources/BuildConfig";
 import { Deployment, DeploymentCondition, Deployments, ListDeployments } from "./resources/Deployment";
 import { CreateImageStream, DeleteImageStream } from "./resources/ImageStream";
 import { CreateKafkaSource, DeleteKafkaSource } from "./resources/KafkaSource";
 import {
   CreateKNativeService,
+  DeleteKNativeService,
   GetKNativeService,
   KNativeService,
   KNativeServices,
@@ -37,6 +37,7 @@ import {
 } from "./resources/KNativeService";
 import { GetProject } from "./resources/Project";
 import {
+  APP_LABEL,
   KNATIVE_SERVING_SERVICE,
   KOGITO_CREATED_BY,
   KOGITO_URI,
@@ -75,51 +76,68 @@ export class OpenShiftService {
   public async getDeploymentRoute(resourceName: string): Promise<string | undefined> {
     const resourceArgs = this.prepareCommonResourceArgs();
 
-    const kNativeService = await this.fetchResource<KNativeService>(
-      new GetKNativeService({ ...resourceArgs, resourceName: resourceName })
-    );
+    try {
+      const kNativeService = await this.fetchResource<KNativeService>(
+        new GetKNativeService({ ...resourceArgs, resourceName: resourceName })
+      );
 
-    return kNativeService.status.url;
+      return kNativeService.status.url;
+    } catch (e) {
+      throw new Error(`Failed to get deployment route for resource ${resourceName}`);
+    }
   }
 
   public async loadDeployments(): Promise<OpenShiftDeployedModel[]> {
     const resourceArgs = this.prepareCommonResourceArgs();
 
-    const kNativeServices = await this.fetchResource<KNativeServices>(new ListKNativeServices(resourceArgs));
+    try {
+      const kNativeServices = await this.fetchResource<KNativeServices>(new ListKNativeServices(resourceArgs));
 
-    if (kNativeServices.items.length === 0) {
-      return [];
+      if (kNativeServices.items.length === 0) {
+        return [];
+      }
+
+      const [deployments, builds] = await Promise.all([
+        this.fetchResource<Deployments>(new ListDeployments(resourceArgs)),
+        this.fetchResource<Builds>(new ListBuilds(resourceArgs)),
+      ]);
+
+      return kNativeServices.items
+        .filter(
+          (kns: KNativeService) =>
+            KOGITO_CREATED_BY in kns.metadata.labels && kns.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY
+        )
+        .map((kns: KNativeService) => {
+          const build = builds.items.find(
+            (b: Build) =>
+              APP_LABEL in b.metadata.labels &&
+              APP_LABEL in kns.metadata.labels &&
+              b.metadata.labels[APP_LABEL] === kns.metadata.labels[APP_LABEL]
+          );
+          const deployment = deployments.items.find(
+            (d: Deployment) =>
+              KNATIVE_SERVING_SERVICE in d.metadata.labels &&
+              d.metadata.labels[KNATIVE_SERVING_SERVICE] === kns.metadata.name
+          );
+          return {
+            resourceName: kns.metadata.name,
+            uri: kns.metadata.annotations[KOGITO_URI],
+            baseUrl: `${kns.status.url}/q/swagger-ui`,
+            creationTimestamp: new Date(kns.metadata.creationTimestamp),
+            state: this.extractDeploymentState(deployment, build),
+            workspaceName: kns.metadata.annotations[KOGITO_WORKSPACE_NAME],
+          };
+        });
+    } catch (e) {
+      throw new Error(`Failed to load deployments: ${e.message}`);
     }
-
-    const [deployments, builds] = await Promise.all([
-      this.fetchResource<Deployments>(new ListDeployments(resourceArgs)),
-      this.fetchResource<Builds>(new ListBuilds(resourceArgs)),
-    ]);
-
-    return kNativeServices.items
-      .filter(
-        (kns: KNativeService) =>
-          KOGITO_CREATED_BY in kns.metadata.labels && kns.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY
-      )
-      .map((kns: KNativeService) => {
-        const build = builds.items.find((b: Build) => b.metadata.name === kns.metadata.name);
-        const deployment = deployments.items.find(
-          (d: Deployment) =>
-            KNATIVE_SERVING_SERVICE in d.metadata.labels &&
-            d.metadata.labels[KNATIVE_SERVING_SERVICE] === kns.metadata.name
-        );
-        return {
-          resourceName: kns.metadata.name,
-          uri: kns.metadata.annotations[KOGITO_URI],
-          baseUrl: `${kns.status.url}/q/swagger-ui`,
-          creationTimestamp: new Date(kns.metadata.creationTimestamp),
-          state: this.extractDeploymentState(deployment, build),
-          workspaceName: kns.metadata.annotations[KOGITO_WORKSPACE_NAME],
-        };
-      });
   }
 
-  public async deploy(args: { workspaceFile: WorkspaceFile; workspaceName: string }): Promise<string> {
+  public async deploy(args: {
+    targetFilePath: string;
+    workspaceName: string;
+    workspaceZipBlob: Blob;
+  }): Promise<string | undefined> {
     const resourceName = `sandbox-${this.generateRandomId()}`;
 
     const resourceArgs = {
@@ -130,76 +148,63 @@ export class OpenShiftService {
     const rollbacks = [
       new DeleteKafkaSource(resourceArgs),
       new DeleteSecret(resourceArgs),
-      new DeleteBuild(resourceArgs),
+      new DeleteKNativeService(resourceArgs),
       new DeleteBuildConfig(resourceArgs),
       new DeleteImageStream(resourceArgs),
     ];
 
     let rollbacksCount = rollbacks.length;
 
-    await this.fetchResource(new CreateImageStream(resourceArgs));
-
-    const buildConfig = await this.fetchResource(
-      new CreateBuildConfig(resourceArgs),
-      rollbacks.slice(--rollbacksCount)
-    );
-
-    const processedFileContent = (await args.workspaceFile.getFileContentsAsString())
-      .replace(/(\r\n|\n|\r)/gm, "") // Remove line breaks
-      .replace(/"/g, '\\"') // Escape double quotes
-      .replace(/'/g, "\\x27"); // Escape single quotes
-
-    await this.fetchResource(
-      new CreateBuild({
-        ...resourceArgs,
-        buildConfigUid: buildConfig.metadata.uid,
-        file: {
-          path: args.workspaceFile.relativePath,
-          content: processedFileContent,
-        },
-      }),
-      rollbacks.slice(--rollbacksCount)
-    );
-
-    await this.fetchResource(
-      new CreateKNativeService({
-        ...resourceArgs,
-        uri: args.workspaceFile.relativePath,
-        workspaceName: args.workspaceName,
-      }),
-      rollbacks.slice(--rollbacksCount)
-    );
-
-    if (this.canCreateKafkaResources()) {
-      const kafkaClientIdKey = "kafka-client-id";
-      const kafkaClientSecretKey = "kafka-client-secret";
-
+    try {
+      await this.fetchResource(new CreateImageStream(resourceArgs));
+      await this.fetchResource(new CreateBuildConfig(resourceArgs), rollbacks.slice(--rollbacksCount));
       await this.fetchResource(
-        new CreateSecret({
-          ...resourceArgs,
-          id: { key: kafkaClientIdKey, value: this.configs.serviceAccount.clientId },
-          secret: { key: kafkaClientSecretKey, value: this.configs.serviceAccount.clientSecret },
-        }),
+        new InstantiateBinary({ ...resourceArgs, file: args.workspaceZipBlob }),
         rollbacks.slice(--rollbacksCount)
       );
 
       await this.fetchResource(
-        new CreateKafkaSource({
+        new CreateKNativeService({
           ...resourceArgs,
-          sinkService: resourceName,
-          bootstrapServer: this.configs.kafka.bootstrapServer,
-          topic: this.configs.kafka.topic,
-          secret: {
-            name: resourceName,
-            keyId: kafkaClientIdKey,
-            keySecret: kafkaClientSecretKey,
-          },
+          uri: args.targetFilePath,
+          workspaceName: args.workspaceName,
         }),
-        rollbacks.slice(--rollbacksCount)
+        rollbacks.slice(rollbacksCount)
       );
+
+      if (this.canCreateKafkaResources()) {
+        const kafkaClientIdKey = "kafka-client-id";
+        const kafkaClientSecretKey = "kafka-client-secret";
+
+        await this.fetchResource(
+          new CreateSecret({
+            ...resourceArgs,
+            id: { key: kafkaClientIdKey, value: this.configs.serviceAccount.clientId },
+            secret: { key: kafkaClientSecretKey, value: this.configs.serviceAccount.clientSecret },
+          }),
+          rollbacks.slice(--rollbacksCount)
+        );
+
+        await this.fetchResource(
+          new CreateKafkaSource({
+            ...resourceArgs,
+            sinkService: resourceName,
+            bootstrapServer: this.configs.kafka.bootstrapServer,
+            topic: this.configs.kafka.topic,
+            secret: {
+              name: resourceName,
+              keyId: kafkaClientIdKey,
+              keySecret: kafkaClientSecretKey,
+            },
+          }),
+          rollbacks.slice(--rollbacksCount)
+        );
+      }
+
+      return resourceName;
+    } catch (e) {
+      console.error(`Failed to deploy: ${e.message}`);
     }
-
-    return resourceName;
   }
 
   private canCreateKafkaResources(): boolean {
@@ -207,19 +212,17 @@ export class OpenShiftService {
   }
 
   private async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
-    const response = await fetch(this.PROXY_ENDPOINT, await target.requestInit());
-
-    if (!response.ok) {
+    try {
+      const response = await fetch(this.PROXY_ENDPOINT, await target.requestInit());
+      return (await response.json()) as T;
+    } catch (e) {
       if (rollbacks && rollbacks.length > 0) {
         for (const resource of rollbacks) {
           await this.fetchResource(resource);
         }
       }
-
       throw new Error(`Error fetching ${target.name()}`);
     }
-
-    return (await response.json()) as T;
   }
 
   private generateRandomId(): string {

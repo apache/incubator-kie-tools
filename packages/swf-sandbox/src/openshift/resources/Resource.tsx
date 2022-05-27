@@ -36,6 +36,7 @@ export interface Resource {
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
+export const APP_LABEL = "app";
 export const KNATIVE_SERVING_SERVICE = "serving.knative.dev/service";
 export const KOGITO_URI = "kogito.kie.org/uri";
 export const KOGITO_CREATED_BY = "kogito.kie.org/created-by";
@@ -48,7 +49,7 @@ export abstract class ResourceFetch {
 
   protected abstract method(): HttpMethod;
 
-  protected abstract requestBody(): Promise<string | undefined>;
+  protected abstract requestBody(): Promise<string | Blob | undefined>;
 
   public abstract name(): string;
 

@@ -27,21 +27,18 @@ import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus";
 import { useSettings } from "../../settings/SettingsContext";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { useDeployDropdownItems } from "../Deploy/DeployDropdownItems";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;
   workspace: ActiveWorkspace | undefined;
-  workspaceFile: WorkspaceFile;
 }
 
 export function KieSandboxExtendedServicesButtons(props: Props) {
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const deployDropdownItems = useDeployDropdownItems({
     workspace: props.workspace,
-    workspaceFile: props.workspaceFile,
   });
   const openshift = useOpenShift();
   const settings = useSettings();

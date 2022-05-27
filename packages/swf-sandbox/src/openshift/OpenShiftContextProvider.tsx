@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { load } from "js-yaml";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
@@ -24,6 +23,7 @@ import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/Servic
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
 import { encoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { createDockerfileContent } from "./FileTemplate";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
@@ -50,31 +50,43 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid OpenShift config");
       }
 
-      const fileType = args.workspaceFile.extension.split(".").pop();
+      try {
+        const descriptor = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
+        const fs = await workspaces.fsService.getWorkspaceFs(args.workspaceFile.workspaceId);
+        const filesToBeDeployed = await workspaces.getFiles({
+          fs,
+          workspaceId: args.workspaceFile.workspaceId,
+          globPattern: "**/*.sw.+(json|yml|yaml)",
+        });
 
-      if (!fileType || !["json", "yml", "yaml"].includes(fileType)) {
-        throw new Error(`Unsupported file type to be deployed: ${fileType}`);
+        const workspaceName =
+          filesToBeDeployed.length > 1 && descriptor.name !== NEW_WORKSPACE_DEFAULT_NAME
+            ? descriptor.name
+            : args.workspaceFile.name;
+
+        const dockerfile = new WorkspaceFile({
+          workspaceId: args.workspaceFile.workspaceId,
+          relativePath: "Dockerfile",
+          getFileContents: async () => encoder.encode(createDockerfileContent()),
+        });
+
+        filesToBeDeployed.push(dockerfile);
+
+        const zipBlob = await workspaces.prepareZipWithFiles({
+          workspaceId: args.workspaceFile.workspaceId,
+          files: filesToBeDeployed,
+        });
+
+        return settingsDispatch.openshift.service.deploy({
+          workspaceName: workspaceName,
+          targetFilePath: args.workspaceFile.relativePath,
+          workspaceZipBlob: zipBlob,
+        });
+      } catch (e) {
+        console.error(e);
       }
-
-      const descriptorService = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
-      const workspaceName =
-        descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : args.workspaceFile.name;
-
-      const jsonFile = ["yml", "yaml"].includes(fileType)
-        ? new WorkspaceFile({
-            workspaceId: args.workspaceFile.workspaceId,
-            relativePath: args.workspaceFile.relativePath.replace(fileType, "json"),
-            getFileContents: async () =>
-              encoder.encode(JSON.stringify(load(await args.workspaceFile.getFileContentsAsString()))),
-          })
-        : args.workspaceFile;
-
-      return settingsDispatch.openshift.service.deploy({
-        workspaceName: workspaceName,
-        workspaceFile: jsonFile,
-      });
     },
-    [settings.openshift.config, settingsDispatch.openshift.service, workspaces.descriptorService]
+    [settings.openshift.config, settingsDispatch.openshift.service, workspaces]
   );
 
   const fetchOpenApiFile = useCallback(

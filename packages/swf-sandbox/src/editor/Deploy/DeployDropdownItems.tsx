@@ -33,12 +33,8 @@ import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 import { FileLabel } from "../../workspace/components/FileLabel";
 import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
-import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
-export function useDeployDropdownItems(props: {
-  workspace: ActiveWorkspace | undefined;
-  workspaceFile: WorkspaceFile;
-}) {
+export function useDeployDropdownItems(props: { workspace: ActiveWorkspace | undefined }) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -81,16 +77,25 @@ export function useDeployDropdownItems(props: {
               isDisabled={isKieSandboxExtendedServicesRunning && !isOpenShiftConnected}
               ouiaId={"deploy-to-openshift-dropdown-button"}
             >
-              <Flex flexWrap={{ default: "nowrap" }}>
-                <FlexItem>
-                  Deploy <b>{`"${props.workspaceFile.nameWithoutExtension}"`}</b>
-                </FlexItem>
-                <FlexItem>
-                  <b>
-                    <FileLabel extension={props.workspaceFile.extension} />
-                  </b>
-                </FlexItem>
-              </Flex>
+              {props.workspace.files.length > 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy models in <b>{`"${props.workspace.descriptor.name}"`}</b>
+                  </FlexItem>
+                </Flex>
+              )}
+              {props.workspace.files.length === 1 && (
+                <Flex flexWrap={{ default: "nowrap" }}>
+                  <FlexItem>
+                    Deploy <b>{`"${props.workspace.files[0].nameWithoutExtension}"`}</b>
+                  </FlexItem>
+                  <FlexItem>
+                    <b>
+                      <FileLabel extension={props.workspace.files[0].extension} />
+                    </b>
+                  </FlexItem>
+                </Flex>
+              )}
             </DropdownItem>
           </FeatureDependentOnKieSandboxExtendedServices>
         )}
@@ -111,12 +116,5 @@ export function useDeployDropdownItems(props: {
         )}
       </React.Fragment>,
     ];
-  }, [
-    props.workspace,
-    props.workspaceFile,
-    onDeploy,
-    isKieSandboxExtendedServicesRunning,
-    isOpenShiftConnected,
-    onSetup,
-  ]);
+  }, [props.workspace, onDeploy, isKieSandboxExtendedServicesRunning, isOpenShiftConnected, onSetup]);
 }

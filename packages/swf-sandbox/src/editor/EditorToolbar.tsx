@@ -59,7 +59,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
-import { isServerlessDecision, isServerlessWorkflow } from "../fixme";
+import { isServerlessWorkflow } from "../fixme";
 import { useAppI18n } from "../i18n";
 import {
   useNavigationBlockersBypass,
@@ -147,8 +147,7 @@ export function EditorToolbar(props: Props) {
   const navigationBlockersBypass = useNavigationBlockersBypass();
 
   const canBeDeployed = useMemo(
-    () =>
-      isServerlessWorkflow(props.workspaceFile.relativePath) || isServerlessDecision(props.workspaceFile.relativePath),
+    () => isServerlessWorkflow(props.workspaceFile.relativePath),
     [props.workspaceFile.relativePath]
   );
 
@@ -1482,7 +1481,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       <ToolbarItem visibility={hideWhenSmall}>
                         <KieSandboxExtendedServicesButtons
                           workspace={workspace}
-                          workspaceFile={props.workspaceFile}
                           editorPageDock={props.editorPageDock}
                         />
                       </ToolbarItem>
@@ -1656,7 +1654,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 <Divider key={"divider-2"} />,
                                 <KieSandboxExtendedServicesDropdownGroup
                                   workspace={workspace}
-                                  workspaceFile={props.workspaceFile}
                                   key="kie-sandbox-extended-services-group"
                                 />,
                               ]),

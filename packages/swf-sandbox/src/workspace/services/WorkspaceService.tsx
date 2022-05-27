@@ -17,11 +17,11 @@
 import { encoder, WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
-import { StorageFile, StorageService } from "./StorageService";
+import { EagerStorageFile, StorageFile, StorageService } from "./StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
-import { extname, join, relative } from "path";
+import { join, relative } from "path";
 import { Minimatch } from "minimatch";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
@@ -124,27 +124,21 @@ export class WorkspaceService {
     }
   }
 
-  public async prepareZip(fs: KieSandboxFs, workspaceId: string, onlyExtensions?: string[]): Promise<Blob> {
+  public async prepareZip(fs: KieSandboxFs, workspaceId: string): Promise<Blob> {
+    const files = await this.getFilesWithLazyContent(fs, workspaceId);
+    return this.prepareZipWithFiles(workspaceId, files);
+  }
+
+  public async prepareZipWithFiles(workspaceId: string, files: WorkspaceFile[]): Promise<Blob> {
     const workspaceRootDirPath = this.getAbsolutePath({ workspaceId });
-
-    const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
-    const paths = await this.storageService.walk({
-      fs,
-      startFromDirPath: workspaceRootDirPath,
-      shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
-      onVisit: async ({ absolutePath }) => absolutePath,
-    });
-
-    const files = (await this.storageService.getFiles(fs, paths)).filter(
-      (f) => !onlyExtensions || onlyExtensions.includes(extname(f.path).slice(1))
-    );
 
     const zip = new JSZip();
     for (const file of files) {
-      zip.file(relative(workspaceRootDirPath, file.path), file.content);
+      const eagerFile = await this.toEagerFile(file);
+      zip.file(relative(workspaceRootDirPath, eagerFile.path), eagerFile.content);
     }
 
-    return await zip.generateAsync({ type: "blob" });
+    return zip.generateAsync({ type: "blob" });
   }
 
   public async createOrOverwriteFile(
@@ -373,6 +367,13 @@ export class WorkspaceService {
     return new StorageFile({
       path: this.getAbsolutePath(workspaceFile),
       getFileContents: workspaceFile.getFileContents,
+    });
+  }
+
+  private async toEagerFile(workspaceFile: WorkspaceFile): Promise<EagerStorageFile> {
+    return new EagerStorageFile({
+      path: this.getAbsolutePath(workspaceFile),
+      content: await workspaceFile.getFileContents(),
     });
   }
 

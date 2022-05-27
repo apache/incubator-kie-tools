@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, ResourceFetch } from "./Resource";
+import { HttpMethod, JAVA_RUNTIME_VERSION, KOGITO_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
 
@@ -45,14 +45,10 @@ export class CreateBuildConfig extends ResourceFetch {
             kind: ImageStreamTag
             name: '${this.args.resourceName}:latest'
         strategy:
-          type: Source
-          sourceStrategy:
-            from:
-              kind: ImageStreamTag
-              namespace: openshift
-              name: 'java:${JAVA_RUNTIME_VERSION}'
+          type: Docker
         source:
-          dockerfile:
+          type: Binary
+          binary: {}
         resources:
           limits:
             memory: 4Gi
@@ -83,5 +79,37 @@ export class DeleteBuildConfig extends ResourceFetch {
 
   public url(): string {
     return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}`;
+  }
+}
+
+interface InstantiateBinaryArgs {
+  file: Blob;
+}
+
+export class InstantiateBinary extends ResourceFetch {
+  public constructor(protected args: ResourceArgs & InstantiateBinaryArgs) {
+    super(args);
+  }
+
+  protected method(): HttpMethod {
+    return "POST";
+  }
+
+  protected async requestBody(): Promise<Blob> {
+    return this.args.file;
+  }
+
+  public name(): string {
+    return InstantiateBinary.name;
+  }
+
+  public url(): string {
+    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}/instantiatebinary?name=${this.args.resourceName}&namespace=${this.args.namespace}`;
+  }
+
+  public async requestInit(): Promise<RequestInit> {
+    const custom = await super.requestInit();
+    custom.headers = { ...custom.headers, "Content-Type": "application/zip" };
+    return custom;
   }
 }

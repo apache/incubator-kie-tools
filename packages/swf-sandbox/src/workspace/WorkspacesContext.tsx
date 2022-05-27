@@ -24,7 +24,7 @@ import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { basename, extname, parse } from "path";
+import { basename, parse } from "path";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
@@ -130,7 +130,8 @@ export interface WorkspacesContextType {
     extension: string;
   }): Promise<WorkspaceFile>;
   prepareZip(args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
-  getFiles(args: { fs: KieSandboxFs; workspaceId: string }): Promise<WorkspaceFile[]>;
+  prepareZipWithFiles(args: { workspaceId: string; files: WorkspaceFile[] }): Promise<Blob>;
+  getFiles(args: { fs: KieSandboxFs; workspaceId: string; globPattern?: string }): Promise<WorkspaceFile[]>;
   hasLocalChanges(args: { fs: KieSandboxFs; workspaceId: string }): Promise<boolean>;
   createSavePoint(args: {
     fs: KieSandboxFs;

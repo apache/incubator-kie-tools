@@ -41,7 +41,9 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
         <Alert
           className="pf-u-mb-md"
           variant="danger"
-          title={"Something went wrong while deploying. Check your OpenShift connection and try again."}
+          title={
+            "Something went wrong while deploying. Check your OpenShift connection and resource limits, and try again."
+          }
           aria-live="polite"
           data-testid="alert-deploy-error"
           actionClose={<AlertActionCloseButton onClose={close} />}
