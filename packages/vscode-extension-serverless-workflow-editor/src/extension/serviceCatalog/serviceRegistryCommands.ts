@@ -15,39 +15,36 @@
  */
 
 import * as vscode from "vscode";
-import { askForServiceRegistryUrl } from "./rhhccServiceRegistry";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../configuration";
 import { COMMAND_IDS } from "../commandIds";
+import { ServiceRegistryStore } from "./serviceRegistry";
 
 export function setupServiceRegistryIntegrationCommands(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
+  serviceRegistryStore: ServiceRegistryStore;
 }) {
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.loginToRhhcc, () => {
-      vscode.authentication.getSession("redhat-mas-account-auth", ["openid"], { createIfNone: true });
+    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistryLogin, () => {
+      args.serviceRegistryStore.authProviders
+        .filter((authProvider) => authProvider.shouldLogin())
+        .forEach(async (authProvider) => authProvider.login());
     })
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.setupServiceRegistryUrl, async () => {
-      const serviceRegistryUrl = await askForServiceRegistryUrl({
-        currentValue: args.configuration.getConfiguredServiceRegistryUrl(),
-      });
-
-      if (!serviceRegistryUrl) {
-        return;
-      }
-
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, serviceRegistryUrl);
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL saved.", 3000);
+    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistryRefresh, () => {
+      vscode.window.setStatusBarMessage("Serverless Workflow Editor: Refreshing...");
+      args.serviceRegistryStore.refresh().then(() => vscode.window.setStatusBarMessage(""));
     })
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.removeServiceRegistryUrl, () => {
-      vscode.workspace.getConfiguration().update(CONFIGURATION_SECTIONS.serviceRegistryUrl, "");
-      vscode.window.setStatusBarMessage("Serverless Workflow: Service Registry URL removed.", 3000);
+    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistryConfig, () => {
+      vscode.commands.executeCommand(
+        "workbench.action.openSettings",
+        `@id:${CONFIGURATION_SECTIONS.serviceRegistrySettings}`
+      );
     })
   );
 }

@@ -19,11 +19,12 @@ import {
   getInterpolatedConfigurationValue,
 } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import * as vscode from "vscode";
+import { ServiceRegistries } from "./serviceCatalog/serviceRegistry";
 
 export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
 
 export const CONFIGURATION_SECTIONS = {
-  serviceRegistryUrl: "kogito.sw.serviceRegistryUrl",
+  serviceRegistrySettings: "kogito.sw.serviceRegistry",
   specsStoragePath: "kogito.sw.specsStoragePath",
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls",
   automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor",
@@ -37,6 +38,10 @@ export enum ShouldOpenDiagramEditorAutomaticallyConfiguration {
 }
 
 export class SwfVsCodeExtensionConfiguration {
+  public getServiceRegistrySettings(): ServiceRegistries {
+    return vscode.workspace.getConfiguration().get(CONFIGURATION_SECTIONS.serviceRegistrySettings, { registries: [] });
+  }
+
   public shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor(): ShouldOpenDiagramEditorAutomaticallyConfiguration {
     const configString = vscode.workspace
       .getConfiguration()
@@ -90,10 +95,6 @@ export class SwfVsCodeExtensionConfiguration {
     return vscode.workspace
       .getConfiguration()
       .get(CONFIGURATION_SECTIONS.shouldReferenceServiceRegistryFunctionsWithUrls, false);
-  }
-
-  public getConfiguredServiceRegistryUrl() {
-    return vscode.workspace.getConfiguration().get(CONFIGURATION_SECTIONS.serviceRegistryUrl, "");
   }
 
   public getInterpolatedSpecsDirAbsolutePosixPath(args: { baseFileAbsolutePosixPath: string }) {

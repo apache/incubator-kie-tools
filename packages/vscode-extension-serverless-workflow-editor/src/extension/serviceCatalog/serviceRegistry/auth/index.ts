@@ -14,14 +14,5 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogService } from "./types";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-
-export interface SwfServiceCatalogChannelApi {
-  kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]>;
-  kogitoSwfServiceCatalog_refresh(): void;
-  kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
-    containingService: SwfServiceCatalogService;
-    documentUri: string;
-  }): void;
-}
+export * from "./AuthProvider";
+export * from "./lookupAuthProvider";

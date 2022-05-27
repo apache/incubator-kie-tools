@@ -2245,7 +2245,7 @@ importers:
       "@kie-tools/serverless-workflow-editor": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      axios: ^0.27.2
+      "@rhoas/registry-instance-sdk": ^0.34.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^3.2.1
@@ -2267,7 +2267,7 @@ importers:
       "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
-      axios: 0.27.2
+      "@rhoas/registry-instance-sdk": 0.34.1
       monaco-editor: 0.33.0
       monaco-yaml: 3.2.1_monaco-editor@0.33.0
       openapi-types: 7.2.3
@@ -4960,6 +4960,15 @@ packages:
       { integrity: sha512-n06+BYDviOEuoo+qE9f0Jm1DkMDpwtXWyaJFHsvi8w8uddQEsBGGoP7lpkwZj15u6jc+F9IDgk/j+EkTScrvUA== }
     dev: false
 
+  /@rhoas/registry-instance-sdk/0.34.1:
+    resolution:
+      { integrity: sha512-qsUgLN+fbF4StEvSTSaOSKRccyFpWGHnoJet1FFXotG6vefy3RqEC0NIfz93KzXAgE/NhKM3cRq7qBhVLBNkHQ== }
+    dependencies:
+      axios: 0.27.2
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /@schematics/angular/13.1.2:
     resolution:
       { integrity: sha512-OMbuOsnzUFjIGeo99NYwIPwjX6udJAiT5Sj5K7QZZYj66HuAqNBMV57J8GPA56edx5mOHZZApWMjXLlOxRXbJA== }
@@ -5670,6 +5679,8 @@ packages:
   /@types/selenium-webdriver/4.1.1:
     resolution:
       { integrity: sha512-NxxZZek50ylIACiXebKQYHD3D4One3WXOasEXWazL6aTfYbZob7ClNKxUpg8I4/oWArX87oPWvj1cHKqfel3Hg== }
+    dependencies:
+      "@types/ws": 8.2.2
     dev: true
 
   /@types/semver/7.3.6:
@@ -6769,15 +6780,6 @@ packages:
       - debug
     dev: true
 
-  /axios/0.24.0:
-    resolution:
-      { integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA== }
-    dependencies:
-      follow-redirects: 1.14.9
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /axios/0.27.2:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
@@ -6786,7 +6788,6 @@ packages:
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
-    dev: false
 
   /azure-devops-node-api/11.0.1:
     resolution:
@@ -11860,7 +11861,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.34
-    dev: false
 
   /forwarded/0.1.2:
     resolution: { integrity: sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ= }
@@ -12891,7 +12891,8 @@ packages:
     engines: { node: ">= 4" }
 
   /image-size/0.5.5:
-    resolution: { integrity: sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w= }
+    resolution:
+      { integrity: sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ== }
     engines: { node: ">=0.10.0" }
     hasBin: true
     requiresBuild: true
@@ -21482,7 +21483,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_esbuild@0.14.22
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:

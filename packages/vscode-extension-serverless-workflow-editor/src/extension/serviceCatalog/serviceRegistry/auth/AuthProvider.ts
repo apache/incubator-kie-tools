@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogService } from "./types";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import * as vscode from "vscode";
 
-export interface SwfServiceCatalogChannelApi {
-  kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]>;
-  kogitoSwfServiceCatalog_refresh(): void;
-  kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
-    containingService: SwfServiceCatalogService;
-    documentUri: string;
-  }): void;
+export interface AuthProvider {
+  login(): Promise<void>;
+
+  getAuthHeader(): Promise<any>;
+
+  subscribeToSessionChange(substrciption: () => void): vscode.Disposable;
+
+  shouldLogin(): boolean;
 }

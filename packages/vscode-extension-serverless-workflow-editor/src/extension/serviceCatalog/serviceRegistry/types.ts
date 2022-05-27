@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogService } from "./types";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+export enum AuthProviderType {
+  NONE = "none",
+  RH_ACCOUNT = "red-hat-account",
+  OIDC = "oidc",
+}
 
-export interface SwfServiceCatalogChannelApi {
-  kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]>;
-  kogitoSwfServiceCatalog_refresh(): void;
-  kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
-    containingService: SwfServiceCatalogService;
-    documentUri: string;
-  }): void;
+export interface ServiceRegistrySettings {
+  name: string;
+  url: string;
+  authProvider: AuthProviderType;
+  authUrl?: string;
+  clientId?: string;
+}
+
+export interface ServiceRegistries {
+  registries: ServiceRegistrySettings[];
 }

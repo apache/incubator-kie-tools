@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-import { SwfServiceCatalogService } from "./types";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import * as vscode from "vscode";
+import { AuthProviderType } from "../types";
+import { AuthProvider } from "./AuthProvider";
+import { RHCCAuthProvider } from "./RHCCAuthProvider";
 
-export interface SwfServiceCatalogChannelApi {
-  kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]>;
-  kogitoSwfServiceCatalog_refresh(): void;
-  kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
-    containingService: SwfServiceCatalogService;
-    documentUri: string;
-  }): void;
-}
+export const lookupAuthProvider = (args: {
+  context: vscode.ExtensionContext;
+  settings: {
+    authProvider: AuthProviderType;
+    authUrl?: string;
+    clientId?: string;
+  };
+}): AuthProvider | undefined => {
+  if (args.settings && args.settings.authProvider === AuthProviderType.RH_ACCOUNT) {
+    return new RHCCAuthProvider(args.context);
+  }
+  return undefined;
+};

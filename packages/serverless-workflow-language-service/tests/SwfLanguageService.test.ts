@@ -50,14 +50,16 @@ const testRelativeService1: SwfServiceCatalogService = {
 const defaultServiceCatalogConfig = {
   relative: { getServices: async () => [] },
   global: { getServices: async () => [] },
-  getServiceFileNameFromSwfServiceCatalogServiceId: async (serviceId: string) => `${serviceId}.yaml`,
+  getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName: string, serviceId: string) =>
+    `${serviceId}.yaml`,
 };
 
 const defaultConfig = {
-  getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "", specsDirAbsolutePosixPath: "" }),
-  getServiceRegistryUrl: () => undefined,
-  getServiceRegistryAuthInfo: () => undefined,
-  shouldDisplayRhhccIntegration: async () => false,
+  isServiceRegistryConfigured: () => true,
+  shouldServiceRegistryLogIn: () => false,
+  canRefreshServices: () => false,
+  getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
+  shouldDisplayServiceRegistryIntegration: async () => true,
   shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
 };
 
@@ -132,11 +134,42 @@ describe("SWF LS", () => {
     } as CodeLens);
   });
 
+  test("functions code lenses (service registry integration disabled)", async () => {
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: defaultServiceCatalogConfig,
+      config: {
+        ...defaultConfig,
+        shouldDisplayServiceRegistryIntegration: async () => Promise.resolve(false),
+        isServiceRegistryConfigured: () => false,
+        shouldServiceRegistryLogIn: () => true,
+        canRefreshServices: () => true,
+      },
+    });
+
+    const { content } = trim(`
+{
+  "functions": []
+}`);
+
+    const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+
+    expect(codeLenses).toHaveLength(1);
+    expect(codeLenses[0]).toStrictEqual({
+      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      command: {
+        title: "+ Add function...",
+        command: "swf.ls.commands.OpenFunctionsCompletionItems",
+        arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+      },
+    } as CodeLens);
+  });
+
   test("functions code lenses (login to service registry)", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
-      config: { ...defaultConfig, shouldDisplayRhhccIntegration: async () => true },
+      config: { ...defaultConfig, shouldServiceRegistryLogIn: () => true },
     });
 
     const { content } = trim(`
@@ -150,8 +183,8 @@ describe("SWF LS", () => {
     expect(codeLenses[0]).toStrictEqual({
       range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
       command: {
-        command: "swf.ls.commands.LogInToRhhcc",
-        title: "↪ Log in to Red Hat Hybrid Cloud Console...",
+        command: "swf.ls.commands.LogInServiceRegistry",
+        title: "↪ Log in Service Registry...",
         arguments: [{ position: { character: 15, line: 1 } }],
       },
     });
@@ -165,14 +198,13 @@ describe("SWF LS", () => {
     } as CodeLens);
   });
 
-  test("functions code lenses (setup service registry url)", async () => {
+  test("functions code lenses (setup service registry)", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: {
         ...defaultConfig,
-        shouldDisplayRhhccIntegration: async () => true,
-        getServiceRegistryAuthInfo: () => ({ username: "tiago", token: "secret-token123" }),
+        isServiceRegistryConfigured: () => false,
       },
     });
 
@@ -187,8 +219,8 @@ describe("SWF LS", () => {
     expect(codeLenses[0]).toStrictEqual({
       range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
       command: {
-        command: "swf.ls.commands.SetupServiceRegistryUrl",
-        title: "↪ Setup Service Registry URL...",
+        command: "swf.ls.commands.OpenServiceRegistryConfig",
+        title: "↪ Setup Service Registry...",
         arguments: [{ position: { character: 15, line: 1 } }],
       },
     });
@@ -208,9 +240,7 @@ describe("SWF LS", () => {
       serviceCatalog: defaultServiceCatalogConfig,
       config: {
         ...defaultConfig,
-        shouldDisplayRhhccIntegration: async () => true,
-        getServiceRegistryUrl: () => "https://tiago.com/service-registry",
-        getServiceRegistryAuthInfo: () => ({ username: "tiago", token: "secret-token123" }),
+        canRefreshServices: () => true,
       },
     });
 
@@ -225,8 +255,8 @@ describe("SWF LS", () => {
     expect(codeLenses[0]).toStrictEqual({
       range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
       command: {
-        command: "swf.ls.commands.RefreshServiceCatalogFromRhhcc",
-        title: "↺ Refresh Service Registry (tiago)",
+        command: "swf.ls.commands.RefreshServiceRegistry",
+        title: "↺ Refresh Service Registry",
         arguments: [{ position: { character: 15, line: 1 } }],
       },
     });
@@ -265,13 +295,13 @@ describe("SWF LS", () => {
     expect(completionItems).toHaveLength(1);
     expect(completionItems[0]).toStrictEqual({
       kind: CompletionItemKind.Reference,
-      label: "fs: testRelativeFunction1",
-      detail: "testRelativeService1.yml#testRelativeFunction1",
+      label: "specs»testRelativeService1.yml#testRelativeFunction1",
+      detail: "specs/testRelativeService1.yml#testRelativeFunction1",
       textEdit: {
         range: { start: cursorPosition, end: cursorPosition },
         newText: `{
   "name": "\${1:testRelativeFunction1}",
-  "operation": "testRelativeService1.yml#testRelativeFunction1",
+  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
   "type": "rest"
 }`,
       },
@@ -288,7 +318,7 @@ describe("SWF LS", () => {
               functions: [
                 {
                   ...testRelativeFunction1,
-                  operation: "testRelativeService1.yml#testRelativeFunction1",
+                  operation: "specs/testRelativeService1.yml#testRelativeFunction1",
                 },
               ],
             },
