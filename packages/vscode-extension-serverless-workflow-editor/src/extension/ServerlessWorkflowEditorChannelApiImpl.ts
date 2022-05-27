@@ -39,7 +39,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
-  SwfServiceCatalogUser,
+  SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
@@ -148,21 +148,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
   }
-
-  public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_user();
-  }
-
-  public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistryUrl();
-  }
-
   public kogitoSwfServiceCatalog_refresh(): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_refresh();
-  }
-
-  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInToRhhcc();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
@@ -170,10 +157,6 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     documentUri: string;
   }): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
-  }
-
-  public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
   }
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
@@ -187,5 +170,17 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
     return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
+  }
+
+  public kogitoSwfServiceCatalog_logInServiceRegistry(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInServiceRegistry();
+  }
+
+  public kogitoSwfServiceCatalog_serviceRegistrySettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistrySettings();
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistrySettings(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistrySettings();
   }
 }

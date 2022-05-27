@@ -42,9 +42,8 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
   const [services] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_services);
-  const [user] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_user);
-  const [serviceRegistryUrl] = useSharedValue(
-    editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
+  const [serviceRegistrySettings] = useSharedValue(
+    editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistrySettings
   );
 
   const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {
@@ -73,7 +72,7 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
 
   useEffect(() => {
     controller.forceRedraw();
-  }, [services, user, serviceRegistryUrl, controller]);
+  }, [services, serviceRegistrySettings, controller]);
 
   useEffect(() => {
     if (!container.current) {

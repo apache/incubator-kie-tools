@@ -31,21 +31,11 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
   swfLanguageService: SwfJsonLanguageService;
-  swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
       args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(cmdArgs);
-    },
-    "swf.ls.commands.RefreshServiceCatalogFromRhhcc": (cmdArgs) => {
-      args.swfServiceCatalogSupportActions.refresh();
-    },
-    "swf.ls.commands.SetupServiceRegistryUrl": (cmdArgs) => {
-      vscode.commands.executeCommand(COMMAND_IDS.setupServiceRegistryUrl, cmdArgs);
-    },
-    "swf.ls.commands.LogInToRhhcc": (cmdArgs) => {
-      vscode.commands.executeCommand(COMMAND_IDS.loginToRhhcc, cmdArgs);
     },
     "swf.ls.commands.OpenFunctionsCompletionItems": (cmdArgs) => {
       if (!vscode.window.activeTextEditor) {
@@ -64,6 +54,15 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
     "swf.ls.commands.OpenStatesWidget": (cmdArgs) => {
       console.info("No op");
+    },
+    "swf.ls.commands.OpenServiceRegistryConfig": () => {
+      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryConfig);
+    },
+    "swf.ls.commands.LogInServiceRegistry": () => {
+      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryLogin);
+    },
+    "swf.ls.commands.RefreshServiceRegistry": () => {
+      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryRefresh);
     },
   };
 

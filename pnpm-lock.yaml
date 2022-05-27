@@ -2258,7 +2258,7 @@ importers:
       "@kie-tools/serverless-workflow-editor": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      axios: ^0.27.2
+      "@rhoas/registry-instance-sdk": ^0.34.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^3.2.1
@@ -2280,7 +2280,7 @@ importers:
       "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
-      axios: 0.27.2
+      "@rhoas/registry-instance-sdk": 0.34.1
       monaco-editor: 0.33.0
       monaco-yaml: 3.2.1_monaco-editor@0.33.0
       openapi-types: 7.2.3
@@ -4970,6 +4970,15 @@ packages:
   /@patternfly/react-tokens/4.33.1:
     resolution:
       { integrity: sha512-n06+BYDviOEuoo+qE9f0Jm1DkMDpwtXWyaJFHsvi8w8uddQEsBGGoP7lpkwZj15u6jc+F9IDgk/j+EkTScrvUA== }
+    dev: false
+
+  /@rhoas/registry-instance-sdk/0.34.1:
+    resolution:
+      { integrity: sha512-qsUgLN+fbF4StEvSTSaOSKRccyFpWGHnoJet1FFXotG6vefy3RqEC0NIfz93KzXAgE/NhKM3cRq7qBhVLBNkHQ== }
+    dependencies:
+      axios: 0.27.2
+    transitivePeerDependencies:
+      - debug
     dev: false
 
   /@schematics/angular/13.1.2:

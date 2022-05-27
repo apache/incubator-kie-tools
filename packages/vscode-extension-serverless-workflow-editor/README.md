@@ -28,7 +28,7 @@ Create and edit Serverless Workflow definition files (\*.sw.json, \*.sw.yaml, \*
 | `kogito.sw.svgFilenameTemplate`                               | Filename template to be used when generating SVG files                                                                                                                                                                                                  | `${fileBasenameNoExtension}-svg.svg`                                             |
 | `kogito.sw.svgFilePath`                                       | Where to save generated SVG files                                                                                                                                                                                                                       | `${fileDirname}`                                                                 |
 | `kogito.sw.specsStoragePath`                                  | Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file).                                                                                                                       | `${fileDirname}/specs`                                                           |
-| `kogito.sw.serviceRegistryUrl`                                | The Service Registry URL to fetch artifacts that improve the functions autocompletion mechanism.                                                                                                                                                        | `(empty)`                                                                        |
+| `kogito.sw.serviceRegistry`                                   | List of Service Registry to fetch artifacts that improve the functions autocompletion mechanism.                                                                                                                                                        | `(empty)`                                                                        |
 | `kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls`   | When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file.                                                                                                                            | `false`                                                                          |
 | `kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor` | When opening Serverless Workflow files, decide whether or not to open the Diagram Editor alongside the text editor. Regardless of the configured option, you can always open the Serverless Workflow Diagram Editor using the 'Open as Diagram' button. | `Ask next time` (possible: `Open automatically`, `Do not open`, `Ask next time`) |
 
@@ -41,6 +41,54 @@ The `kogito.sw.svgFilenameTemplate`, `kogito.sw.svgFilePath`, and `kogito.sw.spe
 | **${fileExtname}**             | `.ext`                                    |
 | **${fileBasename}**            | `file.ext`                                |
 | **${fileBasenameNoExtension}** | `file`                                    |
+
+The Service Registries configured in the `kogito.sw.serviceRegistry` setting expects a value following the following schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "registries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https?://?[-A-Za-z0-9+&@#/%?=_!:.]+[-A-Za-z0-9+&@#/%=~_|]"
+          },
+          "authProvider": {
+            "type": "string",
+            "enum": ["none", "red-hat-account", "oidc"],
+            "default": "none"
+          },
+          "authUrl": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https?://?[-A-Za-z0-9+&@#/%?=_!:.]+[-A-Za-z0-9+&@#/%=~_|]"
+          },
+          "clientId": { "type": "string" }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "authProvider": { "const": "oidc" }
+              }
+            },
+            "then": {
+              "required": ["authUrl", "clientId"]
+            }
+          }
+        ],
+        "required": ["name", "url", "authProvider"]
+      }
+    }
+  }
+}
+```
 
 ### Thank you
 
