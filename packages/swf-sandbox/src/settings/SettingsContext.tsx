@@ -217,8 +217,8 @@ export function SettingsContextProvider(props: any) {
 
   const [openshiftStatus, setOpenshiftStatus] = useState(
     kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
-      ? OpenShiftInstanceStatus.CONNECTED
-      : OpenShiftInstanceStatus.DISCONNECTED
+      ? OpenShiftInstanceStatus.DISCONNECTED
+      : OpenShiftInstanceStatus.UNAVAILABLE
   );
 
   const openshiftService = useMemo(
@@ -231,29 +231,6 @@ export function SettingsContextProvider(props: any) {
       }),
     [kafkaConfig, openshiftConfig, serviceAccountConfig, kieSandboxExtendedServices.config]
   );
-
-  // Initial check for openshift status
-  useEffect(() => {
-    openshiftService.isConnectionEstablished(openshiftConfig).then((status) => {
-      setOpenshiftStatus(status ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.DISCONNECTED);
-    });
-  }, [openshiftConfig, openshiftService]);
-
-  // Poll openshift status
-  useEffect(() => {
-    if (openshiftStatus === OpenShiftInstanceStatus.CONNECTED) {
-      const checkOpenshiftStatus = () => {
-        openshiftService.isConnectionEstablished(openshiftConfig).then((status) => {
-          setOpenshiftStatus(status ? OpenShiftInstanceStatus.CONNECTED : OpenShiftInstanceStatus.DISCONNECTED);
-        });
-      };
-      checkOpenshiftStatus();
-      const pollingOpenshiftStatus = window.setInterval(checkOpenshiftStatus, 30000);
-      return () => {
-        window.clearInterval(pollingOpenshiftStatus);
-      };
-    }
-  }, [openshiftConfig, openshiftService, openshiftStatus]);
 
   const dispatch = useMemo(() => {
     return {

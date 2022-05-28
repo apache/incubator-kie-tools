@@ -32,9 +32,9 @@ interface Props {
   children: React.ReactNode;
 }
 
-const KIE_SANDBOX_EXTENDED_SERVICES_POLLING_TIME = 1000;
-export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
-export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
+const KIE_SANDBOX_EXTENDED_SERVICES_POLLING_TIME = 1500;
+export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "KIE-TOOLS-COOKIE__kie-sandbox-extended-services--host";
+export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "KIE-TOOLS-COOKIE__kie-sandbox-extended-services--port";
 
 export function KieSandboxExtendedServicesContextProvider(props: Props) {
   const env = useEnv();

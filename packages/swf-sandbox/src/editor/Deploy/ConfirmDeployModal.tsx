@@ -28,6 +28,8 @@ import { isServiceRegistryConfigValid } from "../../settings/serviceRegistry/Ser
 import { useSettings } from "../../settings/SettingsContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
+const FETCH_OPEN_API_POLLING_TIME = 5000;
+
 export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts: AlertsController | undefined }) {
   const openshift = useOpenShift();
   const settings = useSettings();
@@ -163,7 +165,7 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
         } else {
           deployEndSuccess.show();
         }
-      }, 5000);
+      }, FETCH_OPEN_API_POLLING_TIME);
     } else {
       setDeployStartedError.show();
     }

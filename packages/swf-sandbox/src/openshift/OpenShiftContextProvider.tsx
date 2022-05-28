@@ -17,6 +17,8 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
+import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsConfig";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
@@ -33,16 +35,30 @@ interface Props {
 }
 
 const DEFAULT_GROUP_ID = "org.kie";
-const LOAD_DEPLOYMENTS_POLLING_TIME = 1000;
+const LOAD_DEPLOYMENTS_POLLING_TIME = 2500;
 
 export function OpenShiftContextProvider(props: Props) {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const workspaces = useWorkspaces();
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
   const [deployments, setDeployments] = useState([] as OpenShiftDeployedModel[]);
   const [isDeployDropdownOpen, setDeployDropdownOpen] = useState(false);
   const [isDeploymentsDropdownOpen, setDeploymentsDropdownOpen] = useState(false);
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
+
+  const onDisconnect = useCallback(
+    (closeModals: boolean) => {
+      settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
+      setDeploymentsDropdownOpen(false);
+      setDeployments([]);
+
+      if (closeModals) {
+        setConfirmDeployModalOpen(false);
+      }
+    },
+    [settingsDispatch.openshift]
+  );
 
   const deploy = useCallback(
     async (args: { workspaceFile: WorkspaceFile }) => {
@@ -138,6 +154,11 @@ export function OpenShiftContextProvider(props: Props) {
   );
 
   useEffect(() => {
+    if (kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING) {
+      onDisconnect(true);
+      return;
+    }
+
     if (!isOpenShiftConfigValid(settings.openshift.config)) {
       if (deployments.length > 0) {
         setDeployments([]);
@@ -178,6 +199,8 @@ export function OpenShiftContextProvider(props: Props) {
     deployments.length,
     settingsDispatch.openshift,
     isDeploymentsDropdownOpen,
+    kieSandboxExtendedServices.status,
+    onDisconnect,
   ]);
 
   const value = useMemo(

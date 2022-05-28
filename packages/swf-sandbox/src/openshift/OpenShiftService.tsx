@@ -214,15 +214,18 @@ export class OpenShiftService {
   private async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
     try {
       const response = await fetch(this.PROXY_ENDPOINT, await target.requestInit());
-      return (await response.json()) as T;
-    } catch (e) {
-      if (rollbacks && rollbacks.length > 0) {
-        for (const resource of rollbacks) {
-          await this.fetchResource(resource);
-        }
+      if (response.ok) {
+        return (await response.json()) as T;
       }
-      throw new Error(`Error fetching ${target.name()}`);
+    } catch (e) {
+      // No-op
     }
+    if (rollbacks && rollbacks.length > 0) {
+      for (const resource of rollbacks) {
+        await this.fetchResource(resource);
+      }
+    }
+    throw new Error(`Error fetching ${target.name()}`);
   }
 
   private generateRandomId(): string {
