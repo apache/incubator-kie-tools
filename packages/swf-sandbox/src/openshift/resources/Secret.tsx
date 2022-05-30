@@ -18,16 +18,8 @@ import { HttpMethod, KOGITO_CREATED_BY, ResourceArgs, ResourceFetch } from "./Re
 
 const API_ENDPOINT = "api/v1";
 
-// TODO: allow a map of key/value pairs, not only id and secret
 interface CreateSecretArgs {
-  id: {
-    key: string;
-    value: string;
-  };
-  secret: {
-    key: string;
-    value: string;
-  };
+  data: { [key: string]: string };
 }
 
 export class CreateSecret extends ResourceFetch {
@@ -40,6 +32,14 @@ export class CreateSecret extends ResourceFetch {
   }
 
   protected async requestBody(): Promise<string | undefined> {
+    const encodedData = Object.entries(this.args.data).reduce(
+      (acc, [key, value]) => ({
+        ...acc,
+        [key]: btoa(value),
+      }),
+      {} as { [key: string]: string }
+    );
+
     return `
     kind: Secret
     apiVersion: v1
@@ -53,9 +53,7 @@ export class CreateSecret extends ResourceFetch {
         app.kubernetes.io/part-of: ${this.args.resourceName}
         app.kubernetes.io/name:  ${this.args.resourceName}
         ${KOGITO_CREATED_BY}: ${this.args.createdBy}
-    data:
-      ${this.args.id.key}: ${btoa(this.args.id.value)}
-      ${this.args.secret.key}: ${btoa(this.args.secret.value)}
+    data: ${JSON.stringify(encodedData)}
   `;
   }
 

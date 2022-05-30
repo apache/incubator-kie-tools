@@ -173,12 +173,16 @@ export class OpenShiftService {
       if (args.shouldAttachKafkaSource) {
         const kafkaClientIdKey = "kafka-client-id";
         const kafkaClientSecretKey = "kafka-client-secret";
+        const kafkaClientMechanismKey = "kafka-client-mechanism";
 
         await this.fetchResource(
           new CreateSecret({
             ...resourceArgs,
-            id: { key: kafkaClientIdKey, value: this.configs.serviceAccount.clientId },
-            secret: { key: kafkaClientSecretKey, value: this.configs.serviceAccount.clientSecret },
+            data: {
+              [kafkaClientIdKey]: this.configs.serviceAccount.clientId,
+              [kafkaClientSecretKey]: this.configs.serviceAccount.clientSecret,
+              [kafkaClientMechanismKey]: "PLAIN",
+            },
           }),
           rollbacks.slice(--rollbacksCount)
         );
@@ -193,6 +197,7 @@ export class OpenShiftService {
               name: resourceName,
               keyId: kafkaClientIdKey,
               keySecret: kafkaClientSecretKey,
+              keyMechanism: kafkaClientMechanismKey,
             },
           }),
           rollbacks.slice(--rollbacksCount)

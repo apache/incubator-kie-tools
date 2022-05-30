@@ -26,6 +26,7 @@ interface CreateKafkaSourceArgs {
     name: string;
     keyId: string;
     keySecret: string;
+    keyMechanism: string;
   };
 }
 
@@ -63,6 +64,10 @@ export class CreateKafkaSource extends ResourceFetch {
           enable: true
         sasl:
           enable: true
+          type:
+            secretKeyRef:
+              key: ${this.args.secret.keyMechanism}
+              name: ${this.args.secret.name}
           password:
             secretKeyRef:
               key: ${this.args.secret.keySecret}
