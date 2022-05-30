@@ -58,7 +58,7 @@ public class EventConditionTransition {
 
     @Labels
     @JsIgnore
-    private final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT_CONDITION).collect(Collectors.toSet());
+    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT_CONDITION).collect(Collectors.toSet());
 
     /**
      * Event condition name.

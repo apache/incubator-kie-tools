@@ -33,6 +33,9 @@ import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -57,16 +60,20 @@ public class DiagramEditor {
     private final StunnerEditor stunnerEditor;
     private final ClientDiagramService diagramService;
     private final IncrementalMarshaller incrementalMarshaller;
+    private final CanvasFileExport canvasFileExport;
+
 
     @Inject
     public DiagramEditor(Promises promises,
                          StunnerEditor stunnerEditor,
                          ClientDiagramService diagramService,
-                         IncrementalMarshaller incrementalMarshaller) {
+                         IncrementalMarshaller incrementalMarshaller,
+                         CanvasFileExport canvasFileExport) {
         this.promises = promises;
         this.stunnerEditor = stunnerEditor;
         this.diagramService = diagramService;
         this.incrementalMarshaller = incrementalMarshaller;
+        this.canvasFileExport = canvasFileExport;
     }
 
     public void onStartup(final PlaceRequest place) {
@@ -89,8 +96,12 @@ public class DiagramEditor {
     }
 
     public Promise<String> getPreview() {
-        // TODO
-        return promises.resolve("");
+        CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
+        if (canvasHandler != null) {
+            return promises.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
+        } else {
+            return promises.resolve("");
+        }
     }
 
     public Promise validate() {
