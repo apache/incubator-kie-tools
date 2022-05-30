@@ -34,7 +34,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflow } from "../fixme";
+import { isSandboxAsset, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";

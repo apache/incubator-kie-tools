@@ -88,7 +88,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
-import { isSandboxAsset } from "../fixme";
+import { isSandboxAsset } from "../extension";
 
 export function HomePage() {
   const routes = useRoutes();

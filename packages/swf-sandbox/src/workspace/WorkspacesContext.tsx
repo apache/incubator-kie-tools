@@ -32,7 +32,7 @@ import { GitService } from "./services/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { StorageService } from "./services/StorageService";
-import { resolveExtension } from "../fixme";
+import { resolveExtension } from "../extension";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();

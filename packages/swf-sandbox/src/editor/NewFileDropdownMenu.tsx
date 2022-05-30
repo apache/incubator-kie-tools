@@ -36,7 +36,7 @@ import { basename, extname } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
-import { isSandboxAsset, resolveExtension } from "../fixme";
+import { isSandboxAsset, resolveExtension } from "../extension";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;

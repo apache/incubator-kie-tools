@@ -16,7 +16,7 @@
 
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { basename, dirname, extname, join, relative, resolve } from "path";
-import { resolveExtension } from "../../fixme";
+import { resolveExtension } from "../../extension";
 
 export class EagerStorageFile {
   constructor(private readonly args: { path: string; content: Uint8Array }) {}

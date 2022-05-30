@@ -37,7 +37,7 @@ import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
-import { isSandboxAsset } from "../fixme";
+import { isSandboxAsset } from "../extension";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
