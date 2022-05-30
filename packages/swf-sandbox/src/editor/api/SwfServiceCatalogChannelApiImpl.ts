@@ -14,50 +14,53 @@
  * limitations under the License.
  */
 
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceCatalogUser,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SettingsContextType } from "../../settings/SettingsContext";
+import { ServiceRegistryInfo } from "./ServiceRegistryInfo";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor(private readonly settings: SettingsContextType) {
+  constructor(
+    private readonly args: {
+      serviceRegistryInfo: ServiceRegistryInfo;
+      proxyUrl: string;
+    }
+  ) {
     this.kogitoSwfServiceCatalog_refresh();
   }
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return { defaultValue: { username: this.settings.serviceAccount.config.clientId } };
+    return { defaultValue: { username: this.args.serviceRegistryInfo.authInfo.username } };
   }
 
   public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return { defaultValue: this.settings.serviceRegistry.config.coreRegistryApi };
+    return { defaultValue: this.args.serviceRegistryInfo.url };
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return { defaultValue: SwfServiceCatalogStore.storedServices };
   }
 
-  public kogitoSwfServiceCatalog_logInToRhhcc(): void {}
+  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
+    // No-op
+  }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    SwfServiceCatalogStore.refresh(
-      this.settings.kieSandboxExtendedServices.config.buildUrl(),
-      this.settings.serviceRegistry.config,
-      this.settings.serviceAccount.config
-    );
+    SwfServiceCatalogStore.refresh(this.args);
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    // this.args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(args);
+    // No-op
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
-    // vscode.commands.executeCommand(COMMAND_IDS.setupServiceRegistryUrl);
+    // No-op
   }
 }

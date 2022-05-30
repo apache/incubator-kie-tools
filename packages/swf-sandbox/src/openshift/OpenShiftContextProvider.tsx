@@ -147,11 +147,16 @@ export function OpenShiftContextProvider(props: Props) {
         groupId: DEFAULT_GROUP_ID,
         content: content,
         proxyUrl: settings.kieSandboxExtendedServices.config.buildUrl(),
-        serviceAccountConfig: settings.serviceAccount.config,
-        serviceRegistryConfig: settings.serviceRegistry.config,
+        serviceRegistryInfo: {
+          authInfo: {
+            username: settings.serviceAccount.config.clientId,
+            token: settings.serviceAccount.config.clientSecret,
+          },
+          url: settings.serviceRegistry.config.coreRegistryApi,
+        },
       });
     },
-    [settings.serviceAccount.config, settings.serviceRegistry.config, settings.kieSandboxExtendedServices.config]
+    [settings.kieSandboxExtendedServices.config, settings.serviceAccount.config, settings.serviceRegistry.config]
   );
 
   useEffect(() => {

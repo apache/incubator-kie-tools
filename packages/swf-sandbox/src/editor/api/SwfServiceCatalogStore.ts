@@ -5,42 +5,42 @@ import {
   SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
-import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
 import * as yaml from "yaml";
-import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
-import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
+import {
+  ServiceRegistryArtifactSearchResponse,
+  ServiceRegistryAuthInfo,
+  ServiceRegistryInfo,
+} from "./ServiceRegistryInfo";
 
 export function getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatalogServiceId: string) {
   return `${swfServiceCatalogServiceId}__latest.yaml`;
 }
 
-// TODO: refactor and remove duplicated code
+// TODO: does this class need to be static?
 export class SwfServiceCatalogStore {
   public static storedServices: SwfServiceCatalogService[] = [];
-  public static async refresh(
-    proxyUrl: string,
-    serviceRegistryConfig: ServiceRegistrySettingsConfig,
-    serviceAccountConfig: ServiceAccountSettingsConfig
-  ) {
-    const serviceRegistryUrl = serviceRegistryConfig.coreRegistryApi;
 
+  private static readonly buildProxiedDevSandboxUrl = (proxyUrl: string) => `${proxyUrl}/devsandbox`;
+  private static readonly buildCommonHeaders = (args: { authInfo: ServiceRegistryAuthInfo }) => ({
+    // We are facing a 401 Error when using oauth, let's use Basic auth for now.
+    Authorization: "Basic " + btoa(`${args.authInfo.username}:${args.authInfo.token}`),
+    "Content-Type": "application/json",
+  });
+
+  public static async refresh(args: { serviceRegistryInfo: ServiceRegistryInfo; proxyUrl: string }) {
     const serviceRegistryRestApi = {
-      getArtifactContentUrl: (params: { groupId: string; id: string }) => {
-        return `${serviceRegistryUrl.toString()}/groups/${params.groupId}/artifacts/${params.id}`;
-      },
-      getArtifactsUrl: () => {
-        return `${serviceRegistryUrl?.toString()}/search/artifacts`;
-      },
+      getArtifactContentUrl: (params: { groupId: string; id: string }) =>
+        `${args.serviceRegistryInfo.url}/groups/${params.groupId}/artifacts/${params.id}`,
+      getArtifactsUrl: () => `${args.serviceRegistryInfo.url}/search/artifacts`,
     };
 
     const artifactsMetadata: ServiceRegistryArtifactSearchResponse = (
-      await axios.get(proxyUrl + "/devsandbox", {
+      await axios.get(this.buildProxiedDevSandboxUrl(args.proxyUrl), {
         headers: {
-          // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-          Authorization: "Basic " + btoa(`${serviceAccountConfig.clientId}:${serviceAccountConfig.clientSecret}`),
-          "Content-Type": "application/json",
+          ...this.buildCommonHeaders({ authInfo: args.serviceRegistryInfo.authInfo }),
           "Target-Url": serviceRegistryRestApi.getArtifactsUrl(),
         },
       })
@@ -52,11 +52,9 @@ export class SwfServiceCatalogStore {
         .map(async (artifactMetadata) => ({
           metadata: artifactMetadata,
           content: (
-            await axios.get(proxyUrl + "/devsandbox", {
+            await axios.get(this.buildProxiedDevSandboxUrl(args.proxyUrl), {
               headers: {
-                // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-                Authorization: "Basic " + btoa(`${serviceAccountConfig.clientId}:${serviceAccountConfig.clientSecret}`),
-                "Content-Type": "application/json",
+                ...this.buildCommonHeaders({ authInfo: args.serviceRegistryInfo.authInfo }),
                 "Target-Url": serviceRegistryRestApi.getArtifactContentUrl(artifactMetadata),
               },
             })
@@ -94,30 +92,14 @@ export class SwfServiceCatalogStore {
     artifactId: string;
     content: string;
     proxyUrl: string;
-    serviceRegistryConfig: ServiceRegistrySettingsConfig;
-    serviceAccountConfig: ServiceAccountSettingsConfig;
+    serviceRegistryInfo: ServiceRegistryInfo;
   }): Promise<void> {
-    await axios.post(args.proxyUrl + "/devsandbox", args.content, {
+    await axios.post(this.buildProxiedDevSandboxUrl(args.proxyUrl), args.content, {
       headers: {
-        // We are facing a 401 Error when using oauth, let's use Basic auth for now.
-        Authorization:
-          "Basic " + btoa(`${args.serviceAccountConfig.clientId}:${args.serviceAccountConfig.clientSecret}`),
-        "Content-Type": "application/json",
+        ...this.buildCommonHeaders({ authInfo: args.serviceRegistryInfo.authInfo }),
         "X-Registry-ArtifactId": args.artifactId.replace(/\s|\//g, "_"),
-        "Target-Url": `${args.serviceRegistryConfig.coreRegistryApi}/groups/${encodeURIComponent(
-          args.groupId
-        )}/artifacts`,
+        "Target-Url": `${args.serviceRegistryInfo.url}/groups/${encodeURIComponent(args.groupId)}/artifacts`,
       },
     });
   }
-}
-
-export interface ServiceRegistryArtifactSearchResponse {
-  artifacts: ServiceRegistryArtifactMetadata[];
-}
-
-export interface ServiceRegistryArtifactMetadata {
-  groupId: string;
-  id: string;
-  type: string;
 }

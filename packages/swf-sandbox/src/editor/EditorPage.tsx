@@ -40,20 +40,20 @@ import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
+import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
+import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings } from "../settings/SettingsContext";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { EditorPageErrorPage } from "./EditorPageErrorPage";
+import { EditorSwfLanguageService } from "./api/EditorSwfLanguageService";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflowEditorChannelApiImpl";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
-import { EditorSwfLanguageService } from "./api/EditorSwfLanguageService";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
-import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
+import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
+import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
-import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
-import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 
 export interface Props {
   workspaceId: string;
@@ -118,7 +118,7 @@ export function EditorPage(props: Props) {
             getFileContents: async () => content,
             isReadOnly: !isSandboxAsset(workspaceFilePromise.data.relativePath),
             fileExtension: workspaceFilePromise.data.extension,
-            fileName: workspaceFilePromise.data.relativePath, //FIXME
+            fileName: workspaceFilePromise.data.name,
           });
         });
       },
@@ -280,6 +280,7 @@ export function EditorPage(props: Props) {
   );
 
   const apiImpl = useMemo(() => {
+    // TODO: This is being triggered on every edit. Should it?
     let swfServiceCatalogChannelApiImpl;
     let swfLanguageServiceChannelApiImpl;
     if (
@@ -287,8 +288,22 @@ export function EditorPage(props: Props) {
       isServiceAccountConfigValid(settings.serviceAccount.config) &&
       isServiceRegistryConfigValid(settings.serviceRegistry.config)
     ) {
-      swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(settings);
-      swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(new EditorSwfLanguageService(settings));
+      const serviceRegistryInfo = {
+        authInfo: {
+          username: settings.serviceAccount.config.clientId,
+          token: settings.serviceAccount.config.clientSecret,
+        },
+        url: settings.serviceRegistry.config.coreRegistryApi,
+      };
+
+      swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl({
+        serviceRegistryInfo,
+        proxyUrl: settings.kieSandboxExtendedServices.config.buildUrl(),
+      });
+
+      swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(
+        new EditorSwfLanguageService({ serviceRegistryInfo })
+      );
     }
     return (
       kogitoEditorChannelApiImpl &&
@@ -298,7 +313,13 @@ export function EditorPage(props: Props) {
         swfLanguageServiceChannelApiImpl
       )
     );
-  }, [kogitoEditorChannelApiImpl, props.fileRelativePath, settings]);
+  }, [
+    kogitoEditorChannelApiImpl,
+    props.fileRelativePath,
+    settings.kieSandboxExtendedServices.config,
+    settings.serviceAccount.config,
+    settings.serviceRegistry.config,
+  ]);
 
   return (
     <OnlineEditorPage>
