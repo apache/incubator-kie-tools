@@ -102,10 +102,10 @@ export function CreateGitHubRepositoryModal(props: {
       });
 
       // TODO: What should be considered a project?
-      const isAlreadyAProject = !!files.find((file) => file.name === "pom.xml");
+      const isProject = !!files.find((file) => file.relativePath === "pom.xml");
       let currentFileAfterMoving: WorkspaceFile | undefined;
 
-      if (!isAlreadyAProject) {
+      if (!isProject) {
         await workspaces.gitService.addRemote({
           fs: fs,
           dir: workspaceRootDirPath,

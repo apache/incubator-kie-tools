@@ -203,8 +203,7 @@ export function EditorPage(props: Props) {
     [workspaces, props.workspaceId]
   );
 
-  // TODO: uncomment when notification is available
-  // validate
+  // TODO: Make notifications available when supported
   // useEffect(() => {
   //   if (!editor?.isReady) {
   //     return;
