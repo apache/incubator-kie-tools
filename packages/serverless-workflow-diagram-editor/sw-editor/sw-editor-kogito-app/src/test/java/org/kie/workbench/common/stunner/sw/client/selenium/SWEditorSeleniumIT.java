@@ -154,7 +154,7 @@ public class SWEditorSeleniumIT {
         final WebElement canvasPanelDiv = waitOperation()
                 .until(visibilityOfElementLocated(className(CANVAS_PANEL)));
         assertThat(canvasPanelDiv)
-                .as("Once content is set canvas panel isibility is a prerequisite" +
+                .as("Once content is set canvas panel visibility is a prerequisite" +
                             "for further test execution.")
                 .isNotNull();
     }
