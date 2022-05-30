@@ -16,13 +16,16 @@
 
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useAppI18n } from "../../i18n";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
+import { isKafkaConfigValid } from "../../settings/kafka/KafkaSettingsConfig";
 import { isServiceAccountConfigValid } from "../../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings } from "../../settings/SettingsContext";
@@ -35,6 +38,21 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
   const settings = useSettings();
   const { i18n } = useAppI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
+  const [shouldUploadOpenApi, setShouldUploadOpenApi] = useState(false);
+  const [shouldAttachKafkaSource, setShouldAttachKafkaSource] = useState(false);
+
+  const canUploadOpenApi = useMemo(
+    () =>
+      isServiceAccountConfigValid(settings.serviceAccount.config) &&
+      isServiceRegistryConfigValid(settings.serviceRegistry.config),
+    [settings.serviceAccount.config, settings.serviceRegistry.config]
+  );
+
+  const canAttachKafkaSource = useMemo(
+    () =>
+      isServiceAccountConfigValid(settings.serviceAccount.config) && isKafkaConfigValid(settings.apacheKafka.config),
+    [settings.apacheKafka.config, settings.serviceAccount.config]
+  );
 
   const setDeployStartedError = useAlert(
     props.alerts,
@@ -56,27 +74,30 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
 
   const setDeployStartedSuccess = useAlert(
     props.alerts,
-    useCallback(({ close }, staticArgs: { shouldUploadOpenApi: boolean }) => {
-      return (
-        <Alert
-          className="pf-u-mb-md"
-          variant="info"
-          title={
-            <>
-              <Spinner size={"sm"} />
-              &nbsp;&nbsp;
-              {staticArgs.shouldUploadOpenApi
-                ? "A new deployment has been started. Its associated OpenAPI spec will be uploaded to Service Registry as soon as the deployment is up and running."
-                : "Your deployment has been successfully started and will be available shortly."}
-              &nbsp;Please do not close this browser tab until the operation is completed.
-            </>
-          }
-          aria-live="polite"
-          data-testid="alert-deploy-success"
-          actionClose={<AlertActionCloseButton onClose={close} />}
-        />
-      );
-    }, [])
+    useCallback(
+      ({ close }) => {
+        return (
+          <Alert
+            className="pf-u-mb-md"
+            variant="info"
+            title={
+              <>
+                <Spinner size={"sm"} />
+                &nbsp;&nbsp;
+                {shouldUploadOpenApi
+                  ? "A new deployment has been started. Its associated OpenAPI spec will be uploaded to Service Registry as soon as the deployment is up and running."
+                  : "Your deployment has been successfully started and will be available shortly."}
+                &nbsp;Please do not close this browser tab until the operation is completed.
+              </>
+            }
+            aria-live="polite"
+            data-testid="alert-deploy-success"
+            actionClose={<AlertActionCloseButton onClose={close} />}
+          />
+        );
+      },
+      [shouldUploadOpenApi]
+    )
   );
 
   const deployEndSuccess = useAlert(
@@ -112,7 +133,7 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
   );
 
   const fetchOpenApiSpec = useCallback(
-    async (deploymentResourceName: string, shouldUploadOpenApi: boolean) => {
+    async (deploymentResourceName: string) => {
       const openApiContents = await openshift.fetchOpenApiFile(deploymentResourceName);
 
       if (!openApiContents) {
@@ -128,7 +149,7 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
 
       return true;
     },
-    [openshift, props.workspaceFile.nameWithoutExtension]
+    [openshift, props.workspaceFile.nameWithoutExtension, shouldUploadOpenApi]
   );
 
   const onConfirm = useCallback(async () => {
@@ -139,21 +160,18 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     setConfirmLoading(true);
     const resourceName = await openshift.deploy({
       workspaceFile: props.workspaceFile,
+      shouldAttachKafkaSource,
     });
     setConfirmLoading(false);
 
     openshift.setConfirmDeployModalOpen(false);
 
     if (resourceName) {
-      const shouldUploadOpenApi =
-        isServiceAccountConfigValid(settings.serviceAccount.config) &&
-        isServiceRegistryConfigValid(settings.serviceRegistry.config);
-
       openshift.setDeploymentsDropdownOpen(true);
-      setDeployStartedSuccess.show({ shouldUploadOpenApi });
+      setDeployStartedSuccess.show();
 
       const fetchOpenApiTask = window.setInterval(async () => {
-        const success = await fetchOpenApiSpec(resourceName, shouldUploadOpenApi);
+        const success = await fetchOpenApiSpec(resourceName);
         if (!success) {
           return;
         }
@@ -173,8 +191,8 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     isConfirmLoading,
     openshift,
     props.workspaceFile,
-    settings.serviceAccount.config,
-    settings.serviceRegistry.config,
+    shouldUploadOpenApi,
+    shouldAttachKafkaSource,
     setDeployStartedSuccess,
     fetchOpenApiSpec,
     openApiUploadSuccess,
@@ -212,6 +230,34 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
       ]}
     >
       {i18n.openshift.confirmModal.body}
+      <ExpandableSection
+        toggleTextCollapsed="Show advanced options"
+        toggleTextExpanded="Hide advanced options"
+        className={"plain"}
+      >
+        <Checkbox
+          id="check-use-service-registry"
+          label="Upload OpenAPI spec to Service Registry"
+          description={
+            !canUploadOpenApi &&
+            "To use this option, you need to configure your Service Account and Service Registry on Settings."
+          }
+          isChecked={shouldUploadOpenApi}
+          onChange={(checked) => setShouldUploadOpenApi(checked)}
+          isDisabled={!canUploadOpenApi}
+        />
+        <Checkbox
+          id="check-use-apache-kafka"
+          label="Attach KafkaSource to the deployment"
+          description={
+            !canAttachKafkaSource &&
+            "To use this option, you need to configure your Service Account and Streams for Apache Kafka on Settings."
+          }
+          isChecked={shouldAttachKafkaSource}
+          onChange={(checked) => setShouldAttachKafkaSource(checked)}
+          isDisabled={!canAttachKafkaSource}
+        />
+      </ExpandableSection>
     </Modal>
   );
 }

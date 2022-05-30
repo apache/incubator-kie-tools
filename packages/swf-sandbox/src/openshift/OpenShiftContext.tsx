@@ -31,7 +31,7 @@ export interface OpenShiftContextType {
   isConfirmDeployModalOpen: boolean;
   setConfirmDeployModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-  deploy(args: { workspaceFile: WorkspaceFile }): Promise<string | undefined>;
+  deploy(args: { workspaceFile: WorkspaceFile; shouldAttachKafkaSource: boolean }): Promise<string | undefined>;
   uploadArtifactToServiceRegistry(artifactId: string, content: string): Promise<void>;
   fetchOpenApiFile(resourceName: string): Promise<string | undefined>;
 }

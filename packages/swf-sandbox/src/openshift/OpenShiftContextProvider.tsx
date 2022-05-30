@@ -61,7 +61,7 @@ export function OpenShiftContextProvider(props: Props) {
   );
 
   const deploy = useCallback(
-    async (args: { workspaceFile: WorkspaceFile }) => {
+    async (args: { workspaceFile: WorkspaceFile; shouldAttachKafkaSource: boolean }) => {
       if (!isOpenShiftConfigValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
@@ -97,6 +97,7 @@ export function OpenShiftContextProvider(props: Props) {
           workspaceName: workspaceName,
           targetFilePath: args.workspaceFile.relativePath,
           workspaceZipBlob: zipBlob,
+          shouldAttachKafkaSource: args.shouldAttachKafkaSource,
         });
       } catch (e) {
         console.error(e);

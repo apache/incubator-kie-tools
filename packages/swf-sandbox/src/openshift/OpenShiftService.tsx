@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import { isKafkaConfigValid, KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
+import { KafkaSettingsConfig } from "../settings/kafka/KafkaSettingsConfig";
 import { isOpenShiftConfigValid, OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
-import {
-  isServiceAccountConfigValid,
-  ServiceAccountSettingsConfig,
-} from "../settings/serviceAccount/ServiceAccountConfig";
+import { ServiceAccountSettingsConfig } from "../settings/serviceAccount/ServiceAccountConfig";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
 import { Build, Builds, ListBuilds } from "./resources/Build";
@@ -137,6 +134,7 @@ export class OpenShiftService {
     targetFilePath: string;
     workspaceName: string;
     workspaceZipBlob: Blob;
+    shouldAttachKafkaSource: boolean;
   }): Promise<string | undefined> {
     const resourceName = `sandbox-${this.generateRandomId()}`;
 
@@ -172,7 +170,7 @@ export class OpenShiftService {
         rollbacks.slice(rollbacksCount)
       );
 
-      if (this.canCreateKafkaResources()) {
+      if (args.shouldAttachKafkaSource) {
         const kafkaClientIdKey = "kafka-client-id";
         const kafkaClientSecretKey = "kafka-client-secret";
 
@@ -205,10 +203,6 @@ export class OpenShiftService {
     } catch (e) {
       console.error(`Failed to deploy: ${e.message}`);
     }
-  }
-
-  private canCreateKafkaResources(): boolean {
-    return isKafkaConfigValid(this.configs.kafka) && isServiceAccountConfigValid(this.configs.serviceAccount);
   }
 
   private async fetchResource<T = Resource>(target: ResourceFetch, rollbacks?: ResourceFetch[]): Promise<Readonly<T>> {
