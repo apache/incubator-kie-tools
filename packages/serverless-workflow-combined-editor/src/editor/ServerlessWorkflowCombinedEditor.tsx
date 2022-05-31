@@ -203,8 +203,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         });
       },
       [textEditor]
-    ),
-    { throttle: 200 }
+    )
   );
 
   useStateControlSubscription(
@@ -223,19 +222,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         });
       },
       [diagramEditor]
-    ),
-    { throttle: 200 }
+    )
   );
 
   const updateEditors = useCallback(
-    async (file: File) => {
+    async (f: File) => {
       if (!textEditor || !diagramEditor) {
         return;
       }
 
       // No need to update textEditor as long as diagramEditor is readonly
-      // await textEditor.setContent(file.path, file.content);
-      await diagramEditor.setContent(file.path, file.content);
+      // await textEditor.setContent(f.path, f.content);
+      await diagramEditor.setContent(f.path, f.content);
     },
     [diagramEditor, textEditor]
   );
