@@ -28,7 +28,7 @@
       }
     ]
   },
-  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback"],
+  "permissions": ["declarativeNetRequest"],
   "host_permissions": ["https://*.github.com/*", "http://*.github.com/*"],
   "sandbox": {
     "pages": ["https://raw.githubusercontent.com"]
