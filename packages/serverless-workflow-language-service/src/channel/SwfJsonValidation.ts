@@ -1,12 +1,13 @@
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { getLanguageService, TextDocument } from "vscode-json-languageservice";
+import { getLanguageService, JSONDocument, LanguageService, TextDocument } from "vscode-json-languageservice";
+import * as ls from "vscode-languageserver-types";
 
-export async function SwfJsonValidation(jsonContent: any, jsonContentUri: any, jsonSchemaUri: any) {
+export async function SwfJsonValidation(jsonContent: string, jsonContentUri: string, jsonSchemaUri: string) {
   const jsonSchema = SW_SPEC_WORKFLOW_SCHEMA;
 
-  const textDocument = TextDocument.create(jsonContentUri, "serverless-workflow-json", 1, jsonContent);
+  const textDocument: TextDocument = TextDocument.create(jsonContentUri, "serverless-workflow-json", 1, jsonContent);
 
-  const jsonLanguageService = getLanguageService({
+  const jsonLanguageService: LanguageService = getLanguageService({
     schemaRequestService: (uri) => {
       if (uri === jsonSchemaUri) {
         return Promise.resolve(JSON.stringify(jsonSchema));
@@ -17,9 +18,9 @@ export async function SwfJsonValidation(jsonContent: any, jsonContentUri: any, j
 
   jsonLanguageService.configure({ allowComments: false, schemas: [{ fileMatch: ["*.sw.json"], uri: jsonSchemaUri }] });
 
-  const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
+  const jsonDocument: JSONDocument = jsonLanguageService.parseJSONDocument(textDocument);
 
-  const diagnostics = await jsonLanguageService.doValidation(textDocument, jsonDocument);
+  const diagnostics: ls.Diagnostic[] = await jsonLanguageService.doValidation(textDocument, jsonDocument);
 
   return diagnostics;
 }

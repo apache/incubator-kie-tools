@@ -28,6 +28,7 @@ import {
   SwfJsonLanguageService,
   SwfJsonValidation,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { debounce } from "../utils";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
@@ -69,45 +70,17 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
   };
 
-  const errors = vscode.languages.createDiagnosticCollection("swfValidation");
+  const validationErrors: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection("swfValidation");
 
   args.context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument(async (doc) => {
-      const editor = vscode.window.activeTextEditor;
-
-      const jsonContent = editor?.document.getText();
-      const jsonContentUri = doc.uri.path;
-      const jsonSchemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
-      const results: any = await SwfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
-
-      const diagnostics: any = [];
-
-      results.map((result: any) => {
-        diagnostics.push(new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning));
-      });
-
-      errors.clear();
-      errors.set(doc.uri, diagnostics);
+    vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+      doValidationOnOpen(doc.uri, validationErrors);
     })
   );
 
   args.context.subscriptions.push(
-    vscode.workspace.onDidChangeTextDocument(async (event) => {
-      const editor = vscode.window.activeTextEditor;
-
-      const jsonContent = editor?.document.getText();
-      const jsonContentUri = event.document.uri.path;
-      const jsonSchemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
-      const results: any = await SwfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
-
-      const diagnostics: any = [];
-
-      results.map((result: any) => {
-        diagnostics.push(new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning));
-      });
-
-      errors.clear();
-      errors.set(event.document.uri, diagnostics);
+    vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
+      doValidationOnChange(event.document.uri, validationErrors);
     })
   );
 
@@ -209,3 +182,34 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     )
   );
 }
+
+async function swfValidation(uri: vscode.Uri, validationErrors: vscode.DiagnosticCollection) {
+  const editor = vscode.window.activeTextEditor;
+
+  const jsonContent: string | undefined = editor?.document.getText();
+  const jsonContentUri: string = uri.path;
+  const jsonSchemaUri: string = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
+
+  let validationResults: ls.Diagnostic[];
+
+  if (jsonContent !== undefined) {
+    validationResults = await SwfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
+
+    const diagnostics: vscode.Diagnostic[] = [];
+
+    validationResults.map((result: any) => {
+      diagnostics.push(new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning));
+    });
+
+    validationErrors.clear();
+    validationErrors.set(uri, diagnostics);
+  }
+}
+
+const doValidationOnChange = debounce((uri: vscode.Uri, validationErrors: vscode.DiagnosticCollection) => {
+  swfValidation(uri, validationErrors);
+}, 1000);
+
+const doValidationOnOpen = debounce((uri: vscode.Uri, validationErrors: vscode.DiagnosticCollection) => {
+  swfValidation(uri, validationErrors);
+}, 0);
