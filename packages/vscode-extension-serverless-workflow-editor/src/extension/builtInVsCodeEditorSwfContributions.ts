@@ -24,7 +24,10 @@ import {
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfJsonLanguageService,
+  SwfJsonValidation,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
@@ -65,6 +68,48 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       console.info("No op");
     },
   };
+
+  const errors = vscode.languages.createDiagnosticCollection("swfValidation");
+
+  args.context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument(async (doc) => {
+      const editor = vscode.window.activeTextEditor;
+
+      const jsonContent = editor?.document.getText();
+      const jsonContentUri = doc.uri.path;
+      const jsonSchemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
+      const results: any = await SwfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
+
+      const diagnostics: any = [];
+
+      results.map((result: any) => {
+        diagnostics.push(new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning));
+      });
+
+      errors.clear();
+      errors.set(doc.uri, diagnostics);
+    })
+  );
+
+  args.context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument(async (event) => {
+      const editor = vscode.window.activeTextEditor;
+
+      const jsonContent = editor?.document.getText();
+      const jsonContentUri = event.document.uri.path;
+      const jsonSchemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
+      const results: any = await SwfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
+
+      const diagnostics: any = [];
+
+      results.map((result: any) => {
+        diagnostics.push(new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning));
+      });
+
+      errors.clear();
+      errors.set(event.document.uri, diagnostics);
+    })
+  );
 
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.swfLsCommand, (args: ls.Command) => {
