@@ -59,6 +59,21 @@ public class RuntimePerspectiveGenerator {
         }
     }
 
+    public void unregisterPerspective(LayoutTemplate layoutTemplate) {
+        deleteScreen(layoutTemplate);
+        deletePerspective(layoutTemplate);
+    }
+
+    private void deleteScreen(LayoutTemplate perspective) {
+        String activityID = PerspectiveEditorScreenActivity.buildScreenId(perspective.getName());
+        activityBeansCache.removeActivity(activityID);
+    }
+
+    private void deletePerspective(LayoutTemplate perspective) {
+        var perspectiveName = perspective.getName();
+        activityBeansCache.removeActivity(perspectiveName);
+    }
+
     private PerspectiveEditorScreenActivity createNewScreen(LayoutTemplate perspective) {
         PerspectiveEditorScreenActivity activity = new PerspectiveEditorScreenActivity(perspective,
                 layoutGenerator);

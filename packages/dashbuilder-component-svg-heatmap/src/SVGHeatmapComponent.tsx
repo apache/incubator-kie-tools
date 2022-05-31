@@ -28,7 +28,7 @@ const CONTAINS_ID_PARAM = "containsId";
 
 const NOT_ENOUGH_COLUMNS_MSG = "Heatmap expects 2 columns: Node ID (TEXT or Label) and value (NUMBER)";
 const INVALID_COLUMNS_TYPE_MSG = "Wrong columns type. First column should be TEXT or LABEL and second column NUMBER.";
-const MISSING_PARAM_MSG = "You must provide either a SVG URL or the SVG Content.";
+const MISSING_PARAM_MSG = "You must provide either a SVG URL or the SVG Content using the parameter 'svg'.";
 const INVALID_SVG_PARAM = "SVG parameter is not valid. It should be either a URL or a SVG content";
 
 const validateDataSet = (ds: DataSet): string | undefined => {
@@ -109,6 +109,7 @@ export function SVGHeatmapComponent(props: Props) {
         ...previousState,
         svgContent: htParams.svg,
         svgNodesValues: extractNodeInfo(ds.data),
+        ...htParams,
       }));
     } else if (isUrl(htParams.svg)) {
       fetch(htParams.svg)
