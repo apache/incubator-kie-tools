@@ -167,8 +167,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
             throw e;
           }
         },
-        getContent: async () => textEditor?.getContent(),
-        getPreview: async () => diagramEditor?.getPreview(),
+        getContent: async () => file?.content ?? "",
+        getPreview: async () => diagramEditor?.getPreview() ?? "",
         undo: async () => {
           textEditor?.undo();
           diagramEditor?.undo();
@@ -177,30 +177,29 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           textEditor?.redo();
           diagramEditor?.redo();
         },
-        validate: (): Notification[] => [],
+        validate: async (): Promise<Notification[]> => textEditor?.validate() ?? [],
         setTheme: async (theme: EditorTheme) => {
           textEditor?.setTheme(theme);
           diagramEditor?.setTheme(theme);
         },
       };
     },
-    [diagramEditor, props.isReadOnly, textEditor]
+    [diagramEditor, file, props.isReadOnly, textEditor]
   );
 
   useStateControlSubscription(
     textEditor,
     useCallback(
-      (isDirty) => {
-        if (!isDirty || !textEditor) {
+      async (_isDirty) => {
+        if (!textEditor) {
           return;
         }
 
-        textEditor.getContent().then((content) => {
-          setFile((prevState) => ({
-            ...prevState!,
-            content,
-          }));
-        });
+        const content = await textEditor.getContent();
+        setFile((prevState) => ({
+          ...prevState!,
+          content,
+        }));
       },
       [textEditor]
     )
@@ -209,17 +208,16 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   useStateControlSubscription(
     diagramEditor,
     useCallback(
-      (isDirty) => {
-        if (!isDirty || !diagramEditor) {
+      async (_isDirty) => {
+        if (!diagramEditor) {
           return;
         }
 
-        diagramEditor.getContent().then((content) => {
-          setFile((prevState) => ({
-            ...prevState!,
-            content,
-          }));
-        });
+        const content = await diagramEditor.getContent();
+        setFile((prevState) => ({
+          ...prevState!,
+          content,
+        }));
       },
       [diagramEditor]
     )
@@ -243,9 +241,13 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       return;
     }
 
+    if (lastContent.current) {
+      props.onNewEdit(new KogitoEdit(file.content));
+    }
+
     lastContent.current = file.content;
     updateEditors(file);
-  }, [file, updateEditors]);
+  }, [file, props, updateEditors]);
 
   const onTextEditorReady = useCallback(() => {
     setTextEditorReady(true);

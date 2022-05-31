@@ -92,20 +92,22 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
           return Promise.resolve("");
         },
         undo: (): Promise<void> => {
+          props.onStateControlCommandUpdate(StateControlCommand.UNDO);
           return swfTextEditorRef.current?.undo() || Promise.resolve();
         },
         redo: (): Promise<void> => {
+          props.onStateControlCommandUpdate(StateControlCommand.REDO);
           return swfTextEditorRef.current?.redo() || Promise.resolve();
         },
-        validate: (): Notification[] => {
-          return [];
+        validate: (): Promise<Notification[]> => {
+          return Promise.resolve([]);
         },
         setTheme: (theme: EditorTheme): Promise<void> => {
           return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
       };
     },
-    []
+    [props]
   );
 
   const setValidationErrors = useCallback(

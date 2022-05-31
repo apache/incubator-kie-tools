@@ -77,7 +77,7 @@ const RefForwardingServerlessWorkflowMermaidViewer: React.ForwardRefRenderFuncti
         redo: async (): Promise<void> => {
           return;
         },
-        validate: (): Notification[] => [],
+        validate: async (): Promise<Notification[]> => [],
         setTheme: async (theme: EditorTheme): Promise<void> => {
           return;
         },
