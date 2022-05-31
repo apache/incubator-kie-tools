@@ -15,7 +15,7 @@
     <!-- ### extra maven repositories ### -->
 
     <profile>
-      <id>default</id>
+      <id>kogito-images</id>
       <repositories>
         <repository>
           <id>jboss-public-repository-group</id>
@@ -55,6 +55,6 @@
   </profiles>
   <activeProfiles>
     <!-- ### extra maven profile ### -->
-    <activeProfile>default</activeProfile>
+    <activeProfile>kogito-images</activeProfile>
   </activeProfiles>
 </settings>

@@ -83,7 +83,7 @@ Feature: kogito-builder image JVM build tests
       | RUNTIME_TYPE      | quarkus                                                  |
       | NATIVE            | false                                                    |
       | ARTIFACT_DIR      | kogito-quarkus-examples/rules-quarkus-helloworld/target  |
-      | MAVEN_ARGS_APPEND | -pl kogito-quarkus-examples/rules-quarkus-helloworld -am                         |
+      | MAVEN_ARGS_APPEND | -pl :rules-quarkus-helloworld -am                         |
     Then check that page is served
       | property        | value                 |
       | port            | 8080                  |
@@ -193,7 +193,7 @@ Feature: kogito-builder image JVM build tests
       | JAVA_OPTIONS      | -Ddebug=true                       |
       | RUNTIME_TYPE      | springboot                         |
       | ARTIFACT_DIR      | kogito-springboot-examples/process-springboot-example/target  |
-      | MAVEN_ARGS_APPEND | -pl kogito-springboot-examples/process-springboot-example -am |
+      | MAVEN_ARGS_APPEND | -pl :process-springboot-example -am |
     Then check that page is served
       | property             | value                                                                         |
       | port                 | 8080                                                                          |
