@@ -8,7 +8,7 @@ CEKIT_CMD := cekit -v ${cekit_option}
 NATIVE := true
 
 clone-repos:
-# if the NO_TEST env defined, proceed with the tests, as first step prepare the repo to be used
+# if the ignore_test env is not defined or false, proceed with the tests, as first step prepare the examples to be used
 ifneq ($(ignore_test),true)
 	cd tests/test-apps && sh clone-repo.sh $(NATIVE)
 	cd ../..
