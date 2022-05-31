@@ -16,7 +16,7 @@
 
 import { BpmnEditor, BpmnEditorImpl } from "./BpmnEditor";
 import { BpmnEditorChannelApi, getBpmnLanguageData } from "../api";
-import { GwtEditorWrapperFactory } from "../../common";
+import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 
 export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
@@ -34,7 +34,7 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),
           ctx.channelApi,
-          self.xmlFormatter,
+          new XmlFormatter(),
           self.gwtStateControlService,
           self.kieBcEditorsI18n
         ),

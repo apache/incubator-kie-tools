@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2019 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-export const editors = {
-  dmn: {
-    id: "DMNDiagramEditor",
-    name: "org.kie.workbench.common.dmn.showcase.DMNKogitoRuntimeWebapp",
-  },
-  bpmn: {
-    id: "BPMNDiagramEditor",
-    name: "org.kie.workbench.common.stunner.kogito.KogitoBPMNEditor",
-  },
-  scesim: {
-    id: "ScenarioSimulationEditor",
-    name: "org.drools.workbench.screens.scenariosimulation.webapp.DroolsWorkbenchScenarioSimulationKogitoRuntime",
-  },
-};
+export interface TextFormatter {
+  format(text: string): string;
+}
+
+export class DefaultTextFormatter implements TextFormatter {
+  public format(text: string) {
+    return text;
+  }
+}

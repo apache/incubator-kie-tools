@@ -39,9 +39,7 @@ export class ServerlessWorkflowDiagramEditorFactory
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),
           ctx.channelApi,
-          {
-            format: (text) => text, // TODO: add formatter for yaml and json?
-          },
+          self.textFormatter,
           self.gwtStateControlService,
           self.kieBcEditorsI18n
         ),
