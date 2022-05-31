@@ -196,12 +196,13 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await textEditor.getContent();
+        props.onNewEdit(new KogitoEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,
         }));
       },
-      [textEditor]
+      [props, textEditor]
     )
   );
 
@@ -214,12 +215,13 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await diagramEditor.getContent();
+        props.onNewEdit(new KogitoEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,
         }));
       },
-      [diagramEditor]
+      [props, diagramEditor]
     )
   );
 
@@ -239,10 +241,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   useEffect(() => {
     if (file?.content === undefined || file.content === lastContent.current) {
       return;
-    }
-
-    if (lastContent.current) {
-      props.onNewEdit(new KogitoEdit(file.content));
     }
 
     lastContent.current = file.content;
