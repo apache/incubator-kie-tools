@@ -242,6 +242,7 @@ public class RuntimeClientLoader {
         } else {
             var parser = parserFactory.getEditorParser(content);
             var runtimeModel = parser.parse(content);
+            clearCurrentModel();
             registerModel(runtimeModel);
             this.clientModel = runtimeModel;
             updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
@@ -335,5 +336,11 @@ public class RuntimeClientLoader {
                 Optional.ofNullable(clientModel),
                 list,
                 false);
+    }
+
+    private void clearCurrentModel() {
+        if (clientModel != null) {
+            clientModel.getLayoutTemplates().forEach(lt -> perspectiveEditorGenerator.unregisterPerspective(lt));
+        }
     }
 }

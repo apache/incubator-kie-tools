@@ -212,7 +212,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
       <Toolbar onPreviewChange={(v) => setShowPreview(v)} preview={showPreview} />
       <Drawer isExpanded={true} isInline={true}>
         <DrawerContent panelContent={panelContent}>
-          <DrawerContentBody style={{ overflowY: "hidden" }}>
+          <DrawerContentBody style={{ overflow: "hidden" }}>
             {initialContent.path !== "" && (
               <DashbuilderMonacoEditor
                 channelType={props.channelType}
