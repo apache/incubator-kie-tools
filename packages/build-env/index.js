@@ -387,15 +387,6 @@ module.exports = {
     manifestFile: getOrDefault(ENV_VARS.CHROME_EXTENSION__manifestFile),
   },
 
-  chromeExtensionServerlessWorkflow: {
-    dev: {
-      port: 9200,
-    },
-    routerTargetOrigin: "https://caponetto.dev", // use "https://localhost:9200" for local development
-    routerRelativePath: "poc/chrome-extension-swf", // use "" for local development
-    manifestFile: "manifest.dev.json",
-  },
-
   onlineEditor: {
     dev: {
       cypressUrl: getOrDefault(ENV_VARS.ONLINE_EDITOR__cypressUrl),
