@@ -594,7 +594,7 @@ jobs:
           echo "Copy Chrome Extension resources"
           rm -rf $DEPLOYMENT_DIR
           mkdir -p $DEPLOYMENT_DIR
-          cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} $DEPLOYMENT_DIR
+          cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} $DEPLOYMENT_DIR
 
           echo "Commit changes and push"
           git add .
