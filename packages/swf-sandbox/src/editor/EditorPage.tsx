@@ -26,13 +26,10 @@ import {
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
-import { LoadingSpinner } from "../common/LoadingSpinner";
+import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { isSandboxAsset, isServerlessWorkflow } from "../extension";
 import { useAppI18n } from "../i18n";
@@ -66,7 +63,7 @@ export function EditorPage(props: Props) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
-  const { locale, i18n } = useAppI18n();
+  const { locale } = useAppI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
@@ -325,17 +322,7 @@ export function EditorPage(props: Props) {
     <OnlineEditorPage>
       <PromiseStateWrapper
         promise={workspaceFilePromise}
-        pending={
-          <Bullseye>
-            <TextContent>
-              <Bullseye>
-                <Spinner />
-              </Bullseye>
-              <br />
-              <Text component={TextVariants.p}>{`Loading...`}</Text>
-            </TextContent>
-          </Bullseye>
-        }
+        pending={<LoadingSpinner />}
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <>
