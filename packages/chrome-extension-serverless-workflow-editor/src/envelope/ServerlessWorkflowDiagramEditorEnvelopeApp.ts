@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
+import { initCustom } from "@kie-tools-core/editor/dist/envelope";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  ServerlessWorkflowDiagramEditor,
+  ServerlessWorkflowDiagramEditorEnvelopeApiImpl,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
 
-init({
+initCustom<
+  ServerlessWorkflowDiagramEditor,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+  ServerlessWorkflowDiagramEditorChannelApi
+>({
   container: document.getElementById("diagram-envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  editorFactory: new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true }),
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
+  apiImplFactory: {
+    create: (args) =>
+      new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }),
+  },
 });

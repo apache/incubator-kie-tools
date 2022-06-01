@@ -20,7 +20,7 @@ import { ServerlessWorkflowMermaidViewerFactory } from "@kie-tools/serverless-wo
 
 init({
   container: document.getElementById("mermaid-envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
   editorFactory: new ServerlessWorkflowMermaidViewerFactory(),
   keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });
