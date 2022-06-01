@@ -26,7 +26,7 @@ import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore"
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import {
   SwfJsonLanguageService,
-  SwfJsonValidation,
+  swfJsonValidation,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { debounce } from "../utils";
 
@@ -70,17 +70,30 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
   };
 
-  const validationErrors: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection("swfValidation");
+  const swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection =
+    vscode.languages.createDiagnosticCollection("swfValidation");
 
   args.context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
-      doValidationOnOpen(doc.uri, validationErrors);
+      const doValidationOnOpen = debounce(
+        (args: ls.Command, uri: vscode.Uri, swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection) => {
+          setSwfJsobDiagnostics(args, uri, swfJsonValidationDiganosticsCollection);
+        },
+        0
+      );
+      doValidationOnOpen(args, doc.uri, swfJsonValidationDiganosticsCollection);
     })
   );
 
   args.context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
-      doValidationOnChange(event.document.uri, validationErrors);
+      const doValidationOnChange = debounce(
+        (args: ls.Command, uri: vscode.Uri, swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection) => {
+          setSwfJsobDiagnostics(args, uri, swfJsonValidationDiganosticsCollection);
+        },
+        1000
+      );
+      doValidationOnChange(args, event.document.uri, swfJsonValidationDiganosticsCollection);
     })
   );
 
@@ -183,7 +196,11 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   );
 }
 
-async function swfValidation(uri: vscode.Uri, validationErrors: vscode.DiagnosticCollection) {
+async function setSwfJsobDiagnostics(
+  args: any,
+  uri: vscode.Uri,
+  swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection
+) {
   const editor = vscode.window.activeTextEditor;
 
   const jsonContent: string | undefined = editor?.document.getText();
@@ -193,7 +210,7 @@ async function swfValidation(uri: vscode.Uri, validationErrors: vscode.Diagnosti
   let validationResults: ls.Diagnostic[];
 
   if (jsonContent !== undefined) {
-    validationResults = await SwfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
+    validationResults = await args.swfLanguageService.swfJsonValidation(jsonContent, jsonContentUri, jsonSchemaUri);
 
     const diagnostics: vscode.Diagnostic[] = [];
 
@@ -201,15 +218,7 @@ async function swfValidation(uri: vscode.Uri, validationErrors: vscode.Diagnosti
       diagnostics.push(new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning));
     });
 
-    validationErrors.clear();
-    validationErrors.set(uri, diagnostics);
+    swfJsonValidationDiganosticsCollection.clear();
+    swfJsonValidationDiganosticsCollection.set(uri, diagnostics);
   }
 }
-
-const doValidationOnChange = debounce((uri: vscode.Uri, validationErrors: vscode.DiagnosticCollection) => {
-  swfValidation(uri, validationErrors);
-}, 1000);
-
-const doValidationOnOpen = debounce((uri: vscode.Uri, validationErrors: vscode.DiagnosticCollection) => {
-  swfValidation(uri, validationErrors);
-}, 0);
