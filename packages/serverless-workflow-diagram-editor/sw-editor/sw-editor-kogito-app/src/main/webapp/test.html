@@ -25,6 +25,7 @@
         var path = "somePath";
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().setContent(path, diagram);
         document.getElementById("download_btn").disabled = false;
+        document.getElementById("download_svg_btn").disabled = false;
       }
 
       function callPreview() {
@@ -42,6 +43,23 @@
             d.setAttribute("download", "process.sw");
             d.style.display = "none";
 
+            document.body.appendChild(d);
+            d.click();
+            document.body.removeChild(d);
+          });
+      }
+
+      function downloadSvg() {
+        window.frames.editorFrame.contentWindow.gwtEditorBeans
+          .get("SWDiagramEditor")
+          .get()
+          .getPreview()
+          .then(function (svgWfPreview) {
+            var d = document.createElement("a");
+            d.setAttribute("href", "data:text/xml;charset=utf-8," + encodeURIComponent(svgWfPreview));
+            d.setAttribute("download", "workflowSvgPreview.svg");
+
+            d.style.display = "none";
             document.body.appendChild(d);
             d.click();
             document.body.removeChild(d);
@@ -69,6 +87,7 @@
       <input type="file" onchange="openFile(event)" value="Choose SW file" accept="sw,txt" />
       When you are ready you can
       <input type="button" id="download_btn" value="Download the diagram" onclick="download()" disabled />
+      <input type="button" id="download_svg_btn" value="Download the diagram as SVG" onclick="downloadSvg()" disabled />
     </div>
 
     <div style="display: inline; float: left; padding: 25px">
