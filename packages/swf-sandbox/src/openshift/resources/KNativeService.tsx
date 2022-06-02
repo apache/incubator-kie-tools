@@ -51,7 +51,7 @@ export class CreateKNativeService extends ResourceFetch {
     return "POST";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
+  protected async requestBody(): Promise<string> {
     return `
     kind: Service
     apiVersion: serving.knative.dev/v1
@@ -96,10 +96,6 @@ export class ListKNativeServices extends ResourceFetch {
     return "GET";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return ListKNativeServices.name;
   }
@@ -114,13 +110,10 @@ export class DeleteKNativeService extends ResourceFetch {
     return "DELETE";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return DeleteKNativeService.name;
   }
+
   public url(): string {
     return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/services/${this.args.resourceName}`;
   }
@@ -129,10 +122,6 @@ export class DeleteKNativeService extends ResourceFetch {
 export class GetKNativeService extends ResourceFetch {
   protected method(): HttpMethod {
     return "GET";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return;
   }
 
   public name(): string {

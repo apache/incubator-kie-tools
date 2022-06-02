@@ -39,7 +39,7 @@ export class CreateKafkaSource extends ResourceFetch {
     return "POST";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
+  protected async requestBody(): Promise<string> {
     return `
     kind: KafkaSource
     apiVersion: sources.knative.dev/v1beta1
@@ -98,10 +98,6 @@ export class CreateKafkaSource extends ResourceFetch {
 export class DeleteKafkaSource extends ResourceFetch {
   protected method(): HttpMethod {
     return "DELETE";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return;
   }
 
   public name(): string {

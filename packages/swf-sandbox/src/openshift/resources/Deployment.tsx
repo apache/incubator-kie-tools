@@ -40,50 +40,11 @@ export class ListDeployments extends ResourceFetch {
     return "GET";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return ListDeployments.name;
   }
 
   public url(): string {
     return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments`;
-  }
-}
-
-export class DeleteDeployment extends ResourceFetch {
-  protected method(): HttpMethod {
-    return "DELETE";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
-  public name(): string {
-    return DeleteDeployment.name;
-  }
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments/${this.args.resourceName}`;
-  }
-}
-
-export class GetDeployment extends ResourceFetch {
-  protected method(): HttpMethod {
-    return "GET";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
-  public name(): string {
-    return GetDeployment.name;
-  }
-
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments/${this.args.resourceName}`;
   }
 }

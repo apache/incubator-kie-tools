@@ -23,7 +23,7 @@ export class CreateBuildConfig extends ResourceFetch {
     return "POST";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
+  protected async requestBody(): Promise<string> {
     return `
       kind: BuildConfig
       apiVersion: build.openshift.io/v1
@@ -69,10 +69,6 @@ export class DeleteBuildConfig extends ResourceFetch {
     return "DELETE";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return DeleteBuildConfig.name;
   }
@@ -99,17 +95,15 @@ export class InstantiateBinary extends ResourceFetch {
     return this.args.file;
   }
 
+  protected contentType(): string {
+    return "application/zip";
+  }
+
   public name(): string {
     return InstantiateBinary.name;
   }
 
   public url(): string {
     return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/buildconfigs/${this.args.resourceName}/instantiatebinary?name=${this.args.resourceName}&namespace=${this.args.namespace}`;
-  }
-
-  public async requestInit(): Promise<RequestInit> {
-    const custom = await super.requestInit();
-    custom.headers = { ...custom.headers, "Content-Type": "application/zip" };
-    return custom;
   }
 }

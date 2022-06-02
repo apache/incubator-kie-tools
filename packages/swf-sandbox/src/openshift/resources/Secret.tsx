@@ -71,10 +71,6 @@ export class DeleteSecret extends ResourceFetch {
     return "DELETE";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return DeleteSecret.name;
   }

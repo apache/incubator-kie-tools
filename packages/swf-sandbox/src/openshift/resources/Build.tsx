@@ -33,33 +33,11 @@ export class ListBuilds extends ResourceFetch {
     return "GET";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return ListBuilds.name;
   }
 
   public url(): string {
     return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/builds`;
-  }
-}
-
-export class DeleteBuild extends ResourceFetch {
-  protected method(): HttpMethod {
-    return "DELETE";
-  }
-
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
-  public name(): string {
-    return DeleteBuild.name;
-  }
-
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/builds/${this.args.resourceName}`;
   }
 }

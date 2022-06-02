@@ -23,10 +23,6 @@ export class GetProject extends ResourceFetch {
     return "GET";
   }
 
-  protected async requestBody(): Promise<string | undefined> {
-    return;
-  }
-
   public name(): string {
     return GetProject.name;
   }

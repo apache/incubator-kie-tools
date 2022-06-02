@@ -49,11 +49,17 @@ export abstract class ResourceFetch {
 
   protected abstract method(): HttpMethod;
 
-  protected abstract requestBody(): Promise<string | Blob | undefined>;
+  protected async requestBody(): Promise<string | Blob | undefined> {
+    return;
+  }
 
-  public abstract name(): string;
+  protected contentType(): string {
+    return "application/yaml";
+  }
 
   public abstract url(): string;
+
+  public abstract name(): string;
 
   public async requestInit(): Promise<RequestInit> {
     return {
@@ -61,7 +67,7 @@ export abstract class ResourceFetch {
       headers: {
         Authorization: `Bearer ${this.args.token}`,
         Accept: "application/json",
-        "Content-Type": "application/yaml",
+        "Content-Type": this.contentType(),
         "Target-Url": this.url(),
       },
       body: await this.requestBody(),
