@@ -295,7 +295,7 @@ const ENV_VARS = {
   },
   SWF_SANDBOX__baseImageName: {
     name: "SWF_SANDBOX__baseImageName",
-    default: "serverless-workflow-base-image",
+    default: "serverless-logic-sandbox-base-image",
     description: "",
   },
   SWF_SANDBOX__baseImageTag: {

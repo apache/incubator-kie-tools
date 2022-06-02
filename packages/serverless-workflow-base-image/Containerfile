@@ -16,20 +16,20 @@ FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.12
 
 ARG QUARKUS_PLATFORM_VERSION
 
-RUN mkdir /tmp/kogito/
+RUN mkdir /tmp/sandbox/
 
-WORKDIR /tmp/kogito/
+WORKDIR /tmp/sandbox/
 
 COPY dist-dev/mvnw mvnw
 COPY dist-dev/.mvn/ .mvn/
 
 RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
   -DplatformVersion=${QUARKUS_PLATFORM_VERSION} \
-  -DprojectGroupId=org.kie.kogito \
-  -DprojectArtifactId=serverless-workflow-base \
+  -DprojectGroupId=org.kie \
+  -DprojectArtifactId=serverless-logic-sandbox \
   -DprojectVersion=0.0.0 \
   -Dextensions="kogito-quarkus-serverless-workflow,quarkus-resteasy-jackson,quarkus-jsonp,quarkus-smallrye-openapi,quarkus-resteasy,smallrye-health" \
-  && cd serverless-workflow-base \
+  && cd serverless-logic-sandbox \
   && echo -e '\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true' >> src/main/resources/application.properties \
   && rm -rf src/main/docker/ src/main/java/ src/test/  \
   && echo "" > src/main/resources/META-INF/resources/index.html \

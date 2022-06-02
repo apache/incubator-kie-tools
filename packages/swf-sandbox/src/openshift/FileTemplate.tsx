@@ -16,13 +16,13 @@
 
 const BASE_IMAGE = process.env.WEBPACK_REPLACE__swfSandbox_baseImageFullUrl;
 const DEPLOYMENTS_FOLDER = "/deployments";
-const KOGITO_FOLDER = "/tmp/kogito";
-const PROJECT_FOLDER = `${KOGITO_FOLDER}/serverless-workflow-base`;
+const SANDBOX_FOLDER = "/tmp/sandbox";
+const PROJECT_FOLDER = `${SANDBOX_FOLDER}/serverless-logic-sandbox`;
 const PROJECT_MAIN_RESOURCES = `${PROJECT_FOLDER}/src/main/resources`;
 const PROJECT_METAINF_RESOURCES = `${PROJECT_MAIN_RESOURCES}/META-INF/resources`;
 const QUARKUS_APP_FOLDER = `${PROJECT_FOLDER}/target/quarkus-app`;
 const POM_PATH = `${PROJECT_FOLDER}/pom.xml`;
-const MVNW_PATH = `${KOGITO_FOLDER}/mvnw`;
+const MVNW_PATH = `${SANDBOX_FOLDER}/mvnw`;
 
 export function createDockerfileContent(): string {
   return `

@@ -73,7 +73,7 @@ digraph G {
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/serverless-workflow-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/serverless-logic-sandbox-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -213,7 +213,7 @@ digraph G {
   "@kie-tools/pmml-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/run-script-if" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
-  "@kie-tools/serverless-workflow-base-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
