@@ -8,9 +8,8 @@
   "functions": [
     {
       "name": "printMessage",
-      "metadata": {
-        "type": "sysout"
-      }
+      "type": "custom",
+      "operation": "sysout"
     }
   ],
   "events": [
@@ -92,7 +91,7 @@
         }
       ],
       "end": {
-        "terminate": "true"
+        "terminate": true
       }
     }
   ]
