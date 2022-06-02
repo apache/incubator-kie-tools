@@ -101,7 +101,7 @@ public class RouterScreen {
     public void doRoute() {
         clientLoader.load(this::route,
                 (a, t) -> {
-                    appNavBar.hide(true);
+                    appNavBar.setHide(true);
                     placeManager.goTo(EmptyPerspective.ID);
                 });
     }
@@ -110,11 +110,11 @@ public class RouterScreen {
         mode = response.getMode();
         var runtimeModelOp = response.getRuntimeModelOp();
         if (mode == DashbuilderRuntimeMode.MULTIPLE_IMPORT) {
-            appNavBar.hide(false);
+            appNavBar.setHide(false);
             appNavBar.setDashboardListEnabled(true);
             appNavBar.setup();
         } else {
-            appNavBar.hide(true);
+            appNavBar.setHide(true);
         }
 
         if (runtimeModelOp.isPresent()) {
@@ -123,7 +123,7 @@ public class RouterScreen {
             placeManager.goTo(RuntimePerspective.ID);
             runtimeScreen.loadDashboards(runtimeModel);
             runtimeScreen.goToIndex(layoutTemplates);
-            appNavBar.hide(mode != DashbuilderRuntimeMode.MULTIPLE_IMPORT && layoutTemplates.size() == 1);
+            appNavBar.setHide(mode != DashbuilderRuntimeMode.MULTIPLE_IMPORT && layoutTemplates.size() == 1);
             appNavBar.setDisplayMainMenu(layoutTemplates.size() > 1);
             return;
         }
