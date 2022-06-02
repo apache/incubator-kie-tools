@@ -14,6 +14,8 @@
 
 FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.12
 
+ARG QUARKUS_PLATFORM_VERSION
+
 RUN mkdir /tmp/kogito/
 
 WORKDIR /tmp/kogito/
@@ -22,7 +24,7 @@ COPY dist-dev/mvnw mvnw
 COPY dist-dev/.mvn/ .mvn/
 
 RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
-  -DplatformVersion=2.9.1.Final \
+  -DplatformVersion=${QUARKUS_PLATFORM_VERSION} \
   -DprojectGroupId=org.kie.kogito \
   -DprojectArtifactId=serverless-workflow-base \
   -DprojectVersion=0.0.0 \

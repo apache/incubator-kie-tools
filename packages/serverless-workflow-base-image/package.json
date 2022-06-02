@@ -12,7 +12,7 @@
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "install:mvnw": "cd dist-dev/ && mvn wrapper:wrapper",
     "copy:assets": "cp pom.xml dist-dev/",
-    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfSandbox.baseImage.buildTags) | xargs printf -- \"-t $(build-env swfSandbox.baseImage.registry)/$(build-env swfSandbox.baseImage.account)/$(build-env swfSandbox.baseImage.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env swfSandbox.baseImage.buildTags) | xargs printf -- \"-t $(build-env swfSandbox.baseImage.registry)/$(build-env swfSandbox.baseImage.account)/$(build-env swfSandbox.baseImage.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env swfSandbox.baseImage.quarkusVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "echo Nothing to do",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "build:prod:darwin:linux": "pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm podman:build\"",

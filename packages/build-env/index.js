@@ -278,6 +278,11 @@ const ENV_VARS = {
     default: undefined,
     description: "",
   },
+  SWF_SANDBOX__baseImageQuarkusVersion: {
+    name: "SWF_SANDBOX__baseImageQuarkusVersion",
+    default: "2.9.2.Final",
+    description: "",
+  },
   SWF_SANDBOX__baseImageRegistry: {
     name: "SWF_SANDBOX__baseImageRegistry",
     default: "quay.io",
@@ -485,6 +490,7 @@ module.exports = {
       port: 9009,
     },
     baseImage: {
+      quarkusVersion: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageQuarkusVersion),
       registry: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageRegistry),
       account: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageAccount),
       name: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageName),
