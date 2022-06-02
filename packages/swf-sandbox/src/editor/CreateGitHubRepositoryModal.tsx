@@ -320,7 +320,7 @@ export function CreateGitHubRepositoryModal(props: {
 
           <Tooltip
             content={
-              "Quarkus accelerator cannot be created since your workspace already seems to contain a project structure."
+              "Quarkus accelerator cannot be used since your workspace already seems to contain a project structure."
             }
             trigger={isProject ? "mouseenter click" : ""}
           >
