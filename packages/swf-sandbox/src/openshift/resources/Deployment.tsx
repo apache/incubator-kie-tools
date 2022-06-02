@@ -14,15 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  HttpMethod,
-  JAVA_RUNTIME_VERSION,
-  KOGITO_CREATED_BY,
-  KOGITO_URI,
-  Resource,
-  ResourceArgs,
-  ResourceFetch,
-} from "./Resource";
+import { HttpMethod, Resource, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/apps/v1";
 
@@ -43,69 +35,6 @@ export interface Deployments {
   items: Deployment[];
 }
 
-export interface CreateDeploymentArgs {
-  uri: string;
-}
-
-export class CreateDeployment extends ResourceFetch {
-  public constructor(protected args: ResourceArgs & CreateDeploymentArgs) {
-    super(args);
-  }
-
-  public method(): HttpMethod {
-    return "POST";
-  }
-
-  public async requestBody(): Promise<string | undefined> {
-    return `
-      kind: Deployment
-      apiVersion: apps/v1
-      metadata:
-        annotations:
-          image.openshift.io/triggers: >-
-            [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:latest","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
-          ${KOGITO_URI}: ${this.args.uri}
-        name: ${this.args.resourceName}
-        namespace: ${this.args.namespace}
-        labels:
-          app: ${this.args.resourceName}
-          app.kubernetes.io/component: ${this.args.resourceName}
-          app.kubernetes.io/instance: ${this.args.resourceName}
-          app.kubernetes.io/part-of: ${this.args.resourceName}
-          app.kubernetes.io/name: ${this.args.resourceName}
-          app.openshift.io/runtime: quarkus
-          app.openshift.io/runtime-version: ${JAVA_RUNTIME_VERSION}
-          ${KOGITO_CREATED_BY}: ${this.args.createdBy}
-      spec:
-        replicas: 1
-        selector:
-          matchLabels:
-            app: ${this.args.resourceName}
-        template:
-          metadata:
-            labels:
-              app: ${this.args.resourceName}
-              deploymentconfig: ${this.args.resourceName}
-          spec:
-            containers:
-              - name: ${this.args.resourceName}
-                image: >-
-                  image-registry.openshift-image-registry.svc:5000/${this.args.namespace}/${this.args.resourceName}:latest
-                ports:
-                  - containerPort: 8080
-                    protocol: TCP
-    `;
-  }
-
-  public name(): string {
-    return CreateDeployment.name;
-  }
-
-  public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments`;
-  }
-}
-
 export class ListDeployments extends ResourceFetch {
   protected method(): HttpMethod {
     return "GET";
@@ -120,7 +49,7 @@ export class ListDeployments extends ResourceFetch {
   }
 
   public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments`; //?labelSelector=${KOGITO_CREATED_BY}`;
+    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/deployments`;
   }
 }
 
