@@ -24,10 +24,7 @@ import {
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import {
-  SwfJsonLanguageService,
-  swfJsonValidation,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { debounce } from "../utils";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
