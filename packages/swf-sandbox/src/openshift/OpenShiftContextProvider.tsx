@@ -48,12 +48,13 @@ export function OpenShiftContextProvider(props: Props) {
   const [isConfirmDeployModalOpen, setConfirmDeployModalOpen] = useState(false);
 
   const onDisconnect = useCallback(
-    (closeModals: boolean) => {
+    (close: boolean) => {
       settingsDispatch.openshift.setStatus(OpenShiftInstanceStatus.DISCONNECTED);
-      setDeploymentsDropdownOpen(false);
       setDeployments([]);
 
-      if (closeModals) {
+      if (close) {
+        setDeployDropdownOpen(false);
+        setDeploymentsDropdownOpen(false);
         setConfirmDeployModalOpen(false);
       }
     },
@@ -192,7 +193,7 @@ export function OpenShiftContextProvider(props: Props) {
           .loadDeployments()
           .then((ds) => setDeployments(ds))
           .catch((error) => {
-            setDeployments([]);
+            onDisconnect(true);
             window.clearInterval(loadDeploymentsTask);
             console.error(error);
           });
