@@ -1666,7 +1666,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             </Flex>
           </PageSection>
           <CreateGitHubRepositoryModal
-            workspace={workspace.descriptor}
+            workspace={workspace}
             isOpen={isCreateGitHubRepositoryModalOpen}
             onClose={() => setCreateGitHubRepositoryModalOpen(false)}
             onSuccess={({ url }) => {

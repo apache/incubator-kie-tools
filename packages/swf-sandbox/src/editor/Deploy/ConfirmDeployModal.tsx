@@ -30,6 +30,7 @@ import { isServiceAccountConfigValid } from "../../settings/serviceAccount/Servi
 import { isServiceRegistryConfigValid } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings } from "../../settings/SettingsContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
@@ -235,28 +236,34 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
         toggleTextExpanded="Hide advanced options"
         className={"plain"}
       >
-        <Checkbox
-          id="check-use-service-registry"
-          label="Upload OpenAPI spec to Service Registry"
-          description={
-            !canUploadOpenApi &&
-            "To use this option, you need to configure your Service Account and Service Registry on Settings."
-          }
-          isChecked={shouldUploadOpenApi}
-          onChange={(checked) => setShouldUploadOpenApi(checked)}
-          isDisabled={!canUploadOpenApi}
-        />
-        <Checkbox
-          id="check-use-apache-kafka"
-          label="Attach KafkaSource to the deployment"
-          description={
-            !canAttachKafkaSource &&
+        <Tooltip
+          content={"To use this option, you need to configure your Service Account and Service Registry on Settings."}
+          trigger={!canUploadOpenApi ? "mouseenter click" : ""}
+        >
+          <Checkbox
+            id="check-use-service-registry"
+            label="Upload OpenAPI spec to Service Registry"
+            description={"The spec will be available in the Service Registry, thus enabling autocompletion."}
+            isChecked={shouldUploadOpenApi}
+            onChange={(checked) => setShouldUploadOpenApi(checked)}
+            isDisabled={!canUploadOpenApi}
+          />
+        </Tooltip>
+        <Tooltip
+          content={
             "To use this option, you need to configure your Service Account and Streams for Apache Kafka on Settings."
           }
-          isChecked={shouldAttachKafkaSource}
-          onChange={(checked) => setShouldAttachKafkaSource(checked)}
-          isDisabled={!canAttachKafkaSource}
-        />
+          trigger={!canAttachKafkaSource ? "mouseenter click" : ""}
+        >
+          <Checkbox
+            id="check-use-apache-kafka"
+            label="Attach KafkaSource to the deployment"
+            description={"Your deployment will listen to incoming messages even when scaled down."}
+            isChecked={shouldAttachKafkaSource}
+            onChange={(checked) => setShouldAttachKafkaSource(checked)}
+            isDisabled={!canAttachKafkaSource}
+          />
+        </Tooltip>
       </ExpandableSection>
     </Modal>
   );

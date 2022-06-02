@@ -27,7 +27,7 @@ import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { SupportedFileExtensions } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
@@ -38,6 +38,7 @@ import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./mode
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
 import { isSandboxAsset } from "../extension";
+import { useSettings } from "../settings/SettingsContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -47,7 +48,7 @@ interface Props {
 }
 
 export function WorkspacesContextProvider(props: Props) {
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const settings = useSettings();
   const storageService = useMemo(() => new StorageService(), []);
   const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
   const svgService = useMemo(() => new WorkspaceSvgService(storageService), [storageService]);
@@ -193,12 +194,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const createWorkspaceFromLocal = useCallback(
-    async (args: {
-      useInMemoryFs: boolean;
-      localFiles: LocalFile[];
-      preferredName?: string;
-      gitConfig?: { email: string; name: string };
-    }) => {
+    async (args: { useInMemoryFs: boolean; localFiles: LocalFile[]; preferredName?: string }) => {
       return createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
@@ -247,8 +243,8 @@ export function WorkspacesContextProvider(props: Props) {
             message: "Initial commit from KIE Sandbox",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
-              name: args.gitConfig?.name ?? "Unknown",
-              email: args.gitConfig?.email ?? "unknown@email.com",
+              name: settings.github.user?.name ?? "Unknown",
+              email: settings.github.user?.email ?? "unknown@email.com",
             },
           });
 
@@ -256,7 +252,7 @@ export function WorkspacesContextProvider(props: Props) {
         },
       });
     },
-    [createWorkspace, gitService, storageService, service]
+    [createWorkspace, gitService, storageService, service, settings.github.user]
   );
 
   const createWorkspaceFromGitRepository = useCallback(

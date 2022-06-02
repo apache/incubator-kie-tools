@@ -29,7 +29,6 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
@@ -37,6 +36,9 @@ import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/service
 import { dirname, join } from "path";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
+import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -53,7 +55,7 @@ const KOGITO_QUARKUS_TEMPLATE = {
 const RESOURCES_FOLDER = "/src/main/resources";
 
 export function CreateGitHubRepositoryModal(props: {
-  workspace: WorkspaceDescriptor;
+  workspace: ActiveWorkspace;
   isOpen: boolean;
   onClose: () => void;
   onSuccess: (args: { url: string }) => void;
@@ -68,11 +70,18 @@ export function CreateGitHubRepositoryModal(props: {
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
-  const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.name));
+  const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.descriptor.name));
+  const [shouldUseQuarkusAccelerator, setShouldUseQuarkusAccelerator] = useState(false);
+
+  // TODO: What should be considered a project?
+  const isProject = useMemo(
+    () => !!props.workspace.files.find((file) => file.relativePath === "pom.xml"),
+    [props.workspace.files]
+  );
 
   useEffect(() => {
-    setName(getSuggestedRepositoryName(props.workspace.name));
-  }, [props.workspace.name]);
+    setName(getSuggestedRepositoryName(props.workspace.descriptor.name));
+  }, [props.workspace.descriptor.name]);
 
   const create = useCallback(async () => {
     try {
@@ -93,19 +102,12 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.workspaceId });
+      const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.descriptor.workspaceId);
+      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.descriptor.workspaceId });
 
-      const files = await workspaces.getFiles({
-        fs: fs,
-        workspaceId: props.workspace.workspaceId,
-      });
-
-      // TODO: What should be considered a project?
-      const isProject = !!files.find((file) => file.relativePath === "pom.xml");
       let currentFileAfterMoving: WorkspaceFile | undefined;
 
-      if (!isProject) {
+      if (!isProject && shouldUseQuarkusAccelerator) {
         await workspaces.gitService.addRemote({
           fs: fs,
           dir: workspaceRootDirPath,
@@ -121,7 +123,7 @@ export function CreateGitHubRepositoryModal(props: {
           ref: KOGITO_QUARKUS_TEMPLATE.branch,
         });
 
-        for (const file of files) {
+        for (const file of props.workspace.files) {
           const movedFile = await workspaces.service.moveFile({
             fs: fs,
             file: file,
@@ -164,7 +166,7 @@ export function CreateGitHubRepositoryModal(props: {
 
       await workspaces.createSavePoint({
         fs: fs,
-        workspaceId: props.workspace.workspaceId,
+        workspaceId: props.workspace.descriptor.workspaceId,
         gitConfig: {
           name: githubAuthInfo.name,
           email: githubAuthInfo.email,
@@ -181,9 +183,9 @@ export function CreateGitHubRepositoryModal(props: {
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.descriptorService.turnIntoGit(props.workspace.workspaceId, new URL(cloneUrl));
+      await workspaces.descriptorService.turnIntoGit(props.workspace.descriptor.workspaceId, new URL(cloneUrl));
       await workspaces.renameWorkspace({
-        workspaceId: props.workspace.workspaceId,
+        workspaceId: props.workspace.descriptor.workspaceId,
         newName: new URL(repo.data.html_url).pathname.substring(1),
       });
 
@@ -193,7 +195,7 @@ export function CreateGitHubRepositoryModal(props: {
       if (currentFileAfterMoving) {
         history.replace({
           pathname: routes.workspaceWithFilePath.path({
-            workspaceId: props.workspace.workspaceId,
+            workspaceId: props.workspace.descriptor.workspaceId,
             fileRelativePath: currentFileAfterMoving.relativePathWithoutExtension,
             extension: currentFileAfterMoving.extension,
           }),
@@ -205,7 +207,18 @@ export function CreateGitHubRepositoryModal(props: {
     } finally {
       setLoading(false);
     }
-  }, [githubAuthInfo, isPrivate, name, props, settingsDispatch.github.octokit, workspaces, history, routes]);
+  }, [
+    githubAuthInfo,
+    settingsDispatch.github.octokit,
+    name,
+    isPrivate,
+    workspaces,
+    props,
+    isProject,
+    shouldUseQuarkusAccelerator,
+    history,
+    routes.workspaceWithFilePath,
+  ]);
 
   const isNameValid = useMemo(() => {
     return name.match(/^[._\-\w\d]+$/g);
@@ -227,7 +240,7 @@ export function CreateGitHubRepositoryModal(props: {
       onClose={props.onClose}
       title={"Create GitHub repository"}
       titleIconVariant={GithubIcon}
-      description={`The contents of '${props.workspace.name}' will be all in the new GitHub Repository.`}
+      description={`The contents of '${props.workspace.descriptor.name}' will be all in the new GitHub Repository.`}
       actions={[
         <Button isLoading={isLoading} key="create" variant="primary" onClick={create} isDisabled={!isNameValid}>
           Create
@@ -303,6 +316,25 @@ export function CreateGitHubRepositoryModal(props: {
             description={"You choose who can see and commit to this repository."}
             onChange={() => setPrivate(true)}
           />
+          <br />
+
+          <Tooltip
+            content={
+              "Quarkus accelerator cannot be created since your workspace already seems to contain a project structure."
+            }
+            trigger={isProject ? "mouseenter click" : ""}
+          >
+            <Checkbox
+              id="check-use-quarkus-accelerator"
+              label="Use Quarkus Accelerator"
+              description={
+                "Create a base Quarkus project in the repository and place workspace files in src/main/resources folder."
+              }
+              isChecked={shouldUseQuarkusAccelerator}
+              onChange={(checked) => setShouldUseQuarkusAccelerator(checked)}
+              isDisabled={isProject}
+            />
+          </Tooltip>
         </FormGroup>
       </Form>
     </Modal>
