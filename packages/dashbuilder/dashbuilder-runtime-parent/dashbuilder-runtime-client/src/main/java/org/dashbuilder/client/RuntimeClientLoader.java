@@ -83,6 +83,8 @@ public class RuntimeClientLoader {
 
     String clientModelBaseUrl;
 
+    boolean hideNavBar;
+
     public RuntimeClientLoader() {
         // do nothing
     }
@@ -112,12 +114,14 @@ public class RuntimeClientLoader {
 
     @PostConstruct
     void loadSetup() {
+        hideNavBar = false;
         mode = RuntimeClientMode.APP;
         clientModelBaseUrl = GWT.getHostPageBaseURL();
         setup = RuntimeClientSetup.Builder.get();
         if (setup != null) {
             var modeStr = setup.getMode();
             var path = setup.getPath();
+            hideNavBar = setup.getHideNavBar();
             if (modeStr != null) {
                 mode = RuntimeClientMode.getOrDefault(modeStr);
             } else if (setup.getDashboards() != null && setup.getDashboards().length > 0) {
@@ -168,9 +172,9 @@ public class RuntimeClientLoader {
                 break;
             case CLIENT:
                 if ((importID != null && !importID.trim().isEmpty())) {
-                    loadClientModelInfo(clientModelBaseUrl + importID, responseConsumer, error);
+                    loadClientModelInfo(resolveModel(importID), responseConsumer, error);
                 } else if (setup.getDashboards() != null && setup.getDashboards().length == 1) {
-                    loadClientModelInfo(clientModelBaseUrl + setup.getDashboards()[0], responseConsumer, error);
+                    loadClientModelInfo(resolveModel(setup.getDashboards()[0]), responseConsumer, error);
                 } else {
                     loading.hideBusyIndicator();
                     responseConsumer.accept(buildClientResponse(clientModel));
@@ -180,7 +184,6 @@ public class RuntimeClientLoader {
                 loading.hideBusyIndicator();
                 responseConsumer.accept(buildEditorResponse());
                 break;
-
         }
 
     }
@@ -233,6 +236,10 @@ public class RuntimeClientLoader {
 
     public boolean hasBackend() {
         return mode == RuntimeClientMode.APP;
+    }
+
+    public boolean isHideNavBar() {
+        return hideNavBar;
     }
 
     public void loadClientModel(String content) {
@@ -342,5 +349,13 @@ public class RuntimeClientLoader {
         if (clientModel != null) {
             clientModel.getLayoutTemplates().forEach(lt -> perspectiveEditorGenerator.unregisterPerspective(lt));
         }
+    }
+
+    private String resolveModel(String importID) {
+        // TODO: improve URL check
+        if (importID.startsWith("http://") || importID.startsWith("https://")) {
+            return importID;
+        }
+        return clientModelBaseUrl + importID;
     }
 }

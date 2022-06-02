@@ -35,7 +35,7 @@ export const Dashbuilder = (props: Props) => {
     <>
       <iframe
         ref={container}
-        src="dashbuilder-client/index.html"
+        src="dashbuilder-runtime-client/index.html"
         onLoad={(e) => {
           window.onmessage = (e) => {
             if (e.data === "ready") {

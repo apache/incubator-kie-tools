@@ -89,6 +89,9 @@ public class AppNavBar implements Header {
     }
 
     public void setupMenus() {
+        if (loader.isHideNavBar()) {
+            return;
+        }
         menuBarPresenter.clear();
         menuBarPresenter.clearContextMenu();
         if (isGoToDashboardMenuEnabled && !loader.isEditor()) {
@@ -109,7 +112,8 @@ public class AppNavBar implements Header {
         }
     }
 
-    public void hide(boolean hide) {
+    public void setHide(boolean hide) {
+        var _hide = loader.isHideNavBar() || hide;
         var header = (HeaderPanel) wbLayout.getRoot();
         var headerParent =
                 header.getHeaderWidget()
@@ -117,10 +121,10 @@ public class AppNavBar implements Header {
                         .getElement()
                         .getParentElement();
         headerParent.getStyle()
-                .setDisplay(hide ? Display.NONE : Display.BLOCK);
+                .setDisplay(_hide ? Display.NONE : Display.BLOCK);
         // workaround for header still showing a white space
         headerParent.getStyle()
-                .setProperty("min-height", hide ? "0px" : "20px");
+                .setProperty("min-height", _hide ? "0px" : "20px");
     }
 
 }
