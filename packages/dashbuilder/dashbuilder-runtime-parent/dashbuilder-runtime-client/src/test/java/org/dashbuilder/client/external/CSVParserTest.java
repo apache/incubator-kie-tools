@@ -20,23 +20,15 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class CSVParserTest {
-
-    String test = "h1,h2,h3\n" +
-            "\"a\"\"\",\"b,\",c\n" +
-            "d,e,f";
-    
+    private static final String TEST = "1942,1943,15,SPECIAL AWARD,\" Metro-Goldwyn-Mayer for its achievement in representing the American Way of Life in the production of the \"\"Andy Hardy\"\" series of films.\",,True\n" 
+                    +
+                    "1943,1944,16,ART DIRECTION (Black-and-White),\"Art Direction:  Hans Dreier, Ernst Fegte;  Interior Decoration:  Bertram Granger\",Five Graves to Cairo,False\n" +
+                    "1953,1954,26,HONORARY AWARD,\" Pete Smith for his witty and pungent observations on the American scene in his series of \"\"Pete Smith Specialties.\"\"\",,True";
+    private static final String EXP="[[\"1943\",\"1944\",\"16\",\"ART DIRECTION (Black-and-White)\",\"Art Direction:  Hans Dreier, Ernst Fegte;  Interior Decoration:  Bertram Granger\",\"Five Graves to Cairo\",\"false\"],[\"1953\",\"1954\",\"26\",\"HONORARY AWARD\",\" Pete Smith for his witty and pungent observations on the American scene in his series of \\\"Pete Smith Specialties.\\\"\",\"\",\"true\"]]";
     @Test
     public void testParse() {
         var parser = new CSVParser();
-        var array = parser.toJsonArray(test);
-        System.out.println(array.toJson());
-        var row1 = array.getArray(0);
-        var row2 = array.getArray(1);
-        assertEquals("a\"", row1.getString(0));
-        assertEquals("b,", row1.getString(1));
-        assertEquals("c", row1.getString(2));
-        assertEquals("d", row2.getString(0));
-        assertEquals("e", row2.getString(1));
-        assertEquals("f", row2.getString(2));
+        var array = parser.toJsonArray(TEST);
+        assertEquals(EXP,array);
     }
 }
