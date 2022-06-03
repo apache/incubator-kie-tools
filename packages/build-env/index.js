@@ -268,63 +268,63 @@ const ENV_VARS = {
     default: "dist",
     description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
   },
-  SWF_SANDBOX__buildInfo: {
-    name: "SWF_SANDBOX__buildInfo",
+  SERVERLESS_LOGIC_SANDBOX__buildInfo: {
+    name: "SERVERLESS_LOGIC_SANDBOX__buildInfo",
     default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
     description: "",
   },
-  SWF_SANDBOX__gtmId: {
-    name: "SWF_SANDBOX__gtmId",
+  SERVERLESS_LOGIC_SANDBOX__gtmId: {
+    name: "SERVERLESS_LOGIC_SANDBOX__gtmId",
     default: undefined,
     description: "",
   },
-  SWF_SANDBOX__baseImageQuarkusVersion: {
-    name: "SWF_SANDBOX__baseImageQuarkusVersion",
+  SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion",
     default: "2.9.2.Final",
     description: "",
   },
-  SWF_SANDBOX__baseImageRegistry: {
-    name: "SWF_SANDBOX__baseImageRegistry",
+  SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageRegistry",
     default: "quay.io",
     description: "",
   },
-  SWF_SANDBOX__baseImageAccount: {
-    name: "SWF_SANDBOX__baseImageAccount",
+  SERVERLESS_LOGIC_SANDBOX__baseImageAccount: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageAccount",
     default: "caponetto", //FIXME: kie-tools
     description: "",
   },
-  SWF_SANDBOX__baseImageName: {
-    name: "SWF_SANDBOX__baseImageName",
+  SERVERLESS_LOGIC_SANDBOX__baseImageName: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageName",
     default: "serverless-logic-sandbox-base-image",
     description: "",
   },
-  SWF_SANDBOX__baseImageTag: {
-    name: "SWF_SANDBOX__baseImageTag",
+  SERVERLESS_LOGIC_SANDBOX__baseImageTag: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageTag",
     default: "latest",
     description: "",
   },
-  SWF_SANDBOX__baseImageBuildTags: {
-    name: "SWF_SANDBOX__baseImageBuildTags",
+  SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags",
     default: "latest",
     description: "",
   },
-  SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
-    name: "SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux",
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux",
     default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
     description: "",
   },
-  SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
-    name: "SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs",
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs",
     default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
     description: "",
   },
-  SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
-    name: "SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows",
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows",
     default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
     description: "",
   },
-  SWF_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
-    name: "SWF_SANDBOX__kieSandboxExtendedServicesCompatibleVersion",
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion",
     default: version,
     description: "",
   },
@@ -483,26 +483,26 @@ module.exports = {
     },
   },
 
-  swfSandbox: {
-    buildInfo: getOrDefault(ENV_VARS.SWF_SANDBOX__buildInfo),
-    gtmId: getOrDefault(ENV_VARS.SWF_SANDBOX__gtmId),
+  serverlessLogicSandbox: {
+    buildInfo: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__buildInfo),
+    gtmId: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__gtmId),
     dev: {
       port: 9009,
     },
     baseImage: {
-      quarkusVersion: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageQuarkusVersion),
-      registry: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageRegistry),
-      account: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageAccount),
-      name: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageName),
-      tag: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageTag),
-      buildTags: getOrDefault(ENV_VARS.SWF_SANDBOX__baseImageBuildTags),
+      quarkusVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion),
+      registry: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageAccount),
+      name: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageName),
+      tag: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageTag),
+      buildTags: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags),
     },
     kieSandboxExtendedServices: {
-      compatibleVersion: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesCompatibleVersion),
+      compatibleVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion),
       downloadUrl: {
-        linux: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
-        macOs: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
-        windows: getOrDefault(ENV_VARS.SWF_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
+        linux: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
+        macOs: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
+        windows: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
       },
     },
   },

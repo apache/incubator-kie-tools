@@ -36,9 +36,9 @@ import { GetProject } from "./resources/Project";
 import {
   APP_LABEL,
   KNATIVE_SERVING_SERVICE,
-  KOGITO_CREATED_BY,
-  KOGITO_URI,
-  KOGITO_WORKSPACE_NAME,
+  RESOURCE_CREATED_BY,
+  RESOURCE_URI,
+  RESOURCE_WORKSPACE_NAME,
   Resource,
   ResourceArgs,
   ResourceFetch,
@@ -102,7 +102,8 @@ export class OpenShiftService {
       return kNativeServices.items
         .filter(
           (kns: KNativeService) =>
-            KOGITO_CREATED_BY in kns.metadata.labels && kns.metadata.labels[KOGITO_CREATED_BY] === DEFAULT_CREATED_BY
+            RESOURCE_CREATED_BY in kns.metadata.labels &&
+            kns.metadata.labels[RESOURCE_CREATED_BY] === DEFAULT_CREATED_BY
         )
         .map((kns: KNativeService) => {
           const build = builds.items.find(
@@ -118,11 +119,11 @@ export class OpenShiftService {
           );
           return {
             resourceName: kns.metadata.name,
-            uri: kns.metadata.annotations[KOGITO_URI],
+            uri: kns.metadata.annotations[RESOURCE_URI],
             baseUrl: `${kns.status.url}/q/swagger-ui`,
             creationTimestamp: new Date(kns.metadata.creationTimestamp),
             state: this.extractDeploymentState(deployment, build),
-            workspaceName: kns.metadata.annotations[KOGITO_WORKSPACE_NAME],
+            workspaceName: kns.metadata.annotations[RESOURCE_WORKSPACE_NAME],
           };
         });
     } catch (e) {

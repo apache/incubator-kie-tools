@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpMethod, KOGITO_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
+import { HttpMethod, RESOURCE_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "apis/sources.knative.dev/v1beta1";
 
@@ -54,7 +54,7 @@ export class CreateKafkaSource extends ResourceFetch {
         app.kubernetes.io/instance: ${this.args.resourceName}
         app.kubernetes.io/part-of: ${this.args.resourceName}
         app.kubernetes.io/name: ${this.args.resourceName}
-        ${KOGITO_CREATED_BY}: ${this.args.createdBy}
+        ${RESOURCE_CREATED_BY}: ${this.args.createdBy}
     spec:
       bootstrapServers:
         - '${this.args.bootstrapServer}'

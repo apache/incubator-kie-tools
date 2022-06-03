@@ -17,9 +17,9 @@
 import {
   HttpMethod,
   JAVA_RUNTIME_VERSION,
-  KOGITO_CREATED_BY,
-  KOGITO_URI,
-  KOGITO_WORKSPACE_NAME,
+  RESOURCE_CREATED_BY,
+  RESOURCE_URI,
+  RESOURCE_WORKSPACE_NAME,
   Resource,
   ResourceArgs,
   ResourceFetch,
@@ -59,8 +59,8 @@ export class CreateKNativeService extends ResourceFetch {
       annotations:
         image.openshift.io/triggers: >-
           [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:latest","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
-        ${KOGITO_URI}: ${this.args.uri}
-        ${KOGITO_WORKSPACE_NAME}: ${this.args.workspaceName}
+        ${RESOURCE_URI}: ${this.args.uri}
+        ${RESOURCE_WORKSPACE_NAME}: ${this.args.workspaceName}
       name: ${this.args.resourceName}
       namespace: ${this.args.namespace}
       labels:
@@ -71,7 +71,7 @@ export class CreateKNativeService extends ResourceFetch {
         app.kubernetes.io/name: ${this.args.resourceName}
         app.openshift.io/runtime: quarkus
         app.openshift.io/runtime-version: ${JAVA_RUNTIME_VERSION}
-        ${KOGITO_CREATED_BY}: ${this.args.createdBy}
+        ${RESOURCE_CREATED_BY}: ${this.args.createdBy}
     spec:
       template:
         spec:
@@ -101,7 +101,7 @@ export class ListKNativeServices extends ResourceFetch {
   }
 
   public url(): string {
-    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/services?labelSelector=${KOGITO_CREATED_BY}`;
+    return `${this.args.host}/${API_ENDPOINT}/namespaces/${this.args.namespace}/services?labelSelector=${RESOURCE_CREATED_BY}`;
   }
 }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { HttpMethod, KOGITO_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
+import { HttpMethod, RESOURCE_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
 
 const API_ENDPOINT = "api/v1";
 
@@ -52,7 +52,7 @@ export class CreateSecret extends ResourceFetch {
         app.kubernetes.io/instance: ${this.args.resourceName}
         app.kubernetes.io/part-of: ${this.args.resourceName}
         app.kubernetes.io/name:  ${this.args.resourceName}
-        ${KOGITO_CREATED_BY}: ${this.args.createdBy}
+        ${RESOURCE_CREATED_BY}: ${this.args.createdBy}
     data: ${JSON.stringify(encodedData)}
   `;
   }

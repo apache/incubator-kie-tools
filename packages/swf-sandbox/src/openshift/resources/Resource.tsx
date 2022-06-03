@@ -38,10 +38,10 @@ export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
 
 export const APP_LABEL = "app";
 export const KNATIVE_SERVING_SERVICE = "serving.knative.dev/service";
-export const KOGITO_URI = "kogito.kie.org/uri";
-export const KOGITO_CREATED_BY = "kogito.kie.org/created-by";
-export const KOGITO_WORKSPACE_NAME = "kogito.kie.org/workspace-name";
-export const KOGITO_WORKFLOW_FILE = "kogito.kie.org/workflow-file";
+export const RESOURCE_GROUP_ID = "kogito.kie.org";
+export const RESOURCE_URI = `${RESOURCE_GROUP_ID}/uri`;
+export const RESOURCE_CREATED_BY = `${RESOURCE_GROUP_ID}/created-by`;
+export const RESOURCE_WORKSPACE_NAME = `${RESOURCE_GROUP_ID}/workspace-name`;
 export const JAVA_RUNTIME_VERSION = "openjdk-11-el7";
 
 export abstract class ResourceFetch {

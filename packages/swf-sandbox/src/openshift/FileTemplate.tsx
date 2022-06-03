@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const BASE_IMAGE = process.env.WEBPACK_REPLACE__swfSandbox_baseImageFullUrl;
+const BASE_IMAGE = process.env.WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl;
 const DEPLOYMENTS_FOLDER = "/deployments";
 const SANDBOX_FOLDER = "/tmp/sandbox";
 const PROJECT_FOLDER = `${SANDBOX_FOLDER}/serverless-logic-sandbox`;
