@@ -417,12 +417,6 @@ module.exports = {
     },
   },
 
-  serverlessWorkflowEditor: {
-    dev: {
-      port: 9007,
-    },
-  },
-
   serverlessWorkflowCombinedEditor: {
     dev: {
       port: 9002,
