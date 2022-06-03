@@ -34,7 +34,8 @@
     "cy:open:darwin:linux": "yarn cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
     "cy:open:win32": "yarn powershell yarn cypress open --project it-tests --config \"baseUrl=http://localhost:$(build-env standaloneEditors.dev.port)\"",
     "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
-    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\""
+    "test:it": "yarn run run-script-if --bool \"$(build-env global.build.testIT)\" --then \"yarn rimraf ./dist-it-tests\" \"yarn run start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" && yarn postreport",
+    "postreport": "jrm ./it-tests/results/junit-transformed.xml \"./it-tests/results/junit-*.xml\""
   },
   "babel": {
     "presets": [
