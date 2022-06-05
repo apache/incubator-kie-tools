@@ -18,7 +18,8 @@
 
 const buildEnv = require("./index");
 const graphviz = require("graphviz");
-const { getPackagesSync } = require("@lerna/project");
+const { findWorkspacePackagesNoCheck } = require("@pnpm/find-workspace-packages");
+
 const fs = require("fs");
 const path = require("path");
 const { spawnSync } = require("child_process");
@@ -41,23 +42,23 @@ async function main() {
   }
 
   if (opt === "--build-graph") {
-    const packages = getPackagesSync();
-    const packageMap = new Map(packages.map((p) => [p.name, p]));
-    const packageNames = new Set(packages.map((p) => p.name));
+    const pkgs = await findWorkspacePackagesNoCheck(path.join(__dirname, "..", ".."));
+    const packageMap = new Map(pkgs.map((p) => [p.manifest.name, p]));
+    const packageNames = new Set(pkgs.map((p) => p.manifest.name));
 
     const adjMatrix = {};
-    for (const pkg of packages) {
-      adjMatrix[pkg.name] = adjMatrix[pkg.name] ?? {};
-      const dependencies = Object.keys(pkg.dependencies ?? {}).sort();
+    for (const pkg of pkgs) {
+      adjMatrix[pkg.manifest.name] = adjMatrix[pkg.manifest.name] ?? {};
+      const dependencies = Object.keys(pkg.manifest.dependencies ?? {}).sort();
       for (const depName of dependencies) {
         if (packageNames.has(depName)) {
-          adjMatrix[pkg.name][depName] = "dependency";
+          adjMatrix[pkg.manifest.name][depName] = "dependency";
         }
       }
-      const devDependencies = Object.keys(pkg.devDependencies ?? {}).sort();
+      const devDependencies = Object.keys(pkg.manifest.devDependencies ?? {}).sort();
       for (const depName of devDependencies) {
         if (packageNames.has(depName)) {
-          adjMatrix[pkg.name][depName] = "devDependency";
+          adjMatrix[pkg.manifest.name][depName] = "devDependency";
         }
       }
     }

@@ -20,6 +20,7 @@
     "build:prod": "pnpm print-build-env"
   },
   "dependencies": {
-    "@lerna/project": "^4.0.0"
+    "@pnpm/find-workspace-packages": "^4.0.10",
+    "@pnpm/logger": "^4.0.0"
   }
 }
