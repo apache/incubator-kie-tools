@@ -19,24 +19,20 @@ import { useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import "./MenuButtons.scss";
-
-export enum Theme {
-  LIGHT,
-  DARK,
-}
 
 interface MenuButtonsProps {
   undo: () => void;
   redo: () => void;
   get: () => Promise<string>;
-  setTheme: (theme: Theme) => void;
+  setTheme: (theme: EditorTheme) => void;
   validate: () => void;
   back: () => void;
 }
 
 export const MenuButtons = (props: MenuButtonsProps) => {
-  const [theme, setTheme] = useState<Theme>(Theme.LIGHT);
+  const [theme, setTheme] = useState<EditorTheme>(EditorTheme.LIGHT);
 
   return (
     <div className="menu-buttons ignore-onclickoutside">
@@ -66,10 +62,10 @@ export const MenuButtons = (props: MenuButtonsProps) => {
             id="theme"
             label="Dark"
             labelOff="Light"
-            checked={theme === Theme.DARK}
+            checked={theme === EditorTheme.DARK}
             onChange={(checked) => {
-              setTheme(checked ? Theme.DARK : Theme.LIGHT);
-              props.setTheme(checked ? Theme.DARK : Theme.LIGHT);
+              setTheme(checked ? EditorTheme.DARK : EditorTheme.LIGHT);
+              props.setTheme(checked ? EditorTheme.DARK : EditorTheme.LIGHT);
             }}
           />
         </SplitItem>
