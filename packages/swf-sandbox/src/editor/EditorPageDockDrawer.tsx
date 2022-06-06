@@ -98,7 +98,7 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  // TODO: Make notifications available when supported
+  // TODO: Make notifications available when supported (KOGITO-7345)
   const notificationsPanelIsDisabled = useMemo(() => true, []);
 
   const notificationsPanelDisabledReason = useMemo(() => {

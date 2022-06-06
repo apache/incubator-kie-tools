@@ -200,7 +200,7 @@ export function EditorPage(props: Props) {
     [workspaces, props.workspaceId]
   );
 
-  // TODO: Make notifications available when supported
+  // TODO: Make notifications available when supported (KOGITO-7345)
   // useEffect(() => {
   //   if (!editor?.isReady) {
   //     return;
