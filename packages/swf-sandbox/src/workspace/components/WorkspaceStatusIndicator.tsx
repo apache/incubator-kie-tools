@@ -79,19 +79,6 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
     );
   }, [workspaceGitStatusPromise]);
 
-  // // Prevent from closing accidentally
-  // TODO: Enable this via env var.
-  // useEffect(() => {
-  //   if (isEverythingPersistedByTheUser) {
-  //     return;
-  //   }
-  //
-  //   window.onbeforeunload = () => "You have unsaved changes.";
-  //   return () => {
-  //     window.onbeforeunload = null;
-  //   };
-  // }, [props.workspace, isEverythingPersistedByTheUser]);
-
   // Prevent from navigating away
   useNavigationBlocker(
     `block-navigation-for-${props.workspace.descriptor.workspaceId}`,
