@@ -73,7 +73,6 @@ export function CreateGitHubRepositoryModal(props: {
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.descriptor.name));
   const [shouldUseQuarkusAccelerator, setShouldUseQuarkusAccelerator] = useState(false);
 
-  // TODO: What should be considered a project?
   const isProject = useMemo(
     () => !!props.workspace.files.find((file) => file.relativePath === "pom.xml"),
     [props.workspace.files]
