@@ -28,7 +28,6 @@ interface MenuButtonsProps {
   get: () => Promise<string>;
   setTheme: (theme: EditorTheme) => void;
   validate: () => void;
-  back: () => void;
 }
 
 export const MenuButtons = (props: MenuButtonsProps) => {
@@ -50,11 +49,6 @@ export const MenuButtons = (props: MenuButtonsProps) => {
         <SplitItem>
           <Button variant="secondary" onClick={props.validate} ouiaId="validate-button">
             Validate
-          </Button>
-        </SplitItem>
-        <SplitItem>
-          <Button variant="secondary" onClick={props.back} ouiaId="back-button">
-            Back to file selection
           </Button>
         </SplitItem>
         <SplitItem className="menu-buttons__theme-switch">
