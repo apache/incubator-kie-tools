@@ -19,9 +19,9 @@ import * as React from "react";
 import { useRef, useState } from "react";
 import { YardEmptyState } from "./EmptyState";
 import type { Property } from "csstype";
-import { MenuButtons, Theme } from "./MenuButtons";
+import { MenuButtons } from "./MenuButtons";
 import "./App.scss";
-import { ChannelType, EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorApi, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 
 type State = string | undefined;
@@ -79,7 +79,7 @@ export const App = () => {
           get={() => editor.current!.getContent()}
           setTheme={(theme) => {
             if (container.current) {
-              if (theme === Theme.DARK) {
+              if (theme === EditorTheme.DARK) {
                 container.current?.classList.add("vscode-dark");
               } else {
                 container.current?.classList.remove("vscode-dark");
