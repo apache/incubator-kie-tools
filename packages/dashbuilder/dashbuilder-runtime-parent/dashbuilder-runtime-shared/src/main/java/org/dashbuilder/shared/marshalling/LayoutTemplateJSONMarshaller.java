@@ -34,6 +34,8 @@ import org.dashbuilder.json.JsonArray;
 import org.dashbuilder.json.JsonObject;
 import org.dashbuilder.json.JsonType;
 import org.dashbuilder.json.JsonValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.uberfire.ext.layout.editor.api.editor.LayoutColumn;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponent;
 import org.uberfire.ext.layout.editor.api.editor.LayoutComponentPart;
@@ -42,6 +44,8 @@ import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate.Style;
 
 public class LayoutTemplateJSONMarshaller {
+    
+    private static final Logger LOGGER = LoggerFactory.getLogger(LayoutTemplateJSONMarshaller.class);
 
     private static final String PART_ID = "partId";
     private static final String PARTS = "parts";
@@ -212,7 +216,12 @@ public class LayoutTemplateJSONMarshaller {
                 .getCssProperties()));
 
         if (settings != null) {
-            component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
+            try {
+                component.setSettings(DisplayerSettingsJSONMarshaller.get().fromJsonObject(settings));
+            } catch(Exception e) {
+                // just log the error and let displayers handle missing configuration
+                LOGGER.warn("Error reading component settings", e);
+            }
         }
         return component;
     }
