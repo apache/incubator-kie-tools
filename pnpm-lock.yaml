@@ -35,7 +35,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
-      "@types/selenium-webdriver": ^4.0.18
+      "@types/selenium-webdriver": ^4.1.1
       "@types/semver": ^7.3.6
       "@types/simpl-schema": ^1.12.0
       "@types/sinon": ^10.0.2
@@ -157,7 +157,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      "@types/selenium-webdriver": 4.0.18
+      "@types/selenium-webdriver": 4.1.1
       "@types/semver": 7.3.6
       "@types/simpl-schema": 1.12.0
       "@types/sinon": 10.0.2
@@ -5622,9 +5622,9 @@ packages:
       { integrity: sha512-tGomyEuzSC1H28y2zlW6XPCaDaXFaD6soTdb4GNdmte2qfHtrKqhy0ZFs4r/1hpazCfEZqeTSRLvSasmEx89uw== }
     dev: true
 
-  /@types/selenium-webdriver/4.0.18:
+  /@types/selenium-webdriver/4.1.1:
     resolution:
-      { integrity: sha512-gkrUo3QldGr8V9im/DjgKkX4UVd1rtflfEBuPG9hPSA1keu7A0rF8h/MQjpTMm2EPVhBCd2K8tn5nlC9Vsd5Xw== }
+      { integrity: sha512-NxxZZek50ylIACiXebKQYHD3D4One3WXOasEXWazL6aTfYbZob7ClNKxUpg8I4/oWArX87oPWvj1cHKqfel3Hg== }
     dev: true
 
   /@types/semver/7.3.6:

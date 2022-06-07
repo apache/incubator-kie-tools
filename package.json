@@ -51,7 +51,7 @@
     "@types/react-dom": "^17.0.5",
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
-    "@types/selenium-webdriver": "^4.0.18",
+    "@types/selenium-webdriver": "^4.1.1",
     "@types/semver": "^7.3.6",
     "@types/simpl-schema": "^1.12.0",
     "@types/sinon": "^10.0.2",
