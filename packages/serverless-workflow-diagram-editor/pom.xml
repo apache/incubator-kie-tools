@@ -299,6 +299,7 @@
     <version.org.mockito>3.12.4</version.org.mockito>
     <version.powermock.api.mockito2>2.0.9</version.powermock.api.mockito2>
     <version.org.xmlunit>2.9.0</version.org.xmlunit>
+    <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
   </properties>
 
   <dependencyManagement>
@@ -623,6 +624,30 @@
         <groupId>org.xmlunit</groupId>
         <artifactId>xmlunit-assertj</artifactId>
         <version>${version.org.xmlunit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-fluent</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-core</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-assertj</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
       </dependency>
 
     </dependencies>
