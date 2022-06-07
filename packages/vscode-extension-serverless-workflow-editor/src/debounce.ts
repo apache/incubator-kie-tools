@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export function debounce(cb: any, delay: number) {
+export function debounce(cb: (...args: any[]) => any, delay: number) {
   let timeout: any;
 
   return (...args: any) => {

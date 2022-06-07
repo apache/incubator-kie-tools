@@ -107,15 +107,13 @@ export class SwfJsonLanguageService {
       );
   }
 
-  public async swfJsonValidation(jsonContent: string, jsonContentUri: string, jsonSchemaUri: string) {
-    const jsonSchema = SW_SPEC_WORKFLOW_SCHEMA;
+  public async getDiagnostics(args: { jsonContent: string; jsonContentUri: string; jsonSchemaUri: string }) {
+    const textDocument = TextDocument.create(args.jsonContentUri, "serverless-workflow-json", 1, args.jsonContent);
 
-    const textDocument: TextDocument = TextDocument.create(jsonContentUri, "serverless-workflow-json", 1, jsonContent);
-
-    const jsonLanguageService: LanguageService = getLanguageService({
+    const jsonLanguageService = getLanguageService({
       schemaRequestService: (uri) => {
-        if (uri === jsonSchemaUri) {
-          return Promise.resolve(JSON.stringify(jsonSchema));
+        if (uri === args.jsonSchemaUri) {
+          return Promise.resolve(JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA));
         }
         return Promise.reject(`Unabled to load schema at ${uri}`);
       },
@@ -123,14 +121,12 @@ export class SwfJsonLanguageService {
 
     jsonLanguageService.configure({
       allowComments: false,
-      schemas: [{ fileMatch: ["*.sw.json"], uri: jsonSchemaUri }],
+      schemas: [{ fileMatch: ["*.sw.json"], uri: args.jsonSchemaUri }],
     });
 
-    const jsonDocument: JSONDocument = jsonLanguageService.parseJSONDocument(textDocument);
+    const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
 
-    const diagnostics: ls.Diagnostic[] = await jsonLanguageService.doValidation(textDocument, jsonDocument);
-
-    return diagnostics;
+    return await jsonLanguageService.doValidation(textDocument, jsonDocument);
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
