@@ -21,7 +21,7 @@ import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
-import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { ServerlessWorkflowTextEditorChannelApi } from "../../api";
 import { editor } from "monaco-editor";
 
@@ -106,6 +106,13 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     editorEnvelopeCtx.channelApi,
     editorEnvelopeCtx.operatingSystem,
   ]);
+
+  useSubscription(
+    editorEnvelopeCtx.channelApi?.notifications.kogitoSwfLanguageService__moveCursorToNode,
+    (nodeName: string) => {
+      console.log("nodeName", nodeName);
+    }
+  );
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

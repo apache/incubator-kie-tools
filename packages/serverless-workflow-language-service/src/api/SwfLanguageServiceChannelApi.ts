@@ -26,6 +26,7 @@ export interface SwfLanguageServiceChannelApi {
   }): Promise<CompletionItem[]>;
 
   kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
+  kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string }): void;
 }
 
 export type SwfLanguageServiceCommandTypes =

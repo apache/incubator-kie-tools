@@ -17,11 +17,11 @@
 package org.kie.workbench.common.stunner.sw.client.editor;
 
 import javax.enterprise.event.Observes;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import elemental2.dom.DomGlobal;
+import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasClearSelectionEvent;
 import org.kie.workbench.common.stunner.core.client.canvas.event.selection.CanvasSelectionEvent;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
@@ -30,13 +30,15 @@ import org.kie.workbench.common.stunner.sw.definition.State;
 @Singleton
 public class ShapeEventsHandler {
 
+    @Inject
+    private DiagramApi diagramApi;
+
     void onCanvasSelectionEvent(@Observes CanvasSelectionEvent event) {
         if (null != event.getCanvasHandler()) {
             if (event.getIdentifiers().size() == 1) {
                 final String uuid = event.getIdentifiers().iterator().next();
                 String stateName = obtainStateName(event.getCanvasHandler(), uuid);
-                // TODO: This stateName is what you have to send to the multiplyach...
-                DomGlobal.console.log("Selected state with name = " + stateName);
+                diagramApi.moveCursorToNode(stateName);
             }
         }
     }
@@ -51,12 +53,6 @@ public class ShapeEventsHandler {
             }
         }
         return null;
-    }
-
-    void onCanvasClearSelectionEvent(@Observes CanvasClearSelectionEvent event) {
-        if (null != event.getCanvasHandler()) {
-            // TODO: Selection is cleard, nothing selected
-        }
     }
 
 }

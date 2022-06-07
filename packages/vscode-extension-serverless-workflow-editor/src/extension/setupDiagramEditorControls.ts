@@ -116,6 +116,12 @@ export async function setupDiagramEditorControls(args: {
     })
   );
 
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(COMMAND_IDS.moveCursorToNode, async ({ nodeName }: { nodeName: string }) => {
+      console.log("vscode moveCursorToNode command called with nodeName", nodeName);
+    })
+  );
+
   if (vscode.window.activeTextEditor) {
     if (!isSwf(vscode.window.activeTextEditor.document)) {
       return;
