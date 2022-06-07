@@ -16,6 +16,7 @@ package deployment
 
 import (
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/kogitoservice"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
@@ -75,19 +76,24 @@ func TestNewDeploymentProcessorTesting(t *testing.T) {
 	cli := test.NewFakeClientBuilder().AddK8sObjects(runtimeDeployment, configmap, supportingServiceList).Build()
 
 	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: "1.0-SNAPSHOT",
 	}
-	RuntimeHandler := app.NewKogitoRuntimeHandler(context)
-	Supportingservicehandler := app.NewKogitoSupportingServiceHandler(context)
+	runtimeHandler := app.NewKogitoRuntimeHandler(context)
+	supportingservicehandler := app.NewKogitoSupportingServiceHandler(context)
 
-	deploymentProcessor := NewDeploymentProcessor(context, runtimeDeployment, RuntimeHandler, Supportingservicehandler)
+	deploymentProcessor := NewDeploymentProcessor(context, runtimeDeployment, runtimeHandler, supportingservicehandler)
 	err := deploymentProcessor.Process()
 
 	assert.NoError(t, err)
 	assert.Equal(t, runtimeDeployment.Spec.Template.Spec.Containers[0].EnvFrom[0].ConfigMapRef.Name, configmap.Name)
 
+	v := make(map[string]string)
+	v[framework.KogitoOperatorVersionAnnotation] = "1.0-SNAPSHOT"
+	assert.Equal(t, v, runtimeDeployment.Annotations)
+	assert.Equal(t, v, runtimeDeployment.Spec.Template.Annotations)
 }
 
 func createList(namespace string) *v1beta1.KogitoSupportingServiceList {

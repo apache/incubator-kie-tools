@@ -15,11 +15,15 @@
 package kogitosupportingservice
 
 import (
+	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
+	v1 "k8s.io/api/apps/v1"
+	v13 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
 
@@ -34,9 +38,10 @@ func TestKogitoSupportingServiceDataIndex_Reconcile(t *testing.T) {
 	dataIndex.GetSpec().AddInfra(kogitoInfinispan.GetName())
 	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, kogitoKafka, kogitoInfinispan, kafka).Build()
 	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: "1.0-SNAPSHOT",
 	}
 	r := &dataIndexSupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
@@ -49,4 +54,11 @@ func TestKogitoSupportingServiceDataIndex_Reconcile(t *testing.T) {
 	}
 	err := r.Reconcile()
 	assert.NoError(t, err)
+
+	dataIndexDeployment := &v1.Deployment{ObjectMeta: v13.ObjectMeta{Name: dataIndex.Name, Namespace: dataIndex.Namespace}}
+	exists, err := kubernetes.ResourceC(cli).Fetch(dataIndexDeployment)
+	assert.NoError(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, "1.0-SNAPSHOT", dataIndexDeployment.Annotations[framework.KogitoOperatorVersionAnnotation])
+	assert.Equal(t, "1.0-SNAPSHOT", dataIndexDeployment.Spec.Template.Annotations[framework.KogitoOperatorVersionAnnotation])
 }

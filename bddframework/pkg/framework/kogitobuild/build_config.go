@@ -56,10 +56,15 @@ func (b *buildConfigHandler) newBuildConfig(build api.KogitoBuildInterface, deco
 		framework.LabelAppKey: app,
 	}
 
+	annotations := map[string]string{
+		framework.KogitoOperatorVersionAnnotation: b.Context.Version,
+	}
+
 	bc := buildv1.BuildConfig{
 		ObjectMeta: metav1.ObjectMeta{
-			Namespace: build.GetNamespace(),
-			Labels:    labels,
+			Namespace:   build.GetNamespace(),
+			Labels:      labels,
+			Annotations: annotations,
 		},
 		Spec: buildv1.BuildConfigSpec{
 			RunPolicy:  buildv1.BuildRunPolicySerial,

@@ -16,13 +16,14 @@ package kogitosupportingservice
 
 import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
-	v12 "k8s.io/api/apps/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/api/apps/v1"
+	v13 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
 
@@ -31,9 +32,10 @@ func TestReconcileKogitoSupportingServiceTaskConsole_Reconcile(t *testing.T) {
 	instance := test.CreateFakeTaskConsole(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(instance).Build()
 	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: "1.0-SNAPSHOT",
 	}
 	r := &taskConsoleSupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
@@ -54,6 +56,13 @@ func TestReconcileKogitoSupportingServiceTaskConsole_Reconcile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, instance.GetStatus())
 	assert.Len(t, *instance.GetStatus().GetConditions(), 2)
+
+	instanceDeployment := &v1.Deployment{ObjectMeta: v13.ObjectMeta{Name: instance.Name, Namespace: instance.Namespace}}
+	exists, err := kubernetes.ResourceC(cli).Fetch(instanceDeployment)
+	assert.NoError(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, "1.0-SNAPSHOT", instanceDeployment.Annotations[framework.KogitoOperatorVersionAnnotation])
+	assert.Equal(t, "1.0-SNAPSHOT", instanceDeployment.Spec.Template.Annotations[framework.KogitoOperatorVersionAnnotation])
 }
 
 func TestReconcileKogitoSupportingServiceTaskConsole_CustomImage(t *testing.T) {
@@ -78,8 +87,8 @@ func TestReconcileKogitoSupportingServiceTaskConsole_CustomImage(t *testing.T) {
 	err := r.Reconcile()
 	assert.NoError(t, err)
 	// Check image name inside deployment
-	deployment := v12.Deployment{
-		ObjectMeta: v1.ObjectMeta{Name: instance.Name, Namespace: ns},
+	deployment := v1.Deployment{
+		ObjectMeta: v13.ObjectMeta{Name: instance.Name, Namespace: ns},
 	}
 	exists, err := kubernetes.ResourceC(cli).Fetch(&deployment)
 	assert.True(t, exists)

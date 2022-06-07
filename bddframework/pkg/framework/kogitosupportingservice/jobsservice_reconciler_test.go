@@ -16,11 +16,14 @@ package kogitosupportingservice
 
 import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal/app"
 	"github.com/kiegroup/kogito-operator/meta"
 	"github.com/stretchr/testify/assert"
+	v1 "k8s.io/api/apps/v1"
+	v13 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"testing"
 )
 
@@ -29,9 +32,10 @@ func TestReconcileKogitoJobsService_Reconcile(t *testing.T) {
 	jobsService := test.CreateFakeJobsService(ns)
 	cli := test.NewFakeClientBuilder().AddK8sObjects(jobsService).Build()
 	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
+		Client:  cli,
+		Log:     test.TestLogger,
+		Scheme:  meta.GetRegisteredSchema(),
+		Version: "1.0-SNAPSHOT",
 	}
 	r := &jobsServiceSupportingServiceResource{
 		supportingServiceContext: supportingServiceContext{
@@ -54,4 +58,11 @@ func TestReconcileKogitoJobsService_Reconcile(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, jobsService.GetStatus())
 	assert.Len(t, *jobsService.GetStatus().GetConditions(), 2)
+
+	jobsServiceDeployment := &v1.Deployment{ObjectMeta: v13.ObjectMeta{Name: jobsService.Name, Namespace: jobsService.Namespace}}
+	exists, err := kubernetes.ResourceC(cli).Fetch(jobsServiceDeployment)
+	assert.NoError(t, err)
+	assert.True(t, exists)
+	assert.Equal(t, "1.0-SNAPSHOT", jobsServiceDeployment.Annotations[framework.KogitoOperatorVersionAnnotation])
+	assert.Equal(t, "1.0-SNAPSHOT", jobsServiceDeployment.Spec.Template.Annotations[framework.KogitoOperatorVersionAnnotation])
 }

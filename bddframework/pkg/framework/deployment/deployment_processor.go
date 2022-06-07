@@ -17,6 +17,7 @@ package deployment
 import (
 	"github.com/kiegroup/kogito-operator/core/client/kubernetes"
 	"github.com/kiegroup/kogito-operator/core/connector"
+	"github.com/kiegroup/kogito-operator/core/framework"
 	"github.com/kiegroup/kogito-operator/core/manager"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	v1 "k8s.io/api/apps/v1"
@@ -44,12 +45,15 @@ func NewDeploymentProcessor(context operator.Context, deployment *v1.Deployment,
 	}
 }
 
+// Process function is called for every deployment managed or watched by operator
+// e.g. crd or full deployment with the expected label
 func (d *deploymentProcessor) Process() (err error) {
-
+	if err = d.injectKogitoAnnotations(); err != nil {
+		return err
+	}
 	if err = d.injectSupportingServiceEndpointIntoDeployment(); err != nil {
 		return err
 	}
-
 	return nil
 }
 
@@ -66,6 +70,23 @@ func (d *deploymentProcessor) injectSupportingServiceEndpointIntoDeployment() er
 	}
 	if err := kubernetes.ResourceC(d.Client).Update(d.deployment); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (d *deploymentProcessor) injectKogitoAnnotations() error {
+	if len(d.Context.Version) == 0 {
+		d.Log.Warn("Not able to get detect Kogito version, version annotation will not be set", "Version Label", framework.KogitoOperatorVersionAnnotation)
+	} else {
+		// annotate the given deployment with the operator version
+		if d.deployment.Annotations == nil {
+			d.deployment.Annotations = make(map[string]string)
+		}
+		if d.deployment.Spec.Template.Annotations == nil {
+			d.deployment.Spec.Template.Annotations = make(map[string]string)
+		}
+		d.deployment.Annotations[framework.KogitoOperatorVersionAnnotation] = d.Context.Version
+		d.deployment.Spec.Template.Annotations[framework.KogitoOperatorVersionAnnotation] = d.Context.Version
 	}
 	return nil
 }
