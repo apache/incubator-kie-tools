@@ -14,7 +14,7 @@
     "@kie-tools/dashbuilder": "0.0.0"
   },
   "scripts": {
-    "copy:dashbuilder": "copyfiles -e \"../**/*/WEB-INF/**/*\" -u 6 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/",
+    "copy:dashbuilder": "copyfiles -e \"../**/*/WEB-INF/**/*\" -e \"../**/*/ace/**/*\" -u 6 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/",
     "build:dev": "rimraf dist && pnpm copy:dashbuilder",
     "build:prod": "pnpm build:dev"
   },
