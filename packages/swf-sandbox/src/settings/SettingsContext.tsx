@@ -35,6 +35,7 @@ import {
 } from "./serviceRegistry/ServiceRegistryConfig";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -115,6 +116,7 @@ export interface SettingsDispatchContextType {
   };
   serviceRegistry: {
     setConfig: React.Dispatch<React.SetStateAction<ServiceRegistrySettingsConfig>>;
+    catalogStore: SwfServiceCatalogStore;
   };
 }
 
@@ -232,6 +234,16 @@ export function SettingsContextProvider(props: any) {
     [kafkaConfig, openshiftConfig, serviceAccountConfig, kieSandboxExtendedServices.config]
   );
 
+  const serviceCatalogStore = useMemo(
+    () =>
+      new SwfServiceCatalogStore({
+        serviceAccount: serviceAccountConfig,
+        serviceRegistry: serviceRegistryConfig,
+        extendedServicesConfig: kieSandboxExtendedServices.config,
+      }),
+    [kieSandboxExtendedServices.config, serviceAccountConfig, serviceRegistryConfig]
+  );
+
   const dispatch = useMemo(() => {
     return {
       open,
@@ -256,9 +268,18 @@ export function SettingsContextProvider(props: any) {
       },
       serviceRegistry: {
         setConfig: setServiceRegistryConfig,
+        catalogStore: serviceCatalogStore,
       },
     };
-  }, [close, githubAuthService, githubOctokit, open, openshiftService, kieSandboxExtendedServices.saveNewConfig]);
+  }, [
+    close,
+    githubAuthService,
+    githubOctokit,
+    open,
+    openshiftService,
+    kieSandboxExtendedServices.saveNewConfig,
+    serviceCatalogStore,
+  ]);
 
   const value = useMemo(() => {
     return {

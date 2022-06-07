@@ -39,7 +39,7 @@ import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
-import { useSettings } from "../settings/SettingsContext";
+import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
@@ -59,6 +59,7 @@ export interface Props {
 
 export function EditorPage(props: Props) {
   const settings = useSettings();
+  const settingsDispatch = useSettingsDispatch();
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
@@ -277,7 +278,6 @@ export function EditorPage(props: Props) {
   );
 
   const apiImpl = useMemo(() => {
-    // TODO: This is being triggered on every edit. Should it?
     let swfServiceCatalogChannelApiImpl;
     let swfLanguageServiceChannelApiImpl;
     if (
@@ -293,13 +293,13 @@ export function EditorPage(props: Props) {
         url: settings.serviceRegistry.config.coreRegistryApi,
       };
 
-      swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl({
-        serviceRegistryInfo,
-        proxyUrl: settings.kieSandboxExtendedServices.config.buildUrl(),
-      });
+      swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(
+        settingsDispatch.serviceRegistry.catalogStore,
+        serviceRegistryInfo
+      );
 
       swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(
-        new EditorSwfLanguageService({ serviceRegistryInfo })
+        new EditorSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore, serviceRegistryInfo)
       );
     }
     return (
@@ -313,7 +313,7 @@ export function EditorPage(props: Props) {
   }, [
     kogitoEditorChannelApiImpl,
     props.fileRelativePath,
-    settings.kieSandboxExtendedServices.config,
+    settingsDispatch.serviceRegistry.catalogStore,
     settings.serviceAccount.config,
     settings.serviceRegistry.config,
   ]);

@@ -144,21 +144,13 @@ export function OpenShiftContextProvider(props: Props) {
         throw new Error("Invalid service registry config");
       }
 
-      await SwfServiceCatalogStore.uploadArtifact({
+      settingsDispatch.serviceRegistry.catalogStore.uploadArtifact({
         artifactId: artifactId,
         groupId: DEFAULT_GROUP_ID,
         content: content,
-        proxyUrl: settings.kieSandboxExtendedServices.config.buildUrl(),
-        serviceRegistryInfo: {
-          authInfo: {
-            username: settings.serviceAccount.config.clientId,
-            token: settings.serviceAccount.config.clientSecret,
-          },
-          url: settings.serviceRegistry.config.coreRegistryApi,
-        },
       });
     },
-    [settings.kieSandboxExtendedServices.config, settings.serviceAccount.config, settings.serviceRegistry.config]
+    [settings.serviceAccount.config, settings.serviceRegistry.config, settingsDispatch.serviceRegistry.catalogStore]
   );
 
   useEffect(() => {

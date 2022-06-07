@@ -16,29 +16,32 @@
 
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { ServiceRegistryInfo } from "./ServiceRegistryInfo";
-import { getServiceFileNameFromSwfServiceCatalogServiceId, SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
+import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class EditorSwfLanguageService {
   public readonly ls: SwfJsonLanguageService;
 
-  constructor(args: { serviceRegistryInfo: ServiceRegistryInfo }) {
+  constructor(
+    private readonly catalogStore: SwfServiceCatalogStore,
+    private readonly serviceRegistryInfo: ServiceRegistryInfo
+  ) {
     this.ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: {
         global: {
-          getServices: async () => SwfServiceCatalogStore.storedServices,
+          getServices: async () => this.catalogStore.services,
         },
         relative: {
           getServices: async (_textDocument) => [],
         },
         getServiceFileNameFromSwfServiceCatalogServiceId: async (swfServiceCatalogServiceId) =>
-          getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatalogServiceId),
+          this.catalogStore.getServiceFileName(swfServiceCatalogServiceId),
       },
       config: {
         shouldDisplayRhhccIntegration: async () => false,
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => true,
-        getServiceRegistryUrl: () => args.serviceRegistryInfo.url,
-        getServiceRegistryAuthInfo: () => args.serviceRegistryInfo.authInfo,
+        getServiceRegistryUrl: () => this.serviceRegistryInfo.url,
+        getServiceRegistryAuthInfo: () => this.serviceRegistryInfo.authInfo,
         getSpecsDirPosixPaths: async (_textDocument) => ({
           specsDirRelativePosixPath: "",
           specsDirAbsolutePosixPath: "",

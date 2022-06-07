@@ -25,24 +25,22 @@ import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
-    private readonly args: {
-      serviceRegistryInfo: ServiceRegistryInfo;
-      proxyUrl: string;
-    }
+    private readonly catalogStore: SwfServiceCatalogStore,
+    private readonly serviceRegistryInfo: ServiceRegistryInfo
   ) {
     this.kogitoSwfServiceCatalog_refresh();
   }
 
   public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return { defaultValue: { username: this.args.serviceRegistryInfo.authInfo.username } };
+    return { defaultValue: { username: this.serviceRegistryInfo.authInfo.username } };
   }
 
   public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return { defaultValue: this.args.serviceRegistryInfo.url };
+    return { defaultValue: this.serviceRegistryInfo.url };
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
-    return { defaultValue: SwfServiceCatalogStore.storedServices };
+    return { defaultValue: this.catalogStore.services };
   }
 
   public kogitoSwfServiceCatalog_logInToRhhcc(): void {
@@ -50,7 +48,7 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    SwfServiceCatalogStore.refresh(this.args);
+    this.catalogStore.refresh();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
