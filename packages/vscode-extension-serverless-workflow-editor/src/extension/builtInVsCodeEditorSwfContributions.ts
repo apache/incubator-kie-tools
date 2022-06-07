@@ -67,24 +67,21 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
   };
 
-  const swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection =
-    vscode.languages.createDiagnosticCollection("SWF-JSON-VALIDATION-DIAGNOSTICS-COLLECTION");
-
-  args.context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
-      setSwfJsonDiagnostics(args, doc.uri, swfJsonValidationDiganosticsCollection);
-    })
+  const swfJsonDiganosticsCollection: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection(
+    "SWF-JSON-DIAGNOSTICS-COLLECTION"
   );
 
   args.context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+      setSwfJsonDiagnostics(args.swfLanguageService, doc.uri, swfJsonDiganosticsCollection);
+    })
+  );
+
+  const doValidationOnChange = debounce(setSwfJsonDiagnostics, 1000);
+
+  args.context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
-      const doValidationOnChange = debounce(
-        (args: ls.Command, uri: vscode.Uri, swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection) => {
-          setSwfJsonDiagnostics(args, uri, swfJsonValidationDiganosticsCollection);
-        },
-        1000
-      );
-      doValidationOnChange(args, event.document.uri, swfJsonValidationDiganosticsCollection);
+      doValidationOnChange(args.swfLanguageService, event.document.uri, swfJsonDiganosticsCollection);
     })
   );
 
@@ -188,29 +185,25 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 }
 
 async function setSwfJsonDiagnostics(
-  args: any,
+  swfLanguageService: SwfJsonLanguageService,
   uri: vscode.Uri,
-  swfJsonValidationDiganosticsCollection: vscode.DiagnosticCollection
+  diganosticsCollection: vscode.DiagnosticCollection
 ) {
-  const editor = vscode.window.activeTextEditor;
+  const content = vscode.window.activeTextEditor?.document.getText();
 
-  const jsonContent = editor?.document.getText();
-  const jsonContentUri = uri.path;
-  const jsonSchemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
-
-  if (jsonContent === undefined) {
+  if (content === undefined) {
     return;
   }
-  const validationResults = await args.swfLanguageService.getDiagnostics({
-    jsonContent,
-    jsonContentUri,
-    jsonSchemaUri,
+
+  const lsDiagnostics = await swfLanguageService.getDiagnostics({
+    content,
+    uriPath: uri.path,
   });
 
-  const diagnostics = validationResults.map((result: any) => {
-    return new vscode.Diagnostic(result.range, result.message, vscode.DiagnosticSeverity.Warning);
+  const diagnostics = lsDiagnostics.map((lsDiagnostic: any) => {
+    return new vscode.Diagnostic(lsDiagnostic.range, lsDiagnostic.message, vscode.DiagnosticSeverity.Warning);
   });
 
-  swfJsonValidationDiganosticsCollection.clear();
-  swfJsonValidationDiganosticsCollection.set(uri, diagnostics);
+  diganosticsCollection.clear();
+  diganosticsCollection.set(uri, diagnostics);
 }

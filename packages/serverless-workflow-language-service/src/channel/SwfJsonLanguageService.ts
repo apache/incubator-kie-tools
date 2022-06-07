@@ -107,12 +107,14 @@ export class SwfJsonLanguageService {
       );
   }
 
-  public async getDiagnostics(args: { jsonContent: string; jsonContentUri: string; jsonSchemaUri: string }) {
-    const textDocument = TextDocument.create(args.jsonContentUri, "serverless-workflow-json", 1, args.jsonContent);
+  public async getDiagnostics(args: { content: string; uriPath: string }) {
+    const textDocument = TextDocument.create(args.uriPath, "serverless-workflow-json", 1, args.content);
+
+    const schemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
 
     const jsonLanguageService = getLanguageService({
       schemaRequestService: (uri) => {
-        if (uri === args.jsonSchemaUri) {
+        if (uri === schemaUri) {
           return Promise.resolve(JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA));
         }
         return Promise.reject(`Unabled to load schema at ${uri}`);
@@ -121,7 +123,7 @@ export class SwfJsonLanguageService {
 
     jsonLanguageService.configure({
       allowComments: false,
-      schemas: [{ fileMatch: ["*.sw.json"], uri: args.jsonSchemaUri }],
+      schemas: [{ fileMatch: ["*.sw.json"], uri: schemaUri }],
     });
 
     const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
