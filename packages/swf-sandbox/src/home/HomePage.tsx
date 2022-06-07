@@ -20,7 +20,6 @@ import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { useHistory } from "react-router";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -88,7 +87,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
 import { Showcase } from "./Showcase";
-import { isSandboxAsset } from "../extension";
+import { FileTypes, isSandboxAsset, SupportedFileExtensions } from "../extension";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -152,19 +151,19 @@ export function HomePage() {
               >
                 <NewServerlessModelCard
                   title={"Workflow"}
-                  jsonExtension={"sw.json"}
-                  yamlExtension={"sw.yaml"}
+                  jsonExtension={FileTypes.SW_JSON}
+                  yamlExtension={FileTypes.SW_YAML}
                   description={"Serverless Workflow files are used to define orchestration logic for services."}
                 />
                 <NewServerlessModelCard
                   title={"Decision"}
-                  jsonExtension={"yard.json"}
-                  yamlExtension={"yard.yaml"}
+                  jsonExtension={FileTypes.YARD_JSON}
+                  yamlExtension={FileTypes.YARD_YAML}
                   description={"Serverless Decision files are used to define decision logic for services."}
                 />
                 <NewModelCard
                   title={"Dashboard"}
-                  extension={"dash.yml"}
+                  extension={FileTypes.DASH_YAML}
                   description={
                     "Dashboard files are used to define data visualization from data extracted from applications."
                   }

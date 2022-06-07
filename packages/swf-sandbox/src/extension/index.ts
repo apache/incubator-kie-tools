@@ -16,29 +16,66 @@
 
 import { basename, extname } from "path";
 
+const REGEX = {
+  supported: /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml)$/,
+  sw: /^.*\.sw\.(json|yml|yaml)$/,
+  yard: /^.*\.yard\.(json|yml|yaml)$/,
+  dash: /^.*\.dash\.(yml|yaml)$/,
+};
+
+export const GLOB_PATTERN = {
+  all: "**/*",
+  sw: "**/*.sw.+(json|yml|yaml)",
+  yard: "**/*.yard.+(json|yml|yaml)",
+  dash: "**/*.dash.+(yml|yaml)",
+};
+
+export enum FileTypes {
+  SW_JSON = "sw.json",
+  SW_YML = "sw.yml",
+  SW_YAML = "sw.yaml",
+  YARD_JSON = "yard.json",
+  YARD_YML = "yard.yml",
+  YARD_YAML = "yard.yaml",
+  DASH_YAML = "dash.yaml",
+  DASH_YML = "dash.yml",
+}
+
+export const supportedFileExtensionArray = [
+  FileTypes.SW_JSON,
+  FileTypes.SW_YML,
+  FileTypes.SW_YAML,
+  FileTypes.YARD_JSON,
+  FileTypes.YARD_YML,
+  FileTypes.YARD_YAML,
+  FileTypes.DASH_YAML,
+  FileTypes.DASH_YML,
+];
+
 export function resolveExtension(path: string): string {
   const fileName = basename(path);
   if (fileName.startsWith(".")) {
     return fileName.slice(1);
   }
-  const regex = /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml)$/;
-  const match = regex.exec(path.toLowerCase());
+  const match = REGEX.supported.exec(path.toLowerCase());
   const extension = match ? match[1] : extname(path);
   return extension ? extension.slice(1) : "";
 }
 
 export function isServerlessWorkflow(path: string): boolean {
-  return /^.*\.sw\.(json|yml|yaml)$/.test(path.toLowerCase());
+  return REGEX.sw.test(path.toLowerCase());
 }
 
 export function isServerlessDecision(path: string): boolean {
-  return /^.*\.yard\.(json|yml|yaml)$/.test(path.toLowerCase());
+  return REGEX.yard.test(path.toLowerCase());
 }
 
 export function isDashbuilder(path: string): boolean {
-  return /^.*\.dash\.(yml|yaml)$/.test(path.toLowerCase());
+  return REGEX.dash.test(path.toLowerCase());
 }
 
 export function isSandboxAsset(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
 }
+
+export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];

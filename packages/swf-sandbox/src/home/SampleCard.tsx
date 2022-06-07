@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
 import { FolderIcon, FileIcon, MonitoringIcon } from "@patternfly/react-icons/dist/js/icons";
-import { SVGIconProps } from "@patternfly/react-icons/dist/js/createIcon";
-import { FileTypes, labelColors } from "../workspace/components/FileLabel";
+import { labelColors } from "../workspace/components/FileLabel";
+import { FileTypes } from "../extension";
 
 export enum SampleType {
   SW_YML = "sw.yml",
@@ -89,7 +89,7 @@ export function SampleCard({ sample }: { sample: Sample }) {
                   url:
                     sample.repoUrl ??
                     `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
-                      type: sample.type || "sw.json",
+                      type: sample.type || FileTypes.SW_JSON,
                       name: sample.fileName,
                     })}`,
                   renameWorkspace: sample.name,

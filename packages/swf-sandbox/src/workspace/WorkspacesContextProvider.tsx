@@ -27,7 +27,6 @@ import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
 import { StorageFile, StorageService } from "./services/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
-import { SupportedFileExtensions } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
@@ -37,7 +36,7 @@ import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
-import { isSandboxAsset } from "../extension";
+import { isSandboxAsset, SupportedFileExtensions } from "../extension";
 import { useSettings } from "../settings/SettingsContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;

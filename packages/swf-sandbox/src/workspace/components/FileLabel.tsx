@@ -16,23 +16,13 @@
 
 import * as React from "react";
 import { Label, LabelProps } from "@patternfly/react-core/dist/js/components/Label";
+import { FileTypes } from "../../extension";
 
 type LabelColorType = { color: LabelProps["color"]; label: string };
 
 const swfLabel: LabelColorType = { color: "green", label: "Serverless Workflow" };
 const sdLabel: LabelColorType = { color: "blue", label: "Serverless Decision" };
 const dashboardLabel: LabelColorType = { color: "purple", label: "Dashboard" };
-
-export enum FileTypes {
-  SW_JSON = "sw.json",
-  SW_YML = "sw.yml",
-  SW_YAML = "sw.yaml",
-  YARD_JSON = "yard.json",
-  YARD_YML = "yard.yml",
-  YARD_YAML = "yard.yaml",
-  DASH_YAML = "dash.yaml",
-  DASH_YML = "dash.yml",
-}
 
 export const labelColors: Record<FileTypes, LabelColorType> = {
   [FileTypes.SW_JSON]: swfLabel,

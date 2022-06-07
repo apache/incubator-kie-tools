@@ -28,15 +28,14 @@ import {
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { basename, extname } from "path";
+import { basename } from "path";
 import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
-import { isSandboxAsset, resolveExtension } from "../extension";
+import { FileTypes, isSandboxAsset, resolveExtension, SupportedFileExtensions } from "../extension";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;
@@ -70,7 +69,6 @@ export function NewFileDropdownMenu(props: {
 
   const workspaces = useWorkspaces();
   const routes = useRoutes();
-  const editorEnvelopeLocator = useEditorEnvelopeLocator();
 
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
@@ -138,11 +136,11 @@ export function NewFileDropdownMenu(props: {
   );
 
   const addSample = useCallback(
-    (extension: SupportedFileExtensions) => {
+    (name: string, extension: SupportedFileExtensions) => {
       importFromUrl(
         `${window.location.origin}${window.location.pathname}${routes.static.sample.path({
           type: extension,
-          name: "greetings",
+          name: name,
         })}`
       );
     },
@@ -220,29 +218,29 @@ export function NewFileDropdownMenu(props: {
         <MenuList>
           <MenuItem
             itemId={"newSwfItemId"}
-            onClick={() => addEmptyFile("sw.json")}
+            onClick={() => addEmptyFile(FileTypes.SW_JSON)}
             description="Serverless Workflow files are used to define orchestration logic for services."
           >
             <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"sw.json"} />
+              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.SW_JSON} />
             </b>
           </MenuItem>
           <MenuItem
             itemId={"newSdItemId"}
-            onClick={() => addEmptyFile("yard.json")}
+            onClick={() => addEmptyFile(FileTypes.YARD_YAML)}
             description="Serverless Decision files are used to define decision logic for services."
           >
             <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"yard.json"} />
+              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.YARD_YAML} />
             </b>
           </MenuItem>
           <MenuItem
             itemId={"newDashboardItemId"}
-            onClick={() => addEmptyFile("dash.yml")}
+            onClick={() => addEmptyFile(FileTypes.DASH_YAML)}
             description="Dashboard files are used to define data visualization from data extracted from applications."
           >
             <b>
-              <FileLabel style={{ marginBottom: "4px" }} extension={"dash.yaml"} />
+              <FileLabel style={{ marginBottom: "4px" }} extension={FileTypes.DASH_YAML} />
             </b>
           </MenuItem>
           <Divider />
@@ -255,35 +253,35 @@ export function NewFileDropdownMenu(props: {
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
                 <MenuItem
-                  onClick={() => addSample("sw.json")}
+                  onClick={() => addSample("greetings", FileTypes.SW_JSON)}
                   description="Serverless Workflow files are used to define orchestration logic for services."
                 >
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
-                      <FileLabel extension={"sw.json"} />
+                      <FileLabel extension={FileTypes.SW_JSON} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>
-                <MenuItem
-                  onClick={() => addSample("yard.json")}
+                {/* <MenuItem
+                  onClick={() => addSample("", FileTypes.YARD.YAML)}
                   description="Serverless Decision files are used to define decision logic for services."
                 >
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
-                      <FileLabel extension={"yard.json"} />
+                      <FileLabel extension={FileTypes.YARD.YAML} />
                     </FlexItem>
                   </Flex>
-                </MenuItem>
+                </MenuItem> */}
                 <MenuItem
-                  onClick={() => addSample("dash.yml")}
+                  onClick={() => addSample("swf-report", FileTypes.DASH_YML)}
                   description="Dashboard files are used to define data visualization from data extracted from applications."
                 >
                   <Flex>
                     <FlexItem>Sample</FlexItem>
                     <FlexItem>
-                      <FileLabel extension={"db"} />
+                      <FileLabel extension={FileTypes.DASH_YML} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>

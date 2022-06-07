@@ -18,6 +18,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { Route, Switch } from "react-router-dom";
 import { EditorPage } from "../editor/EditorPage";
+import { supportedFileExtensionArray } from "../extension";
 import { HomePage } from "../home/HomePage";
 import { NewWorkspaceFromUrlPage } from "../workspace/components/NewWorkspaceFromUrlPage";
 import { NewWorkspaceWithEmptyFilePage } from "../workspace/components/NewWorkspaceWithEmptyFilePage";
@@ -26,10 +27,7 @@ import { NoMatchPage } from "./NoMatchPage";
 
 export function RoutesSwitch() {
   const routes = useRoutes();
-  const supportedExtensions = useMemo(
-    () => "sw.json|sw.yaml|sw.yml|yard.json|yard.yaml|yard.yml|dash.yaml|dash.yml",
-    []
-  );
+  const supportedExtensions = useMemo(() => supportedFileExtensionArray.join("|"), []);
 
   return (
     <Switch>
