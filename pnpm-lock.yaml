@@ -50,7 +50,7 @@ importers:
       "@vscode/test-web": ^0.0.22
       babel-loader: ^8.2.2
       chai: ^4.3.4
-      chromedriver: ^100.0.0
+      chromedriver: ^102.0.0
       circular-dependency-plugin: ^5.2.2
       compressing: ^1.5.1
       copy-webpack-plugin: ^8.1.1
@@ -172,7 +172,7 @@ importers:
       "@vscode/test-web": 0.0.22
       babel-loader: 8.2.3_xcm7bbhl2zdsgckfarl5d37zpy
       chai: 4.3.4
-      chromedriver: 100.0.0
+      chromedriver: 102.0.0
       circular-dependency-plugin: 5.2.2_webpack@5.70.0
       compressing: 1.5.1
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
@@ -8218,15 +8218,15 @@ packages:
       tslib: 1.14.1
     dev: true
 
-  /chromedriver/100.0.0:
+  /chromedriver/102.0.0:
     resolution:
-      { integrity: sha512-oLfB0IgFEGY9qYpFQO/BNSXbPw7bgfJUN5VX8Okps9W2qNT4IqKh5hDwKWtpUIQNI6K3ToWe2/J5NdpurTY02g== }
+      { integrity: sha512-xer/0g1Oarkjc2e+4nyoLgZT4kJHYhcj3PcxD1nEoGJQYEllTjprN1uDpSb4BkgMGo0ydfIS1VDkszrr/J9OOg== }
     engines: { node: ">=10" }
     hasBin: true
     requiresBuild: true
     dependencies:
       "@testim/chrome-version": 1.1.2
-      axios: 0.24.0
+      axios: 0.27.2
       del: 6.0.0
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.0
