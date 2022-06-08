@@ -57,9 +57,9 @@ public class ErrorTransition {
     @Property
     public String errorRef;
 
-    public String transition;
+    public Object transition;
 
-    public boolean end;
+    public Object end;
 
     public ErrorTransition() {
     }
@@ -73,22 +73,20 @@ public class ErrorTransition {
         return this;
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public ErrorTransition setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
-        return this;
     }
 
-    public boolean isEnd() {
+    public Object isEnd() {
         return end;
     }
 
-    public ErrorTransition setEnd(boolean end) {
+    public void setEnd(Object end) {
         this.end = end;
-        return this;
     }
 
     public Set<String> getLabels() {
