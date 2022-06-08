@@ -67,9 +67,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
   };
 
-  const swfJsonDiganosticsCollection: vscode.DiagnosticCollection = vscode.languages.createDiagnosticCollection(
-    "SWF-JSON-DIAGNOSTICS-COLLECTION"
-  );
+  const swfJsonDiganosticsCollection = vscode.languages.createDiagnosticCollection("SWF-JSON-DIAGNOSTICS-COLLECTION");
 
   args.context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
