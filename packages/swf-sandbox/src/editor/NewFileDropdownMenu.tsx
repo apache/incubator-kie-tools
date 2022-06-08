@@ -257,29 +257,29 @@ export function NewFileDropdownMenu(props: {
                   description="Serverless Workflow files are used to define orchestration logic for services."
                 >
                   <Flex>
-                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>Greetings</FlexItem>
                     <FlexItem>
                       <FileLabel extension={FileTypes.SW_JSON} />
                     </FlexItem>
                   </Flex>
                 </MenuItem>
-                {/* <MenuItem
-                  onClick={() => addSample("", FileTypes.YARD.YAML)}
+                <MenuItem
+                  onClick={() => addSample("traffic-violation", FileTypes.YARD_YAML)}
                   description="Serverless Decision files are used to define decision logic for services."
                 >
                   <Flex>
-                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>Traffic Violation</FlexItem>
                     <FlexItem>
-                      <FileLabel extension={FileTypes.YARD.YAML} />
+                      <FileLabel extension={FileTypes.YARD_YAML} />
                     </FlexItem>
                   </Flex>
-                </MenuItem> */}
+                </MenuItem>
                 <MenuItem
                   onClick={() => addSample("swf-report", FileTypes.DASH_YML)}
                   description="Dashboard files are used to define data visualization from data extracted from applications."
                 >
                   <Flex>
-                    <FlexItem>Sample</FlexItem>
+                    <FlexItem>Serverless Workflow Report</FlexItem>
                     <FlexItem>
                       <FileLabel extension={FileTypes.DASH_YML} />
                     </FlexItem>
