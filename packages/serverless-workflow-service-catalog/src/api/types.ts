@@ -14,6 +14,24 @@
  * limitations under the License.
  */
 
+export enum AuthProviderType {
+  NONE = "none",
+  RH_ACCOUNT = "red-hat-account",
+  OIDC = "oidc",
+}
+
+export interface SwfServiceRegistrySettings {
+  name: string;
+  url: string;
+  authProvider: AuthProviderType;
+  authUrl?: string;
+  clientId?: string;
+}
+
+export interface SwfServiceRegistriesSettings {
+  registries: SwfServiceRegistrySettings[];
+}
+
 export enum SwfServiceCatalogServiceType {
   rest = "rest",
   graphql = "graphql",

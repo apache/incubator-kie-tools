@@ -19,7 +19,7 @@ import {
   getInterpolatedConfigurationValue,
 } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import * as vscode from "vscode";
-import { ServiceRegistries } from "./serviceCatalog/serviceRegistry";
+import { SwfServiceRegistriesSettings } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
 
@@ -38,7 +38,7 @@ export enum ShouldOpenDiagramEditorAutomaticallyConfiguration {
 }
 
 export class SwfVsCodeExtensionConfiguration {
-  public getServiceRegistrySettings(): ServiceRegistries {
+  public getServiceRegistrySettings(): SwfServiceRegistriesSettings {
     return vscode.workspace.getConfiguration().get(CONFIGURATION_SECTIONS.serviceRegistrySettings, { registries: [] });
   }
 

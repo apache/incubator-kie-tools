@@ -39,6 +39,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
+  SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
@@ -169,5 +170,17 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
     return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
+  }
+
+  public kogitoSwfServiceCatalog_logInServiceRegistry(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInServiceRegistry();
+  }
+
+  public kogitoSwfServiceCatalog_serviceRegistrySettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistrySettings();
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistrySettings(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistrySettings();
   }
 }

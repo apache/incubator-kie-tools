@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./types";
 export * from "./ServiceRegistryStore";
 
 export function getServiceFileNameFromSwfServiceCatalogServiceId(

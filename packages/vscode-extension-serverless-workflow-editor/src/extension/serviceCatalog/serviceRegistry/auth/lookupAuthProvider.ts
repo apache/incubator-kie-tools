@@ -15,9 +15,9 @@
  */
 
 import * as vscode from "vscode";
-import { AuthProviderType } from "../types";
 import { AuthProvider } from "./AuthProvider";
 import { RHCCAuthProvider } from "./RHCCAuthProvider";
+import { AuthProviderType } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export const lookupAuthProvider = (args: {
   context: vscode.ExtensionContext;

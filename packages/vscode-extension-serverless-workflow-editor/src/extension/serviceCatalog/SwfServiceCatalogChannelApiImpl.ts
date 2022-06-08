@@ -17,6 +17,7 @@
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
+  SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import * as vscode from "vscode";
@@ -46,5 +47,17 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     documentUri: string;
   }): void {
     this.args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(args);
+  }
+
+  kogitoSwfServiceCatalog_logInServiceRegistry(): void {
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryLogin);
+  }
+
+  kogitoSwfServiceCatalog_serviceRegistrySettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return { defaultValue: this.args.configuration.getServiceRegistrySettings() };
+  }
+
+  kogitoSwfServiceCatalog_setupServiceRegistrySettings(): void {
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryConfig);
   }
 }
