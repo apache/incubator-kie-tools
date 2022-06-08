@@ -45,11 +45,13 @@ public class PanelTransformUtils {
         viewport.setTransform(new Transform());
     }
 
-    public static void scaleToFitPanel(ScrollablePanel scrollablePanel) {
+    public static double scaleToFitPanel(ScrollablePanel scrollablePanel) {
         double scale = PanelTransformUtils.computeZoomLevelFitToWidth(scrollablePanel);
         if (scale > 0) {
             PanelTransformUtils.setScaleLevel(scrollablePanel.getViewport(), scale);
+            scrollablePanel.resetScrollPositionToZero();
         }
+        return scale;
     }
 
     public static double computeZoomLevelFitToWidth(final LienzoBoundsPanel panel) {

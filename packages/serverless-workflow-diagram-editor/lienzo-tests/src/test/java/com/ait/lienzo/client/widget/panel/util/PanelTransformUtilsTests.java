@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +30,8 @@ import org.mockito.Mock;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(LienzoMockitoTestRunner.class)
@@ -80,6 +83,22 @@ public class PanelTransformUtilsTests {
         when(panel.getLayerBounds()).thenReturn(layerBounds);
         double level = PanelTransformUtils.computeZoomLevelFitToWidth(panel);
         assertEquals(0.475d, level, 0d);
+    }
+
+    @Test
+    public void testFitToSize() {
+        ScrollablePanel panel = mock(ScrollablePanel.class);
+        Viewport viewport = mock(Viewport.class);
+        Transform transform = mock(Transform.class);
+        when(panel.getWidePx()).thenReturn(800);
+        when(panel.getHighPx()).thenReturn(600);
+        Bounds layerBounds = Bounds.build(0d, 0d, 1600, 1200);
+        when(panel.getLayerBounds()).thenReturn(layerBounds);
+        when(panel.getViewport()).thenReturn(viewport);
+        when(viewport.getTransform()).thenReturn(transform);
+        double level = PanelTransformUtils.scaleToFitPanel(panel);
+        assertEquals(0.475d, level, 0d);
+        verify(panel, times(1)).resetScrollPositionToZero();
     }
 
     @Test
