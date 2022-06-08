@@ -99,38 +99,44 @@ export class FsWatchingServiceCatalogRelativeStore {
       try {
         const specsDirAbsolutePosixPathUri = vscode.Uri.parse(args.specsDirAbsolutePosixPath);
 
-        vscode.workspace.fs.stat(specsDirAbsolutePosixPathUri).then((stats) => {
-          if (!stats || stats.type !== vscode.FileType.Directory) {
-            reject(`Invalid specs dir path: ${args.specsDirAbsolutePosixPath}`);
-            return;
-          }
-
-          vscode.workspace.fs.readDirectory(specsDirAbsolutePosixPathUri).then((files) => {
-            if (!files || files.length <= 0) {
-              resolve([]);
+        vscode.workspace.fs.stat(specsDirAbsolutePosixPathUri).then(
+          (stats) => {
+            if (!stats || stats.type !== vscode.FileType.Directory) {
+              reject(`Invalid specs dir path: ${args.specsDirAbsolutePosixPath}`);
               return;
             }
 
-            const promises: Thenable<SwfServiceCatalogService[]>[] = [];
-
-            files.forEach(([fileName, type]) => {
-              if (!(type === vscode.FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase()))) {
+            vscode.workspace.fs.readDirectory(specsDirAbsolutePosixPathUri).then((files) => {
+              if (!files || files.length <= 0) {
+                resolve([]);
                 return;
               }
 
-              const fileUri = specsDirAbsolutePosixPathUri.with({
-                path: specsDirAbsolutePosixPathUri.path + "/" + fileName,
-              });
-              promises.push(this.readServiceFile(fileUri, fileName, args.specsDirAbsolutePosixPath));
-            });
+              const promises: Thenable<SwfServiceCatalogService[]>[] = [];
 
-            if (promises.length > 0) {
-              Promise.all(promises).then((services) => resolve(services.flatMap((s) => s)));
-            } else {
-              resolve([]);
-            }
-          });
-        });
+              files.forEach(([fileName, type]) => {
+                if (!(type === vscode.FileType.File && OPENAPI_EXTENSIONS_REGEX.test(fileName.toLowerCase()))) {
+                  return;
+                }
+
+                const fileUri = specsDirAbsolutePosixPathUri.with({
+                  path: specsDirAbsolutePosixPathUri.path + "/" + fileName,
+                });
+                promises.push(this.readServiceFile(fileUri, fileName, args.specsDirAbsolutePosixPath));
+              });
+
+              if (promises.length > 0) {
+                Promise.all(promises).then((services) => resolve(services.flatMap((s) => s)));
+              } else {
+                resolve([]);
+              }
+            });
+          },
+          (reason) => {
+            console.log(`could not load specs folder in ${specsDirAbsolutePosixPathUri}.`, reason);
+            return resolve([]);
+          }
+        );
       } catch (e) {
         console.error(e);
         reject(`Could not load services for SWF Service Catalog. ${e}`);
