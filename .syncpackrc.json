@@ -6,6 +6,7 @@
         "@kie-tools/serverless-workflow-editor",
         "@kie-tools/swf-sandbox",
         "@kie-tools/text-editor",
+        "@kie-tools/yard-editor",
         "vscode-extension-serverless-workflow-editor",
         "chrome-extension-serverless-workflow-editor",
         "@kie-tools/dashbuilder-editor"
