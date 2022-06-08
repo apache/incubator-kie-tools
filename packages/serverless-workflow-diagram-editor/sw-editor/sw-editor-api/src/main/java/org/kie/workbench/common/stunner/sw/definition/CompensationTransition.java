@@ -69,7 +69,7 @@ public class CompensationTransition {
      * Transition target.
      */
     @JsIgnore
-    public String transition;
+    public Object transition;
 
     public CompensationTransition() {
     }
@@ -82,11 +82,11 @@ public class CompensationTransition {
         this.name = name;
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
     }
 

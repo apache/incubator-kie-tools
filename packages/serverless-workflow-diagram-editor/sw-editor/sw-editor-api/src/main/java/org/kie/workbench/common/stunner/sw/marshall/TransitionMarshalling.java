@@ -31,6 +31,8 @@ import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 
+import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
+import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.EDGE_START;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
@@ -41,29 +43,6 @@ public interface TransitionMarshalling {
 
     EdgeMarshaller<Object> ANY_EDGE_MARSHALLER =
             (context, edge) -> edge;
-
-    EdgeUnmarshaller<StartTransition> START_TRANSITION_UNMARSHALLER =
-            (context, startTransition) -> {
-                Node sourceNode = context.sourceNode;
-                Edge startEdge = context.addEdge(EDGE_START, startTransition, sourceNode);
-                String targetUUID = context.obtainUUID(startTransition.getTransition());
-                context.connect(startEdge, sourceNode, targetUUID);
-                return startEdge;
-            };
-
-    EdgeMarshaller<StartTransition> START_TRANSITION_MARSHALLER =
-            (context, edge) -> {
-                Workflow workflow = context.getWorkflowRoot();
-                if (null != edge.getTargetNode()) {
-                    Node targetNode = edge.getTargetNode();
-                    String stateName = getStateNodeName(targetNode);
-                    workflow.setStart(stateName);
-                } else {
-                    workflow.setStart("");
-                }
-                // TODO: Update StartTransition.transition ?
-                return edge;
-            };
 
     EdgeUnmarshaller<Transition> TRANSITION_UNMARSHALLER =
             (context, transition) -> {
@@ -94,9 +73,14 @@ public interface TransitionMarshalling {
             };
 
     EdgeUnmarshaller<CompensationTransition> COMPENSATION_TRANSITION_UNMARSHALLER =
-            (context, transition) -> {
-                String to = transition.getTransition();
-                Edge edge = context.addEdgeToTargetName(transition, context.sourceNode, to);
+            (context, compensationTransition) -> {
+                String transition = getTransition(compensationTransition.transition);
+
+                Edge edge = null;
+                if (isValidString(transition)) {
+                    edge = context.addEdgeToTargetName(compensationTransition, context.sourceNode, transition);
+                }
+
                 return edge;
             };
 
@@ -115,81 +99,16 @@ public interface TransitionMarshalling {
                 return edge;
             };
 
-    EdgeUnmarshaller<DefaultConditionTransition> DEFAULT_CONDITION_TRANSITION_UNMARSHALLER =
-            (context, transition) -> {
-                boolean end = transition.isEnd();
-                Edge edge;
-                if (end) {
-                    edge = context.addEdgeToTargetName(transition, context.sourceNode, STATE_END);
-                } else {
-                    String to = transition.getTransition();
-                    edge = context.addEdgeToTargetName(transition, context.sourceNode, to);
-                }
-                return edge;
-            };
-
-    EdgeMarshaller<DefaultConditionTransition> DEFAULT_CONDITION_TRANSITION_MARSHALLER =
-            (context, edge) -> {
-                Node sourceNode = edge.getSourceNode();
-                if (null != sourceNode) {
-                    Node targetNode = edge.getTargetNode();
-                    if (null != targetNode) {
-                        DefaultConditionTransition defaultConditionTransition = getElementDefinition(edge);
-                        Object targetDef = getElementDefinition(targetNode);
-                        if (targetDef instanceof End) {
-                            defaultConditionTransition.transition = null;
-                            defaultConditionTransition.end = true;
-                        } else {
-                            defaultConditionTransition.transition = getStateNodeName(targetNode);
-                            defaultConditionTransition.end = false;
-                        }
-                    }
-                }
-                return edge;
-            };
-
-    EdgeUnmarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_UNMARSHALLER =
-            (context, transition) -> {
-                boolean end = transition.isEnd();
-                Edge edge;
-                if (end) {
-                    edge = context.addEdgeToTargetName(transition, context.sourceNode, STATE_END);
-                } else {
-                    String to = transition.getTransition();
-                    edge = context.addEdgeToTargetName(transition, context.sourceNode, to);
-                }
-                return edge;
-            };
-
-    EdgeMarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_MARSHALLER =
-            (context, edge) -> {
-                Node sourceNode = edge.getSourceNode();
-                if (null != sourceNode) {
-                    Node targetNode = edge.getTargetNode();
-                    if (null != targetNode) {
-                        EventConditionTransition eventConditionTransition = getElementDefinition(edge);
-                        Object targetDef = getElementDefinition(targetNode);
-                        if (targetDef instanceof End) {
-                            eventConditionTransition.transition = null;
-                            eventConditionTransition.end = true;
-                        } else {
-                            eventConditionTransition.transition = getStateNodeName(targetNode);
-                            eventConditionTransition.end = false;
-                        }
-                    }
-                }
-                return edge;
-            };
-
     EdgeUnmarshaller<DataConditionTransition> DATA_CONDITION_TRANSITION_UNMARSHALLER =
-            (context, transition) -> {
-                boolean end = transition.isEnd();
-                Edge edge;
+            (context, dataConditionTransition) -> {
+                boolean end = getEnd(dataConditionTransition.end);
+                String transition = getTransition(dataConditionTransition.transition);
+
+                Edge edge = null;
                 if (end) {
-                    edge = context.addEdgeToTargetName(transition, context.sourceNode, STATE_END);
-                } else {
-                    String to = transition.getTransition();
-                    edge = context.addEdgeToTargetName(transition, context.sourceNode, to);
+                    edge = context.addEdgeToTargetName(dataConditionTransition, context.sourceNode, STATE_END);
+                } else if (isValidString(transition)) {
+                    edge = context.addEdgeToTargetName(dataConditionTransition, context.sourceNode, transition);
                 }
                 return edge;
             };
@@ -214,13 +133,51 @@ public interface TransitionMarshalling {
                 return edge;
             };
 
+    EdgeUnmarshaller<DefaultConditionTransition> DEFAULT_CONDITION_TRANSITION_UNMARSHALLER =
+            (context, defaultConditionTransition) -> {
+                boolean end = getEnd(defaultConditionTransition.end);
+                String transition = getTransition(defaultConditionTransition.transition);
+
+                Edge edge = null;
+                if (end) {
+                    edge = context.addEdgeToTargetName(defaultConditionTransition, context.sourceNode, STATE_END);
+                } else if (isValidString(transition)) {
+                    edge = context.addEdgeToTargetName(defaultConditionTransition, context.sourceNode, transition);
+                }
+
+                return edge;
+            };
+
+    EdgeMarshaller<DefaultConditionTransition> DEFAULT_CONDITION_TRANSITION_MARSHALLER =
+            (context, edge) -> {
+                Node sourceNode = edge.getSourceNode();
+                if (null != sourceNode) {
+                    Node targetNode = edge.getTargetNode();
+                    if (null != targetNode) {
+                        DefaultConditionTransition defaultConditionTransition = getElementDefinition(edge);
+                        Object targetDef = getElementDefinition(targetNode);
+                        if (targetDef instanceof End) {
+                            defaultConditionTransition.transition = null;
+                            defaultConditionTransition.end = true;
+                        } else {
+                            defaultConditionTransition.transition = getStateNodeName(targetNode);
+                            defaultConditionTransition.end = false;
+                        }
+                    }
+                }
+                return edge;
+            };
+
     EdgeUnmarshaller<ErrorTransition> ERROR_TRANSITION_UNMARSHALLER =
             (context, errorTransition) -> {
+                boolean end = getEnd(errorTransition.end);
+                String transition = getTransition(errorTransition.transition);
+
                 Edge edge = null;
-                if (errorTransition.isEnd()) {
+                if (end) {
                     edge = context.addEdgeToTargetName(errorTransition, context.sourceNode, STATE_END);
-                } else if (isValidString(errorTransition.getTransition())) {
-                    edge = context.addEdgeToTargetName(errorTransition, context.sourceNode, errorTransition.getTransition());
+                } else if (isValidString(transition)) {
+                    edge = context.addEdgeToTargetName(errorTransition, context.sourceNode, transition);
                 }
                 return edge;
             };
@@ -244,4 +201,69 @@ public interface TransitionMarshalling {
                 }
                 return edge;
             };
+
+    EdgeUnmarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_UNMARSHALLER =
+            (context, eventConditionTransition) -> {
+                boolean end = getEnd(eventConditionTransition.end);
+                String transition = getTransition(eventConditionTransition.transition);
+
+                Edge edge = null;
+                if (end) {
+                    edge = context.addEdgeToTargetName(eventConditionTransition, context.sourceNode, STATE_END);
+                } else if (isValidString(transition)) {
+                    edge = context.addEdgeToTargetName(eventConditionTransition, context.sourceNode, transition);
+                }
+
+                return edge;
+            };
+
+
+    EdgeMarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_MARSHALLER =
+            (context, edge) -> {
+                Node sourceNode = edge.getSourceNode();
+                if (null != sourceNode) {
+                    Node targetNode = edge.getTargetNode();
+                    if (null != targetNode) {
+                        EventConditionTransition eventConditionTransition = getElementDefinition(edge);
+                        Object targetDef = getElementDefinition(targetNode);
+                        if (targetDef instanceof End) {
+                            eventConditionTransition.transition = null;
+                            eventConditionTransition.end = true;
+                        } else {
+                            eventConditionTransition.transition = getStateNodeName(targetNode);
+                            eventConditionTransition.end = false;
+                        }
+                    }
+                }
+                return edge;
+            };
+
+    EdgeUnmarshaller<StartTransition> START_TRANSITION_UNMARSHALLER =
+            (context, startTransition) -> {
+                Node sourceNode = context.sourceNode;
+                Edge startEdge = context.addEdge(EDGE_START, startTransition, sourceNode);
+
+                String transition = getTransition(startTransition.transition);
+                if (isValidString(transition)) {
+                    String targetUUID = context.obtainUUID(transition);
+                    context.connect(startEdge, sourceNode, targetUUID);
+                }
+
+                return startEdge;
+            };
+
+    EdgeMarshaller<StartTransition> START_TRANSITION_MARSHALLER =
+            (context, edge) -> {
+                Workflow workflow = context.getWorkflowRoot();
+                if (null != edge.getTargetNode()) {
+                    Node targetNode = edge.getTargetNode();
+                    String stateName = getStateNodeName(targetNode);
+                    workflow.setStart(stateName);
+                } else {
+                    workflow.setStart("");
+                }
+                // TODO: Update StartTransition.transition ?
+                return edge;
+            };
+
 }

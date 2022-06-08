@@ -92,6 +92,7 @@ import static org.kie.workbench.common.stunner.sw.marshall.WorkflowMarshalling.W
 @ApplicationScoped
 public class Marshaller {
 
+    public static final int SPACING_LEVEL = 2;
     public static boolean LOAD_DETAILS = false;
     public static final String STATE_START = "startState";
     public static final String STATE_END = "endState";
@@ -182,7 +183,7 @@ public class Marshaller {
                 return Global.undefined;
             }
             return value;
-        });
+        }, SPACING_LEVEL);
     }
 
     /* +++++++++++++++++ UN-MARSHALLING +++++++++++++++++ */
