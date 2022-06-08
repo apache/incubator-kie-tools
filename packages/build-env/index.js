@@ -487,7 +487,7 @@ module.exports = {
     buildInfo: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__buildInfo),
     gtmId: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__gtmId),
     dev: {
-      port: 9009,
+      port: 9020,
     },
     baseImage: {
       quarkusVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion),
