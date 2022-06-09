@@ -22,6 +22,11 @@ import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
+import {
+  findPositionByStateName,
+  getFileLanguage,
+  FileLanguage,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { ServerlessWorkflowTextEditorChannelApi } from "../../api";
 import { editor } from "monaco-editor";
 
@@ -47,22 +52,14 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistryUrl
   );
 
+  const fileLanguage = useMemo(() => getFileLanguage(fileName), [fileName]);
+
   const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {
-    if (fileName.endsWith(".sw.json")) {
+    if (fileLanguage !== null) {
       return new SwfTextEditorController(
         content,
         onContentChange,
-        "json",
-        editorEnvelopeCtx.operatingSystem,
-        isReadOnly,
-        setValidationErrors
-      );
-    }
-    if (fileName.endsWith(".sw.yaml") || fileName.endsWith(".sw.yml")) {
-      return new SwfTextEditorController(
-        content,
-        onContentChange,
-        "yaml",
+        fileLanguage,
         editorEnvelopeCtx.operatingSystem,
         isReadOnly,
         setValidationErrors
@@ -109,8 +106,21 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
 
   useSubscription(
     editorEnvelopeCtx.channelApi?.notifications.kogitoSwfLanguageService__moveCursorToNode,
-    (nodeName: string) => {
-      console.log("nodeName", nodeName);
+    ({ nodeName }: { nodeName: string }) => {
+      if (!fileLanguage) {
+        return;
+      }
+
+      const targetPosition = findPositionByStateName(content, nodeName, fileLanguage);
+
+      if (!targetPosition) {
+        return;
+      }
+
+      controller.editor?.setPosition({
+        lineNumber: targetPosition.line,
+        column: targetPosition.character,
+      });
     }
   );
 

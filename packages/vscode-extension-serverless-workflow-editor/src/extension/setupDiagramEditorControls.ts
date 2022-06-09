@@ -22,9 +22,10 @@ import {
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
 import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
+import { findPositionByStateName, getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 
 function isSwf(textDocument: vscode.TextDocument) {
-  return /^.*\.sw\.(json|yml|yaml)$/.test(textDocument.fileName);
+  return getFileLanguage(textDocument.fileName) !== null;
 }
 
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
@@ -117,9 +118,44 @@ export async function setupDiagramEditorControls(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.moveCursorToNode, async ({ nodeName }: { nodeName: string }) => {
-      console.log("vscode moveCursorToNode command called with nodeName", nodeName);
-    })
+    vscode.commands.registerCommand(
+      COMMAND_IDS.moveCursorToNode,
+      async ({ nodeName, documentUri }: { nodeName: string; documentUri: string }) => {
+        const textEditor = vscode.window.visibleTextEditors.filter(
+          (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
+        )[0];
+
+        if (!textEditor) {
+          console.debug("TextEditor not found");
+          return;
+        }
+
+        const resourceUri = textEditor.document.uri;
+        const fileLanguage = getFileLanguage(textEditor.document.fileName);
+
+        if (!fileLanguage) {
+          return;
+        }
+
+        const targetPosition = findPositionByStateName(textEditor.document.getText(), nodeName, fileLanguage);
+
+        if (targetPosition === null) {
+          return;
+        }
+
+        await vscode.commands.executeCommand("vscode.open", resourceUri, {
+          viewColumn: textEditor.viewColumn,
+          preserveFocus: false,
+        } as vscode.TextDocumentShowOptions);
+
+        const vsPosition = new vscode.Position(targetPosition.line - 1, targetPosition.character - 1);
+
+        if (!vscode.window.activeTextEditor) {
+          return;
+        }
+        vscode.window.activeTextEditor.selections = [new vscode.Selection(vsPosition, vsPosition)];
+      }
+    )
   );
 
   if (vscode.window.activeTextEditor) {

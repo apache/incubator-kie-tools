@@ -16,6 +16,7 @@
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
@@ -25,6 +26,7 @@ initJsonSchemaDiagnostics();
 initYamlSchemaDiagnostics();
 
 export interface SwfTextEditorApi {
+  editor: editor.IStandaloneCodeEditor | undefined;
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
   undo: () => void;
   redo: () => void;
@@ -53,7 +55,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
   constructor(
     content: string,
     private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
-    private readonly language: string,
+    private readonly language: FileLanguage,
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
     private readonly setValidationErrors: (errors: editor.IMarker[]) => void

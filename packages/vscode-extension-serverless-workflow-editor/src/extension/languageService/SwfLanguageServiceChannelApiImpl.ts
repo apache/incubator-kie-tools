@@ -40,7 +40,7 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     return this.args.ls.getCodeLenses(args);
   }
 
-  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string }): void {
+  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
     vscode.commands.executeCommand(COMMAND_IDS.moveCursorToNode, args);
   }
 }
