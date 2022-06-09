@@ -87,8 +87,8 @@ module.exports = async (env) => {
           { from: "./static/env.json", to: "./env.json" },
           // dashbuilder bundle
           {
-            from: "../dashbuilder-editor/dist/dashbuilder-runtime-client",
-            to: "./dashbuilder-runtime-client",
+            from: "../dashbuilder-client/dist/",
+            to: "./dashbuilder-client",
             globOptions: { ignore: ["**/WEB-INF/**/*"] },
           },
         ],
