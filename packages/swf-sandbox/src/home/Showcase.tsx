@@ -24,6 +24,7 @@ import { ReactComponent as FillGlassOfWaterSvg } from "../../static/samples/fill
 import { ReactComponent as TemperatureConversionSvg } from "../../static/samples/temperature-conversion/temperature-conversion.svg";
 import { ReactComponent as ProductsDashboardSvg } from "../../static/samples/products-dashboard/products-dashboard.svg";
 import { ReactComponent as SwfReportSvg } from "../../static/samples/swf-report/swf-report.svg";
+import { ReactComponent as KitchensinkSvg } from "../../static/samples/kitchensink/kitchensink.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 
 export const samples: Array<Sample> = [
@@ -33,6 +34,13 @@ export const samples: Array<Sample> = [
     svg: GreetingsSvg,
     description: `This example shows a single Operation State with one action that calls the "greeting" function. The workflow data input is assumed to be the name of the person to greet. The results of the action is assumed to be the greeting for the provided persons name, which is added to the states data and becomes the workflow data output.`,
     type: SampleType.SW_JSON,
+  },
+  {
+    name: "Dashbuilder Kitchensink",
+    fileName: "kitchensink",
+    svg: KitchensinkSvg,
+    description: `Explore all Dashbuilder components. Navigate in tabs to learn about Dashbuilder concepts and check how to use and the look of all visual components available for use in Dashbuilder.`,
+    type: SampleType.DASH_YML,
   },
   {
     name: "Greetings with Kafka events",

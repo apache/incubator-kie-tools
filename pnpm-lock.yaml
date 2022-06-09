@@ -965,6 +965,17 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
+  packages/dashbuilder-swf-monitoring-dashboard:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-client": 0.0.0
+    dependencies:
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
   packages/desktop:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
@@ -1771,6 +1782,9 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-swf-monitoring-dashboard": 0.0.0
+    dependencies:
+      "@kie-tools/dashbuilder-swf-monitoring-dashboard": link:../dashbuilder-swf-monitoring-dashboard
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -8183,7 +8197,8 @@ packages:
     dev: true
 
   /boolbase/1.0.0:
-    resolution: { integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24= }
+    resolution:
+      { integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww== }
     dev: true
 
   /boolean/3.0.4:
@@ -13503,7 +13518,8 @@ packages:
     dev: true
 
   /is-arrayish/0.2.1:
-    resolution: { integrity: sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0= }
+    resolution:
+      { integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg== }
 
   /is-bigint/1.0.2:
     resolution:
@@ -15178,7 +15194,8 @@ packages:
     dev: true
 
   /lines-and-columns/1.1.6:
-    resolution: { integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA= }
+    resolution:
+      { integrity: sha512-8ZmlJFVK9iCmtLz19HpSsR8HaAMWBT284VMNednLwlIMDP2hJDCIhUp0IZ2xUcZ+Ob6BM0VvCSJwzASDM45NLQ== }
 
   /linkify-it/2.2.0:
     resolution:
