@@ -120,7 +120,7 @@ export class OpenShiftService {
           return {
             resourceName: kns.metadata.name,
             uri: kns.metadata.annotations[RESOURCE_URI],
-            baseUrl: `${kns.status.url}/q/swagger-ui`,
+            baseUrl: kns.status.url,
             creationTimestamp: new Date(kns.metadata.creationTimestamp),
             state: this.extractDeploymentState(deployment, build),
             workspaceName: kns.metadata.annotations[RESOURCE_WORKSPACE_NAME],

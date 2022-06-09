@@ -108,7 +108,7 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
   }, [props.deployment.state, props.id]);
 
   const onItemClicked = useCallback(() => {
-    window.open(`${props.deployment.baseUrl}`, "_blank");
+    window.open(`${props.deployment.baseUrl}/metrics/index.html`, "_blank");
   }, [props.deployment.baseUrl]);
 
   return (

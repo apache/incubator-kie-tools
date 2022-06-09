@@ -20,9 +20,9 @@ RUN mkdir /tmp/sandbox/
 
 WORKDIR /tmp/sandbox/
 
-COPY dist-dev/mvnw mvnw
-COPY dist-dev/.mvn/ .mvn/
-COPY dist-dev/metrics/ metrics/
+COPY --chown=185:root dist-dev/mvnw mvnw
+COPY --chown=185:root dist-dev/.mvn/ .mvn/
+COPY --chown=185:root dist-dev/metrics/ metrics/
 
 RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
   -DplatformVersion=${QUARKUS_PLATFORM_VERSION} \
@@ -34,11 +34,11 @@ RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
   && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true' >> src/main/resources/application.properties \
   && rm -rf src/main/docker/ src/main/java/ src/test/  \
   && echo "<a href='/metrics/index.html'>Metrics</a>" > src/main/resources/META-INF/resources/index.html \
-  && cp -R ../metrics/ src/main/resources/META-INF/resources/ \
+  && mv ../metrics/ src/main/resources/META-INF/resources/ \
   && sed  -i "s/<dependencies>/<dependencies>\n    <dependency>\n      <groupId>org.kie.kogito<\/groupId>\n      <artifactId>kogito-addons-quarkus-monitoring-prometheus<\/artifactId>\n      <version>1.22.1.Final<\/version>\n    <\/dependency>/g" pom.xml \
   && ./mvnw clean package -B -ntp \
   && cp target/quarkus-app/*.jar /deployments/ \
   && cp -R target/quarkus-app/lib/ /deployments/ \
   && cp -R target/quarkus-app/app/ /deployments/ \
   && cp -R target/quarkus-app/quarkus/ /deployments/ \
-  && rm -fr target
+  && rm -rf target/

@@ -125,7 +125,7 @@ digraph G {
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
-  "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-api" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-echarts" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-svg-heatmap" [ style = "solid", color = "black" ];
@@ -157,7 +157,7 @@ digraph G {
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
-  "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-form-webapp" [ style = "solid", color = "black" ];
@@ -218,7 +218,7 @@ digraph G {
   "@kie-tools/pmml-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/pmml-editor-marshaller" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/run-script-if" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
-  "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
