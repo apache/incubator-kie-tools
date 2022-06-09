@@ -68,7 +68,7 @@ public class Workflow {
     /**
      * Workflow start definition.
      */
-    public String start;
+    public Object start;
 
     /**
      * Workflow event definitions.
@@ -103,11 +103,11 @@ public class Workflow {
         return this;
     }
 
-    public String getStart() {
+    public Object getStart() {
         return start;
     }
 
-    public Workflow setStart(String start) {
+    public Workflow setStart(Object start) {
         this.start = start;
         return this;
     }

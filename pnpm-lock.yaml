@@ -682,6 +682,17 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
+  packages/dashbuilder-client:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder": 0.0.0
+    dependencies:
+      "@kie-tools/dashbuilder": link:../dashbuilder
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
   packages/dashbuilder-component-api:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
@@ -913,7 +924,7 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder": 0.0.0
+      "@kie-tools/dashbuilder-client": 0.0.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       monaco-editor: ^0.33.0
@@ -929,7 +940,7 @@ importers:
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/dashbuilder": link:../dashbuilder
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0

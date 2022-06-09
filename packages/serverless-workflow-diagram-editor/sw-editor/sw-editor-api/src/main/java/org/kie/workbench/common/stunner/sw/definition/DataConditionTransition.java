@@ -76,13 +76,13 @@ public class DataConditionTransition {
      * Defines what to do if condition is true.
      * Transitions to another state if set.
      */
-    public String transition;
+    public Object transition;
 
     /**
      * Defines what to do if condition is true.
      * End the workflow if set to true.
      */
-    public boolean end;
+    public Object end;
 
     public DataConditionTransition() {
     }
@@ -103,19 +103,19 @@ public class DataConditionTransition {
         this.condition = condition;
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
     }
 
-    public boolean isEnd() {
-        return end;
+    public Object isEnd() {
+        return false;
     }
 
-    public void setEnd(boolean end) {
+    public void setEnd(Object end) {
         this.end = end;
     }
 

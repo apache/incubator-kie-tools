@@ -75,23 +75,23 @@ public class EventConditionTransition {
      * Defines what to do if condition is true.
      * Transitions to another state if set.
      */
-    public String transition;
+    public Object transition;
 
     /**
      * Defines what to do if condition is true.
      * End the workflow if set to true.
      */
-    public boolean end;
+    public Object end;
 
     public EventConditionTransition() {
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEventRef() {
@@ -102,19 +102,19 @@ public class EventConditionTransition {
         this.eventRef = eventRef;
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
     }
 
-    public boolean isEnd() {
+    public Object isEnd() {
         return end;
     }
 
-    public void setEnd(boolean end) {
+    public void setEnd(Object end) {
         this.end = end;
     }
 

@@ -48,11 +48,12 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> START_NODE_UNMARSHALLER =
             (context, workflow) -> {
+                String start = DefinitionTypeUtils.getStart(workflow.getStart());
                 Node startNode = null;
-                if (isValidString(workflow.getStart())) {
+                if (isValidString(start)) {
                     startNode = context.addNode(STATE_START, new Start());
                     StartTransition tStart = new StartTransition();
-                    tStart.setTransition(workflow.start);
+                    tStart.setTransition(start);
                     context.sourceNode = startNode;
                     Edge startEdge = unmarshallEdge(context, tStart);
                     context.sourceNode = null;

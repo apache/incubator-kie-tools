@@ -56,16 +56,16 @@ public class StartTransition {
      * References of the target state.
      */
     @JsIgnore
-    public String transition;
+    public Object transition;
 
     public StartTransition() {
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
     }
 
