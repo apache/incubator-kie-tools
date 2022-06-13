@@ -56,6 +56,10 @@ public class MarshallerUtils {
         return (T) instance;
     }
 
+    public static <T> T parse(T instance, T jso) {
+        return nativeMerge(instance, jso);
+    }
+
     private static <T> T stunnerMerge(DefinitionManager definitionManager, Object instance, Object jso) {
         JsPropertyMap<Object> instanceMap = Js.asPropertyMap(instance);
         JsPropertyMap<Object> jsoMap = Js.asPropertyMap(jso);

@@ -35,23 +35,29 @@ import org.kie.workbench.common.stunner.core.client.command.CanvasCommandFactory
 import org.kie.workbench.common.stunner.core.client.command.QueueGraphExecutionContext;
 import org.kie.workbench.common.stunner.core.client.shape.ElementShape;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
+import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
+import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.ContextualGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.processing.index.GraphIndexBuilder;
 import org.kie.workbench.common.stunner.core.graph.processing.index.MutableIndex;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleManager;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.uberfire.mvp.Command;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BaseCanvasHandlerTest {
@@ -95,24 +101,21 @@ public class BaseCanvasHandlerTest {
     private QueueGraphExecutionContext queueGraphExecutionContext;
 
     @Mock
-    private ContextualGraphCommandExecutionContext contextualGraphExecutionContext;
-
-    @Mock
     private CanvasElementListener updateListener;
 
     @Before
     public void setup() {
-        canvasHandler = new CanvasHandlerImpl(clientDefinitionManager,
-                                              commandFactory,
-                                              ruleManager,
-                                              graphUtils,
-                                              indexBuilder,
-                                              shapeManager,
-                                              textPropertyProviderFactory,
-                                              canvasElementAddedEvent,
-                                              canvasElementRemovedEvent,
-                                              canvasElementUpdatedEvent,
-                                              canvasElementsClearEvent);
+        canvasHandler = spy(new CanvasHandlerImpl(clientDefinitionManager,
+                                                  commandFactory,
+                                                  ruleManager,
+                                                  graphUtils,
+                                                  indexBuilder,
+                                                  shapeManager,
+                                                  textPropertyProviderFactory,
+                                                  canvasElementAddedEvent,
+                                                  canvasElementRemovedEvent,
+                                                  canvasElementUpdatedEvent,
+                                                  canvasElementsClearEvent));
     }
 
     @Test
@@ -134,7 +137,6 @@ public class BaseCanvasHandlerTest {
 
     @Test
     public void checkApplyElementMutationNotifyQueued() {
-        canvasHandler.setStaticContext(queueGraphExecutionContext);
         final ElementShape shape = mock(ElementShape.class);
         final Element candidate = mock(Element.class);
         final boolean applyPosition = true;
@@ -148,12 +150,11 @@ public class BaseCanvasHandlerTest {
 
         verify(shape, atLeastOnce()).applyPosition(any(), any());
         verify(canvasElementUpdatedEvent, atLeastOnce()).fire(any());
-        verify(queueGraphExecutionContext, times(1)).addElement(candidate);
+        verify(queueGraphExecutionContext, never()).addElement(candidate);
     }
 
     @Test
     public void checkApplyElementMutationNullQueue() {
-        canvasHandler.setStaticContext(null);
         final ElementShape shape = mock(ElementShape.class);
         final Element candidate = mock(Element.class);
         final boolean applyPosition = true;
@@ -173,7 +174,6 @@ public class BaseCanvasHandlerTest {
     @Test
     public void checkNotifyElementUpdatedOnNonQueuedContext() {
         canvasHandler.addRegistrationListener(updateListener);
-        canvasHandler.setStaticContext(contextualGraphExecutionContext);
         final ElementShape shape = mock(ElementShape.class);
         final Element candidate = mock(Element.class);
         final boolean applyPosition = true;
@@ -198,5 +198,28 @@ public class BaseCanvasHandlerTest {
 
         canvasHandler.doBatchUpdate(updatedElements);
         verify(updateListener, times(1)).updateBatch(any());
+    }
+
+    @Test
+    public void checkGraphIndexDereference() {
+        final Command loadCallback = mock(Command.class);
+        final Diagram diagram = mock(Diagram.class);
+        MutableIndex graphIndex0 = mock(MutableIndex.class);
+        MutableIndex graphIndex1 = mock(MutableIndex.class);
+
+        when(canvasHandler.getDiagram()).thenReturn(diagram);
+        when(diagram.getGraph()).thenReturn(mock(Graph.class));
+        doNothing().when(loadCallback).execute();
+
+        when(indexBuilder.build(any(Graph.class))).thenReturn(graphIndex0);
+        canvasHandler.buildGraphIndex(loadCallback);
+
+        when(indexBuilder.build(any(Graph.class))).thenReturn(graphIndex1);
+        canvasHandler.buildGraphIndex(loadCallback);
+
+        verify(graphIndex0, times(1)).clear();
+        verify(graphIndex1, never()).clear();
+        assertNotEquals(graphIndex0, canvasHandler.getGraphIndex());
+        verify((CanvasHandlerImpl) canvasHandler, times(2)).cleanGraphIndex();
     }
 }
