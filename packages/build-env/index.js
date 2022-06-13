@@ -278,6 +278,11 @@ const ENV_VARS = {
     default: undefined,
     description: "",
   },
+  SERVERLESS_LOGIC_SANDBOX__deploymentGtmId: {
+    name: "SERVERLESS_LOGIC_SANDBOX__deploymentGtmId",
+    default: undefined,
+    description: "",
+  },
   SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
     name: "SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion",
     default: "2.9.2.Final",
@@ -486,6 +491,12 @@ module.exports = {
   serverlessLogicSandbox: {
     buildInfo: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__buildInfo),
     gtmId: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__gtmId),
+    deployment: {
+      gtmId: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__deploymentGtmId),
+      dev: {
+        port: 9021,
+      },
+    },
     dev: {
       port: 9020,
     },

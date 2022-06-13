@@ -22,7 +22,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { basename } from "path";
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import { OpenShiftDeployedModel, OpenShiftDeployedModelState } from "./OpenShiftDeployedModel";
 
 interface Props {
@@ -107,16 +107,12 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
     );
   }, [props.deployment.state, props.id]);
 
-  const onItemClicked = useCallback(() => {
-    window.open(`${props.deployment.baseUrl}/metrics/index.html`, "_blank");
-  }, [props.deployment.baseUrl]);
-
   return (
     <DropdownItem
       id="openshift-deployment-item-button"
       key={`openshift-dropdown-item-${props.id}`}
       isDisabled={props.deployment.state === OpenShiftDeployedModelState.ERROR}
-      onClick={onItemClicked}
+      onClick={() => window.open(props.deployment.baseUrl, "_blank")}
       description={`Created at ${props.deployment.creationTimestamp.toLocaleString()}`}
       icon={stateIcon}
     >
