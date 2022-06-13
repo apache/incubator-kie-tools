@@ -16,6 +16,28 @@
 
 set -e
 
+script_dir_path=`dirname "${BASH_SOURCE[0]}"`
+source ${script_dir_path}/rhpam-env.sh
+
+# update opreator name.version
+sed -i "s/rhpam-kogito-operator.v$(getOperatorVersion)/rhpam-kogito-operator.$(getOperatorCsvVersion)/" $(getBundleCsvFile)
+
+# update selector operated-by
+sed -i "s/operated-by: rhpam-kogito-operator.0.0.0/operated-by: rhpam-kogito-operator.$(getOperatorCsvVersion)/" $(getBundleCsvFile)
+
+# update the replaces field
+sed -i "s/replaces: rhpam-kogito-operator.0.0.0/replaces: rhpam-kogito-operator.$(getOperatorPriorCsvVersion)/" $(getBundleCsvFile)
+
+# update csv version
+sed -i "s/version: $(getOperatorVersion)/version: $(getOperatorCsvVersion)/" $(getBundleCsvFile)
+
+# update operator image
+sed -i  "s|registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator.*|${1}|g" $(getBundleCsvFile)
+
+# replaces the IMAGE_REGISTRY registry value from stage to production
+sed -i '/name: IMAGE_REGISTRY/{n;s/registry.stage.redhat.io/registry.redhat.io/}' $(getBundleCsvFile)
+sed -i '/name: IMAGE_REGISTRY/{n;s/registry.stage.redhat.io/registry.redhat.io/}' rhpam-operator.yaml
+
 
 # The script will update the containerImage inside CSV and remove the replaces field
 if [[ -z ${1} ]]; then
@@ -24,11 +46,4 @@ if [[ -z ${1} ]]; then
 fi
 
 echo "Will update the bundle CSV with ${1} image"
-
-## update the image
-sed -i  "s|registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator.*|${1}|g" bundle/rhpam/manifests/rhpam-kogito-operator.clusterserviceversion.yaml
-
-## remove the replaces field
-sed -i "/replaces.*/d" bundle/rhpam/manifests/rhpam-kogito-operator.clusterserviceversion.yaml
-
 echo "Bundle CSV updated"

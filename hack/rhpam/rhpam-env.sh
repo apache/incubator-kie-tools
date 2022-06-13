@@ -21,8 +21,19 @@ DEPENDENT_CRDS_KEYS=(grafana hyperfoil infinispan kafka keycloak knative kogito 
 DEPENDENT_SENSITIVE_CRDS_KEYS=(prometheus)
 
 getOperatorVersion() {
-  local version=$(grep -m 1 'Version =' version/rhpam/version.go) && version=$(echo ${version#*=} | tr -d '"' | tr -d ' ')
-  echo "${version}"
+  echo $(go run version/getrhpamversion.go)
+}
+
+getOperatorCsvVersion() {
+  echo $(go run version/getrhpamversion.go --csv)
+}
+
+getOperatorPriorVersion() {
+  echo $(go run version/getrhpamversion.go --prior)
+}
+
+getOperatorPriorCsvVersion(){
+  echo $(go run version/getrhpamversion.go --csvPrior)
 }
 
 getCsvFile() {
@@ -32,6 +43,11 @@ getCsvFile() {
 getBundleCsvFile() {
   echo "${BUNDLE_CSV_DIR}/rhpam-kogito-operator.clusterserviceversion.yaml"
 }
+
+getRhpamManagerFile() {
+  echo "${MANAGER_RHPAM_DIR}/kustomization.yaml"
+}
+
 
 getAllDependentCrds() {
   for crdKey in ${DEPENDENT_CRDS_KEYS[*]}
