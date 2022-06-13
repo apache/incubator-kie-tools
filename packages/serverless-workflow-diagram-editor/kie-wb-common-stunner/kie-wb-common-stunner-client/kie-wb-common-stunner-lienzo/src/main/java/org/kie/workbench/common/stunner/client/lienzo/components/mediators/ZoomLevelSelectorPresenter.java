@@ -108,7 +108,7 @@ public class ZoomLevelSelectorPresenter {
         selector
                 .setText(parseLevel(1))
                 .dropUp()
-                .onReset(this::reset)
+                .onScaleToFitSize(this::scaleToFitPanel)
                 .onIncreaseLevel(this::increaseLevel)
                 .onDecreaseLevel(this::decreaseLevel)
                 .add(LEVEL_25, () -> setLevel(0.25))
@@ -236,9 +236,13 @@ public class ZoomLevelSelectorPresenter {
         return computeLevel(getLayer().getViewport());
     }
 
-    private void reset() {
-        PanelTransformUtils.reset(getLayer().getViewport());
-        getLayer().batch();
+    private void scaleToFitPanel() {
+        final LienzoPanel panel = getPanel();
+        if (panel.getView() instanceof ScrollablePanel) {
+            final ScrollablePanel scrollablePanel = (ScrollablePanel) panel.getView();
+            PanelTransformUtils.scaleToFitPanel(scrollablePanel);
+            getLayer().batch();
+        }
     }
 
     private double setLevel(final double level) {

@@ -20,6 +20,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 
 public class PanelTransformUtils {
 
@@ -42,6 +43,15 @@ public class PanelTransformUtils {
 
     public static void reset(final Viewport viewport) {
         viewport.setTransform(new Transform());
+    }
+
+    public static double scaleToFitPanel(ScrollablePanel scrollablePanel) {
+        double scale = PanelTransformUtils.computeZoomLevelFitToWidth(scrollablePanel);
+        if (scale > 0) {
+            PanelTransformUtils.setScaleLevel(scrollablePanel.getViewport(), scale);
+            scrollablePanel.resetScrollPositionToZero();
+        }
+        return scale;
     }
 
     public static double computeZoomLevelFitToWidth(final LienzoBoundsPanel panel) {
