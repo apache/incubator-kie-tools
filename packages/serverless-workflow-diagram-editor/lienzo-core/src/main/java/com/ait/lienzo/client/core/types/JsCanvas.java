@@ -311,4 +311,13 @@ public class JsCanvas implements JsCanvasNodeLister {
         }
         return ids;
     }
+
+    public void close() {
+        if (null != layer) {
+            layer.clear();
+            layer = null;
+        }
+        panel = null;
+        stateApplier = null;
+    }
 }
