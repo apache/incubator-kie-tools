@@ -24,22 +24,22 @@ export function initAugmentationCommands(
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
 ): SwfLanguageServiceCommandIds {
   return {
-    "swf.ls.commands.RefreshServiceRegistry": editorInstance.addCommand(
+    "swf.ls.commands.RefreshServiceRegistries": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistry"]) => {
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistries"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
       }
     )!,
-    "swf.ls.commands.LogInServiceRegistry": editorInstance.addCommand(
+    "swf.ls.commands.LogInServiceRegistries": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistry"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistry.send();
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistries"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
       }
     )!,
-    "swf.ls.commands.OpenServiceRegistryConfig": editorInstance.addCommand(
+    "swf.ls.commands.OpenServiceRegistriesConfig": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistryConfig"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistrySettings.send();
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistriesConfig"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
       }
     )!,
     "swf.ls.commands.ImportFunctionFromCompletionItem": editorInstance.addCommand(

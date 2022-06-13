@@ -17,15 +17,15 @@
 import * as vscode from "vscode";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../configuration";
 import { COMMAND_IDS } from "../commandIds";
-import { ServiceRegistryStore } from "./serviceRegistry";
+import { ServiceRegistriesStore } from "./serviceRegistry";
 
 export function setupServiceRegistryIntegrationCommands(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  serviceRegistryStore: ServiceRegistryStore;
+  serviceRegistryStore: ServiceRegistriesStore;
 }) {
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistryLogin, () => {
+    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistriesLogin, () => {
       args.serviceRegistryStore.authProviders
         .filter((authProvider) => authProvider.shouldLogin())
         .forEach(async (authProvider) => authProvider.login());
@@ -33,17 +33,17 @@ export function setupServiceRegistryIntegrationCommands(args: {
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistryRefresh, () => {
+    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistriesRefresh, () => {
       vscode.window.setStatusBarMessage("Serverless Workflow Editor: Refreshing...");
       args.serviceRegistryStore.refresh().then(() => vscode.window.setStatusBarMessage(""));
     })
   );
 
   args.context.subscriptions.push(
-    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistryConfig, () => {
+    vscode.commands.registerCommand(COMMAND_IDS.serviceRegistriesConfig, () => {
       vscode.commands.executeCommand(
         "workbench.action.openSettings",
-        `@id:${CONFIGURATION_SECTIONS.serviceRegistrySettings}`
+        `@id:${CONFIGURATION_SECTIONS.serviceRegistriesSettings}`
       );
     })
   );

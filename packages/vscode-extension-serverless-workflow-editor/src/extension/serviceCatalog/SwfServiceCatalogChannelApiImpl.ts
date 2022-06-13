@@ -39,7 +39,7 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   }
 
   public kogitoSwfServiceCatalog_refresh(): void {
-    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryRefresh);
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesRefresh);
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
@@ -49,15 +49,15 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     this.args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(args);
   }
 
-  kogitoSwfServiceCatalog_logInServiceRegistry(): void {
-    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryLogin);
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesLogin);
   }
 
-  kogitoSwfServiceCatalog_serviceRegistrySettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return { defaultValue: this.args.configuration.getServiceRegistrySettings() };
   }
 
-  kogitoSwfServiceCatalog_setupServiceRegistrySettings(): void {
-    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryConfig);
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesConfig);
   }
 }

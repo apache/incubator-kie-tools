@@ -33,9 +33,9 @@ export type SwfLanguageServiceCommandTypes =
   | "swf.ls.commands.OpenFunctionsWidget"
   | "swf.ls.commands.OpenStatesWidget"
   | "swf.ls.commands.OpenFunctionsCompletionItems"
-  | "swf.ls.commands.OpenServiceRegistryConfig"
-  | "swf.ls.commands.LogInServiceRegistry"
-  | "swf.ls.commands.RefreshServiceRegistry";
+  | "swf.ls.commands.OpenServiceRegistriesConfig"
+  | "swf.ls.commands.LogInServiceRegistries"
+  | "swf.ls.commands.RefreshServiceRegistries";
 
 export type SwfLanguageServiceCommandArgs = {
   "swf.ls.commands.ImportFunctionFromCompletionItem": {
@@ -45,9 +45,9 @@ export type SwfLanguageServiceCommandArgs = {
   "swf.ls.commands.OpenFunctionsWidget": { position: Position };
   "swf.ls.commands.OpenStatesWidget": { position: Position };
   "swf.ls.commands.OpenFunctionsCompletionItems": { newCursorPosition: Position };
-  "swf.ls.commands.OpenServiceRegistryConfig": {};
-  "swf.ls.commands.LogInServiceRegistry": {};
-  "swf.ls.commands.RefreshServiceRegistry": {};
+  "swf.ls.commands.OpenServiceRegistriesConfig": {};
+  "swf.ls.commands.LogInServiceRegistries": {};
+  "swf.ls.commands.RefreshServiceRegistries": {};
 };
 
 export type SwfLanguageServiceCommandIds = Record<SwfLanguageServiceCommandTypes, string>;

@@ -16,38 +16,38 @@
 
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
-import { ServiceRegistryStore } from "./serviceRegistry";
+import { ServiceRegistriesStore } from "./serviceRegistry";
 
 export class SwfServiceCatalogStore {
   private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
 
   constructor(
     private readonly args: {
-      serviceRegistryStore: ServiceRegistryStore;
+      serviceRegistriesStore: ServiceRegistriesStore;
     }
   ) {}
 
   public get storedServices() {
-    return this.args.serviceRegistryStore.storedServices;
+    return this.args.serviceRegistriesStore.storedServices;
   }
 
   public get isServiceRegistryConfigured() {
-    return this.args.serviceRegistryStore.isConfigured;
+    return this.args.serviceRegistriesStore.isConfigured;
   }
 
   public get shouldLoginServices() {
-    return this.args.serviceRegistryStore.shouldLoginServices;
+    return this.args.serviceRegistriesStore.shouldLoginServices;
   }
 
   public get canRefreshServices() {
-    return this.args.serviceRegistryStore.canRefreshServices;
+    return this.args.serviceRegistriesStore.canRefreshServices;
   }
 
   public async init() {
-    this.args.serviceRegistryStore.subscribeToNewServices((swfServices) => {
+    this.args.serviceRegistriesStore.subscribeToNewServices((swfServices) => {
       return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription(this.storedServices)));
     });
-    await this.args.serviceRegistryStore.init();
+    await this.args.serviceRegistriesStore.init();
   }
 
   public subscribeToNewServices(subs: (services: SwfServiceCatalogService[]) => Promise<any>) {
@@ -62,10 +62,10 @@ export class SwfServiceCatalogStore {
   }
 
   public async refresh() {
-    return this.args.serviceRegistryStore.refresh();
+    return this.args.serviceRegistriesStore.refresh();
   }
 
   public dispose() {
-    this.args.serviceRegistryStore.dispose();
+    this.args.serviceRegistriesStore.dispose();
   }
 }

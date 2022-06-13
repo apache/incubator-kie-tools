@@ -25,6 +25,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
+import { SwfJsonLanguageServiceConfig } from "../src/channel";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",
@@ -54,12 +55,12 @@ const defaultServiceCatalogConfig = {
     `${serviceId}.yaml`,
 };
 
-const defaultConfig = {
-  isServiceRegistryConfigured: () => true,
-  shouldServiceRegistryLogIn: () => false,
+const defaultConfig: SwfJsonLanguageServiceConfig = {
+  shouldConfigureServiceRegistries: () => false,
+  shouldServiceRegistriesLogIn: () => false,
   canRefreshServices: () => false,
   getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
-  shouldDisplayServiceRegistryIntegration: async () => true,
+  shouldDisplayServiceRegistriesIntegration: async () => true,
   shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
 };
 
@@ -134,15 +135,15 @@ describe("SWF LS", () => {
     } as CodeLens);
   });
 
-  test("functions code lenses (service registry integration disabled)", async () => {
+  test("functions code lenses (service registries integration disabled)", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: {
         ...defaultConfig,
-        shouldDisplayServiceRegistryIntegration: async () => Promise.resolve(false),
-        isServiceRegistryConfigured: () => false,
-        shouldServiceRegistryLogIn: () => true,
+        shouldDisplayServiceRegistriesIntegration: async () => Promise.resolve(false),
+        shouldConfigureServiceRegistries: () => true,
+        shouldServiceRegistriesLogIn: () => true,
         canRefreshServices: () => true,
       },
     });
@@ -165,11 +166,11 @@ describe("SWF LS", () => {
     } as CodeLens);
   });
 
-  test("functions code lenses (login to service registry)", async () => {
+  test("functions code lenses (login to service registries)", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
-      config: { ...defaultConfig, shouldServiceRegistryLogIn: () => true },
+      config: { ...defaultConfig, shouldServiceRegistriesLogIn: () => true },
     });
 
     const { content } = trim(`
@@ -183,8 +184,8 @@ describe("SWF LS", () => {
     expect(codeLenses[0]).toStrictEqual({
       range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
       command: {
-        command: "swf.ls.commands.LogInServiceRegistry",
-        title: "↪ Log in Service Registry...",
+        command: "swf.ls.commands.LogInServiceRegistries",
+        title: "↪ Log in Service Registries...",
         arguments: [{ position: { character: 15, line: 1 } }],
       },
     });
@@ -198,13 +199,13 @@ describe("SWF LS", () => {
     } as CodeLens);
   });
 
-  test("functions code lenses (setup service registry)", async () => {
+  test("functions code lenses (setup service registries)", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
       config: {
         ...defaultConfig,
-        isServiceRegistryConfigured: () => false,
+        shouldConfigureServiceRegistries: () => true,
       },
     });
 
@@ -219,8 +220,8 @@ describe("SWF LS", () => {
     expect(codeLenses[0]).toStrictEqual({
       range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
       command: {
-        command: "swf.ls.commands.OpenServiceRegistryConfig",
-        title: "↪ Setup Service Registry...",
+        command: "swf.ls.commands.OpenServiceRegistriesConfig",
+        title: "↪ Setup Service Registries...",
         arguments: [{ position: { character: 15, line: 1 } }],
       },
     });
@@ -234,7 +235,7 @@ describe("SWF LS", () => {
     } as CodeLens);
   });
 
-  test("functions code lenses (refresh service registry)", async () => {
+  test("functions code lenses (refresh service registries)", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
@@ -255,8 +256,8 @@ describe("SWF LS", () => {
     expect(codeLenses[0]).toStrictEqual({
       range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
       command: {
-        command: "swf.ls.commands.RefreshServiceRegistry",
-        title: "↺ Refresh Service Registry",
+        command: "swf.ls.commands.RefreshServiceRegistries",
+        title: "↺ Refresh Service Registries...",
         arguments: [{ position: { character: 15, line: 1 } }],
       },
     });

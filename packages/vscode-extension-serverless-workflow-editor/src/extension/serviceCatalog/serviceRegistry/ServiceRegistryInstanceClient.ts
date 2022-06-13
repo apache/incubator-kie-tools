@@ -31,7 +31,7 @@ export class ServiceRegistryInstanceClient {
     private readonly args: {
       name: string;
       url: string;
-      authProvider?: AuthProvider;
+      authProvider: AuthProvider;
     }
   ) {}
 
@@ -44,15 +44,14 @@ export class ServiceRegistryInstanceClient {
   }
 
   public async getSwfServiceCatalogServices(): Promise<SwfServiceCatalogService[]> {
-    const baseOptions: any = {};
-    if (this.args.authProvider) {
-      baseOptions.headers = await this.args.authProvider.getAuthHeader();
-    }
+    const headers = await this.args.authProvider.getAuthHeader();
 
     const artifactsApi: ArtifactsApi = new ArtifactsApi(
       new Configuration({
         basePath: this.args.url,
-        baseOptions,
+        baseOptions: {
+          headers,
+        },
       })
     );
 

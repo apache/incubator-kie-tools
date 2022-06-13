@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-export * from "./ServiceRegistriesStore";
+import { AuthProvider } from "./AuthProvider";
+import * as vscode from "vscode";
 
-export function getServiceFileNameFromSwfServiceCatalogServiceId(
-  registryName: string,
-  swfServiceCatalogServiceId: string
-) {
-  return `${registryName}__${swfServiceCatalogServiceId}__latest.yaml`;
+export class NoOpAuthProvider implements AuthProvider {
+  public getAuthHeader(): Promise<any> {
+    return Promise.resolve({});
+  }
+
+  public login(): Promise<void> {
+    return Promise.resolve();
+  }
+
+  public shouldLogin(): boolean {
+    return false;
+  }
+
+  public subscribeToSessionChange(substrciption: () => void): vscode.Disposable {
+    return {
+      dispose: () => {},
+    };
+  }
 }

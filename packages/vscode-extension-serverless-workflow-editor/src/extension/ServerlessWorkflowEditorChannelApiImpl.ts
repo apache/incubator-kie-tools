@@ -172,15 +172,15 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
   }
 
-  public kogitoSwfServiceCatalog_logInServiceRegistry(): void {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInServiceRegistry();
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInServiceRegistries();
   }
 
-  public kogitoSwfServiceCatalog_serviceRegistrySettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistrySettings();
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistriesSettings();
   }
 
-  public kogitoSwfServiceCatalog_setupServiceRegistrySettings(): void {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistrySettings();
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
 }

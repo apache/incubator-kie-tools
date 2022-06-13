@@ -55,14 +55,14 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     "swf.ls.commands.OpenStatesWidget": (cmdArgs) => {
       console.info("No op");
     },
-    "swf.ls.commands.OpenServiceRegistryConfig": () => {
-      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryConfig);
+    "swf.ls.commands.OpenServiceRegistriesConfig": () => {
+      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesConfig);
     },
-    "swf.ls.commands.LogInServiceRegistry": () => {
-      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryLogin);
+    "swf.ls.commands.LogInServiceRegistries": () => {
+      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesLogin);
     },
-    "swf.ls.commands.RefreshServiceRegistry": () => {
-      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistryRefresh);
+    "swf.ls.commands.RefreshServiceRegistries": () => {
+      vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesRefresh);
     },
   };
 

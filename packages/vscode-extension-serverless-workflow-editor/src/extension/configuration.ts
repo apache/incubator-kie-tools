@@ -24,7 +24,7 @@ import { SwfServiceRegistriesSettings } from "@kie-tools/serverless-workflow-ser
 export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
 
 export const CONFIGURATION_SECTIONS = {
-  serviceRegistrySettings: "kogito.sw.serviceRegistry",
+  serviceRegistriesSettings: "kogito.sw.serviceRegistries",
   specsStoragePath: "kogito.sw.specsStoragePath",
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls",
   automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor",
@@ -39,7 +39,9 @@ export enum ShouldOpenDiagramEditorAutomaticallyConfiguration {
 
 export class SwfVsCodeExtensionConfiguration {
   public getServiceRegistrySettings(): SwfServiceRegistriesSettings {
-    return vscode.workspace.getConfiguration().get(CONFIGURATION_SECTIONS.serviceRegistrySettings, { registries: [] });
+    return vscode.workspace
+      .getConfiguration()
+      .get(CONFIGURATION_SECTIONS.serviceRegistriesSettings, { registries: [] });
   }
 
   public shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor(): ShouldOpenDiagramEditorAutomaticallyConfiguration {

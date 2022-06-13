@@ -29,7 +29,7 @@ import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorS
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
 import { COMMAND_IDS } from "./commandIds";
-import { ServiceRegistryStore } from "./serviceCatalog/serviceRegistry";
+import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -44,12 +44,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const configuration = new SwfVsCodeExtensionConfiguration();
 
-  const serviceRegistryStore = new ServiceRegistryStore({
+  const serviceRegistriesStore = new ServiceRegistriesStore({
     configuration,
     context,
   });
 
-  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ serviceRegistryStore });
+  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ serviceRegistriesStore: serviceRegistriesStore });
   await swfServiceCatalogGlobalStore.init();
   console.info(
     `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
@@ -100,7 +100,7 @@ export async function activate(context: vscode.ExtensionContext) {
   setupServiceRegistryIntegrationCommands({
     context,
     configuration,
-    serviceRegistryStore,
+    serviceRegistryStore: serviceRegistriesStore,
   });
 
   await setupDiagramEditorControls({

@@ -63,7 +63,7 @@ export class VsCodeSwfLanguageService {
         },
       },
       config: {
-        shouldDisplayServiceRegistryIntegration: async () => {
+        shouldDisplayServiceRegistriesIntegration: async () => {
           // FIXME: This should take the OS into account as well. RHHCC integration only works on macOS.
           // https://issues.redhat.com/browse/KOGITO-7105
           return vscode.env.uiKind === vscode.UIKind.Desktop;
@@ -74,10 +74,10 @@ export class VsCodeSwfLanguageService {
         getSpecsDirPosixPaths: async (textDocument) => {
           return this.getSpecsDirPosixPaths(textDocument);
         },
-        isServiceRegistryConfigured: () => {
-          return this.args.swfServiceCatalogGlobalStore.isServiceRegistryConfigured;
+        shouldConfigureServiceRegistries: () => {
+          return !this.args.swfServiceCatalogGlobalStore.isServiceRegistryConfigured;
         },
-        shouldServiceRegistryLogIn: () => {
+        shouldServiceRegistriesLogIn: () => {
           return this.args.swfServiceCatalogGlobalStore.shouldLoginServices;
         },
         canRefreshServices: () => {

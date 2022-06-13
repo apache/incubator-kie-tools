@@ -20,7 +20,7 @@ import * as vscode from "vscode";
 import { ServiceRegistryInstanceClient } from "./ServiceRegistryInstanceClient";
 import { AuthProvider, lookupAuthProvider } from "./auth";
 
-export class ServiceRegistryStore {
+export class ServiceRegistriesStore {
   private registryClientStore: Map<ServiceRegistryInstanceClient, SwfServiceCatalogService[]> = new Map();
   private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
 
@@ -32,7 +32,7 @@ export class ServiceRegistryStore {
   ) {
     args.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((e) => {
-        if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistrySettings)) {
+        if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistriesSettings)) {
           this.init();
         }
       })

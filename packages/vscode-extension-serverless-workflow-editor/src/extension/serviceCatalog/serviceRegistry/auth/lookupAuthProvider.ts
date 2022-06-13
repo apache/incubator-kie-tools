@@ -18,6 +18,7 @@ import * as vscode from "vscode";
 import { AuthProvider } from "./AuthProvider";
 import { RHCCAuthProvider } from "./RHCCAuthProvider";
 import { AuthProviderType } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { NoOpAuthProvider } from "./NoOpAuthProvider";
 
 export const lookupAuthProvider = (args: {
   context: vscode.ExtensionContext;
@@ -26,9 +27,9 @@ export const lookupAuthProvider = (args: {
     authUrl?: string;
     clientId?: string;
   };
-}): AuthProvider | undefined => {
+}): AuthProvider => {
   if (args.settings && args.settings.authProvider === AuthProviderType.RH_ACCOUNT) {
     return new RHCCAuthProvider(args.context);
   }
-  return undefined;
+  return new NoOpAuthProvider();
 };

@@ -39,13 +39,13 @@ import { getLanguageService, JSONDocument, LanguageService, TextDocument } from 
 import * as ls from "vscode-languageserver-types";
 
 export type SwfJsonLanguageServiceConfig = {
-  isServiceRegistryConfigured: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
-  shouldServiceRegistryLogIn: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
+  shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
+  shouldServiceRegistriesLogIn: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
   canRefreshServices: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
   getSpecsDirPosixPaths: (
     textDocument: TextDocument
   ) => Promise<{ specsDirRelativePosixPath: string; specsDirAbsolutePosixPath: string }>;
-  shouldDisplayServiceRegistryIntegration: () => Promise<boolean>;
+  shouldDisplayServiceRegistriesIntegration: () => Promise<boolean>;
   shouldReferenceServiceRegistryFunctionsWithUrls: () => Promise<boolean>;
 };
 
@@ -181,7 +181,7 @@ export class SwfJsonLanguageService {
         return [
           {
             name: "swf.ls.commands.OpenFunctionsCompletionItems",
-            title: `+ Add function...`,
+            title: "+ Add function...",
             args: [
               { newCursorPosition } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenFunctionsCompletionItems"],
             ],
@@ -190,7 +190,7 @@ export class SwfJsonLanguageService {
       },
     });
 
-    const setupServiceRegistry = createCodeLenses({
+    const setupServiceRegistries = createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -200,21 +200,21 @@ export class SwfJsonLanguageService {
           return [];
         }
 
-        if (this.args.config.isServiceRegistryConfigured()) {
+        if (!this.args.config.shouldConfigureServiceRegistries()) {
           return [];
         }
 
         return [
           {
-            name: "swf.ls.commands.OpenServiceRegistryConfig",
-            title: `↪ Setup Service Registry...`,
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistryConfig"]],
+            name: "swf.ls.commands.OpenServiceRegistriesConfig",
+            title: "↪ Setup Service Registries...",
+            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistriesConfig"]],
           },
         ];
       },
     });
 
-    const logInServiceRegistry = createCodeLenses({
+    const logInServiceRegistries = createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -224,25 +224,25 @@ export class SwfJsonLanguageService {
           return [];
         }
 
-        if (!this.args.config.isServiceRegistryConfigured()) {
+        if (this.args.config.shouldConfigureServiceRegistries()) {
           return [];
         }
 
-        if (!this.args.config.shouldServiceRegistryLogIn()) {
+        if (!this.args.config.shouldServiceRegistriesLogIn()) {
           return [];
         }
 
         return [
           {
-            name: "swf.ls.commands.LogInServiceRegistry",
-            title: `↪ Log in Service Registry...`,
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistry"]],
+            name: "swf.ls.commands.LogInServiceRegistries",
+            title: "↪ Log in Service Registries...",
+            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistries"]],
           },
         ];
       },
     });
 
-    const refreshServiceRegistry = createCodeLenses({
+    const refreshServiceRegistries = createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -252,7 +252,7 @@ export class SwfJsonLanguageService {
           return [];
         }
 
-        if (!this.args.config.isServiceRegistryConfigured()) {
+        if (this.args.config.shouldConfigureServiceRegistries()) {
           return [];
         }
 
@@ -262,20 +262,20 @@ export class SwfJsonLanguageService {
 
         return [
           {
-            name: "swf.ls.commands.RefreshServiceRegistry",
-            title: `↺ Refresh Service Registry`,
-            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistry"]],
+            name: "swf.ls.commands.RefreshServiceRegistries",
+            title: "↺ Refresh Service Registries...",
+            args: [{ position } as SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistries"]],
           },
         ];
       },
     });
 
-    const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistryIntegration();
+    const displayRhhccIntegration = await this.args.config.shouldDisplayServiceRegistriesIntegration();
 
     return [
-      ...(displayRhhccIntegration ? setupServiceRegistry : []),
-      ...(displayRhhccIntegration ? logInServiceRegistry : []),
-      ...(displayRhhccIntegration ? refreshServiceRegistry : []),
+      ...(displayRhhccIntegration ? setupServiceRegistries : []),
+      ...(displayRhhccIntegration ? logInServiceRegistries : []),
+      ...(displayRhhccIntegration ? refreshServiceRegistries : []),
       ...addFunction,
     ];
   }
