@@ -54,15 +54,6 @@ public class PatternFlyBootstrapper {
         }
     }
 
-    public static void ensurePrettifyIsAvailable() {
-        if (!isPrettifyLoaded) {
-            ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.prettify().getText())
-                    .setWindow(ScriptInjector.TOP_WINDOW)
-                    .inject();
-            isPrettifyLoaded = true;
-        }
-    }
-
     public static void ensureBootstrapSelectIsAvailable() {
         if (!isBootstrapSelectLoaded) {
             ScriptInjector.fromString(PatternFlyClientBundle.INSTANCE.bootstrapSelect().getText())

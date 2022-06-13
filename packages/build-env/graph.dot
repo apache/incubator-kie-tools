@@ -34,6 +34,7 @@ digraph G {
   "@kie-tools/cors-proxy-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-assembler" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dashbuilder-client" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-api" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-component-echarts" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-component-svg-heatmap" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -123,6 +124,7 @@ digraph G {
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-component-api" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-echarts" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-svg-heatmap" [ style = "solid", color = "black" ];
@@ -152,7 +154,7 @@ digraph G {
   "@kie-tools/dashbuilder-component-victory-charts" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-component-victory-charts" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
