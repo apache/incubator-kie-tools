@@ -107,15 +107,19 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
   useSubscription(
     editorEnvelopeCtx.channelApi?.notifications.kogitoSwfLanguageService__moveCursorToNode,
     ({ nodeName }: { nodeName: string }) => {
-      if (!fileLanguage) {
+      const editorContent = controller.getContent();
+
+      if (!fileLanguage || !editorContent) {
         return;
       }
 
-      const targetPosition = findPositionByStateName(content, nodeName, fileLanguage);
+      const targetPosition = findPositionByStateName(editorContent, nodeName, fileLanguage);
 
       if (!targetPosition) {
         return;
       }
+
+      controller.editor?.revealLineInCenter(targetPosition.line);
 
       controller.editor?.setPosition({
         lineNumber: targetPosition.line,

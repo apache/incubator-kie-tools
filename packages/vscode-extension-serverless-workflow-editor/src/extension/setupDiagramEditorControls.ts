@@ -149,10 +149,12 @@ export async function setupDiagramEditorControls(args: {
         } as vscode.TextDocumentShowOptions);
 
         const vsPosition = new vscode.Position(targetPosition.line - 1, targetPosition.character - 1);
+        const vsRange = new vscode.Range(vsPosition, vsPosition);
 
         if (!vscode.window.activeTextEditor) {
           return;
         }
+        vscode.window.activeTextEditor.revealRange(vsRange, vscode.TextEditorRevealType.InCenter);
         vscode.window.activeTextEditor.selections = [new vscode.Selection(vsPosition, vsPosition)];
       }
     )
