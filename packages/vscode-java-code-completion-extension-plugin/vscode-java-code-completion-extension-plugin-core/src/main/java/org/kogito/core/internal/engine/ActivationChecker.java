@@ -19,6 +19,7 @@ package org.kogito.core.internal.engine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.eclipse.jdt.ls.core.internal.JavaLanguageServerPlugin;
@@ -27,7 +28,7 @@ import org.kogito.core.internal.util.WorkspaceUtil;
 public class ActivationChecker {
 
     private final WorkspaceUtil workspaceUtil;
-    private String activatorUri = "";
+    private String activatorPath = "";
     private boolean present = false;
 
     public ActivationChecker(WorkspaceUtil workspaceUtil) {
@@ -43,7 +44,7 @@ public class ActivationChecker {
         }
         this.present = visitor.isPresent();
         if (this.present) {
-            this.activatorUri = visitor.getActivatorFile().toAbsolutePath().toString();
+            this.activatorPath = visitor.getActivatorFile().toAbsolutePath().toString();
         }
     }
 
@@ -52,8 +53,8 @@ public class ActivationChecker {
     }
 
     public String getActivatorUri() {
-        if (this.existActivator() && this.activatorUri != null && !this.activatorUri.isEmpty()) {
-            return "file://" + this.activatorUri;
+        if (this.existActivator() && this.activatorPath != null && !this.activatorPath.isEmpty()) {
+            return Path.of(this.activatorPath).toUri().toASCIIString();
         } else {
             throw new ActivationCheckerException("Activator URI is not present");
         }
