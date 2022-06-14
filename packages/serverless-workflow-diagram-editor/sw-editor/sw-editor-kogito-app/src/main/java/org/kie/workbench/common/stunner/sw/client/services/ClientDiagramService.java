@@ -83,7 +83,6 @@ public class ClientDiagramService {
     private void doTransform(final String fileName,
                              final String xml,
                              final ServiceCallback<Diagram> callback) {
-
         if (Objects.isNull(xml) || xml.isEmpty()) {
             Diagram newDiagram = createNewDiagram(fileName);
             callback.onSuccess(newDiagram);
