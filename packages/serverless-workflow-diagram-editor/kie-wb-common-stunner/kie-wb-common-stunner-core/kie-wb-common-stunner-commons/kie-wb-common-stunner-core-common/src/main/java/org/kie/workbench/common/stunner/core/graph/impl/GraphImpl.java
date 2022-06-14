@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.graph.impl;
 
-import java.util.List;
 import java.util.Objects;
 
 import jsinterop.annotations.JsIgnore;
@@ -69,27 +68,7 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
     @Override
     public void clear() {
-        nodes().forEach(n -> clearNode(n));
         nodeStore.clear();
-    }
-
-    private void clearNode(Node node) {
-        List<Edge> outEdges = node.getOutEdges();
-        clearEdges(outEdges);
-        List<Edge> inEdges = node.getInEdges();
-        clearEdges(inEdges);
-    }
-
-    private void clearEdges(List<Edge> edges) {
-        if (null != edges) {
-            edges.forEach(e -> clearEdge(e));
-            edges.clear();
-        }
-    }
-
-    private void clearEdge(Edge edge) {
-        edge.setSourceNode(null);
-        edge.setTargetNode(null);
     }
 
     @Override
