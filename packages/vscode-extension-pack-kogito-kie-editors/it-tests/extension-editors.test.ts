@@ -16,7 +16,7 @@
 
 import { By, EditorView, InputBox, SideBarView, TextEditor, WebView } from "vscode-extension-tester";
 import * as path from "path";
-import { h5ComponentWithText } from "./helpers/CommonLocators";
+import { h5ComponentWithText, labeledAnyElementInPropertiesPanel } from "./helpers/CommonLocators";
 import { EditorTabs } from "./helpers/dmn/EditorTabs";
 import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
@@ -33,6 +33,7 @@ import {
 import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 import { TextEdit } from "vscode";
+import Correlation from "./helpers/bpmn/Correlation";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
@@ -191,7 +192,6 @@ describe("Editors are loading properly", () => {
   /**
    * As the opened sceism file is empty, a prompt to specify file under test should be shown
    */
-
   it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
@@ -366,6 +366,57 @@ describe("Editors are loading properly", () => {
     await customProcessMIExecutionOption.click();
 
     await propertiesPanel.assertPropertyValue("MI Execution mode", newProcessMIExecutionValue, "select");
+
+    await webview.switchBack();
+  });
+
+  it("Opens ProcessWithGenerics.bpmn file in BPMN Editor and validate collaborations.", async function () {
+    this.timeout(40000);
+    webview = await testHelper.openFileFromSidebar("ProcessWithCollaboration.bpmn");
+    await testHelper.switchWebviewToFrame(webview);
+    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+    const correllationsModalHelper = await propertiesPanel.getCollerationModalHelper();
+
+    correllationsModalHelper.assertCorrelationsContain(
+      new Correlation("CK_ID_1", "CK Name 1", "CP_ID_1", "CP Name 1", "Object")
+    );
+    correllationsModalHelper.assertCorrelationsContain(
+      new Correlation("CK_ID_2", "CK Name 1", "CP_ID_2", "CP Name 2", "Integer")
+    );
+    correllationsModalHelper.assertCorrelationsContain(
+      new Correlation("CK_ID_3", "CK Name 2", "CP_ID_3", "CP Name 3", "Boolean")
+    );
+    correllationsModalHelper.assertCorrelationsContain(
+      new Correlation("CK_ID_4", "CK Name 3", "CP_ID_4", "CP Name 4", "java.util.ArrayList<String>")
+    );
+    await correllationsModalHelper.assertCorrelationsSize(4);
+    await correllationsModalHelper.closeModal();
+
+    let diagramExplorer = await bpmnEditorTester.openDiagramExplorer();
+    await diagramExplorer.selectDiagramNode("startMessage");
+    propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.CORRELATION);
+    await propertiesPanel.assertPropertyValue("Property", "CK Name 1 - CP Name 1", "select");
+    await propertiesPanel.assertPropertyValue("Message Expression Type", "Object", "div/select");
+    await propertiesPanel.assertPropertyValue("Data Expression Type", "Object", "div/select");
+
+    diagramExplorer = await bpmnEditorTester.openDiagramExplorer();
+    await diagramExplorer.selectDiagramNode("boundaryEventMessage");
+    propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.CORRELATION);
+    await propertiesPanel.assertPropertyValue("Property", "CK Name 1 - CP Name 2", "select");
+    await propertiesPanel.assertPropertyValue("Message Expression Type", "Integer", "div/select");
+    await propertiesPanel.assertPropertyValue("Data Expression Type", "Integer", "div/select");
+
+    diagramExplorer = await bpmnEditorTester.openDiagramExplorer();
+    await diagramExplorer.selectDiagramNode("catchMessage");
+    propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.CORRELATION);
+    await propertiesPanel.assertPropertyValue("Property", "CK Name 3 - CP Name 4", "select");
+    await propertiesPanel.assertPropertyValue("Message Expression Type", "java.util.ArrayList<String>", "div/select");
+    await propertiesPanel.assertPropertyValue("Data Expression Type", "java.util.ArrayList<String>", "div/select");
 
     await webview.switchBack();
   });
