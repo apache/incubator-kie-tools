@@ -71,6 +71,10 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+      if (!doc.uri.path.match(/\.(sw.json)$/i) || doc.languageId !== "serverless-workflow-json") {
+        swfJsonDiganosticsCollection.clear();
+        return;
+      }
       setSwfJsonDiagnostics(args.swfLanguageService, doc.uri, swfJsonDiganosticsCollection);
     })
   );
@@ -79,6 +83,10 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
+      if (!event.document.uri.path.match(/\.(sw.json)$/i) || event.document.languageId !== "serverless-workflow-json") {
+        swfJsonDiganosticsCollection.clear();
+        return;
+      }
       doValidationOnChange(args.swfLanguageService, event.document.uri, swfJsonDiganosticsCollection);
     })
   );
