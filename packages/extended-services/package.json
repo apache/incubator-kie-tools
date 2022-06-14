@@ -21,12 +21,12 @@
     "build:linux": "GOOS=linux GOARCH=amd64 go build -o dist/linux/kie_sandbox_extended_services main.go && pnpm build-headless:linux",
     "build:darwin": "GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -o dist/darwin/kie_sandbox_extended_services main.go",
     "build:win32": "make",
-    "pack": "run-script-os",
-    "pack:linux": "cd ./dist/linux && tar -pcvzf kie_sandbox_extended_services.tar.gz kie_sandbox_extended_services",
-    "pack:darwin": "cd ./scripts/macos && ./build.sh",
-    "pack:win32": "echo 'Nothing to do'",
+    "pack-app": "run-script-os",
+    "pack-app:linux": "cd ./dist/linux && tar -pcvzf kie_sandbox_extended_services.tar.gz kie_sandbox_extended_services",
+    "pack-app:darwin": "cd ./scripts/macos && ./build.sh",
+    "pack-app:win32": "echo 'Nothing to do'",
     "build:dev": "rimraf dist jitexecutor && pnpm copy-jitexecutor && pnpm build",
-    "build:prod": "rimraf dist jitexecutor && pnpm copy-jitexecutor && pnpm build && pnpm pack",
+    "build:prod": "rimraf dist jitexecutor && pnpm copy-jitexecutor && pnpm build && pnpm pack-app",
     "start": "ENV=dev go run main.go"
   },
   "dependencies": {
