@@ -28,8 +28,11 @@ import {
 import { labeledAnyElementInPropertiesPanel } from "../CommonLocators";
 import { assert } from "chai";
 import { sleep } from "../VSCodeTestHelper";
+import CorrelationModalHelper from "./CorrelationModalHelper";
 
 export enum PropertiesPanelSection {
+  COLLABORATION = "Collaboration",
+  CORRELATION = "Correlation",
   PROCESS = "Process",
   PROCESS_DATA = "Process Data",
   IMPLEMENTATION_EXECUTION = "Implementation/Execution",
@@ -187,5 +190,20 @@ export default class PropertiesPanelHelper {
   public async getProperty(propertyName: string, propertyType?: string): Promise<WebElement> {
     const property = await this.root.findElement(labeledAnyElementInPropertiesPanel(propertyName, propertyType));
     return property;
+  }
+
+  /**
+   * Get a correlation modal helper class that allows checking and asserting
+   * Collaborations on top-level of process.
+   *
+   * @returns CorrelationModalHelper class that is initialized
+   */
+  public async getCollerationModalHelper(): Promise<CorrelationModalHelper> {
+    await this.expandPropertySection(PropertiesPanelSection.COLLABORATION);
+    const correllationsButton = this.root.findElement(By.xpath("//button[@id='correlationsButton']"));
+    await this.scrollPropertyIntoView(correllationsButton);
+    await correllationsButton.click();
+    const modalDialog = await this.root.findElement(By.xpath("//div[@class='modal-dialog']"));
+    return new CorrelationModalHelper(modalDialog);
   }
 }
