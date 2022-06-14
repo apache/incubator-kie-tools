@@ -29,6 +29,7 @@ import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscod
 import { VsCodeJavaCodeCompletionImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
 import { KogitoEditorChannelApiProducer } from "./KogitoEditorChannelApiProducer";
 import { KogitoCustomEditorWebviewProvider } from "./KogitoCustomEditorWebviewProvider";
+import { executeOnSaveHook } from "./onSaveHook";
 
 /**
  * Starts a Kogito extension.
@@ -101,6 +102,15 @@ export async function startExtension(args: {
           webviewOptions: { retainContextWhenHidden: true },
         }
       )
+    );
+
+    args.context.subscriptions.push(
+      vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
+        const envelopeMapping = args.editorEnvelopeLocator.getEnvelopeMapping(document.uri.fsPath);
+        if (envelopeMapping) {
+          executeOnSaveHook(envelopeMapping.type);
+        }
+      })
     );
   } else {
     throw new Error("Type not supported");
