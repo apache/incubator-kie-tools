@@ -200,7 +200,7 @@ export default class PropertiesPanelHelper {
    */
   public async getCollerationModalHelper(): Promise<CorrelationModalHelper> {
     await this.expandPropertySection(PropertiesPanelSection.COLLABORATION);
-    const correllationsButton = this.root.findElement(By.xpath("//button[@id='correlationsButton']"));
+    const correllationsButton = await this.root.findElement(By.xpath("//button[@id='correlationsButton']"));
     await this.scrollPropertyIntoView(correllationsButton);
     await correllationsButton.click();
     const modalDialog = await this.root.findElement(By.xpath("//div[@class='modal-dialog']"));

@@ -25,7 +25,7 @@ export default class CorrelationModalHelper {
   constructor(private readonly root: WebElement) {}
 
   public async closeModal(): Promise<void> {
-    const closeBtn = this.root.findElement(By.xpath(".//button[@data-dismiss='modal']"));
+    const closeBtn = await this.root.findElement(By.xpath(".//button[@data-dismiss='modal']"));
     await closeBtn.click();
   }
 
@@ -51,6 +51,11 @@ export default class CorrelationModalHelper {
     return correlations;
   }
 
+  public async assertCorrelationsSize(expected: number): Promise<void> {
+    const correlations = await this.getCorrelations();
+    assert.equal(correlations.length, expected, "Expected " + expected + "variables, but found " + correlations.length);
+  }
+
   /**
    * Asserts that current correlations contain expected correlation.
    *
@@ -61,11 +66,11 @@ export default class CorrelationModalHelper {
     const correlations = await this.getCorrelations();
     for (const correlation of correlations) {
       if (
-        (tested.getId() === correlation.getId() &&
-          tested.getName() === correlation.getName() &&
-          tested.getPropertyId() === correlation.getPropertyId(),
-        tested.getPropertyName() === correlation.getPropertyName(),
-        tested.getPropertyType() === correlation.getPropertyType())
+        tested.getId() === correlation.getId() &&
+        tested.getName() === correlation.getName() &&
+        tested.getPropertyId() === correlation.getPropertyId() &&
+        tested.getPropertyName() === correlation.getPropertyName() &&
+        tested.getPropertyType() === correlation.getPropertyType()
       ) {
         return;
       }

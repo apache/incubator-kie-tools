@@ -391,7 +391,7 @@ describe("Editors are loading properly", () => {
     correllationsModalHelper.assertCorrelationsContain(
       new Correlation("CK_ID_4", "CK Name 3", "CP_ID_4", "CP Name 4", "java.util.ArrayList<String>")
     );
-
+    await correllationsModalHelper.assertCorrelationsSize(4);
     await correllationsModalHelper.closeModal();
 
     let diagramExplorer = await bpmnEditorTester.openDiagramExplorer();
