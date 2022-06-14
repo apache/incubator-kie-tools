@@ -30,7 +30,7 @@ export default class DataAssignmentsModalHelper {
   constructor(private readonly root: WebElement) {}
 
   public async closeModal(): Promise<void> {
-    const closeBtn = this.root.findElement(By.xpath(".//button[@data-dismiss='modal']"));
+    const closeBtn = await this.root.findElement(By.xpath(".//button[@data-dismiss='modal']"));
     await closeBtn.click();
   }
 

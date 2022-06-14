@@ -385,6 +385,7 @@ describe("Editors are loading properly", () => {
       "map_list_generic",
       "java.util.Map<java.util.List<String>,java.util.List<String>>"
     );
+    await processVariablesWidget.assertProcessVariablesSize(3);
 
     const explorer = await bpmnEditorTester.openDiagramExplorer();
     await explorer.selectDiagramNode("Task");

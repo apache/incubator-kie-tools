@@ -219,7 +219,7 @@ export default class PropertiesPanelHelper {
    */
   public async getDataAssignmentsModalHelper(): Promise<DataAssignmentsModalHelper> {
     await this.expandPropertySection(PropertiesPanelSection.DATA_ASSIGNMENTS);
-    const assignmentsButton = this.root.findElement(By.xpath("//span[@class='input-group-btn']"));
+    const assignmentsButton = await this.root.findElement(By.xpath("//span[@class='input-group-btn']"));
     await this.scrollPropertyIntoView(assignmentsButton);
     await assignmentsButton.click();
     const modalDialog = await this.root.findElement(By.xpath("//div[@class='modal-dialog']"));

@@ -52,10 +52,15 @@ export default class ProcessVariablesWidgetHelper {
     assert.fail("Did not find process variable with name: [" + name + "] and datatype: [" + dataType + "]");
   }
 
+  public async assertProcessVariablesSize(exepected: number): Promise<void> {
+    const variables = await this.getProcessVariables();
+    assert.equal(variables.length, exepected, "Expected " + exepected + "variables, but found " + variables.length);
+  }
+
   /**
    * Scrolls desired property element into view.
    *
-   * @param propertyElement element that si to be scrolled into view
+   * @param propertyElement element that is to be scrolled into view
    */
   private async scrollPropertyIntoView(propertyElement: WebElement): Promise<void> {
     const driver = propertyElement.getDriver();
