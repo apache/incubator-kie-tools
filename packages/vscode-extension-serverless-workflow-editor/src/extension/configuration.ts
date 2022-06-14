@@ -23,10 +23,10 @@ import * as vscode from "vscode";
 export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
 
 export const CONFIGURATION_SECTIONS = {
-  serviceRegistryUrl: "kogito.sw.serviceRegistryUrl",
-  specsStoragePath: "kogito.sw.specsStoragePath",
-  shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls",
-  automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor",
+  serviceRegistryUrl: "kogito.swf.serviceRegistryUrl",
+  specsStoragePath: "kogito.swf.specsStoragePath",
+  shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.swf.shouldReferenceServiceRegistryFunctionsWithUrls",
+  automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor",
 };
 
 type ShouldOpenDiagramEditorAutomaticallyType = "Ask next time" | "Do not open" | "Open automatically";
