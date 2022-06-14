@@ -1,6 +1,7 @@
 # 0.20.0 (alpha)
 
 - [KOGITO-7109](https://issues.redhat.com/browse/KOGITO-7109) - [DMN Designer] New Boxed Expression editor - Copy & paste values with newline
+- [KOGITO-4172](https://issues.redhat.com/browse/KOGITO-4172) - [DMN Designer] New Boxed Expression editor - User must be able to create new lines by using shortcuts
 
 # 0.19.0 (alpha)
 
