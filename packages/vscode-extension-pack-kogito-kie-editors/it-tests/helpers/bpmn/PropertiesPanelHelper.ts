@@ -28,12 +28,18 @@ import {
 import { labeledAnyElementInPropertiesPanel } from "../CommonLocators";
 import { assert } from "chai";
 import { sleep } from "../VSCodeTestHelper";
+import CorrelationModalHelper from "./CorrelationModalHelper";
+import ProcessVariablesWidgetHelper from "./ProcessVariablesWidgetHelper";
+import DataAssignmentsModalHelper from "./DataAssignmentsModalHelper";
 
 export enum PropertiesPanelSection {
+  COLLABORATION = "Collaboration",
+  CORRELATION = "Correlation",
   PROCESS = "Process",
   PROCESS_DATA = "Process Data",
   IMPLEMENTATION_EXECUTION = "Implementation/Execution",
   Advanced = "Advanced",
+  DATA_ASSIGNMENTS = "Data Assignments",
 }
 
 /**
@@ -187,5 +193,53 @@ export default class PropertiesPanelHelper {
   public async getProperty(propertyName: string, propertyType?: string): Promise<WebElement> {
     const property = await this.root.findElement(labeledAnyElementInPropertiesPanel(propertyName, propertyType));
     return property;
+  }
+
+  /**
+   * Get a correlation modal helper class that allows checking and asserting
+   * Collaborations on top-level of process.
+   *
+   * @returns CorrelationModalHelper class that is initialized
+   */
+  public async getCollerationModalHelper(): Promise<CorrelationModalHelper> {
+    await this.expandPropertySection(PropertiesPanelSection.COLLABORATION);
+    const correllationsButton = await this.root.findElement(By.xpath("//button[@id='correlationsButton']"));
+    await this.scrollPropertyIntoView(correllationsButton);
+    await correllationsButton.click();
+    const modalDialog = await this.root.findElement(By.xpath("//div[@class='modal-dialog']"));
+    return new CorrelationModalHelper(modalDialog);
+  }
+  /**
+   * Get a helper class that allows working with Process variables widget.
+   * This method expands the Process Data section where this widget is located
+   * initializes the helper and returns it.
+   * View is also scrolled so that the widget is visible.
+   *
+   * @returns Initialized instance of ProcessVariableWidgetHelper
+   */
+  public async getProcessVariablesHelper(): Promise<ProcessVariablesWidgetHelper> {
+    await this.expandPropertySection(PropertiesPanelSection.PROCESS_DATA);
+    const processVariableWidget = await this.root.findElement(
+      labeledAnyElementInPropertiesPanel("Process Variables", "div")
+    );
+    await this.scrollPropertyIntoView(processVariableWidget);
+    return new ProcessVariablesWidgetHelper(processVariableWidget);
+  }
+
+  /**
+   * Get a helper class that allows working with Data Assignments widget.
+   * This method expands the Data Assignments section where this widget is located,
+   * opens the data assignment modal, initializes the helper and returns it.
+   * View is also scrolled so that the widget is visible.
+   *
+   * @returns Initialized instance of DataAssignmntModalHelper
+   */
+  public async getDataAssignmentsModalHelper(): Promise<DataAssignmentsModalHelper> {
+    await this.expandPropertySection(PropertiesPanelSection.DATA_ASSIGNMENTS);
+    const assignmentsButton = await this.root.findElement(By.xpath("//span[@class='input-group-btn']"));
+    await this.scrollPropertyIntoView(assignmentsButton);
+    await assignmentsButton.click();
+    const modalDialog = await this.root.findElement(By.xpath("//div[@class='modal-dialog']"));
+    return new DataAssignmentsModalHelper(modalDialog);
   }
 }

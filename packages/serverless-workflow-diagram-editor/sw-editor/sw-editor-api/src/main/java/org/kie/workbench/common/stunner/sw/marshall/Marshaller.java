@@ -132,29 +132,71 @@ public class Marshaller {
             });
         }
 
-        // TODO: Use dedicated factory instead.
-        final GraphImpl<Object> graph = GraphImpl.build(workflow.id);
-        final Index index = new MapIndexBuilder().build(graph);
-        context = new Context(index);
-        final BuilderContext builderContext = new BuilderContext(context, definitionManager, factoryManager);
-        unmarshallNode(builderContext, workflow);
-        // TODO: Handle errors? if any (no rules execution context)?
-        builderContext.execute();
+        final GraphImpl<Object> graph;
+        try {
+            // TODO: Use dedicated factory instead.
+            graph = GraphImpl.build(workflow.id);
+            final Index index = new MapIndexBuilder().build(graph);
+            context = new Context(index);
+        } catch (Exception ex) {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+                @Override
+                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                                     RejectCallbackFn rejectCallbackFn) {
+                    rejectCallbackFn.onInvoke(new ClientRuntimeError("Error building graph.", ex));
+                }
+            });
+        }
 
-        // Perform automatic layout.
-        final Promise<Node> layout = AutoLayout.applyLayout(graph, context.getWorkflowRootNode(), promises, builderContext.buildExecutionContext(), false);
-        return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
-            @Override
-            public void onInvoke(ResolveCallbackFn<Graph> success, RejectCallbackFn reject) {
-                layout.then(new IThenable.ThenOnFulfilledCallbackFn<Node, Object>() {
-                    @Override
-                    public IThenable<Object> onInvoke(Node node) {
-                        success.onInvoke(graph);
-                        return null;
-                    }
-                });
-            }
-        });
+        final BuilderContext builderContext;
+        try {
+            builderContext = new BuilderContext(context, definitionManager, factoryManager);
+            unmarshallNode(builderContext, workflow);
+        } catch (Exception ex) {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+                @Override
+                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                                     RejectCallbackFn rejectCallbackFn) {
+                    rejectCallbackFn.onInvoke(new ClientRuntimeError("Error unmarshalling nodes.", ex));
+                }
+            });
+        }
+
+        try {
+            builderContext.execute();
+        } catch (Exception ex) {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+                @Override
+                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                                     RejectCallbackFn rejectCallbackFn) {
+                    rejectCallbackFn.onInvoke(new ClientRuntimeError("Error executing builder context.", ex));
+                }
+            });
+        }
+
+        try {
+            final Promise<Node> layout = AutoLayout.applyLayout(graph, context.getWorkflowRootNode(), promises, builderContext.buildExecutionContext(), false);
+            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+                @Override
+                public void onInvoke(ResolveCallbackFn<Graph> success, RejectCallbackFn reject) {
+                    layout.then(new IThenable.ThenOnFulfilledCallbackFn<Node, Object>() {
+                        @Override
+                        public IThenable<Object> onInvoke(Node node) {
+                            success.onInvoke(graph);
+                            return null;
+                        }
+                    });
+                }
+            });
+        } catch (Exception ex) {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+                @Override
+                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                                     RejectCallbackFn rejectCallbackFn) {
+                    rejectCallbackFn.onInvoke(new ClientRuntimeError("Error applying auto-layout.", ex));
+                }
+            });
+        }
     }
 
     @SuppressWarnings("all")

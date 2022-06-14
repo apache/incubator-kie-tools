@@ -41,7 +41,6 @@ import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.util.WindowJSType;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
-import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
@@ -112,7 +111,6 @@ public class DiagramEditor {
     }
 
     public Promise<Void> setContent(final String path, final String value) {
-        close();
         return promises.create((success, failure) -> {
             diagramService.transform(path,
                                      value,
@@ -158,7 +156,7 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onError(final ClientRuntimeError error) {
-                                             stunnerEditor.handleError(new ClientRuntimeError(new DiagramParsingException()));
+                                             stunnerEditor.handleError(error);
                                              failure.onInvoke(error);
                                          }
                                      });
