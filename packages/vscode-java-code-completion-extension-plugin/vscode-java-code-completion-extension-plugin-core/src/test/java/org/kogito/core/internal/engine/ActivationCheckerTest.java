@@ -24,7 +24,7 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.when;
 
-public class ActivationCheckerTest {
+class ActivationCheckerTest {
 
     private WorkspaceUtil workspaceUtilMock;
 
@@ -46,7 +46,7 @@ public class ActivationCheckerTest {
     }
 
     @Test
-    public void getActivatorPathWithSpecialChars() {
+    void getActivatorPathWithSpecialChars() {
         when(workspaceUtilMock.getWorkspace()).thenReturn("src/test/resources/test projéct");
         activationChecker.check();
         var activatorUri = activationChecker.getActivatorUri();
