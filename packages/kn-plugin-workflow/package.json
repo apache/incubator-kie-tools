@@ -1,0 +1,24 @@
+{
+  "name": "@kie-tools/kn-plugin-workflow",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "scripts": {
+    "build": "run-script-os",
+    "build:linux": "GOOS=linux GOARCH=amd64 go build -o dist/kn-workflow-linux-amd64 cmd/main.go",
+    "build:darwin": "GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -o dist/kn-workflow-darwin-amd64 cmd/main.go",
+    "build:win32": "GO111MODULE=on GOOS=windows GOARCH=amd64 go build -o dist/kn-workflow-windows-amd64.exe cmd/main.go",
+    "build:dev": "rimraf dist && pnpm build"
+  },
+  "devDependencies": {
+    "@kie-tools-core/run-script-if": "0.0.0"
+  }
+}
