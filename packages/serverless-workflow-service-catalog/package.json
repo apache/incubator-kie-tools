@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/serverless-workflow-service-catalog",
-  "version": "0.0.0",
+  "version": "0.20.0",
   "description": "",
   "license": "Apache-2.0",
   "files": [
@@ -18,14 +18,14 @@
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test"
   },
   "dependencies": {
-    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.20.0",
     "@types/js-yaml": "^4.0.5",
     "js-yaml": "^4.1.0",
     "openapi-types": "^7.0.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.20.0",
+    "@kie-tools/build-env": "0.20.0"
   },
   "babel": {
     "presets": [

@@ -3,7 +3,7 @@
   <parent>
     <groupId>io.github.kiegroup.kie.tools</groupId>
     <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
-    <version>0.0.0</version>
+    <version>0.20.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>vscode-java-code-completion-extension-plugin-core</artifactId>

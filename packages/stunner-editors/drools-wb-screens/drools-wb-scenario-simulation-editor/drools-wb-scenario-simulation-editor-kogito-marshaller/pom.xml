@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>drools-wb-scenario-simulation-editor</artifactId>
-    <version>0.0.0</version>
+    <version>0.20.0</version>
   </parent>
 
   <artifactId>drools-wb-scenario-simulation-editor-kogito-marshaller</artifactId>
