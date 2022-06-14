@@ -1,3 +1,7 @@
+# 0.20.0 (alpha)
+
+- [KOGITO-7109](https://issues.redhat.com/browse/KOGITO-7109) - [DMN Designer] New Boxed Expression editor - Copy & paste values with newline
+
 # 0.19.0 (alpha)
 
 - [KOGITO-6210](https://issues.redhat.com/browse/KOGITO-6210) - BPMN editor loses data assignment

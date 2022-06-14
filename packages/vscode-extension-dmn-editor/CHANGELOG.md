@@ -1,3 +1,7 @@
+# 0.20.0 (alpha)
+
+- [KOGITO-7109](https://issues.redhat.com/browse/KOGITO-7109) - [DMN Designer] New Boxed Expression editor - Copy & paste values with newline
+
 # 0.19.0 (alpha)
 
 - [KOGITO-6399](https://issues.redhat.com/browse/KOGITO-6399) - DMN Expression Editor - undo decision table annotation column
@@ -46,7 +50,7 @@
 
 - [KOGITO-6222](https://issues.redhat.com/browse/KOGITO-6222) - [DMN Designer] Open Imported DMN from current model
 - [KOGITO-6132](https://issues.redhat.com/browse/KOGITO-6132) - [DMN Designer] Pressing backspace when editing a node deletes the node
-- [KOGITO-6036](https://issues.redhat.com/browse/KOGITO-6036) - Use html <input type='color'> picker
+- [KOGITO-6036](https://issues.redhat.com/browse/KOGITO-6036) - Use html `<input type='color'>` picker
 
 # 0.14.1 (alpha)
 
