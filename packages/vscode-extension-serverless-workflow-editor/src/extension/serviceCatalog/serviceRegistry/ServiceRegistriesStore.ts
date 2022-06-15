@@ -77,29 +77,27 @@ export class ServiceRegistriesStore {
 
     const registrySettings = this.args.configuration.getServiceRegistrySettings();
 
-    if (registrySettings) {
-      registrySettings.registries.forEach((clientSettings) => {
-        try {
-          const authProvider = lookupAuthProvider({
-            settings: clientSettings,
-            context: this.args.context,
-          });
+    registrySettings?.registries?.forEach((clientSettings) => {
+      try {
+        const authProvider = lookupAuthProvider({
+          settings: clientSettings,
+          context: this.args.context,
+        });
 
-          const client = new ServiceRegistryInstanceClient({
-            name: clientSettings.name,
-            url: clientSettings.url,
-            authProvider,
-          });
-          this.registryClientStore.set(client, []);
+        const client = new ServiceRegistryInstanceClient({
+          name: clientSettings.name,
+          url: clientSettings.url,
+          authProvider,
+        });
+        this.registryClientStore.set(client, []);
 
-          if (authProvider) {
-            authProvider.subscribeToSessionChange(() => this.refreshClientStore(client));
-          }
-        } catch (err) {
-          console.log("Couldn't create Service Registry client for: ", clientSettings, err);
+        if (authProvider) {
+          authProvider.subscribeToSessionChange(() => this.refreshClientStore(client));
         }
-      });
-    }
+      } catch (err) {
+        console.log("Couldn't create Service Registry client for: ", clientSettings, err);
+      }
+    });
 
     return await this.refresh();
   }
