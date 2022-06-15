@@ -1838,6 +1838,7 @@ importers:
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
       jsonc-parser: ^3.0.0
+      vscode-json-languageservice: ^4.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
     dependencies:
@@ -1846,6 +1847,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       jsonc-parser: 3.0.0
+      vscode-json-languageservice: 4.2.1
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
 
@@ -2685,7 +2687,6 @@ packages:
     engines: { node: ^12.20.0 || ^14.15.0 || >=16.10.0 }
     dependencies:
       tslib: 2.3.1
-    dev: false
 
   /@angular/core/13.1.1_rxjs@7.5.2+zone.js@0.11.4:
     resolution:
@@ -10980,7 +10981,6 @@ packages:
       esbuild-windows-64: 0.14.22
       esbuild-windows-arm64: 0.14.22
     dev: true
-    optional: true
 
   /escalade/3.1.1:
     resolution:
