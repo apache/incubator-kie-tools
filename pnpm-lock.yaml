@@ -1776,6 +1776,115 @@ importers:
     devDependencies:
       "@kie-tools/build-env": link:../build-env
 
+  packages/serverless-logic-sandbox:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-editor": 0.0.0
+      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools/kie-sandbox-fs": 0.0.0
+      "@kie-tools/serverless-workflow-editor": 0.0.0
+      "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools/text-editor": 0.0.0
+      "@octokit/plugin-rest-endpoint-methods": ^5.0.1
+      "@octokit/rest": ^18.5.3
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@patternfly/react-tokens": ^4.33.1
+      "@svgr/webpack": 6.2.1
+      "@types/history": ^4.7.3
+      "@types/js-yaml": ^4.0.5
+      "@types/minimatch": ^3.0.4
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      "@types/uuid": ^8.3.0
+      axios: ^0.27.2
+      buffer: ^6.0.3
+      history: ^4.9.0
+      isomorphic-git: ^1.11.1
+      js-yaml: ^4.1.0
+      jszip: ^3.7.1
+      minimatch: ^3.0.4
+      moment: ^2.29.1
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^3.2.1
+      openapi-types: ^7.0.1
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-dropzone: ^11.4.2
+      react-router: ^5.2.1
+      react-router-dom: ^5.2.1
+      uuid: ^8.3.2
+      vscode-languageserver-textdocument: ^1.0.4
+      vscode-languageserver-types: ^3.16.0
+      yaml: ^2.0.1
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
+      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
+      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/text-editor": link:../text-editor
+      "@octokit/plugin-rest-endpoint-methods": 5.0.1
+      "@octokit/rest": 18.5.3
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-tokens": 4.33.1
+      "@types/js-yaml": 4.0.5
+      axios: 0.27.2
+      buffer: 6.0.3
+      history: 4.10.1
+      isomorphic-git: 1.11.1
+      js-yaml: 4.1.0
+      jszip: 3.7.1
+      minimatch: 3.0.5
+      moment: 2.29.2
+      monaco-editor: 0.33.0
+      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      openapi-types: 7.2.3
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-dropzone: 11.4.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+      uuid: 8.3.2
+      vscode-languageserver-textdocument: 1.0.4
+      vscode-languageserver-types: 3.16.0
+      yaml: 2.0.1
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@svgr/webpack": 6.2.1
+      "@types/history": 4.7.5
+      "@types/minimatch": 3.0.4
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      "@types/uuid": 8.3.0
+      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+
   packages/serverless-logic-sandbox-base-image:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
@@ -1963,115 +2072,6 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
-
-  packages/swf-sandbox:
-    specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-editor": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-sandbox-fs": 0.0.0
-      "@kie-tools/serverless-workflow-editor": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      "@kie-tools/text-editor": 0.0.0
-      "@octokit/plugin-rest-endpoint-methods": ^5.0.1
-      "@octokit/rest": ^18.5.3
-      "@patternfly/react-core": ^4.157.3
-      "@patternfly/react-icons": ^4.11.17
-      "@patternfly/react-tokens": ^4.33.1
-      "@svgr/webpack": 6.2.1
-      "@types/history": ^4.7.3
-      "@types/js-yaml": ^4.0.5
-      "@types/minimatch": ^3.0.4
-      "@types/react-router": ^5.1.14
-      "@types/react-router-dom": ^5.1.7
-      "@types/uuid": ^8.3.0
-      axios: ^0.27.2
-      buffer: ^6.0.3
-      history: ^4.9.0
-      isomorphic-git: ^1.11.1
-      js-yaml: ^4.1.0
-      jszip: ^3.7.1
-      minimatch: ^3.0.4
-      moment: ^2.29.1
-      monaco-editor: ^0.33.0
-      monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
-      openapi-types: ^7.0.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
-      react-dropzone: ^11.4.2
-      react-router: ^5.2.1
-      react-router-dom: ^5.2.1
-      uuid: ^8.3.2
-      vscode-languageserver-textdocument: ^1.0.4
-      vscode-languageserver-types: ^3.16.0
-      yaml: ^2.0.1
-    dependencies:
-      "@kie-tools-core/editor": link:../editor
-      "@kie-tools-core/envelope-bus": link:../envelope-bus
-      "@kie-tools-core/guided-tour": link:../guided-tour
-      "@kie-tools-core/i18n": link:../i18n
-      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
-      "@kie-tools-core/notifications": link:../notifications
-      "@kie-tools-core/operating-system": link:../operating-system
-      "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
-      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
-      "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
-      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
-      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
-      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
-      "@kie-tools/text-editor": link:../text-editor
-      "@octokit/plugin-rest-endpoint-methods": 5.0.1
-      "@octokit/rest": 18.5.3
-      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
-      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      "@patternfly/react-tokens": 4.33.1
-      "@types/js-yaml": 4.0.5
-      axios: 0.27.2
-      buffer: 6.0.3
-      history: 4.10.1
-      isomorphic-git: 1.11.1
-      js-yaml: 4.1.0
-      jszip: 3.7.1
-      minimatch: 3.0.5
-      moment: 2.29.2
-      monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
-      openapi-types: 7.2.3
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-      react-dropzone: 11.4.2_react@17.0.2
-      react-router: 5.2.1_react@17.0.2
-      react-router-dom: 5.3.0_react@17.0.2
-      uuid: 8.3.2
-      vscode-languageserver-textdocument: 1.0.4
-      vscode-languageserver-types: 3.16.0
-      yaml: 2.0.1
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../build-env
-      "@svgr/webpack": 6.2.1
-      "@types/history": 4.7.5
-      "@types/minimatch": 3.0.4
-      "@types/react-router": 5.1.14
-      "@types/react-router-dom": 5.1.7
-      "@types/uuid": 8.3.0
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
 
   packages/text-editor:
     specifiers:
@@ -2883,6 +2883,7 @@ packages:
     engines: { node: ^12.20.0 || ^14.15.0 || >=16.10.0 }
     dependencies:
       tslib: 2.3.1
+    dev: false
 
   /@angular/core/13.1.1_rxjs@7.5.2+zone.js@0.11.4:
     resolution:
@@ -11461,6 +11462,7 @@ packages:
       esbuild-windows-64: 0.14.22
       esbuild-windows-arm64: 0.14.22
     dev: true
+    optional: true
 
   /escalade/3.1.1:
     resolution:
