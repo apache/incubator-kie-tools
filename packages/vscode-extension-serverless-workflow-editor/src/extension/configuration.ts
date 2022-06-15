@@ -24,7 +24,7 @@ import { SwfServiceRegistriesSettings } from "@kie-tools/serverless-workflow-ser
 export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
 
 export const CONFIGURATION_SECTIONS = {
-  serviceRegistriesSettings: "kogito.sw.serviceRegistries",
+  serviceRegistriesSettings: "kogito.swf.serviceRegistries",
   specsStoragePath: "kogito.sw.specsStoragePath",
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls",
   automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor",
