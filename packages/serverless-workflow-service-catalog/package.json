@@ -21,7 +21,8 @@
     "@kie-tools-core/envelope-bus": "0.0.0",
     "@types/js-yaml": "^4.0.5",
     "js-yaml": "^4.1.0",
-    "openapi-types": "^7.0.1"
+    "openapi-types": "^7.0.1",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",

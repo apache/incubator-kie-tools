@@ -27,6 +27,7 @@ import {
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
 import { posix as posixPath } from "path";
+import get from "lodash/get";
 
 const APPLICATION_JSON = "application/json";
 
@@ -92,17 +93,28 @@ function extractPathItemFunctions(
 ): SwfServiceCatalogFunction[] {
   const swfServiceCatalogFunctions: SwfServiceCatalogFunction[] = [];
 
-  Object.values(pathItem).forEach((pathOperation: OpenAPIV3.OperationObject) => {
-    const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
+  Object.values(pathItem)
+    .filter((pathOperation) => pathOperation.operationId)
+    .forEach((pathOperation: OpenAPIV3.OperationObject) => {
+      const body = pathOperation.requestBody as OpenAPIV3.RequestBodyObject;
 
-    // Looking only at application/json mime types, we might consider others.
-    if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
-      const name = pathOperation.operationId ?? endpoint.replace(/^\/+/, "");
+      const name = pathOperation.operationId as string;
 
-      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = extractFunctionArguments(
-        body.content[APPLICATION_JSON].schema ?? {},
-        serviceOpenApiDocument
-      );
+      const functionArguments: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
+
+      // Looking at operation params
+      if (pathOperation.parameters) {
+        extractFunctionArgumentsFromParams(pathOperation.parameters, functionArguments);
+      }
+
+      // Looking only at application/json mime types, we might consider others.
+      if (body && body.content && body.content[APPLICATION_JSON] && body.content[APPLICATION_JSON].schema) {
+        extractFunctionArgumentsFromRequestBody(
+          body.content[APPLICATION_JSON].schema ?? {},
+          serviceOpenApiDocument,
+          functionArguments
+        );
+      }
 
       const swfServiceCatalogFunction: SwfServiceCatalogFunction = {
         source,
@@ -111,36 +123,46 @@ function extractPathItemFunctions(
         arguments: functionArguments,
       };
       swfServiceCatalogFunctions.push(swfServiceCatalogFunction);
-    }
-  });
+    });
 
   return swfServiceCatalogFunctions;
 }
 
-function extractFunctionArguments(
+function extractFunctionArgumentsFromParams(
+  pathParams: (OpenAPIV3.ReferenceObject | OpenAPIV3.ParameterObject)[],
+  functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
+) {
+  pathParams.forEach((pathParam) => {
+    const name = get(pathParam, "name");
+    const type = get(pathParam, "schema.type");
+    if (name && type) {
+      functionParams[name] = resolveArgumentType(type);
+    }
+  });
+}
+
+function extractFunctionArgumentsFromRequestBody(
   schema: OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject,
-  doc: OpenAPIV3.Document
-): Record<string, SwfServiceCatalogFunctionArgumentType> {
+  doc: OpenAPIV3.Document,
+  functionParams: Record<string, SwfServiceCatalogFunctionArgumentType>
+) {
   const schemaObject: OpenAPIV3.SchemaObject = extractSchemaObject(schema, doc);
-  const functionArgs: Record<string, SwfServiceCatalogFunctionArgumentType> = {};
 
   if (schemaObject.properties) {
     Object.entries(schemaObject.properties).forEach(
       ([propertyName, propertySchema]: [string, OpenAPIV3.ReferenceObject | OpenAPIV3.SchemaObject]) => {
         const asReference = propertySchema as OpenAPIV3.ReferenceObject;
         if (asReference.$ref) {
-          functionArgs[propertyName] = SwfServiceCatalogFunctionArgumentType.object;
+          functionParams[propertyName] = SwfServiceCatalogFunctionArgumentType.object;
         } else {
           const asSchema = propertySchema as OpenAPIV3.SchemaObject;
           if (asSchema.type) {
-            functionArgs[propertyName] = resolveArgumentType(asSchema.type);
+            functionParams[propertyName] = resolveArgumentType(asSchema.type);
           }
         }
       }
     );
   }
-
-  return functionArgs;
 }
 
 function extractSchemaObject(
