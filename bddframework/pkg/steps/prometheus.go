@@ -34,5 +34,5 @@ func (data *Data) prometheusInstanceIsDeployed(labelName, labelValue string) err
 	if err != nil {
 		return err
 	}
-	return framework.WaitForPodsWithLabel(data.Namespace, "app", "prometheus", 1, 3)
+	return framework.WaitForPodsWithLabel(data.Namespace, "app.kubernetes.io/name", "prometheus", 1, 3)
 }
