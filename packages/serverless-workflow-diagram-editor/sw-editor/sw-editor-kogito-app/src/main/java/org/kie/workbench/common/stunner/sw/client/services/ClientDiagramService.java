@@ -35,7 +35,6 @@ import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.sw.Definitions;
 import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
-import org.kie.workbench.common.stunner.sw.marshall.Context;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.uberfire.client.promise.Promises;
 
@@ -92,7 +91,7 @@ public class ClientDiagramService {
     }
 
     public Promise<String> transform(final Diagram diagram) {
-        return marshaller.marshallGraph(diagram.getGraph());
+        return marshaller.marshall(diagram.getGraph());
     }
 
     public Marshaller getMarshaller() {
@@ -137,13 +136,7 @@ public class ClientDiagramService {
         }, new IThenable.ThenOnRejectedCallbackFn<Object>() {
             @Override
             public IThenable<Object> onInvoke(Object o) {
-                final ClientRuntimeError e;
-                if (o instanceof ClientRuntimeError) {
-                    e = (ClientRuntimeError) o;
-                } else {
-                    e = new ClientRuntimeError((Throwable) o);
-                }
-                serviceCallback.onError(e);
+                serviceCallback.onError(new ClientRuntimeError((Throwable) o));
                 return null;
             }
         });
@@ -151,7 +144,7 @@ public class ClientDiagramService {
 
     private Promise<Graph> unmarshall(final Metadata metadata,
                                       final String raw) {
-        return marshaller.unmarshallGraph(raw);
+        return marshaller.unmarshall(raw);
     }
 
     private Metadata createMetadata() {
@@ -162,13 +155,8 @@ public class ClientDiagramService {
 
     private void updateClientMetadata(final Diagram diagram) {
         final Metadata metadata = diagram.getMetadata();
-
-        Context context = marshaller.getContext();
-        if (context != null) {
-            String rootUUID = context.getWorkflowRootNode().getUUID();
-            metadata.setCanvasRootUUID(rootUUID);
-        }
-
+        String rootUUID = marshaller.getContext().getWorkflowRootNode().getUUID();
+        metadata.setCanvasRootUUID(rootUUID);
         if (isEmpty(metadata.getShapeSetId())) {
             final String sId = shapeManager.getDefaultShapeSet(metadata.getDefinitionSetId()).getId();
             metadata.setShapeSetId(sId);

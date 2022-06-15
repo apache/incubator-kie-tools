@@ -101,8 +101,8 @@ public class Marshaller {
         final Index index = new MapIndexBuilder().build(graph);
         final DirectGraphCommandExecutionContext executionContext =
                 new DirectGraphCommandExecutionContext(definitionManager,
-                        factoryManager,
-                        index);
+                                                       factoryManager,
+                                                       index);
         final CompositeCommand<GraphCommandExecutionContext, RuleViolation> commands = builderContext.commands();
         commands.execute(executionContext);
 

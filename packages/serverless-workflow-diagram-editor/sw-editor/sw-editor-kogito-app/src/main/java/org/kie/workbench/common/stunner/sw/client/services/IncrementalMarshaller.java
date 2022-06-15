@@ -19,8 +19,6 @@ package org.kie.workbench.common.stunner.sw.client.services;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import elemental2.promise.IThenable;
-import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddChildNodeCommand;
 import org.kie.workbench.common.stunner.core.client.canvas.command.AddNodeCommand;
@@ -29,7 +27,6 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
-import org.kie.workbench.common.stunner.sw.client.editor.EditorWindow;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
@@ -56,16 +53,8 @@ public class IncrementalMarshaller {
     private void applyCommand(AbstractCanvasHandler canvasHandler,
                               Command<AbstractCanvasHandler, CanvasViolation> command) {
 
-        // TODO: Not  behaving incremental yet. Just changing the whole content.
+        // TODO: Disabled.
         if (true) {
-            Promise<String> contentPromise = marshaller.marshallGraph(canvasHandler.getDiagram().getGraph());
-            contentPromise.then(new IThenable.ThenOnFulfilledCallbackFn<String, Object>() {
-                @Override
-                public IThenable<Object> onInvoke(String content) {
-                    EditorWindow.updateContent(content);
-                    return null;
-                }
-            });
             return;
         }
 

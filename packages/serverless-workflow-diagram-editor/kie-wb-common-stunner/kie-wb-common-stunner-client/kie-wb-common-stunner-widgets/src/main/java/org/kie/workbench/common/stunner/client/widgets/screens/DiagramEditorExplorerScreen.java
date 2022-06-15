@@ -28,7 +28,6 @@ import javax.inject.Named;
 
 import io.crysknife.client.ManagedInstance;
 import org.gwtproject.user.client.ui.IsWidget;
-import org.kie.workbench.common.stunner.client.widgets.canvas.StunnerBoundsProviderFactory;
 import org.kie.workbench.common.stunner.client.widgets.explorer.tree.TreeExplorer;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPreview;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionViewer;

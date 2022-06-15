@@ -20,7 +20,6 @@ import java.util.HashMap;
 
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.processing.index.Index;
 import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
@@ -31,11 +30,11 @@ public class Context {
     private final HashMap<String, String> nameToUUIDBindings;
 
     // TODO: Need to keep a ref to the whole graph?
-    final Index<?, ?> graphIndex;
+    private final Graph graph;
     private Node workflowRootNode;
 
-    public Context(Index<?, ?> graphIndex) {
-        this.graphIndex = graphIndex;
+    public Context(Graph graph) {
+        this.graph = graph;
         this.nameToUUIDBindings = new HashMap<>();
     }
 
@@ -48,15 +47,11 @@ public class Context {
     }
 
     public Node getNode(final String uuid) {
-        return graphIndex.getNode(uuid);
+        return graph.getNode(uuid);
     }
 
     public Workflow getWorkflowRoot() {
         return getElementDefinition(workflowRootNode);
-    }
-
-    public Graph getGraph() {
-        return graphIndex.getGraph();
     }
 
     public String obtainUUID(String name) {

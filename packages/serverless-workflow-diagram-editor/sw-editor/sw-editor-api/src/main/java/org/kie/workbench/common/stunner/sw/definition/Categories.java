@@ -16,13 +16,12 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-public interface Categories {
+public class Categories {
 
-    String START = "SWStart";
-    String END = "SWEnd";
-    String STATES = "SWStates";
-    String TRANSITIONS = "SWTransitions";
-    String EVENTS = "SWEvents";
-    String TIMEOUTS = "SWTimeouts";
-    String ACTIONS = "SWActions";
+    public static final transient String START = "SWStart";
+    public static final transient String END = "SWEnd";
+    public static final transient String STATES = "SWStates";
+    public static final transient String TRANSITIONS = "SWTransitions";
+    public static final transient String EVENTS = "SWEvents";
+    public static final transient String ACTIONS = "SWActions";
 }

@@ -29,17 +29,9 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 
-/**
- * This class defines workflow states define building blocks of the workflow execution instructions.
- * They define the control flow logic instructions on what the workflow is supposed to do.
- *
- * Type of the state is specified by its category, which is set in constructor for all its descendants.
- */
 @Bindable
 @Definition
-@CanDock(roles = {Timeout.LABEL_TIMEOUT})
 @MorphBase(defaultType = InjectState.class)
 @JsType
 public class State {
@@ -52,54 +44,26 @@ public class State {
 
     @Labels
     @JsIgnore
-    public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                       LABEL_STATE).collect(Collectors.toSet());
+    private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
+                                                        LABEL_STATE).collect(Collectors.toSet());
 
-    /**
-     * Unique state name, can't be null.
-     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
-    /**
-     * Type of the state, can't be null.
-     */
     public String type;
 
-    /**
-     * Next transition of the workflow.
-     */
-    // TODO: Not all states supports this (eg: switch state)
-    public Object transition;
+    public String transition;
 
-    /**
-     * Whether this State is a last state in the workflow.
-     */
-    // TODO: Not all states supports this (eg: switch state)
-    public Object end;
+    public boolean end;
 
-    /**
-     * Definitions of states error handling.
-     */
     public ErrorTransition[] onErrors;
-
-    /**
-     * State specific timeouts.
-     */
-    public String eventTimeout;
-
-    /**
-     * Unique name of a workflow state which is responsible for compensation of this state.
-     */
-    public String compensatedBy;
 
     public State() {
         this.name = "State";
     }
 
-    public State setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
     public String getName() {
@@ -110,54 +74,32 @@ public class State {
         return type;
     }
 
-    public State setType(String type) {
+    public void setType(String type) {
         this.type = type;
-        return this;
     }
 
-    public Object getTransition() {
+    public String getTransition() {
         return transition;
     }
 
-    public State setTransition(Object transition) {
+    public void setTransition(String transition) {
         this.transition = transition;
-        return this;
     }
 
-    public Object isEnd() {
+    public boolean isEnd() {
         return end;
     }
 
-    public State setEnd(Object end) {
+    public void setEnd(boolean end) {
         this.end = end;
-        return this;
     }
 
     public ErrorTransition[] getOnErrors() {
         return onErrors;
     }
 
-    public State setOnErrors(ErrorTransition[] onErrors) {
+    public void setOnErrors(ErrorTransition[] onErrors) {
         this.onErrors = onErrors;
-        return this;
-    }
-
-    public String getEventTimeout() {
-        return eventTimeout;
-    }
-
-    public State setEventTimeout(String eventTimeout) {
-        this.eventTimeout = eventTimeout;
-        return this;
-    }
-
-    public String getCompensatedBy() {
-        return compensatedBy;
-    }
-
-    public State setCompensatedBy(String compensatedBy) {
-        this.compensatedBy = compensatedBy;
-        return this;
     }
 
     public Set<String> getLabels() {

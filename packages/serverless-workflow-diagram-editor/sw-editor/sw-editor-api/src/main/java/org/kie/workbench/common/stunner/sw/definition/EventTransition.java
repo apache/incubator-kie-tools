@@ -20,37 +20,32 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.crysknife.ui.databinding.client.api.Bindable;
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 
-/**
- * Switch state data conditions specify a data-based condition statement,
- * which causes a transition to another workflow state if evaluated to true.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Switch-State-Data-Conditions"> State data conditions</a>
- */
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
-@CanConnect(startRole = State.LABEL_STATE, endRole = State.LABEL_STATE)
-@CanConnect(startRole = State.LABEL_STATE, endRole = End.LABEL_END)
-@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.INCOMING, max = -1)
-@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.OUTGOING, max = 1)
+@CanConnect(startRole = State.LABEL_STATE, endRole = OnEvent.LABEL_ONEVENTS)
+@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
+@EdgeOccurrences(role = State.LABEL_STATE, type = EdgeOccurrences.EdgeType.OUTGOING, max = -1)
+@EdgeOccurrences(role = OnEvent.LABEL_ONEVENTS, type = EdgeOccurrences.EdgeType.INCOMING, max = -1)
+@EdgeOccurrences(role = OnEvent.LABEL_ONEVENTS, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @JsType
-public class DataConditionTransition {
+public class EventTransition {
 
-    @JsIgnore
-    public static final String LABEL_TRANSITION_DATA_CONDITION = "transition_data_condition";
+    public static final String LABEL_TRANSITION_EVENT = "transition_event";
 
     @Category
     @JsIgnore
@@ -58,33 +53,12 @@ public class DataConditionTransition {
 
     @Labels
     @JsIgnore
-    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_DATA_CONDITION).collect(Collectors.toSet());
+    private static final Set<String> labels = Stream.of(LABEL_TRANSITION_EVENT).collect(Collectors.toSet());
 
-    /**
-     * Unique data condition name.
-     */
-    @Property
+    @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
-    /**
-     * Workflow expression evaluated against state data. Must evaluate to true or false.
-     * Example: `${ .applicant | .age > 18 }`
-     */
-    public String condition;
-
-    /**
-     * Defines what to do if condition is true.
-     * Transitions to another state if set.
-     */
-    public Object transition;
-
-    /**
-     * Defines what to do if condition is true.
-     * End the workflow if set to true.
-     */
-    public Object end;
-
-    public DataConditionTransition() {
+    public EventTransition() {
     }
 
     public void setName(String name) {
@@ -93,30 +67,6 @@ public class DataConditionTransition {
 
     public String getName() {
         return name;
-    }
-
-    public String getCondition() {
-        return condition;
-    }
-
-    public void setCondition(String condition) {
-        this.condition = condition;
-    }
-
-    public Object getTransition() {
-        return transition;
-    }
-
-    public void setTransition(Object transition) {
-        this.transition = transition;
-    }
-
-    public Object isEnd() {
-        return false;
-    }
-
-    public void setEnd(Object end) {
-        this.end = end;
     }
 
     public Set<String> getLabels() {

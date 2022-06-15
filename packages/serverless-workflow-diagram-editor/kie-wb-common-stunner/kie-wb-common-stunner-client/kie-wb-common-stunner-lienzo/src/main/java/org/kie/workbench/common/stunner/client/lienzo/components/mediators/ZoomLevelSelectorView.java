@@ -140,8 +140,8 @@ public class ZoomLevelSelectorView
     }
 
     @EventHandler("resetButton")
-    void onReset(@ForEvent("click") Event event) {
-        presenter.onReset();
+    public void onReset(@ForEvent("click") Event event) {
+        presenter.onScaleToFitSize();
     }
 
     @EventHandler("dropDownButton")

@@ -30,9 +30,6 @@ import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 
-/**
- * Represents the transition edge from Start node to first state in the workflow.
- */
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
 @CanConnect(startRole = Start.LABEL_START, endRole = State.LABEL_STATE)
@@ -52,20 +49,17 @@ public class StartTransition {
     private static final Set<String> labels = Stream.of(Transition.LABEL_TRANSITION,
                                                         LABEL_TRANSITION_START).collect(Collectors.toSet());
 
-    /**
-     * References of the target state.
-     */
     @JsIgnore
-    public Object transition;
+    public String transition;
 
     public StartTransition() {
     }
 
-    public Object getTransition() {
+    public String getTransition() {
         return transition;
     }
 
-    public void setTransition(Object transition) {
+    public void setTransition(String transition) {
         this.transition = transition;
     }
 

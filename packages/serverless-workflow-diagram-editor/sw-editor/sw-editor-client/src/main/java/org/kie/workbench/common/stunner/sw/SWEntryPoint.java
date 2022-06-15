@@ -27,6 +27,5 @@ public class SWEntryPoint {
     @PostConstruct
     public void init() {
         //TODO Check it needed
-        // PatternFlyBootstrapper.ensureMonacoEditorLoaderIsAvailable();
     }
 }

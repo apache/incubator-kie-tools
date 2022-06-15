@@ -18,22 +18,15 @@ package org.kie.workbench.common.stunner.sw.client.editor;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import elemental2.promise.Promise;
 import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
-import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
-import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
@@ -57,23 +50,20 @@ public class DiagramEditor {
     private final StunnerEditor stunnerEditor;
     private final ClientDiagramService diagramService;
     private final IncrementalMarshaller incrementalMarshaller;
-    private final CanvasFileExport canvasFileExport;
 
     @Inject
     public DiagramEditor(Promises promises,
                          StunnerEditor stunnerEditor,
                          ClientDiagramService diagramService,
-                         IncrementalMarshaller incrementalMarshaller,
-                         CanvasFileExport canvasFileExport) {
+                         IncrementalMarshaller incrementalMarshaller) {
         this.promises = promises;
         this.stunnerEditor = stunnerEditor;
         this.diagramService = diagramService;
         this.incrementalMarshaller = incrementalMarshaller;
-        this.canvasFileExport = canvasFileExport;
     }
 
     public void onStartup(final PlaceRequest place) {
-        stunnerEditor.setReadOnly(true);
+        stunnerEditor.setReadOnly(false);
     }
 
     public void onOpen() {
@@ -92,12 +82,8 @@ public class DiagramEditor {
     }
 
     public Promise<String> getPreview() {
-        CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
-        if (canvasHandler != null) {
-            return promises.resolve(canvasFileExport.exportToSvg((AbstractCanvasHandler) canvasHandler));
-        } else {
-            return promises.resolve("");
-        }
+        // TODO
+        return promises.resolve("");
     }
 
     public Promise validate() {
@@ -122,32 +108,12 @@ public class DiagramEditor {
                                                          @Override
                                                          public void onSuccess() {
                                                              onDiagramOpenSuccess();
-                                                             scaleToFitWorkflow(stunnerEditor);
                                                              success.onInvoke((Void) null);
                                                          }
 
                                                          @Override
                                                          public void onError(ClientRuntimeError error) {
-                                                             stunnerEditor.handleError(error);
                                                              failure.onInvoke(error);
-                                                         }
-
-                                                         @Override
-                                                         public void afterCanvasInitialized() {
-                                                             WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
-                                                             ScrollableLienzoPanel lienzoPanel = (ScrollableLienzoPanel) canvas.getView().getLienzoPanel();
-
-                                                             Layer bgLayer = new Layer() {
-                                                                 @Override
-                                                                 public Layer draw(Context2D context) {
-                                                                     super.draw(context);
-                                                                     context.setFillColor("#f2f2f2");
-                                                                     context.fillRect(0, 0, getWidth(), getHeight());
-
-                                                                     return this;
-                                                                 }
-                                                             };
-                                                             lienzoPanel.setBackgroundLayer(bgLayer);
                                                          }
                                                      });
                                          }
@@ -159,15 +125,6 @@ public class DiagramEditor {
                                          }
                                      });
         });
-    }
-
-    static void scaleToFitWorkflow(StunnerEditor stunnerEditor) {
-        WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
-        ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
-        lienzoPanel.setPostResizeCallback((panel -> {
-            PanelTransformUtils.scaleToFitPanel(lienzoPanel);
-            lienzoPanel.setPostResizeCallback(null);
-        }));
     }
 
     private void onDiagramOpenSuccess() {

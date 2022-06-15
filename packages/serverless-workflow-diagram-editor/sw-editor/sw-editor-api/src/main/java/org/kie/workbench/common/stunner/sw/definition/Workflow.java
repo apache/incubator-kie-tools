@@ -31,11 +31,6 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
 
-/**
- * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Workflow-definition"> Workflow definition </a>
- */
 @Bindable
 @Definition
 @CanContain(roles = {Workflow.LABEL_ROOT_NODE})
@@ -53,36 +48,19 @@ public class Workflow {
 
     @Labels
     @JsIgnore
-    public static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
+    private static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
 
-    /**
-     *  Workflow unique identifier.
-     */
     @Property
     public String id;
 
-    /**
-     * Workflow name.
-     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
-    /**
-     * Workflow start definition.
-     */
-    public Object start;
+    public String start;
 
-    /**
-     * Workflow event definitions.
-     */
     public Event[] events;
 
-    /**
-     * Workflow state definitions.
-     */
     public State[] states;
-
-    // missing specVersion, functions
 
     public Workflow() {
     }
@@ -91,45 +69,40 @@ public class Workflow {
         return id;
     }
 
-    public Workflow setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public Workflow setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
-    public Object getStart() {
+    public String getStart() {
         return start;
     }
 
-    public Workflow setStart(Object start) {
+    public void setStart(String start) {
         this.start = start;
-        return this;
     }
 
     public Event[] getEvents() {
         return events;
     }
 
-    public Workflow setEvents(Event[] events) {
+    public void setEvents(Event[] events) {
         this.events = events;
-        return this;
     }
 
     public State[] getStates() {
         return states;
     }
 
-    public Workflow setStates(State[] states) {
+    public void setStates(State[] states) {
         this.states = states;
-        return this;
     }
 
     public Set<String> getLabels() {

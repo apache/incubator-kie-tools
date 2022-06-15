@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
+import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
@@ -54,12 +55,12 @@ public class ErrorTransition {
     private static final Set<String> labels = Stream.of(Transition.LABEL_TRANSITION,
                                                         LABEL_TRANSITION_ERROR).collect(Collectors.toSet());
 
-    @Property
+    @Property(meta = PropertyMetaTypes.NAME)
     public String errorRef;
 
-    public Object transition;
+    public String transition;
 
-    public Object end;
+    public boolean end;
 
     public ErrorTransition() {
     }
@@ -68,24 +69,23 @@ public class ErrorTransition {
         return errorRef;
     }
 
-    public ErrorTransition setErrorRef(String errorRef) {
+    public void setErrorRef(String errorRef) {
         this.errorRef = errorRef;
-        return this;
     }
 
-    public Object getTransition() {
+    public String getTransition() {
         return transition;
     }
 
-    public void setTransition(Object transition) {
+    public void setTransition(String transition) {
         this.transition = transition;
     }
 
-    public Object isEnd() {
+    public boolean isEnd() {
         return end;
     }
 
-    public void setEnd(Object end) {
+    public void setEnd(boolean end) {
         this.end = end;
     }
 

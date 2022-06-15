@@ -16,21 +16,17 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
-import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.CompositeCommand;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
-import org.kie.workbench.common.stunner.core.factory.graph.ElementFactory;
 import org.kie.workbench.common.stunner.core.factory.graph.NodeFactory;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
-import org.kie.workbench.common.stunner.core.graph.command.DirectGraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddChildNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddConnectorCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.AddNodeCommand;
-import org.kie.workbench.common.stunner.core.graph.command.impl.DockNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.command.impl.SetConnectionTargetNodeCommand;
 import org.kie.workbench.common.stunner.core.graph.content.Bound;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
@@ -38,28 +34,19 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.sw.definition.ActionNode;
-import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
 import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
-import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
-import org.kie.workbench.common.stunner.sw.definition.EventTimeout;
-import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
-import org.kie.workbench.common.stunner.sw.definition.OperationState;
-import org.kie.workbench.common.stunner.sw.definition.ParallelState;
-import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 
 public class BuilderContext {
 
     private final Context context;
-    private final DefinitionManager definitionManager;
     private final FactoryManager factoryManager;
 
     Node parentNode;
@@ -67,9 +54,8 @@ public class BuilderContext {
     private CompositeCommand.Builder storageCommands;
     private CompositeCommand.Builder connectionCommands;
 
-    public BuilderContext(Context context, DefinitionManager definitionManager, FactoryManager factoryManager) {
+    public BuilderContext(Context context, FactoryManager factoryManager) {
         this.context = context;
-        this.definitionManager = definitionManager;
         this.factoryManager = factoryManager;
         this.parentNode = null;
         this.sourceNode = null;
@@ -85,8 +71,7 @@ public class BuilderContext {
     public Node addNode(String name,
                         Object bean) {
         final String uuid = context.obtainUUID(name);
-        final ElementFactory elementFactory = factoryManager.registry().getElementFactory(NodeFactory.class);
-        final Node node = (Node) elementFactory.build(uuid, bean);
+        final Node node = (Node) factoryManager.registry().getElementFactory(NodeFactory.class).build(uuid, bean);
         updateNodeBounds(node);
         if (null == parentNode && null == context.getWorkflowRootNode()) {
             storageCommands.addCommand(new AddNodeCommand(node));
@@ -144,29 +129,11 @@ public class BuilderContext {
         return tEdge;
     }
 
-    @SuppressWarnings("all")
-    public void dock(Node source, Node candidate) {
-        storageCommands.addCommand(new DockNodeCommand(source, candidate));
-    }
-
-    public DirectGraphCommandExecutionContext buildExecutionContext() {
-        return new DirectGraphCommandExecutionContext(definitionManager,
-                                                      factoryManager,
-                                                      context.graphIndex);
-    }
-
-    @SuppressWarnings("all")
-    public CommandResult<RuleViolation> execute() {
-        CompositeCommand<GraphCommandExecutionContext, RuleViolation> commands =
-                new CompositeCommand.Builder<>()
-                        .addCommand(storageCommands.build())
-                        .addCommand(connectionCommands.build())
-                        .build();
-
-        CommandResult<RuleViolation> result = commands.execute(buildExecutionContext());
-        connectionCommands = new CompositeCommand.Builder();
-        storageCommands = new CompositeCommand.Builder();
-        return result;
+    public CompositeCommand<GraphCommandExecutionContext, RuleViolation> commands() {
+        return new CompositeCommand.Builder<>()
+                .addCommand(storageCommands.build())
+                .addCommand(connectionCommands.build())
+                .build();
     }
 
     Context getContext() {
@@ -180,47 +147,30 @@ public class BuilderContext {
         bounds.setLowerRight(new Bound(upperLeft.getX() + beanSize[0], upperLeft.getY() + beanSize[1]));
     }
 
+
     // TODO: Those size are just being "hardcoded" and matching actual svg declarations, for now.
     private static double[] getBeanSize(Object bean) {
         Class<?> type = bean.getClass();
         if (Start.class.equals(type)) {
-            return new double[]{50d, 50d};
+            return new double[]{20d, 20d};
         } else if (End.class.equals(type)) {
-            return new double[]{49d, 47d};
+            return new double[]{20d, 20d};
         } else if (EventRef.class.equals(type)) {
             return new double[]{56d, 56d};
         } else if (EventState.class.equals(type)) {
-            return new double[]{254d, 92d};
+            return new double[]{154d, 102d};
         } else if (InjectState.class.equals(type)) {
-            return new double[]{254d, 92d};
+            return new double[]{154d, 102d};
         } else if (SwitchState.class.equals(type)) {
-            return new double[]{254d, 92d};
-        } else if (OperationState.class.equals(type)) {
-            return new double[]{254d, 92d};
-        } else if (SleepState.class.equals(type)) {
-            return new double[]{254d, 92d};
-        } else if (ParallelState.class.equals(type)) {
-            return new double[]{254d, 92d};
-        } else if (ForEachState.class.equals(type)) {
-            return new double[]{254d, 92d};
-        } else if (CallbackState.class.equals(type)) {
-            return new double[]{254d, 92d};
-        } else if (ActionsContainer.class.equals(type)) {
-            return new double[]{450d, 150d};
-        } else if (ActionNode[].class.equals(type)) {
-            return new double[]{450d, 150d};
-        } else if (OnEvent[].class.equals(type)) {
-            return new double[]{450d, 150d};
+            return new double[]{154d, 102d};
         } else if (OnEvent.class.equals(type)) {
             return new double[]{56d, 56d};
         } else if (CallFunctionAction.class.equals(type)) {
             return new double[]{154d, 51d};
         } else if (CallSubflowAction.class.equals(type)) {
             return new double[]{154d, 51d};
-        } else if (EventTimeout.class.equals(type)) {
-            return new double[]{56d, 56d};
         }
-
         return new double[]{0d, 0d};
     }
+
 }

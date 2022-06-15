@@ -86,6 +86,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.treblereel.gwt.gwtproject.widgets</groupId>
+      <artifactId>gwt-widgets</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>com.google.elemental2</groupId>
       <artifactId>elemental2-dom</artifactId>
     </dependency>
