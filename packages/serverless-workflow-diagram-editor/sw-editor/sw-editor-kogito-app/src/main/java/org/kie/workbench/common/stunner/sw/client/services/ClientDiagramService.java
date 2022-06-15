@@ -35,6 +35,7 @@ import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.sw.Definitions;
 import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
+import org.kie.workbench.common.stunner.sw.marshall.Context;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
 import org.uberfire.client.promise.Promises;
 
@@ -82,7 +83,6 @@ public class ClientDiagramService {
     private void doTransform(final String fileName,
                              final String xml,
                              final ServiceCallback<Diagram> callback) {
-
         if (Objects.isNull(xml) || xml.isEmpty()) {
             Diagram newDiagram = createNewDiagram(fileName);
             callback.onSuccess(newDiagram);
@@ -162,8 +162,13 @@ public class ClientDiagramService {
 
     private void updateClientMetadata(final Diagram diagram) {
         final Metadata metadata = diagram.getMetadata();
-        String rootUUID = marshaller.getContext().getWorkflowRootNode().getUUID();
-        metadata.setCanvasRootUUID(rootUUID);
+
+        Context context = marshaller.getContext();
+        if (context != null) {
+            String rootUUID = context.getWorkflowRootNode().getUUID();
+            metadata.setCanvasRootUUID(rootUUID);
+        }
+
         if (isEmpty(metadata.getShapeSetId())) {
             final String sId = shapeManager.getDefaultShapeSet(metadata.getDefinitionSetId()).getId();
             metadata.setShapeSetId(sId);

@@ -150,23 +150,25 @@ public class StunnerEditor {
 
     public void handleError(final ClientRuntimeError error) {
         final Throwable e = error.getThrowable();
+        final String message;
         if (e instanceof DiagramParsingException) {
             final DiagramParsingException dpe = (DiagramParsingException) e;
-            close();
             parsingExceptionProcessor.accept(dpe);
-            view.setWidget(errorPage);
+            message = e.toString();
+        } else if (e instanceof DefinitionNotFoundException) {
+            final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) e;
+            message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
+                                                  dnfe.getDefinitionId());
         } else {
-            String message = null;
-            if (e instanceof DefinitionNotFoundException) {
-                final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) e;
-                message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
-                                                      dnfe.getDefinitionId());
-            } else {
-                message = error.getThrowable() != null ?
-                        error.getThrowable().getMessage() : error.getMessage();
-            }
-            showError(message);
             exceptionProcessor.accept(error.getThrowable());
+            message = error.getThrowable() != null ? error.getThrowable().getMessage() : error.getMessage();
+        }
+
+        if ((diagramPresenter != null) &&
+                (diagramPresenter.getView() != null)) {
+            showError(message);
+        } else {
+            view.setWidget(errorPage);
         }
     }
 
@@ -211,10 +213,21 @@ public class StunnerEditor {
     }
 
     public void showMessage(String message) {
-        diagramPresenter.getView().showMessage(message);
+        if (!isClosed()) {
+            diagramPresenter.getView().showMessage(message);
+        }
+    }
+
+    public void showWarning(String message) {
+        if (!isClosed()) {
+            diagramPresenter.getView().showWarning(message);
+        }
     }
 
     public void showError(String message) {
+        if (!isClosed()) {
+            diagramPresenter.getView().showError(message);
+        }
     }
 
     public IsWidget getView() {

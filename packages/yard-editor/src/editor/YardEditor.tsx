@@ -28,7 +28,6 @@ import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTe
 import { YardTextEditor } from "../textEditor/YardTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
-import "../../static/css/editor.css";
 
 interface Props {
   /**

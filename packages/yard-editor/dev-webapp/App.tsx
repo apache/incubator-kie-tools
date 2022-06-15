@@ -14,110 +14,107 @@
  * limitations under the License.
  */
 
-import { YardEditor } from "../src";
-import * as React from "react";
-import { useRef, useState } from "react";
-import { YardEmptyState } from "./EmptyState";
-import type { Property } from "csstype";
-import { MenuButtons, Theme } from "./MenuButtons";
-import "./App.scss";
-import { ChannelType, EditorApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
+import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { basename, extname } from "path";
+import * as React from "react";
+import { useCallback, useMemo, useState } from "react";
+import "./App.scss";
+import { YardEmptyState } from "./EmptyState";
+import { MenuButtons } from "./MenuButtons";
 
-type State = string | undefined;
+export type YardFileType = "json" | "yml" | "yaml";
 
 export const App = () => {
-  const [content, setContent] = useState<State>(undefined);
-  const editor = useRef<EditorApi>();
+  const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
+  const { editor, editorRef } = useEditorRef();
 
-  const displayYardEditor = (): Property.Display => {
-    return content === undefined ? "none" : "block";
-  };
+  const editorEnvelopeLocator = useMemo(
+    () =>
+      new EditorEnvelopeLocator(window.location.origin, [
+        new EnvelopeMapping("yard", "**/*.yard.+(yml|yaml|json)", "", "yard-editor-envelope.html"),
+      ]),
+    []
+  );
 
-  const undo = (): void => {
-    editor.current!.undo().finally();
-  };
+  const onUndo = useCallback(async () => {
+    editor?.undo();
+  }, [editor]);
 
-  const redo = (): void => {
-    editor.current!.redo().finally();
-  };
+  const onRedo = useCallback(async () => {
+    editor?.redo();
+  }, [editor]);
 
-  const back = (): void => {
-    setContent(undefined);
-  };
+  const onGetContent = useCallback(async () => editor?.getContent() ?? "", [editor]);
 
-  const validate = () => {
-    editor.current!.validate().then((notifications) => {
-      window.alert(JSON.stringify(notifications, undefined, 2));
+  const onSetTheme = useCallback(
+    async (theme) => {
+      editor?.setTheme(theme);
+    },
+    [editor]
+  );
+
+  const onValidate = useCallback(async () => {
+    if (!editor) {
+      return;
+    }
+
+    const notifications = await editor.validate();
+    window.alert(JSON.stringify(notifications, undefined, 2));
+  }, [editor]);
+
+  const onSetContent = useCallback((path: string, content: string) => {
+    const match = /\.sw\.(json|yml|yaml)$/.exec(path.toLowerCase());
+    const dotExtension = match ? match[0] : extname(path);
+    const extension = dotExtension.slice(1);
+    const fileName = basename(path);
+
+    setEmbeddedEditorFile({
+      path: path,
+      getFileContents: async () => content,
+      isReadOnly: false,
+      fileExtension: extension,
+      fileName: fileName,
     });
-  };
+  }, []);
 
-  const container = useRef<HTMLDivElement | null>(null);
+  const onNewContent = useCallback(
+    (type: YardFileType) => {
+      onSetContent(`new-document.yard.${type}`, "");
+    },
+    [onSetContent]
+  );
 
   return (
     <Page>
-      {content === undefined && (
+      {!embeddedEditorFile && (
         <PageSection isFilled={true}>
-          <YardEmptyState
-            newContent={(type: string) => {
-              setContent("");
-              editor.current!.setContent(`new-document.yard.${type}`, "").finally();
-            }}
-            setContent={(path: string, content: string) => {
-              setContent(content);
-              editor.current!.setContent(path, content).finally();
-            }}
-          />
+          <YardEmptyState newContent={onNewContent} setContent={onSetContent} />
         </PageSection>
       )}
 
-      <PageSection padding={{ default: "noPadding" }} style={{ display: displayYardEditor() }}>
-        <MenuButtons
-          back={back}
-          undo={undo}
-          redo={redo}
-          get={() => editor.current!.getContent()}
-          setTheme={(theme) => {
-            if (container.current) {
-              if (theme === Theme.DARK) {
-                container.current?.classList.add("vscode-dark");
-              } else {
-                container.current?.classList.remove("vscode-dark");
-              }
-            }
-          }}
-          validate={validate}
-        />
-      </PageSection>
-      <PageSection
-        padding={{ default: "noPadding" }}
-        style={{ display: displayYardEditor() }}
-        isFilled={true}
-        hasOverflowScroll={false}
-      >
-        <div ref={container} className="editor-container">
-          <YardEditor
-            channelType={ChannelType.ONLINE}
-            ref={editor}
-            onNewEdit={() => {
-              /*NOP*/
-            }}
-            setNotifications={() => {
-              /*NOP*/
-            }}
-            onStateControlCommandUpdate={(command) => {
-              if (command === StateControlCommand.UNDO) {
-                editor.current?.undo();
-              } else if (command === StateControlCommand.REDO) {
-                editor.current?.redo();
-              } else {
-                console.log("Nothing to do.");
-              }
-            }}
-            isReadOnly={false}
-          />
-        </div>
-      </PageSection>
+      {embeddedEditorFile && (
+        <>
+          <PageSection padding={{ default: "noPadding" }}>
+            <MenuButtons undo={onUndo} redo={onRedo} get={onGetContent} setTheme={onSetTheme} validate={onValidate} />
+          </PageSection>
+          <PageSection padding={{ default: "noPadding" }} isFilled={true} hasOverflowScroll={false}>
+            <div className="editor-container">
+              {embeddedEditorFile && (
+                <EmbeddedEditor
+                  ref={editorRef}
+                  file={embeddedEditorFile}
+                  channelType={ChannelType.ONLINE}
+                  editorEnvelopeLocator={editorEnvelopeLocator}
+                  locale={"en"}
+                />
+              )}
+            </div>
+          </PageSection>
+        </>
+      )}
     </Page>
   );
 };

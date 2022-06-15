@@ -16,7 +16,7 @@
   "background": { "service_worker": "background.js" },
   "web_accessible_resources": [{ "resources": ["resources/*", "scripts/*"], "matches": ["https://*/*", "http://*/*"] }],
   "declarative_net_request": { "rule_resources": [{ "id": "rulesset_1", "enabled": true, "path": "rules.json" }] },
-  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback"],
+  "permissions": ["declarativeNetRequest"],
   "host_permissions": ["https://*.github.com/*", "http://*.github.com/*"],
   "sandbox": { "pages": ["https://raw.githubusercontent.com"] },
   "content_security_policy": { "sandbox": "sandbox allow-scripts; object-src 'self'" },

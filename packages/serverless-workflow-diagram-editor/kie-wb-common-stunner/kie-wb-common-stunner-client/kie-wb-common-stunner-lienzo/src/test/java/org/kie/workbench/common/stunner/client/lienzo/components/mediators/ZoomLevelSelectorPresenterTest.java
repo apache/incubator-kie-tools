@@ -22,6 +22,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
+import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.google.gwt.user.client.ui.IsWidget;
 import com.google.gwt.user.client.ui.Widget;
@@ -71,6 +72,9 @@ public class ZoomLevelSelectorPresenterTest {
 
     @Mock
     private LienzoBoundsPanel panelView;
+
+    @Mock
+    private ScrollablePanel scrollablePanel;
 
     @Mock
     private org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoLayer stunnerLayer;
@@ -142,7 +146,7 @@ public class ZoomLevelSelectorPresenterTest {
     public void testInit() {
         verify(selector, times(1)).setText(eq("100%"));
         verify(selector, times(1)).dropUp();
-        verify(selector, times(1)).onReset(any(Command.class));
+        verify(selector, times(1)).onScaleToFitSize(any(Command.class));
         verify(selector, times(1)).onIncreaseLevel(any(Command.class));
         verify(selector, times(1)).onDecreaseLevel(any(Command.class));
         verify(selector, times(1)).add(eq(ZoomLevelSelectorPresenter.LEVEL_25), any(Command.class));
@@ -199,10 +203,18 @@ public class ZoomLevelSelectorPresenterTest {
     }
 
     @Test
-    public void testOnReset() {
+    public void testOnFitToSize() {
+        when(panel.getView()).thenReturn(scrollablePanel);
+        when(scrollablePanel.getElement()).thenReturn(panelElement);
+        when(scrollablePanel.getViewport()).thenReturn(viewport);
+        when(scrollablePanel.getWidePx()).thenReturn(500);
+        when(scrollablePanel.getHighPx()).thenReturn(500);
+        when(scrollablePanel.getLayerBounds()).thenReturn(Bounds.build(0, 0, 800, 600));
+        Transform viewportTransform = new Transform();
+        when(viewport.getTransform()).thenReturn(viewportTransform);
         tested.init(() -> canvas);
-        selector.onReset();
-        verify(viewport, times(1)).setTransform(eq(new Transform()));
+        selector.onScaleToFitSize();
+        verify(viewport, times(1)).setTransform(any());
         verify(layer, times(1)).batch();
     }
 

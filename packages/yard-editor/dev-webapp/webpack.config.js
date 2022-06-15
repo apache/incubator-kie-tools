@@ -27,6 +27,7 @@ module.exports = (env) =>
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
+      "yard-editor-envelope": path.resolve(__dirname, "./envelope/YardEditorEnvelopeApp.ts"),
     },
     output: {
       path: path.resolve("../dist-dev"),
@@ -37,6 +38,10 @@ module.exports = (env) =>
           { from: path.resolve(__dirname, "./static/resources"), to: "./resources" },
           { from: path.resolve(__dirname, "./static/index.html"), to: "./index.html" },
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
+          {
+            from: path.resolve(__dirname, "./static/envelope/yard-editor-envelope.html"),
+            to: "./yard-editor-envelope.html",
+          },
         ],
       }),
       new MonacoWebpackPlugin({

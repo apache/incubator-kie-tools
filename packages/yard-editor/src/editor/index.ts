@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import "./style.css";
 
 export * from "./YardEditor";

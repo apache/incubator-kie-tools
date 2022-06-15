@@ -144,20 +144,25 @@ public class NavTreeJSONMarshaller {
         String modif = json.getString(NAV_ITEM_MODIF);
         String ctx = json.getString(NAV_ITEM_CTX);
         String page = json.getString(NAV_ITEM_PAGE);
-        
+
         if (name == null) {
             name = id;
         }
-        
-        if (page != null && NavItem.Type.ITEM.equals(navItem.getType())) {
+
+        if (isItem(navItem)) {
+            if (page != null) {
+                if (name == null) {
+                    name = page;
+                }
+                if (id == null) {
+                    id = "nav_item_" + page.replaceAll(" ", "_");
+                }
+            } else {
+                page = name;
+            }
+
             if (ctx == null) {
                 ctx = "resourceId=" + page + ";resourceType=PERSPECTIVE";
-            }
-            if (name == null) {
-                name = page;
-            }
-            if (id == null) {
-                id = "nav_item_" + page.replaceAll(" ", "_");
             }
         }
 
@@ -168,10 +173,14 @@ public class NavTreeJSONMarshaller {
         navItem.setContext(ctx);
 
         if (NavItem.Type.GROUP.toString().equals(type)) {
-            JsonArray childrenArray = json.getArray(NAV_GROUP_CHILDREN);
-            NavGroup navGroup = (NavGroup) navItem;
+            var childrenArray = json.getArray(NAV_GROUP_CHILDREN);
+            var navGroup = (NavGroup) navItem;
             parseNavItemArray(childrenArray, navGroup.getChildren(), navGroup);
         }
         return navItem;
+    }
+
+    private boolean isItem(NavItem navItem) {
+        return NavItem.Type.ITEM.equals(navItem.getType());
     }
 }

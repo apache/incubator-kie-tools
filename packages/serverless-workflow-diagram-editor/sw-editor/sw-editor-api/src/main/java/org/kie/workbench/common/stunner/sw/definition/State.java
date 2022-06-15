@@ -70,13 +70,13 @@ public class State {
      * Next transition of the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
-    public String transition;
+    public Object transition;
 
     /**
      * Whether this State is a last state in the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
-    public boolean end;
+    public Object end;
 
     /**
      * Definitions of states error handling.
@@ -115,20 +115,20 @@ public class State {
         return this;
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public State setTransition(String transition) {
+    public State setTransition(Object transition) {
         this.transition = transition;
         return this;
     }
 
-    public boolean isEnd() {
+    public Object isEnd() {
         return end;
     }
 
-    public State setEnd(boolean end) {
+    public State setEnd(Object end) {
         this.end = end;
         return this;
     }

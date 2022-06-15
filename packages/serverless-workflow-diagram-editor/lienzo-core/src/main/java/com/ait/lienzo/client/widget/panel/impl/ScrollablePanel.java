@@ -435,6 +435,11 @@ public class ScrollablePanel extends LienzoBoundsPanel {
         scrollPanel.scrollTop = (max * ry) / 100;
     }
 
+    public void resetScrollPositionToZero() {
+        setHorizontalScrollRate(0);
+        setVerticalScrollRate(0);
+    }
+
     private double calculateInternalScrollPanelWidth() {
         final double absWidth = maxBoundX() - minBoundX();
         if (getViewport() != null && deltaX() != 0) {

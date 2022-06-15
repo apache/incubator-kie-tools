@@ -38,7 +38,7 @@ public class ZoomLevelSelectorTest {
     private ZoomLevelSelector.View view;
 
     @Mock
-    private Command onReset;
+    private Command onFitToSize;
 
     @Mock
     private Command onDecreaseLevel;
@@ -53,7 +53,7 @@ public class ZoomLevelSelectorTest {
         tested = new ZoomLevelSelector(view);
         tested.onIncreaseLevel(onIncreaseLevel);
         tested.onDecreaseLevel(onDecreaseLevel);
-        tested.onReset(onReset);
+        tested.onScaleToFitSize(onFitToSize);
     }
 
     @Test
@@ -90,9 +90,9 @@ public class ZoomLevelSelectorTest {
     }
 
     @Test
-    public void testOnReset() {
-        tested.onReset();
-        verify(onReset, times(1)).execute();
+    public void testOnFitToSize() {
+        tested.onScaleToFitSize();
+        verify(onFitToSize, times(1)).execute();
     }
 
     @Test

@@ -214,24 +214,48 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
         request.setHeaders(headers);
         fetch(LOOKUP_ENDPOINT, request).then((Response response) -> {
             verifier.verify(response);
-            response.text().then(responseText -> {
-                if (response.status == HttpResponseCodes.SC_INTERNAL_SERVER_ERROR) {
-                    listener.onError(new ClientRuntimeError("Not able to retrieve data set: " + getName(lookup, def),
-                            new Exception(responseText)));
-                } else if (response.status == HttpResponseCodes.SC_NOT_FOUND) {
-                    listener.onError(new ClientRuntimeError("Data Set not found: " + getName(lookup, def),
-                            new Exception(responseText)));
-                } else {
-                    var dataSet = parseDataSet(responseText);
-                    listener.callback(dataSet);
-                }
-                return null;
-            }, error -> {
-                listener.onError(new ClientRuntimeError("Error reading data set content: " + error));
-                return null;
-            });
+            response.text().then(responseText -> handleResponseText(def, lookup, listener, response, responseText),
+                    error -> {
+                        listener.onError(new ClientRuntimeError("Error reading data set content: " + error));
+                        return null;
+                    });
             return null;
         }).catch_(this::handleError);
+    }
+
+    private IThenable<Object> handleResponseText(DataSetDef def,
+                                                 DataSetLookup lookup,
+                                                 DataSetReadyCallback listener,
+                                                 Response response,
+                                                 String responseText) {
+
+        switch (response.status) {
+            case (HttpResponseCodes.SC_INTERNAL_SERVER_ERROR):
+                listener.onError(buildError("Not able to retrieve data set: " + getName(lookup, def),
+                        responseText));
+                break;
+            case (HttpResponseCodes.SC_NOT_FOUND):
+                listener.onError(buildError("Data Set not found: " + getName(lookup, def), responseText));
+                break;
+            default:
+                DataSet dataSet = null;
+                try {
+                    dataSet = parseDataSet(responseText);
+                } catch (Exception e) {
+                    listener.onError(new ClientRuntimeError("Error reading data set content", e));
+                }
+
+                if (dataSet != null) {
+                    listener.callback(dataSet);
+                } else {
+                    listener.onError(new ClientRuntimeError("Not able to retrieve the dataset. Content is not valid."));
+                }
+        }
+        return null;
+    }
+
+    private ClientRuntimeError buildError(String message, String responseText) {
+        return new ClientRuntimeError(message, new Exception(responseText));
     }
 
     private DataSetMetadata parseMetadata(String jsonContent) {

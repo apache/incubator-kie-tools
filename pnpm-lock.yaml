@@ -35,7 +35,7 @@ importers:
       "@types/react-dom": ^17.0.5
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
-      "@types/selenium-webdriver": ^4.0.18
+      "@types/selenium-webdriver": ^4.1.1
       "@types/semver": ^7.3.6
       "@types/simpl-schema": ^1.12.0
       "@types/sinon": ^10.0.2
@@ -50,7 +50,7 @@ importers:
       "@vscode/test-web": ^0.0.22
       babel-loader: ^8.2.2
       chai: ^4.3.4
-      chromedriver: ^100.0.0
+      chromedriver: ^102.0.0
       circular-dependency-plugin: ^5.2.2
       compressing: ^1.5.1
       copy-webpack-plugin: ^8.1.1
@@ -103,7 +103,7 @@ importers:
       sass: ^1.43.4
       sass-loader: ^12.3.0
       sax: ^1.2.4
-      selenium-webdriver: ^4.1.1
+      selenium-webdriver: ^4.2.0
       semver: ^7.3.5
       sinon: ^11.1.1
       source-map-loader: ^2.0.2
@@ -157,7 +157,7 @@ importers:
       "@types/react-dom": 17.0.8
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
-      "@types/selenium-webdriver": 4.0.18
+      "@types/selenium-webdriver": 4.1.1
       "@types/semver": 7.3.6
       "@types/simpl-schema": 1.12.0
       "@types/sinon": 10.0.2
@@ -172,7 +172,7 @@ importers:
       "@vscode/test-web": 0.0.22
       babel-loader: 8.2.3_xcm7bbhl2zdsgckfarl5d37zpy
       chai: 4.3.4
-      chromedriver: 100.0.0
+      chromedriver: 102.0.0
       circular-dependency-plugin: 5.2.2_webpack@5.70.0
       compressing: 1.5.1
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
@@ -225,7 +225,7 @@ importers:
       sass: 1.49.9
       sass-loader: 12.4.0_sass@1.49.9+webpack@5.70.0
       sax: 1.2.4
-      selenium-webdriver: 4.1.1
+      selenium-webdriver: 4.2.0
       semver: 7.3.5
       sinon: 11.1.1
       source-map-loader: 2.0.2_webpack@5.70.0
@@ -682,6 +682,17 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
+  packages/dashbuilder-client:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder": 0.0.0
+    dependencies:
+      "@kie-tools/dashbuilder": link:../dashbuilder
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
   packages/dashbuilder-component-api:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
@@ -913,7 +924,7 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder": 0.0.0
+      "@kie-tools/dashbuilder-client": 0.0.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       monaco-editor: ^0.33.0
@@ -929,7 +940,7 @@ importers:
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/dashbuilder": link:../dashbuilder
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0
@@ -5667,9 +5678,11 @@ packages:
       { integrity: sha512-tGomyEuzSC1H28y2zlW6XPCaDaXFaD6soTdb4GNdmte2qfHtrKqhy0ZFs4r/1hpazCfEZqeTSRLvSasmEx89uw== }
     dev: true
 
-  /@types/selenium-webdriver/4.0.18:
+  /@types/selenium-webdriver/4.1.1:
     resolution:
-      { integrity: sha512-gkrUo3QldGr8V9im/DjgKkX4UVd1rtflfEBuPG9hPSA1keu7A0rF8h/MQjpTMm2EPVhBCd2K8tn5nlC9Vsd5Xw== }
+      { integrity: sha512-NxxZZek50ylIACiXebKQYHD3D4One3WXOasEXWazL6aTfYbZob7ClNKxUpg8I4/oWArX87oPWvj1cHKqfel3Hg== }
+    dependencies:
+      "@types/ws": 8.2.2
     dev: true
 
   /@types/semver/7.3.6:
@@ -6769,15 +6782,6 @@ packages:
       - debug
     dev: true
 
-  /axios/0.24.0:
-    resolution:
-      { integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA== }
-    dependencies:
-      follow-redirects: 1.14.9
-    transitivePeerDependencies:
-      - debug
-    dev: true
-
   /axios/0.27.2:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
@@ -6786,7 +6790,6 @@ packages:
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
-    dev: false
 
   /azure-devops-node-api/11.0.1:
     resolution:
@@ -8263,15 +8266,15 @@ packages:
       tslib: 1.14.1
     dev: true
 
-  /chromedriver/100.0.0:
+  /chromedriver/102.0.0:
     resolution:
-      { integrity: sha512-oLfB0IgFEGY9qYpFQO/BNSXbPw7bgfJUN5VX8Okps9W2qNT4IqKh5hDwKWtpUIQNI6K3ToWe2/J5NdpurTY02g== }
+      { integrity: sha512-xer/0g1Oarkjc2e+4nyoLgZT4kJHYhcj3PcxD1nEoGJQYEllTjprN1uDpSb4BkgMGo0ydfIS1VDkszrr/J9OOg== }
     engines: { node: ">=10" }
     hasBin: true
     requiresBuild: true
     dependencies:
       "@testim/chrome-version": 1.1.2
-      axios: 0.24.0
+      axios: 0.27.2
       del: 6.0.0
       extract-zip: 2.0.1
       https-proxy-agent: 5.0.0
@@ -11860,7 +11863,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.34
-    dev: false
 
   /forwarded/0.1.2:
     resolution: { integrity: sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ= }
@@ -12891,7 +12893,8 @@ packages:
     engines: { node: ">= 4" }
 
   /image-size/0.5.5:
-    resolution: { integrity: sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w= }
+    resolution:
+      { integrity: sha512-6TDAlDPZxUFCv+fuOkIoXT/V/f3Qbq8e37p+YOiYrUv3v9cc3/6x78VdfPgFVaB9dZYeLUfKgHRebpkm/oP2VQ== }
     engines: { node: ">=0.10.0" }
     hasBin: true
     requiresBuild: true
@@ -18851,9 +18854,9 @@ packages:
       xml2js: 0.4.23
     dev: true
 
-  /selenium-webdriver/4.1.1:
+  /selenium-webdriver/4.2.0:
     resolution:
-      { integrity: sha512-Fr9e9LC6zvD6/j7NO8M1M/NVxFX67abHcxDJoP5w2KN/Xb1SyYLjMVPGgD14U2TOiKe4XKHf42OmFw9g2JgCBQ== }
+      { integrity: sha512-gPPXYSz4jJBM2kANRQ9cZW6KFBzR/ptxqGLtyC75eXtdgOsWWRRRyZz5F2pqdnwNmAjrCSFMMXfisJaZeWVejg== }
     engines: { node: ">= 10.15.0" }
     dependencies:
       jszip: 3.7.1
@@ -21482,7 +21485,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_esbuild@0.14.22
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:

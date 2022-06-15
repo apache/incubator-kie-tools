@@ -53,26 +53,26 @@ public class DefaultConditionTransition {
     @JsIgnore
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION_DEFAULT_CONDITION).collect(Collectors.toSet());
 
-    public String transition;
+    public Object transition;
 
-    public boolean end;
+    public Object end;
 
     public DefaultConditionTransition() {
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
     }
 
-    public boolean isEnd() {
+    public Object isEnd() {
         return end;
     }
 
-    public void setEnd(boolean end) {
+    public void setEnd(Object end) {
         this.end = end;
     }
 

@@ -85,62 +85,58 @@ public class DisplayerSettingsJSONMarshaller {
             throw new IllegalArgumentException("Displayer Settings are not a valid object");
         }
 
-        try {
+        // UUID
+        ds.setUUID(jsonObject.getString(SETTINGS_UUID));
+        jsonObject.put(SETTINGS_UUID, (String) null);
 
-            // UUID
-            ds.setUUID(jsonObject.getString(SETTINGS_UUID));
-            jsonObject.put(SETTINGS_UUID, (String) null);
+        // First look if a dataset 'on-the-fly' has been specified
+        var lookupNames = Arrays.asList(DATASET_LOOKUP_PREFIX,
+                DATASET_LOOKUP_PREFIX.toLowerCase(),
+                DATASET_LOOKUP_PREFIX.toUpperCase(),
+                "datasetLookup",
+                "lookup");
+        var data = jsonObject.getObject(DATASET_PREFIX);
+        var lookup = dataSetLookupJsonMarshaller.fromJson(jsonObject.getObject(lookupNames));
+        if (data != null) {
+            var dataSet = dataSetJsonMarshaller.fromJson(data);
+            ds.setDataSet(dataSet);
 
-            // First look if a dataset 'on-the-fly' has been specified
-            var lookupNames = Arrays.asList(DATASET_LOOKUP_PREFIX,
-                    DATASET_LOOKUP_PREFIX.toLowerCase(),
-                    DATASET_LOOKUP_PREFIX.toUpperCase(),
-                    "datasetLookup");
-            var data = jsonObject.getObject(DATASET_PREFIX);
-            var lookup = dataSetLookupJsonMarshaller.fromJson(jsonObject.getObject(lookupNames));
-            if (data != null) {
-                var dataSet = dataSetJsonMarshaller.fromJson(data);
-                ds.setDataSet(dataSet);
+            // Remove from the json input so that it doesn't end up in the settings map.
+            jsonObject.put(DATASET_PREFIX, (JsonValue) null);
 
-                // Remove from the json input so that it doesn't end up in the settings map.
-                jsonObject.put(DATASET_PREFIX, (JsonValue) null);
+            // If none was found, look for a dataset lookup definition
+        } else if (lookup != null) {
+            ds.setDataSetLookup(lookup);
+            // Remove from the json input so that it doesn't end up in the settings map.
+            jsonObject.put(DATASET_LOOKUP_PREFIX, (JsonValue) null);
+        } else {
+            throw new RuntimeException("Dataset lookup for displayer settings is missing.");
+        }
 
-                // If none was found, look for a dataset lookup definition
-            } else if (lookup != null) {
-                ds.setDataSetLookup(lookup);
-                // Remove from the json input so that it doesn't end up in the settings map.
-                jsonObject.put(DATASET_LOOKUP_PREFIX, (JsonValue) null);
+        // Parse the columns settings
+        var columns = jsonObject.getArray(COLUMNS_PREFIX);
+        if (columns != null && columns.getType() == JsonType.ARRAY) {
+            List<ColumnSettings> columnSettingsList = parseColumnsFromJson(columns);
+            ds.setColumnSettingsList(columnSettingsList);
+
+            // Remove from the json input so that it doesn't end up in the settings map.
+            jsonObject.put(COLUMNS_PREFIX, (JsonValue) null);
+        }
+
+        // Now parse all other settings
+        ds.setSettingsFlatMap(parseSettingsFromJson(jsonObject));
+
+        // fix settings without a type
+        if (ds.getTypeString() == null) {
+            if (ds.getComponentId() != null) {
+                ds.setType(DisplayerType.EXTERNAL_COMPONENT);
             } else {
-                throw new RuntimeException("Displayer settings dataset lookup not specified");
+                ds.setType(DisplayerType.TABLE);
             }
-
-            // Parse the columns settings
-            var columns = jsonObject.getArray(COLUMNS_PREFIX);
-            if (columns != null && columns.getType() == JsonType.ARRAY) {
-                List<ColumnSettings> columnSettingsList = parseColumnsFromJson(columns);
-                ds.setColumnSettingsList(columnSettingsList);
-
-                // Remove from the json input so that it doesn't end up in the settings map.
-                jsonObject.put(COLUMNS_PREFIX, (JsonValue) null);
-            }
-
-            // Now parse all other settings
-            ds.setSettingsFlatMap(parseSettingsFromJson(jsonObject));
-
-            // fix settings without a type
-            if (ds.getTypeString() == null) {
-                if (ds.getComponentId() != null) {
-                    ds.setType(DisplayerType.EXTERNAL_COMPONENT);
-                } else {
-                    ds.setType(DisplayerType.TABLE);
-                }
-            }
-            if (ds.getTypeString() != null && ds.getType() == null) {
-                throw new IllegalArgumentException("Unknown settings type. These are the valids types: " +
-                        Arrays.toString(DisplayerType.values()));
-            }
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Error reading displayer settings:\n" + e.getMessage());
+        }
+        if (ds.getTypeString() != null && ds.getType() == null) {
+            throw new IllegalArgumentException("Unknown settings type. These are the valids types: " +
+                    Arrays.toString(DisplayerType.values()));
         }
         return ds;
     }
