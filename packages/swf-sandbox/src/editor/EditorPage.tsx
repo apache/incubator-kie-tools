@@ -23,6 +23,7 @@ import {
   KogitoEditorChannelApiImpl,
   useStateControlSubscription,
 } from "@kie-tools-core/editor/dist/embedded";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -31,7 +32,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflow } from "../extension";
+import { isSandboxAsset, isServerlessWorkflowJson } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -43,7 +44,7 @@ import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { EditorSwfLanguageService } from "./api/EditorSwfLanguageService";
+import { SandboxSwfJsonLanguageService } from "./api/SandboxSwfJsonLanguageService";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflowEditorChannelApiImpl";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
@@ -51,6 +52,7 @@ import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
+import { DiagnosticSeverity } from "vscode-languageserver-types";
 
 export interface Props {
   workspaceId: string;
@@ -64,7 +66,7 @@ export function EditorPage(props: Props) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const history = useHistory();
   const workspaces = useWorkspaces();
-  const { locale } = useAppI18n();
+  const { i18n, locale } = useAppI18n();
   const [editor, editorRef] = useController<EmbeddedEditorRef>();
   const [alerts, alertsRef] = useController<AlertsController>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
@@ -201,25 +203,6 @@ export function EditorPage(props: Props) {
     [workspaces, props.workspaceId]
   );
 
-  // TODO: Make notifications available when supported (KOGITO-7345)
-  // useEffect(() => {
-  //   if (!editor?.isReady) {
-  //     return;
-  //   }
-
-  //   //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
-  //   setTimeout(() => {
-  //     editor?.validate().then((notifications) => {
-  //       editorPageDock?.setNotifications(
-  //         i18n.terms.validation,
-  //         "",
-  //         // Removing the notification path so that we don't group it by path, as we're only validating one file.
-  //         Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
-  //       );
-  //     });
-  //   }, 200);
-  // }, [workspaceFilePromise, editor, i18n, editorPageDock]);
-
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
       if (!workspaceFilePromise.data) {
@@ -277,46 +260,95 @@ export function EditorPage(props: Props) {
     ]
   );
 
-  const apiImpl = useMemo(() => {
-    let swfServiceCatalogChannelApiImpl;
-    let swfLanguageServiceChannelApiImpl;
+  const serviceRegistryInfo = useMemo(() => {
     if (
-      isServerlessWorkflow(props.fileRelativePath) &&
       isServiceAccountConfigValid(settings.serviceAccount.config) &&
       isServiceRegistryConfigValid(settings.serviceRegistry.config)
     ) {
-      const serviceRegistryInfo = {
+      return {
         authInfo: {
           username: settings.serviceAccount.config.clientId,
           token: settings.serviceAccount.config.clientSecret,
         },
         url: settings.serviceRegistry.config.coreRegistryApi,
       };
+    }
+  }, [settings.serviceAccount.config, settings.serviceRegistry.config]);
 
+  // SWF-specific code should be isolated when having more capabilities for other editors.
+
+  const isSwfJson = useMemo(
+    () => workspaceFilePromise.data && isServerlessWorkflowJson(workspaceFilePromise.data.name),
+    [workspaceFilePromise.data]
+  );
+
+  const swfJsonLanguageService = useMemo(() => {
+    if (!isSwfJson) {
+      return;
+    }
+    return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore, serviceRegistryInfo);
+  }, [isSwfJson, serviceRegistryInfo, settingsDispatch.serviceRegistry.catalogStore]);
+
+  const apiImpl = useMemo(() => {
+    if (!kogitoEditorChannelApiImpl) {
+      return;
+    }
+
+    let swfLanguageServiceChannelApiImpl;
+    if (swfJsonLanguageService) {
+      swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(swfJsonLanguageService);
+    }
+
+    let swfServiceCatalogChannelApiImpl;
+    if (serviceRegistryInfo) {
       swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(
         settingsDispatch.serviceRegistry.catalogStore,
         serviceRegistryInfo
       );
-
-      swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(
-        new EditorSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore, serviceRegistryInfo)
-      );
     }
-    return (
-      kogitoEditorChannelApiImpl &&
-      new ServerlessWorkflowEditorChannelApiImpl(
-        kogitoEditorChannelApiImpl,
-        swfServiceCatalogChannelApiImpl,
-        swfLanguageServiceChannelApiImpl
-      )
+
+    return new ServerlessWorkflowEditorChannelApiImpl(
+      kogitoEditorChannelApiImpl,
+      swfServiceCatalogChannelApiImpl,
+      swfLanguageServiceChannelApiImpl
     );
   }, [
     kogitoEditorChannelApiImpl,
-    props.fileRelativePath,
+    swfJsonLanguageService,
+    serviceRegistryInfo,
     settingsDispatch.serviceRegistry.catalogStore,
-    settings.serviceAccount.config,
-    settings.serviceRegistry.config,
   ]);
+
+  useEffect(() => {
+    if (
+      !editor?.isReady ||
+      lastContent.current === undefined ||
+      !workspaceFilePromise.data ||
+      !swfJsonLanguageService
+    ) {
+      return;
+    }
+
+    swfJsonLanguageService
+      .getDiagnostics({
+        content: lastContent.current,
+        uriPath: workspaceFilePromise.data.relativePath,
+      })
+      .then((lsDiagnostics) => {
+        const diagnostics = lsDiagnostics.map(
+          (lsDiagnostic) =>
+            ({
+              path: "", // empty to not group them by path, as we're only validating one file.
+              severity: lsDiagnostic.severity === DiagnosticSeverity.Error ? "ERROR" : "WARNING",
+              message: `${lsDiagnostic.message} [Line ${lsDiagnostic.range.start.line + 1}]`,
+              type: "PROBLEM",
+            } as Notification)
+        );
+
+        editorPageDock?.setNotifications(i18n.terms.validation, "", diagnostics);
+      })
+      .catch((e) => console.error(e));
+  }, [workspaceFilePromise.data, editor, swfJsonLanguageService, editorPageDock, i18n.terms.validation]);
 
   return (
     <OnlineEditorPage>

@@ -19,11 +19,7 @@ import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
-  constructor(
-    private readonly args: {
-      ls: SwfJsonLanguageService;
-    }
-  ) {}
+  constructor(private readonly ls: SwfJsonLanguageService) {}
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
@@ -31,10 +27,10 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.args.ls.getCompletionItems(args);
+    return this.ls.getCompletionItems(args);
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    return this.args.ls.getCodeLenses(args);
+    return this.ls.getCodeLenses(args);
   }
 }

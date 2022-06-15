@@ -17,10 +17,12 @@
 import { basename, extname } from "path";
 
 const REGEX = {
-  supported: /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml)$/,
-  sw: /^.*\.sw\.(json|yml|yaml)$/,
-  yard: /^.*\.yard\.(json|yml|yaml)$/,
-  dash: /^.*\.dash\.(yml|yaml)$/,
+  supported: /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml)$/i,
+  sw: /^.*\.sw\.(json|yml|yaml)$/i,
+  swJson: /^.*\.sw\.json$/i,
+  swYaml: /^.*\.sw\.(yml|yaml)$/i,
+  yard: /^.*\.yard\.(json|yml|yaml)$/i,
+  dash: /^.*\.dash\.(yml|yaml)$/i,
 };
 
 export const GLOB_PATTERN = {
@@ -57,21 +59,29 @@ export function resolveExtension(path: string): string {
   if (fileName.startsWith(".")) {
     return fileName.slice(1);
   }
-  const match = REGEX.supported.exec(path.toLowerCase());
+  const match = REGEX.supported.exec(path);
   const extension = match ? match[1] : extname(path);
   return extension ? extension.slice(1) : "";
 }
 
 export function isServerlessWorkflow(path: string): boolean {
-  return REGEX.sw.test(path.toLowerCase());
+  return REGEX.sw.test(path);
+}
+
+export function isServerlessWorkflowJson(path: string): boolean {
+  return REGEX.swJson.test(path);
+}
+
+export function isServerlessWorkflowYaml(path: string): boolean {
+  return REGEX.swYaml.test(path);
 }
 
 export function isServerlessDecision(path: string): boolean {
-  return REGEX.yard.test(path.toLowerCase());
+  return REGEX.yard.test(path);
 }
 
 export function isDashbuilder(path: string): boolean {
-  return REGEX.dash.test(path.toLowerCase());
+  return REGEX.dash.test(path);
 }
 
 export function isSandboxAsset(path: string): boolean {

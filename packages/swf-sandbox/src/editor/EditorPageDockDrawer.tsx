@@ -19,6 +19,7 @@ import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-cor
 import { ToggleGroup } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { isServerlessWorkflowJson } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useController } from "../reactExt/Hooks";
 import { WorkspaceFile } from "../workspace/WorkspacesContext";
@@ -98,8 +99,10 @@ export const EditorPageDockDrawer = React.forwardRef<
     [notificationsPanel, onToggle, setNotifications]
   );
 
-  // TODO: Make notifications available when supported (KOGITO-7345)
-  const notificationsPanelIsDisabled = useMemo(() => true, []);
+  const notificationsPanelIsDisabled = useMemo(
+    () => !isServerlessWorkflowJson(props.workspaceFile.name),
+    [props.workspaceFile.name]
+  );
 
   const notificationsPanelDisabledReason = useMemo(() => {
     if (notificationsPanelIsDisabled) {

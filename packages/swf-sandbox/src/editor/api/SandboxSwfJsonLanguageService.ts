@@ -18,14 +18,12 @@ import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-
 import { ServiceRegistryInfo } from "./ServiceRegistryInfo";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
-export class EditorSwfLanguageService {
-  public readonly ls: SwfJsonLanguageService;
-
+export class SandboxSwfJsonLanguageService extends SwfJsonLanguageService {
   constructor(
     private readonly catalogStore: SwfServiceCatalogStore,
-    private readonly serviceRegistryInfo: ServiceRegistryInfo
+    private readonly serviceRegistryInfo?: ServiceRegistryInfo
   ) {
-    this.ls = new SwfJsonLanguageService({
+    super({
       fs: {},
       serviceCatalog: {
         global: {
@@ -40,17 +38,13 @@ export class EditorSwfLanguageService {
       config: {
         shouldDisplayRhhccIntegration: async () => false,
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => true,
-        getServiceRegistryUrl: () => this.serviceRegistryInfo.url,
-        getServiceRegistryAuthInfo: () => this.serviceRegistryInfo.authInfo,
+        getServiceRegistryUrl: () => this.serviceRegistryInfo?.url,
+        getServiceRegistryAuthInfo: () => this.serviceRegistryInfo?.authInfo,
         getSpecsDirPosixPaths: async (_textDocument) => ({
           specsDirRelativePosixPath: "",
           specsDirAbsolutePosixPath: "",
         }),
       },
     });
-  }
-
-  public dispose() {
-    this.ls.dispose();
   }
 }
