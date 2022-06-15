@@ -54,7 +54,6 @@ func (j *jobsServiceSupportingServiceResource) Reconcile() (err error) {
 		DefaultImageName: DefaultJobsServiceImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: j.instance.GetName(), Namespace: j.instance.GetNamespace()}},
 		SingleReplica:    true,
-		KafkaTopics:      jobsServicekafkaTopics,
 	}
 	if err = kogitoservice.NewServiceDeployer(j.Context, definition, j.instance, j.infraHandler).Deploy(); err != nil {
 		return
@@ -71,9 +70,4 @@ func (j *jobsServiceSupportingServiceResource) Reconcile() (err error) {
 	}
 
 	return
-}
-
-// Collection of kafka topics that should be handled by the Jobs service
-var jobsServicekafkaTopics = []string{
-	"kogito-job-service-job-status-events",
 }

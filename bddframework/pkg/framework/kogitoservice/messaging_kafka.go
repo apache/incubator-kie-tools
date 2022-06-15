@@ -51,13 +51,7 @@ func (k *kafkaMessagingDeployer) createRequiredKafkaTopics(infra api.KogitoInfra
 		k.Log.Debug("Ignoring Kafka Topics creation, Kafka URI is empty from the given KogitoInfra", "KogitoInfra", infra.GetName())
 		return nil
 	}
-	// topics required by definition
-	for _, kafkaTopic := range k.definition.KafkaTopics {
-		err := k.createKafkaTopicIfNotExists(kafkaTopic, infra)
-		if err != nil {
-			return err
-		}
-	}
+
 	// topics required by the deployed service
 	topics, err := k.fetchTopicsAndSetCloudEventsStatus(service)
 	if err != nil {

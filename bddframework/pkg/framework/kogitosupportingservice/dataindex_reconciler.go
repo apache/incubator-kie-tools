@@ -51,11 +51,9 @@ func initDataIndexSupportingServiceResource(context supportingServiceContext) Re
 // Reconcile reconcile Data Index
 func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 	d.Log.Info("Reconciling for KogitoDataIndex")
-
 	protoBufHandler := shared.NewProtoBufHandler(d.Context, d.supportingServiceHandler)
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName:   DefaultDataIndexImageName,
-		KafkaTopics:        dataIndexKafkaTopics,
 		Request:            controller1.Request{NamespacedName: types.NamespacedName{Name: d.instance.GetName(), Namespace: d.instance.GetNamespace()}},
 		OnDeploymentCreate: protoBufHandler.MountAllProtoBufConfigMapOnDataIndexDeployment,
 	}
@@ -74,12 +72,4 @@ func (d *dataIndexSupportingServiceResource) Reconcile() (err error) {
 		return
 	}
 	return
-}
-
-// Collection of kafka topics that should be handled by the Data-Index service
-var dataIndexKafkaTopics = []string{
-	"kogito-processinstances-events",
-	"kogito-usertaskinstances-events",
-	"kogito-jobs-events",
-	"kogito-variables-events",
 }

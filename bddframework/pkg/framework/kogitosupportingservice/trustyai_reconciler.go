@@ -47,7 +47,6 @@ func (t *trustyAISupportingServiceResource) Reconcile() (err error) {
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName: DefaultTrustyImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: t.instance.GetName(), Namespace: t.instance.GetNamespace()}},
-		KafkaTopics:      trustyAiKafkaTopics,
 	}
 	if err = kogitoservice.NewServiceDeployer(t.Context, definition, t.instance, t.infraHandler).Deploy(); err != nil {
 		return
@@ -63,12 +62,4 @@ func (t *trustyAISupportingServiceResource) Reconcile() (err error) {
 		return
 	}
 	return
-}
-
-// Collection of kafka topics that should be handled by the Trusty service
-var trustyAiKafkaTopics = []string{
-	"kogito-tracing-decision",
-	"kogito-tracing-model",
-	"trusty-explainability-result",
-	"trusty-explainability-request",
 }

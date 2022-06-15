@@ -45,13 +45,6 @@ func (e *explainabilitySupportingServiceResource) Reconcile() (err error) {
 	definition := kogitoservice.ServiceDefinition{
 		DefaultImageName: DefaultExplainabilityImageName,
 		Request:          controller.Request{NamespacedName: types.NamespacedName{Name: e.instance.GetName(), Namespace: e.instance.GetNamespace()}},
-		KafkaTopics:      explainabilitykafkaTopics,
 	}
 	return kogitoservice.NewServiceDeployer(e.Context, definition, e.instance, e.infraHandler).Deploy()
-}
-
-// Collection of kafka topics that should be handled by the Explainability service
-var explainabilitykafkaTopics = []string{
-	"trusty-explainability-request",
-	"trusty-explainability-result",
 }

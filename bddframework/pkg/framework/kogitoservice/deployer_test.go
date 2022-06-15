@@ -17,7 +17,6 @@ package kogitoservice
 import (
 	"github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/core/infrastructure"
-	"github.com/kiegroup/kogito-operator/core/infrastructure/kafka/v1beta2"
 	"github.com/kiegroup/kogito-operator/core/operator"
 	"github.com/kiegroup/kogito-operator/core/test"
 	"github.com/kiegroup/kogito-operator/internal/app"
@@ -127,40 +126,4 @@ func Test_serviceDeployer_DataIndex_InfraNotReconciled(t *testing.T) {
 	test.AssertFetchMustExist(t, cli, dataIndex)
 	assert.NotNil(t, dataIndex.GetStatus())
 	assert.Len(t, *dataIndex.GetStatus().GetConditions(), 3)
-}
-
-func Test_serviceDeployer_DataIndex(t *testing.T) {
-	requiredTopic := "dataindex-required-topic"
-	kafka := test.CreateFakeKafka(t.Name())
-	kafkaConfig := test.CreateFakeKogitoKafkaConfig(t.Name())
-	infraKafka := test.CreateFakeKogitoKafka(t.Name())
-	infraKafka.GetSpec().GetResource().SetName(kafka.Name)
-	infraInfinispan := test.CreateFakeKogitoInfinispan(t.Name())
-	dataIndex := test.CreateFakeDataIndex(t.Name())
-	dataIndex.GetSpec().AddInfra(infraKafka.GetName())
-	dataIndex.GetSpec().AddInfra(infraInfinispan.GetName())
-
-	cli := test.NewFakeClientBuilder().AddK8sObjects(dataIndex, infraKafka, infraInfinispan, kafka, kafkaConfig).Build()
-	definition := ServiceDefinition{
-		DefaultImageName: "kogito-data-index-infinispan",
-		Request:          newReconcileRequest(t.Name()),
-		KafkaTopics:      []string{requiredTopic},
-	}
-	context := operator.Context{
-		Client: cli,
-		Log:    test.TestLogger,
-		Scheme: meta.GetRegisteredSchema(),
-	}
-	infraHandler := app.NewKogitoInfraHandler(context)
-	deployer := NewServiceDeployer(context, definition, dataIndex, infraHandler)
-	err := deployer.Deploy()
-	assert.NoError(t, err)
-
-	topic := &v1beta2.KafkaTopic{
-		ObjectMeta: v1.ObjectMeta{
-			Name:      requiredTopic,
-			Namespace: t.Name(),
-		},
-	}
-	test.AssertFetchMustExist(t, cli, topic)
 }
