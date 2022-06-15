@@ -1,0 +1,289 @@
+{
+  "name": "vscode-extension-yard-editor",
+  "publisher": "redhat",
+  "displayName": "yard Editor",
+  "description": "Edit yard definitions",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "scripts": {
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_yard_editor_$npm_package_version.vsix",
+    "compile": "webpack --env dev",
+    "watch": "webpack --env dev",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/vscode-extension": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
+    "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
+    "@kie-tools/yard-workflow-editor": "0.0.0",
+    "yaml": "^2.0.1",
+    "monaco-editor": "^0.33.0",
+    "monaco-yaml": "^3.2.1",
+    "vscode-languageserver-textdocument": "^1.0.4",
+    "openapi-types": "^7.0.1",
+    "vscode-languageserver-types": "^3.16.0",
+    "axios": "^0.27.2"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools-core/webpack-base": "0.0.0",
+    "monaco-editor-webpack-plugin": "^7.0.1"
+  },
+  "icon": "icon.png",
+  "main": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extensionWeb.js",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:yaml",
+    "onLanguage:serverless-workflow-json",
+    "onLanguage:serverless-workflow-yaml",
+    "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditorsServerlessWorkflow",
+        "displayName": "Serverless Workflow Editor",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "*.{sw.json,sw.yaml,sw.yml}"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "serverless-workflow-json",
+        "extensions": [
+          ".sw.json"
+        ],
+        "aliases": [
+          "Serverless Workflow (JSON)",
+          "sw.json"
+        ],
+        "configuration": "./languageConfiguration/jsonLanguageConfiguration.json"
+      },
+      {
+        "id": "serverless-workflow-yaml",
+        "extensions": [
+          ".sw.yml",
+          ".sw.yaml"
+        ],
+        "aliases": [
+          "Serverless Workflow (YAML)",
+          "sw.yaml",
+          "sw.yml"
+        ],
+        "configuration": "./languageConfiguration/yamlLanguageConfiguration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "serverless-workflow-json",
+        "scopeName": "source.json",
+        "path": "./syntaxes/JSON.tmLanguage.json"
+      },
+      {
+        "language": "serverless-workflow-yaml",
+        "scopeName": "source.yaml",
+        "path": "./syntaxes/YAML.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "yaml.schemas": {
+        "https://serverlessworkflow.io/schemas/0.8/workflow.json": [
+          "**/*.sw.yml",
+          "**/*.sw.yaml"
+        ]
+      },
+      "files.associations": {
+        "*.sw.json": "json",
+        "*.sw.yaml": "yaml",
+        "*.sw.yml": "yaml"
+      },
+      "[json]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[yaml]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[serverless-workflow-json]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[serverless-workflow-yaml]": {
+        "editor.wordBasedSuggestions": false
+      }
+    },
+    "configuration": {
+      "title": "Serverless Workflow Editor",
+      "properties": {
+        "kogito.sw.runOnSave": {
+          "type": "string",
+          "default": "extension.kogito.swf.silentlyGenerateSvg",
+          "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
+        },
+        "kogito.sw.svgFilenameTemplate": {
+          "type": "string",
+          "default": "${fileBasename}.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
+        },
+        "kogito.sw.svgFilePath": {
+          "type": "string",
+          "default": "${fileDirname}",
+          "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
+        },
+        "kogito.sw.specsStoragePath": {
+          "type": "string",
+          "default": "${fileDirname}/specs",
+          "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
+        },
+        "kogito.sw.serviceRegistryUrl": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "The Service Registry URL to fetch artifacts that improve the functions autocompletion mechanism."
+        },
+        "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file."
+        },
+        "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor": {
+          "type": "string",
+          "default": "Ask next time",
+          "enum": [
+            "Open automatically",
+            "Do not open",
+            "Ask next time"
+          ],
+          "markdownDescription": "When opening Serverless Workflow files, decide whether or not to open the Diagram Editor alongside the text editor. Regardless of the configured option, you can always open the Serverless Workflow Diagram Editor using the 'Open as Diagram' button."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.kogito.swf.getPreviewSvg",
+        "title": "Serverless Workflow: Generate SVG",
+        "icon": {
+          "light": "./static/svg-icon-light.png",
+          "dark": "./static/svg-icon-dark.png"
+        }
+      },
+      {
+        "command": "extension.kogito.swf.silentlyGenerateSvg",
+        "title": "Serverless Workflow: Generate SVG without any notification"
+      },
+      {
+        "command": "extension.kogito.swf.logInToRhhcc",
+        "title": "Serverless Workflow: Log in to Red Hat Hybrid Cloud Console"
+      },
+      {
+        "command": "extension.kogito.swf.setupServiceRegistryUrl",
+        "title": "Serverless Workflow: Setup Service Registry URL"
+      },
+      {
+        "command": "extension.kogito.swf.removeServiceRegistryUrl",
+        "title": "Serverless Workflow: Remove Service Registry URL"
+      },
+      {
+        "command": "extension.kogito.swf.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
+        "title": "Serverless Workflow: Setup automatically open Diagram Editor alongside Text Editor"
+      },
+      {
+        "command": "extension.kogito.swf.openAsDiagram",
+        "title": "Serverless Workflow: Open as Diagram (to the side)",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "extension.kogito.swf.openAsSource",
+        "title": "Serverless Workflow: Open as Source",
+        "icon": "$(go-to-file)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.kogito.swf.openAsDiagram",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.(json|yaml|yml)$/"
+      },
+      {
+        "command": "extension.kogito.swf.openAsSource",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow"
+      },
+      {
+        "command": "extension.kogito.swf.getPreviewSvg",
+        "key": "ctrl+k p",
+        "mac": "cmd+k p",
+        "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow"
+      }
+    ],
+    "jsonValidation": [
+      {
+        "fileMatch": "**/*.sw.json",
+        "url": "https://serverlessworkflow.io/schemas/0.8/workflow.json"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.getPreviewSvg"
+        },
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.openAsSource"
+        },
+        {
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.(json|yaml|yml)/",
+          "command": "extension.kogito.swf.openAsDiagram"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.getPreviewSvg",
+          "group": "navigation"
+        },
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsServerlessWorkflow",
+          "command": "extension.kogito.swf.openAsSource",
+          "group": "navigation"
+        },
+        {
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.sw\\.(json|yaml|yml)/",
+          "command": "extension.kogito.swf.openAsDiagram",
+          "group": "navigation"
+        }
+      ]
+    }
+  }
+}
