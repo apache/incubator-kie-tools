@@ -25,6 +25,7 @@ import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { debounce } from "../debounce";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
@@ -65,6 +66,30 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       console.info("No op");
     },
   };
+
+  const swfJsonDiganosticsCollection = vscode.languages.createDiagnosticCollection("SWF-JSON-DIAGNOSTICS-COLLECTION");
+
+  args.context.subscriptions.push(
+    vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
+      if (!doc.uri.path.match(/\.(sw.json)$/i) || doc.languageId !== "serverless-workflow-json") {
+        swfJsonDiganosticsCollection.clear();
+        return;
+      }
+      setSwfJsonDiagnostics(args.swfLanguageService, doc.uri, swfJsonDiganosticsCollection);
+    })
+  );
+
+  const doValidationOnChange = debounce(setSwfJsonDiagnostics, 1000);
+
+  args.context.subscriptions.push(
+    vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
+      if (!event.document.uri.path.match(/\.(sw.json)$/i) || event.document.languageId !== "serverless-workflow-json") {
+        swfJsonDiganosticsCollection.clear();
+        return;
+      }
+      doValidationOnChange(args.swfLanguageService, event.document.uri, swfJsonDiganosticsCollection);
+    })
+  );
 
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.swfLsCommand, (args: ls.Command) => {
@@ -163,4 +188,28 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       `"`
     )
   );
+}
+
+async function setSwfJsonDiagnostics(
+  swfLanguageService: SwfJsonLanguageService,
+  uri: vscode.Uri,
+  diganosticsCollection: vscode.DiagnosticCollection
+) {
+  const content = vscode.window.activeTextEditor?.document.getText();
+
+  if (content === undefined) {
+    return;
+  }
+
+  const lsDiagnostics = await swfLanguageService.getDiagnostics({
+    content,
+    uriPath: uri.path,
+  });
+
+  const diagnostics = lsDiagnostics.map((lsDiagnostic: any) => {
+    return new vscode.Diagnostic(lsDiagnostic.range, lsDiagnostic.message, vscode.DiagnosticSeverity.Warning);
+  });
+
+  diganosticsCollection.clear();
+  diganosticsCollection.set(uri, diagnostics);
 }
