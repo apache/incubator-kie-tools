@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getCookie, setCookie } from "../cookies";
+import { getCookie, makeCookieName, setCookie } from "../cookies";
 import { KieSandboxExtendedServicesBridge } from "./KieSandboxExtendedServicesBridge";
 import { DependentFeature, KieSandboxExtendedServicesContext } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
@@ -33,8 +33,8 @@ interface Props {
 }
 
 const KIE_SANDBOX_EXTENDED_SERVICES_POLLING_TIME = 1500;
-export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = "KIE-TOOLS-COOKIE__kie-sandbox-extended-services--host";
-export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = "KIE-TOOLS-COOKIE__kie-sandbox-extended-services--port";
+export const KIE_SANDBOX_EXTENDED_SERVICES_HOST_COOKIE_NAME = makeCookieName("extended-services", "host");
+export const KIE_SANDBOX_EXTENDED_SERVICES_PORT_COOKIE_NAME = makeCookieName("extended-services", "port");
 
 export function KieSandboxExtendedServicesContextProvider(props: Props) {
   const env = useEnv();

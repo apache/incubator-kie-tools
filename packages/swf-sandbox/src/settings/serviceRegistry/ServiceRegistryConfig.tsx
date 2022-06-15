@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { getCookie, setCookie } from "../../cookies";
+import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
-export const SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME =
-  "KIE-TOOLS-COOKIE__swf-sandbox--service-registry-core-registry-api";
+export const SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME = makeCookieName("service-registry", "core-registry-api");
 
 export interface ServiceRegistrySettingsConfig {
   coreRegistryApi: string;

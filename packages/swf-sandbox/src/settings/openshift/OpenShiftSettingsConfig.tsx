@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { getCookie, setCookie } from "../../cookies";
+import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
-export const OPENSHIFT_PROXY_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--connection-proxy";
-export const OPENSHIFT_NAMESPACE_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--connection-namespace";
-export const OPENSHIFT_HOST_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--connection-host";
-export const OPENSHIFT_TOKEN_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--connection-token";
+export const OPENSHIFT_NAMESPACE_COOKIE_NAME = makeCookieName("openshift", "namespace");
+export const OPENSHIFT_HOST_COOKIE_NAME = makeCookieName("openshift", "host");
+export const OPENSHIFT_TOKEN_COOKIE_NAME = makeCookieName("openshift", "token");
 
 export interface OpenShiftSettingsConfig {
   namespace: string;
@@ -79,10 +78,6 @@ export function readOpenShiftConfigCookie(): OpenShiftSettingsConfig {
 
 export function resetConfigCookie(): void {
   saveConfigCookie(EMPTY_CONFIG);
-}
-
-export function saveProxyCookie(proxy: string): void {
-  setCookie(OPENSHIFT_PROXY_COOKIE_NAME, proxy);
 }
 
 export function saveNamespaceCookie(namespace: string): void {

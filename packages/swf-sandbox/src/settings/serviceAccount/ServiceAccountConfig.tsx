@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { getCookie, setCookie } from "../../cookies";
+import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
-export const SERVICE_ACCOUNT_CLIENT_ID_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--service-account-client-id";
-export const SERVICE_ACCOUNT_CLIENT_SECRET_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--service-account-client-secret";
+export const SERVICE_ACCOUNT_CLIENT_ID_COOKIE_NAME = makeCookieName("service-account", "client-id");
+export const SERVICE_ACCOUNT_CLIENT_SECRET_COOKIE_NAME = makeCookieName("service-account", "client-secret");
 
 export interface ServiceAccountSettingsConfig {
   clientId: string;

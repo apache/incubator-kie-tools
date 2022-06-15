@@ -29,12 +29,13 @@ import { useCallback, useMemo, useState } from "react";
 import { AuthStatus, useSettings, useSettingsDispatch } from "../SettingsContext";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
+import { makeCookieName } from "../../cookies";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const GITHUB_TOKENS_URL = "https://github.com/settings/tokens";
 export const GITHUB_TOKENS_HOW_TO_URL =
   "https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line";
-export const GITHUB_AUTH_TOKEN_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox__github-oauth--token";
+export const GITHUB_AUTH_TOKEN_COOKIE_NAME = makeCookieName("github", "oauth-token");
 
 export enum GitHubSignInOption {
   PERSONAL_ACCESS_TOKEN,

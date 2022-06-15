@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { getCookie, setCookie } from "../../cookies";
+import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
-export const KAFKA_BOOTSTRAP_SERVER_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--kafka-bootstrap-server";
-export const KAFKA_TOPIC_COOKIE_NAME = "KIE-TOOLS-COOKIE__swf-sandbox--kafka-topic";
+export const KAFKA_BOOTSTRAP_SERVER_COOKIE_NAME = makeCookieName("kafka", "bootstrap-server");
+export const KAFKA_TOPIC_COOKIE_NAME = makeCookieName("kafka", "topic");
 
 export interface KafkaSettingsConfig {
   bootstrapServer: string;
