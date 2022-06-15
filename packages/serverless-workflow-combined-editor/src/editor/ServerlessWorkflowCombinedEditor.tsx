@@ -73,7 +73,7 @@ interface File {
   content: string;
 }
 
-const ENVELOPE_LOCATOR_TYPE = "sw";
+const ENVELOPE_LOCATOR_TYPE = "swf";
 
 const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,

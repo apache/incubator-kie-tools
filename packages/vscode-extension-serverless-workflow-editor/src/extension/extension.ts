@@ -78,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext) {
     swfServiceCatalogGlobalStore,
   });
 
-  const swEnvelopeType = "sw";
+  const swEnvelopeType = "swf";
   const baseEnvelopePath = "dist/webview/editors/serverless-workflow";
 
   const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({

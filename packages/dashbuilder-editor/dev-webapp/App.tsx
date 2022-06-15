@@ -44,7 +44,7 @@ export const App = () => {
   const editorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("sw", "**/*.dash.+(yml|yaml)", "", "dashbuilder-editor-envelope.html"),
+        new EnvelopeMapping("dash", "**/*.dash.+(yml|yaml)", "", "dashbuilder-editor-envelope.html"),
       ]),
     []
   );
