@@ -21,7 +21,6 @@ import { ReactComponent as CheckInboxPeriodicalSvg } from "../../static/samples/
 import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/greetings.svg";
 import { ReactComponent as GreetingsKafkaSvg } from "../../static/samples/greetings-kafka/greetings-kafka.svg";
 import { ReactComponent as FillGlassOfWaterSvg } from "../../static/samples/fill-glass-of-water/fill-glass-of-water.svg";
-import { ReactComponent as TemperatureConversionSvg } from "../../static/samples/temperature-conversion/temperature-conversion.svg";
 import { ReactComponent as ProductsDashboardSvg } from "../../static/samples/products-dashboard/products-dashboard.svg";
 import { ReactComponent as SwfReportSvg } from "../../static/samples/swf-report/swf-report.svg";
 import { ReactComponent as KitchensinkSvg } from "../../static/samples/kitchensink/kitchensink.svg";
@@ -48,14 +47,6 @@ export const samples: Array<Sample> = [
     svg: GreetingsKafkaSvg,
     description: `This example is similar to the Greetings sample, but this time the "greeting" function is triggered via an Apache Kafka event. The event payload is assumed to be the name of the person to greet and in which language. The results of the action is assumed to be the greeting for the provided persons name, which is added to the states data and becomes the workflow data output.`,
     type: SampleType.SW_JSON,
-  },
-  {
-    name: "Temperature conversion",
-    fileName: "temperature-conversion",
-    svg: TemperatureConversionSvg,
-    description: `In this example we demonstrate a simple workflow that calls two distinct services via REST. The workflow aims to solve an equation that converts a given Fahrenheit temperature value into Celsius.`,
-    repoUrl: "https://github.com/thiagoelg/serverless-workflow-temperature-conversion.git",
-    type: SampleType.SW_PROJECT,
   },
   {
     name: "Check Inbox Periodical",
