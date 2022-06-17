@@ -17,8 +17,6 @@
 package create
 
 import (
-	"fmt"
-
 	"gopkg.in/yaml.v2"
 )
 
@@ -55,23 +53,19 @@ type Config struct {
 	Spec       SpecStruct     `yaml:spec`
 }
 
-func GenerateYaml(name string, workflow bool) ([]byte, error) {
-	var image string = fmt.Sprintf("quarkus/%s", name)
-	if workflow {
-		image = "kn-workflow/workflow"
-	}
+func GenerateConfigYamlTemplate(cfg CreateConfig) ([]byte, error) {
 	configYaml := Config{
 		ApiVersion: "serving.knative.dev/v1",
 		Kind:       "Service",
 		Metadata: MetadataStruct{
-			Name:      name,
-			Namespace: "default",
+			Name:      cfg.ProjectName,
+			Namespace: cfg.Namespace,
 		},
 		Spec: SpecStruct{
 			Template: TemplateStruct{
 				Spec: TemplateSpecStruct{
 					Containers: []ContainerStruct{{
-						Image: image,
+						Image: cfg.Image,
 						Ports: []PortsStruct{{
 							ContainerPort: 8080,
 						}},

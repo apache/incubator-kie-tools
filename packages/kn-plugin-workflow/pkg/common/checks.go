@@ -48,7 +48,7 @@ func checkJava() error {
 	}
 	userJavaVersion, err := parseJavaVersion(string(version))
 	if err != nil {
-		return fmt.Errorf("Error while parsing Java version: %w", err)
+		return fmt.Errorf("error while parsing Java version: %w", err)
 	}
 
 	if userJavaVersion < javaVersion {
@@ -69,7 +69,7 @@ func checkMaven() error {
 	}
 	major, minor, err := parseMavenVersion(string(version))
 	if err != nil {
-		return fmt.Errorf("Error while parsing Maven version: %w", err)
+		return fmt.Errorf("error while parsing Maven version: %w", err)
 	}
 
 	if major < mavenMajorVersion && minor < mavenMinorVersion {
