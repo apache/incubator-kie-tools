@@ -79,11 +79,30 @@ describe("openapi parser", () => {
 
     const functionDef = result.functions[0];
     expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.rest);
-    expect(functionDef.name).toBe("hiring");
+    expect(functionDef.name).toBe("doHiringOperation");
     expect(functionDef.arguments).not.toBeNull();
+
+    expect(functionDef.arguments).toHaveProperty("businessKey", SwfServiceCatalogFunctionArgumentType.string);
     expect(functionDef.arguments).toHaveProperty("candidate", SwfServiceCatalogFunctionArgumentType.object);
     expect(functionDef.arguments).toHaveProperty("hr_approval", SwfServiceCatalogFunctionArgumentType.boolean);
     expect(functionDef.arguments).toHaveProperty("it_approval", SwfServiceCatalogFunctionArgumentType.boolean);
+  });
+
+  it("parse greeting openapi", async () => {
+    const result = doParse("greeting.yaml");
+
+    expect(result).not.toBeNull();
+    expect(result.type).toBe(SwfServiceCatalogServiceType.rest);
+    expect(result.source.type).toBe(SwfServiceCatalogServiceSourceType.LOCAL_FS);
+    if (result.source.type !== SwfServiceCatalogServiceSourceType.LOCAL_FS) throw new Error("Assertion error.");
+    expect(result.source.absoluteFilePath).toBe("/Users/tiago/open-api-tests/specs/greeting.yaml");
+    expect(result.name).toBe("quarkus-example API");
+    expect(result.functions).toHaveLength(1);
+
+    const functionDef = result.functions[0];
+    expect(functionDef.type).toBe(SwfServiceCatalogFunctionType.rest);
+    expect(functionDef.name).toBe("sayHello");
+    expect(functionDef.arguments).toMatchObject({});
   });
 
   it("parse wrong format test", async () => {

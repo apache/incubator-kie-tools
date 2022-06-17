@@ -14,26 +14,40 @@
  * limitations under the License.
  */
 
-import { RhhccServiceRegistryServiceCatalogStore } from "./rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
+import { ServiceRegistriesStore } from "./serviceRegistry";
 
 export class SwfServiceCatalogStore {
   private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
-  private rhhccServiceRegistriesSwfServiceCatalogServices: SwfServiceCatalogService[] = [];
 
   constructor(
     private readonly args: {
-      rhhccServiceRegistryServiceCatalogStore: RhhccServiceRegistryServiceCatalogStore;
+      serviceRegistriesStore: ServiceRegistriesStore;
     }
   ) {}
 
+  public get storedServices() {
+    return this.args.serviceRegistriesStore.storedServices;
+  }
+
+  public get isServiceRegistryConfigured() {
+    return this.args.serviceRegistriesStore.isConfigured;
+  }
+
+  public get shouldLoginServices() {
+    return this.args.serviceRegistriesStore.shouldLoginServices;
+  }
+
+  public get canRefreshServices() {
+    return this.args.serviceRegistriesStore.canRefreshServices;
+  }
+
   public async init() {
-    await this.args.rhhccServiceRegistryServiceCatalogStore.init();
-    this.args.rhhccServiceRegistryServiceCatalogStore.subscribeToNewServices((s) => {
-      this.rhhccServiceRegistriesSwfServiceCatalogServices = s;
+    this.args.serviceRegistriesStore.subscribeToNewServices((swfServices) => {
       return Promise.all(Array.from(this.subscriptions).map((subscription) => subscription(this.storedServices)));
     });
+    await this.args.serviceRegistriesStore.init();
   }
 
   public subscribeToNewServices(subs: (services: SwfServiceCatalogService[]) => Promise<any>) {
@@ -47,15 +61,11 @@ export class SwfServiceCatalogStore {
     this.subscriptions.delete(subs);
   }
 
-  public get storedServices() {
-    return this.rhhccServiceRegistriesSwfServiceCatalogServices;
-  }
-
   public async refresh() {
-    return this.args.rhhccServiceRegistryServiceCatalogStore.refresh();
+    return this.args.serviceRegistriesStore.refresh();
   }
 
   public dispose() {
-    this.args.rhhccServiceRegistryServiceCatalogStore.dispose();
+    this.args.serviceRegistriesStore.dispose();
   }
 }

@@ -24,28 +24,28 @@ export function initAugmentationCommands(
   channelApi: MessageBusClientApi<ServerlessWorkflowEditorChannelApi>
 ): SwfLanguageServiceCommandIds {
   return {
-    "swf.ls.commands.SetupServiceRegistryUrl": editorInstance.addCommand(
+    "swf.ls.commands.RefreshServiceRegistries": editorInstance.addCommand(
       0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.SetupServiceRegistryUrl"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistryUrl.send();
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceRegistries"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
+      }
+    )!,
+    "swf.ls.commands.LogInServiceRegistries": editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.LogInServiceRegistries"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
+      }
+    )!,
+    "swf.ls.commands.OpenServiceRegistriesConfig": editorInstance.addCommand(
+      0,
+      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.OpenServiceRegistriesConfig"]) => {
+        channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
       }
     )!,
     "swf.ls.commands.ImportFunctionFromCompletionItem": editorInstance.addCommand(
       0,
       async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.ImportFunctionFromCompletionItem"]) => {
         channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
-      }
-    )!,
-    "swf.ls.commands.LogInToRhhcc": editorInstance.addCommand(
-      0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.LogInToRhhcc"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_logInToRhhcc.send();
-      }
-    )!,
-    "swf.ls.commands.RefreshServiceCatalogFromRhhcc": editorInstance.addCommand(
-      0,
-      async (ctx, args: SwfLanguageServiceCommandArgs["swf.ls.commands.RefreshServiceCatalogFromRhhcc"]) => {
-        channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
       }
     )!,
     "swf.ls.commands.OpenFunctionsCompletionItems": editorInstance.addCommand(
