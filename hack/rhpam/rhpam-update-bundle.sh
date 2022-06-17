@@ -26,7 +26,7 @@ sed -i "s/rhpam-kogito-operator.v$(getOperatorVersion)/rhpam-kogito-operator.$(g
 sed -i "s/operated-by: rhpam-kogito-operator.0.0.0/operated-by: rhpam-kogito-operator.$(getOperatorCsvVersion)/" $(getBundleCsvFile)
 
 # update the replaces field
-sed -i "s/replaces: rhpam-kogito-operator.0.0.0/replaces: rhpam-kogito-operator.$(getOperatorPriorCsvVersion)/" $(getBundleCsvFile)
+sed -i "s/replaces: rhpam-kogito-operator.0.0.0/replaces: rhpam-kogito-operator.v$(getOperatorPriorCsvVersion)/" $(getBundleCsvFile)
 
 # update csv version
 sed -i "s/version: $(getOperatorVersion)/version: $(getOperatorCsvVersion)/" $(getBundleCsvFile)
