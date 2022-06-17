@@ -295,7 +295,7 @@ const ENV_VARS = {
   },
   SERVERLESS_LOGIC_SANDBOX__baseImageAccount: {
     name: "SERVERLESS_LOGIC_SANDBOX__baseImageAccount",
-    default: "caponetto", //FIXME: kie-tools
+    default: "kie-tools",
     description: "",
   },
   SERVERLESS_LOGIC_SANDBOX__baseImageName: {
