@@ -37,8 +37,13 @@ public class CoreTranslationMessages {
     private static final String CLIENT_PREF = CORE_PREF + "client" + SEP;
 
     public static final String ERROR = CORE_PREF + "error";
-    public static final String WARNING = CORE_PREF + "warn";
+    public static final String ERRORS = CORE_PREF + "errors";
+    public static final String WARN = CORE_PREF + "warn";
+    public static final String WARNING = CORE_PREF + "warnings";
+    public static final String WARNINGS = CORE_PREF + "warnings";
     public static final String INFO = CORE_PREF + "info";
+    public static final String INFORMATION = CORE_PREF + "information";
+    public static final String INFORMATIONS = CORE_PREF + "informations";
     public static final String REASON = CORE_PREF + "reason";
     public static final String DELETE = CORE_PREF + "delete";
     public static final String EDIT = CORE_PREF + "edit";
