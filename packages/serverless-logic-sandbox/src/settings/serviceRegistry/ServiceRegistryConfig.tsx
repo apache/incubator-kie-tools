@@ -18,12 +18,16 @@ import { makeCookieName, getCookie, setCookie } from "../../cookies";
 
 export const SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME = makeCookieName("service-registry", "core-registry-api");
 
+const RED_HAT_OPENSHIFT_SERVICE_REGISTRY = "Red Hat OpenShift Service Registry";
+
 export interface ServiceRegistrySettingsConfig {
   coreRegistryApi: string;
+  name: string;
 }
 
 export const EMPTY_CONFIG: ServiceRegistrySettingsConfig = {
   coreRegistryApi: "",
+  name: RED_HAT_OPENSHIFT_SERVICE_REGISTRY,
 };
 
 export function isServiceRegistryConfigValid(config: ServiceRegistrySettingsConfig): boolean {
@@ -37,6 +41,7 @@ export function isCoreRegistryApiValid(coreRegistryApi: string): boolean {
 export function readServiceRegistryConfigCookie(): ServiceRegistrySettingsConfig {
   return {
     coreRegistryApi: getCookie(SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME) ?? "",
+    name: RED_HAT_OPENSHIFT_SERVICE_REGISTRY,
   };
 }
 

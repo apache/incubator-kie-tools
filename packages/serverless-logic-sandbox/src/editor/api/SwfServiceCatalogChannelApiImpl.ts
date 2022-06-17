@@ -18,47 +18,39 @@ import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
-  SwfServiceCatalogUser,
+  SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { ServiceRegistryInfo } from "./ServiceRegistryInfo";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
-  constructor(
-    private readonly catalogStore: SwfServiceCatalogStore,
-    private readonly serviceRegistryInfo: ServiceRegistryInfo
-  ) {
+  constructor(private readonly catalogStore: SwfServiceCatalogStore) {
     this.kogitoSwfServiceCatalog_refresh();
-  }
-
-  public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return { defaultValue: { username: this.serviceRegistryInfo.authInfo.username } };
-  }
-
-  public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return { defaultValue: this.serviceRegistryInfo.url };
   }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return { defaultValue: this.catalogStore.services };
   }
 
-  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
-    // No-op
-  }
-
   public kogitoSwfServiceCatalog_refresh(): void {
     this.catalogStore.refresh();
   }
 
-  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(_args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
     // No-op
   }
 
-  public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return { defaultValue: { registries: [] } };
+  }
+
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    // No-op
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
     // No-op
   }
 }

@@ -15,20 +15,19 @@
  */
 
 import {
-  SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { extractFunctions } from "@kie-tools/serverless-workflow-service-catalog/dist/channel/parsers/openapi";
+import { SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
 import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
-import { ServiceRegistryArtifactSearchResponse } from "./ServiceRegistryInfo";
 
 export class SwfServiceCatalogStore {
   private readonly PROXY_ENDPOINT = `${this.configs.extendedServicesConfig.buildUrl()}/devsandbox`;
@@ -41,8 +40,8 @@ export class SwfServiceCatalogStore {
   };
 
   private readonly SERVICE_REGISTRY_API = {
-    getArtifactContentUrl: (params: { groupId: string; id: string }) =>
-      `${this.configs.serviceRegistry.coreRegistryApi}/groups/${params.groupId}/artifacts/${params.id}`,
+    getArtifactContentUrl: (artifact: SearchedArtifact) =>
+      `${this.configs.serviceRegistry.coreRegistryApi}/groups/${artifact.groupId}/artifacts/${artifact.id}`,
     getArtifactsUrl: () => `${this.configs.serviceRegistry.coreRegistryApi}/search/artifacts`,
   };
 
@@ -60,23 +59,19 @@ export class SwfServiceCatalogStore {
     return this.storedServices;
   }
 
-  public getServiceFileName(serviceId: string) {
-    return `${serviceId}__latest.yaml`;
-  }
-
   public async refresh() {
-    const artifactsMetadata: ServiceRegistryArtifactSearchResponse = (
+    const artifacts: SearchedArtifact[] = (
       await axios.get(this.PROXY_ENDPOINT, {
         headers: {
           ...this.COMMON_HEADERS,
           "Target-Url": this.SERVICE_REGISTRY_API.getArtifactsUrl(),
         },
       })
-    ).data;
+    ).data.artifacts;
 
     const artifactsWithContent = await Promise.all(
-      artifactsMetadata.artifacts
-        .filter((artifactMetadata) => artifactMetadata.type === "OPENAPI")
+      artifacts
+        .filter((artifact) => artifact.type === "OPENAPI")
         .map(async (artifactMetadata) => ({
           metadata: artifactMetadata,
           content: (
@@ -91,23 +86,23 @@ export class SwfServiceCatalogStore {
     );
 
     this.storedServices = artifactsWithContent.map((artifact) => {
-      const serviceId = artifact.metadata.id;
-      const serviceFileName = this.getServiceFileName(serviceId);
-
+      // TODO: check the reason `extractFunctions` always return an empty array
       const swfFunctions = extractFunctions(artifact.content, {
-        type: SwfServiceCatalogFunctionSourceType.RHHCC_SERVICE_REGISTRY,
-        serviceId: serviceId,
+        type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+        registry: this.configs.serviceRegistry.name,
+        serviceId: artifact.metadata.id,
       });
 
       return {
-        name: serviceFileName,
+        name: artifact.metadata.id,
         rawContent: yaml.stringify(artifact.content),
         type: SwfServiceCatalogServiceType.rest,
         functions: swfFunctions,
         source: {
+          registry: this.configs.serviceRegistry.name,
           url: this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata),
-          type: SwfServiceCatalogServiceSourceType.RHHCC_SERVICE_REGISTRY,
-          id: serviceId,
+          type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+          id: artifact.metadata.id,
         },
       };
     });

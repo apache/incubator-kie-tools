@@ -1802,6 +1802,7 @@ importers:
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@patternfly/react-tokens": ^4.33.1
+      "@rhoas/registry-instance-sdk": ^0.34.1
       "@svgr/webpack": 6.2.1
       "@types/history": ^4.7.3
       "@types/js-yaml": ^4.0.5
@@ -1852,6 +1853,7 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-tokens": 4.33.1
+      "@rhoas/registry-instance-sdk": 0.34.1
       "@types/js-yaml": 4.0.5
       axios: 0.27.2
       buffer: 6.0.3

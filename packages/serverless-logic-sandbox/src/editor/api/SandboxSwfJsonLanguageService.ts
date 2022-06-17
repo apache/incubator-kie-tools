@@ -15,14 +15,10 @@
  */
 
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { ServiceRegistryInfo } from "./ServiceRegistryInfo";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
 export class SandboxSwfJsonLanguageService extends SwfJsonLanguageService {
-  constructor(
-    private readonly catalogStore: SwfServiceCatalogStore,
-    private readonly serviceRegistryInfo?: ServiceRegistryInfo
-  ) {
+  constructor(private readonly catalogStore: SwfServiceCatalogStore) {
     super({
       fs: {},
       serviceCatalog: {
@@ -32,18 +28,21 @@ export class SandboxSwfJsonLanguageService extends SwfJsonLanguageService {
         relative: {
           getServices: async (_textDocument) => [],
         },
-        getServiceFileNameFromSwfServiceCatalogServiceId: async (swfServiceCatalogServiceId) =>
-          this.catalogStore.getServiceFileName(swfServiceCatalogServiceId),
+        getServiceFileNameFromSwfServiceCatalogServiceId: async (
+          registryName: string,
+          swfServiceCatalogServiceId: string
+        ) => `${registryName}__${swfServiceCatalogServiceId}__latest.yaml`,
       },
       config: {
-        shouldDisplayRhhccIntegration: async () => false,
+        shouldDisplayServiceRegistriesIntegration: async () => false,
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => true,
-        getServiceRegistryUrl: () => this.serviceRegistryInfo?.url,
-        getServiceRegistryAuthInfo: () => this.serviceRegistryInfo?.authInfo,
         getSpecsDirPosixPaths: async (_textDocument) => ({
           specsDirRelativePosixPath: "",
           specsDirAbsolutePosixPath: "",
         }),
+        shouldConfigureServiceRegistries: () => false,
+        shouldServiceRegistriesLogIn: () => false,
+        canRefreshServices: () => true,
       },
     });
   }

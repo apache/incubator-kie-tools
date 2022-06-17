@@ -38,9 +38,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { useCancelableEffect, useController, usePrevious } from "../reactExt/Hooks";
-import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
-import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
-import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { useSettingsDispatch } from "../settings/SettingsContext";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
@@ -60,7 +58,6 @@ export interface Props {
 }
 
 export function EditorPage(props: Props) {
-  const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
@@ -260,21 +257,6 @@ export function EditorPage(props: Props) {
     ]
   );
 
-  const serviceRegistryInfo = useMemo(() => {
-    if (
-      isServiceAccountConfigValid(settings.serviceAccount.config) &&
-      isServiceRegistryConfigValid(settings.serviceRegistry.config)
-    ) {
-      return {
-        authInfo: {
-          username: settings.serviceAccount.config.clientId,
-          token: settings.serviceAccount.config.clientSecret,
-        },
-        url: settings.serviceRegistry.config.coreRegistryApi,
-      };
-    }
-  }, [settings.serviceAccount.config, settings.serviceRegistry.config]);
-
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
   const isSwfJson = useMemo(
@@ -286,8 +268,8 @@ export function EditorPage(props: Props) {
     if (!isSwfJson) {
       return;
     }
-    return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore, serviceRegistryInfo);
-  }, [isSwfJson, serviceRegistryInfo, settingsDispatch.serviceRegistry.catalogStore]);
+    return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+  }, [isSwfJson, settingsDispatch.serviceRegistry.catalogStore]);
 
   const apiImpl = useMemo(() => {
     if (!kogitoEditorChannelApiImpl) {
@@ -299,25 +281,16 @@ export function EditorPage(props: Props) {
       swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(swfJsonLanguageService);
     }
 
-    let swfServiceCatalogChannelApiImpl;
-    if (serviceRegistryInfo) {
-      swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(
-        settingsDispatch.serviceRegistry.catalogStore,
-        serviceRegistryInfo
-      );
-    }
+    const swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(
+      settingsDispatch.serviceRegistry.catalogStore
+    );
 
     return new ServerlessWorkflowEditorChannelApiImpl(
       kogitoEditorChannelApiImpl,
       swfServiceCatalogChannelApiImpl,
       swfLanguageServiceChannelApiImpl
     );
-  }, [
-    kogitoEditorChannelApiImpl,
-    swfJsonLanguageService,
-    serviceRegistryInfo,
-    settingsDispatch.serviceRegistry.catalogStore,
-  ]);
+  }, [kogitoEditorChannelApiImpl, swfJsonLanguageService, settingsDispatch.serviceRegistry.catalogStore]);
 
   useEffect(() => {
     if (
