@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package main
+package root
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/root"
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/create"
+	"github.com/spf13/cobra"
 )
 
-func main() {
-	err := root.NewRootCommand().Execute()
-	if err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
-		}
-		os.Exit(1)
+func NewRootCommand() *cobra.Command {
+	var rootCmd = &cobra.Command{
+		Use:   "kn-workflow",
+		Short: "Serverless Workflow",
+		Long:  "Manage Quarkus workflow projects",
 	}
+
+	rootCmd.AddCommand(create.NewCreateCommand())
+
+	return rootCmd
 }
