@@ -47,9 +47,9 @@ const getSuggestedRepositoryName = (name: string) =>
     .replace(/[^._\-\w\d]/g, "");
 
 const KOGITO_QUARKUS_TEMPLATE = {
-  url: "https://github.com/caponetto/quarkus-template",
+  url: "https://github.com/kiegroup/serverless-logic-sandbox-deployment",
   remoteName: "KOGITO_QUARKUS_SKELETON",
-  branch: "swf-template",
+  branch: "quarkus-accelerator",
 };
 
 const RESOURCES_FOLDER = "/src/main/resources";
