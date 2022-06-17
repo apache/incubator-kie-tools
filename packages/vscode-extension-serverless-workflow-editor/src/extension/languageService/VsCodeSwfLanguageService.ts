@@ -16,20 +16,18 @@
 
 import { TextDocument } from "vscode-languageserver-textdocument";
 import * as vscode from "vscode";
-import { RhhccAuthenticationStore } from "../rhhcc/RhhccAuthenticationStore";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
 import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
 import { posix as posixPath } from "path";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
-import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/rhhccServiceRegistry";
+import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
 
 export class VsCodeSwfLanguageService {
   public readonly ls: SwfJsonLanguageService;
   private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
   constructor(
     private readonly args: {
-      rhhccAuthenticationStore: RhhccAuthenticationStore;
       configuration: SwfVsCodeExtensionConfiguration;
       swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
     }
@@ -60,12 +58,12 @@ export class VsCodeSwfLanguageService {
             return swfServiceCatalogRelativeStore.getServices();
           },
         },
-        getServiceFileNameFromSwfServiceCatalogServiceId: async (swfServiceCatalogServiceId) => {
-          return getServiceFileNameFromSwfServiceCatalogServiceId(swfServiceCatalogServiceId);
+        getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName, swfServiceCatalogServiceId) => {
+          return getServiceFileNameFromSwfServiceCatalogServiceId(registryName, swfServiceCatalogServiceId);
         },
       },
       config: {
-        shouldDisplayRhhccIntegration: async () => {
+        shouldDisplayServiceRegistriesIntegration: async () => {
           // FIXME: This should take the OS into account as well. RHHCC integration only works on macOS.
           // https://issues.redhat.com/browse/KOGITO-7105
           return vscode.env.uiKind === vscode.UIKind.Desktop;
@@ -73,15 +71,17 @@ export class VsCodeSwfLanguageService {
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => {
           return args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
         },
-        getServiceRegistryUrl: () => {
-          return args.configuration.getConfiguredServiceRegistryUrl();
-        },
-        getServiceRegistryAuthInfo: () => {
-          const session = args.rhhccAuthenticationStore.session;
-          return !session ? undefined : { username: session.account.label, token: session.accessToken };
-        },
         getSpecsDirPosixPaths: async (textDocument) => {
           return this.getSpecsDirPosixPaths(textDocument);
+        },
+        shouldConfigureServiceRegistries: () => {
+          return !this.args.swfServiceCatalogGlobalStore.isServiceRegistryConfigured;
+        },
+        shouldServiceRegistriesLogIn: () => {
+          return this.args.swfServiceCatalogGlobalStore.shouldLoginServices;
+        },
+        canRefreshServices: () => {
+          return this.args.swfServiceCatalogGlobalStore.canRefreshServices;
         },
       },
     });

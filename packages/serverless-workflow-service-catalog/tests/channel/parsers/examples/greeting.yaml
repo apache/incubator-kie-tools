@@ -1,0 +1,18 @@
+---
+openapi: 3.0.3
+info:
+  title: quarkus-example API
+  version: 1.0.0
+paths:
+  /hello:
+    get:
+      operationId: sayHello
+      tags:
+        - Greeting Resource
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
