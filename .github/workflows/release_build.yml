@@ -1120,7 +1120,6 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
       SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__deploymentGtmId: "" # FIXME CAPONETTO
 
     if: ${{ needs.extract_runners.outputs.serverless_logic_sandbox_base_image == 'true' }}
     runs-on: ubuntu-latest
@@ -1172,7 +1171,7 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
       SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__gtmId: "" # FIXME CAPONETTO
+      SERVERLESS_LOGIC_SANDBOX__gtmId: "GTM-5W2QP3C"
       SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
       SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
