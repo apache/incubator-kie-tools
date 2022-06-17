@@ -17,7 +17,7 @@
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
-  SwfServiceCatalogUser,
+  SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import * as vscode from "vscode";
@@ -30,30 +30,16 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
       baseFileAbsolutePosixPath: string;
-      defaultUser: SwfServiceCatalogUser | undefined;
-      defaultServiceRegistryUrl: string | undefined;
       swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
-
-  public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return { defaultValue: this.args.defaultUser };
-  }
-
-  public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return { defaultValue: this.args.defaultServiceRegistryUrl };
-  }
 
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return { defaultValue: [] };
   }
 
-  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
-    vscode.commands.executeCommand(COMMAND_IDS.loginToRhhcc);
-  }
-
   public kogitoSwfServiceCatalog_refresh(): void {
-    this.args.swfServiceCatalogSupportActions.refresh();
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesRefresh);
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
@@ -63,7 +49,15 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
     this.args.swfServiceCatalogSupportActions.importFunctionFromCompletionItem(args);
   }
 
-  public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
-    vscode.commands.executeCommand(COMMAND_IDS.setupServiceRegistryUrl);
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesLogin);
+  }
+
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return { defaultValue: this.args.configuration.getServiceRegistrySettings() };
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
+    vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesConfig);
   }
 }

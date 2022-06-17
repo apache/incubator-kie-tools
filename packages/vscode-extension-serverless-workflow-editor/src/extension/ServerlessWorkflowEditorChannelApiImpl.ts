@@ -43,7 +43,7 @@ import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-lan
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
-  SwfServiceCatalogUser,
+  SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
@@ -148,21 +148,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
   }
-
-  public kogitoSwfServiceCatalog_user(): SharedValueProvider<SwfServiceCatalogUser | undefined> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_user();
-  }
-
-  public kogitoSwfServiceCatalog_serviceRegistryUrl(): SharedValueProvider<string | undefined> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistryUrl();
-  }
-
   public kogitoSwfServiceCatalog_refresh(): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_refresh();
-  }
-
-  public kogitoSwfServiceCatalog_logInToRhhcc(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInToRhhcc();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
@@ -170,10 +157,6 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     documentUri: string;
   }): void {
     this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
-  }
-
-  public kogitoSwfServiceCatalog_setupServiceRegistryUrl(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistryUrl();
   }
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
@@ -194,5 +177,17 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
       ...args,
       documentUri: this.editor.document.document.uri.path,
     });
+  }
+
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInServiceRegistries();
+  }
+
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistriesSettings();
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
+    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
 }
