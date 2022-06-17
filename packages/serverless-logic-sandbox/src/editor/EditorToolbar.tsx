@@ -692,6 +692,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   Create Repository...
                 </DropdownItem>
               </Tooltip>
+              {/* TODO: Uncomment when this works again
               <Tooltip
                 data-testid={"create-github-gist-tooltip"}
                 key={`dropdown-create-github-gist`}
@@ -708,7 +709,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 >
                   {i18n.editorToolbar.createGist}
                 </DropdownItem>
-              </Tooltip>
+              </Tooltip> */}
               {!canPushToGitRepository && (
                 <>
                   <Divider />
@@ -732,9 +733,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       downloadSvg,
       downloadWorkspaceZip,
       i18n,
-      canCreateGitHubGist,
       canCreateGitRepository,
-      createGitHubGist,
       settingsDispatch,
     ]
   );
