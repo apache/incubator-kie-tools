@@ -15,9 +15,6 @@
  */
 
 export const COMMAND_IDS = {
-  loginToRhhcc: "extension.kogito.swf.logInToRhhcc",
-  setupServiceRegistryUrl: "extension.kogito.swf.setupServiceRegistryUrl",
-  removeServiceRegistryUrl: "extension.kogito.swf.removeServiceRegistryUrl",
   getPreviewSvg: "extension.kogito.swf.getPreviewSvg",
   silentlyGetPreviewSvg: "extension.kogito.swf.silentlyGenerateSvg",
   openAsDiagram: "extension.kogito.swf.openAsDiagram",
@@ -25,4 +22,7 @@ export const COMMAND_IDS = {
   swfLsCommand: "extension.kogito.swf.ls.command",
   setupAutomaticallyOpenDiagramEditorAlongsideTextEditor:
     "extension.kogito.swf.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
+  serviceRegistriesLogin: "extension.kogito.swf.serviceRegistries.login",
+  serviceRegistriesRefresh: "extension.kogito.swf.serviceRegistries.refresh",
+  serviceRegistriesConfig: "extension.kogito.swf.serviceRegistries.config",
 };
