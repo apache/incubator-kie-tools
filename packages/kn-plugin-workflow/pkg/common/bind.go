@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package root
+package common
 
 import (
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/create"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCommand() *cobra.Command {
-	var rootCmd = &cobra.Command{
-		Use:   "kn-workflow",
-		Short: "Serverless Workflow",
-		Long:  "Manage Quarkus workflow projects",
+type bindFunc func(*cobra.Command, []string) error
+
+func BindEnv(flags ...string) bindFunc {
+	return func(cmd *cobra.Command, args []string) (err error) {
+		for _, flag := range flags {
+			if err = viper.BindPFlag(flag, cmd.Flags().Lookup(flag)); err != nil {
+				return
+			}
+		}
+		return
 	}
-
-	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
-	viper.SetEnvPrefix("workflow") // ensure thay all have the prefix
-
-	rootCmd.AddCommand(create.NewCreateCommand())
-
-	return rootCmd
 }

@@ -33,8 +33,9 @@ const (
 
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "create",
-		Short: "Create a Quarkus serverless workflow project",
+		Use:     "create",
+		Short:   "Create a Quarkus serverless workflow project",
+		PreRunE: common.BindEnv("language", "template", "repository", "confirm"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -62,6 +63,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("create config error %w", err)
 	}
 
+	// TODO: extract quarkus version to env
 	create := exec.Command(
 		"mvn",
 		"io.quarkus.platform:quarkus-maven-plugin:2.9.2.Final:create",
