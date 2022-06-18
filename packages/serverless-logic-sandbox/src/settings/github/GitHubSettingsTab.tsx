@@ -166,7 +166,7 @@ export function GitHubSettingsTab() {
                 </Text>
               </TextContent>
               <h3>
-                <a href={GITHUB_TOKENS_URL} target={"_blank"}>
+                <a href={GITHUB_TOKENS_URL} target={"_blank"} rel="noopener noreferrer">
                   Create a new token&nbsp;&nbsp;
                   <ExternalLinkAltIcon />
                 </a>
