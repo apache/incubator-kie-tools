@@ -50,16 +50,6 @@ import org.kie.workbench.common.stunner.core.client.session.impl.InstanceUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.util.DefinitionUtils;
 
-/**
- * A generic session's presenter instance for authoring purposes.
- * <p>
- * It provides support for an editor Toolbar and a BS3 Palette widget.
- * <p>
- * It aggregates a custom session viewer type which provides binds the editors's diagram instance and the
- * different editors' controls with the diagram and controls for the given session.
- *
- * @see <a>org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorImpl</a>
- */
 @Dependent
 public class SessionEditorPresenter<S extends EditorSession>
         extends AbstractSessionPresenter<Diagram, AbstractCanvasHandler, S, SessionDiagramEditor<S>>
