@@ -125,8 +125,12 @@ public class StunnerEditor {
 
             @Override
             public void afterCanvasInitialized() {
-                ViewerSession session = (ViewerSession) getSession();
-                alertsControl = session.getAlertsControl();
+                ClientSession session = getSession();
+                if (isReadOnly) {
+                    alertsControl = ((ViewerSession)session).getAlertsControl();
+                } else {
+                    alertsControl = ((EditorSession)session).getAlertsControl();
+                }
                 callback.afterCanvasInitialized();
             }
 

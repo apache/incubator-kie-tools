@@ -242,6 +242,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
 
         // Allow preview to scale as the diagram grows horizontally/vertically
         mediatorsControl.init(canvas);
+        alertsControl.init(canvas);
     }
 
     @SuppressWarnings("unchecked")

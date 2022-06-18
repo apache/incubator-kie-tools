@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.enterprise.context.Dependent;
@@ -103,7 +104,7 @@ public class DefaultDiagramViewer
         mediatorsControl = InstanceUtils.lookup(mediatorsControlInstances, qualifier);
         alertsControl = InstanceUtils.lookup(alertsControlInstances, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControlInstances, qualifier);
-        shapeListener = new DefaultCanvasShapeListener(Collections.singletonList(mediatorsControl));
+        shapeListener = new DefaultCanvasShapeListener(Arrays.asList(mediatorsControl, alertsControl));
         canvas.addRegistrationListener(shapeListener);
         elementListener = new DefaultCanvasElementListener(Collections.singletonList(selectionControl));
         canvasHandler.addRegistrationListener(elementListener);
@@ -123,6 +124,8 @@ public class DefaultDiagramViewer
         selectionControl.destroy();
         mediatorsControlInstances.destroy(mediatorsControl);
         mediatorsControlInstances.destroyAll();
+        alertsControlInstances.destroy(alertsControl);
+        alertsControlInstances.destroyAll();
         selectionControlInstances.destroy(selectionControl);
         selectionControlInstances.destroyAll();
         mediatorsControl = null;

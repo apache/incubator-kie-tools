@@ -151,15 +151,19 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).init(eq(canvasHandler));
         verify(view,
                times(1)).setWidget(eq(canvasViewWidget));
+
         ArgumentCaptor<CanvasShapeListener> shapeListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasShapeListener.class);
         ArgumentCaptor<CanvasElementListener> elementListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasElementListener.class);
+
         verify(canvas, times(1)).addRegistrationListener(shapeListenerArgumentCaptor.capture());
         verify(canvasHandler, times(1)).addRegistrationListener(elementListenerArgumentCaptor.capture());
+
         DefaultCanvasShapeListener shapeListener = (DefaultCanvasShapeListener) shapeListenerArgumentCaptor.getValue();
         Iterator<CanvasControl<AbstractCanvas>> canvasControls = shapeListener.getCanvasControls().iterator();
         assertTrue(canvasControls.next() instanceof MediatorsControl);
         assertTrue(canvasControls.next() instanceof AlertsControl);
         assertFalse(canvasControls.hasNext());
+
         DefaultCanvasElementListener elementListener = (DefaultCanvasElementListener) elementListenerArgumentCaptor.getValue();
         Iterator<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls1 = elementListener.getCanvasControls().iterator();
         assertTrue(canvasHandlerControls1.next() instanceof SelectionControl);
@@ -206,6 +210,8 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         tested.destroy();
         assertNull(tested.getInstance());
         verify(mediatorsControl,
+               times(1)).destroyAll();
+        verify(alertsControl,
                times(1)).destroyAll();
         verify(selectionControl,
                times(1)).destroyAll();
