@@ -23,7 +23,7 @@
     "lint": "echo 'Linting'",
     "build:prod:authoring:linux": "cd ./dashbuilder-authoring/ && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
     "build:prod:authoring:darwin": "cd ./dashbuilder-authoring/ && mvn clean install -Dfull -DskipTests",
-    "build:prod:authoring:win32": "cd ./dashbuilder-authoring/ && yarn powershell mvn clean install `-Dfull `-DskipTests",
+    "build:prod:authoring:win32": "echo \"Build not supported on Windows\"",
     "build:prod:authoring": "run-script-os",
     "build:prod:runtime:linux": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
     "build:prod:runtime:darwin": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests",
