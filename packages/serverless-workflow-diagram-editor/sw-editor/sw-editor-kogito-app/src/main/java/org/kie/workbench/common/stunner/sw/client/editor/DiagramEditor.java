@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
 import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
@@ -58,6 +59,7 @@ import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.DiagramParsingException;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.graph.Edge;
+import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
@@ -144,6 +146,7 @@ public class DiagramEditor {
         return updateContent(path, value);
     }
 
+    @SuppressWarnings("all")
     private boolean isSameWorkflow(final String value) {
         Boolean found = false;
         RegExpResult execs = jsRegExp.exec(value);
@@ -184,6 +187,7 @@ public class DiagramEditor {
         });
     }
 
+    @SuppressWarnings("all")
     public void updateDiagram(Diagram diagram) {
         ViewerSession session = (ViewerSession) stunnerEditor.getSession();
         AbstractCanvasHandler canvasHandler = session.getCanvasHandler();
@@ -222,6 +226,21 @@ public class DiagramEditor {
             final Node<View<?>, Edge> node = (Node<View<?>, Edge>) iterator.next();
             if (selection.contains(node.getUUID())) {
                 session.getSelectionControl().select(node.getUUID());
+            }
+        }
+
+        centerFirstSelectedNode(stunnerEditor, jsCanvas);
+    }
+
+    @SuppressWarnings("all")
+    public static void centerFirstSelectedNode(StunnerEditor stunnerEditor, JsCanvas jsCanvas) {
+        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
+        SelectionControl<AbstractCanvasHandler, Element> selectionControl = session.getSelectionControl();
+
+        if (!selectionControl.getSelectedItems().isEmpty()) {
+            String uuid = selectionControl.getSelectedItems().iterator().next();
+            if (!jsCanvas.isShapeVisible(uuid)) {
+                jsCanvas.centerNode(uuid);
             }
         }
     }
@@ -296,6 +315,7 @@ public class DiagramEditor {
         initJsTypes();
     }
 
+    @SuppressWarnings("all")
     private void initJsTypes() {
         LienzoCanvas canvas = (LienzoCanvas) stunnerEditor.getCanvasHandler().getCanvas();
         if (canvas != null) {
