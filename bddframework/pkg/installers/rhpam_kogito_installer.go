@@ -17,12 +17,12 @@ package installers
 import (
 	"errors"
 	"fmt"
+	"regexp"
 	"strings"
 
 	v1 "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
-	"github.com/kiegroup/kogito-operator/version/rhpam"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
@@ -87,6 +87,7 @@ func installRhpamKogitoUsingYaml() error {
 		return err
 	}
 
+	operatorImageTag := config.GetOperatorImageTag()
 	// Use insecure ImageStream when deploying on OpenShift to support using insecure registries, unless the operator tag already points to internal registry
 	if framework.IsOpenshift() && !strings.Contains(config.GetOperatorImageTag(), openShiftInternalRegistryURL) {
 		imageTag := strings.Split(config.GetOperatorImageTag(), ":")[1]
@@ -94,11 +95,14 @@ func installRhpamKogitoUsingYaml() error {
 			return err
 		}
 
-		rhpamKogitoInternalImageTagName := fmt.Sprintf("%s/%s/%s:%s", openShiftInternalRegistryURL, rhpamKogitoNamespace, rhpamKogitoImageStreamName, imageTag)
-		yamlContent = strings.ReplaceAll(yamlContent, "registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator:"+rhpam.Version, rhpamKogitoInternalImageTagName)
-	} else {
-		yamlContent = strings.ReplaceAll(yamlContent, "registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator:"+rhpam.Version, config.GetOperatorImageTag())
+		operatorImageTag = fmt.Sprintf("%s/%s/%s:%s", openShiftInternalRegistryURL, rhpamKogitoNamespace, rhpamKogitoImageStreamName, imageTag)
 	}
+
+	regexp, err := regexp.Compile("registry.stage.redhat.io/rhpam-7/rhpam-kogito-rhel8-operator:.*")
+	if err != nil {
+		return err
+	}
+	yamlContent = regexp.ReplaceAllString(yamlContent, operatorImageTag)
 
 	tempFilePath, err := framework.CreateTemporaryFile("rhpam-operator*.yaml", yamlContent)
 	if err != nil {
