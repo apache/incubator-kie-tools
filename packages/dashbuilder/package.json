@@ -21,11 +21,13 @@
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
-    "build:prod:authoring:linux:darwin": "mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
-    "build:prod:authoring:win32": "yarn powershell mvn clean install `-Dfull `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:authoring:linux": "mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
+    "build:prod:authoring:darwin": "mvn clean install -Dfull -DskipTests",
+    "build:prod:authoring:win32": "yarn powershell mvn clean install `-Dfull `-DskipTests",
     "build:prod:authoring": "cd ./dashbuilder-authoring/ && run-script-os && cd -",
-    "build:prod:runtime:linux:darwin": "mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
-    "build:prod:runtime:win32": "yarn powershell mvn clean install `-Dfull `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:runtime:linux": "mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
+    "build:prod:runtime:darwin": "mvn clean install -Dfull -DskipTests",
+    "build:prod:runtime:win32": "yarn powershell mvn clean install `-Dfull `-DskipTests",
     "build:prod:runtime": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && run-script-os && cd -",
     "delete:components": "rimraf ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
     "copy:components": "pnpm delete:components && copyfiles -u 3 \"../dashbuilder-component-assembler/dist/**/*\" ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
@@ -33,8 +35,9 @@
     "build:dev:linux:darwin": "mvn clean install -DskipTests -Dgwt.compiler.skip=true",
     "build:dev:win32": "yarn powershell mvn clean install `-DskipTests `-Dgwt.compiler.skip=true",
     "build:dev": "run-script-os",
-    "build:prod:linux:darwin": "mvn clean install -Dgwt.compiler.skip=true -DskipTests=$(build-env global.build.test --not)",
-    "build:prod:win32": "yarn powershell mvn clean install `-Dgwt.compiler.skip=true `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:linux": "mvn clean install -Dgwt.compiler.skip=true -DskipTests=$(build-env global.build.test --not)",
+    "build:prod:darwin": "mvn clean install -Dgwt.compiler.skip=true -DskipTests",
+    "build:prod:win32": "yarn powershell mvn clean install `-Dgwt.compiler.skip=true `-DskipTests",
     "build:prod": "pnpm copy:components && pnpm lint && run-script-os && pnpm build:prod:authoring && pnpm build:prod:runtime && pnpm dist && pnpm delete:components"
   }
 }
