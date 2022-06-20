@@ -144,11 +144,9 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	cfg = CreateConfig{
 		ProjectName: viper.GetString("name"),
 		Extesions:   fmt.Sprintf("%s,%s", quarkusDefaultWorkflowExtensions, viper.GetString("extension")),
-
-		Image:     viper.GetString("image"),
-		Namespace: viper.GetString("namespace"),
-
-		Verbose: viper.GetBool("verbose"),
+		Image:       viper.GetString("image"),
+		Namespace:   viper.GetString("namespace"),
+		Verbose:     viper.GetBool("verbose"),
 	}
 	return
 }
