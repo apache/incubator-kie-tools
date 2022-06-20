@@ -35,8 +35,21 @@ const (
 
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:     "create",
-		Short:   "Create a Quarkus serverless workflow project",
+		Use:   "create",
+		Short: "Create a Quarkus serverless workflow project",
+		Long: `
+NAME
+	{{.Name}} create - Create a Quarkus project.
+
+SYNOPSIS
+	{{.Name}} create [-n|--name] [-e|--extension] [-i|--image]
+					 [--namespace] [-v|--verbose]
+
+DESCRIPTION
+	Creates a new Quarkus workflow project with the minimum required deploy to a cluster.
+
+	$ {{.Name}} create -n new-project --namespace
+		`,
 		PreRunE: common.BindEnv("name", "extension", "image", "namespace"),
 	}
 
@@ -46,8 +59,8 @@ func NewCreateCommand() *cobra.Command {
 
 	cmd.Flags().StringP("name", "n", "new-project", fmt.Sprintf("%s project name to be used", cmd.Name()))
 	cmd.Flags().StringP("extension", "e", "", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
-	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
-	cmd.Flags().String("namespace", "default", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
+	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s registry image to be used on the config.yaml", cmd.Name()))
+	cmd.Flags().String("namespace", "default", fmt.Sprintf("%s namespace to be used on the config.yaml", cmd.Name()))
 
 	return cmd
 }
