@@ -15,9 +15,11 @@
 package mappers
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/kiegroup/kogito-operator/apis/app/v1beta1"
+	v1 "github.com/kiegroup/kogito-operator/apis/rhpam/v1"
 
 	api "github.com/kiegroup/kogito-operator/apis"
 
@@ -70,7 +72,15 @@ func mapKogitoBuildTableRow(row *TableRow, kogitoBuild api.KogitoBuildInterface)
 		return mapKogitoBuildConfigTableRow(row, kogitoBuild)
 
 	case kogitoBuildWebhookKey:
-		return mapKogitoBuildWebhookTableRow(row, kogitoBuild.GetSpec().(*v1beta1.KogitoBuildSpec))
+		var spec, ok = kogitoBuild.GetSpec().(*v1beta1.KogitoBuildSpec)
+		if ok {
+			return mapKogitoBuildWebhookTableRow(row, spec)
+		}
+		var rhpamSpec, rhpamok = kogitoBuild.GetSpec().(*v1.KogitoBuildSpec)
+		if rhpamok {
+			return mapKogitoBuildWebhookTableRowRhpam(row, rhpamSpec)
+		}
+		return false, errors.New("unrecognized Kogito Build spec type")
 
 	case kogitoBuildBuildRequestKey:
 		kogitoBuild.GetSpec().AddResourceRequest(GetSecondColumn(row), GetThirdColumn(row))
@@ -104,6 +114,26 @@ func mapKogitoBuildWebhookTableRow(row *TableRow, spec *v1beta1.KogitoBuildSpec)
 
 	if len(spec.WebHooks) == 0 {
 		spec.WebHooks = []v1beta1.WebHookSecret{{}}
+	}
+
+	switch secondColumn {
+	case kogitoBuildTypeKey:
+		spec.WebHooks[0].Type = api.WebHookType(GetThirdColumn(row))
+	case kogitoBuildSecretKey:
+		spec.WebHooks[0].Secret = GetThirdColumn(row)
+
+	default:
+		return false, fmt.Errorf("Unrecognized webhook configuration option: %s", secondColumn)
+	}
+
+	return true, nil
+}
+
+func mapKogitoBuildWebhookTableRowRhpam(row *TableRow, spec *v1.KogitoBuildSpec) (mappingFound bool, err error) {
+	secondColumn := GetSecondColumn(row)
+
+	if len(spec.WebHooks) == 0 {
+		spec.WebHooks = []v1.WebHookSecret{{}}
 	}
 
 	switch secondColumn {
