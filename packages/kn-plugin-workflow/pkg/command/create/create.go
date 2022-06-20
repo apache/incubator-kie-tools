@@ -55,13 +55,18 @@ func NewCreateCommand() *cobra.Command {
 func runCreate(cmd *cobra.Command, args []string) error {
 	start := time.Now()
 
-	if err := common.CheckPreRequisitions(); err != nil {
-		return fmt.Errorf("checking dependencies: %w", err)
-	}
-
 	cfg, err := runCreateConfig(cmd)
 	if err != nil {
 		return fmt.Errorf("create config error %w", err)
+	}
+
+	exists, err := common.CheckIfDirExists(cfg.ProjectName)
+	if err != nil || exists {
+		return fmt.Errorf("directory with name \"%s\" already exists", cfg.ProjectName)
+	}
+
+	if err := common.CheckPreRequisitions(); err != nil {
+		return fmt.Errorf("checking dependencies: %w", err)
 	}
 
 	quarkusVersion := common.GetEnv("QUARKUS_VERSION", quarkusDefaultVersion)
@@ -73,14 +78,15 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
+	fmt.Printf("Creating Quarkus workflow project\n")
+
 	stdout, _ := create.StdoutPipe()
 	stderr, _ := create.StderrPipe()
 
 	if err := create.Start(); err != nil {
-		return fmt.Errorf("create command failed with error: %w", err)
+		return fmt.Errorf("command failed with error: %w", err)
 	}
 
-	fmt.Printf("Creating Quarkus workflow project\n")
 	if cfg.Verbose {
 		stdoutScanner := bufio.NewScanner(stdout)
 		for stdoutScanner.Scan() {
@@ -93,6 +99,10 @@ func runCreate(cmd *cobra.Command, args []string) error {
 			m := stderrScanner.Text()
 			fmt.Println(m)
 		}
+	}
+
+	if err := create.Wait(); err != nil {
+		return fmt.Errorf("Create Quarkus project failed with error: %w", err)
 	}
 
 	generateConfigYaml(cfg)
