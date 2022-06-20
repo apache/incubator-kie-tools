@@ -86,7 +86,6 @@ export class SwfServiceCatalogStore {
     );
 
     this.storedServices = artifactsWithContent.map((artifact) => {
-      // TODO: check the reason `extractFunctions` always return an empty array
       const swfFunctions = extractFunctions(artifact.content, {
         type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
         registry: this.configs.serviceRegistry.name,
