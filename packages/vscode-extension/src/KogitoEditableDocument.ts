@@ -32,6 +32,7 @@ import { KogitoEditor } from "./KogitoEditor";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
+import { executeOnSaveHook } from "./onSaveHook";
 
 export class KogitoEditableDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
@@ -103,19 +104,10 @@ export class KogitoEditableDocument implements CustomDocument {
       }
 
       await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
-      this.executeOnSaveHook();
+      executeOnSaveHook(this.fileType);
       vscode.window.setStatusBarMessage(i18n.savedSuccessfully, 3000);
     } catch (e) {
       this.vsCodeLogger.error(`Error saving. ${e}`);
-    }
-  }
-
-  private executeOnSaveHook() {
-    const hookId = `kogito.${this.fileType}.runOnSave`;
-    const hook = vscode.workspace.getConfiguration().get(hookId, "");
-
-    if (hook) {
-      vscode.commands.executeCommand(hook);
     }
   }
 

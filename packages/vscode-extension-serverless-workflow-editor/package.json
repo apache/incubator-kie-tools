@@ -149,22 +149,22 @@
     "configuration": {
       "title": "Serverless Workflow Editor",
       "properties": {
-        "kogito.sw.runOnSave": {
+        "kogito.swf.runOnSave": {
           "type": "string",
           "default": "extension.kogito.swf.silentlyGenerateSvg",
           "markdownDescription": "Execute a command on each save operation of the Serverless Workflow file."
         },
-        "kogito.sw.svgFilenameTemplate": {
+        "kogito.swf.svgFilenameTemplate": {
           "type": "string",
           "default": "${fileBasename}.svg",
           "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
         },
-        "kogito.sw.svgFilePath": {
+        "kogito.swf.svgFilePath": {
           "type": "string",
           "default": "${fileDirname}",
           "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
         },
-        "kogito.sw.specsStoragePath": {
+        "kogito.swf.specsStoragePath": {
           "type": "string",
           "default": "${fileDirname}/specs",
           "markdownDescription": "Directory where OpenAPI spec files are stored (defaults to a 'specs' directory in the same path as the Serverless Workflow file)."
@@ -240,12 +240,12 @@
             }
           }
         },
-        "kogito.sw.shouldReferenceServiceRegistryFunctionsWithUrls": {
+        "kogito.swf.shouldReferenceServiceRegistryFunctionsWithUrls": {
           "type": "boolean",
           "default": false,
           "markdownDescription": "When adding a function coming from a Service Registry, use its URL to reference it, instead of downloading the OpenAPI file."
         },
-        "kogito.sw.automaticallyOpenDiagramEditorAlongsideTextEditor": {
+        "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor": {
           "type": "string",
           "default": "Ask next time",
           "enum": [
