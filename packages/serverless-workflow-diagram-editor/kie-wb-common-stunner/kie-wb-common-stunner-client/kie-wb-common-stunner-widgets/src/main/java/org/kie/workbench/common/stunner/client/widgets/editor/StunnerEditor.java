@@ -28,7 +28,9 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -54,6 +56,7 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private Consumer<Integer> onResetContentHashProcessor;
+    private AlertsControl<AbstractCanvas> alertsControl;
 
     // CDI proxy.
     public StunnerEditor() {
@@ -122,11 +125,18 @@ public class StunnerEditor {
 
             @Override
             public void afterCanvasInitialized() {
+                ClientSession session = getSession();
+                if (isReadOnly) {
+                    alertsControl = ((ViewerSession)session).getAlertsControl();
+                } else {
+                    alertsControl = ((EditorSession)session).getAlertsControl();
+                }
                 callback.afterCanvasInitialized();
             }
 
             @Override
             public void onSuccess() {
+                alertsControl.clear();
                 callback.onSuccess();
             }
 
@@ -166,7 +176,7 @@ public class StunnerEditor {
 
         if ((diagramPresenter != null) &&
                 (diagramPresenter.getView() != null)) {
-            showError(message);
+            addError(message);
         } else {
             view.setWidget(errorPage);
         }
@@ -176,6 +186,7 @@ public class StunnerEditor {
         if (!isClosed()) {
             diagramPresenter.destroy();
             diagramPresenter = null;
+            alertsControl = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
             view.clear();
@@ -212,21 +223,27 @@ public class StunnerEditor {
         return diagramPresenter;
     }
 
-    public void showMessage(String message) {
+    public void addMessage(String message) {
         if (!isClosed()) {
-            diagramPresenter.getView().showMessage(message);
+            alertsControl.addInfo(message);
         }
     }
 
-    public void showWarning(String message) {
+    public void addWarning(String message) {
         if (!isClosed()) {
-            diagramPresenter.getView().showWarning(message);
+            alertsControl.addWarning(message);
         }
     }
 
-    public void showError(String message) {
+    public void addError(String message) {
         if (!isClosed()) {
-            diagramPresenter.getView().showError(message);
+            alertsControl.addError(message);
+        }
+    }
+
+    public void clearAlerts() {
+        if (!isClosed()) {
+            alertsControl.clear();
         }
     }
 

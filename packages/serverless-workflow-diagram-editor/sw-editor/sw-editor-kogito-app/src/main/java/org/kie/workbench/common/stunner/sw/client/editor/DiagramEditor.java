@@ -165,6 +165,7 @@ public class DiagramEditor {
 
     public Promise<Void> updateContent(final String path, final String value) {
         return promises.create((success, failure) -> {
+            stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
                                      new ServiceCallback<Diagram>() {
@@ -178,7 +179,6 @@ public class DiagramEditor {
                                          @Override
                                          public void onError(final ClientRuntimeError error) {
                                              stunnerEditor.handleError(new ClientRuntimeError(new DiagramParsingException()));
-                                             failure.onInvoke(error);
                                          }
                                      });
         });
@@ -228,6 +228,7 @@ public class DiagramEditor {
 
     public Promise<Void> setNewContent(final String path, final String value) {
         return promises.create((success, failure) -> {
+            stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
                                      new ServiceCallback<Diagram>() {
@@ -246,7 +247,6 @@ public class DiagramEditor {
                                                          @Override
                                                          public void onError(ClientRuntimeError error) {
                                                              stunnerEditor.handleError(error);
-                                                             failure.onInvoke(error);
                                                          }
 
                                                          @Override
@@ -272,7 +272,6 @@ public class DiagramEditor {
                                          @Override
                                          public void onError(final ClientRuntimeError error) {
                                              stunnerEditor.handleError(error);
-                                             failure.onInvoke(error);
                                          }
                                      });
         });

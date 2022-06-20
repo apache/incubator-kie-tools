@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasSettings;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
@@ -72,6 +73,10 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
     private ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControl;
 
     @Mock
+    private AlertsControl<AbstractCanvas> alertsControlInstance;
+    private ManagedInstance<AlertsControl<AbstractCanvas>> alertsControl;
+
+    @Mock
     private SelectionControl<AbstractCanvasHandler, Element> selectionControlInstance;
     private ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControl;
 
@@ -108,6 +113,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         canvasPanels = spy(new ManagedInstanceStub<>(canvasPanel));
         canvasHandlers = spy(new ManagedInstanceStub<>(canvasHandler));
         mediatorsControl = spy(new ManagedInstanceStub<>(mediatorsControlInstance));
+        alertsControl = spy(new ManagedInstanceStub<>(alertsControlInstance));
         selectionControl = spy(new ManagedInstanceStub<>(selectionControlInstance));
         when(metadata.getDefinitionSetId()).thenReturn(DEFINITION_SET_ID);
         when(preferencesRegistries.get(DEFINITION_SET_ID, StunnerPreferences.class)).thenReturn(stunnerPreferences);
@@ -117,6 +123,7 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                                          canvasPanels,
                                          canvasHandlers,
                                          mediatorsControl,
+                                         alertsControl,
                                          selectionControl,
                                          view,
                                          preferencesRegistries);
@@ -138,18 +145,25 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
                times(1)).afterCanvasInitialized();
         verify(mediatorsControlInstance,
                times(1)).init(eq(canvas));
+        verify(alertsControlInstance,
+               times(1)).init(eq(canvas));
         verify(selectionControlInstance,
                times(1)).init(eq(canvasHandler));
         verify(view,
                times(1)).setWidget(eq(canvasViewWidget));
+
         ArgumentCaptor<CanvasShapeListener> shapeListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasShapeListener.class);
         ArgumentCaptor<CanvasElementListener> elementListenerArgumentCaptor = ArgumentCaptor.forClass(CanvasElementListener.class);
+
         verify(canvas, times(1)).addRegistrationListener(shapeListenerArgumentCaptor.capture());
         verify(canvasHandler, times(1)).addRegistrationListener(elementListenerArgumentCaptor.capture());
+
         DefaultCanvasShapeListener shapeListener = (DefaultCanvasShapeListener) shapeListenerArgumentCaptor.getValue();
         Iterator<CanvasControl<AbstractCanvas>> canvasControls = shapeListener.getCanvasControls().iterator();
         assertTrue(canvasControls.next() instanceof MediatorsControl);
+        assertTrue(canvasControls.next() instanceof AlertsControl);
         assertFalse(canvasControls.hasNext());
+
         DefaultCanvasElementListener elementListener = (DefaultCanvasElementListener) elementListenerArgumentCaptor.getValue();
         Iterator<CanvasControl<AbstractCanvasHandler>> canvasHandlerControls1 = elementListener.getCanvasControls().iterator();
         assertTrue(canvasHandlerControls1.next() instanceof SelectionControl);
@@ -196,6 +210,8 @@ public class DiagramViewerTest extends AbstractCanvasHandlerViewerTest {
         tested.destroy();
         assertNull(tested.getInstance());
         verify(mediatorsControl,
+               times(1)).destroyAll();
+        verify(alertsControl,
                times(1)).destroyAll();
         verify(selectionControl,
                times(1)).destroyAll();
