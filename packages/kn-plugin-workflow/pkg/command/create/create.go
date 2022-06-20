@@ -17,6 +17,7 @@
 package create
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os/exec"
@@ -28,6 +29,7 @@ import (
 )
 
 const (
+	quarkusDefaultVersion            = "2.9.2.Final"
 	quarkusDefaultWorkflowExtensions = "kogito-quarkus-serverless-workflow,resteasy-reactive-jackson"
 )
 
@@ -44,7 +46,6 @@ func NewCreateCommand() *cobra.Command {
 
 	cmd.Flags().StringP("name", "n", "new-project", fmt.Sprintf("%s project name to be used", cmd.Name()))
 	cmd.Flags().StringP("extension", "e", "", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
-
 	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
 	cmd.Flags().String("namespace", "default", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
 
@@ -63,18 +64,35 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("create config error %w", err)
 	}
 
-	// TODO: extract quarkus version to env
+	quarkusVersion := common.GetEnv("QUARKUS_VERSION", quarkusDefaultVersion)
 	create := exec.Command(
 		"mvn",
-		"io.quarkus.platform:quarkus-maven-plugin:2.9.2.Final:create",
+		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", quarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
-	if out, err := create.CombinedOutput(); err != nil {
-		fmt.Printf("Creating Quarkus workflow project: \n%s\n", string(out))
+	stdout, _ := create.StdoutPipe()
+	stderr, _ := create.StderrPipe()
+
+	if err := create.Start(); err != nil {
 		return fmt.Errorf("create command failed with error: %w", err)
+	}
+
+	fmt.Printf("Creating Quarkus workflow project\n")
+	if cfg.Verbose {
+		stdoutScanner := bufio.NewScanner(stdout)
+		for stdoutScanner.Scan() {
+			m := stdoutScanner.Text()
+			fmt.Println(m)
+		}
+
+		stderrScanner := bufio.NewScanner(stderr)
+		for stderrScanner.Scan() {
+			m := stderrScanner.Text()
+			fmt.Println(m)
+		}
 	}
 
 	generateConfigYaml(cfg)
@@ -93,6 +111,9 @@ type CreateConfig struct {
 	// Config YAML options
 	Image     string // Registry to be add on the config yaml
 	Namespace string // Namespace to be add on the config yaml
+
+	// Plugin options
+	Verbose bool
 }
 
 // runCreateConfig returns the configs from the current execution context
@@ -103,6 +124,8 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 
 		Image:     viper.GetString("image"),
 		Namespace: viper.GetString("namespace"),
+
+		Verbose: viper.GetBool("verbose"),
 	}
 	return
 }

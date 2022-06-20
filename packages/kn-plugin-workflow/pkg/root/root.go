@@ -17,13 +17,16 @@
 package root
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/create"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
 
 func NewRootCommand() *cobra.Command {
-	var rootCmd = &cobra.Command{
+	var cmd = &cobra.Command{
 		Use:   "kn-workflow",
 		Short: "Serverless Workflow",
 		Long:  "Manage Quarkus workflow projects",
@@ -32,7 +35,12 @@ func NewRootCommand() *cobra.Command {
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
 	viper.SetEnvPrefix("workflow") // ensure thay all have the prefix
 
-	rootCmd.AddCommand(create.NewCreateCommand())
+	cmd.PersistentFlags().BoolP("verbose", "v", false, "Print verbose logs")
+	if err := viper.BindPFlag("verbose", cmd.PersistentFlags().Lookup("verbose")); err != nil {
+		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
+	}
 
-	return rootCmd
+	cmd.AddCommand(create.NewCreateCommand())
+
+	return cmd
 }
