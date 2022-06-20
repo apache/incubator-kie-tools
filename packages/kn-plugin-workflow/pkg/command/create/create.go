@@ -35,7 +35,7 @@ func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:     "create",
 		Short:   "Create a Quarkus serverless workflow project",
-		PreRunE: common.BindEnv("language", "template", "repository", "confirm"),
+		PreRunE: common.BindEnv("name", "extension", "image", "namespace"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {

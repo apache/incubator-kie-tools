@@ -29,14 +29,13 @@ const mavenMajorVersion int64 = 3
 const mavenMinorVersion int64 = 8
 
 func CheckPreRequisitions() error {
-
+	fmt.Println("✅ Checking dependencies...")
 	if err := checkJava(); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 	if err := checkMaven(); err != nil {
 		return fmt.Errorf("%w", err)
 	}
-	fmt.Println("✅ Checking dependencies...")
 	return nil
 }
 
@@ -56,7 +55,7 @@ func checkJava() error {
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
 		os.Exit(0)
 	} else {
-		fmt.Println("Java version check.")
+		fmt.Println(" - Java version check.")
 	}
 	return nil
 }
@@ -77,7 +76,7 @@ func checkMaven() error {
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
 		os.Exit(0)
 	} else {
-		fmt.Println("Maven version check.")
+		fmt.Println(" - Maven version check.")
 	}
 
 	return nil
