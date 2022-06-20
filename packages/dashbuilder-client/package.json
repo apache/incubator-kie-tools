@@ -12,7 +12,7 @@
   },
   "scripts": {
     "copy:dashbuilder:linux:darwin": "copyfiles -e \"../**/*/WEB-INF/**/*\" -e \"../**/*/ace/**/*\" -u 6 \"../dashbuilder/dashbuilder-runtime-parent/dashbuilder-runtime-client/target/dashbuilder-runtime-client/**/*\" ./dist/",
-    "copy:dashbuilder:win32": "mkdir dist && $null > dist/.keep && echo \"Build not supported on Windows\"",
+    "copy:dashbuilder:win32": "mkdir dist && touch dist/.keep && echo \"Build not supported on Windows\"",
     "copy:dashbuilder": "run-script-os",
     "build:dev": "rimraf dist && pnpm copy:dashbuilder",
     "build:prod": "pnpm build:dev"
