@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/create"
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -40,7 +40,7 @@ func NewRootCommand() *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.AddCommand(create.NewCreateCommand())
+	cmd.AddCommand(command.NewCreateCommand())
 
 	return cmd
 }

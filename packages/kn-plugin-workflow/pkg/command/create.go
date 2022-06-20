@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package create
+package command
 
 import (
 	"bufio"

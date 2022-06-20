@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package create
+package command
 
 import (
 	"gopkg.in/yaml.v2"
 )
 
 type MetadataStruct struct {
-	Name      string `yaml:name`
-	Namespace string `yaml:namespace`
+	Name      string `yaml:"name"`
+	Namespace string `yaml:"namespace"`
 }
 
 type PortsStruct struct {
@@ -30,27 +30,27 @@ type PortsStruct struct {
 }
 
 type ContainerStruct struct {
-	Image string        `yaml:image`
+	Image string        `yaml:"image"`
 	Ports []PortsStruct `yaml:"ports"`
 }
 
 type TemplateSpecStruct struct {
-	Containers []ContainerStruct `yaml:containers`
+	Containers []ContainerStruct `yaml:"containers"`
 }
 
 type TemplateStruct struct {
-	Spec TemplateSpecStruct `yaml:spec`
+	Spec TemplateSpecStruct `yaml:"spec"`
 }
 
 type SpecStruct struct {
-	Template TemplateStruct `yaml:template`
+	Template TemplateStruct `yaml:"template"`
 }
 
 type Config struct {
 	ApiVersion string         `yaml:"apiVersion"`
-	Kind       string         `yaml:kind`
-	Metadata   MetadataStruct `yaml:metadata`
-	Spec       SpecStruct     `yaml:spec`
+	Kind       string         `yaml:"kind"`
+	Metadata   MetadataStruct `yaml:"metadata"`
+	Spec       SpecStruct     `yaml:"spec"`
 }
 
 func GenerateConfigYamlTemplate(cfg CreateConfig) ([]byte, error) {
