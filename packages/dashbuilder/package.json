@@ -27,7 +27,7 @@
     "build:prod:authoring": "run-script-os",
     "build:prod:runtime:linux": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
     "build:prod:runtime:darwin": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Dfull -DskipTests",
-    "build:prod:runtime:win32": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && yarn powershell mvn clean install `-Dfull `-DskipTests",
+    "build:prod:runtime:win32": "echo \"Build not supported on Windows\"",
     "build:prod:runtime": "run-script-os",
     "delete:components": "rimraf ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
     "copy:components": "pnpm delete:components && copyfiles -u 3 \"../dashbuilder-component-assembler/dist/**/*\" ./dashbuilder-runtime-parent/dashbuilder-runtime-client/src/main/webapp/dashbuilder/component",
