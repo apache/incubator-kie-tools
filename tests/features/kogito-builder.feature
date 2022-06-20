@@ -90,7 +90,7 @@ Feature: kogito-builder image tests
       | request_body    | {"Driver": {"Points": 2}, "Violation": {"Type": "speed","Actual Speed": 120,"Speed Limit": 100}} |
 
   Scenario: Verify that the Kogito Quarkus Serverless Workflow Extension is building the service properly
-    Given s2i build /tmp/kogito-examples from kogito-quarkus-examples/serverless-workflow-order-processing/src/main/resources using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+    Given s2i build /tmp/kogito-examples from serverless-workflow-examples/serverless-workflow-order-processing/src/main/resources using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
       | variable            | value                 |
       | RUNTIME_TYPE        | quarkus               |
       | NATIVE              | false                 |
