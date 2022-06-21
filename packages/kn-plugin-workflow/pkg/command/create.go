@@ -17,7 +17,6 @@
 package command
 
 import (
-	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os/exec"
@@ -93,29 +92,8 @@ func runCreate(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("Creating a Quarkus workflow project\n")
 
-	stdout, _ := create.StdoutPipe()
-	stderr, _ := create.StderrPipe()
-
-	if err := create.Start(); err != nil {
-		return fmt.Errorf("command failed with error: %w", err)
-	}
-
-	if cfg.Verbose {
-		stdoutScanner := bufio.NewScanner(stdout)
-		for stdoutScanner.Scan() {
-			m := stdoutScanner.Text()
-			fmt.Println(m)
-		}
-
-		stderrScanner := bufio.NewScanner(stderr)
-		for stderrScanner.Scan() {
-			m := stderrScanner.Text()
-			fmt.Println(m)
-		}
-	}
-
-	if err := create.Wait(); err != nil {
-		return fmt.Errorf("create Quarkus project failed with error: %w", err)
+	if err := common.RunCommand(create, cfg.Verbose, "create Quarkus project failed with error"); err != nil {
+		return fmt.Errorf("%w", err)
 	}
 
 	generateConfigYaml(cfg)

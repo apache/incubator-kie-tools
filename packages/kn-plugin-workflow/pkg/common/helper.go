@@ -16,11 +16,33 @@
 
 package common
 
-import "os"
+import (
+	"fmt"
+	"os"
+	"os/exec"
+)
 
 func GetEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}
 	return fallback
+}
+
+func RunCommand(command *exec.Cmd, verbose bool, errorMessage string) error {
+	stdout, _ := command.StdoutPipe()
+	stderr, _ := command.StderrPipe()
+
+	if err := command.Start(); err != nil {
+		return fmt.Errorf("%s: %w", errorMessage, err)
+	}
+
+	if verbose {
+		VerboseLog(stdout, stderr)
+	}
+
+	if err := command.Wait(); err != nil {
+		return fmt.Errorf("%s: %w", errorMessage, err)
+	}
+	return nil
 }

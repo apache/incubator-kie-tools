@@ -15,3 +15,95 @@
  */
 
 package command
+
+import (
+	"fmt"
+	"os/exec"
+	"time"
+
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/ory/viper"
+	"github.com/spf13/cobra"
+)
+
+func NewDeployCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:   "deploy",
+		Short: "Deploy a Quarkus workflow project",
+		Long: `
+NAME
+	{{.Name}} deploy - Deploy a Quarkus project
+	
+SYNOPSIS
+	{{.Name}} deploy
+	
+DESCRIPTION
+	Deploys a Quarkus workflow project into a cluster.
+	
+	$ {{.Name}} deploy
+	`,
+		PreRunE: common.BindEnv("image", "name", "openshift"),
+	}
+
+	cmd.RunE = func(cmd *cobra.Command, args []string) error {
+		return runDeploy(cmd, args)
+	}
+
+	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s image URL", cmd.Name()))
+	cmd.Flags().StringP("name", "n", "new-project", fmt.Sprintf("%s service name", cmd.Name()))
+	cmd.Flags().BoolP("openshift", "o", false, fmt.Sprintf("%s deploy to a openshift cluster", cmd.Name()))
+
+	return cmd
+}
+
+func runDeploy(cmd *cobra.Command, args []string) error {
+	start := time.Now()
+
+	cfg, err := runDeployConfig(cmd)
+	if err != nil {
+		return fmt.Errorf("create config error %w", err)
+	}
+
+	// use stdin to pass config.yaml ?
+	// login?
+	// use knative or file
+	// file path?
+	var deploy *exec.Cmd
+	if cfg.Openshift {
+		deploy = exec.Command("kn", "service", "create", cfg.ServiceName, fmt.Sprintf("--image=%s", cfg.Image), "--port=8080")
+	} else {
+		deploy = exec.Command("kn", "service", "create", cfg.ServiceName, fmt.Sprintf("--image=%s", cfg.Image), "--port=8080")
+	}
+
+	if err := common.RunCommand(deploy, cfg.Verbose, "deploy command failed with error"); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	finish := time.Since(start)
+	fmt.Printf("🚀 Deploy took: %s \n", finish)
+	return nil
+}
+
+type DeployConfig struct {
+	// Deploy options
+	Image       string // registry image
+	ServiceName string // service name
+
+	// Deploy strategy
+	Openshift bool // registry to be uploaded
+
+	// Plugin options
+	Verbose bool
+}
+
+func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
+	cfg = DeployConfig{
+		Image:       viper.GetString("registry"),
+		ServiceName: viper.GetString("group"),
+
+		Openshift: viper.GetBool("openshift"),
+
+		Verbose: viper.GetBool("verbose"),
+	}
+	return
+}

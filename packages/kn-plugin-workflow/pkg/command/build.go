@@ -122,16 +122,16 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 func runAddExtension(cfg BuildConfig) error {
 	var addExtension *exec.Cmd
 	if cfg.NoDocker {
-		fmt.Printf("- Adding Quarkus Jib extension\n")
+		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
 			"-Dextensions=container-image-jib")
 	} else {
-		fmt.Printf("- Adding Quarkus Docker extension\n")
+		fmt.Printf(" - Adding Quarkus Docker extension\n")
 		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
 			"-Dextensions=container-image-docker")
 	}
 
-	if err := runCommand(addExtension, cfg, "adding quarkus extension failed with error"); err != nil {
+	if err := common.RunCommand(addExtension, cfg.Verbose, "adding quarkus extension failed with error"); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -157,28 +157,10 @@ func runBuildImage(cfg BuildConfig) error {
 		"-Dquarkus.container-image.push=true",
 	)
 
-	if err := runCommand(build, cfg, "build command failed with error"); err != nil {
+	if err := common.RunCommand(build, cfg.Verbose, "build command failed with error"); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
 	fmt.Printf("Build success\n")
-	return nil
-}
-
-func runCommand(command *exec.Cmd, cfg BuildConfig, errorMessage string) error {
-	stdout, _ := command.StdoutPipe()
-	stderr, _ := command.StderrPipe()
-
-	if err := command.Start(); err != nil {
-		return fmt.Errorf("%s: %w", errorMessage, err)
-	}
-
-	if cfg.Verbose {
-		common.VerboseLog(stdout, stderr)
-	}
-
-	if err := command.Wait(); err != nil {
-		return fmt.Errorf("%s: %w", errorMessage, err)
-	}
 	return nil
 }
