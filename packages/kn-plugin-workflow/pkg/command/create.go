@@ -169,9 +169,8 @@ func generateConfigYaml(cfg CreateConfig) (err error) {
 
 func generateWorkflow(cfg CreateConfig) (err error) {
 	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
-	data := []byte(`
-{
-	"id": "hello-world",
+	data := []byte(`{
+	"id": "hello",
 	"specVersion": "1.0",
 	"name": "Hello World",
 	"start": "HelloWorld",

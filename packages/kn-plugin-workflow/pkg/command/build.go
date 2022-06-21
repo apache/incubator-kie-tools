@@ -121,26 +121,14 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 
 func runAddExtension(cfg BuildConfig) error {
 	var addExtension *exec.Cmd
-	var removeExtension *exec.Cmd
-	// To build using one extension (Docker or Jib) is necessary to remove the other
 	if cfg.NoDocker {
-		fmt.Println("Removing Quarkus Docker extension")
-		removeExtension = exec.Command("./mvnw", "quarkus:remove-extension",
-			"-Dextensions=container-image-docker")
-		fmt.Println("Adding Quarkus Jib extension")
+		fmt.Printf("- Adding Quarkus Jib extension\n")
 		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
 			"-Dextensions=container-image-jib")
 	} else {
-		fmt.Println("Removing Jib extension")
-		removeExtension = exec.Command("./mvnw", "quarkus:remove-extension",
-			"-Dextensions=container-image-jib")
-		fmt.Println("Adding Quarkus Docker extension")
+		fmt.Printf("- Adding Quarkus Docker extension\n")
 		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
 			"-Dextensions=container-image-docker")
-	}
-
-	if err := runCommand(removeExtension, cfg, "removing quarkus extension failed with error"); err != nil {
-		return fmt.Errorf("%w", err)
 	}
 
 	if err := runCommand(addExtension, cfg, "adding quarkus extension failed with error"); err != nil {
@@ -152,12 +140,20 @@ func runAddExtension(cfg BuildConfig) error {
 }
 
 func runBuildImage(cfg BuildConfig) error {
+	builder := "-Dquakus.container-image.builder="
+	if cfg.NoDocker {
+		builder += "jib"
+	} else {
+		builder += "docker"
+	}
+
 	build := exec.Command("./mvnw", "package",
 		"-Dquarkus.native.container-build=true",
 		fmt.Sprintf("-Dquarkus.container-image.registry=%s", cfg.Registry),
 		fmt.Sprintf("-Dquarkus.container-image.group=%s", cfg.Group),
 		fmt.Sprintf("-Dquarkus.container-image.name=%s", cfg.ImageName),
 		fmt.Sprintf("-Dquarkus.container-image.tag=%s", cfg.Tag),
+		builder,
 		"-Dquarkus.container-image.push=true",
 	)
 
