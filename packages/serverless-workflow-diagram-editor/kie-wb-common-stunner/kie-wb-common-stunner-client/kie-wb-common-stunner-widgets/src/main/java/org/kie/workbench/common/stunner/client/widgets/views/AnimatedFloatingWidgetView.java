@@ -21,8 +21,6 @@ import java.util.logging.Logger;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Specializes;
 
-import org.gwtbootstrap3.extras.animate.client.ui.Animate;
-import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingWidgetView;
 
 /**
@@ -39,19 +37,19 @@ public class AnimatedFloatingWidgetView extends FloatingWidgetView {
 
     @Override
     protected void doShow() {
-        getPanel().getElement().getStyle().setOpacity(0);
+        //getPanel().getElement().getStyle().setOpacity(0); //TODO looks like there is a big in gwtbootstrap3 port, let fix it first
         super.doShow();
         LOGGER.log(Level.FINE,
                    "Showing animated floating view.");
-        aid = Animate.animate(getPanel(),
+/*        aid = Animate.animate(getPanel(),
                               Animation.FADE_IN,
                               1,
-                              DURATION);
+                              DURATION);*/
     }
 
     @Override
     protected void doHide() {
-        LOGGER.log(Level.FINE,
+/*        LOGGER.log(Level.FINE,
                    "Hiding animated floating view.");
         if (null != aid) {
             LOGGER.log(Level.FINE,
@@ -59,7 +57,7 @@ public class AnimatedFloatingWidgetView extends FloatingWidgetView {
             Animate.stopAnimation(getPanel(),
                                   aid);
             this.aid = null;
-        }
+        }*/
         super.doHide();
     }
 }
