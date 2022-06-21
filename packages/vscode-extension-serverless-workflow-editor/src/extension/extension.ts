@@ -76,7 +76,7 @@ export async function activate(context: vscode.ExtensionContext) {
     silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
-        "sw",
+        "swf",
         "**/*.sw.+(json|yml|yaml)",
         "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
         "dist/webview/editors/serverless-workflow"

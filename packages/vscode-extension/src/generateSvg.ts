@@ -34,9 +34,14 @@ export async function generateSvg(args: {
 }) {
   const i18n = args.vsCodeI18n.getCurrent();
 
-  const editor = args.editorStore.activeEditor;
+  const editor =
+    args.editorStore.activeEditor ??
+    Array.from(args.editorStore.openEditors)
+      .filter((e) => e.document.document.uri === vscode.window.activeTextEditor?.document.uri)
+      .pop();
+
   if (!editor) {
-    console.info(`Unable to create SVG because there's no Editor open.`);
+    console.info(`Unable to create SVG because there's no matching Editor that can generate SVGs.`);
     return;
   }
 
