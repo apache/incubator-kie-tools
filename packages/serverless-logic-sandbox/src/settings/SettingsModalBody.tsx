@@ -53,17 +53,17 @@ export function SettingsModalBody() {
       </Tab>
       <Tab
         className="kie-tools--settings-tab"
-        eventKey={SettingsTabs.OPENSHIFT}
-        title={<TabTitleText>OpenShift</TabTitleText>}
-      >
-        <OpenShiftSettingsTab />
-      </Tab>
-      <Tab
-        className="kie-tools--settings-tab"
         eventKey={SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES}
         title={<TabTitleText>KIE Sandbox Extended Services</TabTitleText>}
       >
         <KieSandboxExtendedServicesSettingsTab />
+      </Tab>
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.OPENSHIFT}
+        title={<TabTitleText>OpenShift</TabTitleText>}
+      >
+        <OpenShiftSettingsTab />
       </Tab>
       <Tab
         className="kie-tools--settings-tab"

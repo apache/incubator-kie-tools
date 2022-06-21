@@ -34,6 +34,8 @@ import {
   saveConfigCookie,
 } from "../openshift/OpenShiftSettingsConfig";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -49,6 +51,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
   const [config, setConfig] = useState(settings.openshift.config);
   const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
 
   useEffect(() => {
     setConfig(settings.openshift.config);
@@ -129,6 +132,18 @@ export function OpenShiftSettingsTabSimpleConfig() {
   return (
     <>
       <Form>
+        {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
+          <>
+            <FormAlert>
+              <Alert
+                variant="danger"
+                title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
+                aria-live="polite"
+                isInline
+              />
+            </FormAlert>
+          </>
+        )}
         {isConfigValidated === FormValiationOptions.INVALID && (
           <>
             <FormAlert>
@@ -306,6 +321,7 @@ export function OpenShiftSettingsTabSimpleConfig() {
             onClick={onConnect}
             data-testid="save-config-button"
             isLoading={isConnecting}
+            isDisabled={kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING}
             spinnerAriaValueText={isConnecting ? "Loading" : undefined}
           >
             {isConnecting ? "Connecting" : "Connect"}
