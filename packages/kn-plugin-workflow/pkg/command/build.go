@@ -17,7 +17,6 @@
 package command
 
 import (
-	"bufio"
 	"fmt"
 	"os/exec"
 	"time"
@@ -31,18 +30,32 @@ func NewBuildCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
 		Short: "Build a Quarkus workflow project",
+		Long: `
+NAME
+	{{.Name}} build - Build a Quarkus project and pushes the image to a registry
+	
+SYNOPSIS
+	{{.Name}} build [-r|--registry] [-g|--group] [-i|--image-name]
+					[-t|--tag] [-v|--verbose]
+	
+DESCRIPTION
+	Builds a Quarkus workflow project and pushes a image to a remote registry. It doens't require Docker
+	
+	$ {{.Name}} build
+	`,
+		PreRunE: common.BindEnv("registry", "group", "image-name", "tag", "no-docker"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runBuild(cmd, args)
 	}
 
-	cmd.Flags().StringP("registry", "i", "docker.io", fmt.Sprintf("%s registry URL", cmd.Name()))
-	cmd.Flags().StringP("group", "i", "quarkus", fmt.Sprintf("%s registry group", cmd.Name()))
+	cmd.Flags().StringP("registry", "r", "docker.io", fmt.Sprintf("%s registry URL", cmd.Name()))
+	cmd.Flags().StringP("group", "g", "quarkus", fmt.Sprintf("%s registry group", cmd.Name()))
 	cmd.Flags().StringP("image-name", "i", "new-project", fmt.Sprintf("%s image name", cmd.Name()))
-	cmd.Flags().StringP("tag", "i", "latest", fmt.Sprintf("%s image tag", cmd.Name()))
+	cmd.Flags().StringP("tag", "t", "latest", fmt.Sprintf("%s image tag", cmd.Name()))
 
-	cmd.Flags().Bool("no-docker", false, fmt.Sprintf("%s build using JIB extension", cmd.Name()))
+	cmd.Flags().Bool("no-docker", false, fmt.Sprintf("%s build using Jib extension", cmd.Name()))
 
 	return cmd
 }
@@ -55,55 +68,25 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("build config error %w", err)
 	}
 
-	if err := common.CheckPreRequisitions(); err != nil {
+	if err := common.CheckJavaDependencies(); err != nil {
 		return fmt.Errorf("checking dependencies: %w", err)
 	}
 
-	fmt.Printf("Building Serverless Workflow project\n")
-
-	// build with jib
-	// ./mvnw quarkus:add-extension -Dextensions="container-image-jib"
-
-	// build with docker
-	// check docker
-	// ./mvnw quarkus:add-extension -Dextensions="container-image-docker"
-
-	// local image?
-
-	var build *exec.Cmd
-	build = exec.Command("./mvnw", "package",
-		"-Dquarkus.native.container-build=true",
-		"-Dquarkus.container-image.push=true",
-		fmt.Sprintf("-Dquarkus.container-image.registry=%s", cfg.Registry),
-		fmt.Sprintf("-Dquarkus.container-image.group=%s", cfg.Group),
-		fmt.Sprintf("-Dquarkus.container-image.name=%s", cfg.ImageName),
-		fmt.Sprintf("-Dquarkus.container-image.tag=%s", cfg.Tag),
-	)
-
-	stdout, _ := build.StdoutPipe()
-	stderr, _ := build.StderrPipe()
-
-	if err := build.Start(); err != nil {
-		return fmt.Errorf("Build command failed with error: %w", err)
+	if !cfg.NoDocker {
+		if err := common.CheckContainerRuntime(); err != nil {
+			return fmt.Errorf("no-docker option is false, and no container runtime was found, %w", err)
+		}
 	}
 
-	stdoutScanner := bufio.NewScanner(stdout)
-	for stdoutScanner.Scan() {
-		m := stdoutScanner.Text()
-		fmt.Println(m)
+	if err := runAddExtension(cfg); err != nil {
+		return fmt.Errorf("%w", err)
 	}
 
-	stderrScanner := bufio.NewScanner(stderr)
-	for stderrScanner.Scan() {
-		m := stderrScanner.Text()
-		fmt.Println(m)
+	if err := runBuildImage(cfg); err != nil {
+		return fmt.Errorf("%w", err)
 	}
 
-	if err := build.Wait(); err != nil {
-		return fmt.Errorf("Build command failed with error: %w", err)
-	}
-	fmt.Printf("Created and pushed an image to remote registry: %s/%s/%s:%s\n", registry, registryGroup, imageName, imageTag)
-
+	fmt.Printf("Created and pushed an image to remote registry: %s/%s/%s:%s\n", cfg.Registry, cfg.Group, cfg.ImageName, cfg.Tag)
 	finish := time.Since(start)
 	fmt.Printf("🚀 Build took: %s \n", finish)
 	return nil
@@ -130,43 +113,76 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 		ImageName: viper.GetString("image-name"),
 		Tag:       viper.GetString("tag"),
 
-		NoDocker: viper.GetBool("verbose"),
+		NoDocker: viper.GetBool("no-docker"),
 		Verbose:  viper.GetBool("verbose"),
 	}
 	return
 }
 
-func runAddDockerExtension(cfg BuildConfig) {
-	var build *exec.Cmd
-	build = exec.Command("./mvnw", "package",
+func runAddExtension(cfg BuildConfig) error {
+	var addExtension *exec.Cmd
+	var removeExtension *exec.Cmd
+	// To build using one extension (Docker or Jib) is necessary to remove the other
+	if cfg.NoDocker {
+		fmt.Println("Removing Quarkus Docker extension")
+		removeExtension = exec.Command("./mvnw", "quarkus:remove-extension",
+			"-Dextensions=container-image-docker")
+		fmt.Println("Adding Quarkus Jib extension")
+		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
+			"-Dextensions=container-image-jib")
+	} else {
+		fmt.Println("Removing Jib extension")
+		removeExtension = exec.Command("./mvnw", "quarkus:remove-extension",
+			"-Dextensions=container-image-jib")
+		fmt.Println("Adding Quarkus Docker extension")
+		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
+			"-Dextensions=container-image-docker")
+	}
+
+	if err := runCommand(removeExtension, cfg, "removing quarkus extension failed with error"); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	if err := runCommand(addExtension, cfg, "adding quarkus extension failed with error"); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+
+	fmt.Printf("Quarkus extension was sucessufully add to the project\n")
+	return nil
+}
+
+func runBuildImage(cfg BuildConfig) error {
+	build := exec.Command("./mvnw", "package",
 		"-Dquarkus.native.container-build=true",
-		"-Dquarkus.container-image.push=true",
 		fmt.Sprintf("-Dquarkus.container-image.registry=%s", cfg.Registry),
 		fmt.Sprintf("-Dquarkus.container-image.group=%s", cfg.Group),
 		fmt.Sprintf("-Dquarkus.container-image.name=%s", cfg.ImageName),
 		fmt.Sprintf("-Dquarkus.container-image.tag=%s", cfg.Tag),
+		"-Dquarkus.container-image.push=true",
 	)
 
-	stdout, _ := build.StdoutPipe()
-	stderr, _ := build.StderrPipe()
-
-	if err := build.Start(); err != nil {
-		return fmt.Errorf("Build command failed with error: %w", err)
+	if err := runCommand(build, cfg, "build command failed with error"); err != nil {
+		return fmt.Errorf("%w", err)
 	}
 
-	stdoutScanner := bufio.NewScanner(stdout)
-	for stdoutScanner.Scan() {
-		m := stdoutScanner.Text()
-		fmt.Println(m)
+	fmt.Printf("Build success\n")
+	return nil
+}
+
+func runCommand(command *exec.Cmd, cfg BuildConfig, errorMessage string) error {
+	stdout, _ := command.StdoutPipe()
+	stderr, _ := command.StderrPipe()
+
+	if err := command.Start(); err != nil {
+		return fmt.Errorf("%s: %w", errorMessage, err)
 	}
 
-	stderrScanner := bufio.NewScanner(stderr)
-	for stderrScanner.Scan() {
-		m := stderrScanner.Text()
-		fmt.Println(m)
+	if cfg.Verbose {
+		common.VerboseLog(stdout, stderr)
 	}
 
-	if err := build.Wait(); err != nil {
-		return fmt.Errorf("Build command failed with error: %w", err)
+	if err := command.Wait(); err != nil {
+		return fmt.Errorf("%s: %w", errorMessage, err)
 	}
+	return nil
 }

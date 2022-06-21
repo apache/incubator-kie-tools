@@ -78,7 +78,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("directory with name \"%s\" already exists", cfg.ProjectName)
 	}
 
-	if err := common.CheckPreRequisitions(); err != nil {
+	if err := common.CheckJavaDependencies(); err != nil {
 		return fmt.Errorf("checking dependencies: %w", err)
 	}
 
@@ -91,7 +91,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
-	fmt.Printf("Creating Quarkus workflow project\n")
+	fmt.Printf("Creating a Quarkus workflow project\n")
 
 	stdout, _ := create.StdoutPipe()
 	stderr, _ := create.StderrPipe()
@@ -115,7 +115,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := create.Wait(); err != nil {
-		return fmt.Errorf("Create Quarkus project failed with error: %w", err)
+		return fmt.Errorf("create Quarkus project failed with error: %w", err)
 	}
 
 	generateConfigYaml(cfg)
@@ -169,7 +169,22 @@ func generateConfigYaml(cfg CreateConfig) (err error) {
 
 func generateWorkflow(cfg CreateConfig) (err error) {
 	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
-	data := []byte("{}")
+	data := []byte(`
+{
+	"id": "hello-world",
+	"specVersion": "1.0",
+	"name": "Hello World",
+	"start": "HelloWorld",
+	"states": [
+		{
+		"name": "HelloWorld",
+		"type": "operation",
+		"actions": [],
+		"end": true
+		}
+	]
+}	  
+	`)
 	err = ioutil.WriteFile(workflowFilePath, data, 0644)
 	if err != nil {
 		return fmt.Errorf("error creating workflow file")

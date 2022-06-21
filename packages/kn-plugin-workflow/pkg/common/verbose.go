@@ -19,17 +19,10 @@ package common
 import (
 	"bufio"
 	"fmt"
-	"os/exec"
+	"io"
 )
 
-func VerboseLog(cmd *exec.Cmd) (err error) {
-	stdout, _ := cmd.StdoutPipe()
-	stderr, _ := cmd.StderrPipe()
-
-	if err := cmd.Start(); err != nil {
-		return fmt.Errorf("command failed with error: %w", err)
-	}
-
+func VerboseLog(stdout io.Reader, stderr io.Reader) {
 	stdoutScanner := bufio.NewScanner(stdout)
 	for stdoutScanner.Scan() {
 		m := stdoutScanner.Text()
@@ -41,6 +34,4 @@ func VerboseLog(cmd *exec.Cmd) (err error) {
 		m := stderrScanner.Text()
 		fmt.Println(m)
 	}
-
-	return
 }

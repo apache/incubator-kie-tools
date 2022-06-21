@@ -28,7 +28,7 @@ const javaVersion int64 = 11
 const mavenMajorVersion int64 = 3
 const mavenMinorVersion int64 = 8
 
-func CheckPreRequisitions() error {
+func CheckJavaDependencies() error {
 	fmt.Println("✅ Checking dependencies...")
 	if err := checkJava(); err != nil {
 		return fmt.Errorf("%w", err)
@@ -80,6 +80,39 @@ func checkMaven() error {
 	}
 
 	return nil
+}
+
+func CheckContainerRuntime() error {
+	fmt.Println("✅ Checking if container runtime is running...")
+	isDockerRunning := checkDocker()
+	if !isDockerRunning {
+		fmt.Println("Docker is not running, checking Podman")
+		isPodmanRunning := checkPodman()
+		if !isPodmanRunning {
+			return fmt.Errorf("no container runtime was found")
+		} else {
+			fmt.Println(" - Podman is running")
+		}
+	} else {
+		fmt.Println(" - Docker is running")
+	}
+	return nil
+}
+
+func checkDocker() bool {
+	dockerCheck := exec.Command("docker", "stats", "--no-stream")
+	if err := dockerCheck.Run(); err != nil {
+		return false
+	}
+	return true
+}
+
+func checkPodman() bool {
+	podmanCheck := exec.Command("podman", "stats", "--no-stream")
+	if err := podmanCheck.Run(); err != nil {
+		return false
+	}
+	return true
 }
 
 func parseJavaVersion(version string) (int64, error) {
