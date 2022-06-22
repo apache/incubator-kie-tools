@@ -80,7 +80,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   forwardedRef
 ) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
+  const stateControl = useMemo(
+    () => props.stateControl ?? new StateControl(),
+    [props.file.getFileContents, props.stateControl]
+  );
   const [isReady, setReady] = useState(false);
   const envelopeMapping = useMemo(
     () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.path ?? props.file.fileName),
@@ -158,7 +161,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       return {
         iframeRef,
         isReady: props.isReady ?? isReady,
-        getStateControl: () => props.stateControl ?? stateControl,
+        getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
         getElementPosition: (s) =>
           envelopeServer.envelopeApi.requests.kogitoGuidedTour_guidedTourElementPositionRequest(s),
@@ -175,7 +178,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       };
     },
-    [props.isReady, props.stateControl, isReady, stateControl, envelopeServer]
+    [props.isReady, isReady, stateControl, envelopeServer]
   );
 
   return (
