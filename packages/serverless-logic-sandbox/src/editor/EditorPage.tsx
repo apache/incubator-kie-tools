@@ -301,7 +301,7 @@ export function EditorPage(props: Props) {
   );
 
   useEffect(() => {
-    if (embeddedEditorFile && !isServerlessWorkflow(embeddedEditorFile.path || "") && !isReady) {
+    if (embeddedEditorFile && !isServerlessWorkflowJson(embeddedEditorFile.path || "") && !isReady) {
       setReady(true);
     }
   }, [embeddedEditorFile, isReady]);
