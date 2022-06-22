@@ -22,11 +22,7 @@ import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
-import {
-  findPositionByStateName,
-  getFileLanguage,
-  FileLanguage,
-} from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { ServerlessWorkflowTextEditorChannelApi } from "../../api";
 import { editor } from "monaco-editor";
 
@@ -106,24 +102,7 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
   useSubscription(
     editorEnvelopeCtx.channelApi?.notifications.kogitoSwfLanguageService__moveCursorToNode,
     ({ nodeName }: { nodeName: string }) => {
-      const editorContent = controller.getContent();
-
-      if (!fileLanguage || !editorContent) {
-        return;
-      }
-
-      const targetPosition = findPositionByStateName(editorContent, nodeName, fileLanguage);
-
-      if (!targetPosition) {
-        return;
-      }
-
-      controller.editor?.revealLineInCenter(targetPosition.line);
-
-      controller.editor?.setPosition({
-        lineNumber: targetPosition.line,
-        column: targetPosition.character,
-      });
+      controller.moveCursorToNode(nodeName);
     }
   );
 

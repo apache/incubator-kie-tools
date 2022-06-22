@@ -1884,15 +1884,23 @@ importers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@types/json-to-ast": ^2.1.2
+      json-to-ast: ^2.1.0
+      jsonata: ^1.8.3
       jsonc-parser: ^3.0.0
       vscode-json-languageservice: ^4.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
+      yaml-language-server-parser: ^0.1.3
     dependencies:
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      json-to-ast: 2.1.0
+      jsonata: 1.8.3
+      yaml-language-server-parser: 0.1.3
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      "@types/json-to-ast": 2.1.2
       jsonc-parser: 3.0.0
       vscode-json-languageservice: 4.2.1
       vscode-languageserver-textdocument: 1.0.4
@@ -5628,6 +5636,11 @@ packages:
       { integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ== }
     dev: true
 
+  /@types/json-to-ast/2.1.2:
+    resolution:
+      { integrity: sha512-GEjR5l9wZGS74KhL1a1tZuyRJqdLB7LGgOXzWspJx9xxC/iyCFTwwKv71Lz8fzZyGuVW8FjASQGoYFi6XZJWLQ== }
+    dev: true
+
   /@types/keyv/3.1.1:
     resolution:
       { integrity: sha512-MPtoySlAZQ37VoLaPcTHCu1RWJ4llDkULYZIzOYxlhxBqYPB0RsRlmMU0R6tahtFe27mIdkHV+551ZWV4PLmVw== }
@@ -8611,6 +8624,12 @@ packages:
     resolution: { integrity: sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ= }
     engines: { iojs: ">= 1.0.0", node: ">= 0.12.0" }
     dev: true
+
+  /code-error-fragment/0.0.230:
+    resolution:
+      { integrity: sha512-cadkfKp6932H8UkhzE/gcUqhRMNf8jHzkAN7+5Myabswaghu4xABTgPHDCjW+dBAJxj/SpkTYokpzDqY4pCzQw== }
+    engines: { node: ">= 4" }
+    dev: false
 
   /code-point-at/1.1.0:
     resolution: { integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c= }
@@ -12498,7 +12517,6 @@ packages:
   /grapheme-splitter/1.0.4:
     resolution:
       { integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ== }
-    dev: true
 
   /graphlib/2.1.8:
     resolution:
@@ -14358,6 +14376,15 @@ packages:
 
   /json-stringify-safe/5.0.1:
     resolution: { integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus= }
+
+  /json-to-ast/2.1.0:
+    resolution:
+      { integrity: sha512-W9Lq347r8tA1DfMvAGn9QNcgYm4Wm7Yc+k8e6vezpMnRT+NHbtlxgNBXRVjXe9YM6eTn6+p/MKOlV/aABJcSnQ== }
+    engines: { node: ">= 4" }
+    dependencies:
+      code-error-fragment: 0.0.230
+      grapheme-splitter: 1.0.4
+    dev: false
 
   /json5/0.5.1:
     resolution: { integrity: sha1-Hq3nrMASA0rYTiOWdn6tn6VJWCE= }

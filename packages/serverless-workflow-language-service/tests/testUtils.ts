@@ -15,30 +15,14 @@
  */
 
 /**
- * File language for an opened file in the text editor.
- */
-export enum FileLanguage {
-  JSON = "json",
-  YAML = "yaml",
-}
-
-/**
- * Get the file language from a filename or path
+ * Gets the corresponding line from an offset.
  *
- * @param fileName the filename or path
- * @returns the file language, null if found
+ * @param fullText -
+ * @param offset -
+ * @param lineFrom if you want to get the next line set to 1
+ * @returns only the line
  */
-export const getFileLanguage = (fileName: string): FileLanguage | null => {
-  if (/\.sw\.json$/i.test(fileName)) {
-    return FileLanguage.JSON;
-  }
-
-  if (/\.sw\.(yml|yaml)/i.test(fileName)) {
-    return FileLanguage.YAML;
-  }
-
-  return null;
+export const getLineFromOffset = (fullText: string, offset: number | undefined, lineFrom = 0): string => {
+  const partialText = fullText.substring(offset!);
+  return partialText.substring(0).split("\n")[lineFrom];
 };
-
-export * from "./SwfJsonOffsets";
-export * from "./SwfYamlOffsets";

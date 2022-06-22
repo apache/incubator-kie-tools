@@ -15,8 +15,12 @@
  */
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { SwfLanguageServiceCommandIds, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  FileLanguage,
+  SwfJsonOffsets,
+  SwfYamlOffsets,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
@@ -34,6 +38,7 @@ export interface SwfTextEditorApi {
   setTheme: (theme: EditorTheme) => void;
   forceRedraw: () => void;
   dispose: () => void;
+  moveCursorToNode: (nodeName: string) => void;
 }
 
 export enum SwfTextEditorOperation {
@@ -52,13 +57,16 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
   public editor: editor.IStandaloneCodeEditor | undefined;
 
+  private swfOffsetsApi: SwfOffsetsApi;
+
   constructor(
     content: string,
     private readonly onContentChange: (content: string, operation: SwfTextEditorOperation) => void,
     private readonly language: FileLanguage,
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
-    private readonly setValidationErrors: (errors: editor.IMarker[]) => void
+    private readonly setValidationErrors: (errors: editor.IMarker[]) => void,
+    private readonly fileName: string = ""
   ) {
     this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => {
@@ -71,6 +79,8 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     editor.onDidChangeMarkers(() => {
       this.setValidationErrors(this.getValidationMarkers());
     });
+
+    this.swfOffsetsApi = this.language === FileLanguage.JSON ? new SwfJsonOffsets() : new SwfYamlOffsets();
   }
 
   public redo(): void {
@@ -133,6 +143,35 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
   public forceRedraw() {
     this.editor?.render(true);
+  }
+
+  /**
+   * Moves the cursor to a specified node by node name.
+   *
+   * @param nodeName -
+   * @returns
+   */
+  public moveCursorToNode(nodeName: string): void {
+    if (!this.editor || !nodeName) {
+      return;
+    }
+
+    this.swfOffsetsApi.parseContent(this.getContent());
+
+    const targetOffset = this.swfOffsetsApi.getStateNameOffset(nodeName);
+
+    if (!targetOffset) {
+      return;
+    }
+
+    const targetPosition = this.editor?.getModel()?.getPositionAt(targetOffset);
+
+    if (!targetPosition) {
+      return;
+    }
+
+    this.editor?.revealLineInCenter(targetPosition.lineNumber);
+    this.editor?.setPosition(targetPosition);
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

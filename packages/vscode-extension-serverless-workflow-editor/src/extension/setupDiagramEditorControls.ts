@@ -22,7 +22,15 @@ import {
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
 import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
-import { findPositionByStateName, getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import {
+  getFileLanguage,
+  SwfJsonOffsets,
+  SwfYamlOffsets,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+
+let swfOffsetsApi: SwfOffsetsApi | undefined = undefined;
 
 function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
@@ -137,7 +145,22 @@ export async function setupDiagramEditorControls(args: {
           return;
         }
 
-        const targetPosition = findPositionByStateName(textEditor.document.getText(), nodeName, fileLanguage);
+        const editorContent = textEditor.document.getText();
+
+        if (!swfOffsetsApi || documentUri !== swfOffsetsApi.documentUri) {
+          swfOffsetsApi =
+            fileLanguage === FileLanguage.JSON ? new SwfJsonOffsets(documentUri) : new SwfYamlOffsets(documentUri);
+        }
+
+        swfOffsetsApi.parseContent(editorContent);
+
+        const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
+
+        if (!targetOffset) {
+          return;
+        }
+
+        const targetPosition = textEditor.document.positionAt(targetOffset);
 
         if (targetPosition === null) {
           return;
@@ -148,14 +171,10 @@ export async function setupDiagramEditorControls(args: {
           preserveFocus: false,
         } as vscode.TextDocumentShowOptions);
 
-        const vsPosition = new vscode.Position(targetPosition.line - 1, targetPosition.character - 1);
-        const vsRange = new vscode.Range(vsPosition, vsPosition);
+        const targetRange = new vscode.Range(targetPosition, targetPosition);
 
-        if (!vscode.window.activeTextEditor) {
-          return;
-        }
-        vscode.window.activeTextEditor.revealRange(vsRange, vscode.TextEditorRevealType.InCenter);
-        vscode.window.activeTextEditor.selections = [new vscode.Selection(vsPosition, vsPosition)];
+        textEditor.revealRange(targetRange, vscode.TextEditorRevealType.InCenter);
+        textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
       }
     )
   );
