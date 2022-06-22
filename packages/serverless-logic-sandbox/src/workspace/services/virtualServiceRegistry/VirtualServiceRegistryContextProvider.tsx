@@ -37,7 +37,7 @@ import {
 import { ServiceRegistryFile } from "./models/ServiceRegistryFile";
 import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
 import { decoder, useWorkspaces } from "../../WorkspacesContext";
-import { isServerlessWorkflow } from "../../../extension";
+import { isServerlessWorkflow, isSpec } from "../../../extension";
 
 type SupportedFileExtensions = ".yaml" | ".json";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
@@ -95,11 +95,11 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
             workspaceId: vsrGroup.groupId,
           });
 
-          const specFiles = files.filter((file) => {});
+          const workflowFiles = files.filter(
+            (file) => isServerlessWorkflow(file.relativePath) || isSpec(file.relativePath)
+          );
 
-          const workflowFiles = files.filter((file) => isServerlessWorkflow(file.relativePath));
-
-          const workflowFilesSpecs = workflowFiles.map((file) => {
+          const filesSpecs = workflowFiles.map((file) => {
             const vsrFunction = new VirtualServiceRegistryFunction(file);
             return new StorageFile({
               path: functionPath(vsrGroup, vsrFunction),
@@ -107,7 +107,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
             });
           });
 
-          await storageService.createFiles(fs, workflowFilesSpecs);
+          await storageService.createFiles(fs, filesSpecs);
 
           return vsrService.getFilesWithLazyContent(fs, vsrGroup.groupId);
         },
