@@ -16,90 +16,43 @@
 
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { v4 as uuid } from "uuid";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import DefaultBackend from "@kie-tools/kie-sandbox-fs/dist/DefaultBackend";
-import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
-import { StorageFile, StorageService } from "./StorageService";
-import { decoder, encoder } from "../WorkspacesContext";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "./GitService";
-import { jsonParseWithUrl } from "../../json/JsonParse";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../commonServices/GitService";
+import { DescriptorService, DescriptorServiceConfig } from "../commonServices/DescriptorService";
+import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import { StorageService } from "../commonServices/StorageService";
 
 const WORKSPACE_DESCRIPTORS_FS_NAME = "workspaces";
 export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
-export class WorkspaceDescriptorService {
-  constructor(
-    private readonly storageService: StorageService,
-    private readonly descriptorsFs = new KieSandboxFs(WORKSPACE_DESCRIPTORS_FS_NAME, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (fileDbName, fileStoreName) => {
-          return new DexieBackend(fileDbName, fileStoreName);
-        },
-      }) as any,
-    })
-  ) {}
+type CreateWorkspaceDescriptorArgs = { origin: WorkspaceOrigin; preferredName?: string };
 
-  public async listAll(): Promise<WorkspaceDescriptor[]> {
-    const workspaceDescriptorsFilePaths = await this.storageService.walk({
-      fs: this.descriptorsFs,
-      startFromDirPath: "/",
-      shouldExcludeDir: () => false,
-      onVisit: async ({ absolutePath }) => absolutePath,
-    });
-
-    const workspaceDescriptorFiles = await this.storageService.getFiles(
-      this.descriptorsFs,
-      workspaceDescriptorsFilePaths
-    );
-
-    return workspaceDescriptorFiles.map((workspaceDescriptorFile) =>
-      jsonParseWithUrl(decoder.decode(workspaceDescriptorFile.content))
+export class WorkspaceDescriptorService extends DescriptorService<WorkspaceDescriptor, CreateWorkspaceDescriptorArgs> {
+  constructor(protected readonly storageService: StorageService, descriptorsFs?: KieSandboxFs) {
+    super(
+      storageService,
+      {
+        descriptorFsName: WORKSPACE_DESCRIPTORS_FS_NAME,
+        idField: "workspaceId",
+        nameField: "name",
+      },
+      descriptorsFs
     );
   }
 
-  public async bumpLastUpdatedDate(workspaceId: string): Promise<void> {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        lastUpdatedDateISO: new Date().toISOString(),
-      })
-    );
+  public getDescriptorPath(id: string): string {
+    return `/${id}`;
   }
 
-  public async get(workspaceId: string): Promise<WorkspaceDescriptor> {
-    const workspaceDescriptorFile = await this.storageService.getFile(this.descriptorsFs, `/${workspaceId}`);
-    if (!workspaceDescriptorFile) {
-      throw new Error(`Workspace not found (${workspaceId})`);
-    }
-    return jsonParseWithUrl(decoder.decode(await workspaceDescriptorFile.getFileContents()));
-  }
-
-  public async create(args: { origin: WorkspaceOrigin; preferredName?: string }) {
-    const workspace: WorkspaceDescriptor = {
-      workspaceId: this.newWorkspaceId(),
+  public createNewDescriptor(args: CreateWorkspaceDescriptorArgs): WorkspaceDescriptor {
+    const id = this.newWorkspaceId();
+    return {
+      workspaceId: id,
       name: args.preferredName?.trim() || NEW_WORKSPACE_DEFAULT_NAME,
       origin: args.origin,
       createdDateISO: new Date().toISOString(),
       lastUpdatedDateISO: new Date().toISOString(),
     };
-    await this.storageService.createOrOverwriteFile(this.descriptorsFs, this.toStorageFile(workspace));
-    return workspace;
-  }
-
-  public async delete(workspaceId: string) {
-    await this.storageService.deleteFile(this.descriptorsFs, `/${workspaceId}`);
-  }
-
-  public async rename(workspaceId: string, newName: string) {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        name: newName,
-      })
-    );
   }
 
   public async turnIntoGist(workspaceId: string, gistUrl: URL) {
@@ -141,13 +94,6 @@ export class WorkspaceDescriptorService {
         },
       })
     );
-  }
-
-  private toStorageFile(descriptor: WorkspaceDescriptor) {
-    return new StorageFile({
-      path: `/${descriptor.workspaceId}`,
-      getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
-    });
   }
 
   public newWorkspaceId(): string {

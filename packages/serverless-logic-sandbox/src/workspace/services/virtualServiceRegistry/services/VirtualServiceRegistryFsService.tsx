@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-import { DescriptorBase } from "../commonServices/DescriptorService";
-import { WorkspaceOrigin } from "./WorkspaceOrigin";
+import { groupPath } from "../models/VirtualServiceRegistry";
+import { VirtualServiceRegistryGroupService } from "./VirtualServiceRegistryGroupService";
+import { FsService } from "../../../commonServices/FsService";
 
-export interface WorkspaceDescriptor extends DescriptorBase {
-  workspaceId: string;
-  name: string;
-  origin: WorkspaceOrigin;
-  createdDateISO: string;
-  lastUpdatedDateISO: string;
+export class VirtualServiceRegistryFsService extends FsService<VirtualServiceRegistryGroupService> {
+  getDbName(id: string): string {
+    return groupPath({ groupId: id });
+  }
+  getStoreName(id: string): string {
+    return `${groupPath({ groupId: id })}_files`;
+  }
 }

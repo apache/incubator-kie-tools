@@ -101,7 +101,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       );
 
       const hasConflictingFileName = await workspaces.existsFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        fs: await workspaces.fsService.getFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
@@ -127,7 +127,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       }
 
       await workspaces.renameFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
+        fs: await workspaces.fsService.getFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
         newFileNameWithoutExtension: trimmedNewFileName.trim(),
       });

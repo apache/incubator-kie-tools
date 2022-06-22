@@ -28,7 +28,7 @@ import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../commonServices/GitService";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
@@ -72,7 +72,7 @@ export function NewWorkspaceFromUrlPage() {
 
       if (removeRemote) {
         workspaces.gitService.deleteRemote({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.workspaceId),
+          fs: await workspaces.fsService.getFs(workspace.workspaceId),
           dir: workspaces.getAbsolutePath({ workspaceId: workspace.workspaceId }),
           name: "origin",
         });

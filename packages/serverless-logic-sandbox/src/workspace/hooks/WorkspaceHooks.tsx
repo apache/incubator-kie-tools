@@ -20,7 +20,7 @@ import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
-import { GIT_ORIGIN_REMOTE_NAME } from "../services/GitService";
+import { GIT_ORIGIN_REMOTE_NAME } from "../commonServices/GitService";
 
 export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
   const workspaces = useWorkspaces();
@@ -35,7 +35,7 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
       }
 
       const hasLocalChanges = await workspaces.hasLocalChanges({
-        fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+        fs: await workspaces.fsService.getFs(workspace.descriptor.workspaceId),
         workspaceId: workspace.descriptor.workspaceId,
       });
       if (canceled.get()) {
@@ -52,13 +52,13 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
       ) {
         const head = await workspaces.gitService.resolveRef({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+          fs: await workspaces.fsService.getFs(workspace.descriptor.workspaceId),
           dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
           ref: "HEAD",
         });
 
         const remote = await workspaces.gitService.resolveRef({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+          fs: await workspaces.fsService.getFs(workspace.descriptor.workspaceId),
           dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
           ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`,
         });
@@ -108,7 +108,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         }
 
         const files = await workspaces.getFiles({
-          fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
+          fs: await workspaces.fsService.getFs(workspaceId),
           workspaceId,
         });
         if (canceled.get()) {

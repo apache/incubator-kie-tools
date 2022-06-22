@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,8 @@ import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
+import { useUpdateWorkspaceRegistryGroupFile } from "../workspace/services/virtualServiceRegistry/hooks/useUpdateWorkspaceRegistryGroupFile";
+import { useVirtualServiceRegistry } from "../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContext";
 import { DiagnosticSeverity } from "vscode-languageserver-types";
 
 export interface Props {
@@ -74,6 +76,9 @@ export function EditorPage(props: Props) {
   const [isReady, setReady] = useState(false);
 
   const queryParams = useQueryParams();
+  const virtualServiceRegistry = useVirtualServiceRegistry();
+
+  useUpdateWorkspaceRegistryGroupFile({ workspaceFile: workspaceFilePromise.data });
 
   // keep the page in sync with the name of `workspaceFilePromise`, even if changes
   useEffect(() => {
@@ -150,7 +155,7 @@ export function EditorPage(props: Props) {
     // }
 
     await workspaces.updateFile({
-      fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+      fs: await workspaces.fsService.getFs(workspaceFilePromise.data.workspaceId),
       file: workspaceFilePromise.data,
       getNewContents: () => Promise.resolve(content),
     });
@@ -179,7 +184,7 @@ export function EditorPage(props: Props) {
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        fs: await workspaces.fsService.getFs(props.workspaceId),
         workspaceId: props.workspaceId,
         relativePath: request.path,
         opts: request.opts,
@@ -191,7 +196,7 @@ export function EditorPage(props: Props) {
   const handleResourceListRequest = useCallback(
     async (request: ResourceListRequest) => {
       return workspaces.resourceContentList({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        fs: await workspaces.fsService.getFs(props.workspaceId),
         workspaceId: props.workspaceId,
         globPattern: request.pattern,
         opts: request.opts,
@@ -207,7 +212,7 @@ export function EditorPage(props: Props) {
       }
 
       const file = await workspaces.getFile({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
+        fs: await workspaces.fsService.getFs(workspaceFilePromise.data.workspaceId),
         workspaceId: workspaceFilePromise.data.workspaceId,
         relativePath,
       });
@@ -257,6 +262,18 @@ export function EditorPage(props: Props) {
     ]
   );
 
+  useEffect(() => {
+    if (
+      !settingsDispatch.serviceRegistry.catalogStore.virtualServiceRegistry ||
+      settingsDispatch.serviceRegistry.catalogStore.currentWorkspaceId !== props.workspaceId
+    ) {
+      settingsDispatch.serviceRegistry.catalogStore.setVirtualServiceRegistry(
+        virtualServiceRegistry,
+        props.workspaceId
+      );
+    }
+  }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, props.workspaceId]);
+
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
   const isSwfJson = useMemo(
@@ -271,26 +288,34 @@ export function EditorPage(props: Props) {
     return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
   }, [isSwfJson, settingsDispatch.serviceRegistry.catalogStore]);
 
+  const swfLanguageServiceChannelApiImpl = useMemo(
+    () => swfJsonLanguageService && new SwfLanguageServiceChannelApiImpl(swfJsonLanguageService),
+    [swfJsonLanguageService]
+  );
+
+  const swfServiceCatalogChannelApiImpl = useMemo(
+    () =>
+      settingsDispatch.serviceRegistry.catalogStore &&
+      new SwfServiceCatalogChannelApiImpl(settingsDispatch.serviceRegistry.catalogStore),
+    [settingsDispatch.serviceRegistry.catalogStore]
+  );
+
   const apiImpl = useMemo(() => {
-    if (!kogitoEditorChannelApiImpl) {
+    if (!kogitoEditorChannelApiImpl || !swfJsonLanguageService || !swfServiceCatalogChannelApiImpl) {
       return;
     }
-
-    let swfLanguageServiceChannelApiImpl;
-    if (swfJsonLanguageService) {
-      swfLanguageServiceChannelApiImpl = new SwfLanguageServiceChannelApiImpl(swfJsonLanguageService);
-    }
-
-    const swfServiceCatalogChannelApiImpl = new SwfServiceCatalogChannelApiImpl(
-      settingsDispatch.serviceRegistry.catalogStore
-    );
 
     return new ServerlessWorkflowEditorChannelApiImpl(
       kogitoEditorChannelApiImpl,
       swfServiceCatalogChannelApiImpl,
       swfLanguageServiceChannelApiImpl
     );
-  }, [kogitoEditorChannelApiImpl, swfJsonLanguageService, settingsDispatch.serviceRegistry.catalogStore]);
+  }, [
+    kogitoEditorChannelApiImpl,
+    swfJsonLanguageService,
+    swfServiceCatalogChannelApiImpl,
+    swfLanguageServiceChannelApiImpl,
+  ]);
 
   useEffect(() => {
     if (

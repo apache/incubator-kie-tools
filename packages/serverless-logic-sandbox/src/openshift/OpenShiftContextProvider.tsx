@@ -16,7 +16,6 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
 import { GLOB_PATTERN } from "../extension";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
@@ -70,7 +69,7 @@ export function OpenShiftContextProvider(props: Props) {
 
       try {
         const descriptor = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
-        const fs = await workspaces.fsService.getWorkspaceFs(args.workspaceFile.workspaceId);
+        const fs = await workspaces.fsService.getFs(args.workspaceFile.workspaceId);
         const filesToBeDeployed = await workspaces.getFiles({
           fs,
           workspaceId: args.workspaceFile.workspaceId,

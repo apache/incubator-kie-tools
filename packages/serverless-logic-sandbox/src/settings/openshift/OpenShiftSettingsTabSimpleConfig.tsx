@@ -32,7 +32,7 @@ import {
   isOpenShiftConfigValid,
   OpenShiftSettingsConfig,
   saveConfigCookie,
-} from "../openshift/OpenShiftSettingsConfig";
+} from "./OpenShiftSettingsConfig";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";

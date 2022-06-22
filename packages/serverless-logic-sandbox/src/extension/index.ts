@@ -23,6 +23,9 @@ const REGEX = {
   swYaml: /^.*\.sw\.(yml|yaml)$/i,
   yard: /^.*\.yard\.(json|yml|yaml)$/i,
   dash: /^.*\.dash\.(yml|yaml)$/i,
+  json: /^.*\.json$/i,
+  yaml: /^.*\.(yml|yaml)$/i,
+  spec: /^.*(spec|specs)\/.*(.json|.yml|.yaml)$/i,
 };
 
 export const GLOB_PATTERN = {
@@ -86,6 +89,18 @@ export function isDashbuilder(path: string): boolean {
 
 export function isSandboxAsset(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
+}
+
+export function isSpec(path: string): boolean {
+  return REGEX.spec.test(path);
+}
+
+export function isJson(path: string): boolean {
+  return REGEX.json.test(path);
+}
+
+export function isYaml(path: string): boolean {
+  return REGEX.yaml.test(path);
 }
 
 export type SupportedFileExtensions = typeof supportedFileExtensionArray[number];

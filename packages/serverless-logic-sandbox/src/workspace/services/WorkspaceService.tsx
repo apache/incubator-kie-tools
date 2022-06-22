@@ -17,7 +17,7 @@
 import { encoder, WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
-import { EagerStorageFile, StorageFile, StorageService } from "./StorageService";
+import { EagerStorageFile, StorageFile, StorageService } from "../commonServices/StorageService";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
@@ -52,7 +52,7 @@ export class WorkspaceService {
     try {
       const files = await (args.useInMemoryFs
         ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
-        : args.storeFiles(await this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
+        : args.storeFiles(await this.fsService.getFs(workspace.workspaceId), workspace));
 
       if (args.broadcastArgs.broadcast) {
         const broadcastChannel1 = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);

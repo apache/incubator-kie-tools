@@ -28,23 +28,23 @@ import { basename, parse } from "path";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { GitService } from "./services/GitService";
+import { GitService } from "./commonServices/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { StorageService } from "./services/StorageService";
+import { StorageService } from "./commonServices/StorageService";
 import { resolveExtension } from "../extension";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
 
+export type WorkspaceFileProps = {
+  workspaceId: string;
+  relativePath: string;
+  getFileContents: () => Promise<Uint8Array>;
+};
+
 export class WorkspaceFile {
-  constructor(
-    private readonly args: {
-      workspaceId: string;
-      relativePath: string;
-      getFileContents: () => Promise<Uint8Array>;
-    }
-  ) {}
+  constructor(protected readonly args: WorkspaceFileProps) {}
 
   get getFileContentsAsString() {
     return () => this.getFileContents().then((c) => decoder.decode(c));

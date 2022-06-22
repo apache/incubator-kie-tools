@@ -23,8 +23,8 @@ import {
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { GIT_DEFAULT_BRANCH, GitService } from "./services/GitService";
-import { StorageFile, StorageService } from "./services/StorageService";
+import { GIT_DEFAULT_BRANCH, GitService } from "./commonServices/GitService";
+import { StorageFile, StorageService } from "./commonServices/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
 import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { join } from "path";

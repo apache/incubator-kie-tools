@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { FsCache } from "./FsCache";
+import { FsCache } from "../commonServices/FsCache";
 import { encoder, WorkspaceFile } from "../WorkspacesContext";
-import { StorageFile, StorageService } from "./StorageService";
+import { StorageFile, StorageService } from "../commonServices/StorageService";
 
 export class WorkspaceSvgService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}

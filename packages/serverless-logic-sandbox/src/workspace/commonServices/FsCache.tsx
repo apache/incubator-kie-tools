@@ -20,19 +20,19 @@ import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 
 export class FsCache {
   private fsCache = new Map<string, KieSandboxFs>();
-  public getOrCreateFs(workspaceId: string) {
-    const fs = this.fsCache.get(workspaceId);
+  public getOrCreateFs(id: string) {
+    const fs = this.fsCache.get(id);
     if (fs) {
       return fs;
     }
 
-    const newFs = new KieSandboxFs(workspaceId, {
+    const newFs = new KieSandboxFs(id, {
       backend: new DefaultBackend({
         idbBackendDelegate: (dbName, storeName) => new DexieBackend(dbName, storeName),
       }) as any,
     });
 
-    this.fsCache.set(workspaceId, newFs);
+    this.fsCache.set(id, newFs);
     return newFs;
   }
 }

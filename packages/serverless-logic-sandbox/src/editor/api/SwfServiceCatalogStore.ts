@@ -25,9 +25,18 @@ import { SearchedArtifact } from "@rhoas/registry-instance-sdk";
 import axios from "axios";
 import { OpenAPIV3 } from "openapi-types";
 import * as yaml from "yaml";
+import { VirtualServiceRegistryContextType } from "../../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContext";
 import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/ServiceAccountConfig";
 import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
+import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../workspace/services/virtualServiceRegistry/models/VirtualServiceRegistry";
+
+export const VIRTUAL_SERVICE_REGISTRY_NAME = "Sandbox";
+
+type ArtifactWithContent = {
+  metadata: SearchedArtifact;
+  content: OpenAPIV3.Document<{}>;
+};
 
 export class SwfServiceCatalogStore {
   private readonly PROXY_ENDPOINT = `${this.configs.extendedServicesConfig.buildUrl()}/devsandbox`;
@@ -47,6 +56,9 @@ export class SwfServiceCatalogStore {
 
   private storedServices: SwfServiceCatalogService[] = [];
 
+  public virtualServiceRegistry?: VirtualServiceRegistryContextType;
+  public currentWorkspaceId?: string;
+
   constructor(
     private readonly configs: {
       serviceAccount: ServiceAccountSettingsConfig;
@@ -59,50 +71,120 @@ export class SwfServiceCatalogStore {
     return this.storedServices;
   }
 
+  public setVirtualServiceRegistry(virtualServiceRegistry: VirtualServiceRegistryContextType, workspaceId: string) {
+    this.virtualServiceRegistry = virtualServiceRegistry;
+    this.currentWorkspaceId = workspaceId;
+  }
+
   public async refresh() {
-    const artifacts: SearchedArtifact[] = (
-      await axios.get(this.PROXY_ENDPOINT, {
-        headers: {
-          ...this.COMMON_HEADERS,
-          "Target-Url": this.SERVICE_REGISTRY_API.getArtifactsUrl(),
-        },
-      })
-    ).data.artifacts;
+    let artifacts: SearchedArtifact[] = [];
+    let artifactsWithContent: ArtifactWithContent[] = [];
 
-    const artifactsWithContent = await Promise.all(
-      artifacts
-        .filter((artifact) => artifact.type === "OPENAPI")
-        .map(async (artifactMetadata) => ({
-          metadata: artifactMetadata,
-          content: (
-            await axios.get(this.PROXY_ENDPOINT, {
-              headers: {
-                ...this.COMMON_HEADERS,
-                "Target-Url": this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifactMetadata),
-              },
-            })
-          ).data as OpenAPIV3.Document,
-        }))
-    );
+    try {
+      artifacts = (
+        await axios.get(this.PROXY_ENDPOINT, {
+          headers: {
+            ...this.COMMON_HEADERS,
+            "Target-Url": this.SERVICE_REGISTRY_API.getArtifactsUrl(),
+          },
+        })
+      ).data.artifacts;
+    } catch (e) {
+      console.error(e);
+    }
 
-    this.storedServices = artifactsWithContent.map((artifact) => {
-      const swfFunctions = extractFunctions(artifact.content, {
-        type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
-        registry: this.configs.serviceRegistry.name,
-        serviceId: artifact.metadata.id,
-      });
+    if (artifacts) {
+      artifactsWithContent = await Promise.all(
+        artifacts
+          .filter((artifact) => artifact.type === "OPENAPI")
+          .map(async (artifactMetadata) => ({
+            metadata: artifactMetadata,
+            content: (
+              await axios.get(this.PROXY_ENDPOINT, {
+                headers: {
+                  ...this.COMMON_HEADERS,
+                  "Target-Url": this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifactMetadata),
+                },
+              })
+            ).data as OpenAPIV3.Document,
+          }))
+      );
+    }
+
+    let virtualRegistry: ArtifactWithContent[] = [];
+
+    if (this.virtualServiceRegistry && this.currentWorkspaceId) {
+      const virtualServiceRegistryGroups = await this.virtualServiceRegistry.vsrGroupService.listAll();
+      const virtualServiceRegistryGroupsFiles = await Promise.all(
+        virtualServiceRegistryGroups.map(async (registryGroup) => {
+          return {
+            registryGroup,
+            files: await this.virtualServiceRegistry!.getFiles({
+              fs: await this.virtualServiceRegistry!.vsrFsService.getFs(registryGroup.groupId),
+              groupId: registryGroup.groupId,
+            }),
+          };
+        })
+      );
+
+      const virtualServiceRegistryGroupsFilesWithContent = await Promise.all(
+        virtualServiceRegistryGroupsFiles.map(async (groupFiles) => {
+          return await Promise.all(
+            groupFiles.files.map(async (file) => ({
+              metadata: {
+                groupId: groupFiles.registryGroup.groupId,
+                id: file.relativePath,
+                type: "OPENAPI",
+              } as SearchedArtifact,
+              content: yaml.parse(await file.getFileContentsAsString()) as OpenAPIV3.Document,
+            }))
+          );
+        })
+      );
+
+      virtualRegistry = virtualServiceRegistryGroupsFilesWithContent
+        .flat()
+        .filter((file) => file.content && file.metadata.groupId !== this.currentWorkspaceId);
+    }
+
+    this.storedServices = artifactsWithContent.concat(virtualRegistry).map((artifact) => {
+      const serviceId = artifact.metadata.id;
+
+      const isVirtualServiceRegistry = serviceId.startsWith(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX);
+
+      const swfFunctions = extractFunctions(
+        artifact.content,
+        isVirtualServiceRegistry
+          ? {
+              type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+              registry: VIRTUAL_SERVICE_REGISTRY_NAME,
+              serviceId: serviceId.replace(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX, ""),
+            }
+          : {
+              type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+              registry: this.configs.serviceRegistry.name,
+              serviceId,
+            }
+      );
 
       return {
         name: artifact.metadata.id,
         rawContent: yaml.stringify(artifact.content),
         type: SwfServiceCatalogServiceType.rest,
         functions: swfFunctions,
-        source: {
-          registry: this.configs.serviceRegistry.name,
-          url: this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata),
-          type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
-          id: artifact.metadata.id,
-        },
+        source: isVirtualServiceRegistry
+          ? {
+              url: serviceId,
+              id: serviceId,
+              registry: VIRTUAL_SERVICE_REGISTRY_NAME,
+              type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+            }
+          : {
+              url: this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata),
+              id: serviceId,
+              registry: this.configs.serviceRegistry.name,
+              type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+            },
       };
     });
   }

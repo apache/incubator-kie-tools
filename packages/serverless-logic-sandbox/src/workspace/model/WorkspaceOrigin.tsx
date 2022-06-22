@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../commonServices/GitService";
 
 export enum WorkspaceKind {
   GITHUB_GIST = "GITHUB_GIST",

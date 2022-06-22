@@ -1147,11 +1147,13 @@ importers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/jitexecutor-native": 1.12.0-Final
+      cross-env: ^7.0.3
     dependencies:
       "@kie-tools/jitexecutor-native": 1.12.0-Final
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      cross-env: 7.0.3
 
   packages/feel-input-component:
     specifiers:
@@ -9360,6 +9362,15 @@ packages:
       cross-spawn: 6.0.5
     dev: true
 
+  /cross-env/7.0.3:
+    resolution:
+      { integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw== }
+    engines: { node: ">=10.14", npm: ">=6", yarn: ">=1" }
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+    dev: true
+
   /cross-fetch/3.1.5:
     resolution:
       { integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw== }
@@ -16362,6 +16373,7 @@ packages:
     resolution:
       { integrity: sha512-iWjXZvmboq0ja1pUGULQBexmxq8CV4xBhX7VDOTbL7ZR4FOowwY/VOtRxBN/yKxmdGoIp4j5ysNT4u3S2pDQ3Q== }
     hasBin: true
+    requiresBuild: true
     dev: true
     optional: true
 

@@ -32,7 +32,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../settings/github/Hooks";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/commonServices/GitService";
 import { dirname, join } from "path";
 import { useHistory } from "react-router";
 import { useRoutes } from "../navigation/Hooks";
@@ -101,7 +101,7 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.descriptor.workspaceId);
+      const fs = await workspaces.fsService.getFs(props.workspace.descriptor.workspaceId);
       const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.descriptor.workspaceId });
 
       let currentFileAfterMoving: WorkspaceFile | undefined;

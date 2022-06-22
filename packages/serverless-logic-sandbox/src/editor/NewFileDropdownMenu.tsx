@@ -73,7 +73,7 @@ export function NewFileDropdownMenu(props: {
   const addEmptyFile = useCallback(
     async (extension: SupportedFileExtensions) => {
       const file = await workspaces.addEmptyFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+        fs: await workspaces.fsService.getFs(props.workspaceId),
         workspaceId: props.workspaceId,
         destinationDirRelativePath: props.destinationDirPath,
         extension,
@@ -118,7 +118,7 @@ export function NewFileDropdownMenu(props: {
         const content = await response.text();
 
         const file = await workspaces.addFile({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+          fs: await workspaces.fsService.getFs(props.workspaceId),
           workspaceId: props.workspaceId,
           name,
           extension,
@@ -182,7 +182,7 @@ export function NewFileDropdownMenu(props: {
           const extension = resolveExtension(file.path);
           const name = decodeURIComponent(basename(file.path, `.${extension}`));
           return workspaces.addFile({
-            fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
+            fs: await workspaces.fsService.getFs(props.workspaceId),
             workspaceId: props.workspaceId,
             name: name,
             extension: extension,
