@@ -34,6 +34,7 @@ import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 import { TextEdit } from "vscode";
 import Correlation from "./helpers/bpmn/Correlation";
+import ProcessVariablesWidgetHelper from "./helpers/bpmn/ProcessVariablesWidgetHelper";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
@@ -417,6 +418,33 @@ describe("Editors are loading properly", () => {
     await propertiesPanel.assertPropertyValue("Property", "CK Name 3 - CP Name 4", "select");
     await propertiesPanel.assertPropertyValue("Message Expression Type", "java.util.ArrayList<String>", "div/select");
     await propertiesPanel.assertPropertyValue("Data Expression Type", "java.util.ArrayList<String>", "div/select");
+
+    await webview.switchBack();
+  });
+
+  it("Opens ProcessWithGenerics and diplays the generic types", async function () {
+    this.timeout(40000);
+    webview = await testHelper.openFileFromSidebar("ProcessWithGenerics.bpmn");
+    await testHelper.switchWebviewToFrame(webview);
+    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+    const processVariablesWidget = await propertiesPanel.getProcessVariablesHelper();
+
+    await processVariablesWidget.assertProcessVariablesContain("map_generic_var", "java.util.Map<K,V>");
+    await processVariablesWidget.assertProcessVariablesContain("list_generic_var", "java.util.List<String>");
+    await processVariablesWidget.assertProcessVariablesContain(
+      "map_list_generic",
+      "java.util.Map<java.util.List<String>,java.util.List<String>>"
+    );
+    await processVariablesWidget.assertProcessVariablesSize(3);
+
+    const explorer = await bpmnEditorTester.openDiagramExplorer();
+    await explorer.selectDiagramNode("Task");
+    propertiesPanel = await bpmnEditorTester.openDiagramProperties();
+
+    const dataAssignmentsModalHelper = await propertiesPanel.getDataAssignmentsModalHelper();
+    await dataAssignmentsModalHelper.assertDataInputContain("m_input", "java.util.List<String>", "map_generic_var");
 
     await webview.switchBack();
   });
