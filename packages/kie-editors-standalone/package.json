@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.0.14-cg",
+  "version": "0.0.18-cg",
   "description": "",
   "license": "Apache-2.0",
   "files": [
