@@ -32,7 +32,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflowJson } from "../extension";
+import { isSandboxAsset, isServerlessWorkflow, isServerlessWorkflowJson } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -300,6 +300,12 @@ export function EditorPage(props: Props) {
     [settingsDispatch.serviceRegistry.catalogStore]
   );
 
+  useEffect(() => {
+    if (embeddedEditorFile && !isServerlessWorkflow(embeddedEditorFile.path || "") && !isReady) {
+      setReady(true);
+    }
+  }, [embeddedEditorFile, isReady]);
+
   const apiImpl = useMemo(() => {
     if (!kogitoEditorChannelApiImpl || !swfJsonLanguageService || !swfServiceCatalogChannelApiImpl) {
       return;
@@ -370,7 +376,7 @@ export function EditorPage(props: Props) {
                   <div style={{ height: "100%" }}>
                     {!isEditorReady && <LoadingSpinner />}
                     <div style={{ display: isEditorReady ? "inline" : "none" }}>
-                      {embeddedEditorFile && apiImpl && (
+                      {embeddedEditorFile && (
                         <EmbeddedEditor
                           /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
                            * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
