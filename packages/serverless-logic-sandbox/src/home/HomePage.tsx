@@ -441,7 +441,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     </FlexItem>
                     <FlexItem>
                       <Text component={TextVariants.p}>
-                        {`${editableFiles?.length} of ${workspace.files.length} editable file(s)`}
+                        {`${editableFiles?.length} editable files(s) in ${workspace.files.length} file(s)`}
                       </Text>
                     </FlexItem>
                   </Flex>

@@ -423,7 +423,7 @@ export function WorkspacesMenuItems(props: {
                       itemId={descriptor.workspaceId}
                       description={`${
                         workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isSandboxAsset(f.relativePath)).length
-                      } of ${workspaceFiles.get(descriptor.workspaceId)!.length} editable files`}
+                      } editable file(s) in ${workspaceFiles.get(descriptor.workspaceId)!.length} file(s)`}
                       direction={"down"}
                       drilldownMenu={
                         <DrilldownMenu id={`dd${descriptor.workspaceId}`}>
