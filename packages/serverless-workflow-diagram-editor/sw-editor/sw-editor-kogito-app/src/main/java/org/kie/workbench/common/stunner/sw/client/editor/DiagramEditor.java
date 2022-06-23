@@ -102,22 +102,6 @@ public class DiagramEditor {
         this.jsCanvas = null;
     }
 
-    public void onStartup(final PlaceRequest place) {
-        stunnerEditor.setReadOnly(true);
-    }
-
-    public void onOpen() {
-    }
-
-    public void onClose() {
-        close();
-    }
-
-    void close() {
-        stunnerEditor.close();
-        jsCanvas.close();
-    }
-
     public IsWidget asWidget() {
         return stunnerEditor.getView();
     }
@@ -146,24 +130,59 @@ public class DiagramEditor {
         return updateContent(path, value);
     }
 
-    @SuppressWarnings("all")
-    private boolean isSameWorkflow(final String value) {
-        Boolean found = false;
-        RegExpResult execs = jsRegExp.exec(value);
+    public Promise<Void> setNewContent(final String path, final String value) {
+        return promises.create((success, failure) -> {
+            stunnerEditor.clearAlerts();
+            diagramService.transform(path,
+                                     value,
+                                     new ServiceCallback<Diagram>() {
+                                         @Override
+                                         public void onSuccess(final Diagram diagram) {
+                                             stunnerEditor
+                                                     .close()
+                                                     .open(diagram, new SessionPresenter.SessionPresenterCallback() {
+                                                         @Override
+                                                         public void onSuccess() {
+                                                             onDiagramOpenSuccess();
+                                                             scaleToFitWorkflow(stunnerEditor);
+                                                             success.onInvoke((Void) null);
+                                                         }
 
-        if (null != execs || execs.length > 0) {
-            ViewerSession session = (ViewerSession) stunnerEditor.getSession();
-            AbstractCanvasHandler canvasHandler = session.getCanvasHandler();
-            Diagram oldDiagram = canvasHandler.getDiagram();
+                                                         @Override
+                                                         public void onError(ClientRuntimeError error) {
+                                                             stunnerEditor.handleError(error);
+                                                             DomGlobal.console.error(error);
+                                                             success.onInvoke((Void) null);
+                                                         }
 
-            if (execs.getAt(2).equals(oldDiagram.getGraph().getUUID())) {
-                found = true;
-            }
-        }
+                                                         @Override
+                                                         public void afterCanvasInitialized() {
+                                                             WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
+                                                             ScrollableLienzoPanel lienzoPanel = (ScrollableLienzoPanel) canvas.getView().getLienzoPanel();
 
-        execs = null;
+                                                             Layer bgLayer = new Layer() {
+                                                                 @Override
+                                                                 public Layer draw(Context2D context) {
+                                                                     super.draw(context);
+                                                                     context.setFillColor("#f2f2f2");
+                                                                     context.fillRect(0, 0, getWidth(), getHeight());
 
-        return found;
+                                                                     return this;
+                                                                 }
+                                                             };
+                                                             lienzoPanel.setBackgroundLayer(bgLayer);
+                                                         }
+                                                     });
+                                         }
+
+                                         @Override
+                                         public void onError(final ClientRuntimeError error) {
+                                             handleParseErrors(error, stunnerEditor);
+                                             DomGlobal.console.error(error);
+                                             failure.onInvoke(error);
+                                         }
+                                     });
+        });
     }
 
     public Promise<Void> updateContent(final String path, final String value) {
@@ -175,20 +194,38 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onSuccess(final Diagram diagram) {
-                                             updateDiagram(diagram);
                                              success.onInvoke((Void) null);
+                                             updateDiagram(diagram);
                                          }
 
                                          @Override
                                          public void onError(final ClientRuntimeError error) {
-                                             stunnerEditor.handleError(new ClientRuntimeError(new DiagramParsingException()));
+                                             handleParseErrors(error, stunnerEditor);
+                                             DomGlobal.console.error(error);
+                                             success.onInvoke((Void) null);
                                          }
                                      });
         });
     }
 
+    public void onStartup(final PlaceRequest place) {
+        stunnerEditor.setReadOnly(true);
+    }
+
+    public void onOpen() {
+    }
+
+    public void onClose() {
+        close();
+    }
+
+    void close() {
+        stunnerEditor.close();
+        jsCanvas.close();
+    }
+
     @SuppressWarnings("all")
-    public void updateDiagram(Diagram diagram) {
+    void updateDiagram(Diagram diagram) {
         ViewerSession session = (ViewerSession) stunnerEditor.getSession();
         AbstractCanvasHandler canvasHandler = session.getCanvasHandler();
         Diagram currentDiagram = canvasHandler.getDiagram();
@@ -233,86 +270,29 @@ public class DiagramEditor {
     }
 
     @SuppressWarnings("all")
-    public static void centerFirstSelectedNode(StunnerEditor stunnerEditor, JsCanvas jsCanvas) {
-        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
-        SelectionControl<AbstractCanvasHandler, Element> selectionControl = session.getSelectionControl();
+    private boolean isSameWorkflow(final String value) {
+        Boolean found = false;
 
-        if (!selectionControl.getSelectedItems().isEmpty()) {
-            String uuid = selectionControl.getSelectedItems().iterator().next();
-            if (!jsCanvas.isShapeVisible(uuid)) {
-                jsCanvas.centerNode(uuid);
+        try {
+            RegExpResult execs = jsRegExp.exec(value);
+
+            if (execs != null || execs.length > 0) {
+                ViewerSession session = (ViewerSession) stunnerEditor.getSession();
+                AbstractCanvasHandler canvasHandler = session.getCanvasHandler();
+                Diagram oldDiagram = canvasHandler.getDiagram();
+
+                if (execs.getAt(2).equals(oldDiagram.getGraph().getUUID())) {
+                    found = true;
+                }
             }
+
+            execs = null;
+        } catch (Exception ex) {
+            stunnerEditor.handleError(new ClientRuntimeError(ex));
+            DomGlobal.console.error(ex);
         }
-    }
 
-    public Promise<Void> setNewContent(final String path, final String value) {
-        return promises.create((success, failure) -> {
-            stunnerEditor.clearAlerts();
-            diagramService.transform(path,
-                                     value,
-                                     new ServiceCallback<Diagram>() {
-                                         @Override
-                                         public void onSuccess(final Diagram diagram) {
-                                             stunnerEditor
-                                                     .close()
-                                                     .open(diagram, new SessionPresenter.SessionPresenterCallback() {
-                                                         @Override
-                                                         public void onSuccess() {
-                                                             onDiagramOpenSuccess();
-                                                             scaleToFitWorkflow(stunnerEditor);
-                                                             success.onInvoke((Void) null);
-                                                         }
-
-                                                         @Override
-                                                         public void onError(ClientRuntimeError error) {
-                                                             stunnerEditor.handleError(error);
-                                                         }
-
-                                                         @Override
-                                                         public void afterCanvasInitialized() {
-                                                             WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
-                                                             ScrollableLienzoPanel lienzoPanel = (ScrollableLienzoPanel) canvas.getView().getLienzoPanel();
-
-                                                             Layer bgLayer = new Layer() {
-                                                                 @Override
-                                                                 public Layer draw(Context2D context) {
-                                                                     super.draw(context);
-                                                                     context.setFillColor("#f2f2f2");
-                                                                     context.fillRect(0, 0, getWidth(), getHeight());
-
-                                                                     return this;
-                                                                 }
-                                                             };
-                                                             lienzoPanel.setBackgroundLayer(bgLayer);
-                                                         }
-                                                     });
-                                         }
-
-                                         @Override
-                                         public void onError(final ClientRuntimeError error) {
-                                             stunnerEditor.handleError(error);
-                                         }
-                                     });
-        });
-    }
-
-    static void scaleToFitWorkflow(StunnerEditor stunnerEditor) {
-        WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
-        ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
-        lienzoPanel.setPostResizeCallback((panel -> {
-            PanelTransformUtils.scaleToFitPanel(lienzoPanel);
-            lienzoPanel.setPostResizeCallback(null);
-        }));
-    }
-
-    private void onDiagramOpenSuccess() {
-        Diagram diagram = stunnerEditor.getCanvasHandler().getDiagram();
-        Metadata metadata = diagram.getMetadata();
-        String title = metadata.getTitle();
-        Path path = PathFactory.newPath(title, "/" + title + ".sw");
-        metadata.setPath(path);
-        incrementalMarshaller.run(diagramService.getMarshaller());
-        initJsTypes();
+        return found;
     }
 
     @SuppressWarnings("all")
@@ -331,5 +311,45 @@ public class DiagramEditor {
 
             WindowJSType.linkCanvasJS(jsCanvas);
         }
+    }
+
+    private void handleParseErrors(ClientRuntimeError error, StunnerEditor stunnerEditor) {
+        final DiagramParsingException diagramParsingException =
+                new DiagramParsingException(error.getThrowable());
+        final ClientRuntimeError clientRuntimeError =
+                new ClientRuntimeError(error.getMessage(), diagramParsingException);
+        stunnerEditor.handleError(clientRuntimeError);
+    }
+
+    private void onDiagramOpenSuccess() {
+        Diagram diagram = stunnerEditor.getCanvasHandler().getDiagram();
+        Metadata metadata = diagram.getMetadata();
+        String title = metadata.getTitle();
+        Path path = PathFactory.newPath(title, "/" + title + ".sw");
+        metadata.setPath(path);
+        incrementalMarshaller.run(diagramService.getMarshaller());
+        initJsTypes();
+    }
+
+    @SuppressWarnings("all")
+    static void centerFirstSelectedNode(StunnerEditor stunnerEditor, JsCanvas jsCanvas) {
+        ViewerSession session = (ViewerSession) stunnerEditor.getSession();
+        SelectionControl<AbstractCanvasHandler, Element> selectionControl = session.getSelectionControl();
+
+        if (!selectionControl.getSelectedItems().isEmpty()) {
+            String uuid = selectionControl.getSelectedItems().iterator().next();
+            if (!jsCanvas.isShapeVisible(uuid)) {
+                jsCanvas.centerNode(uuid);
+            }
+        }
+    }
+
+    static void scaleToFitWorkflow(StunnerEditor stunnerEditor) {
+        WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
+        ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
+        lienzoPanel.setPostResizeCallback((panel -> {
+            PanelTransformUtils.scaleToFitPanel(lienzoPanel);
+            lienzoPanel.setPostResizeCallback(null);
+        }));
     }
 }

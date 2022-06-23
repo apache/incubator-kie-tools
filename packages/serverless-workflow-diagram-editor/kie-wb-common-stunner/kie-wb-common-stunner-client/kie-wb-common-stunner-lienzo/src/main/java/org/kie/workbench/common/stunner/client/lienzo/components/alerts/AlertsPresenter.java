@@ -62,7 +62,7 @@ public class AlertsPresenter {
 
     private Timer hideTimer;
     private boolean alertsInit = true;
-    private boolean canShowNotification = true;
+    private boolean notificationOpen = true;
 
     private List<String> infoList;
     private List<String> warningsList;
@@ -116,8 +116,8 @@ public class AlertsPresenter {
         settings.setAllowDismiss(true);
         settings.setDelay(NOTIFY_DELAY);
         settings.setAnimation(Animation.NO_ANIMATION, Animation.FADE_OUT);
-        settings.setShownHandler(() -> canShowNotification = false);
-        settings.setClosedHandler(() -> canShowNotification = true);
+        settings.setShownHandler(() -> notificationOpen = false);
+        settings.setClosedHandler(() -> notificationOpen = true);
 
         if (panel.getView() instanceof ScrollablePanel) {
             final ScrollablePanel scrollablePanel = (ScrollablePanel) panel.getView();
@@ -126,7 +126,6 @@ public class AlertsPresenter {
                                                                                 scrollablePanel.getHighPx()));
         }
 
-        reposition();
         updateAlerts();
 
         alertsMouseOverEventListener = mouseOverEvent -> cancelHide();
@@ -170,8 +169,10 @@ public class AlertsPresenter {
         if (alertsInit) {
             alertsInit = false;
         } else {
-            cancelHide();
-            floatingView.show();
+            if (notificationOpen) {
+                cancelHide();
+                floatingView.show();
+            }
         }
         return this;
     }
@@ -214,8 +215,8 @@ public class AlertsPresenter {
         final LienzoPanel panel = getPanel();
         final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(panel.getView().getElement());
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
-        final double x = absoluteLeft + 10;
-        final double y = absoluteTop + height - 50;
+        final double x = absoluteLeft + width - alerts.asWidget().getElement().getClientWidth() - 50;
+        final double y = absoluteTop + 50;
         return at(x, y);
     }
 
@@ -230,10 +231,12 @@ public class AlertsPresenter {
         alerts.setErrors(errorsList.size());
         show();
         scheduleHide(ALERT_LONG_DELAY);
+        reposition();
     }
 
     private void showInfos() {
-        if (canShowNotification) {
+        if (notificationOpen) {
+            hide();
             settings.setType(kieNotificationCssClass(NotifyType.SUCCESS));
             Notify.notify(clientTranslationService.getNotNullValue(CoreTranslationMessages.INFORMATION),
                           buildHtmlEscapedText(infoList),
@@ -243,7 +246,9 @@ public class AlertsPresenter {
     }
 
     private void showWarnings() {
-        if (canShowNotification) {
+        if (notificationOpen) {
+            hide();
+
             settings.setType(kieNotificationCssClass(NotifyType.WARNING));
             Notify.notify(clientTranslationService.getNotNullValue(CoreTranslationMessages.WARNING),
                           buildHtmlEscapedText(warningsList),
@@ -253,7 +258,8 @@ public class AlertsPresenter {
     }
 
     private void showErrors() {
-        if (canShowNotification) {
+        if (notificationOpen) {
+            hide();
             settings.setType(kieNotificationCssClass(NotifyType.DANGER));
             Notify.notify(clientTranslationService.getNotNullValue(CoreTranslationMessages.ERROR),
                           buildHtmlEscapedText(errorsList),

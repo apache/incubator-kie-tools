@@ -34,6 +34,10 @@ public class AlertsView
         extends Composite
         implements Alerts.View {
 
+    private final String HIDDEN = "hidden";
+    private final String VISIBLE = "visible";
+    private final String VISIBILITY = "visibility";
+
     @Inject
     @DataField
     Button infoButton;
@@ -81,6 +85,15 @@ public class AlertsView
     }
 
     @Override
+    public void setInfoVisible(boolean visible) {
+        if (visible) {
+            infoButton.getStyle().setProperty(VISIBILITY, VISIBLE);
+        } else {
+            infoButton.getStyle().setProperty(VISIBILITY, HIDDEN);
+        }
+    }
+
+    @Override
     public void setWarningsText(String text) {
         warningText.setTextContent(text);
     }
@@ -96,6 +109,15 @@ public class AlertsView
     }
 
     @Override
+    public void setWarningsVisible(boolean visible) {
+        if (visible) {
+            warningButton.getStyle().setProperty(VISIBILITY, VISIBLE);
+        } else {
+            warningButton.getStyle().setProperty(VISIBILITY, HIDDEN);
+        }
+    }
+
+    @Override
     public void setErrorsText(String text) {
         errorText.setTextContent(text);
     }
@@ -108,6 +130,15 @@ public class AlertsView
     @Override
     public void setErrorsEnabled(boolean enabled) {
         errorButton.setDisabled(!enabled);
+    }
+
+    @Override
+    public void setErrorsVisible(boolean visible) {
+        if (visible) {
+            errorButton.getStyle().setProperty(VISIBILITY, VISIBLE);
+        } else {
+            errorButton.getStyle().setProperty(VISIBILITY, HIDDEN);
+        }
     }
 
     @EventHandler("infoButton")

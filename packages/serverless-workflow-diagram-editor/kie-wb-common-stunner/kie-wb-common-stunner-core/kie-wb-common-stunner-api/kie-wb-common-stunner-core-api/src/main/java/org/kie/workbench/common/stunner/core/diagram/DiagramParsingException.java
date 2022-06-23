@@ -36,6 +36,10 @@ public class DiagramParsingException extends RuntimeException {
         this.xml = xml;
     }
 
+    public DiagramParsingException(final Throwable throwable) {
+        super(throwable);
+    }
+
     public Metadata getMetadata() {
         return metadata;
     }

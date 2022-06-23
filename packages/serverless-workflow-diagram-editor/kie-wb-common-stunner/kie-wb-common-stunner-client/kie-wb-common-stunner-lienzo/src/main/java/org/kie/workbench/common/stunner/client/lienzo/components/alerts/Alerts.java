@@ -47,17 +47,23 @@ public class Alerts implements IsWidget {
 
         void setInfoEnabled(boolean enabled);
 
+        void setInfoVisible(boolean visible);
+
         void setWarningsText(String text);
 
         void setWarningsTooltip(String text);
 
         void setWarningsEnabled(boolean enabled);
 
+        void setWarningsVisible(boolean visible);
+
         void setErrorsText(String text);
 
         void setErrorsTooltip(String text);
 
         void setErrorsEnabled(boolean enabled);
+
+        void setErrorsVisible(boolean visible);
     }
 
     private static final String EMPTY = "";
@@ -112,6 +118,7 @@ public class Alerts implements IsWidget {
             view.setInfoTooltip(qty + SPACE + clientTranslationService.getNotNullValue(INFORMATIONS));
         }
         view.setInfoEnabled(informationQty > 0);
+        view.setInfoVisible(informationQty > 0);
     }
 
     public void setWarnings(int warningsQty) {
@@ -127,6 +134,7 @@ public class Alerts implements IsWidget {
             view.setWarningsTooltip(qty + SPACE + clientTranslationService.getNotNullValue(WARNINGS));
         }
         view.setWarningsEnabled(warningsQty > 0);
+        view.setWarningsVisible(warningsQty > 0);
     }
 
     public void setErrors(int errorsQty) {
@@ -142,6 +150,7 @@ public class Alerts implements IsWidget {
             view.setErrorsTooltip(qty + SPACE + clientTranslationService.getNotNullValue(ERRORS));
         }
         view.setErrorsEnabled(errorsQty > 0);
+        view.setErrorsVisible(errorsQty > 0);
     }
 
     public Alerts onShowInfos(final Command onShowInfos) {

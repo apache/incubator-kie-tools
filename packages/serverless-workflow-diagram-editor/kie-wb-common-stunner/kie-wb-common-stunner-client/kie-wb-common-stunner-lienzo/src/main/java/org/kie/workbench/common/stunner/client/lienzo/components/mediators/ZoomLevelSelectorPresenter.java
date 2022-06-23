@@ -102,9 +102,11 @@ public class ZoomLevelSelectorPresenter {
                 hide();
             }
         };
+
         this.canvas = canvas;
         final Layer layer = getLayer();
         final LienzoPanel panel = getPanel();
+
         selector
                 .setText(parseLevel(1))
                 .dropUp()
@@ -128,8 +130,6 @@ public class ZoomLevelSelectorPresenter {
                     scrollablePanel.addResizeEventListener(evt -> onPanelResize(scrollablePanel.getWidePx(),
                                                                                 scrollablePanel.getHighPx()));
         }
-
-        reposition();
 
         transformChangedHandler = layer.getViewport().addViewportTransformChangedHandler(event -> onViewportTransformChanged());
 
@@ -166,6 +166,7 @@ public class ZoomLevelSelectorPresenter {
         } else {
             cancelHide();
             floatingView.show();
+            reposition();
         }
         return this;
     }
@@ -206,6 +207,7 @@ public class ZoomLevelSelectorPresenter {
     private void onViewportTransformChanged() {
         final double level = computeLevel(getLayer().getViewport());
         updateSelectorLevel(level);
+        reposition();
     }
 
     private void reposition() {
@@ -214,13 +216,14 @@ public class ZoomLevelSelectorPresenter {
                       panel.getView().getHighPx());
     }
 
-    private ZoomLevelSelectorPresenter onPanelResize(final double width,
-                                                     final double height) {
+    private ZoomLevelSelectorPresenter onPanelResize(final double width, final double height) {
         final LienzoPanel panel = getPanel();
         final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(panel.getView().getElement());
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
-        final double x = absoluteLeft + width - 174;
-        final double y = absoluteTop + height - 50;
+        final int zoomLevelSelectorWidth = selector.asWidget().getElement().getOffsetWidth();
+        final int zoomLevelSelectorHeight = selector.asWidget().getElement().getOffsetHeight();
+        final double x = absoluteLeft + width - zoomLevelSelectorWidth - 50;
+        final double y = absoluteTop + height - zoomLevelSelectorHeight - 50;
         return at(x, y);
     }
 
@@ -243,6 +246,7 @@ public class ZoomLevelSelectorPresenter {
             PanelTransformUtils.scaleToFitPanel(scrollablePanel);
             getLayer().batch();
         }
+        reposition();
     }
 
     private double setLevel(final double level) {
@@ -264,6 +268,7 @@ public class ZoomLevelSelectorPresenter {
 
     private void updateSelectorLevel(final double level) {
         selector.setText(parseLevel(level));
+        reposition();
     }
 
     private Layer getLayer() {

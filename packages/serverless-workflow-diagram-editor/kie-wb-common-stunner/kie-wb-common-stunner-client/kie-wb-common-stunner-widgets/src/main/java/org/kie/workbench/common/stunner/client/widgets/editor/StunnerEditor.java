@@ -16,12 +16,14 @@
 
 package org.kie.workbench.common.stunner.client.widgets.editor;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.user.client.ui.IsWidget;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionDiagramPresenter;
@@ -127,9 +129,9 @@ public class StunnerEditor {
             public void afterCanvasInitialized() {
                 ClientSession session = getSession();
                 if (isReadOnly) {
-                    alertsControl = ((ViewerSession)session).getAlertsControl();
+                    alertsControl = ((ViewerSession) session).getAlertsControl();
                 } else {
-                    alertsControl = ((EditorSession)session).getAlertsControl();
+                    alertsControl = ((EditorSession) session).getAlertsControl();
                 }
                 callback.afterCanvasInitialized();
             }
@@ -159,19 +161,29 @@ public class StunnerEditor {
     }
 
     public void handleError(final ClientRuntimeError error) {
-        final Throwable e = error.getThrowable();
-        final String message;
-        if (e instanceof DiagramParsingException) {
-            final DiagramParsingException dpe = (DiagramParsingException) e;
-            parsingExceptionProcessor.accept(dpe);
-            message = e.toString();
-        } else if (e instanceof DefinitionNotFoundException) {
-            final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) e;
-            message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
-                                                  dnfe.getDefinitionId());
+        final Throwable throwable = error.getThrowable();
+        String message;
+        if (throwable instanceof DiagramParsingException) {
+            final DiagramParsingException diagramParsingException = (DiagramParsingException) throwable;
+            parsingExceptionProcessor.accept(diagramParsingException);
+            JavaScriptException javaScriptException = (JavaScriptException) diagramParsingException.getCause();
+            if (javaScriptException != null) {
+                message = error.getMessage() + "\r\n";
+                message += javaScriptException.getLocalizedMessage();
+            } else {
+                final String title = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_PARSING);
+                message = buildErrorMessage(error, throwable, title);
+            }
+
+        } else if (throwable instanceof DefinitionNotFoundException) {
+            final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) throwable;
+            exceptionProcessor.accept(dnfe);
+            message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS) + "\r\n";
+            message += dnfe.getDefinitionId();
         } else {
             exceptionProcessor.accept(error.getThrowable());
-            message = error.getThrowable() != null ? error.getThrowable().getMessage() : error.getMessage();
+            final String title = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_GENERIC);
+            message = buildErrorMessage(error, throwable, title);
         }
 
         if ((diagramPresenter != null) &&
@@ -194,21 +206,12 @@ public class StunnerEditor {
         return this;
     }
 
-    @PreDestroy
-    public void destroy() {
-        close();
-    }
-
-    public boolean isReadOnly() {
-        return isReadOnly;
-    }
-
     public boolean isClosed() {
         return null == diagramPresenter;
     }
 
-    public ClientSession getSession() {
-        return (ClientSession) diagramPresenter.getInstance();
+    public boolean isReadOnly() {
+        return isReadOnly;
     }
 
     public CanvasHandler getCanvasHandler() {
@@ -221,6 +224,14 @@ public class StunnerEditor {
 
     public SessionDiagramPresenter getPresenter() {
         return diagramPresenter;
+    }
+
+    public ClientSession getSession() {
+        return (ClientSession) diagramPresenter.getInstance();
+    }
+
+    public IsWidget getView() {
+        return view;
     }
 
     public void addMessage(String message) {
@@ -247,7 +258,22 @@ public class StunnerEditor {
         }
     }
 
-    public IsWidget getView() {
-        return view;
+    private String buildErrorMessage(ClientRuntimeError error, Throwable throwable, String errorTitle) {
+        String message;
+        message = errorTitle + "\r\n";
+        if (throwable != null) {
+            message += throwable + "\r\n";
+            message += "\r\n";
+            message += translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_STACK_TRACE);
+            message += Arrays.toString(throwable.getStackTrace());
+        } else {
+            message += error.toString();
+        }
+        return message;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        close();
     }
 }

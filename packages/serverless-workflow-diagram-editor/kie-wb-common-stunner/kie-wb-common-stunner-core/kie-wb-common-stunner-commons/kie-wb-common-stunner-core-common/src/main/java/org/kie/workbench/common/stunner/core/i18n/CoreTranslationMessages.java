@@ -60,6 +60,9 @@ public class CoreTranslationMessages {
     public static final String ELEMENT = RULE_PREF + "element";
     public static final String VALIDATION_FAILED = RULE_PREF + "fail";
     public static final String MEDIATOR_PREVIEW = CLIENT_PREF + "mediator.zoomArea";
+    public static final String DIAGRAM_LOAD_FAIL_GENERIC = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.generic";
+    public static final String DIAGRAM_LOAD_FAIL_PARSING = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.parsing";
+    public static final String DIAGRAM_LOAD_FAIL_STACK_TRACE = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.stackTrace";
     public static final String DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.unsupported";
     public static final String COPY_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CopySelection";
     public static final String CUT_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CutSelection";
