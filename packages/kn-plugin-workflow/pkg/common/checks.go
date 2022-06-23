@@ -51,9 +51,9 @@ func checkJava() error {
 	}
 
 	if userJavaVersion < javaVersion {
-		fmt.Printf("WARNING: Please make sure you are using Java version %.2d or later", javaVersion)
+		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", javaVersion)
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
-		os.Exit(0)
+		os.Exit(1)
 	} else {
 		fmt.Println(" - Java version check.")
 	}
@@ -72,9 +72,9 @@ func checkMaven() error {
 	}
 
 	if major < mavenMajorVersion && minor < mavenMinorVersion {
-		fmt.Printf("WARNING: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
+		fmt.Printf("ERROR: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
-		os.Exit(0)
+		os.Exit(1)
 	} else {
 		fmt.Println(" - Maven version check.")
 	}
@@ -83,22 +83,17 @@ func checkMaven() error {
 }
 
 func CheckContainerRuntime() error {
-	fmt.Println("✅ Checking if container runtime is running...")
-	isDockerRunning := checkDocker()
-	if !isDockerRunning {
-		return fmt.Errorf("docker runtime was not found, please install it or if it's already installed ensure, it's running")
-	} else {
-		fmt.Println(" - Docker is running")
-	}
-	return nil
-}
-
-func checkDocker() bool {
+	fmt.Println("✅ Checking if Docker is available...")
 	dockerCheck := exec.Command("docker", "stats", "--no-stream")
 	if err := dockerCheck.Run(); err != nil {
-		return false
+		fmt.Println("ERROR: Docker not found.")
+		fmt.Println("Download from https://docs.docker.com/get-docker/")
+		fmt.Println("Or if it's already installed, check if it's running")
+		return fmt.Errorf("%w", err)
 	}
-	return true
+
+	fmt.Println(" - Docker is running")
+	return nil
 }
 
 func parseJavaVersion(version string) (int64, error) {
