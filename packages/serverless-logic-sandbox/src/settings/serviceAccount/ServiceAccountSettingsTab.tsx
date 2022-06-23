@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormGroup, FormAlert } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -27,6 +28,8 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
 
@@ -34,13 +37,22 @@ export function ServiceAccountSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceAccount.config);
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
 
-  const isStoredConfigValid = useMemo(
-    () => isServiceAccountConfigValid(settings.serviceAccount.config),
-    [settings.serviceAccount.config]
+  const isExtendedServicesRunning = useMemo(
+    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    [kieSandboxExtendedServices.status]
   );
 
-  const isCurrentConfigValid = useMemo(() => isServiceAccountConfigValid(config), [config]);
+  const isStoredConfigValid = useMemo(
+    () => isExtendedServicesRunning && isServiceAccountConfigValid(settings.serviceAccount.config),
+    [isExtendedServicesRunning, settings.serviceAccount.config]
+  );
+
+  const isCurrentConfigValid = useMemo(
+    () => isExtendedServicesRunning && isServiceAccountConfigValid(config),
+    [config, isExtendedServicesRunning]
+  );
 
   const onClearClientId = useCallback(() => setConfig({ ...config, clientId: "" }), [config]);
   const onClearClientSecret = useCallback(() => setConfig({ ...config, clientSecret: "" }), [config]);
@@ -102,6 +114,16 @@ export function ServiceAccountSettingsTab() {
         ) : (
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form>
+              {!isExtendedServicesRunning && (
+                <FormAlert>
+                  <Alert
+                    variant="danger"
+                    title={"Connect to KIE Sandbox Extended Services before configuring your Service Account"}
+                    aria-live="polite"
+                    isInline
+                  />
+                </FormAlert>
+              )}
               <TextContent>
                 <Text component={TextVariants.h3}>Service Account</Text>
               </TextContent>
@@ -141,7 +163,7 @@ export function ServiceAccountSettingsTab() {
                     aria-describedby="client-id-field-helper"
                     value={config.clientId}
                     onChange={onClientIdChanged}
-                    tabIndex={6}
+                    tabIndex={1}
                     data-testid="client-id-text-field"
                   />
                   <InputGroupText>
@@ -180,7 +202,7 @@ export function ServiceAccountSettingsTab() {
                     aria-describedby="client-secret-field-helper"
                     value={config.clientSecret}
                     onChange={onClientSecretChanged}
-                    tabIndex={7}
+                    tabIndex={2}
                     data-testid="client-secret-text-field"
                   />
                   <InputGroupText>

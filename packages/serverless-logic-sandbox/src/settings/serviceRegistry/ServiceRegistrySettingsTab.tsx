@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormGroup, FormAlert } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -27,6 +28,8 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import {
   EMPTY_CONFIG,
@@ -39,15 +42,28 @@ export function ServiceRegistrySettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.serviceRegistry.config);
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
 
-  const isStoredConfigValid = useMemo(
-    () => isServiceRegistryConfigValid(settings.serviceRegistry.config),
-    [settings.serviceRegistry.config]
+  const isExtendedServicesRunning = useMemo(
+    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    [kieSandboxExtendedServices.status]
   );
 
-  const isCurrentConfigValid = useMemo(() => isServiceRegistryConfigValid(config), [config]);
+  const isStoredConfigValid = useMemo(
+    () => isExtendedServicesRunning && isServiceRegistryConfigValid(settings.serviceRegistry.config),
+    [isExtendedServicesRunning, settings.serviceRegistry.config]
+  );
+
+  const isCurrentConfigValid = useMemo(
+    () => isExtendedServicesRunning && isServiceRegistryConfigValid(config),
+    [isExtendedServicesRunning, config]
+  );
+
+  const onClearName = useCallback(() => setConfig({ ...config, name: "" }), [config]);
 
   const onClearCoreRegistryApi = useCallback(() => setConfig({ ...config, coreRegistryApi: "" }), [config]);
+
+  const onNameChanged = useCallback((newValue: string) => setConfig({ ...config, name: newValue }), [config]);
 
   const onCoreRegistryApiChanged = useCallback(
     (newValue: string) => setConfig({ ...config, coreRegistryApi: newValue }),
@@ -80,6 +96,11 @@ export function ServiceRegistrySettingsTab() {
               </TextContent>
               <br />
               <TextContent>
+                <b>Service Registry Name: </b>
+                <i>{config.name}</i>
+              </TextContent>
+              <br />
+              <TextContent>
                 <b>Core Registry Api: </b>
                 <i>{config.coreRegistryApi}</i>
               </TextContent>
@@ -92,6 +113,16 @@ export function ServiceRegistrySettingsTab() {
         ) : (
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form>
+              {!isExtendedServicesRunning && (
+                <FormAlert>
+                  <Alert
+                    variant="danger"
+                    title={"Connect to KIE Sandbox Extended Services before configuring your Service Registry instance"}
+                    aria-live="polite"
+                    isInline
+                  />
+                </FormAlert>
+              )}
               <TextContent>
                 <Text component={TextVariants.h3}>Service Registry</Text>
               </TextContent>
@@ -102,6 +133,45 @@ export function ServiceRegistrySettingsTab() {
                   with anyone.
                 </Text>
               </TextContent>
+              <FormGroup
+                label={"Name"}
+                labelIcon={
+                  <Popover bodyContent={"Name to identify your Service Registry instance across the Sandbox."}>
+                    <button
+                      type="button"
+                      aria-label="More info for name field"
+                      onClick={(e) => e.preventDefault()}
+                      aria-describedby="name-field"
+                      className="pf-c-form__group-label-help"
+                    >
+                      <HelpIcon noVerticalAlign />
+                    </button>
+                  </Popover>
+                }
+                isRequired
+                fieldId="name-field"
+              >
+                <InputGroup className="pf-u-mt-sm">
+                  <TextInput
+                    autoComplete={"off"}
+                    isRequired
+                    type="text"
+                    id="name-field"
+                    name="name-field"
+                    aria-label="Name field"
+                    aria-describedby="name-field-helper"
+                    value={config.name}
+                    onChange={onNameChanged}
+                    tabIndex={1}
+                    data-testid="name-text-field"
+                  />
+                  <InputGroupText>
+                    <Button isSmall variant="plain" aria-label="Clear name button" onClick={onClearName}>
+                      <TimesIcon />
+                    </Button>
+                  </InputGroupText>
+                </InputGroup>
+              </FormGroup>
               <FormGroup
                 label={"Core Registry API"}
                 labelIcon={
@@ -131,14 +201,14 @@ export function ServiceRegistrySettingsTab() {
                     aria-describedby="core-registry-api-field-helper"
                     value={config.coreRegistryApi}
                     onChange={onCoreRegistryApiChanged}
-                    tabIndex={6}
+                    tabIndex={2}
                     data-testid="core-registry-api-text-field"
                   />
                   <InputGroupText>
                     <Button
                       isSmall
                       variant="plain"
-                      aria-label="Clear client id button"
+                      aria-label="Clear core registry api button"
                       onClick={onClearCoreRegistryApi}
                     >
                       <TimesIcon />

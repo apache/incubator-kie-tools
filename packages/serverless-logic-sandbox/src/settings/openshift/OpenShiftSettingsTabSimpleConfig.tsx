@@ -133,56 +133,47 @@ export function OpenShiftSettingsTabSimpleConfig() {
     <>
       <Form>
         {kieSandboxExtendedServices.status !== KieSandboxExtendedServicesStatus.RUNNING && (
-          <>
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
-                aria-live="polite"
-                isInline
-              />
-            </FormAlert>
-          </>
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={"Connect to KIE Sandbox Extended Services before configuring your OpenShift instance"}
+              aria-live="polite"
+              isInline
+            />
+          </FormAlert>
         )}
         {isConfigValidated === FormValiationOptions.INVALID && (
-          <>
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={i18n.openshift.configModal.validationError}
-                aria-live="polite"
-                isInline
-                data-testid="alert-validation-error"
-              />
-            </FormAlert>
-          </>
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={i18n.openshift.configModal.validationError}
+              aria-live="polite"
+              isInline
+              data-testid="alert-validation-error"
+            />
+          </FormAlert>
         )}
         {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
-          <>
-            {" "}
-            <FormAlert>
-              <Alert
-                variant="danger"
-                title={i18n.openshift.configModal.connectionError}
-                aria-live="polite"
-                isInline
-                data-testid="alert-connection-error"
-              />
-            </FormAlert>
-          </>
+          <FormAlert>
+            <Alert
+              variant="danger"
+              title={i18n.openshift.configModal.connectionError}
+              aria-live="polite"
+              isInline
+              data-testid="alert-connection-error"
+            />
+          </FormAlert>
         )}
         {isConfigValidated === FormValiationOptions.CONFIG_EXPIRED && (
-          <>
-            <FormAlert>
-              <Alert
-                variant="warning"
-                title={i18n.openshift.configModal.configExpiredWarning}
-                aria-live="polite"
-                isInline
-                data-testid="alert-config-expired-warning"
-              />
-            </FormAlert>
-          </>
+          <FormAlert>
+            <Alert
+              variant="warning"
+              title={i18n.openshift.configModal.configExpiredWarning}
+              aria-live="polite"
+              isInline
+              data-testid="alert-config-expired-warning"
+            />
+          </FormAlert>
         )}
         <TextContent>
           <Text component={TextVariants.h3}>OpenShift</Text>

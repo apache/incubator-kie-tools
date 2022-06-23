@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormGroup, FormAlert } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -27,6 +28,8 @@ import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
+import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
+import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsTabs } from "../SettingsModalBody";
 import { EMPTY_CONFIG, isKafkaConfigValid, resetConfigCookie, saveConfigCookie } from "./KafkaSettingsConfig";
@@ -35,13 +38,22 @@ export function ApacheKafkaSettingsTab() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.apacheKafka.config);
+  const kieSandboxExtendedServices = useKieSandboxExtendedServices();
 
-  const isStoredConfigValid = useMemo(
-    () => isKafkaConfigValid(settings.apacheKafka.config),
-    [settings.apacheKafka.config]
+  const isExtendedServicesRunning = useMemo(
+    () => kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING,
+    [kieSandboxExtendedServices.status]
   );
 
-  const isCurrentConfigValid = useMemo(() => isKafkaConfigValid(config), [config]);
+  const isStoredConfigValid = useMemo(
+    () => isExtendedServicesRunning && isKafkaConfigValid(settings.apacheKafka.config),
+    [isExtendedServicesRunning, settings.apacheKafka.config]
+  );
+
+  const isCurrentConfigValid = useMemo(
+    () => isExtendedServicesRunning && isKafkaConfigValid(config),
+    [isExtendedServicesRunning, config]
+  );
 
   const onClearBootstraServer = useCallback(() => setConfig({ ...config, bootstrapServer: "" }), [config]);
   const onClearTopic = useCallback(() => setConfig({ ...config, topic: "" }), [config]);
@@ -95,6 +107,18 @@ export function ApacheKafkaSettingsTab() {
         ) : (
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form>
+              {!isExtendedServicesRunning && (
+                <FormAlert>
+                  <Alert
+                    variant="danger"
+                    title={
+                      "Connect to KIE Sandbox Extended Services before configuring your Streams for Apache Kafka instance"
+                    }
+                    aria-live="polite"
+                    isInline
+                  />
+                </FormAlert>
+              )}
               <TextContent>
                 <Text component={TextVariants.h3}>Streams for Apache Kafka</Text>
               </TextContent>
@@ -134,7 +158,7 @@ export function ApacheKafkaSettingsTab() {
                     aria-describedby="bootstrap-server-field-helper"
                     value={config.bootstrapServer}
                     onChange={onBootstrapServerChanged}
-                    tabIndex={5}
+                    tabIndex={1}
                     data-testid="bootstrap-server-text-field"
                   />
                   <InputGroupText>
@@ -178,7 +202,7 @@ export function ApacheKafkaSettingsTab() {
                     aria-describedby="topic-field-helper"
                     value={config.topic}
                     onChange={onTopicChanged}
-                    tabIndex={8}
+                    tabIndex={2}
                     data-testid="topic-text-field"
                   />
                   <InputGroupText>

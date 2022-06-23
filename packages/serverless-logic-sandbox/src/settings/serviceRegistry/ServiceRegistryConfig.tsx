@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-import { makeCookieName, getCookie, setCookie } from "../../cookies";
+import { getCookie, makeCookieName, setCookie } from "../../cookies";
 
+export const SERVICE_REGISTRY_NAME_COOKIE_NAME = makeCookieName("service-registry", "name");
 export const SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME = makeCookieName("service-registry", "core-registry-api");
 
-const RED_HAT_OPENSHIFT_SERVICE_REGISTRY = "RHSR";
-
 export interface ServiceRegistrySettingsConfig {
-  coreRegistryApi: string;
   name: string;
+  coreRegistryApi: string;
 }
 
 export const EMPTY_CONFIG: ServiceRegistrySettingsConfig = {
+  name: "",
   coreRegistryApi: "",
-  name: RED_HAT_OPENSHIFT_SERVICE_REGISTRY,
 };
 
 export function isServiceRegistryConfigValid(config: ServiceRegistrySettingsConfig): boolean {
-  return isCoreRegistryApiValid(config.coreRegistryApi);
+  return isNameValid(config.name) && isCoreRegistryApiValid(config.coreRegistryApi);
+}
+
+export function isNameValid(name: string): boolean {
+  return name !== undefined && name.trim().length > 0;
 }
 
 export function isCoreRegistryApiValid(coreRegistryApi: string): boolean {
@@ -40,8 +43,8 @@ export function isCoreRegistryApiValid(coreRegistryApi: string): boolean {
 
 export function readServiceRegistryConfigCookie(): ServiceRegistrySettingsConfig {
   return {
+    name: getCookie(SERVICE_REGISTRY_NAME_COOKIE_NAME) ?? "",
     coreRegistryApi: getCookie(SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME) ?? "",
-    name: RED_HAT_OPENSHIFT_SERVICE_REGISTRY,
   };
 }
 
@@ -49,10 +52,15 @@ export function resetConfigCookie(): void {
   saveConfigCookie(EMPTY_CONFIG);
 }
 
+export function saveNameCookie(name: string): void {
+  setCookie(SERVICE_REGISTRY_NAME_COOKIE_NAME, name);
+}
+
 export function saveCoreRegistryApiCookie(coreRegistryApi: string): void {
   setCookie(SERVICE_REGISTRY_CORE_REGISTRY_API_COOKIE_NAME, coreRegistryApi);
 }
 
 export function saveConfigCookie(config: ServiceRegistrySettingsConfig): void {
+  saveNameCookie(config.name);
   saveCoreRegistryApiCookie(config.coreRegistryApi);
 }
