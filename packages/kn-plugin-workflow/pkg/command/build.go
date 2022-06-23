@@ -56,6 +56,7 @@ DESCRIPTION
 	cmd.Flags().StringP("tag", "t", "latest", fmt.Sprintf("%s image tag", cmd.Name()))
 
 	cmd.Flags().Bool("no-docker", false, fmt.Sprintf("%s build using Jib extension", cmd.Name()))
+	cmd.Flags().Bool("push", true, fmt.Sprintf("%s when using docker, choose to push it to a remote registry", cmd.Name()))
 
 	return cmd
 }
@@ -101,6 +102,7 @@ type BuildConfig struct {
 
 	// Build strategy options
 	NoDocker bool
+	Push     bool
 
 	// Plugin options
 	Verbose bool
@@ -140,12 +142,7 @@ func runAddExtension(cfg BuildConfig) error {
 }
 
 func runBuildImage(cfg BuildConfig) error {
-	builder := "-Dquarkus.container-image.builder="
-	if cfg.NoDocker {
-		builder += "jib"
-	} else {
-		builder += "docker"
-	}
+	builderConfig, pushConfig := getBuilderAndPushConfig(cfg)
 
 	build := exec.Command("./mvnw", "package",
 		"-Dquarkus.native.container-build=true",
@@ -153,8 +150,8 @@ func runBuildImage(cfg BuildConfig) error {
 		fmt.Sprintf("-Dquarkus.container-image.group=%s", cfg.Group),
 		fmt.Sprintf("-Dquarkus.container-image.name=%s", cfg.ImageName),
 		fmt.Sprintf("-Dquarkus.container-image.tag=%s", cfg.Tag),
-		builder,
-		"-Dquarkus.container-image.push=true",
+		builderConfig,
+		pushConfig,
 	)
 
 	if err := common.RunCommand(build, cfg.Verbose, "build command failed with error"); err != nil {
@@ -163,4 +160,22 @@ func runBuildImage(cfg BuildConfig) error {
 
 	fmt.Printf("Build success\n")
 	return nil
+}
+
+func getBuilderAndPushConfig(cfg BuildConfig) (string, string) {
+	builder := "-Dquarkus.container-image.builder="
+	push := "-Dquarkus.container-image.push="
+	if cfg.NoDocker {
+		builder += "jib"
+		push += "true"
+	} else {
+		builder += "docker"
+		if cfg.Push {
+			push += "true"
+		} else {
+			push += "false"
+		}
+	}
+
+	return builder, push
 }
