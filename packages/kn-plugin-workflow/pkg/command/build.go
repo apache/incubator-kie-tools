@@ -36,8 +36,8 @@ NAME
 	{{.Name}} build - Build a Quarkus project and pushes the image to a registry
 	
 SYNOPSIS
-	{{.Name}} build [-r|--registry] [-g|--group] [-i|--image-name]
-					[-t|--tag] [-v|--verbose]
+	{{.Name}} build [-i|--image] [-r|--registry] [-g|--group] [-n|--name] [-t|--tag]
+					[--jib] [--push] [-v|--verbose]
 	
 DESCRIPTION
 	Builds a Quarkus workflow project and pushes a image to a remote registry. It doens't require Docker
@@ -59,6 +59,8 @@ DESCRIPTION
 
 	cmd.Flags().Bool("jib", false, fmt.Sprintf("%s build using Jib extension", cmd.Name()))
 	cmd.Flags().Bool("push", false, fmt.Sprintf("%s push", cmd.Name()))
+
+	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
@@ -136,7 +138,12 @@ func runAddExtension(cfg BuildConfig) error {
 			"-Dextensions=container-image-docker")
 	}
 
-	if err := common.RunCommand(addExtension, cfg.Verbose, "adding quarkus extension failed with error"); err != nil {
+	if err := common.RunCommand(
+		addExtension,
+		cfg.Verbose,
+		"adding quarkus extension failed with error",
+		getAddExtensionFriendlyMessages(),
+	); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -158,7 +165,12 @@ func runBuildImage(cfg BuildConfig) error {
 		pushConfig,
 	)
 
-	if err := common.RunCommand(build, cfg.Verbose, "build command failed with error"); err != nil {
+	if err := common.RunCommand(
+		build,
+		cfg.Verbose,
+		"build command failed with error",
+		getBuildFriendlyMessages(),
+	); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -236,4 +248,26 @@ func getPushConfig(cfg BuildConfig) string {
 	}
 
 	return push
+}
+
+func getAddExtensionFriendlyMessages() []string {
+	return []string{
+		" Still downloading Quarkus extension",
+		" Still downloading Quarkus extension",
+		" Yes, still downloading Quarkus extension",
+		" Don't give up on me",
+		" Still downloading Quarkus extension",
+		" This is taking a while",
+	}
+}
+
+func getBuildFriendlyMessages() []string {
+	return []string{
+		" Still building",
+		" Still building",
+		" Yes, still building",
+		" Don't give up on me",
+		" Still building",
+		" This is taking a while",
+	}
 }

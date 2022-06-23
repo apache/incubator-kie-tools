@@ -18,6 +18,7 @@ package root
 
 import (
 	"fmt"
+	"html/template"
 	"os"
 
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
@@ -44,5 +45,26 @@ func NewRootCommand() *cobra.Command {
 	cmd.AddCommand(command.NewBuildCommand())
 	cmd.AddCommand(command.NewDeployCommand())
 
+	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
+		runRootHelp(cmd, args)
+	})
+
 	return cmd
+}
+
+func runRootHelp(cmd *cobra.Command, args []string) {
+	var (
+		body = cmd.Long + "\n\n" + cmd.UsageString()
+		t    = template.New("root")
+		tpl  = template.Must(t.Parse(body))
+	)
+	var data = struct {
+		Name string
+	}{
+		Name: cmd.Root().Use,
+	}
+
+	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
+		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
+	}
 }

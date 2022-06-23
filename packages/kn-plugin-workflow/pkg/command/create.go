@@ -61,6 +61,8 @@ DESCRIPTION
 	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s registry image to be used on the config.yaml", cmd.Name()))
 	cmd.Flags().String("namespace", "default", fmt.Sprintf("%s namespace to be used on the config.yaml", cmd.Name()))
 
+	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
+
 	return cmd
 }
 
@@ -92,7 +94,12 @@ func runCreate(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("Creating a Quarkus workflow project\n")
 
-	if err := common.RunCommand(create, cfg.Verbose, "create Quarkus project failed with error"); err != nil {
+	if err := common.RunCommand(
+		create,
+		cfg.Verbose,
+		"create Quarkus project failed with error",
+		getCreateFriendlyMessages(),
+	); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -160,4 +167,15 @@ func generateWorkflow(cfg CreateConfig) (err error) {
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
 	return
+}
+
+func getCreateFriendlyMessages() []string {
+	return []string{
+		" Still creating project",
+		" Still creating project",
+		" Yes, still creating project",
+		" Don't give up on me",
+		" Still creating project",
+		" This is taking a while",
+	}
 }

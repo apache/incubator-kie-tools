@@ -3,6 +3,7 @@ module github.com/kiegroup/kie-tools/kn-plugin-workflow
 go 1.17
 
 require (
+	github.com/briandowns/spinner v1.18.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/dgraph-io/ristretto v0.0.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect

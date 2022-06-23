@@ -52,6 +52,8 @@ DESCRIPTION
 
 	cmd.Flags().StringP("file", "f", "config.yaml", fmt.Sprintf("%s config deploy file", cmd.Name()))
 
+	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
+
 	return cmd
 }
 
@@ -70,7 +72,12 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	}
 
 	deploy := exec.Command("kubectl", "apply", "-f", cfg.FilePath)
-	if err := common.RunCommand(deploy, cfg.Verbose, "deploy command failed with error"); err != nil {
+	if err := common.RunCommand(
+		deploy,
+		cfg.Verbose,
+		"deploy command failed with error",
+		getDeployFriendlyMessages(),
+	); err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -94,4 +101,15 @@ func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 		Verbose: viper.GetBool("verbose"),
 	}
 	return
+}
+
+func getDeployFriendlyMessages() []string {
+	return []string{
+		" Still deploying",
+		" Still deploying",
+		" Yes, still deploying",
+		" Don't give up on me",
+		" Still deploying",
+		" This is taking a while",
+	}
 }
