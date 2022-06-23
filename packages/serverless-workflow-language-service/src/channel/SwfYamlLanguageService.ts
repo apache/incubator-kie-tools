@@ -40,9 +40,9 @@ import * as ls from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { FileLanguage } from "../editor";
 
-export class SwfJsonLanguageService extends SwfLanguageService {
-  fileLanguage = FileLanguage.JSON;
-  fileMatch = ["*.sw.json"];
+export class SwfYamlLanguageService extends SwfLanguageService {
+  fileLanguage = FileLanguage.YAML;
+  fileMatch = ["*.sw.yaml", "*.sw.yml"];
 
   constructor(args: SwfLanguageServiceArgs) {
     super(args);
