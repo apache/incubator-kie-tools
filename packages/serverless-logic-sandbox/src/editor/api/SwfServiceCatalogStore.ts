@@ -56,6 +56,19 @@ export class SwfServiceCatalogStore {
     getArtifactContentUrl: (artifact: SearchedArtifact) =>
       `${this.configs.serviceRegistry.coreRegistryApi}/groups/${artifact.groupId}/artifacts/${artifact.id}`,
     getArtifactsUrl: () => `${this.configs.serviceRegistry.coreRegistryApi}/search/artifacts`,
+    getServiceId: (artifact: SearchedArtifact) => artifact.id,
+  };
+
+  private readonly VIRTUAL_SERVICE_REGISTRY_API = {
+    getArtifactContentUrl: (artifact: SearchedArtifact) => artifact.id,
+    getServiceId: (artifact: SearchedArtifact) => artifact.id.replace(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX, ""),
+  };
+
+  private readonly SAME_WORKSPACE_REGISTRY_API = {
+    getArtifactContentUrl: (artifact: SearchedArtifact) =>
+      artifact.id.replace(`${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${artifact.groupId}`, ""),
+    getServiceId: (artifact: SearchedArtifact) =>
+      artifact.id.replace(`${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${artifact.groupId}`, ""),
   };
 
   private storedServices: SwfServiceCatalogService[] = [];
@@ -78,6 +91,7 @@ export class SwfServiceCatalogStore {
   public setVirtualServiceRegistry(virtualServiceRegistry: VirtualServiceRegistryContextType, file?: WorkspaceFile) {
     this.virtualServiceRegistry = virtualServiceRegistry;
     this.currentFile = file;
+    this.refresh();
   }
 
   public async refresh() {
@@ -97,7 +111,7 @@ export class SwfServiceCatalogStore {
       console.error(e);
     }
 
-    if (artifacts) {
+    if (artifacts.length) {
       artifactsWithContent = await Promise.all(
         artifacts
           .filter((artifact) => artifact.type === "OPENAPI")
@@ -137,7 +151,7 @@ export class SwfServiceCatalogStore {
             groupFiles.files.map(async (file) => ({
               metadata: {
                 groupId: groupFiles.registryGroup.groupId,
-                id: file.relativePath.replace(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX, ""),
+                id: file.relativePath,
                 type: "OPENAPI",
                 labels: [ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY],
               } as SearchedArtifact,
@@ -149,19 +163,30 @@ export class SwfServiceCatalogStore {
 
       virtualRegistry = virtualServiceRegistryGroupsFilesWithContent.flat().filter((file) => {
         return (
-          file.content && `${file.metadata.id}` !== `${this.currentFile?.workspaceId}/${this.currentFile?.relativePath}`
+          file.content &&
+          `${file.metadata.id}` !==
+            `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${this.currentFile?.workspaceId}/${this.currentFile?.relativePath}`
         );
       });
     }
 
     this.storedServices = artifactsWithContent.concat(virtualRegistry).map((artifact) => {
       const isVirtualServiceRegistry = artifact.metadata.labels?.includes(ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY);
-      const isFromSameWorkspace = artifact.metadata.groupId === this.currentFile?.workspaceId;
+      const isFromSameWorkspace =
+        isVirtualServiceRegistry && artifact.metadata.groupId === this.currentFile?.workspaceId;
 
       const registry = isVirtualServiceRegistry ? VIRTUAL_SERVICE_REGISTRY_NAME : this.configs.serviceRegistry.name;
-      const serviceId = isFromSameWorkspace
-        ? artifact.metadata.id.replace(`${artifact.metadata.groupId}/`, "")
-        : artifact.metadata.id;
+      const serviceId = isVirtualServiceRegistry
+        ? isFromSameWorkspace
+          ? this.SAME_WORKSPACE_REGISTRY_API.getServiceId(artifact.metadata)
+          : this.VIRTUAL_SERVICE_REGISTRY_API.getServiceId(artifact.metadata)
+        : this.SERVICE_REGISTRY_API.getServiceId(artifact.metadata);
+
+      const url = isVirtualServiceRegistry
+        ? isFromSameWorkspace
+          ? this.SAME_WORKSPACE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
+          : this.VIRTUAL_SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata)
+        : this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata);
 
       const swfFunctions = extractFunctions(artifact.content, {
         type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
@@ -174,19 +199,12 @@ export class SwfServiceCatalogStore {
         rawContent: yaml.stringify(artifact.content),
         type: SwfServiceCatalogServiceType.rest,
         functions: swfFunctions,
-        source: isVirtualServiceRegistry
-          ? {
-              url: serviceId,
-              id: serviceId,
-              registry: VIRTUAL_SERVICE_REGISTRY_NAME,
-              type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
-            }
-          : {
-              url: this.SERVICE_REGISTRY_API.getArtifactContentUrl(artifact.metadata),
-              id: serviceId,
-              registry: this.configs.serviceRegistry.name,
-              type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
-            },
+        source: {
+          url,
+          id: serviceId,
+          registry,
+          type: SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY,
+        },
       };
     });
   }
