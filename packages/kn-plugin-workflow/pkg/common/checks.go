@@ -86,13 +86,7 @@ func CheckContainerRuntime() error {
 	fmt.Println("✅ Checking if container runtime is running...")
 	isDockerRunning := checkDocker()
 	if !isDockerRunning {
-		fmt.Println("Docker is not running, checking Podman")
-		isPodmanRunning := checkPodman()
-		if !isPodmanRunning {
-			return fmt.Errorf("no container runtime was found")
-		} else {
-			fmt.Println(" - Podman is running")
-		}
+		return fmt.Errorf("docker runtime was not found, please install it or if it's already installed ensure, it's running")
 	} else {
 		fmt.Println(" - Docker is running")
 	}
@@ -102,14 +96,6 @@ func CheckContainerRuntime() error {
 func checkDocker() bool {
 	dockerCheck := exec.Command("docker", "stats", "--no-stream")
 	if err := dockerCheck.Run(); err != nil {
-		return false
-	}
-	return true
-}
-
-func checkPodman() bool {
-	podmanCheck := exec.Command("podman", "stats", "--no-stream")
-	if err := podmanCheck.Run(); err != nil {
 		return false
 	}
 	return true

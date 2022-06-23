@@ -130,18 +130,9 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 }
 
 func generateConfigYaml(cfg CreateConfig) (err error) {
-	configYamlTemplate, err := GenerateConfigYamlTemplate(cfg)
-	if err != nil {
-		return fmt.Errorf("error generating config yaml template, %w", err)
+	if err := CreateConfigYaml(cfg); err != nil {
+		return fmt.Errorf("%w", err)
 	}
-
-	var configYamlFile = fmt.Sprintf("./%s/config.yaml", cfg.ProjectName)
-	err = ioutil.WriteFile(configYamlFile, configYamlTemplate, 0644)
-	if err != nil {
-		return fmt.Errorf("error creating yaml file, %w", err)
-	}
-
-	fmt.Printf("Config file created on %s \n", configYamlFile)
 	return
 }
 

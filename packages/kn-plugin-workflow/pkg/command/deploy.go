@@ -18,6 +18,7 @@ package command
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"time"
 
@@ -42,16 +43,14 @@ DESCRIPTION
 	
 	$ {{.Name}} deploy
 	`,
-		PreRunE: common.BindEnv("image", "name", "openshift"),
+		PreRunE: common.BindEnv("file"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runDeploy(cmd, args)
 	}
 
-	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s image URL", cmd.Name()))
-	cmd.Flags().StringP("name", "n", "new-project", fmt.Sprintf("%s service name", cmd.Name()))
-	cmd.Flags().BoolP("openshift", "o", false, fmt.Sprintf("%s deploy to a openshift cluster", cmd.Name()))
+	cmd.Flags().StringP("file", "f", "config.yaml", fmt.Sprintf("%s config deploy file", cmd.Name()))
 
 	return cmd
 }
@@ -64,17 +63,13 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("create config error %w", err)
 	}
 
-	// use stdin to pass config.yaml ?
-	// login?
-	// use knative or file
-	// file path?
-	var deploy *exec.Cmd
-	if cfg.Openshift {
-		deploy = exec.Command("kn", "service", "create", cfg.ServiceName, fmt.Sprintf("--image=%s", cfg.Image), "--port=8080")
-	} else {
-		deploy = exec.Command("kn", "service", "create", cfg.ServiceName, fmt.Sprintf("--image=%s", cfg.Image), "--port=8080")
+	if _, err := exec.LookPath("kubectl"); err != nil {
+		fmt.Println("ERROR: kubectl is required for deploy")
+		fmt.Println("Download from https://kubectl.docs.kubernetes.io/installation/kubectl/")
+		os.Exit(1)
 	}
 
+	deploy := exec.Command("kubectl", "apply", "-f", cfg.FilePath)
 	if err := common.RunCommand(deploy, cfg.Verbose, "deploy command failed with error"); err != nil {
 		return fmt.Errorf("%w", err)
 	}
@@ -86,11 +81,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 
 type DeployConfig struct {
 	// Deploy options
-	Image       string // registry image
-	ServiceName string // service name
-
-	// Deploy strategy
-	Openshift bool // registry to be uploaded
+	FilePath string // service name
 
 	// Plugin options
 	Verbose bool
@@ -98,10 +89,7 @@ type DeployConfig struct {
 
 func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 	cfg = DeployConfig{
-		Image:       viper.GetString("registry"),
-		ServiceName: viper.GetString("group"),
-
-		Openshift: viper.GetBool("openshift"),
+		FilePath: viper.GetString("file"),
 
 		Verbose: viper.GetBool("verbose"),
 	}

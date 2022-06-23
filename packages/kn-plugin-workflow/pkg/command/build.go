@@ -74,7 +74,7 @@ func runBuild(cmd *cobra.Command, args []string) error {
 
 	if !cfg.NoDocker {
 		if err := common.CheckContainerRuntime(); err != nil {
-			return fmt.Errorf("no-docker option is false, and no container runtime was found, %w", err)
+			return fmt.Errorf("\"no-docker\" option is false: %w", err)
 		}
 	}
 
@@ -140,7 +140,7 @@ func runAddExtension(cfg BuildConfig) error {
 }
 
 func runBuildImage(cfg BuildConfig) error {
-	builder := "-Dquakus.container-image.builder="
+	builder := "-Dquarkus.container-image.builder="
 	if cfg.NoDocker {
 		builder += "jib"
 	} else {

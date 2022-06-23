@@ -17,6 +17,9 @@
 package command
 
 import (
+	"fmt"
+	"io/ioutil"
+
 	"gopkg.in/yaml.v2"
 )
 
@@ -53,7 +56,7 @@ type Config struct {
 	Spec       SpecStruct     `yaml:"spec"`
 }
 
-func GenerateConfigYamlTemplate(cfg CreateConfig) ([]byte, error) {
+func generateConfigYamlTemplate(cfg CreateConfig) ([]byte, error) {
 	configYaml := Config{
 		ApiVersion: "serving.knative.dev/v1",
 		Kind:       "Service",
@@ -76,4 +79,20 @@ func GenerateConfigYamlTemplate(cfg CreateConfig) ([]byte, error) {
 	}
 
 	return yaml.Marshal(&configYaml)
+}
+
+func CreateConfigYaml(cfg CreateConfig) error {
+	configYamlTemplate, err := generateConfigYamlTemplate(cfg)
+	if err != nil {
+		return fmt.Errorf("error generating config yaml template, %w", err)
+	}
+
+	var configFilePath = fmt.Sprintf("./%s/config.yaml", cfg.ProjectName)
+	err = ioutil.WriteFile(configFilePath, configYamlTemplate, 0644)
+	if err != nil {
+		return fmt.Errorf("error creating yaml file, %w", err)
+	}
+
+	fmt.Printf("Config file created on %s \n", configFilePath)
+	return nil
 }
