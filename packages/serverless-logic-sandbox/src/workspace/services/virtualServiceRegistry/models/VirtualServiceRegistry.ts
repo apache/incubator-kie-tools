@@ -71,7 +71,9 @@ export interface VirtualServiceRegistryGroup extends DescriptorBase {
   lastUpdatedDateISO: string;
 }
 
-export function groupPath(virtualServiceRegistryGroup: { groupId: VirtualServiceRegistryGroup["groupId"] }): GroupPath {
+export function groupPath(virtualServiceRegistryGroup: {
+  groupId?: VirtualServiceRegistryGroup["groupId"];
+}): GroupPath {
   return `/${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${virtualServiceRegistryGroup.groupId}`;
 }
 
@@ -83,8 +85,8 @@ export function functionPath(
 }
 
 export function functionPathFromWorkspaceFilePath(
-  virtualServiceRegistryGroup: { groupId: VirtualServiceRegistryGroup["groupId"] },
-  relativePath: WorkspaceFile["relativePath"]
+  virtualServiceRegistryGroup: { groupId?: VirtualServiceRegistryGroup["groupId"] },
+  relativePath?: WorkspaceFile["relativePath"]
 ) {
   return `${groupPath(virtualServiceRegistryGroup)}/${relativePath}`;
 }

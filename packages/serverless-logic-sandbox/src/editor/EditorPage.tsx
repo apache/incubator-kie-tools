@@ -265,14 +265,14 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     if (
       !settingsDispatch.serviceRegistry.catalogStore.virtualServiceRegistry ||
-      settingsDispatch.serviceRegistry.catalogStore.currentWorkspaceId !== props.workspaceId
+      settingsDispatch.serviceRegistry.catalogStore.currentFile !== workspaceFilePromise.data
     ) {
       settingsDispatch.serviceRegistry.catalogStore.setVirtualServiceRegistry(
         virtualServiceRegistry,
-        props.workspaceId
+        workspaceFilePromise.data
       );
     }
-  }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, props.workspaceId]);
+  }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, workspaceFilePromise.data]);
 
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
@@ -304,7 +304,7 @@ export function EditorPage(props: Props) {
     if (embeddedEditorFile && !isServerlessWorkflowJson(embeddedEditorFile.path || "") && !isReady) {
       setReady(true);
     }
-  }, [embeddedEditorFile, isReady]);
+  }, [embeddedEditorFile, isReady, settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry]);
 
   const apiImpl = useMemo(() => {
     if (!kogitoEditorChannelApiImpl || !swfJsonLanguageService || !swfServiceCatalogChannelApiImpl) {

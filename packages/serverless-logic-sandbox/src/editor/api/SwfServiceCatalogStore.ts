@@ -30,8 +30,12 @@ import { ServiceAccountSettingsConfig } from "../../settings/serviceAccount/Serv
 import { ServiceRegistrySettingsConfig } from "../../settings/serviceRegistry/ServiceRegistryConfig";
 import { ExtendedServicesConfig } from "../../settings/SettingsContext";
 import { VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX } from "../../workspace/services/virtualServiceRegistry/models/VirtualServiceRegistry";
+import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 
 export const VIRTUAL_SERVICE_REGISTRY_NAME = "Sandbox";
+export const ARTIFACT_TAGS = {
+  IS_VIRTUAL_SERVICE_REGISTRY: "isVirtualServiceRegistry",
+};
 
 type ArtifactWithContent = {
   metadata: SearchedArtifact;
@@ -57,7 +61,7 @@ export class SwfServiceCatalogStore {
   private storedServices: SwfServiceCatalogService[] = [];
 
   public virtualServiceRegistry?: VirtualServiceRegistryContextType;
-  public currentWorkspaceId?: string;
+  public currentFile?: WorkspaceFile;
 
   constructor(
     private readonly configs: {
@@ -71,9 +75,9 @@ export class SwfServiceCatalogStore {
     return this.storedServices;
   }
 
-  public setVirtualServiceRegistry(virtualServiceRegistry: VirtualServiceRegistryContextType, workspaceId: string) {
+  public setVirtualServiceRegistry(virtualServiceRegistry: VirtualServiceRegistryContextType, file?: WorkspaceFile) {
     this.virtualServiceRegistry = virtualServiceRegistry;
-    this.currentWorkspaceId = workspaceId;
+    this.currentFile = file;
   }
 
   public async refresh() {
@@ -113,7 +117,7 @@ export class SwfServiceCatalogStore {
 
     let virtualRegistry: ArtifactWithContent[] = [];
 
-    if (this.virtualServiceRegistry && this.currentWorkspaceId) {
+    if (this.virtualServiceRegistry && this.currentFile) {
       const virtualServiceRegistryGroups = await this.virtualServiceRegistry.vsrGroupService.listAll();
       const virtualServiceRegistryGroupsFiles = await Promise.all(
         virtualServiceRegistryGroups.map(async (registryGroup) => {
@@ -133,8 +137,9 @@ export class SwfServiceCatalogStore {
             groupFiles.files.map(async (file) => ({
               metadata: {
                 groupId: groupFiles.registryGroup.groupId,
-                id: file.relativePath,
+                id: file.relativePath.replace(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX, ""),
                 type: "OPENAPI",
+                labels: [ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY],
               } as SearchedArtifact,
               content: yaml.parse(await file.getFileContentsAsString()) as OpenAPIV3.Document,
             }))
@@ -142,30 +147,27 @@ export class SwfServiceCatalogStore {
         })
       );
 
-      virtualRegistry = virtualServiceRegistryGroupsFilesWithContent
-        .flat()
-        .filter((file) => file.content && file.metadata.groupId !== this.currentWorkspaceId);
+      virtualRegistry = virtualServiceRegistryGroupsFilesWithContent.flat().filter((file) => {
+        return (
+          file.content && `${file.metadata.id}` !== `${this.currentFile?.workspaceId}/${this.currentFile?.relativePath}`
+        );
+      });
     }
 
     this.storedServices = artifactsWithContent.concat(virtualRegistry).map((artifact) => {
-      const serviceId = artifact.metadata.id;
+      const isVirtualServiceRegistry = artifact.metadata.labels?.includes(ARTIFACT_TAGS.IS_VIRTUAL_SERVICE_REGISTRY);
+      const isFromSameWorkspace = artifact.metadata.groupId === this.currentFile?.workspaceId;
 
-      const isVirtualServiceRegistry = serviceId.startsWith(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX);
+      const registry = isVirtualServiceRegistry ? VIRTUAL_SERVICE_REGISTRY_NAME : this.configs.serviceRegistry.name;
+      const serviceId = isFromSameWorkspace
+        ? artifact.metadata.id.replace(`${artifact.metadata.groupId}/`, "")
+        : artifact.metadata.id;
 
-      const swfFunctions = extractFunctions(
-        artifact.content,
-        isVirtualServiceRegistry
-          ? {
-              type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
-              registry: VIRTUAL_SERVICE_REGISTRY_NAME,
-              serviceId: serviceId.replace(VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX, ""),
-            }
-          : {
-              type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
-              registry: this.configs.serviceRegistry.name,
-              serviceId,
-            }
-      );
+      const swfFunctions = extractFunctions(artifact.content, {
+        type: SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY,
+        registry,
+        serviceId,
+      });
 
       return {
         name: artifact.metadata.id,
