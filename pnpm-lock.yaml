@@ -1655,6 +1655,14 @@ importers:
       "@types/uuid": 8.3.0
       cypress-real-events: 1.7.0
 
+  packages/openjdk11-mvn-image:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
   packages/operating-system:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0

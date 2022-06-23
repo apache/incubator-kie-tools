@@ -36,6 +36,12 @@ module.exports = async (env) => {
     serverlessLogicSandbox_baseImageTag,
   ] = getServerlessLogicSandboxBaseImageArgs();
   const [
+    serverlessLogicSandbox_openJdk11MvnImageRegistry,
+    serverlessLogicSandbox_openJdk11MvnImageAccount,
+    serverlessLogicSandbox_openJdk11MvnImageName,
+    serverlessLogicSandbox_openJdk11MvnImageTag,
+  ] = getServerlessLogicSandboxOpenJdk11MvnImageArgs();
+  const [
     kieSandboxExtendedServices_linuxDownloadUrl,
     kieSandboxExtendedServices_macOsDownloadUrl,
     kieSandboxExtendedServices_windowsDownloadUrl,
@@ -70,6 +76,7 @@ module.exports = async (env) => {
       new EnvironmentPlugin({
         WEBPACK_REPLACE__buildInfo: buildInfo,
         WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl: `${serverlessLogicSandbox_baseImageRegistry}/${serverlessLogicSandbox_baseImageAccount}/${serverlessLogicSandbox_baseImageName}:${serverlessLogicSandbox_baseImageTag}`,
+        WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl: `${serverlessLogicSandbox_openJdk11MvnImageRegistry}/${serverlessLogicSandbox_openJdk11MvnImageAccount}/${serverlessLogicSandbox_openJdk11MvnImageName}:${serverlessLogicSandbox_openJdk11MvnImageTag}`,
         WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
         WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
         WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
@@ -155,6 +162,20 @@ function getServerlessLogicSandboxBaseImageArgs() {
   console.info("Serverless Logic Sandbox :: Base Image Tag: " + baseImageTag);
 
   return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag];
+}
+
+function getServerlessLogicSandboxOpenJdk11MvnImageArgs() {
+  const openJdk11MvnImageRegistry = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.registry;
+  const openJdk11MvnImageAccount = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.account;
+  const openJdk11MvnImageName = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.name;
+  const openJdk11MvnImageTag = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.tag;
+
+  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Registry: " + openJdk11MvnImageRegistry);
+  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Account: " + openJdk11MvnImageAccount);
+  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Name: " + openJdk11MvnImageName);
+  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Tag: " + openJdk11MvnImageTag);
+
+  return [openJdk11MvnImageRegistry, openJdk11MvnImageAccount, openJdk11MvnImageName, openJdk11MvnImageTag];
 }
 
 function getGtmResource() {

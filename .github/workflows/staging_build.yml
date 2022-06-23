@@ -79,6 +79,11 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
       SERVERLESS_LOGIC_SANDBOX__baseImageTag: "${{ inputs.tag }}-prerelease"
       SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}-prerelease"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "${{ inputs.tag }}-prerelease"
 
     strategy:
       matrix:
@@ -268,6 +273,16 @@ jobs:
           tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags }}"
           registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
           username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Push openjdk11-mvn-image to quay.io (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Deploy Online Editor to kogito-online-staging (Ubuntu only)"

@@ -39,6 +39,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { isProject } from "../project";
 
 const getSuggestedRepositoryName = (name: string) =>
   name
@@ -72,11 +73,7 @@ export function CreateGitHubRepositoryModal(props: {
   const [error, setError] = useState<string | undefined>(undefined);
   const [name, setName] = useState(getSuggestedRepositoryName(props.workspace.descriptor.name));
   const [shouldUseQuarkusAccelerator, setShouldUseQuarkusAccelerator] = useState(false);
-
-  const isProject = useMemo(
-    () => !!props.workspace.files.find((file) => file.relativePath === "pom.xml"),
-    [props.workspace.files]
-  );
+  const isProjectStructure = useMemo(() => isProject(props.workspace.files), [props.workspace.files]);
 
   useEffect(() => {
     setName(getSuggestedRepositoryName(props.workspace.descriptor.name));
@@ -106,7 +103,7 @@ export function CreateGitHubRepositoryModal(props: {
 
       let currentFileAfterMoving: WorkspaceFile | undefined;
 
-      if (!isProject && shouldUseQuarkusAccelerator) {
+      if (!isProjectStructure && shouldUseQuarkusAccelerator) {
         await workspaces.gitService.addRemote({
           fs: fs,
           dir: workspaceRootDirPath,
@@ -213,7 +210,7 @@ export function CreateGitHubRepositoryModal(props: {
     isPrivate,
     workspaces,
     props,
-    isProject,
+    isProjectStructure,
     shouldUseQuarkusAccelerator,
     history,
     routes.workspaceWithFilePath,
@@ -321,7 +318,7 @@ export function CreateGitHubRepositoryModal(props: {
             content={
               "Quarkus accelerator cannot be used since your workspace already seems to contain a project structure."
             }
-            trigger={isProject ? "mouseenter click" : ""}
+            trigger={isProjectStructure ? "mouseenter click" : ""}
           >
             <Checkbox
               id="check-use-quarkus-accelerator"
@@ -331,7 +328,7 @@ export function CreateGitHubRepositoryModal(props: {
               }
               isChecked={shouldUseQuarkusAccelerator}
               onChange={(checked) => setShouldUseQuarkusAccelerator(checked)}
-              isDisabled={isProject}
+              isDisabled={isProjectStructure}
             />
           </Tooltip>
         </FormGroup>

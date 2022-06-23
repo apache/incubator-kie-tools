@@ -15,6 +15,9 @@
  */
 
 import { basename, extname } from "path";
+import { PROJECT_FILES } from "../project";
+
+const EDIT_NON_MODEL_ALLOW_LIST = [PROJECT_FILES.applicationProperties];
 
 const REGEX = {
   supported: /(\.sw\.json|\.sw\.yaml|\.sw\.yml|\.yard\.json|\.yard\.yaml|\.yard\.yml|\.dash\.yml|\.dash\.yaml)$/i,
@@ -87,8 +90,12 @@ export function isDashbuilder(path: string): boolean {
   return REGEX.dash.test(path);
 }
 
-export function isSandboxAsset(path: string): boolean {
+export function isModel(path: string): boolean {
   return isServerlessWorkflow(path) || isServerlessDecision(path) || isDashbuilder(path);
+}
+
+export function isSandboxAsset(path: string): boolean {
+  return isModel(path) || EDIT_NON_MODEL_ALLOW_LIST.includes(basename(path));
 }
 
 export function isSpec(path: string): boolean {

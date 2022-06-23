@@ -31,16 +31,25 @@ import { isServiceRegistryConfigValid } from "../../settings/serviceRegistry/Ser
 import { useSettings } from "../../settings/SettingsContext";
 import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ActiveWorkspace } from "../../workspace/model/ActiveWorkspace";
+import { isSingleModuleProject } from "../../project";
 
 const FETCH_OPEN_API_POLLING_TIME = 5000;
 
-export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts: AlertsController | undefined }) {
+interface ConfirmDeployModalProps {
+  workspace: ActiveWorkspace;
+  workspaceFile: WorkspaceFile;
+  alerts: AlertsController | undefined;
+}
+
+export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
   const openshift = useOpenShift();
   const settings = useSettings();
   const { i18n } = useAppI18n();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
   const [shouldUploadOpenApi, setShouldUploadOpenApi] = useState(false);
   const [shouldAttachKafkaSource, setShouldAttachKafkaSource] = useState(false);
+  const [shouldDeployAsProject, setShouldDeployAsProject] = useState(false);
 
   const canUploadOpenApi = useMemo(
     () =>
@@ -54,6 +63,8 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
       isServiceAccountConfigValid(settings.serviceAccount.config) && isKafkaConfigValid(settings.apacheKafka.config),
     [settings.apacheKafka.config, settings.serviceAccount.config]
   );
+
+  const canDeployAsProject = useMemo(() => isSingleModuleProject(props.workspace.files), [props.workspace.files]);
 
   const setDeployStartedError = useAlert(
     props.alerts,
@@ -162,6 +173,7 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     const resourceName = await openshift.deploy({
       workspaceFile: props.workspaceFile,
       shouldAttachKafkaSource,
+      shouldDeployAsProject,
     });
     setConfirmLoading(false);
 
@@ -192,10 +204,11 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
     isConfirmLoading,
     openshift,
     props.workspaceFile,
-    shouldUploadOpenApi,
     shouldAttachKafkaSource,
+    shouldDeployAsProject,
     setDeployStartedSuccess,
     fetchOpenApiSpec,
+    shouldUploadOpenApi,
     openApiUploadSuccess,
     deployEndSuccess,
     setDeployStartedError,
@@ -236,6 +249,21 @@ export function ConfirmDeployModal(props: { workspaceFile: WorkspaceFile; alerts
         toggleTextExpanded="Hide advanced options"
         className={"plain"}
       >
+        <Tooltip
+          content={
+            "Cannot deploy as a project since your workspace does not seem to contain a single module project structure."
+          }
+          trigger={!canDeployAsProject ? "mouseenter click" : ""}
+        >
+          <Checkbox
+            id="check-deploy-as-project"
+            label="Deploy as a project"
+            description={"All files in the workspace will be deployed as-is so no pre-built template will be used."}
+            isChecked={shouldDeployAsProject}
+            onChange={(checked) => setShouldDeployAsProject(checked)}
+            isDisabled={!canDeployAsProject}
+          />
+        </Tooltip>
         <Tooltip
           content={"To use this option, you need to configure your Service Account and Service Registry on Settings."}
           trigger={!canUploadOpenApi ? "mouseenter click" : ""}

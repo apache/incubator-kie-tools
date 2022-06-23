@@ -24,7 +24,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -78,6 +78,7 @@ jobs:
       dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
       serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}
       serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}
+      openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}
 
     steps:
       - name: "Set Runners"
@@ -100,6 +101,7 @@ jobs:
           echo "::set-output name=dashbuilder_images::${{ fromJSON(inputs.runners).dashbuilder_images }}"
           echo "::set-output name=serverless_logic_sandbox::${{ fromJSON(inputs.runners).serverless_logic_sandbox }}"
           echo "::set-output name=serverless_logic_sandbox_base_image::${{ fromJSON(inputs.runners).serverless_logic_sandbox_base_image }}"
+          echo "::set-output name=openjdk11_mvn_image::${{ fromJSON(inputs.runners).openjdk11_mvn_image }}"
 
       - name: "Print Runners"
         shell: bash
@@ -120,6 +122,7 @@ jobs:
           echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
           echo "serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}"
           echo "serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}"
+          echo "openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}"
 
   dmn_dev_sandbox_image:
     env:
@@ -1164,6 +1167,49 @@ jobs:
           username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+  openjdk11_mvn_image:
+    env:
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "latest ${{ inputs.tag }}"
+
+    if: ${{ needs.extract_runners.outputs.openjdk11_mvn_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout kie-tools"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          fetch-depth: 0
+
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm -F @kie-tools/openjdk11-mvn-image... build:prod
+
+      - name: "Push openjdk11-mvn-image to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
   serverless_logic_sandbox:
     env:
       SERVERLESS_LOGIC_SANDBOX__buildInfo: ""
@@ -1176,10 +1222,14 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
       SERVERLESS_LOGIC_SANDBOX__baseImageTag: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}"
 
-    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') && (needs.openjdk11_mvn_image.result == 'success' || needs.openjdk11_mvn_image.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, serverless_logic_sandbox_base_image, extended_services]
+    needs: [extract_runners, serverless_logic_sandbox_base_image, openjdk11_mvn_image, extended_services]
     steps:
       - name: "Checkout kie-tools"
         uses: actions/checkout@v2

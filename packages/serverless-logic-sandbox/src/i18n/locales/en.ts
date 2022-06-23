@@ -80,7 +80,7 @@ export const en: AppI18n = {
     },
     confirmModal: {
       title: "Deploy",
-      body: "Are you sure you want to deploy models from this workspace as standalone to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your model.",
+      body: "Are you sure you want to deploy models from this workspace to your instance? This action will take a few minutes to be completed and you will need to create a new deployment if you update your models.",
     },
     introduction: {
       explanation: `Deploy your models to a cloud instance on ${

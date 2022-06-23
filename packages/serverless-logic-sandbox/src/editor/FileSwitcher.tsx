@@ -421,9 +421,9 @@ export function WorkspacesMenuItems(props: {
                   {workspaceFiles.get(descriptor.workspaceId)!.length > 1 && (
                     <MenuItem
                       itemId={descriptor.workspaceId}
-                      description={`${workspaceFiles.get(descriptor.workspaceId)!.length} files, ${
+                      description={`${
                         workspaceFiles.get(descriptor.workspaceId)!.filter((f) => isSandboxAsset(f.relativePath)).length
-                      } models`}
+                      } of ${workspaceFiles.get(descriptor.workspaceId)!.length} editable files`}
                       direction={"down"}
                       drilldownMenu={
                         <DrilldownMenu id={`dd${descriptor.workspaceId}`}>
@@ -540,7 +540,7 @@ export function SearchableFilesMenuGroup(props: {
         <TextInput
           ref={searchInputRef}
           value={search}
-          aria-label={"Other files menu items"}
+          aria-label={"Readonly files menu items"}
           iconVariant={"search"}
           type={"search"}
           onChange={(value) => setSearch(value)}
@@ -583,12 +583,12 @@ export function FilesMenuItems(props: {
     [props.workspaceFiles, props.currentWorkspaceFile]
   );
 
-  const models = useMemo(
+  const editableFiles = useMemo(
     () => sortedAndFilteredFiles.filter((file) => isSandboxAsset(file.relativePath)),
     [sortedAndFilteredFiles]
   );
 
-  const otherFiles = useMemo(
+  const readonlyFiles = useMemo(
     () => sortedAndFilteredFiles.filter((file) => !isSandboxAsset(file.relativePath)),
     [sortedAndFilteredFiles]
   );
@@ -621,8 +621,8 @@ export function FilesMenuItems(props: {
                 maxHeight={"500px"}
                 filesDropdownMode={props.filesDropdownMode}
                 shouldFocusOnSearch={props.shouldFocusOnSearch}
-                label={`Models in '${props.workspaceDescriptor.name}'`}
-                allFiles={models}
+                label={`Editable files in '${props.workspaceDescriptor.name}'`}
+                allFiles={editableFiles}
               >
                 {({ filteredFiles }) =>
                   filteredFiles.map((file) => (
@@ -630,7 +630,7 @@ export function FilesMenuItems(props: {
                   ))
                 }
               </SearchableFilesMenuGroup>
-              {otherFiles.length > 0 && (
+              {readonlyFiles.length > 0 && (
                 <>
                   <Divider component={"li"} />
                   <MenuGroup>
@@ -646,8 +646,8 @@ export function FilesMenuItems(props: {
                         }}
                       >
                         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS
-                          ? "View other files"
-                          : "Hide other files"}
+                          ? "View readonly files"
+                          : "Hide readonly files"}
                         &nbsp;&nbsp;
                         {props.filesDropdownMode === FilesDropdownMode.LIST_MODELS ? (
                           <ArrowRightIcon />
@@ -669,8 +669,8 @@ export function FilesMenuItems(props: {
               maxHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
-              label={`Other files in '${props.workspaceDescriptor.name}'`}
-              allFiles={otherFiles}
+              label={`Readonly files in '${props.workspaceDescriptor.name}'`}
+              allFiles={readonlyFiles}
             >
               {({ filteredFiles }) =>
                 filteredFiles.map((file) => (
@@ -687,8 +687,8 @@ export function FilesMenuItems(props: {
               maxHeight={"500px"}
               filesDropdownMode={props.filesDropdownMode}
               shouldFocusOnSearch={props.shouldFocusOnSearch}
-              label={`Models in '${props.workspaceDescriptor.name}'`}
-              allFiles={models}
+              label={`Editable files in '${props.workspaceDescriptor.name}'`}
+              allFiles={editableFiles}
             >
               {({ filteredFiles }) => (
                 <Gallery hasGutter={true} style={{ padding: "8px" }}>

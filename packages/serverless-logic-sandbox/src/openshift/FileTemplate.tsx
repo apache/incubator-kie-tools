@@ -14,26 +14,62 @@
  * limitations under the License.
  */
 
-const BASE_IMAGE = process.env.WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl;
+import { PROJECT_FILES } from "../project";
+
+const CONTAINER_IMAGES = {
+  baseQuarkusProject: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl,
+  jdk11Mvn: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_openJdk11MvnImageFullUrl,
+};
+
+const DEFAULT_ENV = 'ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"';
 const DEPLOYMENTS_FOLDER = "/deployments";
 const SANDBOX_FOLDER = "/tmp/sandbox";
-const PROJECT_FOLDER = `${SANDBOX_FOLDER}/serverless-logic-sandbox`;
-const PROJECT_MAIN_RESOURCES = `${PROJECT_FOLDER}/src/main/resources`;
-const PROJECT_METAINF_RESOURCES = `${PROJECT_MAIN_RESOURCES}/META-INF/resources`;
-const QUARKUS_APP_FOLDER = `${PROJECT_FOLDER}/target/quarkus-app`;
-const POM_PATH = `${PROJECT_FOLDER}/pom.xml`;
 const MVNW_PATH = `${SANDBOX_FOLDER}/mvnw`;
 
-export function createDockerfileContent(): string {
+const resolveProjectPaths = (projectFolder: string) => ({
+  root: `${projectFolder}`,
+  mainResources: `${projectFolder}/src/main/resources`,
+  metaInfResources: `${projectFolder}/src/main/resources/META-INF/resources`,
+  quarkusApp: `${projectFolder}/target/quarkus-app`,
+  pom: `${projectFolder}/${PROJECT_FILES.pomXml}`,
+});
+
+export function createDockerfileContentForBaseQuarkusProjectImage(): string {
+  const projectFolder = `${SANDBOX_FOLDER}/serverless-logic-sandbox`;
+  const projectPaths = resolveProjectPaths(projectFolder);
   return `
-  FROM ${BASE_IMAGE}
-  ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms128m"
-  COPY . ${PROJECT_METAINF_RESOURCES}/
-  RUN ${MVNW_PATH} clean package -B -ntp -f ${POM_PATH} \
-    && cp ${QUARKUS_APP_FOLDER}/*.jar ${DEPLOYMENTS_FOLDER} \
-    && cp -R ${QUARKUS_APP_FOLDER}/lib/ ${DEPLOYMENTS_FOLDER} \
-    && cp -R ${QUARKUS_APP_FOLDER}/app/ ${DEPLOYMENTS_FOLDER} \
-    && cp -R ${QUARKUS_APP_FOLDER}/quarkus/ ${DEPLOYMENTS_FOLDER} \
+  FROM ${CONTAINER_IMAGES.baseQuarkusProject}
+  ${DEFAULT_ENV}
+  COPY . ${projectPaths.metaInfResources}/
+  RUN ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} \
+    && cp ${projectPaths.quarkusApp}/*.jar ${DEPLOYMENTS_FOLDER} \
+    && cp -R ${projectPaths.quarkusApp}/lib/ ${DEPLOYMENTS_FOLDER} \
+    && cp -R ${projectPaths.quarkusApp}/app/ ${DEPLOYMENTS_FOLDER} \
+    && cp -R ${projectPaths.quarkusApp}/quarkus/ ${DEPLOYMENTS_FOLDER} \
     && rm -fr ~/.m2
+  `;
+}
+
+export function createDockerfileContentForBaseJdk11MvnImage(projectName: string): string {
+  const sanitizedProjectName = projectName.replace(/[^A-Z0-9]/gi, "_"); // Replace whitespaces and special chars
+  const projectFolder = `${SANDBOX_FOLDER}/${sanitizedProjectName}`;
+  const projectPaths = resolveProjectPaths(projectFolder);
+  return `
+  FROM ${CONTAINER_IMAGES.jdk11Mvn}
+  ${DEFAULT_ENV}
+  RUN mkdir ${projectPaths.root}/
+  COPY --chown=185:root . ${projectPaths.root}/
+  RUN ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} \
+    && cp ${projectPaths.quarkusApp}/*.jar ${DEPLOYMENTS_FOLDER} \
+    && cp -R ${projectPaths.quarkusApp}/lib/ ${DEPLOYMENTS_FOLDER} \
+    && cp -R ${projectPaths.quarkusApp}/app/ ${DEPLOYMENTS_FOLDER} \
+    && cp -R ${projectPaths.quarkusApp}/quarkus/ ${DEPLOYMENTS_FOLDER} \
+    && rm -fr ~/.m2
+  `;
+}
+
+export function createDockerIgnoreContent(): string {
+  return `
+  ${PROJECT_FILES.dockerFile}
   `;
 }

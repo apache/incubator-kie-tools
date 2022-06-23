@@ -441,7 +441,7 @@ export function WorkspaceCard(props: { workspaceId: string; isSelected: boolean;
                     </FlexItem>
                     <FlexItem>
                       <Text component={TextVariants.p}>
-                        {`${workspace.files.length} file(s), ${editableFiles?.length} model(s)`}
+                        {`${editableFiles?.length} of ${workspace.files.length} editable file(s)`}
                       </Text>
                     </FlexItem>
                   </Flex>
@@ -551,7 +551,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
   const routes = useRoutes();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
 
-  const otherFiles = useMemo(
+  const readonlyFiles = useMemo(
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
@@ -559,7 +559,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
     [workspacePromise.data?.files]
   );
 
-  const models = useMemo(
+  const editableFiles = useMemo(
     () =>
       (workspacePromise.data?.files ?? [])
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))
@@ -588,7 +588,9 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
               <Flex>
                 <FlexItem>
                   <TextContent>
-                    <Text component={TextVariants.h3}>{`Models in '${workspacePromise.data?.descriptor.name}'`}</Text>
+                    <Text
+                      component={TextVariants.h3}
+                    >{`Editable files in '${workspacePromise.data?.descriptor.name}'`}</Text>
                   </TextContent>
                 </FlexItem>
                 <FlexItem>
@@ -629,7 +631,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
             </DrawerHead>
             <DrawerPanelBody>
               <DataList aria-label="models-data-list">
-                {models.map((file) => (
+                {editableFiles.map((file) => (
                   <Link
                     key={file.relativePath}
                     to={routes.workspaceWithFilePath.path({
@@ -643,14 +645,14 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                 ))}
               </DataList>
               <br />
-              {otherFiles.length > 0 && (
+              {readonlyFiles.length > 0 && (
                 <ExpandableSection
-                  toggleTextCollapsed="View other files"
-                  toggleTextExpanded="Hide other files"
+                  toggleTextCollapsed="View readonly files"
+                  toggleTextExpanded="Hide readonly files"
                   className={"plain"}
                 >
-                  <DataList aria-label="other-files-data-list">
-                    {otherFiles.map((file) => (
+                  <DataList aria-label="readonly-files-data-list">
+                    {readonlyFiles.map((file) => (
                       <Link
                         key={file.relativePath}
                         to={routes.workspaceWithFilePath.path({

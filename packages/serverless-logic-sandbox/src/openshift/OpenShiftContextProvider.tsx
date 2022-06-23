@@ -19,13 +19,18 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { GLOB_PATTERN } from "../extension";
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
+import { PROJECT_FILES } from "../project";
 import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsConfig";
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
 import { encoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { createDockerfileContent } from "./FileTemplate";
+import {
+  createDockerfileContentForBaseJdk11MvnImage,
+  createDockerfileContentForBaseQuarkusProjectImage,
+  createDockerIgnoreContent,
+} from "./FileTemplate";
 import { OpenShiftContext } from "./OpenShiftContext";
 import { OpenShiftDeployedModel } from "./OpenShiftDeployedModel";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
@@ -62,7 +67,11 @@ export function OpenShiftContextProvider(props: Props) {
   );
 
   const deploy = useCallback(
-    async (args: { workspaceFile: WorkspaceFile; shouldAttachKafkaSource: boolean }) => {
+    async (args: {
+      workspaceFile: WorkspaceFile;
+      shouldAttachKafkaSource: boolean;
+      shouldDeployAsProject: boolean;
+    }) => {
       if (!isOpenShiftConfigValid(settings.openshift.config)) {
         throw new Error("Invalid OpenShift config");
       }
@@ -70,24 +79,37 @@ export function OpenShiftContextProvider(props: Props) {
       try {
         const descriptor = await workspaces.descriptorService.get(args.workspaceFile.workspaceId);
         const fs = await workspaces.fsService.getFs(args.workspaceFile.workspaceId);
-        const filesToBeDeployed = await workspaces.getFiles({
-          fs,
-          workspaceId: args.workspaceFile.workspaceId,
-          globPattern: GLOB_PATTERN.sw,
-        });
+        const filesToBeDeployed = (
+          await workspaces.getFiles({
+            fs,
+            workspaceId: args.workspaceFile.workspaceId,
+            globPattern: !args.shouldDeployAsProject ? GLOB_PATTERN.sw : undefined,
+          })
+        ).filter((f) => f.name !== PROJECT_FILES.dockerIgnore);
 
         const workspaceName =
           filesToBeDeployed.length > 1 && descriptor.name !== NEW_WORKSPACE_DEFAULT_NAME
             ? descriptor.name
             : args.workspaceFile.name;
 
-        const dockerfile = new WorkspaceFile({
+        const dockerfileFile = new WorkspaceFile({
           workspaceId: args.workspaceFile.workspaceId,
-          relativePath: "Dockerfile",
-          getFileContents: async () => encoder.encode(createDockerfileContent()),
+          relativePath: PROJECT_FILES.dockerFile,
+          getFileContents: async () => {
+            const dockerfileContent = args.shouldDeployAsProject
+              ? createDockerfileContentForBaseJdk11MvnImage(workspaceName)
+              : createDockerfileContentForBaseQuarkusProjectImage();
+            return encoder.encode(dockerfileContent);
+          },
         });
 
-        filesToBeDeployed.push(dockerfile);
+        const dockerIgnoreFile = new WorkspaceFile({
+          workspaceId: args.workspaceFile.workspaceId,
+          relativePath: PROJECT_FILES.dockerIgnore,
+          getFileContents: async () => encoder.encode(createDockerIgnoreContent()),
+        });
+
+        filesToBeDeployed.push(dockerfileFile, dockerIgnoreFile);
 
         const zipBlob = await workspaces.prepareZipWithFiles({
           workspaceId: args.workspaceFile.workspaceId,

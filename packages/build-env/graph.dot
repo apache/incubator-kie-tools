@@ -75,6 +75,7 @@ digraph G {
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/openjdk11-mvn-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-sandbox" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-logic-sandbox-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -211,6 +212,7 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
+  "@kie-tools/openjdk11-mvn-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools-core/operating-system" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/patternfly-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools/pmml-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];

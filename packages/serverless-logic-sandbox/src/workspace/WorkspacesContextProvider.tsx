@@ -36,7 +36,7 @@ import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
-import { isSandboxAsset, SupportedFileExtensions } from "../extension";
+import { isModel, SupportedFileExtensions } from "../extension";
 import { useSettings } from "../settings/SettingsContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
@@ -91,7 +91,7 @@ export function WorkspacesContextProvider(props: Props) {
       }
 
       const suggestedFirstFile = files
-        .filter((file) => isSandboxAsset(file.relativePath))
+        .filter((file) => isModel(file.relativePath))
         .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
 
       if (!suggestedFirstFile) {

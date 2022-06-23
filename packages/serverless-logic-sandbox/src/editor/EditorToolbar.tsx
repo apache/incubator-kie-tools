@@ -90,6 +90,8 @@ import { FileSwitcher } from "./FileSwitcher";
 import { KieSandboxExtendedServicesButtons } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesButtons";
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
+import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
+
 export interface Props {
   alerts: AlertsController | undefined;
   alertsRef: (controller: AlertsController) => void;
@@ -1677,6 +1679,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
             }}
             currentFile={props.workspaceFile}
           />
+          <ConfirmDeployModal workspace={workspace} workspaceFile={props.workspaceFile} alerts={props.alerts} />
           <textarea ref={copyContentTextArea} style={{ height: 0, position: "absolute", zIndex: -1 }} />
           <a ref={downloadRef} />
           <a ref={downloadAllRef} />

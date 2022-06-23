@@ -46,7 +46,6 @@ import { SandboxSwfJsonLanguageService } from "./api/SandboxSwfJsonLanguageServi
 import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflowEditorChannelApiImpl";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
-import { ConfirmDeployModal } from "./Deploy/ConfirmDeployModal";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { EditorPageErrorPage } from "./EditorPageErrorPage";
 import { EditorToolbar } from "./EditorToolbar";
@@ -397,7 +396,6 @@ export function EditorPage(props: Props) {
                 </PageSection>
               </EditorPageDockDrawer>
             </Page>
-            <ConfirmDeployModal workspaceFile={file} alerts={alerts} />
           </>
         )}
       />

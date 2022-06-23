@@ -333,6 +333,31 @@ const ENV_VARS = {
     default: version,
     description: "",
   },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount",
+    default: "kie-tools",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName",
+    default: "openjdk11-mvn-image",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag",
+    default: "latest",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags",
+    default: "latest",
+    description: "",
+  },
 };
 
 module.exports = {
@@ -507,6 +532,13 @@ module.exports = {
       name: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageName),
       tag: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageTag),
       buildTags: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags),
+    },
+    openJdk11MvnImage: {
+      registry: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry),
+      account: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount),
+      name: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName),
+      tag: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag),
+      buildTags: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags),
     },
     kieSandboxExtendedServices: {
       compatibleVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion),
