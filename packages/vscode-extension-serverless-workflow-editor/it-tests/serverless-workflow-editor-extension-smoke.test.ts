@@ -39,12 +39,8 @@ describe("Serverless workflow editor - smoke integration tests", () => {
 
   afterEach(async function () {
     this.timeout(15000);
-    try {
-      await testHelper.closeAllEditors();
-      await testHelper.closeAllNotifications();
-    } catch (e) {
-      // noop
-    }
+    await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
   });
 
   it("Opens greetings.sw.json and loads two editor groups", async function () {
