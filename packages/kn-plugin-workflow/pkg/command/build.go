@@ -252,6 +252,7 @@ func getPushConfig(cfg BuildConfig) string {
 
 func getAddExtensionFriendlyMessages() []string {
 	return []string{
+		" Downloading extension...",
 		" Still downloading Quarkus extension",
 		" Still downloading Quarkus extension",
 		" Yes, still downloading Quarkus extension",
@@ -263,6 +264,7 @@ func getAddExtensionFriendlyMessages() []string {
 
 func getBuildFriendlyMessages() []string {
 	return []string{
+		" Building...",
 		" Still building",
 		" Still building",
 		" Yes, still building",

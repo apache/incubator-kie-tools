@@ -105,6 +105,7 @@ func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 
 func getDeployFriendlyMessages() []string {
 	return []string{
+		" Deploying...",
 		" Still deploying",
 		" Still deploying",
 		" Yes, still deploying",

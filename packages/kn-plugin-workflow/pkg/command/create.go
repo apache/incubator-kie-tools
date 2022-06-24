@@ -171,6 +171,7 @@ func generateWorkflow(cfg CreateConfig) (err error) {
 
 func getCreateFriendlyMessages() []string {
 	return []string{
+		" Creating...",
 		" Still creating project",
 		" Still creating project",
 		" Yes, still creating project",

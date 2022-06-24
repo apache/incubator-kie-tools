@@ -49,7 +49,7 @@ func RunCommand(command *exec.Cmd, verbose bool, errorMessage string, friendlyMe
 		VerboseLog(stdout, stderr)
 	} else {
 		s.Start()
-		s.Suffix = " Building..."
+		s.Suffix = friendlyMessages[0]
 		printBuildActivity(ctx, s, friendlyMessages)
 	}
 
@@ -75,7 +75,7 @@ func bla() bool {
 }
 
 func printBuildActivity(ctx context.Context, s *spinner.Spinner, friendlyMessages []string) {
-	i := 0
+	i := 1
 	ticker := time.NewTicker(10 * time.Second)
 	go func() {
 		for {
