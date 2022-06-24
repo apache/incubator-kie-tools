@@ -100,6 +100,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		"create Quarkus project failed with error",
 		getCreateFriendlyMessages(),
 	); err != nil {
+		fmt.Println("Check the full logs with the [-v | --verbose] flag")
 		return fmt.Errorf("%w", err)
 	}
 

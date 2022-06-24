@@ -57,7 +57,7 @@ DESCRIPTION
 	cmd.Flags().StringP("name", "n", "", fmt.Sprintf("%s image name", cmd.Name()))
 	cmd.Flags().StringP("tag", "t", "", fmt.Sprintf("%s image tag", cmd.Name()))
 
-	cmd.Flags().Bool("jib", false, fmt.Sprintf("%s build using Jib extension", cmd.Name()))
+	cmd.Flags().Bool("jib", false, fmt.Sprintf("%s use Jib extension to create the image", cmd.Name()))
 	cmd.Flags().Bool("push", false, fmt.Sprintf("%s push", cmd.Name()))
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
@@ -174,6 +174,10 @@ func runBuildImage(cfg BuildConfig) error {
 		"build command failed with error",
 		getBuildFriendlyMessages(),
 	); err != nil {
+		if cfg.Push {
+			fmt.Println("Error building the image, it might be due to missing registry authentication")
+		}
+		fmt.Println("Check the full logs with the [-v | --verbose] flag")
 		return fmt.Errorf("%w", err)
 	}
 

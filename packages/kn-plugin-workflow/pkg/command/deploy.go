@@ -79,6 +79,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		"creating knative service failed with error",
 		getDeployFriendlyMessages(),
 	); err != nil {
+		fmt.Println("Check the full logs with the [-v | --verbose] flag")
 		return fmt.Errorf("%w", err)
 	}
 	fmt.Println("✅ Knative service sucessufully created")
@@ -91,10 +92,12 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			"creating knative events binding failed with error",
 			getDeployFriendlyMessages(),
 		); err != nil {
+			fmt.Println("Check the full logs with the [-v | --verbose] flag")
 			return fmt.Errorf("%w", err)
 		}
 		fmt.Println("✅ Knative events binding sucessufully created")
 	} else if err != nil {
+		fmt.Println("Check the full logs with the [-v | --verbose] flag")
 		return fmt.Errorf("%w", err)
 	}
 
