@@ -2294,6 +2294,53 @@ importers:
       "@kie-tools/build-env": link:../build-env
       monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
 
+  packages/vscode-extension-yard-editor:
+    specifiers:
+      "@kie-tools-core/backend": 0.0.0
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/vscode-extension": 0.0.0
+      "@kie-tools-core/vscode-java-code-completion": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/yard-editor": 0.0.0
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^3.2.1
+      openapi-types: ^7.0.1
+      vscode-languageserver-textdocument: ^1.0.4
+      vscode-languageserver-types: ^3.16.0
+      yaml: ^2.0.1
+    dependencies:
+      "@kie-tools-core/backend": link:../backend
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/vscode-extension": link:../vscode-extension
+      "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/yard-editor": link:../yard-editor
+      monaco-editor: registry.npmjs.org/monaco-editor/0.33.0
+      monaco-yaml: registry.npmjs.org/monaco-yaml/3.2.1_monaco-editor@0.33.0
+      openapi-types: registry.npmjs.org/openapi-types/7.2.3
+      vscode-languageserver-textdocument: registry.npmjs.org/vscode-languageserver-textdocument/1.0.4
+      vscode-languageserver-types: registry.npmjs.org/vscode-languageserver-types/3.16.0
+      yaml: registry.npmjs.org/yaml/2.0.1
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm
+
   packages/vscode-java-code-completion:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
