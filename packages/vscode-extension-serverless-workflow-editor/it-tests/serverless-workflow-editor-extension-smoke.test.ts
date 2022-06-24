@@ -59,8 +59,8 @@ describe("Serverless workflow editor - smoke integration tests", () => {
     assert.equal(await textEditor.getNumberOfLines(), 81);
 
     // fined elements, asserts they exist
-    const svg = await swfEditor.getSvgElement();
-    const mermaid = await swfEditor.getMermeaidDivElement();
+    await swfEditor.getSvgElement();
+    await swfEditor.getMermeaidDivElement();
 
     // expect 7 states /w end and start
     const stateElements = await swfEditor.getAllStateNodes();
