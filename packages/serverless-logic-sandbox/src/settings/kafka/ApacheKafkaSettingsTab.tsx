@@ -112,7 +112,13 @@ export function ApacheKafkaSettingsTab() {
                   <Alert
                     variant="danger"
                     title={
-                      "Connect to KIE Sandbox Extended Services before configuring your Streams for Apache Kafka instance"
+                      <Text>
+                        Connect to{" "}
+                        <a onClick={() => settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES)}>
+                          KIE Sandbox Extended Services
+                        </a>{" "}
+                        before configuring your Streams for Apache Kafka instance
+                      </Text>
                     }
                     aria-live="polite"
                     isInline

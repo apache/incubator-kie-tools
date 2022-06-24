@@ -96,7 +96,19 @@ export function KieSandboxExtendedServicesSettingsTab() {
                 <FormAlert>
                   <Alert
                     variant="danger"
-                    title={"You are not connected to KIE Sandbox Extended Services"}
+                    title={
+                      <Text>
+                        You are not connected to KIE Sandbox Extended Services.{" "}
+                        <a
+                          onClick={() => {
+                            kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
+                            kieSandboxExtendedServices.setModalOpen(true);
+                          }}
+                        >
+                          Click to setup
+                        </a>
+                      </Text>
+                    }
                     aria-live="polite"
                     isInline
                   />

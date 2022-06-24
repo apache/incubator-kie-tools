@@ -40,6 +40,7 @@ export function KieSandboxExtendedServicesIcon() {
     if (!kieSandboxExtendedServices.outdated) {
       return;
     }
+    kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
     kieSandboxExtendedServices.setModalOpen(true);
   }, [settingsDispatch, kieSandboxExtendedServices]);
 

@@ -286,7 +286,7 @@ export const en: AppI18n = {
       use: {
         title: "All set! 🎉",
         connected: `You're connected to the ${en_common.names.kieSandboxExtendedServices}.`,
-        backToEditor: "Back to Editor",
+        backToSandbox: "Back to Sandbox",
       },
     },
     button: {

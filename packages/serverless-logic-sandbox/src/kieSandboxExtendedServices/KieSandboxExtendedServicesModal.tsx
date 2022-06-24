@@ -56,7 +56,6 @@ const FEDORA_APP_INDICATOR_LIB = "dnf install libappindicator-gtk3";
 
 export function KieSandboxExtendedServicesModal() {
   const { i18n } = useAppI18n();
-  const routes = useRoutes();
   const [operatingSystem, setOperatingSystem] = useState(getOperatingSystem() ?? OperatingSystem.LINUX);
   const [modalPage, setModalPage] = useState<ModalPage>(ModalPage.INITIAL);
   const kieSandboxExtendedServices = useKieSandboxExtendedServices();
@@ -626,22 +625,23 @@ export function KieSandboxExtendedServicesModal() {
     if (
       [KieSandboxExtendedServicesStatus.NOT_RUNNING, KieSandboxExtendedServicesStatus.AVAILABLE].includes(
         kieSandboxExtendedServices.status
-      )
+      ) &&
+      kieSandboxExtendedServices.installTriggeredBy
     ) {
       setModalPage(ModalPage.INITIAL);
-    } else if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.STOPPED) {
-      setModalPage(ModalPage.WIZARD);
     } else if (kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.RUNNING) {
       setModalPage(ModalPage.USE);
-    }
-
-    if (kieSandboxExtendedServices.outdated) {
+    } else {
       setModalPage(ModalPage.WIZARD);
     }
-  }, [kieSandboxExtendedServices.status, kieSandboxExtendedServices.outdated]);
+  }, [
+    kieSandboxExtendedServices.status,
+    kieSandboxExtendedServices.outdated,
+    kieSandboxExtendedServices.installTriggeredBy,
+  ]);
 
   const onClose = useCallback(() => {
-    setModalPage(ModalPage.INITIAL);
+    kieSandboxExtendedServices.setInstallTriggeredBy(undefined);
     kieSandboxExtendedServices.setModalOpen(false);
     if (
       kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.STOPPED ||
@@ -716,25 +716,23 @@ export function KieSandboxExtendedServicesModal() {
               <Text component={TextVariants.h1}>{i18n.names.devSandbox}</Text>
             </TextContent>
           </div>
-          {kieSandboxExtendedServices.installTriggeredBy === DependentFeature.OPENSHIFT && (
-            <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row" style={{ marginTop: "16px" }}>
-              <div>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <I18nHtml>{i18n.openshift.introduction.explanation}</I18nHtml>
+          <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row" style={{ marginTop: "16px" }}>
+            <div>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  <I18nHtml>{i18n.openshift.introduction.explanation}</I18nHtml>
+                </Text>
+              </TextContent>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
+                    {i18n.openshift.common.learnMore}&nbsp;&nbsp;
+                    <ExternalLinkAltIcon />
                   </Text>
-                </TextContent>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    <Text component={TextVariants.a} href={DEVELOPER_SANDBOX_URL} target={"_blank"}>
-                      {i18n.openshift.common.learnMore}&nbsp;&nbsp;
-                      <ExternalLinkAltIcon />
-                    </Text>
-                  </Text>
-                </TextContent>
-              </div>
+                </Text>
+              </TextContent>
             </div>
-          )}
+          </div>
         </div>
       )}
       {modalPage === ModalPage.WIZARD && (
@@ -781,7 +779,7 @@ export function KieSandboxExtendedServicesModal() {
               onClick={onClose}
               className={"kogito--editor__kie-sandbox-extended-services-modal-use-margin"}
             >
-              {i18n.kieSandboxExtendedServices.modal.use.backToEditor}
+              {i18n.kieSandboxExtendedServices.modal.use.backToSandbox}
             </Button>
           </div>
         </div>

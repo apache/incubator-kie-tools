@@ -33,7 +33,7 @@ export interface KieSandboxExtendedServicesContextType {
   isModalOpen: boolean;
   setModalOpen: React.Dispatch<boolean>;
   installTriggeredBy?: DependentFeature;
-  setInstallTriggeredBy: React.Dispatch<React.SetStateAction<DependentFeature>>;
+  setInstallTriggeredBy: React.Dispatch<React.SetStateAction<DependentFeature | undefined>>;
 }
 
 export const KieSandboxExtendedServicesContext = React.createContext<KieSandboxExtendedServicesContextType>({} as any);

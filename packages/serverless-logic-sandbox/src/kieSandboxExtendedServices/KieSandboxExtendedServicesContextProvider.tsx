@@ -89,6 +89,7 @@ export function KieSandboxExtendedServicesContextProvider(props: Props) {
       detectCrashesOrStops = window.setInterval(() => {
         bridge.check().catch(() => {
           setStatus(KieSandboxExtendedServicesStatus.STOPPED);
+          setInstallTriggeredBy(undefined);
           setModalOpen(true);
           window.clearInterval(detectCrashesOrStops);
         });

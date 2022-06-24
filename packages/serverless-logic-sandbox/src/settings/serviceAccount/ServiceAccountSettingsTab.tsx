@@ -31,6 +31,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsTabs } from "../SettingsModalBody";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
 
 export function ServiceAccountSettingsTab() {
@@ -118,7 +119,15 @@ export function ServiceAccountSettingsTab() {
                 <FormAlert>
                   <Alert
                     variant="danger"
-                    title={"Connect to KIE Sandbox Extended Services before configuring your Service Account"}
+                    title={
+                      <Text>
+                        Connect to{" "}
+                        <a onClick={() => settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES)}>
+                          KIE Sandbox Extended Services
+                        </a>{" "}
+                        before configuring your Service Account
+                      </Text>
+                    }
                     aria-live="polite"
                     isInline
                   />

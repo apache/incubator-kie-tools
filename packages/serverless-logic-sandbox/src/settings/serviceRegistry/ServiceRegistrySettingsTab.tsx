@@ -31,6 +31,7 @@ import { useCallback, useMemo, useState } from "react";
 import { useKieSandboxExtendedServices } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { useSettings, useSettingsDispatch } from "../SettingsContext";
+import { SettingsTabs } from "../SettingsModalBody";
 import {
   EMPTY_CONFIG,
   isServiceRegistryConfigValid,
@@ -117,7 +118,15 @@ export function ServiceRegistrySettingsTab() {
                 <FormAlert>
                   <Alert
                     variant="danger"
-                    title={"Connect to KIE Sandbox Extended Services before configuring your Service Registry instance"}
+                    title={
+                      <Text>
+                        Connect to{" "}
+                        <a onClick={() => settingsDispatch.open(SettingsTabs.KIE_SANDBOX_EXTENDED_SERVICES)}>
+                          KIE Sandbox Extended Services
+                        </a>{" "}
+                        before configuring your Service Registry instance
+                      </Text>
+                    }
                     aria-live="polite"
                     isInline
                   />
@@ -216,6 +225,13 @@ export function ServiceRegistrySettingsTab() {
                   </InputGroupText>
                 </InputGroup>
               </FormGroup>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  <b>Note</b>: You must also provide{" "}
+                  <a onClick={() => settingsDispatch.open(SettingsTabs.SERVICE_ACCOUNT)}>Service Account</a> information
+                  so the connection with your Service Registry instance can be properly established.
+                </Text>
+              </TextContent>
               <ActionGroup>
                 <Button
                   isDisabled={!isCurrentConfigValid}

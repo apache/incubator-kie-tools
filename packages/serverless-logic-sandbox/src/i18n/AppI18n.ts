@@ -248,7 +248,7 @@ interface AppDictionary extends ReferenceDictionary {
       use: {
         title: string;
         connected: string;
-        backToEditor: string;
+        backToSandbox: string;
       };
     };
     button: {
