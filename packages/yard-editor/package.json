@@ -15,8 +15,9 @@
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && pnpm copy:css && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "cy:open": "pnpm cypress open --project it-tests",
     "cy:run": "pnpm cypress run -b chrome --project it-tests",
