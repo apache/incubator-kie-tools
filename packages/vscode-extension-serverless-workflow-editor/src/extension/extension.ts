@@ -22,16 +22,14 @@ import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
 import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
-import { RhhccAuthenticationStore } from "./rhhcc/RhhccAuthenticationStore";
 import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
-import { RhhccServiceRegistryServiceCatalogStore } from "./serviceCatalog/rhhccServiceRegistry/RhhccServiceRegistryServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
 import { COMMAND_IDS } from "./commandIds";
-import { setupRhhccAuthenticationStore } from "./rhhcc/setupRhhccAuthenticationStore";
+import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -46,21 +44,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const configuration = new SwfVsCodeExtensionConfiguration();
 
-  const rhhccAuthenticationStore = new RhhccAuthenticationStore();
-
-  const rhhccServiceRegistryServiceCatalogStore = new RhhccServiceRegistryServiceCatalogStore({
-    rhhccAuthenticationStore,
+  const serviceRegistriesStore = new ServiceRegistriesStore({
     configuration,
-  });
-
-  await setupRhhccAuthenticationStore({
     context,
-    configuration,
-    rhhccAuthenticationStore,
-    rhhccServiceRegistryServiceCatalogStore,
   });
 
-  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ rhhccServiceRegistryServiceCatalogStore });
+  const swfServiceCatalogGlobalStore = new SwfServiceCatalogStore({ serviceRegistriesStore: serviceRegistriesStore });
   await swfServiceCatalogGlobalStore.init();
   console.info(
     `SWF Service Catalog global store successfully initialized with ${swfServiceCatalogGlobalStore.storedServices.length} services.`
@@ -68,9 +57,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const vsCodeSwfLanguageService = new VsCodeSwfLanguageService({
     configuration,
-    rhhccAuthenticationStore,
     swfServiceCatalogGlobalStore,
   });
+
   context.subscriptions.push(vsCodeSwfLanguageService);
 
   const swfServiceCatalogSupportActions = new SwfServiceCatalogSupportActions({
@@ -87,7 +76,7 @@ export async function activate(context: vscode.ExtensionContext) {
     silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
-        "sw",
+        "swf",
         "**/*.sw.+(json|yml|yaml)",
         "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
         "dist/webview/editors/serverless-workflow"
@@ -95,7 +84,6 @@ export async function activate(context: vscode.ExtensionContext) {
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
       configuration,
-      rhhccAuthenticationStore,
       swfLanguageService: vsCodeSwfLanguageService.ls,
       swfServiceCatalogSupportActions,
     }),
@@ -106,13 +94,13 @@ export async function activate(context: vscode.ExtensionContext) {
     context,
     swfLanguageService: vsCodeSwfLanguageService.ls,
     configuration,
-    swfServiceCatalogGlobalStore,
     swfServiceCatalogSupportActions,
   });
 
   setupServiceRegistryIntegrationCommands({
     context,
     configuration,
+    serviceRegistryStore: serviceRegistriesStore,
   });
 
   await setupDiagramEditorControls({

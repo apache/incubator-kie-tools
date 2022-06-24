@@ -29,18 +29,15 @@ export interface SwfLanguageServiceChannelApi {
 }
 
 export type SwfLanguageServiceCommandTypes =
-  | "swf.ls.commands.LogInToRhhcc"
-  | "swf.ls.commands.SetupServiceRegistryUrl"
-  | "swf.ls.commands.RefreshServiceCatalogFromRhhcc"
   | "swf.ls.commands.ImportFunctionFromCompletionItem"
   | "swf.ls.commands.OpenFunctionsWidget"
   | "swf.ls.commands.OpenStatesWidget"
-  | "swf.ls.commands.OpenFunctionsCompletionItems";
+  | "swf.ls.commands.OpenFunctionsCompletionItems"
+  | "swf.ls.commands.OpenServiceRegistriesConfig"
+  | "swf.ls.commands.LogInServiceRegistries"
+  | "swf.ls.commands.RefreshServiceRegistries";
 
 export type SwfLanguageServiceCommandArgs = {
-  "swf.ls.commands.LogInToRhhcc": {};
-  "swf.ls.commands.SetupServiceRegistryUrl": {};
-  "swf.ls.commands.RefreshServiceCatalogFromRhhcc": {};
   "swf.ls.commands.ImportFunctionFromCompletionItem": {
     containingService: SwfServiceCatalogService;
     documentUri: string;
@@ -48,6 +45,9 @@ export type SwfLanguageServiceCommandArgs = {
   "swf.ls.commands.OpenFunctionsWidget": { position: Position };
   "swf.ls.commands.OpenStatesWidget": { position: Position };
   "swf.ls.commands.OpenFunctionsCompletionItems": { newCursorPosition: Position };
+  "swf.ls.commands.OpenServiceRegistriesConfig": {};
+  "swf.ls.commands.LogInServiceRegistries": {};
+  "swf.ls.commands.RefreshServiceRegistries": {};
 };
 
 export type SwfLanguageServiceCommandIds = Record<SwfLanguageServiceCommandTypes, string>;

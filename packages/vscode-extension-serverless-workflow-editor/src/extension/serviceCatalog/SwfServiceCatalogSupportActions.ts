@@ -19,10 +19,10 @@ import {
   SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
-import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./rhhccServiceRegistry";
 import { posix as posixPath } from "path";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
+import { getServiceFileNameFromSwfServiceCatalogServiceId } from "./serviceRegistry";
 
 const encoder = new TextEncoder();
 
@@ -34,11 +34,6 @@ export class SwfServiceCatalogSupportActions {
     }
   ) {}
 
-  public refresh(): void {
-    vscode.window.setStatusBarMessage("Serverless Workflow Editor: Refreshing...");
-    this.args.swfServiceCatalogGlobalStore.refresh().then(() => vscode.window.setStatusBarMessage(""));
-  }
-
   public importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
@@ -47,7 +42,11 @@ export class SwfServiceCatalogSupportActions {
       return;
     }
 
-    const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(args.containingService.source.id);
+    const serviceFileName = getServiceFileNameFromSwfServiceCatalogServiceId(
+      args.containingService.source.registry,
+      args.containingService.source.id
+    );
+
     const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath({
       baseFileAbsolutePosixPath: vscode.Uri.parse(args.documentUri).path,
     });
