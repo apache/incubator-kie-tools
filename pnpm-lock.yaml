@@ -2329,17 +2329,17 @@ importers:
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/yard-editor": link:../yard-editor
-      monaco-editor: registry.npmjs.org/monaco-editor/0.33.0
-      monaco-yaml: registry.npmjs.org/monaco-yaml/3.2.1_monaco-editor@0.33.0
-      openapi-types: registry.npmjs.org/openapi-types/7.2.3
-      vscode-languageserver-textdocument: registry.npmjs.org/vscode-languageserver-textdocument/1.0.4
-      vscode-languageserver-types: registry.npmjs.org/vscode-languageserver-types/3.16.0
-      yaml: registry.npmjs.org/yaml/2.0.1
+      monaco-editor: 0.33.0
+      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      openapi-types: 7.2.3
+      vscode-languageserver-textdocument: 1.0.4
+      vscode-languageserver-types: 3.16.0
+      yaml: 2.0.1
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: registry.npmjs.org/monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
 
   packages/vscode-java-code-completion:
     specifiers:
