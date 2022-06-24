@@ -20,10 +20,7 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { YardEditorChannelApiProducer } from "./YardEditorChannelApiProducer";
-import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
-import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
-import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
+import { YardVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
 import { COMMAND_IDS } from "./commandIds";
 
@@ -38,11 +35,11 @@ export async function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  const configuration = new SwfVsCodeExtensionConfiguration();
+  const configuration = new YardVsCodeExtensionConfiguration();
 
   const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
-    extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
+    extensionName: "kie-group.vscode-extension-yard-editor",
     context: context,
     viewType: WEBVIEW_EDITOR_VIEW_TYPE,
     generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
@@ -55,26 +52,7 @@ export async function activate(context: vscode.ExtensionContext) {
         "dist/webview/editors/yard"
       ),
     ]),
-    channelApiProducer: new YardEditorChannelApiProducer({
-      configuration,
-      rhhccAuthenticationStore,
-      swfLanguageService: vsCodeSwfLanguageService.ls,
-      swfServiceCatalogSupportActions,
-    }),
     backendProxy,
-  });
-
-  setupBuiltInVsCodeEditorSwfContributions({
-    context,
-    swfLanguageService: vsCodeSwfLanguageService.ls,
-    configuration,
-    swfServiceCatalogGlobalStore,
-    swfServiceCatalogSupportActions,
-  });
-
-  setupServiceRegistryIntegrationCommands({
-    context,
-    configuration,
   });
 
   await setupDiagramEditorControls({
