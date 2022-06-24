@@ -156,7 +156,10 @@ func runBuildImage(cfg BuildConfig) error {
 	builderConfig := getBuilderConfig(cfg)
 	pushConfig := getPushConfig(cfg)
 
-	build := exec.Command("./mvnw", "package", "-Dquarkus.container-image.build=true",
+	build := exec.Command("./mvnw", "package",
+		"-Dquarkus.kubernetes.deployment-target=knative",
+		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
+		"-Dquarkus.container-image.build=true",
 		fmt.Sprintf("-Dquarkus.container-image.registry=%s", registry),
 		fmt.Sprintf("-Dquarkus.container-image.group=%s", group),
 		fmt.Sprintf("-Dquarkus.container-image.name=%s", name),

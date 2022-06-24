@@ -29,7 +29,7 @@ import (
 
 const (
 	quarkusDefaultVersion            = "2.9.2.Final"
-	quarkusDefaultWorkflowExtensions = "kogito-quarkus-serverless-workflow,resteasy-reactive-jackson"
+	quarkusDefaultWorkflowExtensions = "kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,resteasy-reactive-jackson,quarkus-kubernetes"
 )
 
 func NewCreateCommand() *cobra.Command {
@@ -103,7 +103,6 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("%w", err)
 	}
 
-	generateConfigYaml(cfg)
 	generateWorkflow(cfg)
 
 	finish := time.Since(start)
@@ -136,18 +135,11 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	return
 }
 
-func generateConfigYaml(cfg CreateConfig) (err error) {
-	if err := CreateConfigYaml(cfg); err != nil {
-		return fmt.Errorf("%w", err)
-	}
-	return
-}
-
 func generateWorkflow(cfg CreateConfig) (err error) {
 	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
 	data := []byte(`{
 	"id": "hello",
-	"specVersion": "1.0",
+	"specVersion": "0.8.0",
 	"name": "Hello World",
 	"start": "HelloWorld",
 	"states": [

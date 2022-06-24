@@ -17,6 +17,7 @@
 package command
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -43,14 +44,14 @@ DESCRIPTION
 	
 	$ {{.Name}} deploy
 	`,
-		PreRunE: common.BindEnv("file"),
+		PreRunE: common.BindEnv("path"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runDeploy(cmd, args)
 	}
 
-	cmd.Flags().StringP("file", "f", "config.yaml", fmt.Sprintf("%s config deploy file", cmd.Name()))
+	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deploy files", cmd.Name()))
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -71,13 +72,29 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		os.Exit(1)
 	}
 
-	deploy := exec.Command("kubectl", "apply", "-f", cfg.FilePath)
+	createService := exec.Command("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
 	if err := common.RunCommand(
-		deploy,
+		createService,
 		cfg.Verbose,
-		"deploy command failed with error",
+		"creating knative service failed with error",
 		getDeployFriendlyMessages(),
 	); err != nil {
+		return fmt.Errorf("%w", err)
+	}
+	fmt.Println("✅ Knative service sucessufully created")
+
+	if exists, err := checkIfKogitoJsonExists(cfg); exists && err == nil {
+		deploy := exec.Command("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
+		if err := common.RunCommand(
+			deploy,
+			cfg.Verbose,
+			"creating knative events binding failed with error",
+			getDeployFriendlyMessages(),
+		); err != nil {
+			return fmt.Errorf("%w", err)
+		}
+		fmt.Println("✅ Knative events binding sucessufully created")
+	} else if err != nil {
 		return fmt.Errorf("%w", err)
 	}
 
@@ -88,7 +105,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 
 type DeployConfig struct {
 	// Deploy options
-	FilePath string // service name
+	Path string // service name
 
 	// Plugin options
 	Verbose bool
@@ -96,11 +113,21 @@ type DeployConfig struct {
 
 func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 	cfg = DeployConfig{
-		FilePath: viper.GetString("file"),
+		Path: viper.GetString("path"),
 
 		Verbose: viper.GetBool("verbose"),
 	}
 	return
+}
+
+func checkIfKogitoJsonExists(cfg DeployConfig) (bool, error) {
+	if _, err := os.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
+		return true, nil
+	} else if errors.Is(err, os.ErrNotExist) {
+		return false, nil
+	} else {
+		return false, fmt.Errorf("%w", err)
+	}
 }
 
 func getDeployFriendlyMessages() []string {
