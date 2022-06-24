@@ -14,31 +14,9 @@
  * limitations under the License.
  */
 
-import {
-  CodeLens,
-  CompletionItem,
-  CompletionItemKind,
-  InsertTextFormat,
-  Position,
-  Range,
-} from "vscode-languageserver-types";
 import * as jsonc from "jsonc-parser";
-import { JSONPath } from "jsonc-parser";
-import { posix as posixPath } from "path";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
-  SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
-import * as swfModelQueries from "./modelQueries";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { getLanguageService, JSONDocument, LanguageService, TextDocument } from "vscode-json-languageservice";
-import * as ls from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { FileLanguage } from "../editor";
+import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode } from "./SwfLanguageService";
 
 export class SwfJsonLanguageService extends SwfLanguageService {
   fileLanguage = FileLanguage.JSON;
@@ -46,5 +24,9 @@ export class SwfJsonLanguageService extends SwfLanguageService {
 
   constructor(args: SwfLanguageServiceArgs) {
     super(args);
+  }
+
+  protected parseContent(content: string): SwfLSNode | undefined {
+    return jsonc.parseTree(content);
   }
 }

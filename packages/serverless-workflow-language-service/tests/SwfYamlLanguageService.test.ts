@@ -88,7 +88,7 @@ describe("SWF LS YAML", () => {
     expect(codeLenses).toStrictEqual([]);
   });
 
-  test("functions code lenses (add function - formatted)", async () => {
+  test.only("functions code lenses (add function - formatted)", async () => {
     const ls = new SwfYamlLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,

@@ -36,7 +36,17 @@ import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { FileLanguage } from "../editor";
+
+export declare type SwfLSNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
+export type SwfLSNode = {
+  type: SwfLSNodeType;
+  value?: any;
+  offset: number;
+  length: number;
+  colonOffset?: number;
+  parent?: SwfLSNode;
+  children?: SwfLSNode[];
+};
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -72,6 +82,8 @@ export abstract class SwfLanguageService {
 
   constructor(private readonly args: SwfLanguageServiceArgs) {}
 
+  protected abstract parseContent(content: string): SwfLSNode | undefined;
+
   public async getCompletionItems(args: {
     content: string;
     uri: string;
@@ -79,7 +91,7 @@ export abstract class SwfLanguageService {
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.fileLanguage, 0, args.content);
-    const rootNode = jsonc.parseTree(args.content);
+    const rootNode = this.parseContent(args.content);
     if (!rootNode) {
       return [];
     }
@@ -164,12 +176,12 @@ export abstract class SwfLanguageService {
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
     const document = TextDocument.create(args.uri, this.fileLanguage, 0, args.content);
 
-    const rootNode = jsonc.parseTree(document.getText());
+    const rootNode = this.parseContent(document.getText());
     if (!rootNode) {
       return [];
     }
 
-    const addFunction = createCodeLenses({
+    const addFunction = this.createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -193,7 +205,7 @@ export abstract class SwfLanguageService {
       },
     });
 
-    const setupServiceRegistries = createCodeLenses({
+    const setupServiceRegistries = this.createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -217,7 +229,7 @@ export abstract class SwfLanguageService {
       },
     });
 
-    const logInServiceRegistries = createCodeLenses({
+    const logInServiceRegistries = this.createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -245,7 +257,7 @@ export abstract class SwfLanguageService {
       },
     });
 
-    const refreshServiceRegistries = createCodeLenses({
+    const refreshServiceRegistries = this.createCodeLenses({
       document,
       rootNode,
       jsonPath: ["functions"],
@@ -327,6 +339,88 @@ export abstract class SwfLanguageService {
       throw new Error("Unknown Service Catalog function source type");
     }
   }
+
+  // This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
+  // This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
+  public findNodesAtLocation(root: SwfLSNode | undefined, path: JSONPath): SwfLSNode[] {
+    if (!root) {
+      return [];
+    }
+
+    let nodes: SwfLSNode[] = [root];
+
+    for (const segment of path) {
+      if (segment === "*") {
+        nodes = nodes.flatMap((s) => s.children ?? []);
+        continue;
+      }
+
+      if (typeof segment === "number") {
+        const index = segment as number;
+        nodes = nodes.flatMap((n) => {
+          if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
+            return [];
+          }
+
+          return [n.children[index]];
+        });
+      }
+
+      if (typeof segment === "string") {
+        nodes = nodes.flatMap((n) => {
+          if (n.type !== "object" || !Array.isArray(n.children)) {
+            return [];
+          }
+
+          for (const prop of n.children) {
+            if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
+              return [prop.children[1]];
+            }
+          }
+
+          return [];
+        });
+      }
+    }
+
+    return nodes;
+  }
+
+  public createCodeLenses(args: {
+    document: TextDocument;
+    rootNode: SwfLSNode;
+    jsonPath: JSONPath;
+    commandDelegates: (args: {
+      position: Position;
+      node: SwfLSNode;
+    }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
+    positionLensAt: "begin" | "end";
+  }): CodeLens[] {
+    const nodes = this.findNodesAtLocation(args.rootNode, args.jsonPath);
+    const codeLenses = nodes.flatMap((node) => {
+      // Only position at the end if the type is object or array and has at least one child.
+      const position =
+        args.positionLensAt === "end" &&
+        (node.type === "object" || node.type === "array") &&
+        (node.children?.length ?? 0) > 0
+          ? args.document.positionAt(node.offset + node.length)
+          : args.document.positionAt(node.offset);
+
+      return args.commandDelegates({ position, node }).map((command) => ({
+        command: {
+          command: command.name,
+          title: command.title,
+          arguments: command.args,
+        },
+        range: {
+          start: position,
+          end: position,
+        },
+      }));
+    });
+
+    return codeLenses;
+  }
 }
 
 type SwfCompletionItemServiceCatalogFunction = SwfServiceCatalogFunction & { operation: string };
@@ -340,10 +434,10 @@ const completions = new Map<
     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
     document: TextDocument;
     cursorPosition: Position;
-    currentNode: jsonc.Node;
+    currentNode: SwfLSNode;
     overwriteRange: Range;
     currentNodePosition: { start: Position; end: Position };
-    rootNode: jsonc.Node;
+    rootNode: SwfLSNode;
     langServiceConfig: SwfLanguageServiceConfig;
   }) => Promise<CompletionItem[]>
 >([
@@ -594,85 +688,84 @@ function toCompletionItemLabel(namespace: string, resource: string, operation: s
   return `${namespace}»${resource}#${operation}`;
 }
 
-function createCodeLenses(args: {
-  document: TextDocument;
-  rootNode: jsonc.Node;
-  jsonPath: JSONPath;
-  commandDelegates: (args: {
-    position: Position;
-    node: jsonc.Node;
-  }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
-  positionLensAt: "begin" | "end";
-}): CodeLens[] {
-  const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
-  const codeLenses = nodes.flatMap((node) => {
-    // Only position at the end if the type is object or array and has at least one child.
-    const position =
-      args.positionLensAt === "end" &&
-      (node.type === "object" || node.type === "array") &&
-      (node.children?.length ?? 0) > 0
-        ? args.document.positionAt(node.offset + node.length)
-        : args.document.positionAt(node.offset);
-
-    return args.commandDelegates({ position, node }).map((command) => ({
-      command: {
-        command: command.name,
-        title: command.title,
-        arguments: command.args,
-      },
-      range: {
-        start: position,
-        end: position,
-      },
-    }));
-  });
-
-  debugger;
-  return codeLenses;
-}
+// function createCodeLenses(args: {
+//   document: TextDocument;
+//   rootNode: jsonc.Node;
+//   jsonPath: JSONPath;
+//   commandDelegates: (args: {
+//     position: Position;
+//     node: jsonc.Node;
+//   }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
+//   positionLensAt: "begin" | "end";
+// }): CodeLens[] {
+//   const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
+//   const codeLenses = nodes.flatMap((node) => {
+//     // Only position at the end if the type is object or array and has at least one child.
+//     const position =
+//       args.positionLensAt === "end" &&
+//       (node.type === "object" || node.type === "array") &&
+//       (node.children?.length ?? 0) > 0
+//         ? args.document.positionAt(node.offset + node.length)
+//         : args.document.positionAt(node.offset);
+//
+//     return args.commandDelegates({ position, node }).map((command) => ({
+//       command: {
+//         command: command.name,
+//         title: command.title,
+//         arguments: command.args,
+//       },
+//       range: {
+//         start: position,
+//         end: position,
+//       },
+//     }));
+//   });
+//
+//   return codeLenses;
+// }
 
 // This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
 // This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
-  if (!root) {
-    return [];
-  }
-
-  let nodes: jsonc.Node[] = [root];
-
-  for (const segment of path) {
-    if (segment === "*") {
-      nodes = nodes.flatMap((s) => s.children ?? []);
-      continue;
-    }
-
-    if (typeof segment === "number") {
-      const index = segment as number;
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
-          return [];
-        }
-
-        return [n.children[index]];
-      });
-    }
-
-    if (typeof segment === "string") {
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "object" || !Array.isArray(n.children)) {
-          return [];
-        }
-
-        for (const prop of n.children) {
-          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
-            return [prop.children[1]];
-          }
-        }
-
-        return [];
-      });
-    }
-  }
-
-  return nodes;
-}
+// export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
+//   if (!root) {
+//     return [];
+//   }
+//
+//   let nodes: jsonc.Node[] = [root];
+//
+//   for (const segment of path) {
+//     if (segment === "*") {
+//       nodes = nodes.flatMap((s) => s.children ?? []);
+//       continue;
+//     }
+//
+//     if (typeof segment === "number") {
+//       const index = segment as number;
+//       nodes = nodes.flatMap((n) => {
+//         if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
+//           return [];
+//         }
+//
+//         return [n.children[index]];
+//       });
+//     }
+//
+//     if (typeof segment === "string") {
+//       nodes = nodes.flatMap((n) => {
+//         if (n.type !== "object" || !Array.isArray(n.children)) {
+//           return [];
+//         }
+//
+//         for (const prop of n.children) {
+//           if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
+//             return [prop.children[1]];
+//           }
+//         }
+//
+//         return [];
+//       });
+//     }
+//   }
+//
+//   return nodes;
+// }

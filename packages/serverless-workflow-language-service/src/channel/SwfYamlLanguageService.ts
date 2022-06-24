@@ -14,31 +14,10 @@
  * limitations under the License.
  */
 
-import {
-  CodeLens,
-  CompletionItem,
-  CompletionItemKind,
-  InsertTextFormat,
-  Position,
-  Range,
-} from "vscode-languageserver-types";
 import * as jsonc from "jsonc-parser";
-import { JSONPath } from "jsonc-parser";
-import { posix as posixPath } from "path";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
-  SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
-import * as swfModelQueries from "./modelQueries";
-import { Specification } from "@severlessworkflow/sdk-typescript";
-import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { getLanguageService, JSONDocument, LanguageService, TextDocument } from "vscode-json-languageservice";
-import * as ls from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { load, YAMLNode, Kind } from "yaml-language-server-parser";
 import { FileLanguage } from "../editor";
+import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode, SwfLSNodeType } from "./SwfLanguageService";
 
 export class SwfYamlLanguageService extends SwfLanguageService {
   fileLanguage = FileLanguage.YAML;
@@ -47,4 +26,45 @@ export class SwfYamlLanguageService extends SwfLanguageService {
   constructor(args: SwfLanguageServiceArgs) {
     super(args);
   }
+
+  protected parseContent(content: string): SwfLSNode | undefined {
+    const ast = load(content);
+
+    // check if the yaml is not valid
+    if (ast.errors && ast.errors.length) {
+      throw new Error(ast.errors[0].message);
+    }
+
+    return astConvert(ast);
+  }
 }
+
+const getSwfLSNodeType = (kind: Kind): SwfLSNodeType => {
+  switch (kind) {
+    case 0:
+      return "property";
+    case 1:
+      return "string";
+    case 2:
+      return "object";
+    case 3:
+      return "array";
+    default:
+      return "object";
+  }
+};
+
+const astConvert = (node: YAMLNode, parentNode?: SwfLSNode): SwfLSNode | undefined => {
+  const currentNode: SwfLSNode = {
+    type: getSwfLSNodeType(node.kind),
+    value: node.value.value,
+    offset: node.startPosition,
+    length: node.endPosition - node.startPosition,
+    colonOffset: node.endPosition,
+    parent: parentNode,
+  };
+
+  currentNode.children = node.value.items.map((child: YAMLNode) => astConvert(child, currentNode));
+
+  return currentNode;
+};

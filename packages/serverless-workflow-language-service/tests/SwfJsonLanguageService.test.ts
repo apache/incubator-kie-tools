@@ -329,7 +329,7 @@ describe("SWF LS JSON", () => {
     } as CompletionItem);
   });
 
-  test.only("functionRef completion", async () => {
+  test("functionRef completion", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: {
