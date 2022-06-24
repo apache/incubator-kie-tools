@@ -17,13 +17,12 @@
 import * as React from "react";
 import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Sample, SampleCard, SampleType } from "./SampleCard";
-import { ReactComponent as CheckInboxPeriodicalSvg } from "../../static/samples/check-inbox-periodical/check-inbox-periodical.svg";
 import { ReactComponent as GreetingsSvg } from "../../static/samples/greetings/greetings.svg";
 import { ReactComponent as GreetingsKafkaSvg } from "../../static/samples/greetings-kafka/greetings-kafka.svg";
-import { ReactComponent as FillGlassOfWaterSvg } from "../../static/samples/fill-glass-of-water/fill-glass-of-water.svg";
 import { ReactComponent as ProductsDashboardSvg } from "../../static/samples/products-dashboard/products-dashboard.svg";
 import { ReactComponent as SwfReportSvg } from "../../static/samples/swf-report/swf-report.svg";
 import { ReactComponent as KitchensinkSvg } from "../../static/samples/kitchensink/kitchensink.svg";
+import { ReactComponent as CompensationSvg } from "../../static/samples/compensation/compensation.svg";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 
 export const samples: Array<Sample> = [
@@ -35,13 +34,6 @@ export const samples: Array<Sample> = [
     type: SampleType.SW_JSON,
   },
   {
-    name: "Dashbuilder Kitchensink",
-    fileName: "kitchensink",
-    svg: KitchensinkSvg,
-    description: `Explore all Dashbuilder components. Navigate in tabs to learn about Dashbuilder concepts and check how to use and the look of all visual components available for use in Dashbuilder.`,
-    type: SampleType.DASH_YML,
-  },
-  {
     name: "Greetings with Kafka events",
     fileName: "greetings-kafka",
     svg: GreetingsKafkaSvg,
@@ -49,19 +41,18 @@ export const samples: Array<Sample> = [
     type: SampleType.SW_JSON,
   },
   {
-    name: "Check Inbox Periodical",
-    fileName: "check-inbox-periodical",
-    svg: CheckInboxPeriodicalSvg,
-    description:
-      "In this example we show the use of scheduled cron-based start event property. The example workflow checks the users inbox every 15 minutes and send them a text message when there are important emails.",
+    name: "Compensation",
+    fileName: "compensation",
+    svg: CompensationSvg,
+    description: `This example contains a simple workflow service that illustrate compensation handling. This is simple workflow that expects a boolean shouldCompensate to indicate if compensation segment (which is composed by two inject states) should be executed or not. The process result is a boolean field compensated which value should match shouldCompensate.`,
     type: SampleType.SW_JSON,
   },
   {
-    name: "Fill glass of water",
-    fileName: "fill-glass-of-water",
-    svg: FillGlassOfWaterSvg,
-    description: `Our workflow simulates filling up a glass of water one "count" at a time until "max" count is reached which represents our glass is full. Each time we increment the current count, the workflow checks if we need to keep refilling the glass. If the current count reaches the max count, the workflow execution ends.`,
-    type: SampleType.SW_JSON,
+    name: "Dashbuilder Kitchensink",
+    fileName: "kitchensink",
+    svg: KitchensinkSvg,
+    description: `Explore all Dashbuilder components. Navigate in tabs to learn about Dashbuilder concepts and check how to use and the look of all visual components available for use in Dashbuilder.`,
+    type: SampleType.DASH_YML,
   },
   {
     name: "Products Dashboard",
