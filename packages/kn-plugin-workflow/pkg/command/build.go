@@ -30,35 +30,57 @@ import (
 func NewBuildCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
-		Short: "Build a Quarkus workflow project",
-		Long: `
-NAME
-	{{.Name}} build - Build a Quarkus project and pushes the image to a registry
+		Short: "Build a Quarkus workflow project and generate a container image",
+		Long: `Build a Quarkus workflow project and generate a container image
+
+	This command builds the workflow project in the current directory. The result 
+	will be a container image.  
+	By default the resultant container image will have the project name. It can be 
+	overriten with the --image and with all --image-* options
+
+	During build a knative.yml file will be generated on the ./target/kubernetes folder
+	If you workflow uses eventing an additional kogito.yml will be generated as well.
+	Those two files are used by the deploy command.
+
+	If you want to push the resultant image to a private registry, authentication is
+	required. To authenticate to your registry, use "docker login" or any other
+	equivalent method.
+`,
+		Example: `
+	# Build from the local directory
+	# The full image name will be determined automatically based on the
+	# project directory name
+	{{.Name}} build
 	
-SYNOPSIS
-	{{.Name}} build [-i|--image] [-r|--registry] [-g|--group] [-n|--name] [-t|--tag]
-					[--jib] [--push] [-v|--verbose]
+	# Build from the local directory, specifying the full image name
+	{{.Name}} build --image quay.io/myuser/myworkflow:1.0
 	
-DESCRIPTION
-	Builds a Quarkus workflow project and pushes a image to a remote registry. It doens't require Docker
+	# Build from the local directory, specifying the full image name and pushing
+	# it to remote registry (authentication can be necessary, use docker login)
+	{{.Name}} build --image quay.io/mysuer/myworkflow:1.0 --push
 	
-	$ {{.Name}} build
-	`,
-		PreRunE: common.BindEnv("image", "registry", "group", "name", "tag", "jib", "push"),
+	# Build from the local directory, passing separadtly image options
+	{{.Name}} build --image-registry quay.io --image-repository myuser --image-name myworkflow --image-tag 1.0
+
+	# Build using Jib instead of Docker. (Read more: https://quarkus.io/guides/container-image#jib)
+	# Docker is still required to save the image
+	{{.Name}} build --jib`,
+		SuggestFor: []string{"biuld", "buidl", "built"},
+		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "push"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runBuild(cmd, args)
 	}
 
-	cmd.Flags().StringP("image", "i", "", fmt.Sprintf("%s image URL", cmd.Name()))
-	cmd.Flags().StringP("registry", "r", "", fmt.Sprintf("%s registry URL", cmd.Name()))
-	cmd.Flags().StringP("group", "g", "", fmt.Sprintf("%s registry group", cmd.Name()))
-	cmd.Flags().StringP("name", "n", "", fmt.Sprintf("%s image name", cmd.Name()))
-	cmd.Flags().StringP("tag", "t", "", fmt.Sprintf("%s image tag", cmd.Name()))
+	cmd.Flags().StringP("image", "i", "", "Full image name in the form [registry]/[repository]/[name]:[tag]")
+	cmd.Flags().String("image-registry", "", "Image registry, ex: quay.io, if the --image flag is in use this option overrides image [registry]")
+	cmd.Flags().String("image-repository", "", "Image repository, ex: registry-user or registry-project, if the --image flag is in use, this option overrides image [repository]")
+	cmd.Flags().String("image-name", "", "Image name, ex: new-project, if the --image flag is in use, this option overrides the image [name]")
+	cmd.Flags().String("image-tag", "", "Image tag, ex: 1.0, if the --image flag is in use, this option overrides the image [tag]")
 
-	cmd.Flags().Bool("jib", false, fmt.Sprintf("%s use Jib extension to create the image", cmd.Name()))
-	cmd.Flags().Bool("push", false, fmt.Sprintf("%s push", cmd.Name()))
+	cmd.Flags().Bool("jib", false, "Use Jib extension to generate the image (Docker is still required to save the generated image)")
+	cmd.Flags().Bool("push", false, "Attempt to push the genereated image after being successfully built")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -70,23 +92,23 @@ func runBuild(cmd *cobra.Command, args []string) error {
 
 	cfg, err := runBuildConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("build config error %w", err)
+		return fmt.Errorf("initializing build config: %w", err)
 	}
 
 	if err := common.CheckJavaDependencies(); err != nil {
-		return fmt.Errorf("checking dependencies: %w", err)
+		return err
 	}
 
 	if err := common.CheckContainerRuntime(); err != nil {
-		return fmt.Errorf("docker is not available: %w", err)
+		return err
 	}
 
 	if err := runAddExtension(cfg); err != nil {
-		return fmt.Errorf("%w", err)
+		return err
 	}
 
 	if err := runBuildImage(cfg); err != nil {
-		return fmt.Errorf("%w", err)
+		return err
 	}
 
 	finish := time.Since(start)
@@ -96,11 +118,11 @@ func runBuild(cmd *cobra.Command, args []string) error {
 
 type BuildConfig struct {
 	// Image options
-	Image     string // image
-	Registry  string // registry to be uploaded
-	Group     string // group from registry
-	ImageName string // image name
-	Tag       string // tag
+	Image      string // full image name
+	Registry   string // image registry (overrides image name)
+	Repository string // image repository (overrides image name)
+	ImageName  string // image name (overrides image name)
+	Tag        string // image tag (overrides image name)
 
 	// Build strategy options
 	Jib  bool // use Jib extension to build the image and push it to a remote registry
@@ -112,11 +134,11 @@ type BuildConfig struct {
 
 func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 	cfg = BuildConfig{
-		Image:     viper.GetString("image"),
-		Registry:  viper.GetString("registry"),
-		Group:     viper.GetString("group"),
-		ImageName: viper.GetString("name"),
-		Tag:       viper.GetString("tag"),
+		Image:      viper.GetString("image"),
+		Registry:   viper.GetString("registry"),
+		Repository: viper.GetString("repository"),
+		ImageName:  viper.GetString("name"),
+		Tag:        viper.GetString("tag"),
 
 		Jib:  viper.GetBool("jib"),
 		Push: viper.GetBool("push"),
@@ -144,15 +166,15 @@ func runAddExtension(cfg BuildConfig) error {
 		"adding quarkus extension failed with error",
 		getAddExtensionFriendlyMessages(),
 	); err != nil {
-		return fmt.Errorf("%w", err)
+		return err
 	}
 
-	fmt.Printf("✅ Quarkus extension was sucessufully add to the project\n")
+	fmt.Println("✅ Quarkus extension was successfully add to the project")
 	return nil
 }
 
 func runBuildImage(cfg BuildConfig) error {
-	registry, group, name, tag := getImageConfig(cfg)
+	registry, repository, name, tag := getImageConfig(cfg)
 	builderConfig := getBuilderConfig(cfg)
 	pushConfig := getPushConfig(cfg)
 
@@ -161,7 +183,7 @@ func runBuildImage(cfg BuildConfig) error {
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
 		fmt.Sprintf("-Dquarkus.container-image.registry=%s", registry),
-		fmt.Sprintf("-Dquarkus.container-image.group=%s", group),
+		fmt.Sprintf("-Dquarkus.container-image.group=%s", repository),
 		fmt.Sprintf("-Dquarkus.container-image.name=%s", name),
 		fmt.Sprintf("-Dquarkus.container-image.tag=%s", tag),
 		builderConfig,
@@ -175,18 +197,24 @@ func runBuildImage(cfg BuildConfig) error {
 		getBuildFriendlyMessages(),
 	); err != nil {
 		if cfg.Push {
-			fmt.Println("Error building the image, it might be due to missing registry authentication")
+			fmt.Println("ERROR: Image build failed.")
+			fmt.Println("If you're using a private registry, check if you're authenticated")
 		}
-		fmt.Println("Check the full logs with the [-v | --verbose] flag")
-		return fmt.Errorf("%w", err)
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
 	}
 
-	fmt.Printf("Created and pushed an image to remote registry: %s\n", getImageName(registry, group, name, tag))
+	if cfg.Push {
+		fmt.Printf("Created and pushed an image to registry: %s\n", getImageName(registry, repository, name, tag))
+	} else {
+		fmt.Printf("Created a local image: %s\n", getImageName(registry, repository, name, tag))
+	}
 
-	fmt.Println("Build success")
+	fmt.Println("✅ Build success")
 	return nil
 }
 
+// Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
 func getImageConfig(cfg BuildConfig) (string, string, string, string) {
 	imageTagArray := strings.Split(cfg.Image, ":")
 	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
@@ -198,13 +226,13 @@ func getImageConfig(cfg BuildConfig) (string, string, string, string) {
 		registry = imageArray[0]
 	}
 
-	var group = ""
-	if len(cfg.Group) > 0 {
-		group = cfg.Group
+	var repository = ""
+	if len(cfg.Repository) > 0 {
+		repository = cfg.Repository
 	} else if len(imageArray) == 2 {
-		group = imageArray[0]
+		repository = imageArray[0]
 	} else if len(imageArray) == 3 {
-		group = imageArray[1]
+		repository = imageArray[1]
 	}
 
 	var name = ""
@@ -225,14 +253,14 @@ func getImageConfig(cfg BuildConfig) (string, string, string, string) {
 		tag = imageTagArray[1]
 	}
 
-	return registry, group, name, tag
+	return registry, repository, name, tag
 }
 
-func getImageName(registry string, group string, name string, tag string) string {
-	if len(group) == 0 {
+func getImageName(registry string, repository string, name string, tag string) string {
+	if len(repository) == 0 {
 		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
 	}
-	return fmt.Sprintf("%s/%s/%s:%s", registry, group, name, tag)
+	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
 }
 
 func getBuilderConfig(cfg BuildConfig) string {
@@ -259,7 +287,7 @@ func getPushConfig(cfg BuildConfig) string {
 
 func getAddExtensionFriendlyMessages() []string {
 	return []string{
-		" Downloading extension...",
+		" Downloading Quarkus extension...",
 		" Still downloading Quarkus extension",
 		" Still downloading Quarkus extension",
 		" Yes, still downloading Quarkus extension",

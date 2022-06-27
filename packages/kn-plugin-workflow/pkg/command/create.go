@@ -35,21 +35,29 @@ const (
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
-		Short: "Create a Quarkus serverless workflow project",
-		Long: `
-NAME
-	{{.Name}} create - Create a Quarkus project.
+		Short: "Create a Quarkus workflow project",
+		Long: `Create a Quarkus workflow project
 
-SYNOPSIS
-	{{.Name}} create [-n|--name] [-e|--extension] [-i|--image]
-					 [--namespace] [-v|--verbose]
-
-DESCRIPTION
-	Creates a new Quarkus workflow project with the minimum required deploy to a cluster.
-
-	$ {{.Name}} create -n new-project --namespace
+	This command creates a Quarkus workflow project in the current directory.
+	It sets up a Quarkus project with the minimun extensions to build a workflow
+	project.
+	The generated project will have a "hello world" workflow.sw.json located on the
+	./src/main/java/resources/ directory.
 		`,
-		PreRunE: common.BindEnv("name", "extension", "image", "namespace"),
+		Example: `
+	# Create a project in the local directory
+	# By default the project will be named "new-project"
+	{{.Name}} create
+
+	# Create a project with an specfic name
+	{{.Name}} create --name myproject
+
+	# Create a project with additional extensions
+	# Multiple can be add by separete then with a comma
+	{{.Name}} create --extensions kogito-addons-quarkus-persistence-postgresql,quarkus-core
+		`,
+		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
+		PreRunE:    common.BindEnv("name", "extension"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -58,8 +66,6 @@ DESCRIPTION
 
 	cmd.Flags().StringP("name", "n", "new-project", fmt.Sprintf("%s project name to be used", cmd.Name()))
 	cmd.Flags().StringP("extension", "e", "", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
-	cmd.Flags().StringP("image", "i", "quarkus/new-project", fmt.Sprintf("%s registry image to be used on the config.yaml", cmd.Name()))
-	cmd.Flags().String("namespace", "default", fmt.Sprintf("%s namespace to be used on the config.yaml", cmd.Name()))
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -116,10 +122,6 @@ type CreateConfig struct {
 	ProjectName string // Project name
 	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
 
-	// Config YAML options
-	Image     string // Registry to be add on the config yaml
-	Namespace string // Namespace to be add on the config yaml
-
 	// Plugin options
 	Verbose bool
 }
@@ -129,8 +131,6 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	cfg = CreateConfig{
 		ProjectName: viper.GetString("name"),
 		Extesions:   fmt.Sprintf("%s,%s", quarkusDefaultWorkflowExtensions, viper.GetString("extension")),
-		Image:       viper.GetString("image"),
-		Namespace:   viper.GetString("namespace"),
 		Verbose:     viper.GetBool("verbose"),
 	}
 	return

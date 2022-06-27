@@ -32,19 +32,26 @@ func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "deploy",
 		Short: "Deploy a Quarkus workflow project",
-		Long: `
-NAME
-	{{.Name}} deploy - Deploy a Quarkus project
-	
-SYNOPSIS
+		Long: `Deploy a Quarkus workflow project
+
+	This command deploys the workflow project in the current directory. 
+	By default this commands uses the ./target/kubernetes folder to find
+	the deployment files generated in the build process, so the build step
+	is required before using the deploy command.
+
+	Before you use the deploy command, ensure that your cluster have 
+	access to the build output image.
+		`,
+		Example: `
+	# Deploy the workflow from the current directory's project. 
+	# Deploy as Knative service.
 	{{.Name}} deploy
 	
-DESCRIPTION
-	Deploys a Quarkus workflow project into a cluster.
-	
-	$ {{.Name}} deploy
-	`,
-		PreRunE: common.BindEnv("path"),
+	# Specify the path of the directory containing the "knative.yml" 
+	{{.Name}} deploy --path ./kubernetes
+		`,
+		SuggestFor: []string{"delpoy", "deplyo"},
+		PreRunE:    common.BindEnv("path"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
