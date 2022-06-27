@@ -64,9 +64,8 @@ func NewCreateCommand() *cobra.Command {
 		return runCreate(cmd, args)
 	}
 
-	cmd.Flags().StringP("name", "n", "new-project", fmt.Sprintf("%s project name to be used", cmd.Name()))
-	cmd.Flags().StringP("extension", "e", "", fmt.Sprintf("%s project custom extensions, separated with a comma", cmd.Name()))
-
+	cmd.Flags().StringP("name", "n", "new-project", "Project name that will be created in the current directory.")
+	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -77,16 +76,16 @@ func runCreate(cmd *cobra.Command, args []string) error {
 
 	cfg, err := runCreateConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("create config error %w", err)
+		return fmt.Errorf("initializing create config: %w", err)
 	}
 
 	exists, err := common.CheckIfDirExists(cfg.ProjectName)
 	if err != nil || exists {
-		return fmt.Errorf("directory with name \"%s\" already exists", cfg.ProjectName)
+		return fmt.Errorf("directory with name \"%s\" already exists: %w", cfg.ProjectName, err)
 	}
 
 	if err := common.CheckJavaDependencies(); err != nil {
-		return fmt.Errorf("checking dependencies: %w", err)
+		return err
 	}
 
 	quarkusVersion := common.GetEnv("QUARKUS_VERSION", quarkusDefaultVersion)
@@ -98,7 +97,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
-	fmt.Printf("Creating a Quarkus workflow project\n")
+	fmt.Println("Creating a Quarkus workflow project...")
 
 	if err := common.RunCommand(
 		create,
@@ -106,8 +105,8 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		"create Quarkus project failed with error",
 		getCreateFriendlyMessages(),
 	); err != nil {
-		fmt.Println("Check the full logs with the [-v | --verbose] flag")
-		return fmt.Errorf("%w", err)
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
 	}
 
 	generateWorkflow(cfg)
@@ -155,7 +154,7 @@ func generateWorkflow(cfg CreateConfig) (err error) {
 	`)
 	err = ioutil.WriteFile(workflowFilePath, data, 0644)
 	if err != nil {
-		return fmt.Errorf("error creating workflow file")
+		return fmt.Errorf("error creating workflow file: %w", err)
 	}
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
