@@ -75,6 +75,10 @@ interface File {
 
 const ENVELOPE_LOCATOR_TYPE = "swf";
 
+// Value fixed to `false` until this is integrated with Serverless Logic Sandbox.
+// Then, it can be enabled/disabed through channel request.
+const IS_STUNNER_VIEWER_ENABLED = false;
+
 const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,
   Props
@@ -114,24 +118,31 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     [props.resourcesPathPrefix, targetOrigin]
   );
 
-  const diagramEditorEnvelopeLocator = useMemo(
-    () =>
-      new EditorEnvelopeLocator(targetOrigin, [
-        new EnvelopeMapping(
-          ENVELOPE_LOCATOR_TYPE,
-          "**/*.sw.json",
-          props.resourcesPathPrefix + "/diagram",
-          props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html"
-        ),
-        new EnvelopeMapping(
-          ENVELOPE_LOCATOR_TYPE,
-          "**/*.sw.+(yml|yaml)",
-          props.resourcesPathPrefix + "/mermaid",
-          props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
-        ),
-      ]),
-    [props.resourcesPathPrefix, targetOrigin]
-  );
+  const diagramEditorEnvelopeLocator = useMemo(() => {
+    const diagramEnvelopeMappingConfig = IS_STUNNER_VIEWER_ENABLED
+      ? {
+          resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
+        }
+      : {
+          resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+        };
+    return new EditorEnvelopeLocator(targetOrigin, [
+      new EnvelopeMapping(
+        ENVELOPE_LOCATOR_TYPE,
+        "**/*.sw.json",
+        diagramEnvelopeMappingConfig.resourcesPathPrefix,
+        diagramEnvelopeMappingConfig.envelopePath
+      ),
+      new EnvelopeMapping(
+        ENVELOPE_LOCATOR_TYPE,
+        "**/*.sw.+(yml|yaml)",
+        props.resourcesPathPrefix + "/mermaid",
+        props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
+      ),
+    ]);
+  }, [props.resourcesPathPrefix, targetOrigin]);
 
   useImperativeHandle(
     forwardedRef,

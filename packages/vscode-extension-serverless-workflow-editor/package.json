@@ -254,6 +254,11 @@
             "Ask next time"
           ],
           "markdownDescription": "When opening Serverless Workflow files, decide whether or not to open the Diagram Editor alongside the text editor. Regardless of the configured option, you can always open the Serverless Workflow Diagram Editor using the 'Open as Diagram' button."
+        },
+        "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Enable/disable Kogito Serverless Workflow Visualization Preview for JSON files."
         }
       }
     },

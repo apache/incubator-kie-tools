@@ -21,7 +21,7 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
 import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
-import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
@@ -70,6 +70,33 @@ export async function activate(context: vscode.ExtensionContext) {
   const swEnvelopeType = "swf";
   const baseEnvelopePath = "dist/webview/editors/serverless-workflow";
 
+  const diagramEnvelopeMappingConfig = configuration.isKogitoServerlessWorkflowVisualizationPreviewEnabled()
+    ? {
+        resourcesPathPrefix: baseEnvelopePath + "/diagram",
+        envelopePath: baseEnvelopePath + "/serverless-workflow-diagram-editor-envelope.js",
+      }
+    : {
+        resourcesPathPrefix: baseEnvelopePath,
+        envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
+      };
+
+  vscode.workspace.onDidChangeConfiguration(async (event) => {
+    if (event.affectsConfiguration(CONFIGURATION_SECTIONS.enableKogitoServerlessWorkflowVisualizationPreview)) {
+      const isStunnerEnabled = configuration.isKogitoServerlessWorkflowVisualizationPreviewEnabled();
+      const restartNowLabel = "Restart now";
+      const selection = await vscode.window.showInformationMessage(
+        `Kogito Serverless Workflow Visualization Preview will be ${
+          isStunnerEnabled ? "enabled" : "disabled"
+        } for JSON files after VS Code is restarted.`,
+        restartNowLabel
+      );
+      if (selection !== restartNowLabel) {
+        return;
+      }
+      vscode.commands.executeCommand("workbench.action.reloadWindow");
+    }
+  });
+
   const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
@@ -81,8 +108,8 @@ export async function activate(context: vscode.ExtensionContext) {
       new EnvelopeMapping(
         swEnvelopeType,
         "**/*.sw.json",
-        baseEnvelopePath + "/serverless-workflow-diagram-editor-envelope.js",
-        baseEnvelopePath + "/diagram"
+        diagramEnvelopeMappingConfig.envelopePath,
+        diagramEnvelopeMappingConfig.resourcesPathPrefix
       ),
       new EnvelopeMapping(
         swEnvelopeType,
