@@ -12,6 +12,7 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
+    "install": "go mod tidy",
     "build": "run-script-os",
     "build:linux": "GOOS=linux GOARCH=amd64 go build -o dist/kn-workflow-linux-amd64 cmd/main.go",
     "build:darwin": "GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -o dist/kn-workflow-darwin-amd64 cmd/main.go",
