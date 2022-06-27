@@ -82,7 +82,7 @@ export abstract class SwfLanguageService {
 
   constructor(private readonly args: SwfLanguageServiceArgs) {}
 
-  protected abstract parseContent(content: string): SwfLSNode | undefined;
+  public abstract parseContent(content: string): SwfLSNode | undefined;
 
   public async getCompletionItems(args: {
     content: string;

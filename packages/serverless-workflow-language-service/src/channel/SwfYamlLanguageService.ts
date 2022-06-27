@@ -27,7 +27,7 @@ export class SwfYamlLanguageService extends SwfLanguageService {
     super(args);
   }
 
-  protected parseContent(content: string): SwfLSNode | undefined {
+  parseContent(content: string): SwfLSNode | undefined {
     const ast = load(content);
 
     // check if the yaml is not valid
@@ -42,9 +42,9 @@ export class SwfYamlLanguageService extends SwfLanguageService {
 const getSwfLSNodeType = (kind: Kind): SwfLSNodeType => {
   switch (kind) {
     case 0:
-      return "property";
-    case 1:
       return "string";
+    case 1:
+      return "property";
     case 2:
       return "object";
     case 3:
@@ -55,16 +55,27 @@ const getSwfLSNodeType = (kind: Kind): SwfLSNodeType => {
 };
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLSNode): SwfLSNode | undefined => {
-  const currentNode: SwfLSNode = {
+  if (!node) {
+    return undefined;
+  }
+
+  const convertedNode: SwfLSNode = {
     type: getSwfLSNodeType(node.kind),
-    value: node.value.value,
+    value: node.value || node.value?.items,
     offset: node.startPosition,
     length: node.endPosition - node.startPosition,
     colonOffset: node.endPosition,
     parent: parentNode,
   };
 
-  currentNode.children = node.value.items.map((child: YAMLNode) => astConvert(child, currentNode));
+  if (node.kind === 2) {
+    convertedNode.children = node.mappings?.map((mapping: YAMLNode) => astConvert(mapping, convertedNode));
+  } else if (node.kind === 1) {
+    convertedNode.children = [astConvert(node.key, convertedNode)!, astConvert(node.value, convertedNode)!];
+  } else if (node.kind === 3) {
+    // casting node to any because items is not in the type
+    convertedNode.children = (node as any).items?.map((item: YAMLNode) => astConvert(item, convertedNode));
+  }
 
-  return currentNode;
+  return convertedNode;
 };

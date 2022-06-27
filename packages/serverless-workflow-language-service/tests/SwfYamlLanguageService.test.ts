@@ -65,6 +65,51 @@ const defaultConfig: SwfLanguageServiceConfig = {
 };
 
 describe("SWF LS YAML", () => {
+  test.only("parsing", async () => {
+    const ls = new SwfYamlLanguageService({
+      fs: {},
+      serviceCatalog: defaultServiceCatalogConfig,
+      config: defaultConfig,
+    });
+
+    const { content } = trim(`
+---
+functions: []
+`);
+
+    const rootNode = ls.parseContent(content);
+
+    expect(rootNode).not.toBeUndefined();
+    expect(rootNode!.type).toBe("object");
+    expect(rootNode!.children).not.toBeUndefined();
+    expect(rootNode!.children![0].type).toBe("property");
+    expect(rootNode!.children![0].children).not.toBeUndefined();
+    expect(rootNode!.children![0].children![0]).not.toBeUndefined();
+    expect(rootNode!.children![0].children![0].value).toBe("functions");
+    expect(rootNode!.children![0].children![1]).not.toBeUndefined();
+    expect(rootNode!.children![0].children![1].type).toBe("array");
+    expect(rootNode!.children![0].children![1].children).toEqual([]);
+
+    expect(rootNode).toMatchObject({
+      type: "object",
+      children: [
+        {
+          type: "property",
+          children: [
+            {
+              type: "string",
+              value: "functions",
+            },
+            {
+              type: "array",
+              children: [],
+            },
+          ],
+        },
+      ],
+    });
+  });
+
   test("basic", async () => {
     const ls = new SwfYamlLanguageService({
       fs: {},
@@ -88,7 +133,7 @@ describe("SWF LS YAML", () => {
     expect(codeLenses).toStrictEqual([]);
   });
 
-  test.only("functions code lenses (add function - formatted)", async () => {
+  test("functions code lenses (add function - formatted)", async () => {
     const ls = new SwfYamlLanguageService({
       fs: {},
       serviceCatalog: defaultServiceCatalogConfig,
