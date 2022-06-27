@@ -10,7 +10,7 @@
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
+  "devDependencies": {
     "@kie-tools/dashbuilder": "0.0.0"
   },
   "scripts": {
