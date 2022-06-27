@@ -70,7 +70,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 
 	cfg, err := runDeployConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("create config error %w", err)
+		return fmt.Errorf("initializing deploy config: %w", err)
 	}
 
 	if _, err := exec.LookPath("kubectl"); err != nil {
@@ -86,12 +86,13 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		"creating knative service failed with error",
 		getDeployFriendlyMessages(),
 	); err != nil {
-		fmt.Println("Check the full logs with the [-v | --verbose] flag")
-		return fmt.Errorf("%w", err)
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
 	}
 	fmt.Println("✅ Knative service sucessufully created")
 
-	if exists, err := checkIfKogitoJsonExists(cfg); exists && err == nil {
+	// Check if kogito.yml file exists
+	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
 		deploy := exec.Command("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
 		if err := common.RunCommand(
 			deploy,
@@ -99,13 +100,13 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			"creating knative events binding failed with error",
 			getDeployFriendlyMessages(),
 		); err != nil {
-			fmt.Println("Check the full logs with the [-v | --verbose] flag")
-			return fmt.Errorf("%w", err)
+			fmt.Println("Check the full logs with the -v | --verbose option")
+			return err
 		}
 		fmt.Println("✅ Knative events binding sucessufully created")
 	} else if err != nil {
-		fmt.Println("Check the full logs with the [-v | --verbose] flag")
-		return fmt.Errorf("%w", err)
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
 	}
 
 	finish := time.Since(start)
@@ -130,7 +131,7 @@ func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 	return
 }
 
-func checkIfKogitoJsonExists(cfg DeployConfig) (bool, error) {
+func checkIfKogitoFileExists(cfg DeployConfig) (bool, error) {
 	if _, err := os.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
 		return true, nil
 	} else if errors.Is(err, os.ErrNotExist) {
