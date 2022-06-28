@@ -481,7 +481,7 @@ jobs:
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Upload Knative Workflow plugin for Linux (Ubuntu only)"
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -492,7 +492,7 @@ jobs:
           asset_name: STAGING__kn-workflow-linux-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Upload Knative Workflow plugin for macOS (macOS only)"
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS (macOS only)"
         if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -503,7 +503,7 @@ jobs:
           asset_name: STAGING__kie_sandbox_kn-workflow-darwin-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Knative Workflow plugin for Windows (Windows only)"
+      - name: "STAGING: Knative CLI Workflow Plugin for Windows (Windows only)"
         if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:

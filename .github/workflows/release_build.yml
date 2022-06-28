@@ -1112,6 +1112,9 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
   kn_plugin_workflow:
+    env:
+      KN_PLUGIN_WORKFLOW__quarkusVersion: "2.9.2.Final"
+
     if: ${{ needs.extract_runners.outputs.kn_plugin_workflow == 'true' }}
     runs-on: ${{ matrix.os }}
     needs: [extract_runners]
@@ -1145,7 +1148,7 @@ jobs:
         run: |
           pnpm -F @kie-tools/kn-plugin-workflow... build:prod
 
-      - name: "Upload Knative Workflow plugin for Linux (Ubuntu only)"
+      - name: "Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -1156,7 +1159,7 @@ jobs:
           asset_name: kn-workflow-linux-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "Upload Knative Workflow plugin for macOS (macOS only)"
+      - name: "Upload Knative CLI Workflow Plugin for macOS (macOS only)"
         if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -1167,7 +1170,7 @@ jobs:
           asset_name: kn-workflow-darwin-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "Upload Knative Workflow plugin for Windows (Windows only)"
+      - name: "Upload Knative CLI Workflow Plugin for Windows (Windows only)"
         if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
