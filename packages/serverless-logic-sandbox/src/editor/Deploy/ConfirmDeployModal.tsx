@@ -21,7 +21,7 @@ import { ExpandableSection } from "@patternfly/react-core/dist/js/components/Exp
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { AlertsController, useAlert } from "../../alerts/Alerts";
 import { useAppI18n } from "../../i18n";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
@@ -65,6 +65,10 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
   );
 
   const canDeployAsProject = useMemo(() => isSingleModuleProject(props.workspace.files), [props.workspace.files]);
+
+  useEffect(() => {
+    setShouldDeployAsProject(canDeployAsProject);
+  }, [canDeployAsProject]);
 
   const setDeployStartedError = useAlert(
     props.alerts,
@@ -243,12 +247,10 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
         </Button>,
       ]}
     >
-      {i18n.openshift.confirmModal.body}
-      <ExpandableSection
-        toggleTextCollapsed="Show advanced options"
-        toggleTextExpanded="Hide advanced options"
-        className={"plain"}
-      >
+      <>
+        {i18n.openshift.confirmModal.body}
+        <br />
+        <br />
         <Tooltip
           content={
             "Cannot deploy as a project since your workspace does not seem to contain a single module project structure."
@@ -264,35 +266,41 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
             isDisabled={!canDeployAsProject}
           />
         </Tooltip>
-        <Tooltip
-          content={"To use this option, you need to configure your Service Account and Service Registry on Settings."}
-          trigger={!canUploadOpenApi ? "mouseenter click" : ""}
+        <ExpandableSection
+          toggleTextCollapsed="Show advanced options"
+          toggleTextExpanded="Hide advanced options"
+          className={"plain"}
         >
-          <Checkbox
-            id="check-use-service-registry"
-            label="Upload OpenAPI spec to Service Registry"
-            description={"The spec will be available in the Service Registry, thus enabling autocompletion."}
-            isChecked={shouldUploadOpenApi}
-            onChange={(checked) => setShouldUploadOpenApi(checked)}
-            isDisabled={!canUploadOpenApi}
-          />
-        </Tooltip>
-        <Tooltip
-          content={
-            "To use this option, you need to configure your Service Account and Streams for Apache Kafka on Settings."
-          }
-          trigger={!canAttachKafkaSource ? "mouseenter click" : ""}
-        >
-          <Checkbox
-            id="check-use-apache-kafka"
-            label="Attach KafkaSource to the deployment"
-            description={"Your deployment will listen to incoming messages even when scaled down."}
-            isChecked={shouldAttachKafkaSource}
-            onChange={(checked) => setShouldAttachKafkaSource(checked)}
-            isDisabled={!canAttachKafkaSource}
-          />
-        </Tooltip>
-      </ExpandableSection>
+          <Tooltip
+            content={"To use this option, you need to configure your Service Account and Service Registry on Settings."}
+            trigger={!canUploadOpenApi ? "mouseenter click" : ""}
+          >
+            <Checkbox
+              id="check-use-service-registry"
+              label="Upload OpenAPI spec to Service Registry"
+              description={"The spec will be available in the Service Registry, thus enabling autocompletion."}
+              isChecked={shouldUploadOpenApi}
+              onChange={(checked) => setShouldUploadOpenApi(checked)}
+              isDisabled={!canUploadOpenApi}
+            />
+          </Tooltip>
+          <Tooltip
+            content={
+              "To use this option, you need to configure your Service Account and Streams for Apache Kafka on Settings."
+            }
+            trigger={!canAttachKafkaSource ? "mouseenter click" : ""}
+          >
+            <Checkbox
+              id="check-use-apache-kafka"
+              label="Attach KafkaSource to the deployment"
+              description={"Your deployment will listen to incoming messages even when scaled down."}
+              isChecked={shouldAttachKafkaSource}
+              onChange={(checked) => setShouldAttachKafkaSource(checked)}
+              isDisabled={!canAttachKafkaSource}
+            />
+          </Tooltip>
+        </ExpandableSection>
+      </>
     </Modal>
   );
 }
