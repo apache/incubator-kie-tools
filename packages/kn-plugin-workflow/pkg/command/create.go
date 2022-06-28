@@ -37,7 +37,7 @@ func NewCreateCommand() *cobra.Command {
 	It sets up a Quarkus project with the minimun extensions to build a workflow
 	project.
 	The generated project will have a "hello world" workflow.sw.json located on the
-	./src/main/java/resources/ directory.
+	./<project-name>/src/main/resources directory.
 		`,
 		Example: `
 	# Create a project in the local directory

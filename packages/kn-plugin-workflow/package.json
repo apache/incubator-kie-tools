@@ -16,7 +16,7 @@
     "build:linux": "GOOS=linux GOARCH=amd64 go build -o dist/kn-workflow-linux-amd64 cmd/main.go",
     "build:darwin": "GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -o dist/kn-workflow-darwin-amd64 cmd/main.go",
     "build:win32": "GO111MODULE=on GOOS=windows GOARCH=amd64 go build -o dist/kn-workflow-windows-amd64.exe cmd/main.go",
-    "build:dev": "rimraf dist && KN_PLUGIN_WOKRFLOW_quarkusVersion=$(build-env knPluginWorkflow.quarkusVersion) &&  pnpm build",
+    "build:dev": "rimraf dist && KN_PLUGIN_WOKRFLOW_quarkusVersion=$(build-env knPluginWorkflow.quarkusVersion) && pnpm build",
     "build:prod": "rimraf dist && KN_PLUGIN_WOKRFLOW_quarkusVersion=$(build-env knPluginWorkflow.quarkusVersion) && pnpm build"
   },
   "devDependencies": {
