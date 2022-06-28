@@ -41,7 +41,7 @@ export default class SwfEditorTestHelper {
     return Promise.resolve(result);
   }
 
-  public async getMermeaidDivElement(): Promise<WebElement> {
+  public async getMermaidDivElement(): Promise<WebElement> {
     await this.switchToEditorFrame();
     const result = await this.webview.findWebElement(By.xpath(".//div[@class='mermaid']"));
     await this.switchBack();

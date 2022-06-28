@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { SideBarView, WebView, CustomEditor } from "vscode-extension-tester";
 import * as path from "path";
 import { assert } from "chai";
 import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
@@ -50,10 +49,9 @@ describe("Serverless workflow editor - smoke integration tests", () => {
     const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
 
-    // fined elements, asserts they exist
+    // find elements, this asserts they exist
     await swfEditor.getSvgElement();
-    await swfEditor.getMermeaidDivElement();
-    await swfTextEditor.getSwfTextEditor();
+    await swfEditor.getMermaidDivElement();
 
     // expect 7 states /w end and start
     const stateElements = await swfEditor.getAllStateNodes();

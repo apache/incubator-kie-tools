@@ -25,6 +25,6 @@ export default class SwfTextEditorTestHelper {
   constructor(private readonly webview: WebView) {}
 
   public async getSwfTextEditor(): Promise<TextEditor> {
-    return new TextEditor();
+    return Promise.resolve(new TextEditor());
   }
 }
