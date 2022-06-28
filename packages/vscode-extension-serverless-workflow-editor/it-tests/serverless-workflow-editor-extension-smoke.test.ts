@@ -50,13 +50,10 @@ describe("Serverless workflow editor - smoke integration tests", () => {
     const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
 
-    const textEditor = await swfTextEditor.getSwfTextEditor();
-    // check that something is displayed
-    assert.equal(await textEditor.getNumberOfLines(), 81);
-
     // fined elements, asserts they exist
     await swfEditor.getSvgElement();
     await swfEditor.getMermeaidDivElement();
+    await swfTextEditor.getSwfTextEditor();
 
     // expect 7 states /w end and start
     const stateElements = await swfEditor.getAllStateNodes();
