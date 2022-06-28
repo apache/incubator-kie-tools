@@ -92,10 +92,6 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
   const [featureToggle] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfFeatureToggle_get);
 
-  useEffect(() => {
-    console.log("isStunnerEnabled: " + featureToggle?.stunnerEnabled);
-  }, [featureToggle]);
-
   useImperativeHandle(
     forwardedRef,
     () => {
