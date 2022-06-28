@@ -65,48 +65,268 @@ const defaultConfig: SwfLanguageServiceConfig = {
 };
 
 describe("SWF LS YAML", () => {
-  test.only("parsing", async () => {
-    const ls = new SwfYamlLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-    });
+  describe.only("parsing content", () => {
+    test("parsing very simple content", async () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
 
-    const { content } = trim(`
+      const { content } = trim(`
 ---
 functions: []
 `);
 
-    const rootNode = ls.parseContent(content);
+      const rootNode = ls.parseContent(content);
 
-    expect(rootNode).not.toBeUndefined();
-    expect(rootNode!.type).toBe("object");
-    expect(rootNode!.children).not.toBeUndefined();
-    expect(rootNode!.children![0].type).toBe("property");
-    expect(rootNode!.children![0].children).not.toBeUndefined();
-    expect(rootNode!.children![0].children![0]).not.toBeUndefined();
-    expect(rootNode!.children![0].children![0].value).toBe("functions");
-    expect(rootNode!.children![0].children![1]).not.toBeUndefined();
-    expect(rootNode!.children![0].children![1].type).toBe("array");
-    expect(rootNode!.children![0].children![1].children).toEqual([]);
+      expect(rootNode).not.toBeUndefined();
+      expect(rootNode!.type).toBe("object");
+      expect(rootNode!.children).not.toBeUndefined();
+      expect(rootNode!.children![0].type).toBe("property");
+      expect(rootNode!.children![0].children).not.toBeUndefined();
+      expect(rootNode!.children![0].children![0]).not.toBeUndefined();
+      expect(rootNode!.children![0].children![0].value).toBe("functions");
+      expect(rootNode!.children![0].children![1]).not.toBeUndefined();
+      expect(rootNode!.children![0].children![1].type).toBe("array");
+      expect(rootNode!.children![0].children![1].children).toEqual([]);
 
-    expect(rootNode).toMatchObject({
-      type: "object",
-      children: [
-        {
-          type: "property",
-          children: [
-            {
-              type: "string",
-              value: "functions",
-            },
-            {
-              type: "array",
-              children: [],
-            },
-          ],
-        },
-      ],
+      expect(rootNode).toMatchObject({
+        type: "object",
+        children: [
+          {
+            type: "property",
+            children: [
+              {
+                type: "string",
+                value: "functions",
+              },
+              {
+                type: "array",
+                children: [],
+              },
+            ],
+          },
+        ],
+      });
+    });
+
+    test("parsing content with one state and one function", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+
+      const { content } = trim(`
+---
+functions:
+- name: myFunc
+  operation: "./specs/myService#myFunc"
+  type: rest
+states:
+- name: testState
+  type: operation
+  transition: end
+  actions:
+  - name: testStateAction
+    functionRef:
+      refName: 'myFunc'
+`);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(rootNode).not.toBeUndefined();
+      expect(rootNode!.type).toBe("object");
+      expect(rootNode!.children).not.toBeUndefined();
+      expect(rootNode!.children![0].type).toBe("property");
+      expect(rootNode!.children![0].children).not.toBeUndefined();
+      expect(rootNode!.children![0].children![0]).not.toBeUndefined();
+      expect(rootNode!.children![0].children![0].value).toBe("functions");
+      expect(rootNode!.children![0].children![1]).not.toBeUndefined();
+      expect(rootNode!.children![0].children![1].type).toBe("array");
+      expect(rootNode!.children![1].children![1].children![0].children![0].children![1].value).toBe("testState");
+
+      expect(rootNode).toMatchObject({
+        type: "object",
+        children: [
+          {
+            type: "property",
+            children: [
+              {
+                type: "string",
+                value: "functions",
+              },
+              {
+                type: "array",
+                children: [
+                  {
+                    type: "object",
+                    children: [
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "name",
+                          },
+                          {
+                            type: "string",
+                            value: "myFunc",
+                          },
+                        ],
+                      },
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "operation",
+                          },
+                          {
+                            type: "string",
+                            value: "./specs/myService#myFunc",
+                          },
+                        ],
+                      },
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "type",
+                          },
+                          {
+                            type: "string",
+                            value: "rest",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "property",
+            children: [
+              {
+                type: "string",
+                value: "states",
+              },
+              {
+                type: "array",
+                children: [
+                  {
+                    type: "object",
+                    children: [
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "name",
+                          },
+                          {
+                            type: "string",
+                            value: "testState",
+                          },
+                        ],
+                      },
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "type",
+                          },
+                          {
+                            type: "string",
+                            value: "operation",
+                          },
+                        ],
+                      },
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "transition",
+                          },
+                          {
+                            type: "string",
+                            value: "end",
+                          },
+                        ],
+                      },
+                      {
+                        type: "property",
+                        children: [
+                          {
+                            type: "string",
+                            value: "actions",
+                          },
+                          {
+                            type: "array",
+                            children: [
+                              {
+                                type: "object",
+                                children: [
+                                  {
+                                    type: "property",
+                                    children: [
+                                      {
+                                        type: "string",
+                                        value: "name",
+                                      },
+                                      {
+                                        type: "string",
+                                        value: "testStateAction",
+                                      },
+                                    ],
+                                  },
+                                  {
+                                    type: "property",
+                                    children: [
+                                      {
+                                        type: "string",
+                                        value: "functionRef",
+                                      },
+                                      {
+                                        type: "object",
+                                        children: [
+                                          {
+                                            type: "property",
+                                            children: [
+                                              {
+                                                type: "string",
+                                                value: "refName",
+                                              },
+                                              {
+                                                type: "string",
+                                                value: "myFunc",
+                                              },
+                                            ],
+                                          },
+                                        ],
+                                      },
+                                    ],
+                                  },
+                                ],
+                              },
+                            ],
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
     });
   });
 
