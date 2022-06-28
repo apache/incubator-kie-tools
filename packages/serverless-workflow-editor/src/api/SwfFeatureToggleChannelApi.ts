@@ -14,5 +14,12 @@
  * limitations under the License.
  */
 
-export * from "./ServerlessWorkflowEditorChannelApi";
-export * from "./SwfFeatureToggleChannelApi";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+
+export interface SwfFeatureToggle {
+  stunnerEnabled: boolean;
+}
+
+export interface SwfFeatureToggleChannelApi {
+  kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle>;
+}

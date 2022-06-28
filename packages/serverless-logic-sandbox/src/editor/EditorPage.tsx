@@ -52,6 +52,7 @@ import { EditorToolbar } from "./EditorToolbar";
 import { useUpdateWorkspaceRegistryGroupFile } from "../workspace/services/virtualServiceRegistry/hooks/useUpdateWorkspaceRegistryGroupFile";
 import { useVirtualServiceRegistry } from "../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContext";
 import { DiagnosticSeverity } from "vscode-languageserver-types";
+import { useSwfFeatureToggle } from "./hooks/useSwfFeatureToggle";
 
 export interface Props {
   workspaceId: string;
@@ -73,6 +74,7 @@ export function EditorPage(props: Props) {
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => editor?.isReady, [editor]);
   const [isReady, setReady] = useState(false);
+  const swfFeatureToggle = useSwfFeatureToggle(editor);
 
   const queryParams = useQueryParams();
   const virtualServiceRegistry = useVirtualServiceRegistry();
@@ -312,6 +314,7 @@ export function EditorPage(props: Props) {
 
     return new ServerlessWorkflowEditorChannelApiImpl(
       kogitoEditorChannelApiImpl,
+      swfFeatureToggle,
       swfServiceCatalogChannelApiImpl,
       swfLanguageServiceChannelApiImpl
     );
@@ -319,6 +322,7 @@ export function EditorPage(props: Props) {
     kogitoEditorChannelApiImpl,
     swfJsonLanguageService,
     swfServiceCatalogChannelApiImpl,
+    swfFeatureToggle,
     swfLanguageServiceChannelApiImpl,
   ]);
 

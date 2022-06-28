@@ -36,6 +36,7 @@ import {
 import { useKieSandboxExtendedServices } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesStatus";
 import { SwfServiceCatalogStore } from "../editor/api/SwfServiceCatalogStore";
+import { FeaturePreviewSettingsConfig, readFeaturePreviewConfigCookie } from "./featurePreview/FeaturePreviewConfig";
 
 export enum AuthStatus {
   SIGNED_OUT,
@@ -91,6 +92,9 @@ export interface SettingsContextType {
   serviceRegistry: {
     config: ServiceRegistrySettingsConfig;
   };
+  featurePreview: {
+    config: FeaturePreviewSettingsConfig;
+  };
 }
 
 export interface SettingsDispatchContextType {
@@ -117,6 +121,9 @@ export interface SettingsDispatchContextType {
   serviceRegistry: {
     setConfig: React.Dispatch<React.SetStateAction<ServiceRegistrySettingsConfig>>;
     catalogStore: SwfServiceCatalogStore;
+  };
+  featurePreview: {
+    setConfig: React.Dispatch<React.SetStateAction<FeaturePreviewSettingsConfig>>;
   };
 }
 
@@ -217,6 +224,10 @@ export function SettingsContextProvider(props: any) {
     readServiceRegistryConfigCookie()
   );
 
+  const [featurePreviewConfig, setFeaturePreviewConfig] = useState<FeaturePreviewSettingsConfig>(
+    readFeaturePreviewConfigCookie()
+  );
+
   const [openshiftStatus, setOpenshiftStatus] = useState(
     kieSandboxExtendedServices.status === KieSandboxExtendedServicesStatus.AVAILABLE
       ? OpenShiftInstanceStatus.DISCONNECTED
@@ -270,6 +281,9 @@ export function SettingsContextProvider(props: any) {
         setConfig: setServiceRegistryConfig,
         catalogStore: serviceCatalogStore,
       },
+      featurePreview: {
+        setConfig: setFeaturePreviewConfig,
+      },
     };
   }, [
     close,
@@ -307,6 +321,9 @@ export function SettingsContextProvider(props: any) {
       serviceRegistry: {
         config: serviceRegistryConfig,
       },
+      featurePreview: {
+        config: featurePreviewConfig,
+      },
     };
   }, [
     isOpen,
@@ -321,6 +338,7 @@ export function SettingsContextProvider(props: any) {
     serviceAccountConfig,
     serviceRegistryConfig,
     kieSandboxExtendedServices.config,
+    featurePreviewConfig,
   ]);
 
   return (

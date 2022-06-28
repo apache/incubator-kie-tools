@@ -29,9 +29,16 @@ import svgPanZoom from "svg-pan-zoom";
 import mermaid from "mermaid";
 import { SwfTextEditorApi, SwfTextEditorOperation } from "../textEditor/SwfTextEditorController";
 import { SwfTextEditor } from "../textEditor/SwfTextEditor";
-import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorTheme,
+  StateControlCommand,
+  useKogitoEditorEnvelopeContext,
+} from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
 import "../../static/css/editor.css";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { ServerlessWorkflowEditorChannelApi } from "../api";
 
 interface Props {
   /**
@@ -82,6 +89,12 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   const swfDiagramEditorContainerRef = useRef<HTMLDivElement>(null);
   const swfDiagramEditorHiddenContainerRef = useRef<HTMLDivElement>(null);
   const swfTextEditorRef = useRef<SwfTextEditorApi>(null);
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowEditorChannelApi>();
+  const [featureToggle] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfFeatureToggle_get);
+
+  useEffect(() => {
+    console.log("isStunnerEnabled: " + featureToggle?.stunnerEnabled);
+  }, [featureToggle]);
 
   useImperativeHandle(
     forwardedRef,
