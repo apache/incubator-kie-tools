@@ -20,20 +20,12 @@ import (
 	"context"
 	"fmt"
 	"html/template"
-	"os"
 	"os/exec"
 	"time"
 
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 )
-
-func GetEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
-}
 
 func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMessages []string) error {
 	stdout, _ := command.StdoutPipe()

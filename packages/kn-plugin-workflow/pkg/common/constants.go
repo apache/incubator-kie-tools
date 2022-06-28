@@ -16,7 +16,9 @@
 
 package common
 
-const QUARKUS_VERSION = "2.9.2.Final"
+// can be overriten by env
+var QUARKUS_VERSION = "2.9.2.Final"
+
 const QUARKUS_DEFAULT_EXTENSIONS = "kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,resteasy-reactive-jackson,quarkus-kubernetes"
 const JAVA_VERSION = 11
 const MAVEN_MAJOR_VERSION = 3

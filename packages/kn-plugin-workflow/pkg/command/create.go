@@ -83,10 +83,9 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	quarkusVersion := common.GetEnv("KN_PLUGIN_WORKFLOW_quarkusVersion", common.QUARKUS_VERSION)
 	create := exec.Command(
 		"mvn",
-		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", quarkusVersion),
+		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", common.QUARKUS_VERSION),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
