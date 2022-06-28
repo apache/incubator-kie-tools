@@ -83,7 +83,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	if err := common.RunCommand(
 		createService,
 		cfg.Verbose,
-		"creating knative service failed with error",
+		"deploy",
 		getDeployFriendlyMessages(),
 	); err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
@@ -97,7 +97,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		if err := common.RunCommand(
 			deploy,
 			cfg.Verbose,
-			"creating knative events binding failed with error",
+			"deploy",
 			getDeployFriendlyMessages(),
 		); err != nil {
 			fmt.Println("Check the full logs with the -v | --verbose option")

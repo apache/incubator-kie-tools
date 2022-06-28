@@ -35,12 +35,13 @@ func GetEnv(key, fallback string) string {
 	return fallback
 }
 
-func RunCommand(command *exec.Cmd, verbose bool, errorMessage string, friendlyMessages []string) error {
+func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMessages []string) error {
 	stdout, _ := command.StdoutPipe()
 	stderr, _ := command.StderrPipe()
 
 	if err := command.Start(); err != nil {
-		return fmt.Errorf("%s: %w", errorMessage, err)
+		fmt.Printf("ERROR: starting command \"%s\" failed\n", commandName)
+		return err
 	}
 
 	s := spinner.New(spinner.CharSets[42], 100*time.Millisecond)
@@ -56,7 +57,8 @@ func RunCommand(command *exec.Cmd, verbose bool, errorMessage string, friendlyMe
 	if err := command.Wait(); err != nil {
 		s.Stop()
 		cancel()
-		return fmt.Errorf("%s: %w", errorMessage, err)
+		fmt.Printf("ERROR: something went wrong during command \"%s\"\n", commandName)
+		return err
 	}
 
 	if !verbose {
@@ -68,10 +70,6 @@ func RunCommand(command *exec.Cmd, verbose bool, errorMessage string, friendlyMe
 	}()
 
 	return nil
-}
-
-func bla() bool {
-	return true
 }
 
 func printBuildActivity(ctx context.Context, s *spinner.Spinner, friendlyMessages []string) {

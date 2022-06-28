@@ -24,10 +24,6 @@ import (
 	"strings"
 )
 
-const javaVersion int64 = 11
-const mavenMajorVersion int64 = 3
-const mavenMinorVersion int64 = 8
-
 func CheckJavaDependencies() error {
 	fmt.Println("✅ Checking dependencies...")
 	if err := checkJava(); err != nil {
@@ -52,8 +48,8 @@ func checkJava() error {
 		return fmt.Errorf("error while parsing Java version: %w", err)
 	}
 
-	if userJavaVersion < javaVersion {
-		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", javaVersion)
+	if userJavaVersion < JAVA_VERSION {
+		fmt.Printf("ERROR: Please make sure you are using Java version %.2d or later", JAVA_VERSION)
 		fmt.Println("Installation stopped. Please upgrade Java and run again")
 		os.Exit(1)
 	} else {
@@ -75,7 +71,7 @@ func checkMaven() error {
 		return fmt.Errorf("error while parsing Maven version: %w", err)
 	}
 
-	if major < mavenMajorVersion && minor < mavenMinorVersion {
+	if major < MAVEN_MAJOR_VERSION && minor < MAVEN_MINOR_VERSION {
 		fmt.Printf("ERROR: Please make sure you are using Maven version %d.%d.1 or later", major, minor)
 		fmt.Println("Installation stopped. Please upgrade Maven and run again")
 		os.Exit(1)

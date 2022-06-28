@@ -27,11 +27,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	quarkusDefaultVersion            = "2.9.2.Final"
-	quarkusDefaultWorkflowExtensions = "kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,resteasy-reactive-jackson,quarkus-kubernetes"
-)
-
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
@@ -88,7 +83,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	quarkusVersion := common.GetEnv("QUARKUS_VERSION", quarkusDefaultVersion)
+	quarkusVersion := common.GetEnv("KN_PLUGIN_WORKFLOW_quarkusVersion", common.QUARKUS_VERSION)
 	create := exec.Command(
 		"mvn",
 		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", quarkusVersion),
@@ -102,7 +97,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	if err := common.RunCommand(
 		create,
 		cfg.Verbose,
-		"create Quarkus project failed with error",
+		"create",
 		getCreateFriendlyMessages(),
 	); err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
@@ -129,7 +124,7 @@ type CreateConfig struct {
 func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	cfg = CreateConfig{
 		ProjectName: viper.GetString("name"),
-		Extesions:   fmt.Sprintf("%s,%s", quarkusDefaultWorkflowExtensions, viper.GetString("extension")),
+		Extesions:   fmt.Sprintf("%s,%s", common.QUARKUS_DEFAULT_EXTENSIONS, viper.GetString("extension")),
 		Verbose:     viper.GetBool("verbose"),
 	}
 	return

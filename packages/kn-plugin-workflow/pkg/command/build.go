@@ -163,7 +163,7 @@ func runAddExtension(cfg BuildConfig) error {
 	if err := common.RunCommand(
 		addExtension,
 		cfg.Verbose,
-		"adding quarkus extension failed with error",
+		"build",
 		getAddExtensionFriendlyMessages(),
 	); err != nil {
 		return err
@@ -193,7 +193,7 @@ func runBuildImage(cfg BuildConfig) error {
 	if err := common.RunCommand(
 		build,
 		cfg.Verbose,
-		"build command failed with error",
+		"build",
 		getBuildFriendlyMessages(),
 	); err != nil {
 		if cfg.Push {
