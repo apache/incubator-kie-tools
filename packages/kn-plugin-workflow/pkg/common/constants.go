@@ -17,9 +17,13 @@
 package common
 
 // can be overriten by env
-var QUARKUS_VERSION = "2.9.2.Final"
+var QUARKUS_VERSION = "2.10.1.Final"
 
-const QUARKUS_DEFAULT_EXTENSIONS = "kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,resteasy-reactive-jackson,quarkus-kubernetes"
-const JAVA_VERSION = 11
-const MAVEN_MAJOR_VERSION = 3
-const MAVEN_MINOR_VERSION = 8
+const (
+	QUARKUS_DEFAULT_EXTENSIONS = "kogito-quarkus-serverless-workflow,kogito-addons-quarkus-knative-eventing,resteasy-reactive-jackson,quarkus-kubernetes"
+	JAVA_VERSION               = 11
+	MAVEN_MAJOR_VERSION        = 3
+	MAVEN_MINOR_VERSION        = 8
+	DEFAULT_REGISTRY           = "quay.io"
+	DEFAULT_TAG                = "latest"
+)
