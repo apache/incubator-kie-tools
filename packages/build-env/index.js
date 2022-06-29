@@ -270,7 +270,7 @@ const ENV_VARS = {
   },
   KN_PLUGIN_WORKFLOW__quarkusVersion: {
     name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
-    default: "2.9.2.Final",
+    default: "2.10.0.Final",
     description: "version to be used when creating the Quarkus workflow project",
   },
 };

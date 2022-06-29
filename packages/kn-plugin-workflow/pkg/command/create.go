@@ -41,7 +41,7 @@ func NewCreateCommand() *cobra.Command {
 		Use:   "create",
 		Short: "Create a Kogito Serverless Workflow project",
 		Long: `
-	This command creates a Kogito Serverless Workflow project in the current directory.
+	Creates a Kogito Serverless Workflow project in the current directory.
 	It sets up a Quarkus project with minimal extensions to build a workflow
 	project.
 	The generated project has a "hello world" workflow.sw.json located on the

@@ -30,7 +30,7 @@ func NewRootCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "kn-workflow",
 		Short: "Serverless Workflow",
-		Long:  "Manage Quarkus workflow projects",
+		Long:  "Manage Kogito Serverless Workflow projects",
 	}
 
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>

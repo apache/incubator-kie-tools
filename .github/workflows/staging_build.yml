@@ -147,7 +147,7 @@ jobs:
           ONLINE_EDITOR__gtmId: ""
           DMN_DEV_SANDBOX__gtmId: ""
           DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
-          KN_PLUGIN_WORKFLOW_quarkusVersion: "2.9.2.Final"
+          KN_PLUGIN_WORKFLOW_quarkusVersion: "2.10.0.Final"
         run: |
           pnpm -r build:prod
 

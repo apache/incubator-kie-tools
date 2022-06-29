@@ -49,13 +49,13 @@ func NewBuildCommand() *cobra.Command {
 		Use:   "build",
 		Short: "Build a Kogito Serverless Workflow project and generate a container image",
 		Long: `
-	This command builds the a Kogito Serverless Workflow project in the current directory 
+	Builds a Kogito Serverless Workflow project in the current directory 
 	resulting in a container image.  
 	By default the resultant container image will have the project name. It can be 
 	overriten with the --image or with others image options, see help for more information.
 
 	During the build, a knative.yml file will be generated on the ./target/kubernetes folder.
-	If your workflow uses eventing, an additional kogito.json is also generated.
+	If your workflow uses eventing, an additional kogito.yml is also generated.
 	The deploy command uses both these files.
 
 	Authentication is required if you want to push the resultant image to a private registry.
