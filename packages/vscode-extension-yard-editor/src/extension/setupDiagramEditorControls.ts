@@ -27,7 +27,7 @@ function isYard(textDocument: vscode.TextDocument) {
   return /^.*\.yard\.(json|yml|yaml)$/.test(textDocument.fileName);
 }
 
-async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
+async function openAsDiagramIfYard(args: { textEditor: vscode.TextEditor; active: boolean }) {
   if (!isYard(args.textEditor.document)) {
     return;
   }
@@ -40,7 +40,7 @@ async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active:
   });
 }
 
-async function maybeOpenAsDiagramIfSwf(args: {
+async function maybeOpenAsDiagramIfYard(args: {
   configuration: YardVsCodeExtensionConfiguration;
   textEditor: vscode.TextEditor;
   active: boolean;
@@ -59,7 +59,7 @@ async function maybeOpenAsDiagramIfSwf(args: {
     return;
   }
 
-  await openAsDiagramIfSwf(args);
+  await openAsDiagramIfYard(args);
 }
 
 export async function setupDiagramEditorControls(args: {
@@ -88,14 +88,14 @@ export async function setupDiagramEditorControls(args: {
         return;
       }
 
-      await maybeOpenAsDiagramIfSwf({ configuration: args.configuration, textEditor, active: false });
+      await maybeOpenAsDiagramIfYard({ configuration: args.configuration, textEditor, active: false });
     })
   );
 
   args.context.subscriptions.push(
     vscode.commands.registerCommand(COMMAND_IDS.openAsDiagram, async () => {
       if (vscode.window.activeTextEditor) {
-        await openAsDiagramIfSwf({ textEditor: vscode.window.activeTextEditor, active: true });
+        await openAsDiagramIfYard({ textEditor: vscode.window.activeTextEditor, active: true });
       }
     })
   );
@@ -121,7 +121,7 @@ export async function setupDiagramEditorControls(args: {
       return;
     }
 
-    await maybeOpenAsDiagramIfSwf({
+    await maybeOpenAsDiagramIfYard({
       configuration: args.configuration,
       textEditor: vscode.window.activeTextEditor,
       active: false,
