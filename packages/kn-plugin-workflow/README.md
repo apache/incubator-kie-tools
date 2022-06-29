@@ -1,10 +1,15 @@
 # kn-plugin-workflow
 
-`kn-plugin-workflow` is a plugin of the Knative Client, to enable users to quickly set up a local Quarkus workflow project from the command line.
+`kn-plugin-workflow` is a plugin of the Knative Client, to enable users to quickly set up a local Kogito Serverless Workflow project from the command line.
 
 ## Getting Started
 
-Note: In order to use the `workflow` plugin, you must install [Java](https://www.java.com/en/download/help/download_options.html) at least version 11, [Maven](https://maven.apache.org/install.html) at least version 3.8.1, [Docker](https://docs.docker.com/engine/install/) and [Kubernetes CLI `kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl).
+Note: In order to use the `workflow` plugin, you must install:
+
+- [Java](https://www.java.com/en/download/help/download_options.html) at least version 11
+- [Maven](https://maven.apache.org/install.html) at least version 3.8.1
+- [Docker](https://docs.docker.com/engine/install/)
+- [Kubernetes CLI `kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl).
 
 ### Instalation
 
@@ -45,15 +50,15 @@ Use "kn workflow [command] --help" for more information about a command.
 
 ### create
 
-Creates a new Quarkus workflow project named "myproject":
+This command will scaffold a new Kogito Serverless Workflow project named "my-project":
 
 ```bash
-kn workflow create --name myproject
+kn workflow create --name my-project
 ```
 
 ### build
 
-Builds a Quarkus workflow project in the current directory and generate a specific image:
+Builds a Kogito Serverless Workflow project in the current directory and generate a specific image:
 
 ```bash
 kn workflow build --image quay.io/mysuer/myproject
@@ -61,7 +66,7 @@ kn workflow build --image quay.io/mysuer/myproject
 
 ### deploy
 
-Deploys a Quarkus workflow project in the current directory (build command is required):
+Deploys a Kogito Serverless Workflow project in the current directory (build command is required):
 
 ```bash
 kn workflow deploy
@@ -74,5 +79,6 @@ git clone git@github.com:kie-group/kie-tools.git
 cd kie-tools
 yarn bootstrap
 cd packages/kn-plugin-workflow
+go mod tidy
 yarn build
 ```
