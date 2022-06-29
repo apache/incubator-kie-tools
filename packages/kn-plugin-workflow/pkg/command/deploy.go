@@ -17,7 +17,6 @@
 package command
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -28,15 +27,22 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type DeployConfig struct {
+	// Deploy options
+	Path string // service name
+
+	// Plugin options
+	Verbose bool
+}
+
 func NewDeployCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "deploy",
-		Short: "Deploy a Quarkus workflow project",
-		Long: `Deploy a Quarkus workflow project
-
-	This command deploys the workflow project in the current directory. 
-	By default this commands uses the ./target/kubernetes folder to find
-	the deployment files generated in the build process, so the build step
+		Short: "Deploy a Kogito Serverless Workflow project",
+		Long: `
+	Deploys a Kogito Serverless Workflow project in the current directory. 
+	By default, this command uses the ./target/kubernetes folder to find
+	the deployment files generated in the build process. The build step
 	is required before using the deploy command.
 
 	Before you use the deploy command, ensure that your cluster have 
@@ -58,7 +64,7 @@ func NewDeployCommand() *cobra.Command {
 		return runDeploy(cmd, args)
 	}
 
-	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deploy files", cmd.Name()))
+	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deployment files", cmd.Name()))
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -103,7 +109,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			fmt.Println("Check the full logs with the -v | --verbose option")
 			return err
 		}
-		fmt.Println("✅ Knative events binding sucessufully created")
+		fmt.Println("✅ Knative Eventing bindings successfully created")
 	} else if err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
@@ -112,14 +118,6 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	finish := time.Since(start)
 	fmt.Printf("🚀 Deploy took: %s \n", finish)
 	return nil
-}
-
-type DeployConfig struct {
-	// Deploy options
-	Path string // service name
-
-	// Plugin options
-	Verbose bool
 }
 
 func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
@@ -134,10 +132,8 @@ func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 func checkIfKogitoFileExists(cfg DeployConfig) (bool, error) {
 	if _, err := os.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
 		return true, nil
-	} else if errors.Is(err, os.ErrNotExist) {
-		return false, nil
 	} else {
-		return false, fmt.Errorf("%w", err)
+		return false, err
 	}
 }
 
