@@ -139,18 +139,7 @@
       "properties": {
         "kogito.yard.runOnSave": {
           "type": "string",
-          "default": "extension.kogito.yard.silentlyGenerateSvg",
           "markdownDescription": "Execute a command on each save operation of the yard file."
-        },
-        "kogito.yard.svgFilenameTemplate": {
-          "type": "string",
-          "default": "${fileBasename}.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}.svg`)."
-        },
-        "kogito.yard.svgFilePath": {
-          "type": "string",
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as the file: `${fileDirname}`)."
         },
         "kogito.yard.automaticallyOpenDiagramEditorAlongsideTextEditor": {
           "type": "string",
@@ -165,18 +154,6 @@
       }
     },
     "commands": [
-      {
-        "command": "extension.kogito.yard.getPreviewSvg",
-        "title": "yard: Generate SVG",
-        "icon": {
-          "light": "./static/svg-icon-light.png",
-          "dark": "./static/svg-icon-dark.png"
-        }
-      },
-      {
-        "command": "extension.kogito.yard.silentlyGenerateSvg",
-        "title": "yard: Generate SVG without any notification"
-      },
       {
         "command": "extension.kogito.yard.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
         "title": "yard: Setup automatically open Diagram Editor alongside Text Editor"
@@ -204,20 +181,10 @@
         "key": "ctrl+k v",
         "mac": "cmd+k v",
         "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard"
-      },
-      {
-        "command": "extension.kogito.yard.getPreviewSvg",
-        "key": "ctrl+k p",
-        "mac": "cmd+k p",
-        "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard"
       }
     ],
     "menus": {
       "commandPalette": [
-        {
-          "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard",
-          "command": "extension.kogito.yard.getPreviewSvg"
-        },
         {
           "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard",
           "command": "extension.kogito.yard.openAsSource"
@@ -228,11 +195,6 @@
         }
       ],
       "editor/title": [
-        {
-          "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard",
-          "command": "extension.kogito.yard.getPreviewSvg",
-          "group": "navigation"
-        },
         {
           "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard",
           "command": "extension.kogito.yard.openAsSource",
