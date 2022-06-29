@@ -27,28 +27,36 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type CreateConfig struct {
+	// Quarkus project options
+	ProjectName string // Project name
+	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
+
+	// Plugin options
+	Verbose bool
+}
+
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
-		Short: "Create a Quarkus workflow project",
-		Long: `Create a Quarkus workflow project
-
-	This command creates a Quarkus workflow project in the current directory.
-	It sets up a Quarkus project with the minimun extensions to build a workflow
+		Short: "Create a Kogito Serverless Workflow project",
+		Long: `
+	This command creates a Kogito Serverless Workflow project in the current directory.
+	It sets up a Quarkus project with minimal extensions to build a workflow
 	project.
-	The generated project will have a "hello world" workflow.sw.json located on the
+	The generated project has a "hello world" workflow.sw.json located on the
 	./<project-name>/src/main/resources directory.
 		`,
 		Example: `
 	# Create a project in the local directory
-	# By default the project will be named "new-project"
+	# By default the project is named "new-project"
 	{{.Name}} create
 
 	# Create a project with an specfic name
 	{{.Name}} create --name myproject
 
 	# Create a project with additional extensions
-	# Multiple can be add by separete then with a comma
+	# You can add multiple extensions by separating them with a comma
 	{{.Name}} create --extensions kogito-addons-quarkus-persistence-postgresql,quarkus-core
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
@@ -59,7 +67,7 @@ func NewCreateCommand() *cobra.Command {
 		return runCreate(cmd, args)
 	}
 
-	cmd.Flags().StringP("name", "n", "new-project", "Project name that will be created in the current directory.")
+	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -91,7 +99,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
-	fmt.Println("Creating a Quarkus workflow project...")
+	fmt.Println("Creating a Kogito Serverless Workflow project...")
 
 	if err := common.RunCommand(
 		create,
@@ -106,17 +114,8 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	generateWorkflow(cfg)
 
 	finish := time.Since(start)
-	fmt.Printf("🚀 Create took: %s \n", finish)
+	fmt.Printf("🚀 Project creation took: %s \n", finish)
 	return nil
-}
-
-type CreateConfig struct {
-	// Quarkus project options
-	ProjectName string // Project name
-	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
-
-	// Plugin options
-	Verbose bool
 }
 
 // runCreateConfig returns the configs from the current execution context
@@ -131,24 +130,15 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 
 func generateWorkflow(cfg CreateConfig) (err error) {
 	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
-	data := []byte(`{
-	"id": "hello",
-	"specVersion": "0.8.0",
-	"name": "Hello World",
-	"start": "HelloWorld",
-	"states": [
-		{
-		"name": "HelloWorld",
-		"type": "operation",
-		"actions": [],
-		"end": true
-		}
-	]
-}	  
-	`)
-	err = ioutil.WriteFile(workflowFilePath, data, 0644)
+	workflowFileData, err := GetWorkflowTemplate()
 	if err != nil {
-		return fmt.Errorf("error creating workflow file: %w", err)
+		return err
+	}
+
+	err = ioutil.WriteFile(workflowFilePath, workflowFileData, 0644)
+	if err != nil {
+		fmt.Println("ERROR: writing the workflow json file.")
+		return err
 	}
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
