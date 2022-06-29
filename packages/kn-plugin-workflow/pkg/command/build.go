@@ -37,8 +37,9 @@ type BuildConfig struct {
 	Tag        string // image tag (overrides image name)
 
 	// Build strategy options
-	Jib  bool // use Jib extension to build the image and push it to a remote registry
-	Push bool // choose to push an image to a remote registry or not (Docker only)
+	Jib       bool // use Jib extension to build the image and push it to a remote registry
+	JibPodman bool // use Jib extension to build the image and save it in podman
+	Push      bool // choose to push an image to a remote registry or not (Docker only)
 
 	// Plugin options
 	Verbose bool
@@ -80,9 +81,14 @@ func NewBuildCommand() *cobra.Command {
 
 	# Build using Jib instead of Docker. (Read more: https://kiegroup.github.io/kogito-docs/serverlessworkflow/main/cloud/build-workflow-image-with-quarkus-cli.html)
 	# Docker is still required to save the image if the push flag is not used
-	{{.Name}} build --jib`,
+	{{.Name}} build --jib
+	
+	# Build using Jib and save the image in podman
+	# Can't use the "push" or "jib" flag for this build strategy
+	{{.Name}} build --jib-podman
+	`,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "push"),
+		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "jib-podman", "push"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -96,10 +102,10 @@ func NewBuildCommand() *cobra.Command {
 	cmd.Flags().String("image-tag", "", "Image tag, ex: 1.0, if the --image flag is in use, this option overrides the image [tag]")
 
 	cmd.Flags().Bool("jib", false, "Use Jib extension to generate the image (Docker is still required to save the generated image if push is not used)")
+	cmd.Flags().Bool("jib-podman", false, "Use Jib extension to generate the image and save it in podman (can't use --push)")
 	cmd.Flags().Bool("push", false, "Attempt to push the genereated image after being successfully built")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
-
 	return cmd
 }
 
@@ -115,8 +121,14 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := common.CheckContainerRuntime(); err != nil {
-		return err
+	if cfg.JibPodman {
+		if err := common.CheckPodman(); err != nil {
+			return err
+		}
+	} else if cfg.Jib && !cfg.Push {
+		if err := common.CheckDocker(); err != nil {
+			return err
+		}
 	}
 
 	if err := runAddExtension(cfg); err != nil {
@@ -140,17 +152,30 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 		ImageName:  viper.GetString("name"),
 		Tag:        viper.GetString("tag"),
 
-		Jib:  viper.GetBool("jib"),
-		Push: viper.GetBool("push"),
+		Jib:       viper.GetBool("jib"),
+		JibPodman: viper.GetBool("jib-podman"),
+		Push:      viper.GetBool("push"),
 
 		Verbose: viper.GetBool("verbose"),
+	}
+	if len(cfg.Image) == 0 && len(cfg.ImageName) == 0 {
+		fmt.Println("ERROR: either --image or --image-name should be used")
+		err = fmt.Errorf("missing flags")
+	}
+	if cfg.JibPodman && cfg.Push {
+		fmt.Println("ERROR: can't use --jib-podman with --push")
+		err = fmt.Errorf("invalid flags")
+	}
+	if cfg.JibPodman && cfg.Jib {
+		fmt.Println("ERROR: can't use --jib-podman with --jib")
+		err = fmt.Errorf("invalid flags")
 	}
 	return
 }
 
 func runAddExtension(cfg BuildConfig) error {
 	var addExtension *exec.Cmd
-	if cfg.Jib {
+	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
 			"-Dextensions=container-image-jib")
@@ -176,6 +201,7 @@ func runAddExtension(cfg BuildConfig) error {
 func runBuildImage(cfg BuildConfig) error {
 	registry, repository, name, tag := getImageConfig(cfg)
 	builderConfig := getBuilderConfig(cfg)
+	executableName := getExecutableNameConfig(cfg)
 
 	build := exec.Command("./mvnw", "package",
 		"-Dquarkus.kubernetes.deployment-target=knative",
@@ -185,8 +211,9 @@ func runBuildImage(cfg BuildConfig) error {
 		fmt.Sprintf("-Dquarkus.container-image.group=%s", repository),
 		fmt.Sprintf("-Dquarkus.container-image.name=%s", name),
 		fmt.Sprintf("-Dquarkus.container-image.tag=%s", tag),
-		builderConfig,
 		fmt.Sprintf("-Dquarkus.container-image.push=%s", strconv.FormatBool(cfg.Push)),
+		builderConfig,
+		executableName,
 	)
 
 	if err := common.RunCommand(
@@ -264,13 +291,23 @@ func getImage(registry string, repository string, name string, tag string) strin
 
 func getBuilderConfig(cfg BuildConfig) string {
 	builder := "-Dquarkus.container-image.builder="
-	if cfg.Jib {
+	if cfg.Jib || cfg.JibPodman {
 		builder += "jib"
 	} else {
 		builder += "docker"
 	}
 
 	return builder
+}
+
+func getExecutableNameConfig(cfg BuildConfig) string {
+	executableName := "-Dquarkus.jib.docker-executable-name="
+	if cfg.JibPodman {
+		executableName += "podman"
+	} else {
+		executableName += "docker"
+	}
+	return executableName
 }
 
 func getAddExtensionFriendlyMessages() []string {

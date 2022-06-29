@@ -82,7 +82,7 @@ func checkMaven() error {
 	return nil
 }
 
-func CheckContainerRuntime() error {
+func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
 	dockerCheck := exec.Command("docker", "stats", "--no-stream")
 	if err := dockerCheck.Run(); err != nil {
@@ -93,6 +93,20 @@ func CheckContainerRuntime() error {
 	}
 
 	fmt.Println(" - Docker is running")
+	return nil
+}
+
+func CheckPodman() error {
+	fmt.Println("✅ Checking if Docker is available...")
+	dockerCheck := exec.Command("podman", "stats", "--no-stream")
+	if err := dockerCheck.Run(); err != nil {
+		fmt.Println("ERROR: Podman not found.")
+		fmt.Println("Download from https://docs.podman.io/en/latest/")
+		fmt.Println("If it's already installed, check if the podman daemon is running")
+		return err
+	}
+
+	fmt.Println(" - Podman is running")
 	return nil
 }
 

@@ -8,7 +8,8 @@ Note: In order to use the `workflow` plugin, you must install:
 
 - [Java](https://www.java.com/en/download/help/download_options.html) at least version 11
 - [Maven](https://maven.apache.org/install.html) at least version 3.8.1
-- [Docker](https://docs.docker.com/engine/install/)
+- [Docker](https://docs.docker.com/engine/install/) (Optional)
+- [Podman](https://docs.podman.io/en/latest/) (Optional)
 - [Kubernetes CLI `kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl).
 
 ### Instalation
