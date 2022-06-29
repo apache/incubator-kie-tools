@@ -40,7 +40,7 @@ func checkJava() error {
 	version, err := javaCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Java not found")
-		fmt.Println("At least Java 11 is required to use this command")
+		fmt.Printf("At least Java %.2d is required to use this command\n", JAVA_VERSION)
 		return err
 	}
 	userJavaVersion, err := parseJavaVersion(string(version))
@@ -63,7 +63,7 @@ func checkMaven() error {
 	version, err := mavenCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Maven not found")
-		fmt.Println("At least Maven 3.8.1 is required to use this command")
+		fmt.Printf("At least Maven %.2d.%.2d.1 is required to use this command\n", MAVEN_MAJOR_VERSION, MAVEN_MINOR_VERSION)
 		return err
 	}
 	major, minor, err := parseMavenVersion(string(version))
@@ -88,7 +88,7 @@ func CheckContainerRuntime() error {
 	if err := dockerCheck.Run(); err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
-		fmt.Println("If it's already installed, check if it's running")
+		fmt.Println("If it's already installed, check if the docker daemon is running")
 		return err
 	}
 
