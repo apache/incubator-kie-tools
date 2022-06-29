@@ -35,10 +35,10 @@ Usage:
   kn workflow [command]
 
 Available Commands:
-  build       Build a Quarkus workflow project and generate a container image
+  build       Build a Kogito Serverless Workflow project and generate a container image
   completion  Generate the autocompletion script for the specified shell
-  create      Create a Quarkus workflow project
-  deploy      Deploy a Quarkus workflow project
+  create      Create a Kogito Serverless Workflow project
+  deploy      Deploy a Kogito Serverless Workflow project
   help        Help about any command
 
 Flags:
