@@ -83,12 +83,17 @@ func printBuildActivity(ctx context.Context, s *spinner.Spinner, friendlyMessage
 	}()
 }
 
-func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
+func GetTemplate(cmd *cobra.Command, name string) *template.Template {
 	var (
 		body = cmd.Long + "\n\n" + cmd.UsageString()
-		t    = template.New("help")
+		t    = template.New(name)
 		tpl  = template.Must(t.Parse(body))
 	)
+	return tpl
+}
+
+func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
+	tpl := GetTemplate(cmd, "help")
 	var data = struct{ Name string }{Name: cmd.Root().Use}
 
 	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {

@@ -18,10 +18,10 @@ package root
 
 import (
 	"fmt"
-	"html/template"
 	"os"
 
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -53,11 +53,7 @@ func NewRootCommand() *cobra.Command {
 }
 
 func runRootHelp(cmd *cobra.Command, args []string) {
-	var (
-		body = cmd.Long + "\n\n" + cmd.UsageString()
-		t    = template.New("root")
-		tpl  = template.Must(t.Parse(body))
-	)
+	tpl := common.GetTemplate(cmd, "root")
 	var data = struct {
 		Name string
 	}{
