@@ -7,5 +7,6 @@
   "files.simpleDialog.enable": true,
   "window.dialogStyle": "custom",
   "explorer.compactFolders": false,
-  "security.workspace.trust.enabled": false
+  "security.workspace.trust.enabled": false,
+  "kogito.yard.automaticallyOpenDiagramEditorAlongsideTextEditor": "Open automatically"
 }

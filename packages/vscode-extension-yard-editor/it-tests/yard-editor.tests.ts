@@ -54,8 +54,8 @@ describe("Editors with empty assets", () => {
   it("Opens empty.yard.json in yard Editor", async function () {
     this.timeout(20000);
     textE = await testHelper.getTextEditor(EMPTY_YARD_JSON);
-    let pippo = await textE.getText();
-    assert.isTrue(pippo === "");
+    let text = await textE.getText();
+    assert.isTrue(text === "");
 
     /*
         await testHelper.switchWebviewToFrame(webview);
