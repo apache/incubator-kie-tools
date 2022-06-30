@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-import {
-  AuthProviderType,
-  SwfServiceCatalogService,
-  SwfServiceRegistriesSettings,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
 import { ServiceRegistryInstanceClient } from "./ServiceRegistryInstanceClient";
 import { AuthProvider, AuthProviderFactory } from "./auth";
 import * as vscode from "vscode";
+import { RedHatAuthenticationStore } from "./auth/RedHatAuthenticationStore";
 
 export class ServiceRegistriesStore {
+  private readonly redHatAuthenticationStore: RedHatAuthenticationStore;
   private readonly authProviderFactory: AuthProviderFactory;
   private readonly registryClientStore: Map<ServiceRegistryInstanceClient, SwfServiceCatalogService[]> = new Map();
   private readonly subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
@@ -35,6 +33,9 @@ export class ServiceRegistriesStore {
       context: vscode.ExtensionContext;
     }
   ) {
+    this.redHatAuthenticationStore = RedHatAuthenticationStore.get();
+    this.authProviderFactory = new AuthProviderFactory();
+
     args.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((e) => {
         if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistriesSettings)) {
@@ -42,11 +43,9 @@ export class ServiceRegistriesStore {
         }
       })
     );
-
-    this.authProviderFactory = new AuthProviderFactory({
-      context: this.args.context,
-      onExtensionChange: () => this.init(),
-    });
+    args.context.subscriptions.push(
+      this.redHatAuthenticationStore.subscribeToRedHatAuthenticationStateChange(() => this.init())
+    );
 
     args.context.subscriptions.push(new vscode.Disposable(() => this.dispose()));
   }
@@ -88,29 +87,36 @@ export class ServiceRegistriesStore {
 
     const registrySettings = this.args.configuration.getServiceRegistrySettings();
 
-    this.checkSettingsAuthProviders(registrySettings);
-
-    registrySettings?.registries?.forEach((clientSettings) => {
+    const showMissingExtensionWarn = registrySettings?.registries?.reduce((result, clientSettings) => {
       try {
         const authProvider = this.authProviderFactory.lookupAuthProvider({
           authProvider: clientSettings.authProvider,
           context: this.args.context,
         });
 
+        if (!authProvider) {
+          return true;
+        }
+
         const client = new ServiceRegistryInstanceClient({
           name: clientSettings.name,
           url: clientSettings.url,
           authProvider,
         });
+
         this.registryClientStore.set(client, []);
 
-        if (authProvider) {
-          authProvider.subscribeToSessionChange(() => this.refreshClientStore(client));
-        }
+        authProvider.subscribeToSessionChange(() => this.refreshClientStore(client));
+
+        return result;
       } catch (err) {
         console.log("Couldn't create Service Registry client for: ", clientSettings, err);
       }
-    });
+    }, false);
+
+    if (showMissingExtensionWarn) {
+      this.showMissingExtensionWarn();
+    }
 
     return await this.refresh();
   }
@@ -154,21 +160,14 @@ export class ServiceRegistriesStore {
     this.subscriptions.forEach((subscription) => subscription(this.storedServices));
   }
 
-  private checkSettingsAuthProviders(registriesSettings: SwfServiceRegistriesSettings) {
-    if (this.authProviderFactory.isRHAuthEnabled) {
+  private showMissingExtensionWarn() {
+    if (this.redHatAuthenticationStore.isRHAuthEnabled) {
       return;
     }
-
-    const needsRHAccount = registriesSettings?.registries?.find(
-      (registrySetting) => registrySetting.authProvider === AuthProviderType.RH_ACCOUNT
-    );
-
-    if (needsRHAccount) {
-      vscode.window.showWarningMessage("Serverless Workflow Editor: Red Hat Authentication extension not available", {
-        modal: true,
-        detail:
-          "Looks like at least one of the configured Service Registries requires Red Hat authentication but the `Red Hat Authentication` extension isn't available. Please check that the extension is installed and enabled.",
-      });
-    }
+    vscode.window.showWarningMessage("Serverless Workflow Editor: Red Hat Authentication extension not available", {
+      modal: true,
+      detail:
+        "Looks like at least one of the configured Service Registries requires Red Hat authentication but the `Red Hat Authentication` extension isn't available. Please check that the extension is installed and enabled.",
+    });
   }
 }

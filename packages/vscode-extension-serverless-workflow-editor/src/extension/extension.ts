@@ -30,6 +30,7 @@ import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCata
 import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
 import { COMMAND_IDS } from "./commandIds";
 import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
+import { RedHatAuthenticationStore } from "./serviceCatalog/serviceRegistry/auth/RedHatAuthenticationStore";
 
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
@@ -43,6 +44,8 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   const configuration = new SwfVsCodeExtensionConfiguration();
+
+  context.subscriptions.push(RedHatAuthenticationStore.get());
 
   const serviceRegistriesStore = new ServiceRegistriesStore({
     configuration,

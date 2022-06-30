@@ -19,40 +19,23 @@ import { AuthProviderType } from "@kie-tools/serverless-workflow-service-catalog
 import { AuthProvider } from "./AuthProvider";
 import { RHCCAuthProvider } from "./RHCCAuthProvider";
 import { NoOpAuthProvider } from "./NoOpAuthProvider";
+import { RedHatAuthenticationStore } from "./RedHatAuthenticationStore";
 
 export class AuthProviderFactory {
-  private _rhAuthEnabled: boolean;
+  private readonly redHatAuthenticationStore = RedHatAuthenticationStore.get();
 
-  constructor(
-    private readonly args: {
-      context: vscode.ExtensionContext;
-      onExtensionChange: () => void;
+  public lookupAuthProvider(args: {
+    context: vscode.ExtensionContext;
+    authProvider: AuthProviderType;
+  }): AuthProvider | undefined {
+    if (args.authProvider === AuthProviderType.NONE) {
+      return new NoOpAuthProvider();
     }
-  ) {
-    this._rhAuthEnabled = this.getCurrentRHExtensionEnabled();
 
-    this.args.context.subscriptions.push(
-      vscode.extensions.onDidChange((e) => {
-        if (this._rhAuthEnabled !== this.getCurrentRHExtensionEnabled()) {
-          this._rhAuthEnabled = !this._rhAuthEnabled;
-          this.args.onExtensionChange();
-        }
-      })
-    );
-  }
-
-  public get isRHAuthEnabled(): boolean {
-    return this._rhAuthEnabled;
-  }
-
-  public lookupAuthProvider(args: { context: vscode.ExtensionContext; authProvider: AuthProviderType }): AuthProvider {
-    if (args.authProvider === AuthProviderType.RH_ACCOUNT && this.isRHAuthEnabled) {
+    if (this.redHatAuthenticationStore.isRHAuthEnabled) {
       return new RHCCAuthProvider(args.context);
     }
-    return new NoOpAuthProvider();
-  }
 
-  private getCurrentRHExtensionEnabled(): boolean {
-    return vscode.extensions.getExtension("redhat.vscode-redhat-account") !== undefined;
+    return undefined;
   }
 }
