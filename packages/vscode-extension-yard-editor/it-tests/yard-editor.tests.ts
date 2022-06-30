@@ -18,12 +18,9 @@ import { By, EditorView, InputBox, SideBarView, TextEditor, WebView } from "vsco
 import * as path from "path";
 /*import { h5ComponentWithText, labeledAnyElementInPropertiesPanel } from "./helpers/CommonLocators";
 import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";*/
-import VSCodeTestHelper from "./helpers/VSCodeTestHelper"; /*
-import { assert } from "chai";
-import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
-import { TextEdit } from "vscode";
-import Correlation from "./helpers/bpmn/Correlation";
-import ProcessVariablesWidgetHelper from "./helpers/bpmn/ProcessVariablesWidgetHelper";*/
+import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import { assert } from "chai"; /*
+import { TextEdit } from "vscode";*/
 
 describe("Editors with empty assets", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
@@ -33,6 +30,7 @@ describe("Editors with empty assets", () => {
 
   let testHelper: VSCodeTestHelper;
   let webview: WebView;
+  let textE: TextEditor;
   let folderView: SideBarView;
 
   before(async function () {
@@ -55,9 +53,12 @@ describe("Editors with empty assets", () => {
 
   it("Opens empty.yard.json in yard Editor", async function () {
     this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(EMPTY_YARD_JSON);
-    await testHelper.switchWebviewToFrame(webview);
+    textE = await testHelper.getTextEditor(EMPTY_YARD_JSON);
+    let pippo = await textE.getText();
+    assert.isTrue(pippo === "");
+
     /*
+        await testHelper.switchWebviewToFrame(webview);
         const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
         const palette = await bpmnEditorTester.getPalette();
@@ -172,7 +173,7 @@ describe("Editors with empty assets", () => {
         await scesimEditorTester.openTestTools();
 
         await webview.switchBack();
-    });*/
+    });*/ /*
 
   /**
    * As the opened sceism file is empty, a prompt to specify file under test should be shown

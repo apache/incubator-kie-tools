@@ -21,6 +21,7 @@ import {
   InputBox,
   ModalDialog,
   SideBarView,
+  TextEditor,
   until,
   ViewControl,
   ViewSection,
@@ -138,6 +139,22 @@ export default class VSCodeTestHelper {
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
     await this.waitUntilKogitoEditorIsLoaded(webview);
     return webview;
+  };
+
+  public getTextEditor = async (fileName: string, fileParentPath?: string): Promise<TextEditor> => {
+    if (fileParentPath == undefined || fileParentPath == "") {
+      await this.workspaceSectionView.openItem(fileName);
+    } else {
+      const pathPieces = fileParentPath.split("/");
+      const viewItem = await this.workspaceSectionView.openItem(...pathPieces);
+      const fileItem = await this.workspaceSectionView.findItem(fileName);
+      if (fileItem != undefined) {
+        await fileItem.click();
+      }
+    }
+
+    const textEditor = new TextEditor(this.workbench.getEditorView(), By.linkText(fileName));
+    return textEditor;
   };
 
   /**
