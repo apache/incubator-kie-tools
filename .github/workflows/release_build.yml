@@ -24,7 +24,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -76,6 +76,7 @@ jobs:
       extended_services: ${{ steps.set_runners.outputs.extended_services }}
       dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}
       dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
+      kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}
 
     steps:
       - name: "Set Runners"
@@ -96,6 +97,7 @@ jobs:
           echo "::set-output name=extended_services::${{ fromJSON(inputs.runners).extended_services }}"
           echo "::set-output name=dashbuilder::${{ fromJSON(inputs.runners).dashbuilder }}"
           echo "::set-output name=dashbuilder_images::${{ fromJSON(inputs.runners).dashbuilder_images }}"
+          echo "::set-output name=kn_plugin_workflow::${{ fromJSON(inputs.runners).kn_plugin_workflow }}"
 
       - name: "Print Runners"
         shell: bash
@@ -114,6 +116,7 @@ jobs:
           echo "extended_services: ${{ steps.set_runners.outputs.extended_services }}"
           echo "dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}"
           echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
+          echo "kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}"
 
   dmn_dev_sandbox_image:
     env:
@@ -1107,3 +1110,73 @@ jobs:
           registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
+
+  kn_plugin_workflow:
+    env:
+      KN_PLUGIN_WORKFLOW__quarkusVersion: "2.9.2.Final"
+
+    if: ${{ needs.extract_runners.outputs.kn_plugin_workflow == 'true' }}
+    runs-on: ${{ matrix.os }}
+    needs: [extract_runners]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: "Support longpaths (Windows only)"
+        if: matrix.os == 'windows-latest'
+        run: git config --system core.longpaths true
+
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm -F @kie-tools/kn-plugin-workflow... build:prod
+
+      - name: "Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/kn-plugin-workflow/dist/kn-workflow-linux-amd64
+          asset_name: kn-workflow-linux-amd64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Knative CLI Workflow Plugin for macOS (macOS only)"
+        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64
+          asset_name: kn-workflow-darwin-amd64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Knative CLI Workflow Plugin for Windows (Windows only)"
+        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: "./packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe"
+          asset_name: "kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
+          asset_content_type: application/octet-stream
