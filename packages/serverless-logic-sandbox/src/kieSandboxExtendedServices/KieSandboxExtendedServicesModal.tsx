@@ -30,7 +30,6 @@ import {
   WizardContextConsumer,
   WizardFooter,
 } from "@patternfly/react-core/dist/js/components/Wizard";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -40,9 +39,8 @@ import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-component
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import { DEVELOPER_SANDBOX_URL } from "../openshift/OpenShiftService";
-import { DependentFeature, useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
+import { useKieSandboxExtendedServices } from "./KieSandboxExtendedServicesContext";
 import { KieSandboxExtendedServicesStatus } from "./KieSandboxExtendedServicesStatus";
-import { useRoutes } from "../navigation/Hooks";
 import { ExtendedServicesConfig } from "../settings/SettingsContext";
 
 enum ModalPage {
