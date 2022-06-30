@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { TextDocument } from "vscode-languageserver-textdocument";
 
 /**
  * Gets the corresponding line from an offset.
@@ -26,3 +27,16 @@ export const getLineFromOffset = (fullText: string, offset: number | undefined, 
   const partialText = fullText.substring(offset!);
   return partialText.substring(0).split("\n")[lineFrom];
 };
+
+type ContentWithCursor = `${string}🎯${string}`;
+
+export function treat(content: ContentWithCursor) {
+  const trimmedContent = content.trim();
+  const treatedContent = trimmedContent.replace("🎯", "");
+  const doc = TextDocument.create("", "json", 0, trimmedContent);
+  return { content: treatedContent, cursorPosition: doc.positionAt(trimmedContent.indexOf("🎯")) };
+}
+
+export function trim(content: string) {
+  return { content: content.trim() };
+}

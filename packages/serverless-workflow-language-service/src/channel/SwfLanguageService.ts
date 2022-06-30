@@ -114,6 +114,8 @@ export abstract class SwfLanguageService {
 
     const cursorLocation = jsonc.getLocation(args.content, cursorOffset);
 
+    console.log("cursorLocation", cursorLocation);
+
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -129,11 +131,19 @@ export abstract class SwfLanguageService {
       }))
     );
 
+    console.log(
+      "entries",
+      Array.from(completions.entries()).filter(([path, _]) => {
+        console.log("filter", cursorLocation.matches(path), cursorLocation.path.length === path.length);
+        return cursorLocation.matches(path) && cursorLocation.path.length === path.length;
+      })
+    );
+
     const result = await Promise.all(
       Array.from(completions.entries())
         .filter(([path, _]) => cursorLocation.matches(path) && cursorLocation.path.length === path.length)
-        .map(([_, completionItemsDelegate]) =>
-          completionItemsDelegate({
+        .map(([_, completionItemsDelegate]) => {
+          return completionItemsDelegate({
             document: doc,
             cursorPosition: args.cursorPosition,
             currentNode,
@@ -142,8 +152,8 @@ export abstract class SwfLanguageService {
             overwriteRange,
             swfCompletionItemServiceCatalogServices,
             langServiceConfig: this.args.config,
-          })
-        )
+          });
+        })
     );
 
     return Promise.resolve(result.flat());

@@ -23,9 +23,9 @@ import {
   SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import { SwfLanguageServiceConfig } from "../src/channel";
+import { trim, treat } from "./testUtils";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",
@@ -271,7 +271,7 @@ describe("SWF LS JSON", () => {
     } as CodeLens);
   });
 
-  test("function completion", async () => {
+  test.only("function completion", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: {
@@ -364,7 +364,6 @@ describe("SWF LS JSON", () => {
     },
   ]
 }`);
-    debugger;
 
     const completionItems = await ls.getCompletionItems({
       uri: "test.sw.json",
@@ -388,16 +387,3 @@ describe("SWF LS JSON", () => {
     } as CompletionItem);
   });
 });
-
-type ContentWithCursor = `${string}🎯${string}`;
-
-function treat(content: ContentWithCursor) {
-  const trimmedContent = content.trim();
-  const treatedContent = trimmedContent.replace("🎯", "");
-  const doc = TextDocument.create("", "json", 0, trimmedContent);
-  return { content: treatedContent, cursorPosition: doc.positionAt(trimmedContent.indexOf("🎯")) };
-}
-
-function trim(content: string) {
-  return { content: content.trim() };
-}

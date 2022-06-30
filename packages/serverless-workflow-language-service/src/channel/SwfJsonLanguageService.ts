@@ -27,9 +27,6 @@ export class SwfJsonLanguageService extends SwfLanguageService {
   }
 
   parseContent(content: string): SwfLSNode | undefined {
-    /* TODO: SwfJsonLanguageService: remove me */
-    const t = jsonc.parseTree(content);
-    debugger;
     return jsonc.parseTree(content);
   }
 }

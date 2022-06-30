@@ -26,6 +26,7 @@ import {
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import { SwfLanguageServiceConfig } from "../src/channel";
+import { trim, treat } from "./testUtils";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",
@@ -65,7 +66,7 @@ const defaultConfig: SwfLanguageServiceConfig = {
 };
 
 describe("SWF LS YAML", () => {
-  describe.only("parsing content", () => {
+  describe("parsing content", () => {
     test("parsing very simple content", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
@@ -82,9 +83,9 @@ functions: []
 
       expect(rootNode).not.toBeUndefined();
       expect(rootNode!.type).toBe("object");
-      expect(rootNode!.children).not.toBeUndefined();
+      expect(rootNode!.children).toHaveLength(1);
       expect(rootNode!.children![0].type).toBe("property");
-      expect(rootNode!.children![0].children).not.toBeUndefined();
+      expect(rootNode!.children![0].children).toHaveLength(2);
       expect(rootNode!.children![0].children![0]).not.toBeUndefined();
       expect(rootNode!.children![0].children![0].value).toBe("functions");
       expect(rootNode!.children![0].children![1]).not.toBeUndefined();
@@ -138,9 +139,9 @@ states:
 
       expect(rootNode).not.toBeUndefined();
       expect(rootNode!.type).toBe("object");
-      expect(rootNode!.children).not.toBeUndefined();
+      expect(rootNode!.children).toHaveLength(2);
       expect(rootNode!.children![0].type).toBe("property");
-      expect(rootNode!.children![0].children).not.toBeUndefined();
+      expect(rootNode!.children![0].children).toHaveLength(2);
       expect(rootNode!.children![0].children![0]).not.toBeUndefined();
       expect(rootNode!.children![0].children![0].value).toBe("functions");
       expect(rootNode!.children![0].children![1]).not.toBeUndefined();
@@ -368,11 +369,11 @@ functions: []`);
 
     expect(codeLenses).toHaveLength(1);
     expect(codeLenses[0]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         title: "+ Add function...",
         command: "swf.ls.commands.OpenFunctionsCompletionItems",
-        arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
       },
     } as CodeLens);
   });
@@ -392,11 +393,11 @@ functions: [] `);
 
     expect(codeLenses).toHaveLength(1);
     expect(codeLenses[0]).toStrictEqual({
-      range: { start: { line: 0, character: 13 }, end: { line: 0, character: 13 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         title: "+ Add function...",
         command: "swf.ls.commands.OpenFunctionsCompletionItems",
-        arguments: [{ newCursorPosition: { character: 14, line: 0 } }],
+        arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
       },
     } as CodeLens);
   });
@@ -423,11 +424,11 @@ functions: []
 
     expect(codeLenses).toHaveLength(1);
     expect(codeLenses[0]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         title: "+ Add function...",
         command: "swf.ls.commands.OpenFunctionsCompletionItems",
-        arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
       },
     } as CodeLens);
   });
@@ -448,19 +449,19 @@ functions: []
 
     expect(codeLenses).toHaveLength(2);
     expect(codeLenses[0]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         command: "swf.ls.commands.LogInServiceRegistries",
         title: "↪ Log in Service Registries...",
-        arguments: [{ position: { character: 15, line: 1 } }],
+        arguments: [{ position: { character: 11, line: 1 } }],
       },
     });
     expect(codeLenses[1]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         title: "+ Add function...",
         command: "swf.ls.commands.OpenFunctionsCompletionItems",
-        arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
       },
     } as CodeLens);
   });
@@ -484,19 +485,19 @@ functions: []
 
     expect(codeLenses).toHaveLength(2);
     expect(codeLenses[0]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         command: "swf.ls.commands.OpenServiceRegistriesConfig",
         title: "↪ Setup Service Registries...",
-        arguments: [{ position: { character: 15, line: 1 } }],
+        arguments: [{ position: { character: 11, line: 1 } }],
       },
     });
     expect(codeLenses[1]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         title: "+ Add function...",
         command: "swf.ls.commands.OpenFunctionsCompletionItems",
-        arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
       },
     } as CodeLens);
   });
@@ -520,24 +521,24 @@ functions: []
 
     expect(codeLenses).toHaveLength(2);
     expect(codeLenses[0]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         command: "swf.ls.commands.RefreshServiceRegistries",
         title: "↺ Refresh Service Registries...",
-        arguments: [{ position: { character: 15, line: 1 } }],
+        arguments: [{ position: { character: 11, line: 1 } }],
       },
     });
     expect(codeLenses[1]).toStrictEqual({
-      range: { start: { line: 1, character: 15 }, end: { line: 1, character: 15 } },
+      range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
       command: {
         title: "+ Add function...",
         command: "swf.ls.commands.OpenFunctionsCompletionItems",
-        arguments: [{ newCursorPosition: { character: 16, line: 1 } }],
+        arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
       },
     } as CodeLens);
   });
 
-  test("function completion", async () => {
+  test.only("function completion", async () => {
     const ls = new SwfYamlLanguageService({
       fs: {},
       serviceCatalog: {
@@ -643,16 +644,3 @@ states:
     } as CompletionItem);
   });
 });
-
-type ContentWithCursor = `${string}🎯${string}`;
-
-function treat(content: ContentWithCursor) {
-  const trimmedContent = content.trim();
-  const treatedContent = trimmedContent.replace("🎯", "");
-  const doc = TextDocument.create("", "yaml", 0, trimmedContent);
-  return { content: treatedContent, cursorPosition: doc.positionAt(trimmedContent.indexOf("🎯")) };
-}
-
-function trim(content: string) {
-  return { content: content.trim() };
-}
