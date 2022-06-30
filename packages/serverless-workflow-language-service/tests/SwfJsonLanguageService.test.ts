@@ -65,6 +65,80 @@ const defaultConfig: SwfLanguageServiceConfig = {
 };
 
 describe("SWF LS JSON", () => {
+  describe("matchNodeWithLocation", () => {
+    test("parsing empty content", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`🎯{}`);
+      const root = ls.parseContent(content);
+      const node = ls.findNodeAtOffset(root, cursorOffset);
+
+      expect(ls.matchNodeWithLocation(root, node, ["functions", "*"])).toBeFalsy();
+      expect(ls.matchNodeWithLocation(root, node, ["functions"])).toBeFalsy();
+      expect(ls.matchNodeWithLocation(root, node, ["functions", "none"])).toBeFalsy();
+    });
+
+    test("parsing content with empty function array", async () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
+{
+  "functions": [🎯]
+}`);
+      const root = ls.parseContent(content);
+      const node = ls.findNodeAtOffset(root, cursorOffset);
+
+      expect(ls.matchNodeWithLocation(root, node, ["functions", "*"])).toBeTruthy();
+      expect(ls.matchNodeWithLocation(root, node, ["functions"])).toBeTruthy();
+      expect(ls.matchNodeWithLocation(root, node, ["functions", "none"])).toBeFalsy();
+    });
+
+    test("parsing content with one state and one function", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
+{
+  "functions": [
+    {
+      "name": "myFunc",
+      "operation": "./specs/myService#myFunc",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"🎯"
+          }
+        }
+      ]
+    },
+  ]
+}`);
+      const root = ls.parseContent(content);
+      const node = ls.findNodeAtOffset(root, cursorOffset);
+
+      expect(
+        ls.matchNodeWithLocation(root, node, ["states", "*", "actions", "*", "functionRef", "refName"])
+      ).toBeTruthy();
+    });
+  });
+
   test("basic", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
@@ -271,7 +345,7 @@ describe("SWF LS JSON", () => {
     } as CodeLens);
   });
 
-  test.only("function completion", async () => {
+  test("function completion", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
       serviceCatalog: {
@@ -357,7 +431,7 @@ describe("SWF LS JSON", () => {
         {
           "name": "testStateAction",
           "functionRef": {
-            "refName":🎯
+            "refName":"🎯"
           }
         }
       ]
@@ -381,7 +455,16 @@ describe("SWF LS JSON", () => {
       sortText: `"myFunc"`,
       textEdit: {
         newText: `"myFunc"`,
-        range: { start: cursorPosition, end: cursorPosition },
+        range: {
+          start: {
+            ...cursorPosition,
+            character: cursorPosition.character - 1,
+          },
+          end: {
+            ...cursorPosition,
+            character: cursorPosition.character + 1,
+          },
+        },
       },
       insertTextFormat: InsertTextFormat.Snippet,
     } as CompletionItem);

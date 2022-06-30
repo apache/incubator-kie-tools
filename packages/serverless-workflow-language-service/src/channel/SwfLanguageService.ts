@@ -114,8 +114,6 @@ export abstract class SwfLanguageService {
 
     const cursorLocation = jsonc.getLocation(args.content, cursorOffset);
 
-    console.log("cursorLocation", cursorLocation);
-
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -131,17 +129,22 @@ export abstract class SwfLanguageService {
       }))
     );
 
-    console.log(
-      "entries",
-      Array.from(completions.entries()).filter(([path, _]) => {
-        console.log("filter", cursorLocation.matches(path), cursorLocation.path.length === path.length);
-        return cursorLocation.matches(path) && cursorLocation.path.length === path.length;
-      })
-    );
+    const root = this.parseContent(args.content);
+    const nodeAtOffset = jsonc.findNodeAtOffset(root!, cursorOffset);
 
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => cursorLocation.matches(path) && cursorLocation.path.length === path.length)
+        .filter(([path, _]) => {
+          if (!root || !nodeAtOffset) {
+            return false;
+          }
+          /* TODO: SwfLanguageService: review this block */
+          const nodesAtLocation = this.findNodesAtLocation(root, path);
+          const retVal = this.matchNodeWithLocation(root, nodeAtOffset, path);
+          const oldChek = cursorLocation.matches(path) && cursorLocation.path.length === path.length;
+          if (retVal !== oldChek) debugger;
+          return retVal;
+        })
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
@@ -348,6 +351,34 @@ export abstract class SwfLanguageService {
     else {
       throw new Error("Unknown Service Catalog function source type");
     }
+  }
+
+  public findNodeAtOffset(root: SwfLSNode, offset: number, includeRightBound?: boolean): SwfLSNode | undefined {
+    return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLSNode;
+  }
+
+  /**
+   * Check if a Node is in Location.
+   *
+   * @param root root node
+   * @param node the Node to check
+   * @param path the location to verify
+   * @returns true if the node is in the location, false otherwise
+   */
+  public matchNodeWithLocation(root: SwfLSNode, node: SwfLSNode, path: JSONPath): boolean {
+    if (!root || !node || !path || !path.length) {
+      return false;
+    }
+
+    const nodesAtLocation = this.findNodesAtLocation(root, path);
+
+    if (nodesAtLocation.some((currentNode) => currentNode === node)) {
+      return true;
+    } else if (path[path.length - 1] === "*" && !nodesAtLocation.length) {
+      return this.matchNodeWithLocation(root, node, path.slice(0, -1));
+    }
+
+    return false;
   }
 
   // This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
@@ -697,85 +728,3 @@ function toCompletionItemLabelPrefix(
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {
   return `${namespace}»${resource}#${operation}`;
 }
-
-// function createCodeLenses(args: {
-//   document: TextDocument;
-//   rootNode: jsonc.Node;
-//   jsonPath: JSONPath;
-//   commandDelegates: (args: {
-//     position: Position;
-//     node: jsonc.Node;
-//   }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
-//   positionLensAt: "begin" | "end";
-// }): CodeLens[] {
-//   const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
-//   const codeLenses = nodes.flatMap((node) => {
-//     // Only position at the end if the type is object or array and has at least one child.
-//     const position =
-//       args.positionLensAt === "end" &&
-//       (node.type === "object" || node.type === "array") &&
-//       (node.children?.length ?? 0) > 0
-//         ? args.document.positionAt(node.offset + node.length)
-//         : args.document.positionAt(node.offset);
-//
-//     return args.commandDelegates({ position, node }).map((command) => ({
-//       command: {
-//         command: command.name,
-//         title: command.title,
-//         arguments: command.args,
-//       },
-//       range: {
-//         start: position,
-//         end: position,
-//       },
-//     }));
-//   });
-//
-//   return codeLenses;
-// }
-
-// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
-// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-// export function findNodesAtLocation(root: jsonc.Node | undefined, path: JSONPath): jsonc.Node[] {
-//   if (!root) {
-//     return [];
-//   }
-//
-//   let nodes: jsonc.Node[] = [root];
-//
-//   for (const segment of path) {
-//     if (segment === "*") {
-//       nodes = nodes.flatMap((s) => s.children ?? []);
-//       continue;
-//     }
-//
-//     if (typeof segment === "number") {
-//       const index = segment as number;
-//       nodes = nodes.flatMap((n) => {
-//         if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
-//           return [];
-//         }
-//
-//         return [n.children[index]];
-//       });
-//     }
-//
-//     if (typeof segment === "string") {
-//       nodes = nodes.flatMap((n) => {
-//         if (n.type !== "object" || !Array.isArray(n.children)) {
-//           return [];
-//         }
-//
-//         for (const prop of n.children) {
-//           if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
-//             return [prop.children[1]];
-//           }
-//         }
-//
-//         return [];
-//       });
-//     }
-//   }
-//
-//   return nodes;
-// }

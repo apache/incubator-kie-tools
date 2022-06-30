@@ -34,7 +34,8 @@ export function treat(content: ContentWithCursor) {
   const trimmedContent = content.trim();
   const treatedContent = trimmedContent.replace("🎯", "");
   const doc = TextDocument.create("", "json", 0, trimmedContent);
-  return { content: treatedContent, cursorPosition: doc.positionAt(trimmedContent.indexOf("🎯")) };
+  const cursorOffset = trimmedContent.indexOf("🎯");
+  return { content: treatedContent, cursorPosition: doc.positionAt(cursorOffset), cursorOffset };
 }
 
 export function trim(content: string) {

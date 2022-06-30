@@ -31,7 +31,7 @@ export class SwfYamlLanguageService extends SwfLanguageService {
     const ast = load(content);
 
     // check if the yaml is not valid
-    if (ast.errors && ast.errors.length) {
+    if (ast && ast.errors && ast.errors.length) {
       throw new Error(ast.errors[0].message);
     }
 
