@@ -35,6 +35,6 @@
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0",
-    "cross-env": "^7.0.3"
+    "cross-env": "^5.2.1"
   }
 }

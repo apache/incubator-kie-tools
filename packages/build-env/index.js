@@ -358,6 +358,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  KN_PLUGIN_WORKFLOW__quarkusVersion: {
+    name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
+    default: "2.10.0.Final",
+    description: "version to be used when creating the Quarkus workflow project",
+  },
 };
 
 module.exports = {
@@ -478,6 +483,10 @@ module.exports = {
       name: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
       buildTags: getOrDefault(ENV_VARS.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
     },
+  },
+
+  knPluginWorkflow: {
+    quarkusVersion: getOrDefault(ENV_VARS.KN_PLUGIN_WORKFLOW__quarkusVersion),
   },
 
   corsProxy: {

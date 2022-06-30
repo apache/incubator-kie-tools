@@ -32,6 +32,7 @@ func main() {
 	var config config.Config
 	conf := config.GetConfig()
 	port := flag.Int("p", conf.Proxy.Port, "KIE Sandbox Extended Services Port")
+	insecureSkipVerify := conf.Proxy.InsecureSkipVerify
 	flag.Parse()
-	kogito.Systray(*port, jitexecutor)
+	kogito.Systray(*port, jitexecutor, insecureSkipVerify)
 }

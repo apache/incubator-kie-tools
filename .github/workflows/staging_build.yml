@@ -173,6 +173,7 @@ jobs:
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+          KN_PLUGIN_WORKFLOW_quarkusVersion: "2.10.0.Final"
         run: |
           pnpm -r build:prod
 
@@ -559,3 +560,36 @@ jobs:
           registry: "${{ env.DASHBUILDER__baseImageRegistry }}/${{ env.DASHBUILDER__baseImageAccount }}"
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
+
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-linux-amd64
+          asset_name: STAGING__kn-workflow-linux-amd64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS (macOS only)"
+        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ${{ github.workspace }}/kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64
+          asset_name: STAGING__kie_sandbox_kn-workflow-darwin-amd64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "STAGING: Knative CLI Workflow Plugin for Windows (Windows only)"
+        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: "${{ github.workspace }}/kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe"
+          asset_name: "STAGING__kie_sandbox_kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
+          asset_content_type: application/octet-stream

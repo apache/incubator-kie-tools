@@ -24,7 +24,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -79,6 +79,7 @@ jobs:
       serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}
       serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}
       openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}
+      kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}
 
     steps:
       - name: "Set Runners"
@@ -102,6 +103,7 @@ jobs:
           echo "::set-output name=serverless_logic_sandbox::${{ fromJSON(inputs.runners).serverless_logic_sandbox }}"
           echo "::set-output name=serverless_logic_sandbox_base_image::${{ fromJSON(inputs.runners).serverless_logic_sandbox_base_image }}"
           echo "::set-output name=openjdk11_mvn_image::${{ fromJSON(inputs.runners).openjdk11_mvn_image }}"
+          echo "::set-output name=kn_plugin_workflow::${{ fromJSON(inputs.runners).kn_plugin_workflow }}"
 
       - name: "Print Runners"
         shell: bash
@@ -123,6 +125,7 @@ jobs:
           echo "serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}"
           echo "serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}"
           echo "openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}"
+          echo "kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}"
 
   dmn_dev_sandbox_image:
     env:
@@ -717,6 +720,7 @@ jobs:
             -F vscode-extension-kogito-bundle... \
             -F vscode-extension-red-hat-business-automation-bundle... \
             -F vscode-extension-serverless-workflow-editor... \
+            -F vscode-extension-kie-ba-bundle... \
             build:prod
 
       - name: "Upload VS Code Extension - BPMN Editor (prod)"
@@ -761,6 +765,17 @@ jobs:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ./packages/vscode-extension-kogito-bundle/dist/vscode_extension_kogito_bundle_${{ inputs.tag }}.vsix
           asset_name: vscode_extension_kogito_bundle_${{ inputs.tag }}.vsix
+          asset_content_type: application/zip
+
+      - name: "Upload VS Code Extension - KIE Business Automation Bundle (prod)"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/vscode-extension-kie-ba-bundle/dist/vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
+          asset_name: vscode_extension_kie_ba_bundle_${{ inputs.tag }}.vsix
           asset_content_type: application/zip
 
       - name: "Upload VS Code Extension - Red Hat Business Automation Bundle (prod)"
@@ -1117,6 +1132,75 @@ jobs:
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
+  kn_plugin_workflow:
+    env:
+      KN_PLUGIN_WORKFLOW__quarkusVersion: "2.9.2.Final"
+
+    if: ${{ needs.extract_runners.outputs.kn_plugin_workflow == 'true' }}
+    runs-on: ${{ matrix.os }}
+    needs: [extract_runners]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: "Support longpaths (Windows only)"
+        if: matrix.os == 'windows-latest'
+        run: git config --system core.longpaths true
+
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.base_ref }}
+
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ${{ matrix.os }}
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm -F @kie-tools/kn-plugin-workflow... build:prod
+      - name: "Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/kn-plugin-workflow/dist/kn-workflow-linux-amd64
+          asset_name: kn-workflow-linux-amd64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Knative CLI Workflow Plugin for macOS (macOS only)"
+        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64
+          asset_name: kn-workflow-darwin-amd64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Knative CLI Workflow Plugin for Windows (Windows only)"
+        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: "./packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe"
+          asset_name: "kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
+          asset_content_type: application/octet-stream
+
   serverless_logic_sandbox_base_image:
     env:
       SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
@@ -1156,7 +1240,6 @@ jobs:
         shell: bash
         run: |
           pnpm -F @kie-tools/serverless-logic-sandbox-base-image... build:prod
-
       - name: "Push serverless-logic-sandbox-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -1199,7 +1282,6 @@ jobs:
         shell: bash
         run: |
           pnpm -F @kie-tools/openjdk11-mvn-image... build:prod
-
       - name: "Push openjdk11-mvn-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -1273,7 +1355,6 @@ jobs:
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
           pnpm -F @kie-tools/serverless-logic-sandbox... build:prod
-
       - name: "Deploy to GitHub Pages (serverless-logic-sandbox-deployment)"
         if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/serverless-logic-sandbox-deployment
@@ -1282,10 +1363,8 @@ jobs:
           echo "Reset deployment dir"
           shopt -s extglob
           rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME")
-
           echo "Copy resources"
           cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist/* .
-
           echo "Commit changes and push"
           git add .
           git commit -m "Deploy ${{ inputs.tag }}"
