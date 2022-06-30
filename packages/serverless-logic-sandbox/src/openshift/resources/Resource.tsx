@@ -43,6 +43,7 @@ export const RESOURCE_URI = `${RESOURCE_GROUP_ID}/uri`;
 export const RESOURCE_CREATED_BY = `${RESOURCE_GROUP_ID}/created-by`;
 export const RESOURCE_WORKSPACE_NAME = `${RESOURCE_GROUP_ID}/workspace-name`;
 export const JAVA_RUNTIME_VERSION = "openjdk-11-el7";
+export const BUILD_IMAGE_TAG = "1.0";
 
 export abstract class ResourceFetch {
   public constructor(protected readonly args: ResourceArgs) {}

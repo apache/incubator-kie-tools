@@ -23,6 +23,7 @@ import {
   Resource,
   ResourceArgs,
   ResourceFetch,
+  BUILD_IMAGE_TAG,
 } from "./Resource";
 
 const API_ENDPOINT = "apis/serving.knative.dev/v1";
@@ -58,7 +59,7 @@ export class CreateKNativeService extends ResourceFetch {
     metadata:
       annotations:
         image.openshift.io/triggers: >-
-          [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:latest","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
+          [{"from":{"kind":"ImageStreamTag","name":"${this.args.resourceName}:${BUILD_IMAGE_TAG}","namespace":"${this.args.namespace}"},"fieldPath":"spec.template.spec.containers[?(@.name==\\"${this.args.resourceName}\\")].image","pause":"false"}]
         ${RESOURCE_URI}: ${this.args.uri}
         ${RESOURCE_WORKSPACE_NAME}: ${this.args.workspaceName}
       name: ${this.args.resourceName}
@@ -78,7 +79,7 @@ export class CreateKNativeService extends ResourceFetch {
           containers:
             - name: ${this.args.resourceName}
               image: >-
-                image-registry.openshift-image-registry.svc:5000/${this.args.namespace}/${this.args.resourceName}:latest
+                image-registry.openshift-image-registry.svc:5000/${this.args.namespace}/${this.args.resourceName}:${BUILD_IMAGE_TAG}
   `;
   }
 

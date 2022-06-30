@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { HttpMethod, JAVA_RUNTIME_VERSION, RESOURCE_CREATED_BY, ResourceArgs, ResourceFetch } from "./Resource";
+import {
+  BUILD_IMAGE_TAG,
+  HttpMethod,
+  JAVA_RUNTIME_VERSION,
+  ResourceArgs,
+  ResourceFetch,
+  RESOURCE_CREATED_BY,
+} from "./Resource";
 
 const API_ENDPOINT = "apis/build.openshift.io/v1";
 
@@ -43,7 +50,7 @@ export class CreateBuildConfig extends ResourceFetch {
         output:
           to:
             kind: ImageStreamTag
-            name: '${this.args.resourceName}:latest'
+            name: '${this.args.resourceName}:${BUILD_IMAGE_TAG}'
         strategy:
           type: Docker
         source:
