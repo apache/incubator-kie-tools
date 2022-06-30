@@ -85,7 +85,7 @@ describe("Editors are loading properly", () => {
 
     const explorer = await bpmnEditorTester.openDiagramExplorer();
     await explorer.assertDiagramNodeIsPresent("Start");
-    await explorer.assertDiagramNodeIsPresent("End");
+    await explorer.assertDiagramNodeIsPresent("Ends");
 
     await webview.switchBack();
   });
