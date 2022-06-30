@@ -219,11 +219,11 @@ const RefForwardingServerlessWorkflowEditor: React.ForwardRefRenderFunction<
   );
 
   useEffect(() => {
-    if (initialContent !== undefined) {
+    if (updateDiagram && initialContent?.originalContent !== undefined) {
       // FIXME: setTimeout to avoid blank graphical editor on bootstrap (SWF Sandbox)
       setTimeout(() => {
         updateDiagram(initialContent.originalContent);
-      }, 0);
+      }, 1000);
     }
   }, [initialContent, updateDiagram]);
 

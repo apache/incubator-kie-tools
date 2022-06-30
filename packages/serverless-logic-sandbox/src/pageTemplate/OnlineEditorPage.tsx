@@ -14,20 +14,31 @@
  * limitations under the License.
  */
 
+import * as React from "react";
+import { useMemo } from "react";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import * as React from "react";
 import { useHistory } from "react-router";
 import { KieSandboxExtendedServicesIcon } from "../kieSandboxExtendedServices/KieSandboxExtendedServicesIcon";
 import { useRoutes } from "../navigation/Hooks";
 import { OpenshiftDeploymentsDropdown } from "../openshift/OpenshiftDeploymentsDropdown";
 import { SettingsButton } from "../settings/SettingsButton";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { ExclamationIcon, ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons";
+import { useAppI18n } from "../i18n";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
+  const { i18n } = useAppI18n();
+
+  const isChromiumBased = useMemo(() => {
+    const agent = window.navigator.userAgent.toLowerCase();
+    return agent.indexOf("edg") > -1 || agent.indexOf("chrome") > -1;
+  }, []);
+
   return (
     <Page
       header={
@@ -59,6 +70,22 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                   <KieSandboxExtendedServicesIcon />
                 </PageHeaderToolsItem>
               </FlexItem>
+              {!isChromiumBased && (
+                <Tooltip
+                  className="kogito--editor__light-tooltip"
+                  key={"not-chromium"}
+                  content={i18n.browserAlert.warning}
+                  flipBehavior={["left"]}
+                  distance={20}
+                >
+                  <ExclamationIcon
+                    data-testid="not-chromium-icon"
+                    className="kogito--editor__kie-sandbox-extended-services-dropdown-icon-outdated static-opacity"
+                    id="kie-sandbox-extended-services-not-chromium-icon"
+                    style={{ cursor: "pointer" }}
+                  />
+                </Tooltip>
+              )}
             </Flex>
           </MastheadMain>
         </Masthead>

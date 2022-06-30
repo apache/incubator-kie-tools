@@ -268,6 +268,9 @@ interface AppDictionary extends ReferenceDictionary {
       };
     };
   };
+  browserAlert: {
+    warning: string;
+  };
   notificationsPanel: {
     name: string;
     tooltip: {
