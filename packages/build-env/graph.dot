@@ -84,6 +84,7 @@ digraph G {
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -245,6 +246,7 @@ digraph G {
   "vscode-extension-dmn-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
+  "vscode-extension-kie-ba-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-kogito-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
