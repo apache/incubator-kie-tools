@@ -80,10 +80,10 @@ export interface VirtualServiceRegistryContextType {
   updateFile(args: {
     fs: KieSandboxFs;
     file: ServiceRegistryFile;
-    getNewContents: () => Promise<Uint8Array | undefined>;
+    getNewContents: () => Promise<string>;
   }): Promise<void>;
 
-  deleteFile(args: { fs: KieSandboxFs; path: string }): Promise<void>;
+  deleteFile(args: { fs: KieSandboxFs; file: ServiceRegistryFile }): Promise<void>;
 
   addFile(args: {
     fs: KieSandboxFs;

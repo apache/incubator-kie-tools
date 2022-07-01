@@ -24,8 +24,9 @@ import { isOpenShiftConfigValid } from "../settings/openshift/OpenShiftSettingsC
 import { isServiceAccountConfigValid } from "../settings/serviceAccount/ServiceAccountConfig";
 import { isServiceRegistryConfigValid } from "../settings/serviceRegistry/ServiceRegistryConfig";
 import { useSettings, useSettingsDispatch } from "../settings/SettingsContext";
+import { encoder } from "../workspace/commonServices/BaseFile";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "../workspace/services/WorkspaceDescriptorService";
-import { encoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import {
   createDockerfileContentForBaseJdk11MvnImage,
   createDockerfileContentForBaseQuarkusProjectImage,

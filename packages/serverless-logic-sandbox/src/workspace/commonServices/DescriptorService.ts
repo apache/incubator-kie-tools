@@ -18,8 +18,8 @@ import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import DefaultBackend from "@kie-tools/kie-sandbox-fs/dist/DefaultBackend";
 import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 import { StorageFile, StorageService } from "./StorageService";
-import { decoder, encoder } from "../WorkspacesContext";
 import { jsonParseWithUrl } from "../../json/JsonParse";
+import { decoder, encoder } from "./BaseFile";
 
 export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
@@ -57,6 +57,10 @@ export abstract class DescriptorService<T extends DescriptorBase, CreateTArgs ex
   public abstract getDescriptorPath(id: string): string;
 
   public abstract createNewDescriptor(args: CreateTArgs): T;
+
+  public getDescriptorId(descriptor: T): string {
+    return descriptor[this.config.idField];
+  }
 
   public async listAll(): Promise<T[]> {
     const descriptorsFilePaths = await this.storageService.walk({
@@ -111,7 +115,7 @@ export abstract class DescriptorService<T extends DescriptorBase, CreateTArgs ex
 
   protected toStorageFile(descriptor: T) {
     return new StorageFile({
-      path: this.getDescriptorPath(descriptor[this.config.idField]),
+      path: this.getDescriptorPath(this.getDescriptorId(descriptor)),
       getFileContents: () => Promise.resolve(encoder.encode(JSON.stringify(descriptor))),
     });
   }

@@ -15,8 +15,9 @@
  */
 
 import { FsCache } from "../commonServices/FsCache";
-import { encoder, WorkspaceFile } from "../WorkspacesContext";
+import { WorkspaceFile } from "../WorkspacesContext";
 import { StorageFile, StorageService } from "../commonServices/StorageService";
+import { encoder } from "../commonServices/BaseFile";
 
 export class WorkspaceSvgService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}

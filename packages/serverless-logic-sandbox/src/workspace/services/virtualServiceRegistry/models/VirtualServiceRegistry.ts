@@ -15,11 +15,12 @@
  */
 
 import { isJson, isSpec } from "../../../../extension";
-import { decoder, encoder, WorkspaceFile } from "../../../WorkspacesContext";
+import { WorkspaceFile } from "../../../WorkspacesContext";
 import { generateOpenApiSpec } from "./BaseOpenApiSpec";
 import { ServiceRegistryFile } from "./ServiceRegistryFile";
 import { DescriptorBase } from "../../../commonServices/DescriptorService";
 import * as yaml from "yaml";
+import { decoder, encoder } from "../../../commonServices/BaseFile";
 
 export const VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX = "sandbox::";
 
@@ -45,7 +46,7 @@ export class VirtualServiceRegistryFunction {
   public async getOpenApiSpec() {
     const content = await this.file.getFileContents();
     if (this.isSpec || this.isFromServiceRegistryFile) {
-      return content;
+      return decoder.decode(content);
     }
     const decodedContent = decoder.decode(content);
     try {
@@ -53,9 +54,9 @@ export class VirtualServiceRegistryFunction {
       if (!parsedContent["id"]) {
         throw new Error("No workflow ID!");
       }
-      return await encoder.encode(generateOpenApiSpec(parsedContent["id"]));
+      return await generateOpenApiSpec(parsedContent["id"]);
     } catch (_e) {
-      return encoder.encode("");
+      return "";
     }
   }
 

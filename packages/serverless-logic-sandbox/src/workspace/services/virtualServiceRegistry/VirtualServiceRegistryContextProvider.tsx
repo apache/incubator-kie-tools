@@ -36,8 +36,9 @@ import {
 } from "./models/VirtualServiceRegistry";
 import { ServiceRegistryFile } from "./models/ServiceRegistryFile";
 import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
-import { decoder, useWorkspaces } from "../../WorkspacesContext";
+import { useWorkspaces } from "../../WorkspacesContext";
 import { isServerlessWorkflow, isSpec } from "../../../extension";
+import { decoder, encoder } from "../../commonServices/BaseFile";
 
 type SupportedFileExtensions = ".yaml" | ".json";
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
@@ -57,12 +58,14 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
   const workspaces = useWorkspaces();
 
   const getAbsolutePath = useCallback(
-    (args: { groupId: string; relativePath?: string }) => vsrService.getAbsolutePath(args),
+    (args: { groupId: string; relativePath?: string }) =>
+      vsrService.getAbsolutePath({ descriptorId: args.groupId, ...args }),
     [vsrService]
   );
 
   const getUniqueFileIdentifier = useCallback(
-    (args: { groupId: string; relativePath: string }) => vsrService.getUniqueFileIdentifier(args),
+    (args: { groupId: string; relativePath: string }) =>
+      vsrService.getUniqueFileIdentifier({ descriptorId: args.groupId, ...args }),
     [vsrService]
   );
 
@@ -72,9 +75,9 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
       storeRegistryFiles: (fs: KieSandboxFs, vsrGroup: VirtualServiceRegistryGroup) => Promise<ServiceRegistryFile[]>;
       workspaceDescriptor: WorkspaceDescriptor;
     }) => {
-      const { vsrGroup, files } = await vsrService.create({
+      const { descriptor: vsrGroup, files } = await vsrService.create({
         useInMemoryFs: args.useInMemoryFs,
-        storeRegistryFiles: args.storeRegistryFiles,
+        storeFiles: args.storeRegistryFiles,
         workspaceDescriptor: args.workspaceDescriptor,
         broadcastArgs: { broadcast: true },
       });
@@ -103,7 +106,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
             const vsrFunction = new VirtualServiceRegistryFunction(file);
             return new StorageFile({
               path: functionPath(vsrGroup, vsrFunction),
-              getFileContents: () => vsrFunction.getOpenApiSpec(),
+              getFileContents: () => vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
             });
           });
 
@@ -138,20 +141,23 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
 
   const getFile = useCallback(
     async (args: { fs: KieSandboxFs; groupId: string; relativePath: string }) => {
-      return vsrService.getFile(args);
+      return vsrService.getFile({
+        ...args,
+        descriptorId: args.groupId,
+      });
     },
     [vsrService]
   );
 
   const deleteFile = useCallback(
-    async (args: { fs: KieSandboxFs; path: string }) => {
-      await vsrService.deleteFile(args.fs, args.path, { broadcast: true });
+    async (args: { fs: KieSandboxFs; file: ServiceRegistryFile }) => {
+      await vsrService.deleteFile(args.fs, args.file, { broadcast: true });
     },
     [vsrService]
   );
 
   const updateFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: ServiceRegistryFile; getNewContents: () => Promise<Uint8Array> }) => {
+    async (args: { fs: KieSandboxFs; file: ServiceRegistryFile; getNewContents: () => Promise<string> }) => {
       await vsrService.updateFile(args.fs, args.file, args.getNewContents, { broadcast: true });
     },
     [vsrService]
@@ -170,21 +176,19 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
         if (
           await vsrService.existsFile({
             fs: args.fs,
-            groupId: args.groupId,
+            descriptorId: args.groupId,
             relativePath: args.destinationDirRelativePath,
           })
         ) {
           continue;
         }
 
-        const newFile = new ServiceRegistryFile(
-          {
-            workspaceId: args.groupId,
-            getFileContents: () => Promise.resolve(args.content!),
-            relativePath: args.destinationDirRelativePath,
-          },
-          true
-        );
+        const newFile = new ServiceRegistryFile({
+          groupId: args.groupId,
+          getFileContents: () => Promise.resolve(args.content!),
+          relativePath: args.destinationDirRelativePath,
+          needsWorkspaceDeploy: true,
+        });
         await vsrService.createOrOverwriteFile(args.fs, newFile, { broadcast: true });
         return newFile;
       }
@@ -195,13 +199,14 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
   );
 
   const existsFile = useCallback(
-    async (args: { fs: KieSandboxFs; groupId: string; relativePath: string }) => await vsrService.existsFile(args),
+    async (args: { fs: KieSandboxFs; groupId: string; relativePath: string }) =>
+      await vsrService.existsFile({ descriptorId: args.groupId, ...args }),
     [vsrService]
   );
 
   const resourceContentGet = useCallback(
     async (args: { fs: KieSandboxFs; groupId: string; relativePath: string; opts?: ResourceContentOptions }) => {
-      const file = await vsrService.getFile(args);
+      const file = await vsrService.getFile({ descriptorId: args.groupId, ...args });
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.groupId}`);
       }

@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -36,6 +36,7 @@ import { ImportFromUrlForm } from "../workspace/components/ImportFromUrlForm";
 import { UrlType } from "../workspace/hooks/ImportableUrlHooks";
 import { useRoutes } from "../navigation/Hooks";
 import { FileTypes, isSandboxAsset, resolveExtension, SupportedFileExtensions } from "../extension";
+import { decoder } from "../workspace/commonServices/BaseFile";
 
 export function NewFileDropdownMenu(props: {
   alerts: AlertsController | undefined;

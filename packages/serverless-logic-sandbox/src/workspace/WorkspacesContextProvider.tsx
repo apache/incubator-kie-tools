@@ -26,7 +26,7 @@ import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { GIT_DEFAULT_BRANCH, GitService } from "./commonServices/GitService";
 import { StorageFile, StorageService } from "./commonServices/StorageService";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { join } from "path";
 import { WorkspaceEvents } from "./hooks/WorkspaceHooks";
 import { Buffer } from "buffer";
@@ -38,6 +38,7 @@ import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { DEFAULT_CORS_PROXY_URL } from "../env/EnvContext";
 import { isModel, SupportedFileExtensions } from "../extension";
 import { useSettings } from "../settings/SettingsContext";
+import { decoder, encoder } from "./commonServices/BaseFile";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -62,12 +63,14 @@ export function WorkspacesContextProvider(props: Props) {
   }, []);
 
   const getAbsolutePath = useCallback(
-    (args: { workspaceId: string; relativePath?: string }) => service.getAbsolutePath(args),
+    (args: { workspaceId: string; relativePath?: string }) =>
+      service.getAbsolutePath({ descriptorId: args.workspaceId, ...args }),
     [service]
   );
 
   const getUniqueFileIdentifier = useCallback(
-    (args: { workspaceId: string; relativePath: string }) => service.getUniqueFileIdentifier(args),
+    (args: { workspaceId: string; relativePath: string }) =>
+      service.getUniqueFileIdentifier({ descriptorId: args.workspaceId, ...args }),
     [service]
   );
 
@@ -78,7 +81,7 @@ export function WorkspacesContextProvider(props: Props) {
       origin: WorkspaceOrigin;
       preferredName?: string;
     }) => {
-      const { workspace, files } = await service.create({
+      const { descriptor: workspace, files } = await service.create({
         useInMemoryFs: args.useInMemoryFs,
         storeFiles: args.storeFiles,
         broadcastArgs: { broadcast: true },
@@ -108,7 +111,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: { fs: KieSandboxFs; workspaceId: string }) => {
       return gitService.hasLocalChanges({
         fs: args.fs,
-        dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+        dir: service.getAbsolutePath({ descriptorId: args.workspaceId }),
       });
     },
     [gitService, service]
@@ -124,7 +127,7 @@ export function WorkspacesContextProvider(props: Props) {
       const workspace = await descriptorService.get(args.workspaceId);
       await gitService.pull({
         fs: args.fs,
-        dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+        dir: service.getAbsolutePath({ descriptorId: args.workspaceId }),
         ref: workspace.origin.branch,
         author: {
           name: args.gitConfig?.name ?? "Unknown",
@@ -144,7 +147,7 @@ export function WorkspacesContextProvider(props: Props) {
     async (args: { fs: KieSandboxFs; workspaceId: string; gitConfig?: { email: string; name: string } }) => {
       const descriptor = await descriptorService.get(args.workspaceId);
 
-      const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
+      const workspaceRootDirPath = service.getAbsolutePath({ descriptorId: args.workspaceId });
 
       const fileRelativePaths = await gitService.unstagedModifiedFileRelativePaths({
         fs: args.fs,
@@ -158,7 +161,7 @@ export function WorkspacesContextProvider(props: Props) {
 
       await Promise.all(
         fileRelativePaths.map(async (relativePath) => {
-          if (await service.existsFile({ fs: args.fs, workspaceId: args.workspaceId, relativePath })) {
+          if (await service.existsFile({ fs: args.fs, descriptorId: args.workspaceId, relativePath })) {
             await gitService.add({
               fs: args.fs,
               dir: workspaceRootDirPath,
@@ -204,14 +207,14 @@ export function WorkspacesContextProvider(props: Props) {
             .map(
               (localFile) =>
                 new StorageFile({
-                  path: service.getAbsolutePath({ workspaceId: workspace.workspaceId, relativePath: localFile.path }),
+                  path: service.getAbsolutePath({ descriptorId: workspace.workspaceId, relativePath: localFile.path }),
                   getFileContents: localFile.getFileContents,
                 })
             );
 
           await storageService.createFiles(fs, files);
 
-          const workspaceRootDirPath = await service.getAbsolutePath({ workspaceId: workspace.workspaceId });
+          const workspaceRootDirPath = await service.getAbsolutePath({ descriptorId: workspace.workspaceId });
 
           const ignoredPaths = await storageService.walk({
             fs,
@@ -270,7 +273,7 @@ export function WorkspacesContextProvider(props: Props) {
         storeFiles: async (fs, workspace) => {
           await gitService.clone({
             fs,
-            dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
+            dir: service.getAbsolutePath({ descriptorId: workspace.workspaceId }),
             repositoryUrl: args.origin.url,
             gitConfig: args.gitConfig,
             authInfo: args.authInfo,
@@ -306,7 +309,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const getFile = useCallback(
     async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) => {
-      return service.getFile(args);
+      return service.getFile({ descriptorId: args.workspaceId, ...args });
     },
     [service]
   );
@@ -340,7 +343,7 @@ export function WorkspacesContextProvider(props: Props) {
         const fileName = `${args.name}${index}.${args.extension}`;
         const relativePath = join(args.destinationDirRelativePath, fileName);
 
-        if (await service.existsFile({ fs: args.fs, workspaceId: args.workspaceId, relativePath })) {
+        if (await service.existsFile({ fs: args.fs, descriptorId: args.workspaceId, relativePath })) {
           continue;
         }
 
@@ -359,7 +362,8 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const existsFile = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) => await service.existsFile(args),
+    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) =>
+      await service.existsFile({ descriptorId: args.workspaceId, ...args }),
     [service]
   );
 
@@ -386,7 +390,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const resourceContentGet = useCallback(
     async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
-      const file = await service.getFile(args);
+      const file = await service.getFile({ descriptorId: args.workspaceId, ...args });
       if (!file) {
         throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
       }

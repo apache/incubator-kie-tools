@@ -1132,7 +1132,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       const workspace = await workspaces.descriptorService.get(workspaceId);
       await workspaces.gitService.push({
         fs: await workspaces.fsService.getFs(workspaceId),
-        dir: await workspaces.service.getAbsolutePath({ workspaceId }),
+        dir: await workspaces.service.getAbsolutePath({ descriptorId: workspaceId }),
         ref: workspace.origin.branch,
         remote: GIST_ORIGIN_REMOTE_NAME,
         remoteRef: `refs/heads/${workspace.origin.branch}`,

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { encoder, LocalFile, useWorkspaces } from "../WorkspacesContext";
+import * as React from "react";
+import { LocalFile, useWorkspaces } from "../WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
-import * as React from "react";
 import { useCallback, useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -33,6 +33,7 @@ import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { useGitHubAuthInfo } from "../../settings/github/Hooks";
 import { EditorPageErrorPage } from "../../editor/EditorPageErrorPage";
+import { encoder } from "../commonServices/BaseFile";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
+import * as React from "react";
+import { createContext, useContext } from "react";
 import {
   ResourceContent,
   ResourceContentOptions,
   ResourceListOptions,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
-import * as React from "react";
-import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
 import { WorkspaceService } from "./services/WorkspaceService";
-import { basename, parse } from "path";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
@@ -32,54 +31,23 @@ import { GitService } from "./commonServices/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { StorageService } from "./commonServices/StorageService";
-import { resolveExtension } from "../extension";
+import { BaseFile, BaseFileProps } from "./commonServices/BaseFile";
 
-export const decoder = new TextDecoder("utf-8");
-export const encoder = new TextEncoder();
-
-export type WorkspaceFileProps = {
+export interface WorkspaceFileProps extends BaseFileProps {
   workspaceId: string;
-  relativePath: string;
-  getFileContents: () => Promise<Uint8Array>;
-};
+}
 
-export class WorkspaceFile {
-  constructor(protected readonly args: WorkspaceFileProps) {}
-
-  get getFileContentsAsString() {
-    return () => this.getFileContents().then((c) => decoder.decode(c));
-  }
-
-  get getFileContents() {
-    return this.args.getFileContents;
+export class WorkspaceFile extends BaseFile {
+  constructor(protected readonly args: WorkspaceFileProps) {
+    super(args);
   }
 
   get workspaceId() {
     return this.args.workspaceId;
   }
 
-  get relativePath() {
-    return this.args.relativePath;
-  }
-
-  get relativePathWithoutExtension() {
-    return this.relativePath.replace(`.${this.extension}`, "");
-  }
-
-  get relativeDirPath() {
-    return parse(this.relativePath).dir;
-  }
-
-  get extension() {
-    return resolveExtension(this.relativePath);
-  }
-
-  get nameWithoutExtension() {
-    return basename(this.relativePath, `.${this.extension}`);
-  }
-
-  get name() {
-    return basename(this.relativePath);
+  get parentId() {
+    return this.workspaceId;
   }
 }
 

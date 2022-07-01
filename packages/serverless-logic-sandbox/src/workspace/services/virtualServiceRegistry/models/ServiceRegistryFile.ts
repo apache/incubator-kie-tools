@@ -14,22 +14,31 @@
  * limitations under the License.
  */
 
-import { WorkspaceFile, WorkspaceFileProps } from "../../../WorkspacesContext";
+import { BaseFile, BaseFileProps } from "../../../commonServices/BaseFile";
 
-export class ServiceRegistryFile extends WorkspaceFile {
-  constructor(args: WorkspaceFileProps, private readonly _needsWorkspaceDeploy: boolean) {
+export interface ServiceRegistryFileProps extends BaseFileProps {
+  groupId: string;
+  needsWorkspaceDeploy: boolean;
+}
+
+export class ServiceRegistryFile extends BaseFile {
+  constructor(protected readonly args: ServiceRegistryFileProps) {
     super(args);
   }
 
   get groupId() {
-    return this.args.workspaceId;
+    return this.args.groupId;
   }
 
   get relatedWorkspaceId() {
-    return this.args.workspaceId;
+    return this.args.groupId;
   }
 
   get needsWorkspaceDeploy() {
-    return this._needsWorkspaceDeploy;
+    return this.args.needsWorkspaceDeploy;
+  }
+
+  get parentId() {
+    return this.groupId;
   }
 }

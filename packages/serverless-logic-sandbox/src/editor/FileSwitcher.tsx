@@ -15,7 +15,7 @@
  */
 
 import { ActiveWorkspace } from "../workspace/model/ActiveWorkspace";
-import { decoder, useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { useRoutes } from "../navigation/Hooks";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -63,6 +63,7 @@ import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-righ
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { isSandboxAsset } from "../extension";
+import { decoder } from "../workspace/commonServices/BaseFile";
 
 const ROOT_MENU_ID = "rootMenu";
 
