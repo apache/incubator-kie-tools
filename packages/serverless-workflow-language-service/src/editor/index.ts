@@ -33,7 +33,7 @@ export const getFileLanguage = (fileName: string): FileLanguage | null => {
     return FileLanguage.JSON;
   }
 
-  if (/\.sw\.(yml|yaml)/i.test(fileName)) {
+  if (/\.sw\.(yml|yaml)$/i.test(fileName)) {
     return FileLanguage.YAML;
   }
 
