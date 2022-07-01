@@ -20,7 +20,7 @@ import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode } from "./SwfLang
 
 export class SwfJsonLanguageService extends SwfLanguageService {
   fileLanguage = FileLanguage.JSON;
-  fileMatch = ["*.sw.json"];
+  protected fileMatch = ["*.sw.json"];
 
   constructor(args: SwfLanguageServiceArgs) {
     super(args);

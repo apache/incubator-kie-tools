@@ -30,13 +30,13 @@ import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-serv
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
-      swfLanguageService: SwfJsonLanguageService;
+      swfLanguageService: SwfLanguageService;
       swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}

@@ -19,12 +19,18 @@ import * as vscode from "vscode";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
 import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
 import { posix as posixPath } from "path";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+  SwfLanguageService,
+  SwfLanguageServiceArgs,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { FileLanguage, getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
 
 export class VsCodeSwfLanguageService {
-  public readonly ls: SwfJsonLanguageService;
+  public readonly ls: SwfLanguageService;
   private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
   constructor(
     private readonly args: {
@@ -32,7 +38,7 @@ export class VsCodeSwfLanguageService {
       swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
     }
   ) {
-    this.ls = new SwfJsonLanguageService({
+    const lsArgs: SwfLanguageServiceArgs = {
       fs: {},
       serviceCatalog: {
         global: {
@@ -84,7 +90,21 @@ export class VsCodeSwfLanguageService {
           return this.args.swfServiceCatalogGlobalStore.canRefreshServices;
         },
       },
-    });
+    };
+    const filePath = vscode.window.activeTextEditor?.document.uri.path;
+
+    if (!filePath) {
+      return;
+    }
+
+    const fileLanguage = getFileLanguage(filePath);
+
+    /* FIXME: VsCodeSwfLanguageService: doesn't reinit on file change */
+    if (fileLanguage === FileLanguage.JSON) {
+      this.ls = new SwfJsonLanguageService(lsArgs);
+    } else if (fileLanguage === FileLanguage.YAML) {
+      this.ls = new SwfYamlLanguageService(lsArgs);
+    }
   }
 
   private getSpecsDirPosixPaths(document: TextDocument) {

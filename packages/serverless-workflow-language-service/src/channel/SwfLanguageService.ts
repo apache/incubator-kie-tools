@@ -80,7 +80,7 @@ export type SwfLanguageServiceArgs = {
 
 export abstract class SwfLanguageService {
   protected abstract fileMatch: string[];
-  protected abstract fileLanguage: FileLanguage;
+  public abstract fileLanguage: FileLanguage;
 
   constructor(private readonly args: SwfLanguageServiceArgs) {}
 

@@ -21,7 +21,7 @@ import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode, SwfLSNodeType } 
 
 export class SwfYamlLanguageService extends SwfLanguageService {
   fileLanguage = FileLanguage.YAML;
-  fileMatch = ["*.sw.yaml", "*.sw.yml"];
+  protected fileMatch = ["*.sw.yaml", "*.sw.yml"];
 
   constructor(args: SwfLanguageServiceArgs) {
     super(args);

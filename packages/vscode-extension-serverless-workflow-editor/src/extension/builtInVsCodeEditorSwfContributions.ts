@@ -24,13 +24,13 @@ import {
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { debounce } from "../debounce";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  swfLanguageService: SwfJsonLanguageService;
+  swfLanguageService: SwfLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
@@ -190,7 +190,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 }
 
 async function setSwfJsonDiagnostics(
-  swfLanguageService: SwfJsonLanguageService,
+  swfLanguageService: SwfLanguageService,
   uri: vscode.Uri,
   diganosticsCollection: vscode.DiagnosticCollection
 ) {
