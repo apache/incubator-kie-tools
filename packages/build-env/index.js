@@ -285,7 +285,7 @@ const ENV_VARS = {
   },
   SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
     name: "SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion",
-    default: "2.9.2.Final",
+    default: "2.10.1.Final",
     description: "",
   },
   SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: {
