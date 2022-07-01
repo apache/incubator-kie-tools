@@ -36,6 +36,7 @@ import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
+import { FileLanguage } from "../editor";
 
 export declare type SwfLSNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 export type SwfLSNode = {
@@ -78,7 +79,7 @@ export type SwfLanguageServiceArgs = {
 
 export abstract class SwfLanguageService {
   protected abstract fileMatch: string[];
-  protected abstract fileLanguage: string;
+  protected abstract fileLanguage: FileLanguage;
 
   constructor(private readonly args: SwfLanguageServiceArgs) {}
 
@@ -112,8 +113,6 @@ export abstract class SwfLanguageService {
       ? Range.create(currentNodePosition.start, currentNodePosition.end)
       : args.cursorWordRange;
 
-    const cursorLocation = jsonc.getLocation(args.content, cursorOffset);
-
     const swfCompletionItemServiceCatalogServices = await Promise.all(
       [
         ...(await this.args.serviceCatalog.global.getServices()),
@@ -134,17 +133,7 @@ export abstract class SwfLanguageService {
 
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => {
-          if (!root || !nodeAtOffset) {
-            return false;
-          }
-          /* TODO: SwfLanguageService: review this block */
-          const nodesAtLocation = this.findNodesAtLocation(root, path);
-          const retVal = this.matchNodeWithLocation(root, nodeAtOffset, path);
-          const oldChek = cursorLocation.matches(path) && cursorLocation.path.length === path.length;
-          if (retVal !== oldChek) debugger;
-          return retVal;
-        })
+        .filter(([path, _]) => this.matchNodeWithLocation(root, nodeAtOffset, path))
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
@@ -365,7 +354,7 @@ export abstract class SwfLanguageService {
    * @param path the location to verify
    * @returns true if the node is in the location, false otherwise
    */
-  public matchNodeWithLocation(root: SwfLSNode, node: SwfLSNode, path: JSONPath): boolean {
+  public matchNodeWithLocation(root: SwfLSNode | undefined, node: SwfLSNode | undefined, path: JSONPath): boolean {
     if (!root || !node || !path || !path.length) {
       return false;
     }

@@ -332,22 +332,22 @@ states:
   });
 
   describe("matchNodeWithLocation", () => {
-    test("parsing empty content", () => {
+    test("matching root node with empty content", () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
       });
-      const { content, cursorOffset } = treat(`🎯 `);
+      const { content, cursorOffset } = treat(`---🎯 `);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root, cursorOffset);
+      const node = ls.findNodeAtOffset(root!, cursorOffset);
 
-      expect(ls.matchNodeWithLocation(root, node, ["functions", "*"])).toBeFalsy();
-      expect(ls.matchNodeWithLocation(root, node, ["functions"])).toBeFalsy();
-      expect(ls.matchNodeWithLocation(root, node, ["functions", "none"])).toBeFalsy();
+      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
+      expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
-    test("parsing content with empty function array", async () => {
+    test("matching empty function array", () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -356,16 +356,16 @@ states:
       const { content, cursorOffset } = treat(`
 
 ---
-functions: []`);
+functions: [🎯]`);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root, cursorOffset);
+      const node = ls.findNodeAtOffset(root!, cursorOffset);
 
-      expect(ls.matchNodeWithLocation(root, node, ["functions", "*"])).toBeTruthy();
-      expect(ls.matchNodeWithLocation(root, node, ["functions"])).toBeTruthy();
-      expect(ls.matchNodeWithLocation(root, node, ["functions", "none"])).toBeFalsy();
+      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+      expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
-    test("parsing content with one state and one function", () => {
+    test("matching refName", () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -387,10 +387,10 @@ states:
       refName: "🎯"
 `);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root, cursorOffset);
+      const node = ls.findNodeAtOffset(root!, cursorOffset);
 
       expect(
-        ls.matchNodeWithLocation(root, node, ["states", "*", "actions", "*", "functionRef", "refName"])
+        ls.matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
       ).toBeTruthy();
     });
   });
