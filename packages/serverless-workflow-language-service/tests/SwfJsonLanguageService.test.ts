@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService, findNodeAtOffset } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
@@ -74,7 +74,7 @@ describe("SWF LS JSON", () => {
       });
       const { content, cursorOffset } = treat(`🎯{}`);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
       expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
@@ -92,7 +92,7 @@ describe("SWF LS JSON", () => {
   "functions": [🎯]
 }`);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
       expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
@@ -131,7 +131,7 @@ describe("SWF LS JSON", () => {
   ]
 }`);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(
         ls.matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])

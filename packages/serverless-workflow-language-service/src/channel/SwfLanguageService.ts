@@ -23,7 +23,6 @@ import {
   Range,
 } from "vscode-languageserver-types";
 import * as jsonc from "jsonc-parser";
-import { JSONPath } from "jsonc-parser";
 import { posix as posixPath } from "path";
 import {
   SwfServiceCatalogFunction,
@@ -38,6 +37,8 @@ import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
 import { FileLanguage } from "../editor";
 
+// SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
+export declare type SwfJSONPath = (string | number)[];
 export declare type SwfLSNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 export type SwfLSNode = {
   type: SwfLSNodeType;
@@ -99,7 +100,7 @@ export abstract class SwfLanguageService {
 
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
-    const currentNode = jsonc.findNodeAtOffset(rootNode, cursorOffset);
+    const currentNode = findNodeAtOffset(rootNode, cursorOffset);
     if (!currentNode) {
       return [];
     }
@@ -129,7 +130,7 @@ export abstract class SwfLanguageService {
     );
 
     const root = this.parseContent(args.content);
-    const nodeAtOffset = jsonc.findNodeAtOffset(root!, cursorOffset);
+    const nodeAtOffset = findNodeAtOffset(root!, cursorOffset);
 
     const result = await Promise.all(
       Array.from(completions.entries())
@@ -342,10 +343,6 @@ export abstract class SwfLanguageService {
     }
   }
 
-  public findNodeAtOffset(root: SwfLSNode, offset: number, includeRightBound?: boolean): SwfLSNode | undefined {
-    return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLSNode;
-  }
-
   /**
    * Check if a Node is in Location.
    *
@@ -354,12 +351,12 @@ export abstract class SwfLanguageService {
    * @param path the location to verify
    * @returns true if the node is in the location, false otherwise
    */
-  public matchNodeWithLocation(root: SwfLSNode | undefined, node: SwfLSNode | undefined, path: JSONPath): boolean {
+  public matchNodeWithLocation(root: SwfLSNode | undefined, node: SwfLSNode | undefined, path: SwfJSONPath): boolean {
     if (!root || !node || !path || !path.length) {
       return false;
     }
 
-    const nodesAtLocation = this.findNodesAtLocation(root, path);
+    const nodesAtLocation = findNodesAtLocation(root, path);
 
     if (nodesAtLocation.some((currentNode) => currentNode === node)) {
       return true;
@@ -370,63 +367,17 @@ export abstract class SwfLanguageService {
     return false;
   }
 
-  // This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
-  // This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-  public findNodesAtLocation(root: SwfLSNode | undefined, path: JSONPath): SwfLSNode[] {
-    if (!root) {
-      return [];
-    }
-
-    let nodes: SwfLSNode[] = [root];
-
-    for (const segment of path) {
-      if (segment === "*") {
-        nodes = nodes.flatMap((s) => s.children ?? []);
-        continue;
-      }
-
-      if (typeof segment === "number") {
-        const index = segment as number;
-        nodes = nodes.flatMap((n) => {
-          if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
-            return [];
-          }
-
-          return [n.children[index]];
-        });
-      }
-
-      if (typeof segment === "string") {
-        nodes = nodes.flatMap((n) => {
-          if (n.type !== "object" || !Array.isArray(n.children)) {
-            return [];
-          }
-
-          for (const prop of n.children) {
-            if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
-              return [prop.children[1]];
-            }
-          }
-
-          return [];
-        });
-      }
-    }
-
-    return nodes;
-  }
-
   public createCodeLenses(args: {
     document: TextDocument;
     rootNode: SwfLSNode;
-    jsonPath: JSONPath;
+    jsonPath: SwfJSONPath;
     commandDelegates: (args: {
       position: Position;
       node: SwfLSNode;
     }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
     positionLensAt: "begin" | "end";
   }): CodeLens[] {
-    const nodes = this.findNodesAtLocation(args.rootNode, args.jsonPath);
+    const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
     const codeLenses = nodes.flatMap((node) => {
       // Only position at the end if the type is object or array and has at least one child.
       const position =
@@ -459,7 +410,7 @@ type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "fu
 };
 
 const completions = new Map<
-  jsonc.JSONPath,
+  SwfJSONPath,
   (args: {
     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
     document: TextDocument;
@@ -539,8 +490,7 @@ const completions = new Map<
       }
 
       // As "rest" is the default, if the value is undefined, it's a rest function too.
-      const isRestFunction =
-        (jsonc.findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
+      const isRestFunction = (findNodeAtLocation(currentNode.parent.parent, ["type"])?.value ?? "rest") === "rest";
       if (!isRestFunction) {
         return Promise.resolve([]);
       }
@@ -649,7 +599,7 @@ const completions = new Map<
         return Promise.resolve([]);
       }
 
-      const swfFunctionRefName: string = jsonc.findNodeAtLocation(currentNode.parent, ["refName"])?.value;
+      const swfFunctionRefName: string = findNodeAtLocation(currentNode.parent, ["refName"])?.value;
       if (!swfFunctionRefName) {
         return Promise.resolve([]);
       }
@@ -712,6 +662,60 @@ function toCompletionItemLabelPrefix(
     default:
       return "";
   }
+}
+
+// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
+// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
+export function findNodesAtLocation(root: SwfLSNode | undefined, path: SwfJSONPath): SwfLSNode[] {
+  if (!root) {
+    return [];
+  }
+
+  let nodes: SwfLSNode[] = [root];
+
+  for (const segment of path) {
+    if (segment === "*") {
+      nodes = nodes.flatMap((s) => s.children ?? []);
+      continue;
+    }
+
+    if (typeof segment === "number") {
+      const index = segment as number;
+      nodes = nodes.flatMap((n) => {
+        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
+          return [];
+        }
+
+        return [n.children[index]];
+      });
+    }
+
+    if (typeof segment === "string") {
+      nodes = nodes.flatMap((n) => {
+        if (n.type !== "object" || !Array.isArray(n.children)) {
+          return [];
+        }
+
+        for (const prop of n.children) {
+          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
+            return [prop.children[1]];
+          }
+        }
+
+        return [];
+      });
+    }
+  }
+
+  return nodes;
+}
+
+export function findNodeAtLocation(root: SwfLSNode, path: SwfJSONPath): SwfLSNode | undefined {
+  return findNodesAtLocation(root, path)[0];
+}
+
+export function findNodeAtOffset(root: SwfLSNode, offset: number, includeRightBound?: boolean): SwfLSNode | undefined {
+  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLSNode;
 }
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {

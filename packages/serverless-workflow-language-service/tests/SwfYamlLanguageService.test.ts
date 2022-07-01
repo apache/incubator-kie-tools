@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { SwfYamlLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfYamlLanguageService, findNodeAtOffset } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
@@ -340,7 +340,7 @@ states:
       });
       const { content, cursorOffset } = treat(`---🎯 `);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
       expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
@@ -358,7 +358,7 @@ states:
 ---
 functions: [🎯]`);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
       expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
@@ -387,7 +387,7 @@ states:
       refName: "🎯"
 `);
       const root = ls.parseContent(content);
-      const node = ls.findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(
         ls.matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
