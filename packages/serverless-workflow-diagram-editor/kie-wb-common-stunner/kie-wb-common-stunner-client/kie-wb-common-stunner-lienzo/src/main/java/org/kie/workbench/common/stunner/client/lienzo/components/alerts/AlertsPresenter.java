@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ import org.kie.workbench.common.stunner.core.i18n.CoreTranslationMessages;
 @Dependent
 public class AlertsPresenter {
 
+    private static final double MARGIN = 25d;
     private static final String ON_MOUSE_OVER = EventType.MOUSE_OVER.getType();
     private static final int ALERT_SHORT_DELAY = 250;
     private static final int ALERT_LONG_DELAY = 1000;
@@ -215,8 +216,8 @@ public class AlertsPresenter {
         final LienzoPanel panel = getPanel();
         final int absoluteLeft = MouseEventUtil.getAbsoluteLeft(panel.getView().getElement());
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
-        final double x = absoluteLeft + width - alerts.asWidget().getElement().getClientWidth() - 50;
-        final double y = absoluteTop + 50;
+        final double x = absoluteLeft + width - alerts.asWidget().getElement().getClientWidth() - MARGIN;
+        final double y = absoluteTop + MARGIN;
         return at(x, y);
     }
 

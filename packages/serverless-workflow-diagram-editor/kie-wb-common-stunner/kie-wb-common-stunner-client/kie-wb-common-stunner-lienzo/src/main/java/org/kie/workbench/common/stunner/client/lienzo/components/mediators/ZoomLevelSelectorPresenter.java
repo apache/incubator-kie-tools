@@ -46,6 +46,7 @@ import static com.ait.lienzo.client.widget.panel.util.PanelTransformUtils.setSca
 @Dependent
 public class ZoomLevelSelectorPresenter {
 
+    private static final double MARGIN = 25d;
     private static final double LEVEL_STEP = 0.1d;
     static final String LEVEL_25 = "25%";
     static final String LEVEL_50 = "50%";
@@ -222,8 +223,8 @@ public class ZoomLevelSelectorPresenter {
         final int absoluteTop = MouseEventUtil.getAbsoluteTop(panel.getView().getElement());
         final int zoomLevelSelectorWidth = selector.asWidget().getElement().getOffsetWidth();
         final int zoomLevelSelectorHeight = selector.asWidget().getElement().getOffsetHeight();
-        final double x = absoluteLeft + width - zoomLevelSelectorWidth - 50;
-        final double y = absoluteTop + height - zoomLevelSelectorHeight - 50;
+        final double x = absoluteLeft + width - zoomLevelSelectorWidth - MARGIN;
+        final double y = absoluteTop + height - zoomLevelSelectorHeight - MARGIN;
         return at(x, y);
     }
 
