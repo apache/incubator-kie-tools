@@ -90,6 +90,7 @@ digraph G {
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-red-hat-business-automation-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
@@ -258,6 +259,8 @@ digraph G {
   "vscode-extension-red-hat-business-automation-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-editor" [ style = "solid", color = "blue" ];
+  "vscode-extension-yard-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "vscode-extension-yard-editor" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/webpack-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
