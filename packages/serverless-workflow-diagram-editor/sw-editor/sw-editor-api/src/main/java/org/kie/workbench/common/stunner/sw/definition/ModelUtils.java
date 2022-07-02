@@ -23,81 +23,87 @@ import jsinterop.base.Js;
 public class ModelUtils {
 
     public static void cleanWorkflow(Workflow workflow) {
-        workflow.id = (String) Js.undefined();
-        workflow.name = (String) Js.undefined();
-        workflow.start = (String) Js.undefined();
-        if (null != workflow.events) {
-            for (int i = 0; i < workflow.events.length; i++) {
-                cleanEvent(workflow.events[i]);
-                workflow.events[i] = (Event) Js.undefined();
+        if (workflow != null) {
+            workflow.id = (String) Js.undefined();
+            workflow.name = (String) Js.undefined();
+            workflow.start = (String) Js.undefined();
+            if (null != workflow.events) {
+                for (int i = 0; i < workflow.events.length; i++) {
+                    cleanEvent(workflow.events[i]);
+                    workflow.events[i] = (Event) Js.undefined();
+                }
             }
-        }
-        if (null != workflow.states) {
-            for (int i = 0; i < workflow.states.length; i++) {
-                cleanState(workflow.states[i]);
-                workflow.states[i] = (State) Js.undefined();
+            if (null != workflow.states) {
+                for (int i = 0; i < workflow.states.length; i++) {
+                    cleanState(workflow.states[i]);
+                    workflow.states[i] = (State) Js.undefined();
+                }
             }
+            workflow.events = (Event[]) Js.undefined();
+            workflow.states = (State[]) Js.undefined();
         }
-        workflow.events = (Event[]) Js.undefined();
-        workflow.states = (State[]) Js.undefined();
     }
 
     private static void cleanEvent(Event event) {
-        event.name = (String) Js.undefined();
-
-        event.source = (String) Js.undefined();
-
-        event.type = (String) Js.undefined();
+        if (event != null) {
+            event.name = (String) Js.undefined();
+            event.source = (String) Js.undefined();
+            event.type = (String) Js.undefined();
+        }
     }
 
     private static void cleanState(State state) {
-        if (InjectState.TYPE_INJECT.equals(state.type)) {
-            cleanInjectState((InjectState) state);
-        } else if (EventState.TYPE_EVENT.equals(state.type)) {
-            cleanEventState((EventState) state);
-        } else if (SwitchState.TYPE_SWITCH.equals(state.type)) {
-            cleanSwitchState((SwitchState) state);
-        } else if (OperationState.TYPE_OPERATION.equals(state.type)) {
-            cleanOperationState((OperationState) state);
-        } else if (SleepState.TYPE_SLEEP.equals(state.type)) {
-            cleanSleepState((SleepState) state);
-        } else if (ParallelState.TYPE_PARALLEL.equals(state.type)) {
-            cleanParallelState((ParallelState) state);
-        } else if (ForEachState.TYPE_FOR_EACH.equals(state.type)) {
-            cleanForEachState((ForEachState) state);
-        } else if (CallbackState.TYPE_CALLBACK.equals(state.type)) {
-            cleanCallbackState((CallbackState) state);
-        }
-
-        state.name = (String) Js.undefined();
-        state.type = (String) Js.undefined();
-        state.transition = (String) Js.undefined();
-        state.eventTimeout = (String) Js.undefined();
-        state.compensatedBy = (String) Js.undefined();
-        state.end = false;
-        if (null != state.onErrors) {
-            for (int i = 0; i < state.onErrors.length; i++) {
-                cleanErrorTransition(state.onErrors[i]);
-                state.onErrors[i] = (ErrorTransition) Js.undefined();
+        if (state != null) {
+            if (InjectState.TYPE_INJECT.equals(state.type)) {
+                cleanInjectState((InjectState) state);
+            } else if (EventState.TYPE_EVENT.equals(state.type)) {
+                cleanEventState((EventState) state);
+            } else if (SwitchState.TYPE_SWITCH.equals(state.type)) {
+                cleanSwitchState((SwitchState) state);
+            } else if (OperationState.TYPE_OPERATION.equals(state.type)) {
+                cleanOperationState((OperationState) state);
+            } else if (SleepState.TYPE_SLEEP.equals(state.type)) {
+                cleanSleepState((SleepState) state);
+            } else if (ParallelState.TYPE_PARALLEL.equals(state.type)) {
+                cleanParallelState((ParallelState) state);
+            } else if (ForEachState.TYPE_FOR_EACH.equals(state.type)) {
+                cleanForEachState((ForEachState) state);
+            } else if (CallbackState.TYPE_CALLBACK.equals(state.type)) {
+                cleanCallbackState((CallbackState) state);
             }
+
+            state.name = (String) Js.undefined();
+            state.type = (String) Js.undefined();
+            state.transition = (String) Js.undefined();
+            state.eventTimeout = (String) Js.undefined();
+            state.compensatedBy = (String) Js.undefined();
+            state.end = false;
+            if (null != state.onErrors) {
+                for (int i = 0; i < state.onErrors.length; i++) {
+                    cleanErrorTransition(state.onErrors[i]);
+                    state.onErrors[i] = (ErrorTransition) Js.undefined();
+                }
+            }
+            state.onErrors = (ErrorTransition[]) Js.undefined();
         }
-        state.onErrors = (ErrorTransition[]) Js.undefined();
     }
 
     public static void cleanErrorTransition(ErrorTransition errorTransition) {
-        errorTransition.errorRef = (String) Js.undefined();
-        errorTransition.transition = (String) Js.undefined();
-        errorTransition.end = false;
+        if (errorTransition != null) {
+            errorTransition.errorRef = (String) Js.undefined();
+            errorTransition.transition = (String) Js.undefined();
+            errorTransition.end = false;
+        }
     }
 
     public static void cleanActionNode(ActionNode actionNode) {
-        actionNode.id = (String) Js.undefined();
-        actionNode.name = (String) Js.undefined();
-        actionNode.functionRef = (String) Js.undefined();
-        ;
-        actionNode.eventRef = (String) Js.undefined();
-        ;
-        actionNode.subFlowRef = (String) Js.undefined();
+        if (actionNode != null) {
+            actionNode.id = (String) Js.undefined();
+            actionNode.name = (String) Js.undefined();
+            actionNode.functionRef = (String) Js.undefined();
+            actionNode.eventRef = (String) Js.undefined();
+            actionNode.subFlowRef = (String) Js.undefined();
+        }
     }
 
     public static void cleanActions(ActionNode[] actionNodes) {
@@ -110,77 +116,95 @@ public class ModelUtils {
     }
 
     public static void cleanOperationState(OperationState operationState) {
-        operationState.actionMode = (String) Js.undefined();
-        operationState.usedForCompensation = false;
-        cleanActions(operationState.actions);
-        operationState.actions = (ActionNode[]) Js.undefined();
+        if (operationState != null) {
+            operationState.actionMode = (String) Js.undefined();
+            operationState.usedForCompensation = false;
+            cleanActions(operationState.actions);
+            operationState.actions = (ActionNode[]) Js.undefined();
+        }
     }
 
     public static void cleanOnEvent(OnEvent onEvent) {
-        if (null != onEvent.eventRefs) {
-            Arrays.stream(onEvent.eventRefs).forEach(eventRef -> eventRef = (String) Js.undefined());
+        if (onEvent != null) {
+            if (null != onEvent.eventRefs) {
+                Arrays.stream(onEvent.eventRefs).forEach(eventRef -> eventRef = (String) Js.undefined());
+            }
+            onEvent.eventRefs = (String[]) Js.undefined();
+            cleanActions(onEvent.actions);
+            onEvent.actions = (ActionNode[]) Js.undefined();
         }
-        onEvent.eventRefs = (String[]) Js.undefined();
-        cleanActions(onEvent.actions);
-        onEvent.actions = (ActionNode[]) Js.undefined();
     }
 
     public static void cleanEventState(EventState eventState) {
-        eventState.exclusive = false;
-        if (null != eventState.onEvents) {
-            for (int i = 0; i < eventState.onEvents.length; i++) {
-                cleanOnEvent(eventState.onEvents[i]);
-                eventState.onEvents[i] = (OnEvent) Js.undefined();
+        if (eventState != null) {
+            eventState.exclusive = false;
+            if (null != eventState.onEvents) {
+                for (int i = 0; i < eventState.onEvents.length; i++) {
+                    cleanOnEvent(eventState.onEvents[i]);
+                    eventState.onEvents[i] = (OnEvent) Js.undefined();
+                }
             }
+            eventState.onEvents = (OnEvent[]) Js.undefined();
         }
-        eventState.onEvents = (OnEvent[]) Js.undefined();
     }
 
     public static void cleanInjectState(InjectState injectState) {
-        injectState.data = (String) Js.undefined();
-        injectState.usedForCompensation = false;
+        if (injectState != null) {
+            injectState.data = (String) Js.undefined();
+            injectState.usedForCompensation = false;
+        }
     }
 
     public static void cleanSwitchState(SwitchState switchState) {
-        cleanDefaultConditionTransition(switchState.defaultCondition);
-        if (null != switchState.eventConditions) {
-            for (int i = 0; i < switchState.eventConditions.length; i++) {
-                cleanEventConditionTransition(switchState.eventConditions[i]);
-                switchState.eventConditions[i] = (EventConditionTransition) Js.undefined();
+        if (switchState != null) {
+            cleanDefaultConditionTransition(switchState.defaultCondition);
+            if (null != switchState.eventConditions) {
+                for (int i = 0; i < switchState.eventConditions.length; i++) {
+                    cleanEventConditionTransition(switchState.eventConditions[i]);
+                    switchState.eventConditions[i] = (EventConditionTransition) Js.undefined();
+                }
             }
-        }
-        switchState.eventConditions = (EventConditionTransition[]) Js.undefined();
-        if (null != switchState.dataConditions) {
-            for (int i = 0; i < switchState.dataConditions.length; i++) {
-                cleanDataConditionTransition(switchState.dataConditions[i]);
-                switchState.dataConditions[i] = (DataConditionTransition) Js.undefined();
+            switchState.eventConditions = (EventConditionTransition[]) Js.undefined();
+            if (null != switchState.dataConditions) {
+                for (int i = 0; i < switchState.dataConditions.length; i++) {
+                    cleanDataConditionTransition(switchState.dataConditions[i]);
+                    switchState.dataConditions[i] = (DataConditionTransition) Js.undefined();
+                }
             }
+            switchState.dataConditions = (DataConditionTransition[]) Js.undefined();
+            switchState.usedForCompensation = false;
         }
-        switchState.dataConditions = (DataConditionTransition[]) Js.undefined();
-        switchState.usedForCompensation = false;
     }
 
     public static void cleanDefaultConditionTransition(DefaultConditionTransition defaultConditionTransition) {
-        defaultConditionTransition.transition = (String) Js.undefined();
-        defaultConditionTransition.end = false;
+        if (defaultConditionTransition != null) {
+            defaultConditionTransition.transition = (String) Js.undefined();
+            defaultConditionTransition.end = false;
+        }
     }
 
     public static void cleanEventConditionTransition(EventConditionTransition eventConditionTransition) {
-        eventConditionTransition.name = (String) Js.undefined();
-        eventConditionTransition.eventRef = (String) Js.undefined();
-        eventConditionTransition.transition = (String) Js.undefined();
-        eventConditionTransition.end = false;
+        if (eventConditionTransition != null) {
+            eventConditionTransition.name = (String) Js.undefined();
+            eventConditionTransition.eventRef = (String) Js.undefined();
+            eventConditionTransition.transition = (String) Js.undefined();
+            eventConditionTransition.end = false;
+        }
     }
 
     public static void cleanDataConditionTransition(DataConditionTransition dataConditionTransition) {
-        dataConditionTransition.name = (String) Js.undefined();
-        dataConditionTransition.condition = (String) Js.undefined();
-        dataConditionTransition.transition = (String) Js.undefined();
-        dataConditionTransition.end = false;
+        if (dataConditionTransition != null) {
+            dataConditionTransition.name = (String) Js.undefined();
+            dataConditionTransition.condition = (String) Js.undefined();
+            dataConditionTransition.transition = (String) Js.undefined();
+            dataConditionTransition.end = false;
+        }
     }
 
     public static void cleanSleepState(SleepState sleepState) {
-        sleepState.duration = (String) Js.undefined();
+        if (sleepState != null) {
+            sleepState.duration = (String) Js.undefined();
+        }
     }
 
     public static void cleanParallelState(ParallelState parallelState) {
@@ -188,13 +212,17 @@ public class ModelUtils {
     }
 
     public static void cleanForEachState(ForEachState forEachState) {
-        cleanActions(forEachState.actions);
-        forEachState.actions = (ActionNode[]) Js.undefined();
+        if (forEachState != null) {
+            cleanActions(forEachState.actions);
+            forEachState.actions = (ActionNode[]) Js.undefined();
+        }
     }
 
     public static void cleanCallbackState(CallbackState callbackState) {
-        callbackState.eventRef = (String) Js.undefined();
-        cleanActionNode(callbackState.action);
-        callbackState.action = (ActionNode) Js.undefined();
+        if (callbackState != null) {
+            callbackState.eventRef = (String) Js.undefined();
+            cleanActionNode(callbackState.action);
+            callbackState.action = (ActionNode) Js.undefined();
+        }
     }
 }
