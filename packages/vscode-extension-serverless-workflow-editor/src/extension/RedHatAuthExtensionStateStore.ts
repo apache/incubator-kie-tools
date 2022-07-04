@@ -16,47 +16,38 @@
 
 import * as vscode from "vscode";
 
-export class RedHatAuthenticationStore implements vscode.Disposable {
-  private static instance = new RedHatAuthenticationStore();
-
+export class RedHatAuthExtensionStateStore implements vscode.Disposable {
   private readonly subscriptions = new Set<() => void>();
-  private readonly disposeCallback: vscode.Disposable;
+  private readonly extensionsChangeCallback: vscode.Disposable;
 
-  private _rhAuthEnabled: boolean;
+  private _isRedHatAuthExtensionEnabled: boolean;
 
-  private constructor() {
-    this._rhAuthEnabled = this.getCurrentRHExtensionEnabled();
+  public constructor() {
+    this._isRedHatAuthExtensionEnabled = this.isRedHatAuthExtensionCurrentlyEnabled();
 
-    this.disposeCallback = vscode.extensions.onDidChange(() => {
-      if (this._rhAuthEnabled !== this.getCurrentRHExtensionEnabled()) {
-        this._rhAuthEnabled = !this._rhAuthEnabled;
+    this.extensionsChangeCallback = vscode.extensions.onDidChange(() => {
+      if (this._isRedHatAuthExtensionEnabled !== this.isRedHatAuthExtensionCurrentlyEnabled()) {
+        this._isRedHatAuthExtensionEnabled = !this._isRedHatAuthExtensionEnabled;
         this.subscriptions.forEach((subscription) => subscription());
       }
     });
   }
 
-  public subscribeToRedHatAuthenticationStateChange(subscription: () => void): vscode.Disposable {
+  public subscribeToRedHatAuthExtensionStateChange(subscription: () => void): vscode.Disposable {
     this.subscriptions.add(subscription);
     return new vscode.Disposable(() => this.subscriptions.delete(subscription));
   }
 
-  public get isRHAuthEnabled(): boolean {
-    return this._rhAuthEnabled;
+  public get isRedHatAuthExtensionEnabled(): boolean {
+    return this._isRedHatAuthExtensionEnabled;
   }
 
   public dispose() {
     this.subscriptions.clear();
-    this.disposeCallback.dispose();
+    this.extensionsChangeCallback.dispose();
   }
 
-  private getCurrentRHExtensionEnabled(): boolean {
+  private isRedHatAuthExtensionCurrentlyEnabled(): boolean {
     return vscode.extensions.getExtension("redhat.vscode-redhat-account") !== undefined;
-  }
-
-  public static get() {
-    if (this.instance === undefined) {
-      this.instance = new RedHatAuthenticationStore();
-    }
-    return this.instance;
   }
 }

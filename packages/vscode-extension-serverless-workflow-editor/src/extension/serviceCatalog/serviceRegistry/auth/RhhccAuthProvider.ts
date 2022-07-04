@@ -17,17 +17,17 @@
 import { AuthProvider } from "./AuthProvider";
 import * as vscode from "vscode";
 
-const RH_MAS_ACCOUNT = "redhat-mas-account-auth";
-const SCOPE = "openid";
+const RH_MAS_ACCOUNT_PROVIDER_ID = "redhat-mas-account-auth";
+const RH_MAS_ACCOUNT_SCOPE = "openid";
 
-export class RHCCAuthProvider implements AuthProvider {
+export class RhhccAuthProvider implements AuthProvider {
   private session: vscode.AuthenticationSession | undefined;
   private subscriptions = new Set<() => void>();
 
   constructor(context: vscode.ExtensionContext) {
     context.subscriptions.push(
       vscode.authentication.onDidChangeSessions(async (e) => {
-        if (e.provider.id === RH_MAS_ACCOUNT) {
+        if (e.provider.id === RH_MAS_ACCOUNT_PROVIDER_ID) {
           await this.acquireSession();
         }
       })
@@ -46,10 +46,12 @@ export class RHCCAuthProvider implements AuthProvider {
 
   public async login(): Promise<void> {
     try {
-      this.session = await vscode.authentication.getSession(RH_MAS_ACCOUNT, [SCOPE], { createIfNone: true });
+      this.session = await vscode.authentication.getSession(RH_MAS_ACCOUNT_PROVIDER_ID, [RH_MAS_ACCOUNT_SCOPE], {
+        createIfNone: true,
+      });
       return Promise.resolve();
     } catch (err) {
-      return Promise.reject();
+      return Promise.reject(err);
     }
   }
 
@@ -69,7 +71,7 @@ export class RHCCAuthProvider implements AuthProvider {
   }
 
   private async acquireSession(): Promise<void> {
-    this.session = await vscode.authentication.getSession(RH_MAS_ACCOUNT, [SCOPE]);
+    this.session = await vscode.authentication.getSession(RH_MAS_ACCOUNT_PROVIDER_ID, [RH_MAS_ACCOUNT_SCOPE]);
     this.subscriptions.forEach((subscription) => subscription());
   }
 }

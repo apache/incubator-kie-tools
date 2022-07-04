@@ -19,10 +19,9 @@ import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../c
 import { ServiceRegistryInstanceClient } from "./ServiceRegistryInstanceClient";
 import { AuthProvider, AuthProviderFactory } from "./auth";
 import * as vscode from "vscode";
-import { RedHatAuthenticationStore } from "./auth/RedHatAuthenticationStore";
+import { RedHatAuthExtensionStateStore } from "../../RedHatAuthExtensionStateStore";
 
 export class ServiceRegistriesStore {
-  private readonly redHatAuthenticationStore: RedHatAuthenticationStore;
   private readonly authProviderFactory: AuthProviderFactory;
   private readonly registryClientStore: Map<ServiceRegistryInstanceClient, SwfServiceCatalogService[]> = new Map();
   private readonly subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
@@ -30,11 +29,13 @@ export class ServiceRegistriesStore {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
+      redhatAuthExtensionStateStore: RedHatAuthExtensionStateStore;
       context: vscode.ExtensionContext;
     }
   ) {
-    this.redHatAuthenticationStore = RedHatAuthenticationStore.get();
-    this.authProviderFactory = new AuthProviderFactory();
+    this.authProviderFactory = new AuthProviderFactory({
+      redhatAuthExtensionStateStore: this.args.redhatAuthExtensionStateStore,
+    });
 
     args.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((e) => {
@@ -44,7 +45,7 @@ export class ServiceRegistriesStore {
       })
     );
     args.context.subscriptions.push(
-      this.redHatAuthenticationStore.subscribeToRedHatAuthenticationStateChange(() => this.init())
+      this.args.redhatAuthExtensionStateStore.subscribeToRedHatAuthExtensionStateChange(() => this.init())
     );
 
     args.context.subscriptions.push(new vscode.Disposable(() => this.dispose()));
@@ -161,7 +162,7 @@ export class ServiceRegistriesStore {
   }
 
   private showMissingExtensionWarn() {
-    if (this.redHatAuthenticationStore.isRHAuthEnabled) {
+    if (this.args.redhatAuthExtensionStateStore.isRedHatAuthExtensionEnabled) {
       return;
     }
     vscode.window.showWarningMessage("Serverless Workflow Editor: Red Hat Authentication extension not available", {
