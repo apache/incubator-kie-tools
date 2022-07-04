@@ -54,10 +54,11 @@ type Proxy struct {
 	InsecureSkipVerify bool
 }
 
-func NewProxy(port int, jitexecutor []byte) *Proxy {
+func NewProxy(port int, jitexecutor []byte, insecureSkipVerify bool) *Proxy {
 	proxy := &Proxy{Started: false}
 	proxy.jitexecutorPath = proxy.createJitExecutor(jitexecutor)
 	proxy.Port = port
+	proxy.InsecureSkipVerify = insecureSkipVerify
 	return proxy
 }
 
@@ -65,8 +66,6 @@ func (self *Proxy) Start() {
 
 	var config config.Config
 	conf := config.GetConfig()
-
-	self.InsecureSkipVerify = conf.Proxy.InsecureSkipVerify
 
 	self.RunnerPort = getFreePort()
 	runnerPort := strconv.Itoa(self.RunnerPort)
@@ -91,7 +90,7 @@ func (self *Proxy) Start() {
 	proxy := httputil.NewSingleHostReverseProxy(target)
 
 	r := mux.NewRouter()
-	r.PathPrefix("/devsandbox").HandlerFunc(devSandboxHandler())
+	r.PathPrefix("/devsandbox").HandlerFunc(devSandboxHandler(self))
 	r.PathPrefix("/ping").HandlerFunc(pingHandler(self.Port))
 	r.PathPrefix("/").HandlerFunc(proxyHandler(proxy, self.cmd))
 
@@ -202,7 +201,7 @@ func (self *Proxy) createJitExecutor(jitexecutor []byte) string {
 	return jitexecutorPath
 }
 
-func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
+func devSandboxHandler(self *Proxy) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method == "OPTIONS" {
 			w.Header().Add("Access-Control-Allow-Origin", "*")
@@ -219,9 +218,6 @@ func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
 
 		proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 
-		var config config.Config
-		conf := config.GetConfig()
-
 		// tolerate self-signed certificates
 		proxy.Transport = &http.Transport{
 			Proxy: http.ProxyFromEnvironment,
@@ -235,7 +231,7 @@ func devSandboxHandler() func(w http.ResponseWriter, r *http.Request) {
 			TLSHandshakeTimeout:   10 * time.Second,
 			ExpectContinueTimeout: 1 * time.Second,
 			TLSClientConfig: &tls.Config{
-				InsecureSkipVerify: conf.Proxy.InsecureSkipVerify,
+				InsecureSkipVerify: self.InsecureSkipVerify,
 			},
 		}
 

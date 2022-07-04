@@ -1,0 +1,211 @@
+{
+  "name": "vscode-extension-yard-editor",
+  "publisher": "redhat",
+  "displayName": "yard Editor",
+  "description": "Edit yard definitions",
+  "version": "0.0.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "scripts": {
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "build:dev": "rimraf dist && webpack --env dev",
+    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_yard_editor_$npm_package_version.vsix",
+    "compile": "webpack --env dev",
+    "watch": "webpack --env dev",
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+  },
+  "dependencies": {
+    "@kie-tools-core/backend": "0.0.0",
+    "@kie-tools-core/editor": "0.0.0",
+    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/guided-tour": "0.0.0",
+    "@kie-tools-core/i18n": "0.0.0",
+    "@kie-tools-core/notifications": "0.0.0",
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@kie-tools-core/vscode-extension": "0.0.0",
+    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
+    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools/yard-editor": "0.0.0",
+    "monaco-editor": "^0.33.0",
+    "monaco-yaml": "^3.2.1",
+    "openapi-types": "^7.0.1",
+    "vscode-languageserver-textdocument": "^1.0.4",
+    "vscode-languageserver-types": "^3.16.0",
+    "yaml": "^2.0.1"
+  },
+  "devDependencies": {
+    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools/build-env": "0.0.0",
+    "monaco-editor-webpack-plugin": "^7.0.1"
+  },
+  "icon": "icon.png",
+  "main": "./dist/extension/extension.js",
+  "browser": "./dist/extension/extensionWeb.js",
+  "engines": {
+    "vscode": "^1.46.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:json",
+    "onLanguage:yaml",
+    "onLanguage:yard-json",
+    "onLanguage:yard-yaml",
+    "onCustomEditor:kieKogitoWebviewEditorsYard"
+  ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  },
+  "contributes": {
+    "customEditors": [
+      {
+        "viewType": "kieKogitoWebviewEditorsYard",
+        "displayName": "yard Editor",
+        "priority": "option",
+        "selector": [
+          {
+            "filenamePattern": "*.{yard.json,yard.yaml,yard.yml}"
+          }
+        ]
+      }
+    ],
+    "languages": [
+      {
+        "id": "yard-json",
+        "extensions": [
+          ".yard.json"
+        ],
+        "aliases": [
+          "yard (JSON)",
+          "yard.json"
+        ],
+        "configuration": "./languageConfiguration/jsonLanguageConfiguration.json"
+      },
+      {
+        "id": "yard-yaml",
+        "extensions": [
+          ".yard.yml",
+          ".yard.yaml"
+        ],
+        "aliases": [
+          "yard (YAML)",
+          "yard.yaml",
+          "yard.yml"
+        ],
+        "configuration": "./languageConfiguration/yamlLanguageConfiguration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "yard-json",
+        "scopeName": "source.json",
+        "path": "./syntaxes/JSON.tmLanguage.json"
+      },
+      {
+        "language": "yard-yaml",
+        "scopeName": "source.yaml",
+        "path": "./syntaxes/YAML.tmLanguage.json"
+      }
+    ],
+    "configurationDefaults": {
+      "files.associations": {
+        "*.yard.json": "json",
+        "*.yard.yaml": "yaml",
+        "*.yard.yml": "yaml"
+      },
+      "[json]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[yaml]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[yard-json]": {
+        "editor.wordBasedSuggestions": false
+      },
+      "[yard-yaml]": {
+        "editor.wordBasedSuggestions": false
+      }
+    },
+    "configuration": {
+      "title": "yard Editor",
+      "properties": {
+        "kogito.yard.runOnSave": {
+          "type": "string",
+          "markdownDescription": "Execute a command on each save operation of the yard file."
+        },
+        "kogito.yard.automaticallyOpenDiagramEditorAlongsideTextEditor": {
+          "type": "string",
+          "default": "Ask next time",
+          "enum": [
+            "Open automatically",
+            "Do not open",
+            "Ask next time"
+          ],
+          "markdownDescription": "When opening yard files, decide whether or not to open the Diagram Editor alongside the text editor. Regardless of the configured option, you can always open the yard Diagram Editor using the 'Open as Diagram' button."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "extension.kogito.yard.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
+        "title": "yard: Setup automatically open Diagram Editor alongside Text Editor"
+      },
+      {
+        "command": "extension.kogito.yard.openAsDiagram",
+        "title": "yard: Open as Diagram (to the side)",
+        "icon": "$(open-preview)"
+      },
+      {
+        "command": "extension.kogito.yard.openAsSource",
+        "title": "yard: Open as Source",
+        "icon": "$(go-to-file)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "extension.kogito.yard.openAsDiagram",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(json|yaml|yml)$/"
+      },
+      {
+        "command": "extension.kogito.yard.openAsSource",
+        "key": "ctrl+k v",
+        "mac": "cmd+k v",
+        "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard",
+          "command": "extension.kogito.yard.openAsSource"
+        },
+        {
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(json|yaml|yml)/",
+          "command": "extension.kogito.yard.openAsDiagram"
+        }
+      ],
+      "editor/title": [
+        {
+          "when": "activeCustomEditorId == kieKogitoWebviewEditorsYard",
+          "command": "extension.kogito.yard.openAsSource",
+          "group": "navigation"
+        },
+        {
+          "when": "!activeCustomEditorId && resourceFilename =~ /^.*\\.yard\\.(json|yaml|yml)/",
+          "command": "extension.kogito.yard.openAsDiagram",
+          "group": "navigation"
+        }
+      ]
+    }
+  }
+}
