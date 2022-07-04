@@ -32,15 +32,25 @@ import org.kie.workbench.common.stunner.sw.client.shapes.TransitionShape;
 import org.kie.workbench.common.stunner.sw.client.shapes.TransitionShapeDef;
 import org.kie.workbench.common.stunner.sw.client.shapes.TransitionView;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
+import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
 import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
+import org.kie.workbench.common.stunner.sw.definition.CallbackState;
+import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
+import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
+import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
-import org.kie.workbench.common.stunner.sw.definition.EventTransition;
+import org.kie.workbench.common.stunner.sw.definition.EventTimeout;
+import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
+import org.kie.workbench.common.stunner.sw.definition.OperationState;
+import org.kie.workbench.common.stunner.sw.definition.ParallelState;
+import org.kie.workbench.common.stunner.sw.definition.SleepState;
 import org.kie.workbench.common.stunner.sw.definition.Start;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
@@ -54,22 +64,32 @@ public class ShapeFactory
         implements org.kie.workbench.common.stunner.core.client.shape.factory.ShapeFactory<Object, Shape> {
 
     // TODO: Refactor this, no need for storing state...
-    private static final Map<Class<?>, ShapeViewDef> typeViewDefinitions = new HashMap<Class<?>, ShapeViewDef>() {{
+    private final Map<Class<?>, ShapeViewDef> typeViewDefinitions = new HashMap<Class<?>, ShapeViewDef>() {{
         put(Workflow.class, new AnyStateShapeDef());
-        put(Start.class, new AnyStateShapeDef(false));
-        put(End.class, new AnyStateShapeDef(false));
-        put(OnEvent.class, new AnyStateShapeDef());
-        put(EventRef.class, new AnyStateShapeDef(false));
-        put(CallFunctionAction.class, new AnyStateShapeDef());
-        put(CallSubflowAction.class, new AnyStateShapeDef());
+        put(Start.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER_WITH_AlPHA, true));
+        put(End.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER_WITH_AlPHA, true));
+        put(ActionsContainer.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
+        put(OnEvent.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER, true));
+        put(EventRef.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.OUTSIDE_CENTER_BOTTOM, true));
+        put(CallFunctionAction.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
+        put(CallSubflowAction.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.INSIDE_CENTER));
         put(InjectState.class, new AnyStateShapeDef());
         put(SwitchState.class, new AnyStateShapeDef());
+        put(OperationState.class, new AnyStateShapeDef());
         put(EventState.class, new AnyStateShapeDef());
+        put(SleepState.class, new AnyStateShapeDef());
+        put(ParallelState.class, new AnyStateShapeDef());
+        put(ForEachState.class, new AnyStateShapeDef());
+        put(CallbackState.class, new AnyStateShapeDef());
         put(Transition.class, new TransitionShapeDef());
         put(StartTransition.class, new TransitionShapeDef());
         put(ErrorTransition.class, new TransitionShapeDef());
-        put(EventTransition.class, new TransitionShapeDef());
+        put(EventConditionTransition.class, new TransitionShapeDef());
+        put(DataConditionTransition.class, new TransitionShapeDef());
+        put(DefaultConditionTransition.class, new TransitionShapeDef());
         put(ActionTransition.class, new TransitionShapeDef());
+        put(CompensationTransition.class, new TransitionShapeDef());
+        put(EventTimeout.class, new AnyStateShapeDef(AnyStateShapeDef.FontStyle.OUTSIDE_CENTER_BOTTOM, true));
     }};
 
     private final SVGShapeFactory svgShapeFactory;

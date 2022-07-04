@@ -49,19 +49,19 @@ public class AutoLayout {
                                             DirectGraphCommandExecutionContext context,
                                             boolean isSubset) {
 
-        return promises.create((resolve, reject) -> {
-            final CompositeCommand.Builder layoutCommands = new CompositeCommand.Builder();
+                return promises.create((resolve, reject) -> {
+                    final CompositeCommand.Builder layoutCommands = new CompositeCommand.Builder();
 
-            updateNodesPosition(parentNode.getUUID(), graph, layoutCommands);
+                    updateNodesPosition(parentNode.getUUID(), graph, layoutCommands);
 
-            final CompositeCommand<GraphCommandExecutionContext, RuleViolation> all =
-                    new CompositeCommand.Builder<>()
-                            .addCommand(layoutCommands.build())
-                            .build();
+                    final CompositeCommand<GraphCommandExecutionContext, RuleViolation> all =
+                            new CompositeCommand.Builder<>()
+                                    .addCommand(layoutCommands.build())
+                                    .build();
 
-            all.execute(context);
-            resolve.onInvoke(parentNode);
-        });
+                    all.execute(context);
+                    resolve.onInvoke(parentNode);
+                });
     }
 
     private static BiPredicate<String, String> isCanvasRoot() {
@@ -103,7 +103,7 @@ public class AutoLayout {
                 Bounds bounds = node.getContent().getBounds();
 
                 layoutCommands.addCommand(new UpdateElementPositionCommand(graph.getNode(node.getUUID()),
-                        new Point2D(getNextX(), getNextY())));
+                                                                           new Point2D(getNextX(), getNextY())));
 
                 addProcessedNode(node);
             }

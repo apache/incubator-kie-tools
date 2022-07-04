@@ -34,7 +34,7 @@ import org.kie.workbench.common.stunner.sw.marshall.Marshaller.NodeUnmarshaller;
 import static org.kie.workbench.common.stunner.core.graph.util.GraphUtils.getChildNodes;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_START;
-import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.WORKFLOW_UUID;
+import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.hasNodeMarshaller;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.isEndState;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.isStartState;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.marshallEdge;
@@ -48,11 +48,12 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> START_NODE_UNMARSHALLER =
             (context, workflow) -> {
+                String start = DefinitionTypeUtils.getStart(workflow.getStart());
                 Node startNode = null;
-                if (isValidString(workflow.getStart())) {
+                if (isValidString(start)) {
                     startNode = context.addNode(STATE_START, new Start());
                     StartTransition tStart = new StartTransition();
-                    tStart.setTransition(workflow.start);
+                    tStart.setTransition(start);
                     context.sourceNode = startNode;
                     Edge startEdge = unmarshallEdge(context, tStart);
                     context.sourceNode = null;
@@ -83,7 +84,7 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> WORKFLOW_UNMARSHALLER =
             (context, workflow) -> {
-                Node<View<Workflow>, Edge> workflowNode = context.addNode(WORKFLOW_UUID, workflow);
+                Node<View<Workflow>, Edge> workflowNode = context.addNode(workflow.name, workflow);
                 workflowNode.getContent().setBounds(Bounds.create(0, 0, 950, 950));
 
                 // Set workflow node into the context state.
@@ -119,8 +120,11 @@ public interface WorkflowMarshalling {
                 List<Node> childNodes = getChildNodes(workflowNode);
                 childNodes.forEach(node -> {
                     if (!isStartState(node) && !isEndState(node)) {
-                        marshallNode(context, node);
-                        beans.add(getElementDefinition(node));
+                        // TODO: If node has been already processed by some edge, no real need to iterate over it here....
+                        if (hasNodeMarshaller(node)) {
+                            marshallNode(context, node);
+                            beans.add(getElementDefinition(node));
+                        }
                     }
                 });
                 workflow.states = beans.isEmpty() ? null : beans.toArray(new State[beans.size()]);

@@ -126,6 +126,12 @@
       <classifier>sources</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+      <artifactId>kie-wb-common-stunner-client-common</artifactId>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 

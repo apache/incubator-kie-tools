@@ -28,8 +28,11 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeDef;
 import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 import org.kie.workbench.common.stunner.sw.client.resources.GlyphFactory;
 import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
+import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
+import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
-import org.kie.workbench.common.stunner.sw.definition.EventTransition;
+import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 
@@ -43,8 +46,11 @@ public class TransitionShapeDef<W>
         TRANSITION,
         START,
         ERROR,
-        EVENT,
-        ACTION
+        EVENT_CONDITION,
+        DATA_CONDITION,
+        DEFAULT_CONDITION,
+        ACTION,
+        COMPENSATION
     }
 
     enum Direction {
@@ -75,10 +81,17 @@ public class TransitionShapeDef<W>
                                    .build()::handle);
     }
 
-    private static final DashArray DASH_ARRAY = DashArray.create(2, 6);
+    private static final DashArray DASH_ARRAY = DashArray.create(8, 8);
+    private static final DashArray DOT_ARRAY = DashArray.create(4, 6);
 
     public DashArray getDashArray(Object bean) {
-        return bean instanceof ActionTransition ? DASH_ARRAY : null;
+        if (bean instanceof ErrorTransition) {
+            return DASH_ARRAY;
+        } else if (bean instanceof ActionTransition || bean instanceof CompensationTransition) {
+            return DOT_ARRAY;
+        }
+
+        return null;
     }
 
     @Override
@@ -96,11 +109,20 @@ public class TransitionShapeDef<W>
         if (type == Type.ERROR) {
             return GlyphFactory.TRANSITION_ERROR;
         }
-        if (type == Type.EVENT) {
-            return GlyphFactory.TRANSITION_EVENT;
+        if (type == Type.EVENT_CONDITION) {
+            return GlyphFactory.TRANSITION_CONDITION;
+        }
+        if (type == Type.DATA_CONDITION) {
+            return GlyphFactory.TRANSITION_CONDITION;
+        }
+        if (type == Type.DEFAULT_CONDITION) {
+            return GlyphFactory.TRANSITION_CONDITION;
         }
         if (type == Type.ACTION) {
             return GlyphFactory.TRANSITION_ACTION;
+        }
+        if (type == Type.COMPENSATION) {
+            return GlyphFactory.TRANSITION_COMPENSATION;
         }
         return GlyphFactory.TRANSITION;
     }
@@ -116,15 +138,18 @@ public class TransitionShapeDef<W>
         public ViewAttributesHandlerBuilder() {
             this.fillColor(TransitionShapeDef::getColor)
                     .strokeColor(TransitionShapeDef::getColor)
-                    .strokeWidth(bean -> 1d);
+                    .strokeWidth(bean -> 1.5d);
         }
     }
 
     private static final String TYPE_TRANSITION = getDefinitionId(Transition.class);
     private static final String TYPE_START = getDefinitionId(StartTransition.class);
     private static final String TYPE_ERROR = getDefinitionId(ErrorTransition.class);
-    private static final String TYPE_EVENT = getDefinitionId(EventTransition.class);
+    private static final String TYPE_EVENT_CONDITION = getDefinitionId(EventConditionTransition.class);
+    private static final String TYPE_DATA_CONDITION = getDefinitionId(DataConditionTransition.class);
+    private static final String TYPE_DEFAULT_CONDITION = getDefinitionId(DefaultConditionTransition.class);
     private static final String TYPE_ACTION = getDefinitionId(ActionTransition.class);
+    private static final String TYPE_COMPENSATION = getDefinitionId(CompensationTransition.class);
 
     public static Type getType(Object transition) {
         Type type = getTypeOrNull(transition);
@@ -157,11 +182,20 @@ public class TransitionShapeDef<W>
         if (TYPE_ERROR.equals(id)) {
             return Type.ERROR;
         }
-        if (TYPE_EVENT.equals(id)) {
-            return Type.EVENT;
+        if (TYPE_EVENT_CONDITION.equals(id)) {
+            return Type.EVENT_CONDITION;
+        }
+        if (TYPE_DATA_CONDITION.equals(id)) {
+            return Type.DATA_CONDITION;
+        }
+        if (TYPE_DEFAULT_CONDITION.equals(id)) {
+            return Type.DEFAULT_CONDITION;
         }
         if (TYPE_ACTION.equals(id)) {
             return Type.ACTION;
+        }
+        if (TYPE_COMPENSATION.equals(id)) {
+            return Type.COMPENSATION;
         }
         return null;
     }
@@ -169,17 +203,26 @@ public class TransitionShapeDef<W>
     private static String getColor(Object transition) {
         Type type = getType(transition);
         if (type == Type.START) {
-            return "#0000FF";
+            return "#757575";
         }
         if (type == Type.ERROR) {
-            return "#FF0000";
+            return "#c9190b";
         }
-        if (type == Type.EVENT) {
-            return "#00FF00";
+        if (type == Type.EVENT_CONDITION) {
+            return "#828282";
+        }
+        if (type == Type.DATA_CONDITION) {
+            return "#757575";
+        }
+        if (type == Type.DEFAULT_CONDITION) {
+            return "#3e8635";
         }
         if (type == Type.ACTION) {
-            return "#646464";
+            return "#757575";
         }
-        return "#000000";
+        if (type == Type.COMPENSATION) {
+            return "#f0ab00";
+        }
+        return "#757575";
     }
 }

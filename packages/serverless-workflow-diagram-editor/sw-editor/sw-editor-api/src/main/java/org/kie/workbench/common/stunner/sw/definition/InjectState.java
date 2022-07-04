@@ -17,26 +17,36 @@
 package org.kie.workbench.common.stunner.sw.definition;
 
 import io.crysknife.ui.databinding.client.api.Bindable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
+/**
+ * Inject state can be used to inject static data into state data input.
+ * Inject state does not perform any actions.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Inject-State"> Inject state </a>
+ */
 @Bindable
 @Definition
 @Morph(base = State.class)
-@JsType
 public class InjectState extends State {
 
-    @JsIgnore
     public static final String TYPE_INJECT = "inject";
 
-    @Property
+    /**
+     * JSON object as String which can be set as state's data input and can be manipulated via filter.
+     */
     public String data;
+
+    /**
+     * Whether the state is used to compensate for another state.
+     * Defaults to false.
+     */
+    public boolean usedForCompensation;
 
     public InjectState() {
         this.type = TYPE_INJECT;
+        usedForCompensation = false;
     }
 
     public String getData() {
@@ -45,5 +55,13 @@ public class InjectState extends State {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public boolean isUsedForCompensation() {
+        return usedForCompensation;
+    }
+
+    public void setUsedForCompensation(boolean usedForCompensation) {
+        this.usedForCompensation = usedForCompensation;
     }
 }

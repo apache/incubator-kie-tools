@@ -20,12 +20,12 @@
     ******************
  */
 .state_border {
-  stroke: black;
-  stroke-width: 1.5px;
+  stroke: #d5d5d5;
+  stroke-width: 5.5px;
 }
 
 .state_background {
-  fill: #d7c5f6;
+  fill: #ffffff;
   stroke: none;
 }
 
@@ -61,6 +61,38 @@
   fill: #393f44;
 }
 
+.state_group_callback {
+  opacity: 0;
+}
+
+.state_callback_icon {
+  fill: #393f44;
+}
+
+.state_group_for_each {
+  opacity: 0;
+}
+
+.state_for_each_icon {
+  fill: #393f44;
+}
+
+.state_group_parallel {
+  opacity: 0;
+}
+
+.state_parallel_icon {
+  fill: #393f44;
+}
+
+.state_group_sleep {
+  opacity: 0;
+}
+
+.state_sleep_icon {
+  fill: #393f44;
+}
+
 #injectState .state_group_inject {
   opacity: 1;
 }
@@ -77,19 +109,35 @@
   opacity: 1;
 }
 
+#callbackState .state_group_callback {
+  opacity: 1;
+}
+
+#forEachState .state_group_for_each {
+  opacity: 1;
+}
+
+#parallelState .state_group_parallel {
+  opacity: 1;
+}
+
+#sleepState .state_group_sleep {
+  opacity: 1;
+}
+
 /*
     ******************
     Start.
     ******************
  */
 .start_background {
-  opacity: 1;
-  fill: #333333;
+  fill: #ffffff;
+  stroke: none;
 }
 
 .start {
-  opacity: 1;
-  fill: #111111;
+  stroke: #d5d5d5;
+  stroke-width: 2px;
 }
 
 /*
@@ -98,12 +146,12 @@
     ******************
  */
 .end_background {
-  opacity: 1;
-  fill: #7948e7;
+  fill: #ffffff;
+  stroke: none;
 }
-.end {
-  opacity: 1;
-  fill: #333333;
+.end_border {
+  stroke: #d5d5d5;
+  stroke-width: 2px;
 }
 
 /*
@@ -125,6 +173,32 @@
   opacity: 1;
   fill: #0758d9;
 }
+
+/*
+    ******************
+    Event Timeout.
+    ******************
+ */
+.event_timeout_background {
+  opacity: 1;
+  fill: #fbefcf;
+}
+
+.event_timeout_inner {
+  opacity: 1;
+  fill-opacity: 1;
+  fill: #e5a000;
+  stroke-opacity: 0;
+  stroke-dasharray: 15, 15;
+  stroke-width: 5px;
+  stroke: #e5a000;
+}
+
+.event_timeout_icon {
+  opacity: 1;
+  fill: #e5a000;
+}
+
 /*
     ******************
     Action.
@@ -145,7 +219,7 @@
     ******************
  */
 .container_background {
-  fill: #ffffff;
+  fill: #d7dcf1;
 }
 
 .container_border {

@@ -19,6 +19,8 @@ package org.uberfire.ext.editor.commons.client.file.exports.svg;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import javax.enterprise.context.ApplicationScoped;
+
 import elemental2.dom.Blob;
 import org.uberfire.ext.editor.commons.client.file.exports.AbstractFileExport;
 
@@ -27,6 +29,7 @@ import static elemental2.dom.Blob.ConstructorBlobPartsArrayUnionType;
 /**
  * Exports an {@link IContext2D} to a serialized SVG file.
  */
+@ApplicationScoped
 public class SvgFileExport extends AbstractFileExport<IContext2D> {
 
     public SvgFileExport() {

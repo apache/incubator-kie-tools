@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.crysknife.ui.databinding.client.api.Bindable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
@@ -31,17 +29,14 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 @Bindable
 @Definition
 @CanContain(roles = {EventRef.LABEL_EVENT, ActionNode.LABEL_ACTION})
-@JsType
 public class OnEvent {
 
     public static final String LABEL_ONEVENTS = "on_events";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.EVENTS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                         LABEL_ONEVENTS).collect(Collectors.toSet());
 

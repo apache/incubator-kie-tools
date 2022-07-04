@@ -275,9 +275,9 @@
 
     <org.treblereel.j2cl.processors.version>0.3</org.treblereel.j2cl.processors.version>
     <org.treblereel.gwt.nio.version>1.1</org.treblereel.gwt.nio.version>
-    <org.crysknife.version>0.4</org.crysknife.version>
+    <org.crysknife.version>0.5</org.crysknife.version>
     <org.gwtbootstrap3.version>1.2</org.gwtbootstrap3.version>
-    <version.org.treblereel.gwt.json.mapper>0.1</version.org.treblereel.gwt.json.mapper>
+    <version.org.treblereel.gwt.json.mapper>0.2</version.org.treblereel.gwt.json.mapper>
 
     <!-- Test Libraries -->
     <version.io.github.bonigarcia>3.8.1</version.io.github.bonigarcia>
@@ -292,6 +292,7 @@
     <version.com.google.code.gson>2.8.2</version.com.google.code.gson>
     <version.org.w3c>2.3.0-jaxb-1.0.6</version.org.w3c>
     <version.gwtproject>202203291</version.gwtproject>
+    <version.net.javacrumbs.json-unit>2.35.0</version.net.javacrumbs.json-unit>
   </properties>
 
   <dependencyManagement>
@@ -594,6 +595,41 @@
         <artifactId>slf4j-simple</artifactId>
         <version>${version.org.slf4j}</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-core</artifactId>
+        <version>${version.org.xmlunit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.xmlunit</groupId>
+        <artifactId>xmlunit-assertj</artifactId>
+        <version>${version.org.xmlunit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-fluent</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-core</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-assertj</artifactId>
+        <version>${version.net.javacrumbs.json-unit}</version>
       </dependency>
 
     </dependencies>

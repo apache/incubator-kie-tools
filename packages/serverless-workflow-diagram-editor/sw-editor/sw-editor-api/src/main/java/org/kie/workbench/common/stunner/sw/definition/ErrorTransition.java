@@ -21,16 +21,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.crysknife.ui.databinding.client.api.Bindable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionEndJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionTransitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
 
 @Bindable
 @Definition(graphFactory = EdgeFactory.class)
@@ -41,26 +43,27 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
-@JsType
 public class ErrorTransition {
 
     public static final String LABEL_TRANSITION_ERROR = "transition_error";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TRANSITIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(Transition.LABEL_TRANSITION,
                                                         LABEL_TRANSITION_ERROR).collect(Collectors.toSet());
 
-    @Property(meta = PropertyMetaTypes.NAME)
+    @Property
     public String errorRef;
 
-    public String transition;
+    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
+    public Object transition;
 
-    public boolean end;
+    @JsonbTypeSerializer(DataConditionTransitionEndJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
+    public Object end;
 
     public ErrorTransition() {
     }
@@ -69,23 +72,24 @@ public class ErrorTransition {
         return errorRef;
     }
 
-    public void setErrorRef(String errorRef) {
+    public ErrorTransition setErrorRef(String errorRef) {
         this.errorRef = errorRef;
+        return this;
     }
 
-    public String getTransition() {
+    public Object getTransition() {
         return transition;
     }
 
-    public void setTransition(String transition) {
+    public void setTransition(Object transition) {
         this.transition = transition;
     }
 
-    public boolean isEnd() {
+    public Object getEnd() {
         return end;
     }
 
-    public void setEnd(boolean end) {
+    public void setEnd(Object end) {
         this.end = end;
     }
 

@@ -21,8 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.crysknife.ui.databinding.client.api.Bindable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
@@ -30,40 +28,57 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 
+/**
+ * Actions specify invocations of services or other workflows during workflow execution.
+ * Note that functionRef, eventRef, and subFlowRef are mutually exclusive, meaning that only one of them can be specified
+ * in a single action definition.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Action-Definition"> Action definition </a>
+ */
 @Bindable
 @Definition
 @MorphBase(defaultType = CallFunctionAction.class)
-@JsType
 public class ActionNode {
 
     public static final String LABEL_ACTION = "action";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.ACTIONS;
 
     @Labels
-    @JsIgnore
     private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                         LABEL_ACTION).collect(Collectors.toSet());
 
     @Property
     public String id;
 
+    /**
+     * Unique action name.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
+    /**
+     * References to a reusable function definition.
+     */
     public String functionRef;
 
+    /**
+     * Reference to a trigger and result reusable event definition.
+     */
     public String eventRef;
 
+    /**
+     * Reference to a workflow to be invoked.
+     */
     public String subFlowRef;
 
     public ActionNode() {
     }
 
-    public void setName(String name) {
+    public ActionNode setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getName() {
@@ -74,32 +89,36 @@ public class ActionNode {
         return id;
     }
 
-    public void setId(String id) {
+    public ActionNode setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getFunctionRef() {
         return functionRef;
     }
 
-    public void setFunctionRef(String functionRef) {
+    public ActionNode setFunctionRef(String functionRef) {
         this.functionRef = functionRef;
+        return this;
     }
 
     public String getEventRef() {
         return eventRef;
     }
 
-    public void setEventRef(String eventRef) {
+    public ActionNode setEventRef(String eventRef) {
         this.eventRef = eventRef;
+        return this;
     }
 
     public String getSubFlowRef() {
         return subFlowRef;
     }
 
-    public void setSubFlowRef(String subFlowRef) {
+    public ActionNode setSubFlowRef(String subFlowRef) {
         this.subFlowRef = subFlowRef;
+        return this;
     }
 
     public Set<String> getLabels() {

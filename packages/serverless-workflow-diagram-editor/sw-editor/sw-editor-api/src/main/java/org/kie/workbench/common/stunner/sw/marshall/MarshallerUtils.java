@@ -16,7 +16,7 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
-import jsinterop.annotations.JsMethod;
+import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -27,6 +27,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.definition.State;
 
+@JsType
 public class MarshallerUtils {
 
     @SuppressWarnings("all")
@@ -70,7 +71,5 @@ public class MarshallerUtils {
         return Js.uncheckedCast(instance);
     }
 
-
-    @JsMethod
     public static native <T> T nativeMerge(Object o1, Object o2);
 }

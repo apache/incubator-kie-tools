@@ -21,46 +21,69 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.crysknife.ui.databinding.client.api.Bindable;
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionStartJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
 import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
 
+/**
+ * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
+ *
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Workflow-definition"> Workflow definition </a>
+ */
+@JSONMapper
 @Bindable
 @Definition
 @CanContain(roles = {Workflow.LABEL_ROOT_NODE})
-@JsType
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
-@JSONMapper
 public class Workflow {
 
     public static final String LABEL_WORKFLOW = "workflow";
     public static final String LABEL_ROOT_NODE = "rootNode";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.STATES;
 
     @Labels
-    @JsIgnore
-    private static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
+    public static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
 
+    /**
+     *  Workflow unique identifier.
+     */
     @Property
     public String id;
 
+    /**
+     * Workflow name.
+     */
     @Property(meta = PropertyMetaTypes.NAME)
     public String name;
 
-    public String start;
+    /**
+     * Workflow start definition.
+     */
+    @JsonbTypeSerializer(DataConditionTransitionStartJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
+    public Object start;
 
+    /**
+     * Workflow event definitions.
+     */
     public Event[] events;
 
+    /**
+     * Workflow state definitions.
+     */
     public State[] states;
+
+    // missing specVersion, functions
 
     public Workflow() {
     }
@@ -69,40 +92,45 @@ public class Workflow {
         return id;
     }
 
-    public void setId(String id) {
+    public Workflow setId(String id) {
         this.id = id;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Workflow setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public String getStart() {
+    public Object getStart() {
         return start;
     }
 
-    public void setStart(String start) {
+    public Workflow setStart(Object start) {
         this.start = start;
+        return this;
     }
 
     public Event[] getEvents() {
         return events;
     }
 
-    public void setEvents(Event[] events) {
+    public Workflow setEvents(Event[] events) {
         this.events = events;
+        return this;
     }
 
     public State[] getStates() {
         return states;
     }
 
-    public void setStates(State[] states) {
+    public Workflow setStates(State[] states) {
         this.states = states;
+        return this;
     }
 
     public Set<String> getLabels() {

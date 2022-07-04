@@ -55,6 +55,9 @@ public interface ImageResources extends ClientBundleWithLookup {
     @Source("images/icons/call-subflow.png")
     ImageResource callSubflow();
 
+    @Source("images/icons/event-timeout.png")
+    ImageResource eventTimeout();
+
     @Source("images/icons/transition.png")
     ImageResource transition();
 
@@ -64,9 +67,12 @@ public interface ImageResources extends ClientBundleWithLookup {
     @Source("images/icons/transition-error.png")
     ImageResource transitionError();
 
-    @Source("images/icons/transition-event.png")
-    ImageResource transitionEvent();
+    @Source("images/icons/transition-condition.png")
+    ImageResource transitionCondition();
 
     @Source("images/icons/transition-action.png")
     ImageResource transitionAction();
+
+    @Source("images/icons/transition.png")
+    ImageResource transitionCompensation();
 }

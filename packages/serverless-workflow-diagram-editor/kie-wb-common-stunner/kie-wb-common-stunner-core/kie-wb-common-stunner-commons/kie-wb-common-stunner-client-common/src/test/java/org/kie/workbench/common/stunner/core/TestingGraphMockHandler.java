@@ -94,10 +94,10 @@ public class TestingGraphMockHandler {
         this.graph = spy(graphAPI.graphFactory.build(GRAPH_UUID, DEF_SET_ID));
         this.ruleSet = spy(new RuleSetImpl("TestingRuleSet", new ArrayList<>()));
         this.graphCommandExecutionContext = spy(new ContextualGraphCommandExecutionContext(getDefinitionManager(),
-                                                                                           getFactoryManager(),
-                                                                                           getRuleManager(),
-                                                                                           graphIndex,
-                                                                                           ruleSet));
+                getFactoryManager(),
+                getRuleManager(),
+                graphIndex,
+                ruleSet));
         //when(graphCommandExecutionContext.getRuleSet()).thenReturn(ruleSet);
         when(graphIndex.getGraph()).thenReturn(graph);
     }
@@ -153,7 +153,7 @@ public class TestingGraphMockHandler {
             }
         } else {
             definition = newDef("def-" + id,
-                                Optional.empty());
+                    Optional.empty());
         }
         return definition;
     }
@@ -162,8 +162,8 @@ public class TestingGraphMockHandler {
                          final Optional<String[]> labels) {
         final Object def = mock(Object.class);
         mockDefAttributes(def,
-                          id,
-                          labels);
+                id,
+                labels);
         return def;
     }
 
@@ -181,22 +181,22 @@ public class TestingGraphMockHandler {
                         String id,
                         Optional<String[]> labels) {
         return newViewNode(uuid,
-                           Optional.of(newDef(id,
-                                              labels)),
-                           0,
-                           0,
-                           100,
-                           100);
+                Optional.of(newDef(id,
+                        labels)),
+                0,
+                0,
+                100,
+                100);
     }
 
     public Node newNode(String uuid,
                         Optional<Object> def) {
         return newViewNode(uuid,
-                           def,
-                           0,
-                           0,
-                           100,
-                           100);
+                def,
+                0,
+                0,
+                100,
+                100);
     }
 
     public Node newViewNode(String uuid,
@@ -208,10 +208,10 @@ public class TestingGraphMockHandler {
         final Object definition = getDefIfPresent(uuid, def);
         doReturn(Bounds.create(x, y, x + w, y + h))
                 .when(getDefinitionUtils()).buildBounds(eq(definition),
-                                                        anyDouble(),
-                                                        anyDouble());
+                        anyDouble(),
+                        anyDouble());
         final Node<Definition<Object>, Edge> result = graphAPI.nodeFactory.build(uuid,
-                                                                                 definition);
+                definition);
         execute(graphAPI.commandFactory.addNode(result));
         when(graphIndex.getNode(eq(uuid))).thenReturn(result);
         when(graphIndex.get(eq(uuid))).thenReturn(result);
@@ -222,7 +222,7 @@ public class TestingGraphMockHandler {
                         String id,
                         Optional<String[]> labels) {
         final Object definition = newDef(id,
-                                         labels);
+                labels);
         return newEdge(uuid, definition);
     }
 
@@ -243,7 +243,7 @@ public class TestingGraphMockHandler {
         final Object definition = def.isPresent() ?
                 def.get() :
                 newDef("def-" + uuid,
-                       Optional.empty());
+                        Optional.empty());
         return newEdge(uuid, definition);
     }
 
@@ -251,60 +251,60 @@ public class TestingGraphMockHandler {
     public TestingGraphMockHandler setChild(final Node parent,
                                             final Node candidate) {
         return execute(graphAPI.commandFactory.setChild(parent,
-                                                        candidate));
+                candidate));
     }
 
     @SuppressWarnings("unchecked")
     public TestingGraphMockHandler removeChild(final Node parent,
                                                final Node candidate) {
         return execute(graphAPI.commandFactory.removeChild(parent,
-                                                           candidate));
+                candidate));
     }
 
     @SuppressWarnings("unchecked")
     public TestingGraphMockHandler dockTo(final Node parent,
                                           final Node candidate) {
         return execute(graphAPI.commandFactory.dockNode(parent,
-                                                        candidate));
+                candidate));
     }
 
     @SuppressWarnings("unchecked")
     public TestingGraphMockHandler addEdge(final Edge edge,
                                            final Node source) {
         return execute(graphAPI.commandFactory.addConnector(source,
-                                                            edge,
-                                                            MagnetConnection.Builder.at(0d,
-                                                                                        0d)));
+                edge,
+                MagnetConnection.Builder.at(0d,
+                        0d)));
     }
 
     @SuppressWarnings("unchecked")
     public TestingGraphMockHandler connectTo(final Edge edge,
                                              final Node target) {
         return execute(graphAPI.commandFactory.setTargetNode(target,
-                                                             edge,
-                                                             MagnetConnection.Builder.at(0d,
-                                                                                         0d)));
+                edge,
+                MagnetConnection.Builder.at(0d,
+                        0d)));
     }
 
     @SuppressWarnings("unchecked")
     public TestingGraphMockHandler removeTargetConnection(final Edge edge) {
         return execute(graphAPI.commandFactory.setTargetNode(null,
-                                                             edge,
-                                                             MagnetConnection.Builder.at(0d,
-                                                                                         0d)));
+                edge,
+                MagnetConnection.Builder.at(0d,
+                        0d)));
     }
 
     public RuleManager createRuleManagerImplementation() {
         ElementCardinalityEvaluationHandler cardinalityEvaluationHandler = new ElementCardinalityEvaluationHandler(getDefinitionManager(),
-                                                                                                                   new CardinalityEvaluationHandler());
+                new CardinalityEvaluationHandler());
         ConnectorCardinalityEvaluationHandler connectorCardinalityEvaluationHandler = new ConnectorCardinalityEvaluationHandler(getDefinitionManager(),
-                                                                                                                                new EdgeCardinalityEvaluationHandler());
+                new EdgeCardinalityEvaluationHandler());
         GraphConnectionEvaluationHandler connectionEvaluationHandler = new GraphConnectionEvaluationHandler(getDefinitionManager(),
-                                                                                                            new ConnectionEvaluationHandler());
+                new ConnectionEvaluationHandler());
         NodeContainmentEvaluationHandler containmentEvaluationHandler = new NodeContainmentEvaluationHandler(getDefinitionManager(),
-                                                                                                             new ContainmentEvaluationHandler());
+                new ContainmentEvaluationHandler());
         NodeDockingEvaluationHandler dockingEvaluationHandler = new NodeDockingEvaluationHandler(getDefinitionManager(),
-                                                                                                 new DockingEvaluationHandler());
+                new DockingEvaluationHandler());
         RuleHandlerRegistry handlerRegistry = new RuleHandlerRegistryImpl();
         handlerRegistry.register(cardinalityEvaluationHandler);
         handlerRegistry.register(connectorCardinalityEvaluationHandler);
@@ -322,6 +322,6 @@ public class TestingGraphMockHandler {
 
     private static void assertCommandResult(CommandResult<RuleViolation> result) {
         assertNotEquals(CommandResult.Type.ERROR,
-                        result.getType());
+                result.getType());
     }
 }
