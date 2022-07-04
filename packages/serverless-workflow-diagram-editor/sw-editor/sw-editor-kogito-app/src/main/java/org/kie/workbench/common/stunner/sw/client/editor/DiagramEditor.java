@@ -29,6 +29,7 @@ import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
@@ -79,12 +80,14 @@ public class DiagramEditor {
     static String ID_SEARCH_PATTERN = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
             "?(?<value>true|false|[0-9a-zA-Z\\+\\-\\,\\.\\$]*)";
     static JsRegExp jsRegExp = new JsRegExp(ID_SEARCH_PATTERN, "i"); //case insensitive
+    static int UPDATE_DIAGRAM_TIMER_INTERVAL = 25; //milliseconds
 
     private final Promises promises;
     private final StunnerEditor stunnerEditor;
     private final ClientDiagramService diagramService;
     private final IncrementalMarshaller incrementalMarshaller;
     private final CanvasFileExport canvasFileExport;
+    private final UpdateDiagramTimer updateDiagramTimer;
 
     JsCanvas jsCanvas;
 
@@ -99,6 +102,7 @@ public class DiagramEditor {
         this.diagramService = diagramService;
         this.incrementalMarshaller = incrementalMarshaller;
         this.canvasFileExport = canvasFileExport;
+        this.updateDiagramTimer = new UpdateDiagramTimer();
         this.jsCanvas = null;
     }
 
@@ -185,8 +189,10 @@ public class DiagramEditor {
         });
     }
 
+    Diagram renderDiagram;
     public Promise<Void> updateContent(final String path, final String value) {
         return promises.create((success, failure) -> {
+            updateDiagramTimer.cancel();
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
@@ -194,8 +200,9 @@ public class DiagramEditor {
 
                                          @Override
                                          public void onSuccess(final Diagram diagram) {
+                                             renderDiagram = diagram;
+                                             updateDiagramTimer.schedule(UPDATE_DIAGRAM_TIMER_INTERVAL, diagram);
                                              success.onInvoke((Void) null);
-                                             updateDiagram(diagram);
                                          }
 
                                          @Override
@@ -220,6 +227,7 @@ public class DiagramEditor {
     }
 
     void close() {
+        updateDiagramTimer.cancel();
         stunnerEditor.close();
         jsCanvas.close();
     }
@@ -351,5 +359,36 @@ public class DiagramEditor {
             PanelTransformUtils.scaleToFitPanel(lienzoPanel);
             lienzoPanel.setPostResizeCallback(null);
         }));
+    }
+
+    private class UpdateDiagramTimer {
+
+        private Diagram diagram;
+        private Timer timer;
+
+        public UpdateDiagramTimer() {
+            this.timer = new Timer() {
+                @Override
+                public void run() {
+                    update();
+                }
+            };
+        }
+
+        public void schedule(int delayMillis, Diagram diagram) {
+            this.diagram = diagram;
+            timer.schedule(delayMillis);
+        }
+
+        public void cancel() {
+            timer.cancel();
+            diagram = null;
+        }
+
+        private void update() {
+            if (diagram != null) {
+                updateDiagram(diagram);
+            }
+        }
     }
 }
