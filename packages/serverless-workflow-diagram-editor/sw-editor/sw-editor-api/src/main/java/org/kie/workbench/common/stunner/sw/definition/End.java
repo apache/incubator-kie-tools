@@ -37,7 +37,7 @@ public class End {
     public static final String LABEL_END = "end";
 
     @Property(meta = PropertyMetaTypes.NAME)
-    String name;
+    public String name;
 
     @Category
     @JsIgnore

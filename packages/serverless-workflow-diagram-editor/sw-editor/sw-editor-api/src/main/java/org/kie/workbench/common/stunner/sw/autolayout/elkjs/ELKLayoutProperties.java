@@ -238,6 +238,21 @@ public class ELKLayoutProperties {
         public abstract String getValue();
     }
 
+    public enum directionCongruencyType {
+        ROTATION {
+            public String getValue() {
+                return "\"directionCongruency\":\"ROTATION\"";
+            }
+        },
+        READING_DIRECTION {
+            public String getValue() {
+                return "\"directionCongruency\":\"READING_DIRECTION\"";
+            }
+        };
+
+        public abstract String getValue();
+    }
+
     public static String getNodeNodeBetweenLayersSpacing(final double nodeHorizontalSpacing) {
         return "\"spacing.nodeNodeBetweenLayers\": " + nodeHorizontalSpacing;
     }

@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -98,6 +99,12 @@ public class SessionViewerImpl<S extends ViewerSession>
         return getSession().getMediatorsControl();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public AlertsControl<AbstractCanvas> getAlertsControl() {
+        return getSession().getAlertsControl();
+    }
+
     private S getSession() {
         return getInstance();
     }
@@ -160,6 +167,12 @@ public class SessionViewerImpl<S extends ViewerSession>
         @SuppressWarnings("unchecked")
         public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
             return (MediatorsControl<C>) getSession().getMediatorsControl();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public <C extends Canvas> AlertsControl<C> getAlertsControl() {
+            return (AlertsControl<C>) getSession().getAlertsControl();
         }
 
         @Override

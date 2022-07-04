@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.components.views;
+package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
-import javax.inject.Inject;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.client.local.api.IsElement;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+public interface AlertsControl<C extends Canvas> extends CanvasControl<C> {
 
-@Templated
-public class AlertView implements IsElement {
+    AlertsControl<C> addInfo(String info);
 
-    @Inject
-    @DataField
-    Span text;
+    AlertsControl<C> addWarning(String warning);
 
-    public void setText(final String text) {
-        this.text.setTextContent(text);
-    }
+    AlertsControl<C> addError(String error);
+
+    AlertsControl<C> clear();
 }
