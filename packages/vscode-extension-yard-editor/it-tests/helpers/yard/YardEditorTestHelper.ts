@@ -24,25 +24,9 @@ import { By, WebView } from "vscode-extension-tester";
 export default class YardEditorTestHelper {
   constructor(private readonly webview: WebView) {}
 
-  public async getAllStateNodes(): Promise<WebElement[]> {
+  public async getTemporaryFutureUIElement(): Promise<WebElement> {
     await this.switchToEditorFrame();
-    const result = await this.webview.findWebElements(
-      By.xpath(".//*[name()='svg']//*[name()='g' and (@class='node statediagram-state' or @class='node default')]")
-    );
-    await this.switchBack();
-    return Promise.resolve(result);
-  }
-
-  public async getSvgElement(): Promise<WebElement> {
-    await this.switchToEditorFrame();
-    const result = await this.webview.findWebElement(By.xpath(".//*[name()='svg']"));
-    await this.switchBack();
-    return Promise.resolve(result);
-  }
-
-  public async getMermaidDivElement(): Promise<WebElement> {
-    await this.switchToEditorFrame();
-    const result = await this.webview.findWebElement(By.xpath(".//div[@class='mermaid']"));
+    const result = await this.webview.findWebElement(By.xpath(".//*[contains(text(), 'Future UI here')]"));
     await this.switchBack();
     return Promise.resolve(result);
   }

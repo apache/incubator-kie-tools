@@ -16,7 +16,7 @@
 
 import * as path from "path";
 import { assert } from "chai";
-import VSCodeTestHelper, { sleep } from "./helpers/VSCodeTestHelper";
+import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import YardEditorTestHelper from "./helpers/yard/YardEditorTestHelper";
 import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 
@@ -55,6 +55,8 @@ describe("yard editor - integration tests", () => {
 
       assert.isFalse(await yardTextEditor.isDirty());
       assert.equal("\n", await yardTextEditor.getText());
+
+      assert.isNotNull(await yardWebView.getTemporaryFutureUIElement());
     });
   });
 });

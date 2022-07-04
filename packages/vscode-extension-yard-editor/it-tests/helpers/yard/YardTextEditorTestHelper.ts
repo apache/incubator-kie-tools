@@ -18,7 +18,6 @@ import { TextEditor } from "vscode-extension-tester";
 
 /**
  * Helper class to support work with yard text editor.
- * Make sure you switch to the webview's frame before creating an instance via constructor.
  */
 export default class YardTextEditorTestHelper {
   constructor(private readonly textEditor: TextEditor) {}
