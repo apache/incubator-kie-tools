@@ -192,45 +192,16 @@
                     "type": "string",
                     "enum": [
                       "none",
-                      "red-hat-account",
-                      "oidc"
+                      "red-hat-account"
                     ],
                     "enumDescriptions": [
                       "No authentication",
-                      "Red Hat account login (Requires the Red Hat Authentication extension)",
-                      "OpenId Connect"
+                      "Red Hat account login (Requires the Red Hat Authentication extension)"
                     ],
                     "default": "none",
                     "description": "Authentication type required by the Service Registry instance. It can be 'none' (requires no authentication), 'red-hat-account' to log in by using your Red Hat Account (requires the Red Hat Authentication VS Code extension) or 'oidc' to connect to a custom OpenId Authentication Server"
-                  },
-                  "authUrl": {
-                    "type": "string",
-                    "format": "uri",
-                    "pattern": "^https?://?[-A-Za-z0-9+&@#/%?=_!:.]+[-A-Za-z0-9+&@#/%=~_|]",
-                    "description": "Url of the OpenId Authentication Service, only required when 'authProvider' is 'oidc'"
-                  },
-                  "clientId": {
-                    "type": "string",
-                    "description": "Client Id of the OpenId Authentication Service, only required when 'authProvider' is 'oidc'"
                   }
                 },
-                "allOf": [
-                  {
-                    "if": {
-                      "properties": {
-                        "authProvider": {
-                          "const": "oidc"
-                        }
-                      }
-                    },
-                    "then": {
-                      "required": [
-                        "authUrl",
-                        "clientId"
-                      ]
-                    }
-                  }
-                ],
                 "required": [
                   "name",
                   "url",

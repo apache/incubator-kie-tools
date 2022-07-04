@@ -16,20 +16,27 @@
 
 import { SwfServiceCatalogService } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "../../configuration";
-import * as vscode from "vscode";
 import { ServiceRegistryInstanceClient } from "./ServiceRegistryInstanceClient";
-import { AuthProvider, lookupAuthProvider } from "./auth";
+import { AuthProvider, AuthProviderFactory } from "./auth";
+import * as vscode from "vscode";
+import { RedHatAuthExtensionStateStore } from "../../RedHatAuthExtensionStateStore";
 
 export class ServiceRegistriesStore {
-  private registryClientStore: Map<ServiceRegistryInstanceClient, SwfServiceCatalogService[]> = new Map();
-  private subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
+  private readonly authProviderFactory: AuthProviderFactory;
+  private readonly registryClientStore: Map<ServiceRegistryInstanceClient, SwfServiceCatalogService[]> = new Map();
+  private readonly subscriptions: Set<(services: SwfServiceCatalogService[]) => Promise<any>> = new Set();
 
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
+      redhatAuthExtensionStateStore: RedHatAuthExtensionStateStore;
       context: vscode.ExtensionContext;
     }
   ) {
+    this.authProviderFactory = new AuthProviderFactory({
+      redhatAuthExtensionStateStore: this.args.redhatAuthExtensionStateStore,
+    });
+
     args.context.subscriptions.push(
       vscode.workspace.onDidChangeConfiguration((e) => {
         if (e.affectsConfiguration(CONFIGURATION_SECTIONS.serviceRegistriesSettings)) {
@@ -37,6 +44,10 @@ export class ServiceRegistriesStore {
         }
       })
     );
+    args.context.subscriptions.push(
+      this.args.redhatAuthExtensionStateStore.subscribeToRedHatAuthExtensionStateChange(() => this.init())
+    );
+
     args.context.subscriptions.push(new vscode.Disposable(() => this.dispose()));
   }
 
@@ -77,27 +88,36 @@ export class ServiceRegistriesStore {
 
     const registrySettings = this.args.configuration.getServiceRegistrySettings();
 
-    registrySettings?.registries?.forEach((clientSettings) => {
+    const showMissingExtensionWarn = registrySettings?.registries?.reduce((result, clientSettings) => {
       try {
-        const authProvider = lookupAuthProvider({
-          settings: clientSettings,
+        const authProvider = this.authProviderFactory.lookupAuthProvider({
+          authProvider: clientSettings.authProvider,
           context: this.args.context,
         });
+
+        if (!authProvider) {
+          return true;
+        }
 
         const client = new ServiceRegistryInstanceClient({
           name: clientSettings.name,
           url: clientSettings.url,
           authProvider,
         });
+
         this.registryClientStore.set(client, []);
 
-        if (authProvider) {
-          authProvider.subscribeToSessionChange(() => this.refreshClientStore(client));
-        }
+        authProvider.subscribeToSessionChange(() => this.refreshClientStore(client));
+
+        return result;
       } catch (err) {
         console.log("Couldn't create Service Registry client for: ", clientSettings, err);
       }
-    });
+    }, false);
+
+    if (showMissingExtensionWarn) {
+      this.showMissingExtensionWarn();
+    }
 
     return await this.refresh();
   }
@@ -139,5 +159,16 @@ export class ServiceRegistriesStore {
 
   private notifyRefresh() {
     this.subscriptions.forEach((subscription) => subscription(this.storedServices));
+  }
+
+  private showMissingExtensionWarn() {
+    if (this.args.redhatAuthExtensionStateStore.isRedHatAuthExtensionEnabled) {
+      return;
+    }
+    vscode.window.showWarningMessage("Serverless Workflow Editor: Red Hat Authentication extension not available", {
+      modal: true,
+      detail:
+        "Looks like at least one of the configured Service Registries requires Red Hat authentication but the `Red Hat Authentication` extension isn't available. Please check that the extension is installed and enabled.",
+    });
   }
 }
