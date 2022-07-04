@@ -23,7 +23,7 @@ import YardTextEditorTestHelper from "./helpers/yard/YardTextEditorTestHelper";
 describe("yard editor - integration tests", () => {
   const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources");
   const EMPTY_YARD_JSON = "empty.yard.json";
-  const EMPTY_YARD_YAML = "empty.yard.yml";
+  const EMPTY_YARD_YAML = "empty.yard.yaml";
   const EMPTY_YARD_YML = "empty.yard.yml";
 
   let testHelper: VSCodeTestHelper;
@@ -45,14 +45,16 @@ describe("yard editor - integration tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  it("Opens empty.yard.json and loads two editor groups (text editor and a web view)", async function () {
-    this.timeout(30000);
-    let [textEditor, webView] = await testHelper.openFileFromSidebar(EMPTY_YARD_JSON);
+  [EMPTY_YARD_JSON, EMPTY_YARD_YAML, EMPTY_YARD_YML].forEach(function (fileName) {
+    it("Opens " + fileName + " and loads two editor groups (text editor and a web view)", async function () {
+      this.timeout(30000);
+      let [textEditor, webView] = await testHelper.openFileFromSidebar(fileName);
 
-    const yardTextEditor = new YardTextEditorTestHelper(textEditor);
-    const yardWebView = new YardEditorTestHelper(webView);
+      const yardTextEditor = new YardTextEditorTestHelper(textEditor);
+      const yardWebView = new YardEditorTestHelper(webView);
 
-    assert.isFalse(await yardTextEditor.isDirty());
-    assert.equal("\n", await yardTextEditor.getText());
+      assert.isFalse(await yardTextEditor.isDirty());
+      assert.equal("\n", await yardTextEditor.getText());
+    });
   });
 });
