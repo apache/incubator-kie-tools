@@ -1,3 +1,8 @@
+# 0.20.0 (alpha)
+
+- [KOGITO-7157](https://issues.redhat.com/browse/KOGITO-7157) - Autocompletion does not work in Serverless Workflow editor
+- [KOGITO-6883](https://issues.redhat.com/browse/KOGITO-6883) - [SWF Editor] Create a Language Service for Serverless Workflow
+
 # 0.19.0 (alpha)
 
 - [KOGITO-6972](https://issues.redhat.com/browse/KOGITO-6972) - Add zoom control buttons to the mermaid generated SVG

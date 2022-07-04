@@ -71,6 +71,7 @@ digraph G {
   "@kie-tools/kie-sandbox-fs" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kie-sandbox-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/online-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kn-plugin-workflow" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-core/workspace" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -86,11 +87,13 @@ digraph G {
   "vscode-extension-bpmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-pack-kogito-kie-editors" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "vscode-extension-pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-red-hat-business-automation-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
@@ -124,7 +127,7 @@ digraph G {
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
-  "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-client" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-api" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-echarts" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-svg-heatmap" [ style = "solid", color = "black" ];
@@ -155,6 +158,7 @@ digraph G {
   "@kie-tools/dashbuilder-component-victory-charts" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
@@ -199,6 +203,7 @@ digraph G {
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "dashed", color = "black" ];
+  "@kie-tools/kn-plugin-workflow" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
@@ -252,6 +257,7 @@ digraph G {
   "vscode-extension-dmn-editor" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/vscode-java-code-completion-extension-plugin" [ style = "solid", color = "blue" ];
   "vscode-extension-dmn-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "blue" ];
+  "vscode-extension-kie-ba-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-kogito-bundle" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "black" ];
   "vscode-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
@@ -266,6 +272,8 @@ digraph G {
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
+  "vscode-extension-yard-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
+  "vscode-extension-yard-editor" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/webpack-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
