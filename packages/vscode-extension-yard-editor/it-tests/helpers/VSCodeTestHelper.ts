@@ -21,7 +21,6 @@ import {
   InputBox,
   ModalDialog,
   SideBarView,
-  TextEditor,
   until,
   ViewControl,
   ViewSection,
@@ -31,32 +30,13 @@ import {
   Workbench,
 } from "vscode-extension-tester";
 
-export const kogitoLoadingSpinner = (): By => {
-  return By.className("kie-tools--loading-screen-spinner");
-};
-
 /**
  * Common test helper class for VSCode extension testing.
  * Provides common API to work with VSCode test instance.
  * Allows you  to open folders, files, close open editor.
- * Acquire notifications, input CLI commands etc.
+ * Aquire notifications, input CLI commands etc.
  */
 export default class VSCodeTestHelper {
-  /**
-   * Name of the root folder in workspace that contains all source files.
-   */
-  private readonly SRC_ROOT: string = "src";
-
-  /**
-   * Name of the roof folder of all testing resources.
-   */
-  private readonly RESOURCES_ROOT: string = "resources";
-
-  /**
-   * Loading timeout for editors.
-   */
-  private readonly EDITOR_LOADING_TIMEOUT: number = 60000;
-
   /**
    * Handle for VSCode workbench.
    * Initialized in constructor.
@@ -99,20 +79,23 @@ export default class VSCodeTestHelper {
    * @param absolutePath absolute path to the folder that needs to be openned
    * @returns a promise that resolves to a SideBarView of the openned folder
    */
-  public openFolder = async (absolutePath: string): Promise<SideBarView> => {
+  public openFolder = async (absolutePath: string, folderName: string): Promise<SideBarView> => {
     await this.browser.openResources(absolutePath);
 
     const control = (await new ActivityBar().getViewControl("Explorer")) as ViewControl;
     this.sidebarView = await control.openView();
     assert.isTrue(await this.sidebarView.isDisplayed(), "Explorer side bar view was not opened");
 
-    this.workspaceSectionView = await this.sidebarView.getContent().getSection(this.RESOURCES_ROOT);
+    this.workspaceSectionView = await this.sidebarView.getContent().getSection(folderName);
     return this.sidebarView;
   };
 
   /**
-   * Opens file from a sidebarview. Expects that the sidebarview will be defined and open.
-   * Once the file is opened, it waits for the WebView to load and the returns it.
+   * Opens serverless workflow file from a sidebarview. Expects that the sideBarView will be defined and open.
+   * To define sideBarView a folder needs to be openned using openFolder function.
+   * Once the file is openned using a click, function assert existence of two
+   * editor groups and assigns each group to Webview. Both webviews are confirmed loaded and returned
+   * in an array on predefined indexes - see returns definition.
    *
    * If the file is not located in root of resources folder, specify a relative path to its
    * parent directory.
@@ -122,39 +105,37 @@ export default class VSCodeTestHelper {
    * @param fileName name of the file to open
    * @param fileParentPath optional, use when file is not in root of resources. This is the path of file's parent directory, relative to resources
    *                       if not used the file will be looked in root of resources.
-   * @returns promise that resolves to WebView of the openned file.
+   * @returns promise that resolves to an array of WebViews of the openned serverless worklow file.
+   *          The lenght of the array is always 2 and there is guaranteed TextEditor as webview on O index.
+   *          Custom kogito swf editor as webview is always on index 1
    */
-  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView> => {
+  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(fileName);
     } else {
       const pathPieces = fileParentPath.split("/");
-      const viewItem = await this.workspaceSectionView.openItem(...pathPieces);
+      await this.workspaceSectionView.openItem(...pathPieces);
       const fileItem = await this.workspaceSectionView.findItem(fileName);
       if (fileItem != undefined) {
         await fileItem.click();
+        await sleep(1000);
       }
     }
 
-    const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
-    await this.waitUntilKogitoEditorIsLoaded(webview);
-    return webview;
-  };
+    const editorGroups = await this.workbench.getEditorView().getEditorGroups();
+    // should be always two groups, one text editor and one swf editor
+    assert.equal(editorGroups.length, 2);
 
-  public getTextEditor = async (fileName: string, fileParentPath?: string): Promise<TextEditor> => {
-    if (fileParentPath == undefined || fileParentPath == "") {
-      await this.workspaceSectionView.openItem(fileName);
-    } else {
-      const pathPieces = fileParentPath.split("/");
-      const viewItem = await this.workspaceSectionView.openItem(...pathPieces);
-      const fileItem = await this.workspaceSectionView.findItem(fileName);
-      if (fileItem != undefined) {
-        await fileItem.click();
-      }
-    }
+    const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
+    const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
 
-    const textEditor = new TextEditor(this.workbench.getEditorView(), By.linkText(fileName));
-    return textEditor;
+    // right webview has the custom kogito editor, wait for it to load
+    await this.waitUntilKogitoEditorIsLoaded(webviewRight);
+
+    const webviews = [] as WebView[];
+    webviews.push(webviewLeft, webviewRight);
+
+    return Promise.resolve(webviews);
   };
 
   /**
@@ -215,18 +196,18 @@ export default class VSCodeTestHelper {
     await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
     await driver.wait(
       until.elementLocated(By.id("envelope-app")),
-      this.EDITOR_LOADING_TIMEOUT,
-      "No 'div#envelope-app' located in webview's active-frame in " +
-        this.EDITOR_LOADING_TIMEOUT +
-        "ms. Please investigate."
+      60000,
+      "No 'div#envelope-app' located in webview's active-frame in ms. Please investigate."
     );
     await driver.wait(
       async () => {
-        const loadingSpinners = await webview.getDriver().findElements(kogitoLoadingSpinner());
+        const loadingSpinners = await webview
+          .getDriver()
+          .findElements(By.className("kie-tools--loading-screen-spinner"));
         return !loadingSpinners || loadingSpinners.length <= 0;
       },
-      this.EDITOR_LOADING_TIMEOUT,
-      "Editor was still loading after " + this.EDITOR_LOADING_TIMEOUT + "ms. Please investigate."
+      60000,
+      "Editor was still loading after ms. Please investigate."
     );
 
     await sleep(2000);
@@ -253,31 +234,6 @@ export default class VSCodeTestHelper {
     }
 
     throw new Error(`'${command}' not found in prompt`);
-  };
-
-  /**
-   * Switches provided webview's context to iframe#active-frame within it.
-   *
-   * @param webview
-   */
-  public switchWebviewToFrame = async (webview: WebView): Promise<void> => {
-    const driver = webview.getDriver();
-    await driver.wait(
-      until.elementLocated(By.className("webview ready")),
-      2000,
-      "No iframe.webview.ready that was ready was located in webview under 2 seconds." +
-        "This should not happen and is most probably issue of VSCode." +
-        "In case this happens investigate vscode or vscode-extension-tester dependency."
-    );
-    await driver.switchTo().frame(await driver.findElement(By.className("webview ready")));
-    await driver.wait(
-      until.elementLocated(By.id("active-frame")),
-      2000,
-      "No iframe#active-frame located in webview under 2 seconds." +
-        "This should not happen and is most probably issue of VSCode." +
-        "In case this happens investigate vscode or vscode-extension-tester dependency."
-    );
-    await driver.switchTo().frame(await driver.findElement(By.id("active-frame")));
   };
 }
 
