@@ -31,6 +31,7 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.diagram.Diagra
 import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.LineSpliceAcceptorControl;
@@ -215,6 +216,11 @@ public class DefaultDiagramEditor
     @Override
     public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
         return viewer.getMediatorsControl();
+    }
+
+    @Override
+    public <C extends Canvas> AlertsControl<C> getAlertsControl() {
+        return viewer.getAlertsControl();
     }
 
     @Override

@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import java.util.HashMap;
+
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
@@ -67,6 +69,8 @@ public class BuilderContext {
     private CompositeCommand.Builder storageCommands;
     private CompositeCommand.Builder connectionCommands;
 
+    private HashMap<String, String> previousNameToUUIDBindings;
+
     public BuilderContext(Context context, DefinitionManager definitionManager, FactoryManager factoryManager) {
         this.context = context;
         this.definitionManager = definitionManager;
@@ -75,16 +79,25 @@ public class BuilderContext {
         this.sourceNode = null;
         this.storageCommands = new CompositeCommand.Builder();
         this.connectionCommands = new CompositeCommand.Builder();
+        this.previousNameToUUIDBindings = null;
+    }
+
+    public void setPreviousNameToUUIDBindings(HashMap<String, String> oldNameToUUIDBindings) {
+        this.previousNameToUUIDBindings = oldNameToUUIDBindings;
     }
 
     public String obtainUUID(String name) {
-        return context.obtainUUID(name);
+        return context.resolveUUID(name, previousNameToUUIDBindings);
     }
 
     @SuppressWarnings("all")
     public Node addNode(String name,
                         Object bean) {
-        final String uuid = context.obtainUUID(name);
+        return addNodeByUUID(obtainUUID(name), bean);
+    }
+
+    public Node addNodeByUUID(String uuid,
+                              Object bean) {
         final ElementFactory elementFactory = factoryManager.registry().getElementFactory(NodeFactory.class);
         final Node node = (Node) elementFactory.build(uuid, bean);
         updateNodeBounds(node);
@@ -130,8 +143,7 @@ public class BuilderContext {
     public Edge addEdgeToTargetName(Object transition,
                                     Node source,
                                     String target) {
-        final String targetUUID = context.obtainUUID(target);
-        return addEdgeToTargetUUID(transition, source, targetUUID);
+        return addEdgeToTargetUUID(transition, source, obtainUUID(target));
     }
 
     @SuppressWarnings("all")

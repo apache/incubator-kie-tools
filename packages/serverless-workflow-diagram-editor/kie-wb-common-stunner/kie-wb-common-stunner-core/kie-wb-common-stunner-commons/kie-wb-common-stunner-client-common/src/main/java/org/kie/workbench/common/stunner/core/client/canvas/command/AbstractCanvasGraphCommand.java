@@ -41,7 +41,7 @@ public abstract class AbstractCanvasGraphCommand
      * The private instance of the graph command.
      * It's a private stateful command instance - will be used for undoing the operation on the graph.
      */
-    private Command<GraphCommandExecutionContext, RuleViolation> graphCommand;
+    protected Command<GraphCommandExecutionContext, RuleViolation> graphCommand;
 
     /**
      * The private instance of the canvas command.
@@ -124,7 +124,6 @@ public abstract class AbstractCanvasGraphCommand
         getCanvasCommand(context);
         // Obtain the graph execution context and execute the graph command updates.
         final GraphCommandExecutionContext graphContext = context.getGraphExecutionContext();
-        context.setStaticContext(graphContext);
 
         if (Objects.isNull(graphContext)) {
             //skipping command in case there is no graph execution context

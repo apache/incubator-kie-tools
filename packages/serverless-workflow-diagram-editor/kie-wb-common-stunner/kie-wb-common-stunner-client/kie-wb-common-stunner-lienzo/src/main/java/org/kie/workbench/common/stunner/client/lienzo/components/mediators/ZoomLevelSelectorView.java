@@ -91,9 +91,9 @@ public class ZoomLevelSelectorView
     @Override
     public void init(final ZoomLevelSelector presenter) {
         this.presenter = presenter;
+        setTooltip(resetButton, translationService.getNotNullValue(CoreTranslationMessages.RESET));
         setTooltip(increaseButton, translationService.getNotNullValue(CoreTranslationMessages.INCREASE));
         setTooltip(decreaseButton, translationService.getNotNullValue(CoreTranslationMessages.DECREASE));
-        setTooltip(resetButton, translationService.getNotNullValue(CoreTranslationMessages.RESET));
     }
 
     @Override
@@ -121,7 +121,10 @@ public class ZoomLevelSelectorView
 
     @Override
     public void setEnabled(boolean enabled) {
+        resetButton.disabled = (!enabled);
+        increaseButton.disabled = (!enabled);
         dropDownButton.disabled = (!enabled);
+        decreaseButton.disabled = (!enabled);
     }
 
     @Override

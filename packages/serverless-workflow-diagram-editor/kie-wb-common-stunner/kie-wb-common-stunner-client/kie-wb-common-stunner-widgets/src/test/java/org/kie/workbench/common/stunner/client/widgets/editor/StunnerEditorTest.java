@@ -26,7 +26,9 @@ import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.impl.EditorSession;
@@ -38,7 +40,6 @@ import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.widgets.client.errorpage.ErrorPage;
 import org.mockito.Mock;
-import org.uberfire.stubs.ManagedInstanceStub;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -49,7 +50,6 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -59,10 +59,12 @@ public class StunnerEditorTest {
 
     @Mock
     private SessionEditorPresenter<EditorSession> sessionEditorPresenter;
+    @Mock
     private ManagedInstance<SessionEditorPresenter<EditorSession>> sessionEditorPresenters;
 
     @Mock
     private SessionViewerPresenter<ViewerSession> sessionViewerPresenter;
+    @Mock
     private ManagedInstance<SessionViewerPresenter<ViewerSession>> sessionViewerPresenters;
 
     @Mock
@@ -83,6 +85,9 @@ public class StunnerEditorTest {
     private ViewerSession viewerSession;
     @Mock
     private AbstractCanvasHandler canvasHandler;
+    @Mock
+    private AlertsControl<AbstractCanvas> alertsControl;
+
     private DiagramImpl diagram;
 
     private StunnerEditor tested;
@@ -90,8 +95,8 @@ public class StunnerEditorTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setup() {
-        sessionEditorPresenters = spy(new ManagedInstanceStub<>(sessionEditorPresenter));
-        sessionViewerPresenters = spy(new ManagedInstanceStub<>(sessionViewerPresenter));
+        when(sessionEditorPresenters.get()).thenReturn(sessionEditorPresenter);
+        when(sessionViewerPresenters.get()).thenReturn(sessionViewerPresenter);
         when(sessionEditorPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionViewerPresenter.getView()).thenReturn(sessionPresenterView);
         when(sessionEditorPresenter.getInstance()).thenReturn(editorSession);
@@ -101,7 +106,9 @@ public class StunnerEditorTest {
         Metadata metadata = new MetadataImpl.MetadataImplBuilder("testSet").build();
         diagram = new DiagramImpl("testDiagram", mock(Graph.class), metadata);
         when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(editorSession.getAlertsControl()).thenReturn(alertsControl);
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(viewerSession.getAlertsControl()).thenReturn(alertsControl);
         when(canvasHandler.getDiagram()).thenReturn(diagram);
         tested = new StunnerEditor(sessionEditorPresenters,
                                    sessionViewerPresenters,
@@ -114,6 +121,7 @@ public class StunnerEditorTest {
     @SuppressWarnings("all")
     public void testOpenSuccess() {
         doAnswer(invocation -> {
+            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[0]).afterCanvasInitialized();
             ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).onSuccess();
             return null;
         }).when(sessionEditorPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));
@@ -189,10 +197,12 @@ public class StunnerEditorTest {
     @SuppressWarnings("all")
     private void openSuccess() {
         doAnswer(invocation -> {
+            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).afterCanvasInitialized();
             ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).onSuccess();
             return null;
         }).when(sessionViewerPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));
         doAnswer(invocation -> {
+            ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).afterCanvasInitialized();
             ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).onSuccess();
             return null;
         }).when(sessionEditorPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));

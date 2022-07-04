@@ -126,12 +126,14 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
                                 @Override
                                 public void onSuccess() {
                                     onSessionOpened(session);
+                                    diagram = null;
                                     callback.onSuccess();
                                 }
 
                                 @Override
                                 public void onError(final ClientRuntimeError error) {
                                     AbstractSessionPresenter.this.showError(error);
+                                    diagram = null;
                                     callback.onError(error);
                                 }
                             });
@@ -227,7 +229,17 @@ public abstract class AbstractSessionPresenter<D extends Diagram, H extends Abst
     }
 
     protected D getDiagram() {
-        return diagram;
+        if (null != diagram) {
+            return diagram;
+        }
+        if (getSession().isPresent()) {
+            return (D) getAbstractSession().getCanvasHandler().getDiagram();
+        }
+        return null;
+    }
+
+    private AbstractSession getAbstractSession() {
+        return getSession().get();
     }
 
     @SuppressWarnings("unchecked")

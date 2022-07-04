@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.DockingAcceptorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
@@ -126,6 +127,10 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     private ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControls;
 
     @Mock
+    private AlertsControl<AbstractCanvas> alertsControl;
+    private ManagedInstance<AlertsControl<AbstractCanvas>> alertsControls;
+
+    @Mock
     private ConnectionAcceptorControl<AbstractCanvasHandler> connectionAcceptorControl;
 
     @Mock
@@ -192,6 +197,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     public void setup() throws Exception {
         super.init();
         mediatorsControls = new ManagedInstanceStub<>(mediatorsControl);
+        alertsControls = new ManagedInstanceStub<>(alertsControl);
         selectionControls = new ManagedInstanceStub<>(selectionControl);
         canvasCommandManagers = new ManagedInstanceStub<>(canvasCommandManager);
         canvases = new ManagedInstanceStub<>(canvas);
@@ -200,6 +206,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getMediatorsControl()).thenReturn(mediatorsControl);
+        when(session.getAlertsControl()).thenReturn(alertsControl);
         when(session.getConnectionAcceptorControl()).thenReturn(connectionAcceptorControl);
         when(session.getContainmentAcceptorControl()).thenReturn(containmentAcceptorControl);
         when(session.getDockingAcceptorControl()).thenReturn(dockingAcceptorControl);
@@ -234,6 +241,7 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
                                               canvasPanels,
                                               canvasHandlerFactories,
                                               mediatorsControls,
+                                              alertsControls,
                                               selectionControls,
                                               canvasCommandFactories,
                                               canvasCommandManagers,
@@ -258,6 +266,12 @@ public class SessionPreviewImplTest extends AbstractCanvasHandlerViewerTest {
     }
 
     //@Test
+    public void testAlertControlInitialization() {
+        checkCanvasHandler(false,
+                           (c) -> verify(alertsControl, times(1)).init(canvas));
+    }
+
+    @Test
     public void testStartRequest() {
         checkCanvasHandler(false,
                            (c) -> {

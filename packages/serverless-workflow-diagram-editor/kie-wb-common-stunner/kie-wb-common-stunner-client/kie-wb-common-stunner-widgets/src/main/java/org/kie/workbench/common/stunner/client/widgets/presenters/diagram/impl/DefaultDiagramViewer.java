@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.widgets.presenters.diagram.impl;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.enterprise.context.Dependent;
@@ -31,6 +32,7 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
@@ -60,6 +62,7 @@ public class DefaultDiagramViewer
     private final ManagedInstance<CanvasPanel> canvasPanelInstances;
     private final ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances;
     private final ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControlInstances;
+    private final ManagedInstance<AlertsControl<AbstractCanvas>> alertsControlInstances;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances;
     private final StunnerPreferencesRegistries preferencesRegistries;
 
@@ -69,6 +72,7 @@ public class DefaultDiagramViewer
     private CanvasPanel canvasPanel;
     private AbstractCanvasHandler canvasHandler;
     private MediatorsControl<AbstractCanvas> mediatorsControl;
+    private AlertsControl<AbstractCanvas> alertsControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
 
     @Inject
@@ -77,6 +81,7 @@ public class DefaultDiagramViewer
                                 final @Any ManagedInstance<CanvasPanel> canvasPanelInstances,
                                 final @Any ManagedInstance<AbstractCanvasHandler> canvasHandlerInstances,
                                 final @Any ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorsControlInstances,
+                                final @Any ManagedInstance<AlertsControl<AbstractCanvas>> alertsControlInstances,
                                 final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControlInstances,
                                 final WidgetWrapperView view,
                                 final StunnerPreferencesRegistries preferencesRegistries) {
@@ -86,6 +91,7 @@ public class DefaultDiagramViewer
         this.canvasPanelInstances = canvasPanelInstances;
         this.canvasHandlerInstances = canvasHandlerInstances;
         this.mediatorsControlInstances = mediatorsControlInstances;
+        this.alertsControlInstances = alertsControlInstances;
         this.selectionControlInstances = selectionControlInstances;
         this.preferencesRegistries = preferencesRegistries;
     }
@@ -98,8 +104,9 @@ public class DefaultDiagramViewer
         canvas = InstanceUtils.lookup(canvasInstances, qualifier);
         canvasHandler = InstanceUtils.lookup(canvasHandlerInstances, qualifier);
         mediatorsControl = InstanceUtils.lookup(mediatorsControlInstances, qualifier);
+        alertsControl = InstanceUtils.lookup(alertsControlInstances, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControlInstances, qualifier);
-        shapeListener = new DefaultCanvasShapeListener(Collections.singletonList(mediatorsControl));
+        shapeListener = new DefaultCanvasShapeListener(Arrays.asList(mediatorsControl, alertsControl));
         canvas.addRegistrationListener(shapeListener);
         elementListener = new DefaultCanvasElementListener(Collections.singletonList(selectionControl));
         canvasHandler.addRegistrationListener(elementListener);
@@ -108,18 +115,23 @@ public class DefaultDiagramViewer
     @Override
     protected void enableControls() {
         mediatorsControl.init(getCanvas());
+        alertsControl.init(getCanvas());
         selectionControl.init(getHandler());
     }
 
     @Override
     protected void destroyControls() {
         mediatorsControl.destroy();
+        alertsControl.destroy();
         selectionControl.destroy();
         mediatorsControlInstances.destroy(mediatorsControl);
         mediatorsControlInstances.destroyAll();
+        alertsControlInstances.destroy(alertsControl);
+        alertsControlInstances.destroyAll();
         selectionControlInstances.destroy(selectionControl);
         selectionControlInstances.destroyAll();
         mediatorsControl = null;
+        alertsControl = null;
         selectionControl = null;
     }
 
@@ -174,6 +186,12 @@ public class DefaultDiagramViewer
     @SuppressWarnings("unchecked")
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return mediatorsControl;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public AlertsControl<AbstractCanvas> getAlertsControl() {
+        return alertsControl;
     }
 
     @Override

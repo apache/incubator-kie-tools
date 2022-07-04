@@ -37,6 +37,7 @@ import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphCleanup;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.core.rule.RuleSet;
 import org.uberfire.mvp.Command;
@@ -413,7 +414,7 @@ public abstract class BaseCanvasHandler<D extends Diagram, C extends AbstractCan
     protected void destroyGraph(final Command callback) {
         destroyGraphIndex(() -> {
             if (null != diagram && null != diagram.getGraph()) {
-                diagram.getGraph().clear();
+                GraphCleanup.clear(diagram.getGraph());
             }
             callback.execute();
         });

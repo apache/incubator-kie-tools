@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.client.lienzo.components.views;
+package org.kie.workbench.common.stunner.core.client.canvas.controls;
 
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 
-import elemental2.dom.HTMLElement;
-import io.crysknife.client.IsElement;
-import io.crysknife.ui.templates.client.annotation.DataField;
-import io.crysknife.ui.templates.client.annotation.Templated;
+public interface AlertsControl<C extends Canvas> extends CanvasControl<C> {
 
-@Templated
-@Dependent
-public class AlertView implements IsElement {
+    AlertsControl<C> addInfo(String info);
 
-    @Inject
-    @DataField
-    @Named("span")
-    private HTMLElement text;
+    AlertsControl<C> addWarning(String warning);
 
-    public void setText(final String text) {
-        this.text.textContent = text;
-    }
+    AlertsControl<C> addError(String error);
+
+    AlertsControl<C> clear();
 }

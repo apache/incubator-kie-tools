@@ -40,7 +40,7 @@ public class Start {
     public static final String LABEL_START = "start";
 
     @Property(meta = PropertyMetaTypes.NAME)
-    String name;
+    public String name;
 
     @Category
     public static final transient String category = Categories.START;

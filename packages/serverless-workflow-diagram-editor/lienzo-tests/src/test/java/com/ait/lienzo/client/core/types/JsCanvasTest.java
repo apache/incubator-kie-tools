@@ -15,18 +15,23 @@
  */
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.types.JsWiresShape;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -38,6 +43,22 @@ public class JsCanvasTest {
 
     @Mock
     private JsWiresShape jsWiresShape;
+
+    @Mock
+    JSShapeStateApplier shapeStateApplier;
+
+    @Mock
+    Layer layer;
+
+    @Mock
+    LienzoPanel panel;
+
+    @Before
+    public void setup() {
+        jsCanvas.layer = layer;
+        jsCanvas.panel = panel;
+        jsCanvas.stateApplier = shapeStateApplier;
+    }
 
     @Test
     public void testGetBackgroundColor() {
@@ -212,5 +233,76 @@ public class JsCanvasTest {
         assertEquals(null, dimensions);
         dimensions = jsCanvas.getDimensions("");
         assertEquals(null, dimensions);
+    }
+
+    @Test
+    public void testApplyStateNulls() {
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState(null, null);
+        verify(shapeStateApplier, never()).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", null);
+        verify(shapeStateApplier, never()).applyState(anyString(), anyString());
+
+        jsCanvas.applyState(null, "none");
+        verify(shapeStateApplier, never()).applyState(anyString(), anyString());
+    }
+
+    @Test
+    public void testApplyStateNone() {
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "none");
+        verify(shapeStateApplier, times(1)).applyState("someId", "none");
+    }
+
+    @Test
+    public void testApplyStateSelected() {
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "selected");
+        verify(shapeStateApplier, times(1)).applyState("someId", "selected");
+    }
+
+    @Test
+    public void testApplyStateHighlight() {
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "highlight");
+        verify(shapeStateApplier, times(1)).applyState("someId", "highlight");
+    }
+
+    @Test
+    public void testApplyStateInvalid() {
+        doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
+
+        jsCanvas.applyState("someId", "invalid");
+        verify(shapeStateApplier, times(1)).applyState("someId", "invalid");
+    }
+
+    @Test
+    public void testCenter() {
+        doCallRealMethod().when(jsCanvas).center(anyString());
+        jsCanvas.center("someId");
+        verify(jsCanvas, times(1)).centerNode("someId");
+    }
+
+    @Test
+    public void testCenterNull() {
+        doCallRealMethod().when(jsCanvas).center(anyString());
+        jsCanvas.center(null);
+        verify(jsCanvas, never()).centerNode(anyString());
+    }
+
+    @Test
+    public void testClose() {
+        doCallRealMethod().when(jsCanvas).close();
+        jsCanvas.close();
+
+        verify(layer, times(1)).clear();
+        assertNull(jsCanvas.layer);
+        assertNull(jsCanvas.panel);
+        assertNull(jsCanvas.stateApplier);
     }
 }

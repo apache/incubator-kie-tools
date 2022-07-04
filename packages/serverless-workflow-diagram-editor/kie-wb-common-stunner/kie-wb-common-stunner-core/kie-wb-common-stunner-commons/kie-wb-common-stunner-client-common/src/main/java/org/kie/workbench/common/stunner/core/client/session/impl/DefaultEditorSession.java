@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.appformer.client.stateControl.registry.Registry;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasInlineTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
@@ -102,6 +103,7 @@ public class DefaultEditorSession
                      final Command callback) {
 
         init(s -> s.registerCanvasControl(MediatorsControl.class)
+                     .registerCanvasControl(AlertsControl.class)
                      .registerCanvasHandlerControl(SelectionControl.class,
                                                    MultipleSelection.class)
                      .registerCanvasHandlerControl(ResizeControl.class)
@@ -185,6 +187,11 @@ public class DefaultEditorSession
     @Override
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return (MediatorsControl<AbstractCanvas>) session.getCanvasControl(MediatorsControl.class);
+    }
+
+    @Override
+    public AlertsControl<AbstractCanvas> getAlertsControl() {
+        return (AlertsControl<AbstractCanvas>) session.getCanvasControl(AlertsControl.class);
     }
 
     @Override

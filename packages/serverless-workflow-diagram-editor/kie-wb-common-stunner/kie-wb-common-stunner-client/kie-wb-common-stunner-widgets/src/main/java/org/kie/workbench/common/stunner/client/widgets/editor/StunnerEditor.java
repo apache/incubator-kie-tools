@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets.editor;
 
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 import javax.annotation.PreDestroy;
@@ -29,7 +30,9 @@ import org.kie.workbench.common.stunner.client.widgets.presenters.session.Sessio
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
@@ -55,6 +58,7 @@ public class StunnerEditor {
     private Consumer<DiagramParsingException> parsingExceptionProcessor;
     private Consumer<Throwable> exceptionProcessor;
     private Consumer<Integer> onResetContentHashProcessor;
+    private AlertsControl<AbstractCanvas> alertsControl;
 
     @Inject
     private BeanManager beanManager;
@@ -126,11 +130,18 @@ public class StunnerEditor {
 
             @Override
             public void afterCanvasInitialized() {
+                ClientSession session = getSession();
+                if (isReadOnly) {
+                    alertsControl = ((ViewerSession) session).getAlertsControl();
+                } else {
+                    alertsControl = ((EditorSession) session).getAlertsControl();
+                }
                 callback.afterCanvasInitialized();
             }
 
             @Override
             public void onSuccess() {
+                alertsControl.clear();
                 callback.onSuccess();
             }
 
@@ -153,54 +164,57 @@ public class StunnerEditor {
     }
 
     public void handleError(final ClientRuntimeError error) {
-        final Throwable e = error.getThrowable();
-        if (e instanceof DiagramParsingException) {
-            final DiagramParsingException dpe = (DiagramParsingException) e;
-            close();
-            parsingExceptionProcessor.accept(dpe);
-            view.setWidget(errorPage);
-        } else {
-            String message = null;
-            if (e instanceof DefinitionNotFoundException) {
-                final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) e;
-                message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS,
-                        dnfe.getDefinitionId());
+        final Throwable throwable = error.getThrowable();
+        String message;
+        if (throwable instanceof DiagramParsingException) {
+            final DiagramParsingException diagramParsingException = (DiagramParsingException) throwable;
+            parsingExceptionProcessor.accept(diagramParsingException);
+            Exception javaScriptException = (Exception) diagramParsingException.getCause();
+            if (javaScriptException != null) {
+                message = error.getMessage() + "\r\n";
+                message += javaScriptException.getLocalizedMessage();
             } else {
-                message = error.getThrowable() != null ?
-                        error.getThrowable().getMessage() : error.getMessage();
+                final String title = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_PARSING);
+                message = buildErrorMessage(error, throwable, title);
             }
-            showError(message);
+
+        } else if (throwable instanceof DefinitionNotFoundException) {
+            final DefinitionNotFoundException dnfe = (DefinitionNotFoundException) throwable;
+            exceptionProcessor.accept(dnfe);
+            message = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS) + "\r\n";
+            message += dnfe.getDefinitionId();
+        } else {
             exceptionProcessor.accept(error.getThrowable());
+            final String title = translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_GENERIC);
+            message = buildErrorMessage(error, throwable, title);
+        }
+
+        if ((diagramPresenter != null) &&
+                (diagramPresenter.getView() != null)) {
+            addError(message);
+        } else {
+            view.setWidget(errorPage);
         }
     }
 
     public StunnerEditor close() {
         if (!isClosed()) {
             diagramPresenter.destroy();
+            diagramPresenter = null;
+            alertsControl = null;
             editorSessionPresenterInstances.destroyAll();
             viewerSessionPresenterInstances.destroyAll();
             view.clear();
-            beanManager.destroyBean(diagramPresenter);
-            diagramPresenter = null;
         }
         return this;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        close();
-    }
-
-    public boolean isReadOnly() {
-        return isReadOnly;
     }
 
     public boolean isClosed() {
         return null == diagramPresenter;
     }
 
-    public ClientSession getSession() {
-        return (ClientSession) diagramPresenter.getInstance();
+    public boolean isReadOnly() {
+        return isReadOnly;
     }
 
     public CanvasHandler getCanvasHandler() {
@@ -215,14 +229,54 @@ public class StunnerEditor {
         return diagramPresenter;
     }
 
-    public void showMessage(String message) {
-        diagramPresenter.getView().showMessage(message);
-    }
-
-    public void showError(String message) {
+    public ClientSession getSession() {
+        return (ClientSession) diagramPresenter.getInstance();
     }
 
     public IsWidget getView() {
         return view;
+    }
+
+    public void addMessage(String message) {
+        if (!isClosed()) {
+            alertsControl.addInfo(message);
+        }
+    }
+
+    public void addWarning(String message) {
+        if (!isClosed()) {
+            alertsControl.addWarning(message);
+        }
+    }
+
+    public void addError(String message) {
+        if (!isClosed()) {
+            alertsControl.addError(message);
+        }
+    }
+
+    public void clearAlerts() {
+        if (!isClosed()) {
+            alertsControl.clear();
+        }
+    }
+
+    private String buildErrorMessage(ClientRuntimeError error, Throwable throwable, String errorTitle) {
+        String message;
+        message = errorTitle + "\r\n";
+        if (throwable != null) {
+            message += throwable + "\r\n";
+            message += "\r\n";
+            message += translationService.getValue(CoreTranslationMessages.DIAGRAM_LOAD_FAIL_STACK_TRACE);
+            message += Arrays.toString(throwable.getStackTrace());
+        } else {
+            message += error.toString();
+        }
+        return message;
+    }
+
+    @PreDestroy
+    public void destroy() {
+        close();
     }
 }

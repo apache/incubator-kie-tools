@@ -16,6 +16,8 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import java.util.HashMap;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -103,6 +105,7 @@ public class Marshaller {
     private final Promises promises;
 
     private Context context;
+    private Workflow workflow;
 
     private org.kie.workbench.common.stunner.sw.definition.Workflow_JsonMapperImpl mapper = org.kie.workbench.common.stunner.sw.definition.Workflow_JsonMapperImpl.INSTANCE;
 
@@ -116,11 +119,11 @@ public class Marshaller {
         this.factoryManager = factoryManager;
         this.parser = parser;
         this.promises = promises;
+        workflow = null;
     }
 
     @SuppressWarnings("all")
     public Promise<Graph> unmarshallGraph(String raw) {
-        final Workflow workflow;
         try {
             workflow = parser.parse(mapper.fromJSON(raw));
         } catch (Exception e) {
@@ -134,10 +137,17 @@ public class Marshaller {
         }
 
         final GraphImpl<Object> graph;
+        HashMap<String, String> previousNameToUUIDBindings = null;
         try {
             // TODO: Use dedicated factory instead.
             graph = GraphImpl.build(workflow.id);
             final Index index = new MapIndexBuilder().build(graph);
+
+            // Keep UUIDs when reloading
+            if (null != context) {
+                previousNameToUUIDBindings = (HashMap<String, String>) context.getNameToUUIDBindings().clone();
+            }
+
             context = new Context(index);
         } catch (Exception ex) {
             return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
@@ -152,6 +162,7 @@ public class Marshaller {
         final BuilderContext builderContext;
         try {
             builderContext = new BuilderContext(context, definitionManager, factoryManager);
+            builderContext.setPreviousNameToUUIDBindings(previousNameToUUIDBindings);
             unmarshallNode(builderContext, workflow);
         } catch (Exception ex) {
             return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
@@ -173,6 +184,9 @@ public class Marshaller {
                     rejectCallbackFn.onInvoke(new ClientRuntimeError("Error executing builder context.", ex));
                 }
             });
+        } finally {
+            previousNameToUUIDBindings = null;
+            builderContext.setPreviousNameToUUIDBindings(null);
         }
 
         try {

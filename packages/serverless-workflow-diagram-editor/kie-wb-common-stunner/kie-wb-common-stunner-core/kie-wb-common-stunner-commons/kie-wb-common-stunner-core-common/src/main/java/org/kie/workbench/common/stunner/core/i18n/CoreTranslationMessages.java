@@ -37,8 +37,13 @@ public class CoreTranslationMessages {
     private static final String CLIENT_PREF = CORE_PREF + "client" + SEP;
 
     public static final String ERROR = CORE_PREF + "error";
-    public static final String WARNING = CORE_PREF + "warn";
+    public static final String ERRORS = CORE_PREF + "errors";
+    public static final String WARN = CORE_PREF + "warn";
+    public static final String WARNING = CORE_PREF + "warnings";
+    public static final String WARNINGS = CORE_PREF + "warnings";
     public static final String INFO = CORE_PREF + "info";
+    public static final String INFORMATION = CORE_PREF + "information";
+    public static final String INFORMATIONS = CORE_PREF + "informations";
     public static final String REASON = CORE_PREF + "reason";
     public static final String DELETE = CORE_PREF + "delete";
     public static final String EDIT = CORE_PREF + "edit";
@@ -55,6 +60,9 @@ public class CoreTranslationMessages {
     public static final String ELEMENT = RULE_PREF + "element";
     public static final String VALIDATION_FAILED = RULE_PREF + "fail";
     public static final String MEDIATOR_PREVIEW = CLIENT_PREF + "mediator.zoomArea";
+    public static final String DIAGRAM_LOAD_FAIL_GENERIC = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.generic";
+    public static final String DIAGRAM_LOAD_FAIL_PARSING = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.parsing";
+    public static final String DIAGRAM_LOAD_FAIL_STACK_TRACE = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.stackTrace";
     public static final String DIAGRAM_LOAD_FAIL_UNSUPPORTED_ELEMENTS = "org.kie.workbench.common.stunner.core.client.diagram.load.fail.unsupported";
     public static final String COPY_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CopySelection";
     public static final String CUT_SELECTION = "org.kie.workbench.common.stunner.core.client.toolbox.CutSelection";

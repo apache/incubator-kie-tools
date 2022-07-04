@@ -22,6 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
@@ -80,6 +81,7 @@ public class DefaultViewerSessionTest {
         tested.init(metadata,
                     command);
         verify(managedSession, times(1)).registerCanvasControl(eq(MediatorsControl.class));
+        verify(managedSession, times(1)).registerCanvasControl(eq(AlertsControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(SelectionControl.class),
                                                                       eq(SingleSelection.class));
         verify(managedSession, times(1)).init(eq(metadata),

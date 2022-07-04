@@ -235,7 +235,6 @@ public class SessionPresenterView extends Composite
 
     @Override
     public SessionPresenterView showError(final String message) {
-
         getSettings().setType(kieNotificationCssClass(NotifyType.DANGER));
         showNotification(translate(SessionPresenterView_Error), message, IconType.EXCLAMATION_CIRCLE);
 

@@ -16,13 +16,23 @@
 
 package org.kie.workbench.common.stunner.sw.client.editor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.core.types.Transform;
 import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.PostResizeCallback;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
+import elemental2.core.JsRegExp;
+import elemental2.core.RegExpResult;
 import elemental2.promise.Promise;
+import org.gwtproject.regexp.shared.MatchResult;
+import org.gwtproject.regexp.shared.RegExp;
 import org.gwtproject.user.client.ui.IsWidget;
+import org.junit.Before;
+import org.junit.Test;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
@@ -30,12 +40,17 @@ import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.core.client.ReadOnlyProvider;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.select.AbstractSelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
+import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
+import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
 import org.kie.workbench.common.stunner.core.client.session.ClientSession;
+import org.kie.workbench.common.stunner.core.client.session.impl.ViewerSession;
 import org.kie.workbench.common.stunner.core.diagram.DiagramImpl;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Graph;
+import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
 import org.mockito.Mock;
@@ -51,6 +66,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -104,12 +120,64 @@ public class DiagramEditorTest {
     @Mock
     private IncrementalMarshaller incrementalMarshaller;
 
+    @Mock
+    private ViewerSession viewerSession;
+
+    @Mock
+    private JsRegExp jsRegExp;
+
+    @Mock
+    private RegExpResult regExpResult;
+
+    @Mock
+    private Graph graph;
+
+    @Mock
+    private JsCanvas jsCanvas;
+
+    @Mock
+    private AbstractSelectionControl selectionControl;
+
+    @Mock
+    private CanvasCommandManager commandManager;
+
     private DiagramEditor tested;
     private Promises promises;
     private DiagramImpl diagram;
     private Metadata metadata;
 
-    //@Before
+    private static String rawJSON = "{\n" +
+            " \"id\": \"injectExample\",\n" +
+            " \"version\": \"1.0\",\n" +
+            " \"specVersion\": \"0.8\",\n" +
+            " \"name\": \"Inject State Example\",\n" +
+            " \"description\": \"Inject Example\",\n" +
+            " \"start\": \"Inject State\",\n" +
+            " \"states\": [\n" +
+            "  {\n" +
+            "   \"name\": \"Inject State\",\n" +
+            "   \"type\": \"inject\",\n" +
+            "   \"data\": {\n" +
+            "    \"person\": {\n" +
+            "     \"fname\": \"John\",\n" +
+            "     \"lname\": \"Doe\"\n" +
+            "    }\n" +
+            "   },\n" +
+            "   \"stateDataFilter\": {\n" +
+            "    \"input\": \"${ {vegetables: .vegetables} }\",\n" +
+            "    \"output\": \"${ {vegetables: [.vegetables[] | select(.veggieLike == true)]} }\"\n" +
+            "   },\n" +
+            "   \"usedForCompensation\": false,\n" +
+            "   \"metadata\": {\n" +
+            "    \"prop1\": \"value1\",\n" +
+            "    \"prop2\": \"value2\"\n" +
+            "   },\n" +
+            "   \"end\": true\n" +
+            "  }\n" +
+            " ]\n" +
+            "}";
+
+    @Before
     public void setUp() {
         when(stunnerEditor.getCanvasHandler()).thenReturn(canvasHandler);
         when(canvasHandler.getCanvas()).thenReturn(canvas);
@@ -129,23 +197,28 @@ public class DiagramEditorTest {
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
                 .setTitle("testDiagram")
                 .build());
-        diagram = new DiagramImpl("testDiagram",
-                mock(Graph.class),
-                metadata);
+        diagram = spy(new DiagramImpl("testDiagram",
+                graph,
+                metadata));
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
-        when(stunnerEditor2.getSession()).thenReturn(session);
+        when(stunnerEditor2.getSession()).thenReturn(viewerSession);
+        when(viewerSession.getSelectionControl()).thenReturn(selectionControl);
+        when(selectionControl.getSelectedItems()).thenReturn(new ArrayList<>(Arrays.asList("uuid")));
+        when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler2);
         when(stunnerEditor2.getCanvasHandler()).thenReturn(canvasHandler2);
         when(stunnerEditor2.getDiagram()).thenReturn(diagram);
-        tested = new DiagramEditor(promises,
+        tested = spy(new DiagramEditor(promises,
                 stunnerEditor2,
                 diagramServices,
                 incrementalMarshaller,
-                canvasFileExport);
+                canvasFileExport));
+        tested.jsRegExp = jsRegExp;
+        tested.jsCanvas = jsCanvas;
     }
 
-    //@Test
+    @Test
     public void testScaleToFitWorkflow() {
         when(lienzoPanel.getWidePx()).thenReturn(500);
         when(lienzoPanel.getHighPx()).thenReturn(500);
@@ -162,7 +235,7 @@ public class DiagramEditorTest {
         verify(lienzoPanel, times(1)).setPostResizeCallback(null);
     }
 
-    //@Test
+    @Test
     public void testScaleToFitWorkflowScaleLessThanZero() {
         when(lienzoPanel.getWidePx()).thenReturn(0);
         when(lienzoPanel.getHighPx()).thenReturn(0);
@@ -179,21 +252,21 @@ public class DiagramEditorTest {
         verify(lienzoPanel, times(1)).setPostResizeCallback(null);
     }
 
-    //@Test
+    @Test
     public void testStartupReadOnly() {
         when(readOnlyProvider.isReadOnlyDiagram()).thenReturn(true);
         tested.onStartup(new DefaultPlaceRequest());
         verify(stunnerEditor2, times(1)).setReadOnly(eq(true));
     }
 
-    //@Test
+    @Test
     public void testAsWidget() {
         IsWidget w = mock(IsWidget.class);
         when(stunnerEditor2.getView()).thenReturn(w);
         assertEquals(w, tested.asWidget());
     }
 
-    //@Test
+    @Test
     public void testGetPreview() {
         when(canvasFileExport.exportToSvg(eq(canvasHandler2))).thenReturn("<svg/>");
         Promise content = tested.getPreview();
@@ -203,5 +276,77 @@ public class DiagramEditorTest {
             return null;
         });
         assertEquals("<svg/>", result[0]);
+    }
+
+    @Test
+    public void testSetNewContent() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("SomeOtherStuff");
+
+        tested.setContent("", rawJSON);
+
+        verify(tested, times(1)).setNewContent("", rawJSON);
+        verify(tested, never()).updateContent("", rawJSON);
+        verify(tested, never()).close();
+    }
+
+    @Test
+    public void testUpdateContent() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("injectExample");
+
+        final Promise<Void> promise = tested.setContent("", rawJSON);
+
+        verify(tested, times(1)).updateContent("", rawJSON);
+        verify(tested, never()).setNewContent("", rawJSON);
+    }
+
+    @Test
+    public void testRegex() {
+        RegExp regExp = RegExp.compile(DiagramEditor.ID_SEARCH_PATTERN);
+        MatchResult matcher = regExp.exec(rawJSON);
+
+        assertNotNull(matcher);
+        assertEquals("id", matcher.getGroup(1));
+        assertEquals("injectExample", matcher.getGroup(2));
+    }
+
+    @Test
+    public void testClose() {
+        when(jsRegExp.exec(rawJSON)).thenReturn(regExpResult);
+        when(regExpResult.getAt(2)).thenReturn("injectExample");
+        when(graph.getUUID()).thenReturn("SomeOtherStuff");
+
+        tested.setContent("", rawJSON);
+        tested.close();
+
+        verify(stunnerEditor2, times(1)).close();
+        verify(jsCanvas, times(1)).close();
+    }
+
+    @Test
+    public void testUpdateDiagramAndSelection() {
+        DiagramImpl newDiagram = mock(DiagramImpl.class);
+        Node node = mock(Node.class);
+        Node newNode = mock(Node.class);
+        ArrayList<Node> uuids = new ArrayList<>(Arrays.asList(newNode));
+
+        when(graph.getNode("uuid")).thenReturn(node);
+        when(node.getUUID()).thenReturn("uuid");
+        when(newNode.getUUID()).thenReturn("uuid"); //must have same uuid to reapply selection
+        when(viewerSession.getCommandManager()).thenReturn(commandManager);
+        when(graph.nodes()).thenReturn(uuids);
+
+        tested.updateDiagram(newDiagram);
+
+        // Clean up
+        verify(selectionControl, times(1)).clear();
+        verify(commandManager, times(1)).execute(eq(canvasHandler2), any(ClearAllCommand.class));
+        // Keep selection
+        verify(selectionControl, times(1)).select("uuid");
+        // Center selected node
+        verify(jsCanvas, times(1)).centerNode("uuid");
     }
 }

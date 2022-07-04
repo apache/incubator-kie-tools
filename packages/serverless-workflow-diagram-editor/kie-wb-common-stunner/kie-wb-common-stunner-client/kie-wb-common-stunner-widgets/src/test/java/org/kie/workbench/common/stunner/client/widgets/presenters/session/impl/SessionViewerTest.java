@@ -29,6 +29,7 @@ import org.kie.workbench.common.stunner.client.widgets.views.WidgetWrapperView;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.preferences.StunnerPreferencesRegistries;
@@ -63,6 +64,8 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
     @Mock
     MediatorsControl<AbstractCanvas> mediatorsControl;
     @Mock
+    AlertsControl<AbstractCanvas> alertsControl;
+    @Mock
     SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     @Mock
     WidgetWrapperView view;
@@ -83,6 +86,7 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
         when(session.getCanvasHandler()).thenReturn(canvasHandler);
         when(session.getCanvas()).thenReturn(canvas);
         when(session.getMediatorsControl()).thenReturn(mediatorsControl);
+        when(session.getAlertsControl()).thenReturn(alertsControl);
         when(session.getSelectionControl()).thenReturn(selectionControl);
         this.tested = new SessionViewerImpl<>(view, canvasPanel, preferencesRegistries);
     }
@@ -100,6 +104,8 @@ public class SessionViewerTest extends AbstractCanvasHandlerViewerTest {
                      tested.getHandler().getDiagram());
         assertEquals(mediatorsControl,
                      tested.getDiagramViewer().getMediatorsControl());
+        assertEquals(alertsControl,
+                     tested.getDiagramViewer().getAlertsControl());
         assertEquals(selectionControl,
                      tested.getDiagramViewer().getSelectionControl());
         verify(canvasHandler,

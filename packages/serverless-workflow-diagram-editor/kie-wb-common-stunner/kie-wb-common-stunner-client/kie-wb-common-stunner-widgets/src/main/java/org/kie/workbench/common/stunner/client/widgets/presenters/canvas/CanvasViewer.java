@@ -20,6 +20,7 @@ import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.widgets.presenters.Viewer;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 
 /**
@@ -35,4 +36,9 @@ public interface CanvasViewer<T, H extends CanvasHandler, V extends IsWidget, K 
      * Returns a canvas mediators control enabled and available to use.
      */
     <C extends Canvas> MediatorsControl<C> getMediatorsControl();
+
+    /**
+     * Returns a canvas alerts control enabled and available to use.
+     */
+    <C extends Canvas> AlertsControl<C> getAlertsControl();
 }

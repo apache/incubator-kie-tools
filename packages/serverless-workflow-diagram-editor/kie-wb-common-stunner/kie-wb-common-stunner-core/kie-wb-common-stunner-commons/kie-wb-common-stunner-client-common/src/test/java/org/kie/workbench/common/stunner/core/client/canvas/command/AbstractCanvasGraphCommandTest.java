@@ -32,15 +32,17 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class AbstractCanvasGraphCommandTest {
-
     private static CommandResult<RuleViolation> GRAPH_COMMAND_SUCCESS = GraphCommandResultBuilder.SUCCESS;
     private static CommandResult<RuleViolation> GRAPH_COMMAND_FAILED = GraphCommandResultBuilder.failed();
     private static CommandResult<CanvasViolation> CANVAS_COMMAND_SUCCESS = CanvasCommandResultBuilder.SUCCESS;
@@ -62,6 +64,9 @@ public class AbstractCanvasGraphCommandTest {
 
     @Before
     public void setUp() throws Exception {
+        tested = spy(new AbstractCanvasGraphCommandStub());
+        tested.graphCommand = graphCommand;
+        doAnswer(x->canvasCommand).when(tested).getCanvasCommand(any(AbstractCanvasHandler.class));
         when(canvasHandler.getGraphExecutionContext()).thenReturn(graphContext);
         when(graphCommand.allow(eq(graphContext))).thenReturn(GRAPH_COMMAND_SUCCESS);
         when(graphCommand.execute(eq(graphContext))).thenReturn(GRAPH_COMMAND_SUCCESS);
@@ -69,7 +74,6 @@ public class AbstractCanvasGraphCommandTest {
         when(canvasCommand.allow(eq(canvasHandler))).thenReturn(CANVAS_COMMAND_SUCCESS);
         when(canvasCommand.execute(eq(canvasHandler))).thenReturn(CANVAS_COMMAND_SUCCESS);
         when(canvasCommand.undo(eq(canvasHandler))).thenReturn(CANVAS_COMMAND_SUCCESS);
-        tested = new AbstractCanvasGraphCommandStub();
     }
 
     @Test
