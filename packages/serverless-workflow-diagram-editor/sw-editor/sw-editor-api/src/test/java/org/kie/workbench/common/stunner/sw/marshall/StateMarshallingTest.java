@@ -33,6 +33,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StateMarshallingTest extends BaseMarshallingTest {
 
@@ -50,10 +51,10 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     @Test
     public void testEndObject() {
         JsPropertyMap<Object> endObject = mock(JsPropertyMap.class);
-        endObject.set("terminate", true);
-        endObject.set("continueAs", "{}");
-        endObject.set("compensate", false);
-        endObject.set("produceEvents","[]");
+        when(endObject.get("terminate")).thenReturn(true);
+        when(endObject.get("continueAs")).thenReturn("{}");
+        when(endObject.get("compensate")).thenReturn(false);
+        when(endObject.get("produceEvents")).thenReturn("[]");
         workflow.states[0].setEnd(endObject);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
