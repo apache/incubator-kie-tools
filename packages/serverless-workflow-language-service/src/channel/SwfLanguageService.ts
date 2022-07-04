@@ -37,7 +37,7 @@ import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
 import { FileLanguage } from "../editor";
 
-// SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
+// types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
 export declare type SwfJSONPath = (string | number)[];
 export declare type SwfLSNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 export type SwfLSNode = {
@@ -134,7 +134,7 @@ export abstract class SwfLanguageService {
 
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => this.matchNodeWithLocation(root, nodeAtOffset, path))
+        .filter(([path, _]) => matchNodeWithLocation(root, nodeAtOffset, path))
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
@@ -341,30 +341,6 @@ export abstract class SwfLanguageService {
     else {
       throw new Error("Unknown Service Catalog function source type");
     }
-  }
-
-  /**
-   * Check if a Node is in Location.
-   *
-   * @param root root node
-   * @param node the Node to check
-   * @param path the location to verify
-   * @returns true if the node is in the location, false otherwise
-   */
-  public matchNodeWithLocation(root: SwfLSNode | undefined, node: SwfLSNode | undefined, path: SwfJSONPath): boolean {
-    if (!root || !node || !path || !path.length) {
-      return false;
-    }
-
-    const nodesAtLocation = findNodesAtLocation(root, path);
-
-    if (nodesAtLocation.some((currentNode) => currentNode === node)) {
-      return true;
-    } else if (path[path.length - 1] === "*" && !nodesAtLocation.length) {
-      return this.matchNodeWithLocation(root, node, path.slice(0, -1));
-    }
-
-    return false;
   }
 
   public createCodeLenses(args: {
@@ -662,6 +638,34 @@ function toCompletionItemLabelPrefix(
     default:
       return "";
   }
+}
+
+/**
+ * Check if a Node is in Location.
+ *
+ * @param root root node
+ * @param node the Node to check
+ * @param path the location to verify
+ * @returns true if the node is in the location, false otherwise
+ */
+export function matchNodeWithLocation(
+  root: SwfLSNode | undefined,
+  node: SwfLSNode | undefined,
+  path: SwfJSONPath
+): boolean {
+  if (!root || !node || !path || !path.length) {
+    return false;
+  }
+
+  const nodesAtLocation = findNodesAtLocation(root, path);
+
+  if (nodesAtLocation.some((currentNode) => currentNode === node)) {
+    return true;
+  } else if (path[path.length - 1] === "*" && !nodesAtLocation.length) {
+    return matchNodeWithLocation(root, node, path.slice(0, -1));
+  }
+
+  return false;
 }
 
 // This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.

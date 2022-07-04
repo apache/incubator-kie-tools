@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { SwfJsonLanguageService, findNodeAtOffset } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfJsonLanguageService,
+  findNodeAtOffset,
+  matchNodeWithLocation,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
@@ -76,9 +80,9 @@ describe("SWF LS JSON", () => {
       const root = ls.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
-      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
-      expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
+      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
     test("matching empty function array", () => {
@@ -94,9 +98,9 @@ describe("SWF LS JSON", () => {
       const root = ls.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset);
 
-      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-      expect(ls.matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
-      expect(ls.matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
     test("matching refName", () => {
@@ -134,7 +138,7 @@ describe("SWF LS JSON", () => {
       const node = findNodeAtOffset(root!, cursorOffset);
 
       expect(
-        ls.matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
+        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
       ).toBeTruthy();
     });
   });
