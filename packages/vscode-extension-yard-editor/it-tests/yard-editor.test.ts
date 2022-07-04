@@ -45,22 +45,14 @@ describe("yard editor - integration tests", () => {
     await testHelper.closeAllNotifications();
   });
 
-  it("Opens greetings.sw.json and loads two editor groups", async function () {
+  it("Opens empty.yard.json and loads two editor groups (text editor and a web view)", async function () {
     this.timeout(30000);
-    const editorWebviews = await testHelper.openFileFromSidebar(EMPTY_YARD_JSON);
+    let [textEditor, webView] = await testHelper.openFileFromSidebar(EMPTY_YARD_JSON);
 
-    const yardTextEditor = new YardTextEditorTestHelper(editorWebviews[0]);
-    //const swfEditor = new YardEditorTestHelper(editorWebviews[1]);
+    const yardTextEditor = new YardTextEditorTestHelper(textEditor);
+    const yardWebView = new YardEditorTestHelper(webView);
 
-    //yardTextEditor.
-
-    // find elements, this asserts they exist
-    /*
-        await swfEditor.getSvgElement();
-        await swfEditor.getMermaidDivElement();*/
-
-    // expect 7 states /w end and start
-    /*const stateElements = await swfEditor.getAllStateNodes();
-        assert.equal(stateElements.length, 7);*/
+    assert.isFalse(await yardTextEditor.isDirty());
+    assert.equal("\n", await yardTextEditor.getText());
   });
 });

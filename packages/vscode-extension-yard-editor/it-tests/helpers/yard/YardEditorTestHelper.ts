@@ -18,9 +18,8 @@ import { WebElement } from "selenium-webdriver";
 import { By, WebView } from "vscode-extension-tester";
 
 /**
- * Helper class to easen work with SWF editor inside of a webview.
- * Make sure you switch to the webview's frame before creating and instance
- * via contructor.
+ * Helper class to support work with yard editor webview.
+ * Make sure you switch to the webview's frame before creating and instance via constructor
  */
 export default class YardEditorTestHelper {
   constructor(private readonly webview: WebView) {}

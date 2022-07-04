@@ -21,6 +21,7 @@ import {
   InputBox,
   ModalDialog,
   SideBarView,
+  TextEditor,
   until,
   ViewControl,
   ViewSection,
@@ -91,9 +92,9 @@ export default class VSCodeTestHelper {
   };
 
   /**
-   * Opens serverless workflow file from a sidebarview. Expects that the sideBarView will be defined and open.
-   * To define sideBarView a folder needs to be openned using openFolder function.
-   * Once the file is openned using a click, function assert existence of two
+   * Opens serverless logic file from a sidebarview. Expects that the sideBarView will be defined and open.
+   * To define sideBarView a folder needs to be opened using openFolder function.
+   * Once the file is opened using a click, function assert existence of two
    * editor groups and assigns each group to Webview. Both webviews are confirmed loaded and returned
    * in an array on predefined indexes - see returns definition.
    *
@@ -106,10 +107,10 @@ export default class VSCodeTestHelper {
    * @param fileParentPath optional, use when file is not in root of resources. This is the path of file's parent directory, relative to resources
    *                       if not used the file will be looked in root of resources.
    * @returns promise that resolves to an array of WebViews of the openned serverless worklow file.
-   *          The lenght of the array is always 2 and there is guaranteed TextEditor as webview on O index.
+   *          The length of the array is always 2 and there is guaranteed TextEditor as webview on O index.
    *          Custom kogito swf editor as webview is always on index 1
    */
-  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<WebView[]> => {
+  public openFileFromSidebar = async (fileName: string, fileParentPath?: string): Promise<[TextEditor, WebView]> => {
     if (fileParentPath == undefined || fileParentPath == "") {
       await this.workspaceSectionView.openItem(fileName);
     } else {
@@ -118,29 +119,26 @@ export default class VSCodeTestHelper {
       const fileItem = await this.workspaceSectionView.findItem(fileName);
       if (fileItem != undefined) {
         await fileItem.click();
-        await sleep(1000);
       }
     }
 
+    await sleep(1000);
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
     // should be always two groups, one text editor and one swf editor
     assert.equal(editorGroups.length, 2);
 
-    const webviewLeft = new WebView(editorGroups[0], By.linkText(fileName));
-    const webviewRight = new WebView(editorGroups[1], By.linkText(fileName));
+    const textEditor = new TextEditor(editorGroups[0]);
+    const webView = new WebView(editorGroups[1], By.linkText(fileName));
 
     // right webview has the custom kogito editor, wait for it to load
-    await this.waitUntilKogitoEditorIsLoaded(webviewRight);
+    await this.waitUntilKogitoEditorIsLoaded(webView);
 
-    const webviews = [] as WebView[];
-    webviews.push(webviewLeft, webviewRight);
-
-    return Promise.resolve(webviews);
+    return Promise.resolve([textEditor, webView]);
   };
 
   /**
    * Closes all editor views that are open.
-   * Resolves even if there are no open editor views.
+   * Resoxlves even if there are no open editor views.
    */
   public closeAllEditors = async (): Promise<void> => {
     try {
