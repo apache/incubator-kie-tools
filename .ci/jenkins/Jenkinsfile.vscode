@@ -15,6 +15,7 @@ node('rhel8') {
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_serverless_workflow_editor_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_red_hat_business_automation_bundle_$VERSION.vsix"'
         sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kogito_bundle_$VERSION.vsix"'
+        sh 'wget "https://github.com/kiegroup/kie-tools/releases/download/$VERSION/vscode_extension_kie_ba_bundle_$VERSION.vsix"'
         sh 'md5sum *.vsix'
     }
 
@@ -31,6 +32,7 @@ node('rhel8') {
         def vsix_editors = findFiles(glob: '**editor*.vsix')
         def vsix_redhat_bundle = findFiles(glob: '**red_hat*.vsix')
         def vsix_kogito_bundle = findFiles(glob: '**kogito*.vsix')
+        def vsix_kie_ba_bundle = findFiles(glob: '**kie_ba*.vsix')
 
         if (publishToMarketPlace.equals('true')) {
             stage('Publish to VS Code Marketplace') {
@@ -44,6 +46,7 @@ node('rhel8') {
                 }
                 withCredentials([[$class: 'StringBinding', credentialsId: 'kie-vscode-token', variable: 'KIE_TOKEN']]) {
                     sh 'vsce publish -p ${KIE_TOKEN} --packagePath' + " ${vsix_kogito_bundle[0].path}"
+                    sh 'vsce publish -p ${KIE_TOKEN} --packagePath' + " ${vsix_kie_ba_bundle[0].path}"
                 }
             }
         }
@@ -60,6 +63,7 @@ node('rhel8') {
                 }
                 withCredentials([[$class: 'StringBinding', credentialsId: 'kie-openvsx-token', variable: 'KIE_OVSX_TOKEN']]) {
                     sh 'ovsx publish -p ${KIE_OVSX_TOKEN}' + " ${vsix_kogito_bundle[0].path}"
+                    sh 'ovsx publish -p ${KIE_OVSX_TOKEN}' + " ${vsix_kie_ba_bundle[0].path}"
                 }
             }
         }
