@@ -30,7 +30,7 @@ import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
 
 export class VsCodeSwfLanguageService {
-  public readonly ls: SwfLanguageService;
+  private _ls: SwfLanguageService;
   private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
   constructor(
     private readonly args: {
@@ -38,12 +38,29 @@ export class VsCodeSwfLanguageService {
       swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
     }
   ) {
+    vscode.workspace.onDidOpenTextDocument((document) => {
+      this.reinitLs(document);
+    });
+
+    this.reinitLs(vscode.window.activeTextEditor?.document);
+  }
+
+  public get ls(): SwfLanguageService {
+    return this._ls;
+  }
+
+  private reinitLs(document: vscode.TextDocument | undefined) {
+    if (!document) {
+      return;
+    }
+    const filePath = document.uri.path;
+    const fileLanguage = getFileLanguage(filePath);
     const lsArgs: SwfLanguageServiceArgs = {
       fs: {},
       serviceCatalog: {
         global: {
           getServices: async () => {
-            return args.swfServiceCatalogGlobalStore.storedServices;
+            return this.args.swfServiceCatalogGlobalStore.storedServices;
           },
         },
         relative: {
@@ -75,7 +92,7 @@ export class VsCodeSwfLanguageService {
           return vscode.env.uiKind === vscode.UIKind.Desktop;
         },
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => {
-          return args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
+          return this.args.configuration.getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls();
         },
         getSpecsDirPosixPaths: async (textDocument) => {
           return this.getSpecsDirPosixPaths(textDocument);
@@ -91,19 +108,11 @@ export class VsCodeSwfLanguageService {
         },
       },
     };
-    const filePath = vscode.window.activeTextEditor?.document.uri.path;
 
-    if (!filePath) {
-      return;
-    }
-
-    const fileLanguage = getFileLanguage(filePath);
-
-    /* FIXME: VsCodeSwfLanguageService: doesn't reinit on file change */
     if (fileLanguage === FileLanguage.JSON) {
-      this.ls = new SwfJsonLanguageService(lsArgs);
+      this._ls = new SwfJsonLanguageService(lsArgs);
     } else if (fileLanguage === FileLanguage.YAML) {
-      this.ls = new SwfYamlLanguageService(lsArgs);
+      this._ls = new SwfYamlLanguageService(lsArgs);
     }
   }
 
