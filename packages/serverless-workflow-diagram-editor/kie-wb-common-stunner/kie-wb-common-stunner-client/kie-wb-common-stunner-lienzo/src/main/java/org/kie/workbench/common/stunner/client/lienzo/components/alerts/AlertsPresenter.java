@@ -26,9 +26,6 @@ import javax.inject.Inject;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.tools.client.event.EventType;
 import com.ait.lienzo.tools.client.event.MouseEventUtil;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.dom.Element;
 import elemental2.dom.EventListener;
 import jsinterop.base.Js;
@@ -37,6 +34,9 @@ import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtbootstrap3.extras.notify.client.constants.NotifyType;
 import org.gwtbootstrap3.extras.notify.client.ui.Notify;
 import org.gwtbootstrap3.extras.notify.client.ui.NotifySettings;
+import org.gwtproject.safehtml.shared.SafeHtmlBuilder;
+import org.gwtproject.timer.client.Timer;
+import org.gwtproject.user.client.ui.IsWidget;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.core.client.components.views.FloatingView;
@@ -73,7 +73,7 @@ public class AlertsPresenter {
     public AlertsPresenter(final FloatingView<IsWidget> floatingView,
                            final Alerts alerts,
                            final ClientTranslationService clientTranslationService) {
-        this(floatingView, alerts, Js.cast(alerts.asWidget().getElement()), clientTranslationService);
+        this(floatingView, alerts, Js.uncheckedCast(alerts.asWidget().getElement()), clientTranslationService);
     }
 
     AlertsPresenter(final FloatingView<IsWidget> floatingView,

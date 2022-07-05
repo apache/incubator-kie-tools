@@ -32,7 +32,6 @@ import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
-import org.kie.workbench.common.stunner.sw.definition.ModelUtils;
 import org.kie.workbench.common.stunner.sw.definition.OnEvent;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
@@ -53,14 +52,6 @@ public class Parser {
     public Workflow parse(Workflow jso) {
         Workflow workflow = parse(Workflow.class, jso);
         loadStates(workflow, jso);
-
-        return workflow;
-    }
-
-    public Workflow reParse(Workflow workflow, Workflow newWorkflow) {
-        ModelUtils.cleanWorkflow(workflow);
-        parse(workflow, newWorkflow);
-        loadStates(workflow, newWorkflow);
 
         return workflow;
     }
@@ -226,7 +217,4 @@ public class Parser {
         return MarshallerUtils.parse(factoryManager, type, jso);
     }
 
-    private <T> T parse(T workflow, T jso) {
-        return MarshallerUtils.parse(workflow, jso);
-    }
 }

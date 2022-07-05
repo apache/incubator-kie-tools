@@ -19,14 +19,16 @@ package org.kie.workbench.common.stunner.client.lienzo.components.alerts;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.inject.Named;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.user.client.ui.Composite;
-import org.jboss.errai.common.client.dom.Button;
-import org.jboss.errai.common.client.dom.Span;
-import org.jboss.errai.ui.shared.api.annotations.DataField;
-import org.jboss.errai.ui.shared.api.annotations.EventHandler;
-import org.jboss.errai.ui.shared.api.annotations.Templated;
+import elemental2.dom.Event;
+import elemental2.dom.HTMLButtonElement;
+import elemental2.dom.HTMLElement;
+import io.crysknife.ui.templates.client.annotation.DataField;
+import io.crysknife.ui.templates.client.annotation.EventHandler;
+import io.crysknife.ui.templates.client.annotation.ForEvent;
+import io.crysknife.ui.templates.client.annotation.Templated;
+import org.gwtproject.user.client.ui.Composite;
 
 @Dependent
 @Templated
@@ -40,27 +42,30 @@ public class AlertsView
 
     @Inject
     @DataField
-    Button infoButton;
+    HTMLButtonElement infoButton;
 
     @Inject
     @DataField
-    Span infoText;
+    @Named("span")
+    HTMLElement infoText;
 
     @Inject
     @DataField
-    Button warningButton;
+    HTMLButtonElement warningButton;
 
     @Inject
     @DataField
-    Span warningText;
+    @Named("span")
+    HTMLElement warningText;
 
     @Inject
     @DataField
-    Button errorButton;
+    HTMLButtonElement errorButton;
 
     @Inject
     @DataField
-    Span errorText;
+    @Named("span")
+    HTMLElement errorText;
 
     private Alerts presenter;
 
@@ -71,7 +76,7 @@ public class AlertsView
 
     @Override
     public void setInfoText(String text) {
-        infoText.setTextContent(text);
+        infoText.textContent = text;
     }
 
     @Override
@@ -81,21 +86,21 @@ public class AlertsView
 
     @Override
     public void setInfoEnabled(boolean enabled) {
-        infoButton.setDisabled(!enabled);
+        infoButton.disabled = !enabled;
     }
 
     @Override
     public void setInfoVisible(boolean visible) {
         if (visible) {
-            infoButton.getStyle().setProperty(VISIBILITY, VISIBLE);
+            infoButton.style.visibility = VISIBLE;
         } else {
-            infoButton.getStyle().setProperty(VISIBILITY, HIDDEN);
+            infoButton.style.visibility = HIDDEN;
         }
     }
 
     @Override
     public void setWarningsText(String text) {
-        warningText.setTextContent(text);
+        warningText.textContent = text;
     }
 
     @Override
@@ -105,21 +110,21 @@ public class AlertsView
 
     @Override
     public void setWarningsEnabled(boolean enabled) {
-        warningButton.setDisabled(!enabled);
+        warningButton.disabled = !enabled;
     }
 
     @Override
     public void setWarningsVisible(boolean visible) {
         if (visible) {
-            warningButton.getStyle().setProperty(VISIBILITY, VISIBLE);
+            warningButton.style.visibility = VISIBLE;
         } else {
-            warningButton.getStyle().setProperty(VISIBILITY, HIDDEN);
+            warningButton.style.visibility = HIDDEN;
         }
     }
 
     @Override
     public void setErrorsText(String text) {
-        errorText.setTextContent(text);
+        errorText.textContent = text;
     }
 
     @Override
@@ -129,30 +134,30 @@ public class AlertsView
 
     @Override
     public void setErrorsEnabled(boolean enabled) {
-        errorButton.setDisabled(!enabled);
+        errorButton.disabled = (!enabled);
     }
 
     @Override
     public void setErrorsVisible(boolean visible) {
         if (visible) {
-            errorButton.getStyle().setProperty(VISIBILITY, VISIBLE);
+            errorButton.style.visibility = VISIBLE;
         } else {
-            errorButton.getStyle().setProperty(VISIBILITY, HIDDEN);
+            errorButton.style.visibility = HIDDEN;
         }
     }
 
     @EventHandler("infoButton")
-    void onShowInfos(ClickEvent event) {
+    void onShowInfos(@ForEvent("click") Event event) {
         presenter.onShowInfos();
     }
 
     @EventHandler("warningButton")
-    void onShowWarnings(ClickEvent event) {
+    void onShowWarnings(@ForEvent("click") Event event) {
         presenter.onShowWarnings();
     }
 
     @EventHandler("errorButton")
-    void onShowErrors(ClickEvent event) {
+    void onShowErrors(@ForEvent("click") Event event) {
         presenter.onShowErrors();
     }
 
@@ -161,9 +166,9 @@ public class AlertsView
         presenter = null;
     }
 
-    private static void setTooltip(final Button button,
+    private static void setTooltip(final HTMLButtonElement button,
                                    final String text) {
         button.setAttribute("data-placement", "top");
-        button.setTitle(text);
+        button.title = text;
     }
 }

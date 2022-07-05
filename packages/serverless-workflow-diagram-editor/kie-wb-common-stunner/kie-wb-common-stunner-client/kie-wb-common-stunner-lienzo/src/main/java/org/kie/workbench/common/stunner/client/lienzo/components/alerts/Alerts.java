@@ -23,8 +23,8 @@ import javax.annotation.PreDestroy;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import com.google.gwt.user.client.ui.IsWidget;
-import com.google.gwt.user.client.ui.Widget;
+import org.gwtproject.user.client.ui.IsWidget;
+import org.gwtproject.user.client.ui.Widget;
 import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.uberfire.client.mvp.UberView;
 import org.uberfire.mvp.Command;
