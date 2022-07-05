@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-import * as jsonc from "jsonc-parser";
-import { load, YAMLNode, Kind } from "yaml-language-server-parser";
+import {
+  Kind,
+  load,
+  YAMLAnchorReference,
+  YamlMap,
+  YAMLMapping,
+  YAMLNode,
+  YAMLScalar,
+  YAMLSequence,
+} from "yaml-language-server-parser";
 import { FileLanguage } from "../editor";
-import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode, SwfLSNodeType } from "./SwfLanguageService";
+import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode } from "./SwfLanguageService";
 
 export class SwfYamlLanguageService extends SwfLanguageService {
   fileLanguage = FileLanguage.YAML;
@@ -39,42 +47,34 @@ export class SwfYamlLanguageService extends SwfLanguageService {
   }
 }
 
-const getSwfLSNodeType = (kind: Kind): SwfLSNodeType => {
-  switch (kind) {
-    case 0:
-      return "string";
-    case 1:
-      return "property";
-    case 2:
-      return "object";
-    case 3:
-      return "array";
-    default:
-      return "object";
-  }
-};
-
-const astConvert = (node: YAMLNode, parentNode?: SwfLSNode): SwfLSNode | undefined => {
-  if (!node) {
-    return undefined;
-  }
-
+const astConvert = (node: YAMLNode, parentNode?: SwfLSNode): SwfLSNode => {
   const convertedNode: SwfLSNode = {
-    type: getSwfLSNodeType(node.kind),
-    value: node.value || node.value?.items,
+    type: "object",
     offset: node.startPosition,
     length: node.endPosition - node.startPosition,
     colonOffset: node.endPosition,
     parent: parentNode,
   };
 
-  if (node.kind === 2) {
-    convertedNode.children = node.mappings?.map((mapping: YAMLNode) => astConvert(mapping, convertedNode));
-  } else if (node.kind === 1) {
-    convertedNode.children = [astConvert(node.key, convertedNode)!, astConvert(node.value, convertedNode)!];
-  } else if (node.kind === 3) {
-    // casting node to any because items is not in the type
-    convertedNode.children = (node as any).items?.map((item: YAMLNode) => astConvert(item, convertedNode));
+  if (node.kind === Kind.SCALAR) {
+    convertedNode.value = (node as YAMLScalar).value;
+    convertedNode.type = "string";
+  } else if (node.kind === Kind.MAP) {
+    const yamlMap = node as YamlMap;
+    convertedNode.value = yamlMap.value;
+    convertedNode.children = yamlMap.mappings.map((mapping) => astConvert(mapping, convertedNode));
+    convertedNode.type = "object";
+  } else if (node.kind === Kind.MAPPING) {
+    const yamlMapping = node as YAMLMapping;
+    convertedNode.value = yamlMapping.value;
+    convertedNode.children = [astConvert(yamlMapping.key, convertedNode), astConvert(yamlMapping.value, convertedNode)];
+    convertedNode.type = "property";
+  } else if (node.kind === Kind.SEQ) {
+    convertedNode.children = (node as YAMLSequence).items.map((item) => astConvert(item, convertedNode));
+    convertedNode.type = "array";
+  } else if (node.kind === Kind.ANCHOR_REF || node.kind === Kind.INCLUDE_REF) {
+    convertedNode.value = (node as YAMLAnchorReference).value;
+    convertedNode.type = "object";
   }
 
   return convertedNode;
