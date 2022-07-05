@@ -93,6 +93,8 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
     @Override
     @SuppressWarnings("unchecked")
     protected void buildGraphIndex(final Command loadCallback) {
+        cleanGraphIndex(); // Release old references in heap.
+
         this.graphIndex = getIndexBuilder().build(getDiagram().getGraph());
         loadCallback.execute();
     }
@@ -144,11 +146,15 @@ public class CanvasHandlerImpl<D extends Diagram, C extends AbstractCanvas> exte
 
     @Override
     protected void destroyGraphIndex(final Command callback) {
+        cleanGraphIndex();
+        callback.execute();
+    }
+
+    protected void cleanGraphIndex() {
         if (null != graphIndex) {
             graphIndex.clear();
             graphIndex = null;
         }
-        callback.execute();
     }
 
     private GraphIndexBuilder<? extends MutableIndex<Node, Edge>> getIndexBuilder() {

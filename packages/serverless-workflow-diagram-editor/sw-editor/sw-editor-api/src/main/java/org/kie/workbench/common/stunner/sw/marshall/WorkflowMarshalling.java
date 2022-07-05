@@ -84,7 +84,7 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> WORKFLOW_UNMARSHALLER =
             (context, workflow) -> {
-                Node<View<Workflow>, Edge> workflowNode = context.addNode(workflow.name, workflow);
+                Node<View<Workflow>, Edge> workflowNode = context.addNodeByUUID(workflow.name, workflow);
                 workflowNode.getContent().setBounds(Bounds.create(0, 0, 950, 950));
 
                 // Set workflow node into the context state.

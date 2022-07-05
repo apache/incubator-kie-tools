@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.select.SingleSelection;
@@ -58,6 +59,7 @@ public class DefaultViewerSession
     public void init(final Metadata metadata,
                      final Command callback) {
         init(s -> s.registerCanvasControl(MediatorsControl.class)
+                     .registerCanvasControl(AlertsControl.class)
                      .registerCanvasHandlerControl(SelectionControl.class,
                                                    SingleSelection.class),
              metadata,
@@ -114,6 +116,11 @@ public class DefaultViewerSession
     @Override
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return (MediatorsControl<AbstractCanvas>) session.getCanvasControl(MediatorsControl.class);
+    }
+
+    @Override
+    public AlertsControl<AbstractCanvas> getAlertsControl() {
+        return (AlertsControl<AbstractCanvas>) session.getCanvasControl(AlertsControl.class);
     }
 
     @Override

@@ -42,7 +42,7 @@ import static com.ait.lienzo.client.core.animation.AnimationProperty.Properties.
 public class ShapeStateAttributeAnimationHandler<V extends LienzoShapeView>
         implements ShapeStateHandler {
 
-    private static final long ANIMATION_DURATION = 50L;
+    private static final long ANIMATION_DURATION = 0L;
 
     private final ShapeStateAttributeHandler<V> handler;
     private IAnimationHandle animationHandle;

@@ -25,6 +25,7 @@ import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandExecutionContext;
 import org.kie.workbench.common.stunner.core.graph.command.GraphCommandResultBuilder;
+import org.kie.workbench.common.stunner.core.graph.impl.GraphCleanup;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
 
 /**
@@ -61,7 +62,7 @@ public final class ClearGraphCommand extends AbstractGraphCommand {
                     });
                 }
             } else {
-                graph.clear();
+                GraphCleanup.clear(graph);
                 getMutableIndex(context).clear();
             }
         }

@@ -61,28 +61,10 @@ The Service Registries configured in the `kogito.swf.serviceRegistries` setting 
           },
           "authProvider": {
             "type": "string",
-            "enum": ["none", "red-hat-account", "oidc"],
+            "enum": ["none", "red-hat-account"],
             "default": "none"
-          },
-          "authUrl": {
-            "type": "string",
-            "format": "uri",
-            "pattern": "^https?://?[-A-Za-z0-9+&@#/%?=_!:.]+[-A-Za-z0-9+&@#/%=~_|]"
-          },
-          "clientId": { "type": "string" }
-        },
-        "allOf": [
-          {
-            "if": {
-              "properties": {
-                "authProvider": { "const": "oidc" }
-              }
-            },
-            "then": {
-              "required": ["authUrl", "clientId"]
-            }
           }
-        ],
+        },
         "required": ["name", "url", "authProvider"]
       }
     }

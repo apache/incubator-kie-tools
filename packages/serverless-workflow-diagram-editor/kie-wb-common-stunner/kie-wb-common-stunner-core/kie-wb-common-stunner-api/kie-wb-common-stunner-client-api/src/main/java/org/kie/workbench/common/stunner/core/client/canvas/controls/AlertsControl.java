@@ -14,5 +14,17 @@
  * limitations under the License.
  */
 
-export * from "./AuthProviderFactory";
-export * from "./AuthProvider";
+package org.kie.workbench.common.stunner.core.client.canvas.controls;
+
+import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
+
+public interface AlertsControl<C extends Canvas> extends CanvasControl<C> {
+
+    AlertsControl<C> addInfo(String info);
+
+    AlertsControl<C> addWarning(String warning);
+
+    AlertsControl<C> addError(String error);
+
+    AlertsControl<C> clear();
+}

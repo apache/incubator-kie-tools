@@ -64,6 +64,7 @@ public class ZoomLevelSelector implements IsWidget {
     @PostConstruct
     public void init() {
         view.init(this);
+        view.setEnabled(true);
     }
 
     public ZoomLevelSelector onDecreaseLevel(final Command onDecreaseLevel) {

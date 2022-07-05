@@ -15,14 +15,18 @@
  */
 package com.ait.lienzo.client.core.types;
 
+import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.wires.types.JsWiresShape;
+import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -42,6 +46,19 @@ public class JsCanvasTest {
 
     @Mock
     JSShapeStateApplier shapeStateApplier;
+
+    @Mock
+    Layer layer;
+
+    @Mock
+    LienzoPanel panel;
+
+    @Before
+    public void setup() {
+        jsCanvas.layer = layer;
+        jsCanvas.panel = panel;
+        jsCanvas.stateApplier = shapeStateApplier;
+    }
 
     @Test
     public void testGetBackgroundColor() {
@@ -220,7 +237,6 @@ public class JsCanvasTest {
 
     @Test
     public void testApplyStateNulls() {
-        jsCanvas.stateApplier = shapeStateApplier;
         doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
 
         jsCanvas.applyState(null, null);
@@ -235,7 +251,6 @@ public class JsCanvasTest {
 
     @Test
     public void testApplyStateNone() {
-        jsCanvas.stateApplier = shapeStateApplier;
         doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
 
         jsCanvas.applyState("someId", "none");
@@ -244,7 +259,6 @@ public class JsCanvasTest {
 
     @Test
     public void testApplyStateSelected() {
-        jsCanvas.stateApplier = shapeStateApplier;
         doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
 
         jsCanvas.applyState("someId", "selected");
@@ -253,7 +267,6 @@ public class JsCanvasTest {
 
     @Test
     public void testApplyStateHighlight() {
-        jsCanvas.stateApplier = shapeStateApplier;
         doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
 
         jsCanvas.applyState("someId", "highlight");
@@ -262,7 +275,6 @@ public class JsCanvasTest {
 
     @Test
     public void testApplyStateInvalid() {
-        jsCanvas.stateApplier = shapeStateApplier;
         doCallRealMethod().when(jsCanvas).applyState(anyString(), anyString());
 
         jsCanvas.applyState("someId", "invalid");
@@ -281,5 +293,16 @@ public class JsCanvasTest {
         doCallRealMethod().when(jsCanvas).center(anyString());
         jsCanvas.center(null);
         verify(jsCanvas, never()).centerNode(anyString());
+    }
+
+    @Test
+    public void testClose() {
+        doCallRealMethod().when(jsCanvas).close();
+        jsCanvas.close();
+
+        verify(layer, times(1)).clear();
+        assertNull(jsCanvas.layer);
+        assertNull(jsCanvas.panel);
+        assertNull(jsCanvas.stateApplier);
     }
 }
