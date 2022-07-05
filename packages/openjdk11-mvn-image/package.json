@@ -17,8 +17,8 @@
     "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env serverlessLogicSandbox.openJdk11MvnImage.buildTags) | xargs printf -- \"-t $(build-env serverlessLogicSandbox.openJdk11MvnImage.registry)/$(build-env serverlessLogicSandbox.openJdk11MvnImage.account)/$(build-env serverlessLogicSandbox.openJdk11MvnImage.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "echo Nothing to do",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
-    "build:prod:darwin:linux": "pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm podman:build\"",
-    "build:prod": "pnpm cleanup && pnpm copy:assets && pnpm install:mvnw && run-script-os"
+    "build:prod:darwin:linux": "pnpm cleanup && pnpm copy:assets && pnpm install:mvnw && pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm podman:build\"",
+    "build:prod": "run-script-os"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
