@@ -14,10 +14,16 @@
 
 FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.12
 
+ARG OKD_VERSION
+
 RUN mkdir /tmp/sandbox/
 
 WORKDIR /tmp/sandbox/
 
 COPY --chown=185:root dist-dev/mvnw mvnw
 COPY --chown=185:root dist-dev/.mvn/ .mvn/
-COPY --chown=185:root dist-dev/oc oc
+
+RUN curl --output okd.tar.gz -LO https://github.com/openshift/okd/releases/download/${OKD_VERSION}/openshift-client-linux-${OKD_VERSION}.tar.gz \
+  && tar -zxvf okd.tar.gz oc \
+  && rm okd.tar.gz \
+  && ./oc version
