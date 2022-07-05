@@ -1,0 +1,8 @@
+{
+  "reporterEnabled": "mocha-jenkins-reporter",
+  "mochaJenkinsReporterReporterOptions": {
+    "junit_report_name": "@kie-tools/vscode-extension-yard-editor",
+    "junit_report_path": "./dist-it-tests/junit-vscode-yard-tooling-it-tests.xml",
+    "junit_report_stack": 0
+  }
+}
