@@ -30,7 +30,7 @@ export class NoOpAuthProvider implements AuthProvider {
     return false;
   }
 
-  public subscribeToSessionChange(substrciption: () => void): vscode.Disposable {
+  public subscribeToSessionChange(subscription: () => void): vscode.Disposable {
     return {
       dispose: () => {},
     };

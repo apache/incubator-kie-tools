@@ -39,11 +39,17 @@ public class Context {
         this.nameToUUIDBindings = new HashMap<>();
     }
 
+    public HashMap<String, String> getNameToUUIDBindings() {
+        return nameToUUIDBindings;
+    }
+
     public Node getWorkflowRootNode() {
         return workflowRootNode;
     }
 
     public void setWorkflowRootNode(Node workflowRootNode) {
+        nameToUUIDBindings.put(workflowRootNode.getUUID(), workflowRootNode.getUUID());
+
         this.workflowRootNode = workflowRootNode;
     }
 
@@ -57,6 +63,19 @@ public class Context {
 
     public Graph getGraph() {
         return graphIndex.getGraph();
+    }
+
+    public String resolveUUID(String name, HashMap<String, String> previousNameToUUIDBindings) {
+        if (null != previousNameToUUIDBindings) {
+            final String uuid = previousNameToUUIDBindings.get(name);
+            if (null != uuid) {
+                nameToUUIDBindings.put(name, uuid); //add to current context
+
+                return previousNameToUUIDBindings.get(name);
+            }
+        }
+
+        return obtainUUID(name);
     }
 
     public String obtainUUID(String name) {

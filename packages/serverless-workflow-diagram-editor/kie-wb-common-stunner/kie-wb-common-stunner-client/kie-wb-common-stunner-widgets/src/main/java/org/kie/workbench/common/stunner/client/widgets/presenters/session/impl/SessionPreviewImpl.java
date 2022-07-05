@@ -44,6 +44,7 @@ import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler
 import org.kie.workbench.common.stunner.core.client.canvas.BaseCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.Canvas;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasPanel;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.MediatorsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.actions.TextPropertyProviderFactory;
@@ -89,6 +90,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     private final ManagedInstance<PreviewLienzoPanel> canvasPanels;
     private final ManagedInstance<BaseCanvasHandler> canvasHandlers;
     private final ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorControls;
+    private final ManagedInstance<AlertsControl<AbstractCanvas>> alertControls;
     private final ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls;
     private final ManagedInstance<CanvasCommandFactory> canvasCommandFactories;
     private final ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers;
@@ -97,6 +99,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
     private PreviewLienzoPanel canvasPanel;
     private SessionPreviewCanvasHandlerProxy canvasHandler;
     private MediatorsControl<AbstractCanvas> mediatorsControl;
+    private AlertsControl<AbstractCanvas> alertsControl;
     private SelectionControl<AbstractCanvasHandler, Element> selectionControl;
     private CanvasCommandFactory commandFactory;
     private CanvasCommandManager<AbstractCanvasHandler> commandManager;
@@ -114,6 +117,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
                               final @Any ManagedInstance<PreviewLienzoPanel> canvasPanels,
                               final @Any ManagedInstance<BaseCanvasHandler> canvasHandlers,
                               final @Any ManagedInstance<MediatorsControl<AbstractCanvas>> mediatorControls,
+                              final @Any ManagedInstance<AlertsControl<AbstractCanvas>> alertControls,
                               final @Any @SingleSelection ManagedInstance<SelectionControl<AbstractCanvasHandler, Element>> selectionControls,
                               final @Any ManagedInstance<CanvasCommandFactory> canvasCommandFactories,
                               final @Any ManagedInstance<CanvasCommandManager<AbstractCanvasHandler>> canvasCommandManagers,
@@ -128,6 +132,7 @@ public class SessionPreviewImpl<S extends AbstractSession>
         this.canvasPanels = canvasPanels;
         this.canvasHandlers = canvasHandlers;
         this.mediatorControls = mediatorControls;
+        this.alertControls = alertControls;
         this.selectionControls = selectionControls;
         this.canvasCommandFactories = canvasCommandFactories;
         this.canvasCommandManagers = canvasCommandManagers;
@@ -143,6 +148,11 @@ public class SessionPreviewImpl<S extends AbstractSession>
                     @Override
                     public <C extends Canvas> MediatorsControl<C> getMediatorsControl() {
                         return (MediatorsControl<C>) mediatorsControl;
+                    }
+
+                    @Override
+                    public <C extends Canvas> AlertsControl<C> getAlertsControl() {
+                        return (AlertsControl<C>) alertsControl;
                     }
 
                     @Override
@@ -225,12 +235,14 @@ public class SessionPreviewImpl<S extends AbstractSession>
                                                              shapeManager,
                                                              textPropertyProviderFactory);
         mediatorsControl = InstanceUtils.lookup(mediatorControls, qualifier);
+        alertsControl = InstanceUtils.lookup(alertControls, qualifier);
         selectionControl = InstanceUtils.lookup(selectionControls, qualifier);
         commandFactory = InstanceUtils.lookup(canvasCommandFactories, qualifier);
         commandManager = InstanceUtils.lookup(canvasCommandManagers, qualifier);
 
         // Allow preview to scale as the diagram grows horizontally/vertically
         mediatorsControl.init(canvas);
+        alertsControl.init(canvas);
     }
 
     @SuppressWarnings("unchecked")
@@ -365,5 +377,11 @@ public class SessionPreviewImpl<S extends AbstractSession>
     @SuppressWarnings("all")
     public MediatorsControl<AbstractCanvas> getMediatorsControl() {
         return mediatorsControl;
+    }
+
+    @Override
+    @SuppressWarnings("all")
+    public AlertsControl<AbstractCanvas> getAlertsControl() {
+        return alertsControl;
     }
 }

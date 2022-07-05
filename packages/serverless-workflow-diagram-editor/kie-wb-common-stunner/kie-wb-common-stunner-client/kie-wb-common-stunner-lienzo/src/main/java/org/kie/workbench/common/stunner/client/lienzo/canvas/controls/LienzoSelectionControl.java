@@ -106,11 +106,21 @@ public class LienzoSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void clear() {
+        super.clear();
+        clearHandlers();
+    }
+
+    private void clearHandlers() {
         new HashSet<>(handlers.keySet())
                 .forEach(this::deregister);
         handlers.clear();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        clearHandlers();
     }
 
     private void registerHandler(final String uuid,

@@ -7,8 +7,9 @@
         "@kie-tools/serverless-logic-sandbox",
         "@kie-tools/text-editor",
         "@kie-tools/yard-editor",
-        "vscode-extension-serverless-workflow-editor",
         "chrome-extension-serverless-workflow-editor",
+        "vscode-extension-serverless-workflow-editor",
+        "vscode-extension-yard-editor",
         "@kie-tools/dashbuilder-editor"
       ]
     }
