@@ -122,7 +122,7 @@ export default class VSCodeTestHelper {
       }
     }
 
-    await sleep(1000);
+    await sleep(3000);
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
     // should be always two groups, one text editor and one swf editor
     assert.equal(editorGroups.length, 2);

@@ -118,9 +118,9 @@ export default class VSCodeTestHelper {
       const fileItem = await this.workspaceSectionView.findItem(fileName);
       if (fileItem != undefined) {
         await fileItem.click();
-        await sleep(1000);
       }
     }
+    await sleep(3000);
 
     const editorGroups = await this.workbench.getEditorView().getEditorGroups();
     // should be always two groups, one text editor and one swf editor
