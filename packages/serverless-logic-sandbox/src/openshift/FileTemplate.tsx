@@ -15,6 +15,7 @@
  */
 
 import { PROJECT_FILES } from "../project";
+import { OpenShiftSettingsConfig } from "../settings/openshift/OpenShiftSettingsConfig";
 
 const CONTAINER_IMAGES = {
   baseQuarkusProject: process.env.WEBPACK_REPLACE__serverlessLogicSandbox_baseImageFullUrl,
@@ -25,11 +26,13 @@ const DEFAULT_ENV = 'ENV MAVEN_OPTS="-Xmx352m -Xms128m" JAVA_OPTS="-Xmx352m -Xms
 const DEPLOYMENTS_FOLDER = "/deployments";
 const SANDBOX_FOLDER = "/tmp/sandbox";
 const MVNW_PATH = `${SANDBOX_FOLDER}/mvnw`;
+const OC_PATH = `${SANDBOX_FOLDER}/oc`;
 
 const resolveProjectPaths = (projectFolder: string) => ({
   root: `${projectFolder}`,
   mainResources: `${projectFolder}/src/main/resources`,
   metaInfResources: `${projectFolder}/src/main/resources/META-INF/resources`,
+  kubernetes: `${projectFolder}/target/kubernetes`,
   quarkusApp: `${projectFolder}/target/quarkus-app`,
   pom: `${projectFolder}/${PROJECT_FILES.pomXml}`,
 });
@@ -50,8 +53,11 @@ export function createDockerfileContentForBaseQuarkusProjectImage(): string {
   `;
 }
 
-export function createDockerfileContentForBaseJdk11MvnImage(projectName: string): string {
-  const sanitizedProjectName = projectName.replace(/[^A-Z0-9]/gi, "_"); // Replace whitespaces and special chars
+export function createDockerfileContentForBaseJdk11MvnImage(args: {
+  projectName: string;
+  openShiftConfig: OpenShiftSettingsConfig;
+}): string {
+  const sanitizedProjectName = args.projectName.replace(/[^A-Z0-9]/gi, "_"); // Replace whitespaces and special chars
   const projectFolder = `${SANDBOX_FOLDER}/${sanitizedProjectName}`;
   const projectPaths = resolveProjectPaths(projectFolder);
   return `
@@ -59,7 +65,9 @@ export function createDockerfileContentForBaseJdk11MvnImage(projectName: string)
   ${DEFAULT_ENV}
   RUN mkdir ${projectPaths.root}/
   COPY --chown=185:root . ${projectPaths.root}/
-  RUN ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} \
+  RUN ${OC_PATH} login --token=${args.openShiftConfig.token} --server=${args.openShiftConfig.host} \
+    && ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} \
+    && if [ -f ${projectPaths.kubernetes}/kogito.yml ]; then ${OC_PATH} apply -n ${args.openShiftConfig.namespace} -f ${projectPaths.kubernetes}/kogito.yml; fi \
     && cp ${projectPaths.quarkusApp}/*.jar ${DEPLOYMENTS_FOLDER} \
     && cp -R ${projectPaths.quarkusApp}/lib/ ${DEPLOYMENTS_FOLDER} \
     && cp -R ${projectPaths.quarkusApp}/app/ ${DEPLOYMENTS_FOLDER} \

@@ -1,10 +1,11 @@
-# Copyright 2022 Red Hat
+#!/bin/bash
+# Copyright 2022 Red Hat, Inc. and/or its affiliates
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+#      http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -12,12 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.12
-
-RUN mkdir /tmp/sandbox/
-
-WORKDIR /tmp/sandbox/
-
-COPY --chown=185:root dist-dev/mvnw mvnw
-COPY --chown=185:root dist-dev/.mvn/ .mvn/
-COPY --chown=185:root dist-dev/oc oc
+curl --output-dir dist-dev -LO https://github.com/openshift/okd/releases/download/$1/openshift-client-linux-$1.tar.gz
+tar -C dist-dev -zxvf dist-dev/openshift-client-linux-$1.tar.gz oc
+rm dist-dev/openshift-client-linux-$1.tar.gz

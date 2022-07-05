@@ -358,6 +358,11 @@ const ENV_VARS = {
     default: "latest",
     description: "",
   },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion",
+    default: "4.10.0-0.okd-2022-06-24-212905",
+    description: "",
+  },
   KN_PLUGIN_WORKFLOW__quarkusVersion: {
     name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
     default: "2.10.0.Final",
@@ -548,6 +553,7 @@ module.exports = {
       name: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName),
       tag: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag),
       buildTags: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags),
+      okdVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion),
     },
     kieSandboxExtendedServices: {
       compatibleVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion),

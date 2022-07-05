@@ -98,7 +98,10 @@ export function OpenShiftContextProvider(props: Props) {
           relativePath: PROJECT_FILES.dockerFile,
           getFileContents: async () => {
             const dockerfileContent = args.shouldDeployAsProject
-              ? createDockerfileContentForBaseJdk11MvnImage(workspaceName)
+              ? createDockerfileContentForBaseJdk11MvnImage({
+                  projectName: workspaceName,
+                  openShiftConfig: settings.openshift.config,
+                })
               : createDockerfileContentForBaseQuarkusProjectImage();
             return encoder.encode(dockerfileContent);
           },
