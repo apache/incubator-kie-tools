@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-curl --output-dir dist-dev -LO https://github.com/openshift/okd/releases/download/$1/openshift-client-linux-$1.tar.gz
-tar -C dist-dev -zxvf dist-dev/openshift-client-linux-$1.tar.gz oc
-rm dist-dev/openshift-client-linux-$1.tar.gz
+curl --output dist-dev/okd.tar.gz -LO https://github.com/openshift/okd/releases/download/$1/openshift-client-linux-$1.tar.gz
+tar -C dist-dev -zxvf dist-dev/okd.tar.gz oc
+rm dist-dev/okd.tar.gz
