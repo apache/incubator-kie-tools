@@ -95,7 +95,7 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       language: LANGUAGE,
       scrollBeyondLastLine: false,
       automaticLayout: true,
-      fontSize: 14,
+      fontSize: 12,
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
