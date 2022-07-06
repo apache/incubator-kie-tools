@@ -15520,17 +15520,17 @@ packages:
     resolution:
       { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
 
-  /monaco-page-objects/1.9.0_hka5vqvaes6dno5lo3xs7pan7y:
+  /monaco-page-objects/2.0.0_rbm5onw4rdv3wixpn2nzow77om:
     resolution:
-      { integrity: sha512-CVTbG5GAMv6Gh704/h0bL+VK8NkYwy/bga/5JG1uqc7TM426PCG5ssHe7gyTEYQx4iCgWQFg8+obQqn//d1ohQ== }
+      { integrity: sha512-+nMHbbQIsxpBqn0semRpAaa24L+RORi+RKD3yoTIzZQLCBqhsgjksqX+c3mIFpvIQDLGUxS5MKZoo1xRpkKd2g== }
     peerDependencies:
-      selenium-webdriver: ^3.0.0
+      selenium-webdriver: ^4.2.0
     dependencies:
       clipboardy: 2.3.0
       clone-deep: 4.0.1
       compare-versions: 3.6.0
       fs-extra: 10.0.0
-      selenium-webdriver: 3.6.0
+      selenium-webdriver: 4.2.0
       ts-essentials: 8.1.0_typescript@4.5.4
     transitivePeerDependencies:
       - typescript
