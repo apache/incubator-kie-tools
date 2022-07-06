@@ -22064,3 +22064,8 @@ packages:
     dependencies:
       tslib: 2.3.0
     dev: true
+
+  /hpagent/0.1.2:
+    resolution:
+      { integrity: sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ== }
+    dev: true
