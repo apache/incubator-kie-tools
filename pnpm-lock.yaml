@@ -21112,15 +21112,15 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /vscode-extension-tester-locators/1.62.0_bwl5ocqujumeeyxdjdsy5dboba:
+  /vscode-extension-tester-locators/2.0.0_q7aqd6epe36dorcswu5mv7hqau:
     resolution:
-      { integrity: sha512-7mGTy2Fm5VA5Go6tXnt4RrItmJnygWmlGHstWmwsYqtxEkJ5hHC4Cc59FhnaPtl/j0NlgQ+iSqPBoiQNC+J8cw== }
+      { integrity: sha512-ljmevi7R1K5uCiMpstKydh/sCA9TEiohxLmzX30ZZU5qE/ZNWz/5oLrxTdqN3EcSVW9ZXhExvrQFvHoYZxy9Ng== }
     peerDependencies:
-      monaco-page-objects: ^1.0.0
-      selenium-webdriver: ^3.0.0
+      monaco-page-objects: ^2.0.0
+      selenium-webdriver: ^4.2.0
     dependencies:
-      monaco-page-objects: 1.9.0_hka5vqvaes6dno5lo3xs7pan7y
-      selenium-webdriver: 3.6.0
+      monaco-page-objects: 2.0.0_rbm5onw4rdv3wixpn2nzow77om
+      selenium-webdriver: 4.2.0
     dev: true
 
   /vscode-extension-tester/4.3.0_jvempbdbjtvhoodinnen4jiyly:
