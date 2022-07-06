@@ -65,7 +65,7 @@ export function createDockerfileContentForBaseJdk11MvnImage(args: {
   ${DEFAULT_ENV}
   RUN mkdir ${projectPaths.root}/
   COPY --chown=185:root . ${projectPaths.root}/
-  RUN ${OC_PATH} login --token=${args.openShiftConfig.token} --server=${args.openShiftConfig.host} \
+  RUN ${OC_PATH} login --token=${args.openShiftConfig.token} --server=${args.openShiftConfig.host} --insecure-skip-tls-verify \
     && ${MVNW_PATH} clean package -B -ntp -f ${projectPaths.pom} \
     && if [ -f ${projectPaths.kubernetes}/kogito.yml ]; then ${OC_PATH} apply -n ${args.openShiftConfig.namespace} -f ${projectPaths.kubernetes}/kogito.yml; fi \
     && cp ${projectPaths.quarkusApp}/*.jar ${DEPLOYMENTS_FOLDER} \
