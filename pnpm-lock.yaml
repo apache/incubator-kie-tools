@@ -22076,3 +22076,11 @@ packages:
       monaco-editor: ">=0.30.0"
     dependencies:
       monaco-editor: 0.33.0
+
+  /monaco-worker-manager/2.0.1_monaco-editor@0.33.0:
+    resolution:
+      { integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg== }
+    peerDependencies:
+      monaco-editor: ">=0.30.0"
+    dependencies:
+      monaco-editor: 0.33.0
