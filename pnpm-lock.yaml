@@ -22072,3 +22072,11 @@ packages:
     resolution:
       { integrity: sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ== }
     dev: true
+
+  /monaco-marker-data-provider/1.1.0_monaco-editor@0.33.0:
+    resolution:
+      { integrity: sha512-g5YH4FLItl3usf0Qxr1Td/vCd4XZmPOFh+dFpo8d+Q5mp8nJZTPFMVA7kwz0vWAy0zBd7bzQYUmfdvHfR1ETBw== }
+    peerDependencies:
+      monaco-editor: ">=0.30.0"
+    dependencies:
+      monaco-editor: 0.33.0
