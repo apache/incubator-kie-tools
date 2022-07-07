@@ -121,7 +121,7 @@ importers:
       uniforms-bridge-simple-schema-2: ^3.5.5
       url-loader: ^4.1.1
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.2.3
+      vscode-extension-tester: ^4.3.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
@@ -243,7 +243,7 @@ importers:
       uniforms-bridge-simple-schema-2: 3.6.2
       url-loader: 4.1.1_plzek67nbn24rjxjp577ruq77e
       vsce: 2.6.5
-      vscode-extension-tester: 4.2.3_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 4.3.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -15520,17 +15520,17 @@ packages:
     resolution:
       { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
 
-  /monaco-page-objects/1.9.0_hka5vqvaes6dno5lo3xs7pan7y:
+  /monaco-page-objects/2.0.0_rbm5onw4rdv3wixpn2nzow77om:
     resolution:
-      { integrity: sha512-CVTbG5GAMv6Gh704/h0bL+VK8NkYwy/bga/5JG1uqc7TM426PCG5ssHe7gyTEYQx4iCgWQFg8+obQqn//d1ohQ== }
+      { integrity: sha512-+nMHbbQIsxpBqn0semRpAaa24L+RORi+RKD3yoTIzZQLCBqhsgjksqX+c3mIFpvIQDLGUxS5MKZoo1xRpkKd2g== }
     peerDependencies:
-      selenium-webdriver: ^3.0.0
+      selenium-webdriver: ^4.2.0
     dependencies:
       clipboardy: 2.3.0
       clone-deep: 4.0.1
       compare-versions: 3.6.0
       fs-extra: 10.0.0
-      selenium-webdriver: 3.6.0
+      selenium-webdriver: 4.2.0
       ts-essentials: 8.1.0_typescript@4.5.4
     transitivePeerDependencies:
       - typescript
@@ -21112,41 +21112,44 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /vscode-extension-tester-locators/1.62.0_bwl5ocqujumeeyxdjdsy5dboba:
+  /vscode-extension-tester-locators/2.0.0_q7aqd6epe36dorcswu5mv7hqau:
     resolution:
-      { integrity: sha512-7mGTy2Fm5VA5Go6tXnt4RrItmJnygWmlGHstWmwsYqtxEkJ5hHC4Cc59FhnaPtl/j0NlgQ+iSqPBoiQNC+J8cw== }
+      { integrity: sha512-ljmevi7R1K5uCiMpstKydh/sCA9TEiohxLmzX30ZZU5qE/ZNWz/5oLrxTdqN3EcSVW9ZXhExvrQFvHoYZxy9Ng== }
     peerDependencies:
-      monaco-page-objects: ^1.0.0
-      selenium-webdriver: ^3.0.0
+      monaco-page-objects: ^2.0.0
+      selenium-webdriver: ^4.2.0
     dependencies:
-      monaco-page-objects: 1.9.0_hka5vqvaes6dno5lo3xs7pan7y
-      selenium-webdriver: 3.6.0
+      monaco-page-objects: 2.0.0_rbm5onw4rdv3wixpn2nzow77om
+      selenium-webdriver: 4.2.0
     dev: true
 
-  /vscode-extension-tester/4.2.3_jvempbdbjtvhoodinnen4jiyly:
+  /vscode-extension-tester/4.3.0_jvempbdbjtvhoodinnen4jiyly:
     resolution:
-      { integrity: sha512-VNJTw4I1uGULiUdAlyf47zZ+J5nYnqkcHI9rjk/gjpymphYob5rRHk1og1vPUUT7rYTv5fYL2cJ8xpw7POe+5A== }
+      { integrity: sha512-Ih12B4j64l/XQMQ4SdWI+UpltzaCmHlX1u9yv9iIIUi/y401jgjQLbIoFxCUNas0SzG767hVjkzKsKbmzFPMXw== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
     dependencies:
-      "@types/selenium-webdriver": 3.0.17
+      "@types/selenium-webdriver": 4.1.1
       commander: 8.3.0
       compare-versions: 3.6.0
       fs-extra: 10.0.0
       glob: 7.2.0
       got: 11.8.2
+      hpagent: 0.1.2
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 1.9.0_hka5vqvaes6dno5lo3xs7pan7y
+      monaco-page-objects: 2.0.0_rbm5onw4rdv3wixpn2nzow77om
       sanitize-filename: 1.6.3
-      selenium-webdriver: 3.6.0
+      selenium-webdriver: 4.2.0
       targz: 1.0.1
       unzip-stream: 0.3.1
-      vsce: 1.103.1
-      vscode-extension-tester-locators: 1.62.0_bwl5ocqujumeeyxdjdsy5dboba
+      vsce: 2.6.5
+      vscode-extension-tester-locators: 2.0.0_q7aqd6epe36dorcswu5mv7hqau
     transitivePeerDependencies:
+      - bufferutil
       - typescript
+      - utf-8-validate
     dev: true
 
   /vscode-json-languageservice/4.2.1:
@@ -22060,4 +22063,9 @@ packages:
       { integrity: sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw== }
     dependencies:
       tslib: 2.3.0
+    dev: true
+
+  /hpagent/0.1.2:
+    resolution:
+      { integrity: sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ== }
     dev: true
