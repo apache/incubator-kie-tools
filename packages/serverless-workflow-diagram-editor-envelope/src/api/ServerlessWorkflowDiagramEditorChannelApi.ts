@@ -17,5 +17,7 @@
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 
 export interface ServerlessWorkflowDiagramEditorChannelApi extends KogitoEditorChannelApi {
-  kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void;
+  kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUrl?: string }): void;
+  // TODO: documentUrl-> documentUri
+  kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUrl?: string }): void;
 }

@@ -66,7 +66,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
     private readonly setValidationErrors: (errors: editor.IMarker[]) => void,
-    private readonly fileName: string = ""
+    private readonly onEditorSelectedNode: (nodeName: string) => void
   ) {
     this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => {
@@ -78,6 +78,10 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
     editor.onDidChangeMarkers(() => {
       this.setValidationErrors(this.getValidationMarkers());
+    });
+
+    editor.onDidCreateEditor((codeEditor) => {
+      codeEditor.onMouseDown((event) => this.highlightNodeOnDiagram(event));
     });
 
     this.swfOffsetsApi = this.language === FileLanguage.JSON ? new SwfJsonOffsets() : new SwfYamlOffsets();
@@ -172,6 +176,30 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
     this.editor?.revealLineInCenter(targetPosition.lineNumber);
     this.editor?.setPosition(targetPosition);
+  }
+
+  public highlightNodeOnDiagram(event: editor.IEditorMouseEvent): void {
+    const position = event.target.position;
+
+    if (!position) {
+      return;
+    }
+
+    const offset = this.editor?.getModel()?.getOffsetAt(position);
+
+    if (!offset) {
+      return;
+    }
+
+    this.swfOffsetsApi.parseContent(this.getContent());
+
+    const nodeName = this.swfOffsetsApi.getStateNameFromOffset(offset);
+
+    if (!nodeName) {
+      return;
+    }
+
+    this.onEditorSelectedNode(nodeName);
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

@@ -36,6 +36,29 @@ function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
 }
 
+function initSwfOffetsApi(textDocument: vscode.TextDocument) {
+  if (!textDocument) {
+    console.debug("TextDocument not found");
+    return;
+  }
+
+  const resourceUri = textDocument.uri.path;
+  const fileLanguage = getFileLanguage(textDocument.fileName);
+
+  if (!fileLanguage) {
+    return;
+  }
+
+  const editorContent = textDocument.getText();
+
+  if (!swfOffsetsApi) {
+    swfOffsetsApi =
+      fileLanguage === FileLanguage.JSON ? new SwfJsonOffsets(resourceUri) : new SwfYamlOffsets(resourceUri);
+  }
+
+  swfOffsetsApi?.parseContent(editorContent);
+}
+
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
   if (!isSwf(args.textEditor.document)) {
     return;
@@ -132,27 +155,17 @@ export async function setupDiagramEditorControls(args: {
         const textEditor = vscode.window.visibleTextEditors.filter(
           (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
         )[0];
+        const resourceUri = textEditor.document.uri.path;
 
-        if (!textEditor) {
-          console.debug("TextEditor not found");
+        if (swfOffsetsApi && documentUri !== swfOffsetsApi.documentUri) {
+          swfOffsetsApi = undefined;
+        }
+
+        initSwfOffetsApi(textEditor.document);
+
+        if (!swfOffsetsApi) {
           return;
         }
-
-        const resourceUri = textEditor.document.uri;
-        const fileLanguage = getFileLanguage(textEditor.document.fileName);
-
-        if (!fileLanguage) {
-          return;
-        }
-
-        const editorContent = textEditor.document.getText();
-
-        if (!swfOffsetsApi || documentUri !== swfOffsetsApi.documentUri) {
-          swfOffsetsApi =
-            fileLanguage === FileLanguage.JSON ? new SwfJsonOffsets(documentUri) : new SwfYamlOffsets(documentUri);
-        }
-
-        swfOffsetsApi.parseContent(editorContent);
 
         const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
 
@@ -190,4 +203,14 @@ export async function setupDiagramEditorControls(args: {
       active: false,
     });
   }
+
+  vscode.window.onDidChangeTextEditorSelection((e) => {
+    const offset = e.textEditor.document.offsetAt(e.selections[0].active);
+
+    initSwfOffetsApi(e.textEditor.document);
+
+    const nodeName = swfOffsetsApi?.getStateNameFromOffset(offset);
+
+    debugger;
+  });
 }

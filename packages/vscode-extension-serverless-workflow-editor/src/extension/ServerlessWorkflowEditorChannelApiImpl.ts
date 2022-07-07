@@ -190,4 +190,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
     return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
   }
+
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
+    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__highlightNode(args);
+  }
 }
