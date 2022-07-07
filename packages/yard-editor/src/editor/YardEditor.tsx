@@ -16,21 +16,12 @@
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
-  Button,
   Drawer,
   DrawerContent,
   DrawerContentBody,
   DrawerPanelBody,
   DrawerPanelContent,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  Tab,
-  Tabs,
-  TabTitleText,
-  Title,
-} from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+} from "@patternfly/react-core/dist/js/components/Drawer";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTextEditorController";
@@ -193,49 +184,10 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
     [initialContent, props.channelType, onContentChanged, setValidationErrors, props.isReadOnly]
   );
 
-  const EmptyStep = ({
-    emptyStateBodyText,
-    emptyStateTitleText,
-  }: {
-    emptyStateBodyText: string;
-    emptyStateTitleText: string;
-  }) => {
-    return (
-      <EmptyState>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel={"h6"} size={"md"}>
-          {emptyStateTitleText}
-        </Title>
-        <EmptyStateBody>{emptyStateBodyText}</EmptyStateBody>
-      </EmptyState>
-    );
-  };
-
-  const onNewElementButtonClicked = useCallback(() => {
-    window.alert("Not yet implemented");
-  }, []);
-
   const yardUIContainer = (
-    <Tabs isBox={false} aria-label="Tabs in the default example">
-      <Tab eventKey={0} title={<TabTitleText>Decision Elements</TabTitleText>}>
-        <div style={{ padding: 10 }}>
-          <Button variant="primary" onClick={onNewElementButtonClicked}>
-            New Element
-          </Button>{" "}
-          <Button variant="danger" isDisabled={true}>
-            Delete Element
-          </Button>
-        </div>
-        <div style={{ padding: 10 }}>
-          <EmptyStep
-            emptyStateTitleText="No decision elements"
-            emptyStateBodyText="Your yard file doesn't have any Decision element. Please add a new element"
-          ></EmptyStep>
-        </div>
-      </Tab>
-      <Tab eventKey={1} title={<TabTitleText>Decision Inputs</TabTitleText>}></Tab>
-      <Tab eventKey={2} title={<TabTitleText>General</TabTitleText>}></Tab>
-    </Tabs>
+    <>
+      <p>Future UI here</p>
+    </>
   );
 
   return (
@@ -245,7 +197,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody style={{ padding: 5 }}>{yardUIContainer}</DrawerPanelBody>
+                <DrawerPanelBody>{yardUIContainer}</DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
