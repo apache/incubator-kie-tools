@@ -194,11 +194,11 @@ public class DiagramEditorTest {
 
         promises = new SyncPromises();
         metadata = spy(new MetadataImpl.MetadataImplBuilder("testSet")
-                .setTitle("testDiagram")
-                .build());
+                               .setTitle("testDiagram")
+                               .build());
         diagram = spy(new DiagramImpl("testDiagram",
-                graph,
-                metadata));
+                                      graph,
+                                      metadata));
         when(session.getCanvasHandler()).thenReturn(canvasHandler2);
         when(canvasHandler2.getDiagram()).thenReturn(diagram);
         doReturn(stunnerEditor2).when(stunnerEditor2).close();
@@ -209,10 +209,10 @@ public class DiagramEditorTest {
         when(stunnerEditor2.getCanvasHandler()).thenReturn(canvasHandler2);
         when(stunnerEditor2.getDiagram()).thenReturn(diagram);
         tested = spy(new DiagramEditor(promises,
-                stunnerEditor2,
-                diagramServices,
-                incrementalMarshaller,
-                canvasFileExport));
+                                       stunnerEditor2,
+                                       diagramServices,
+                                       incrementalMarshaller,
+                                       canvasFileExport));
         tested.jsRegExp = jsRegExp;
         tested.jsCanvas = jsCanvas;
     }

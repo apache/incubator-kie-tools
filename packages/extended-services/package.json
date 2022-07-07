@@ -27,13 +27,14 @@
     "pack-app:win32": "echo 'Nothing to do'",
     "build:dev": "rimraf dist jitexecutor && pnpm copy-jitexecutor && pnpm build",
     "build:prod": "rimraf dist jitexecutor && pnpm copy-jitexecutor && pnpm build && pnpm pack-app",
-    "start": "ENV=dev go run main.go"
+    "start": "cross-env ENV=dev go run main.go"
   },
   "dependencies": {
     "@kie-tools/jitexecutor-native": "1.12.0-Final"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.0.0",
+    "cross-env": "^5.2.1"
   }
 }

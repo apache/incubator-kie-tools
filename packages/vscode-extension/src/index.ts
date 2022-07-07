@@ -45,8 +45,8 @@ export async function startExtension(args: {
   extensionName: string;
   context: vscode.ExtensionContext;
   viewType: string;
-  generateSvgCommandId: string;
-  silentlyGenerateSvgCommandId: string;
+  generateSvgCommandId?: string;
+  silentlyGenerateSvgCommandId?: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   backendProxy: VsCodeBackendProxy;
   channelApiProducer?: KogitoEditorChannelApiProducer;
@@ -116,29 +116,33 @@ export async function startExtension(args: {
     throw new Error("Type not supported");
   }
 
-  args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.generateSvgCommandId, () =>
-      generateSvg({
-        editorStore: editorStore,
-        workspaceApi: workspaceApi,
-        vsCodeI18n: vsCodeI18n,
-        displayNotification: true,
-        editorEnvelopeLocator: args.editorEnvelopeLocator,
-      })
-    )
-  );
+  if (args.generateSvgCommandId !== undefined) {
+    args.context.subscriptions.push(
+      vscode.commands.registerCommand(args.generateSvgCommandId, () =>
+        generateSvg({
+          editorStore: editorStore,
+          workspaceApi: workspaceApi,
+          vsCodeI18n: vsCodeI18n,
+          displayNotification: true,
+          editorEnvelopeLocator: args.editorEnvelopeLocator,
+        })
+      )
+    );
+  }
 
-  args.context.subscriptions.push(
-    vscode.commands.registerCommand(args.silentlyGenerateSvgCommandId, () =>
-      generateSvg({
-        editorStore: editorStore,
-        workspaceApi: workspaceApi,
-        vsCodeI18n: vsCodeI18n,
-        displayNotification: false,
-        editorEnvelopeLocator: args.editorEnvelopeLocator,
-      })
-    )
-  );
+  if (args.silentlyGenerateSvgCommandId !== undefined) {
+    args.context.subscriptions.push(
+      vscode.commands.registerCommand(args.silentlyGenerateSvgCommandId, () =>
+        generateSvg({
+          editorStore: editorStore,
+          workspaceApi: workspaceApi,
+          vsCodeI18n: vsCodeI18n,
+          displayNotification: false,
+          editorEnvelopeLocator: args.editorEnvelopeLocator,
+        })
+      )
+    );
+  }
 
   return editorStore;
 }

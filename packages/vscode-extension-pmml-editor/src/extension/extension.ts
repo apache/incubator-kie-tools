@@ -38,8 +38,6 @@ export function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-pmml-editor",
     context: context,
     viewType: "kieKogitoWebviewEditorsPmml",
-    generateSvgCommandId: "",
-    silentlyGenerateSvgCommandId: "",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/PmmlEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
     ]),

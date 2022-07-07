@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
+export * from "./AuthProviderFactory";
 export * from "./AuthProvider";
-export * from "./lookupAuthProvider";
