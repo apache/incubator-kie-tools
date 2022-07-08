@@ -25,7 +25,7 @@ import {
   TabTitleText,
   Title,
 } from "@patternfly/react-core";
-import { CubesIcon } from "@patternfly/react-icons";
+import { CubesIcon, MinusIcon, PlusIcon } from "@patternfly/react-icons";
 import { useCallback } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 
@@ -58,10 +58,10 @@ export const YardUIEditor = () => {
     <Tabs isBox={false} aria-label="Tabs in the default example">
       <Tab eventKey={0} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
         <div style={{ padding: 10 }}>
-          <Button variant="primary" onClick={onNewElementButtonClicked}>
+          <Button variant="primary" icon={PlusIcon} onClick={onNewElementButtonClicked}>
             {i18n.decisionElementsTab.addDecisionElementsButton}
           </Button>{" "}
-          <Button variant="danger" isDisabled={true}>
+          <Button icon={MinusIcon} isDisabled={true} variant="danger">
             {i18n.decisionElementsTab.removeDecisionElementButton}
           </Button>
         </div>
@@ -72,8 +72,8 @@ export const YardUIEditor = () => {
           ></EmptyStep>
         </div>
       </Tab>
-      <Tab eventKey={1} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}></Tab>
-      <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}></Tab>
+      <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}></Tab>
+      <Tab eventKey={2} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}></Tab>
     </Tabs>
   );
 };
