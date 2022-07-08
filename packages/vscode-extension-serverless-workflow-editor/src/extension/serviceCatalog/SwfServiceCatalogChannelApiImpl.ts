@@ -60,4 +60,8 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
     vscode.commands.executeCommand(COMMAND_IDS.serviceRegistriesConfig);
   }
+
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
+    debugger;
+  }
 }

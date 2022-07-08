@@ -17,4 +17,6 @@
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { CanvasEnvelopeApi } from "@kie-tools/kie-bc-editors/dist/jslienzo/CanvasApi";
 
-export interface ServerlessWorkflowDiagramEditorEnvelopeApi extends KogitoEditorEnvelopeApi, CanvasEnvelopeApi {}
+export interface ServerlessWorkflowDiagramEditorEnvelopeApi extends KogitoEditorEnvelopeApi, CanvasEnvelopeApi {
+  kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void;
+}

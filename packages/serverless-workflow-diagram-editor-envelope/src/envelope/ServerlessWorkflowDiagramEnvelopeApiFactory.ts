@@ -123,7 +123,7 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     return editor.centerNode(uuid);
   }
 
-  //   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }){
-  //     debugger;
-  //   }
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
+    debugger;
+  }
 }

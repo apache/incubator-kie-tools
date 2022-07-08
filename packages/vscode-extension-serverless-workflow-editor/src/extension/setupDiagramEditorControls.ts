@@ -28,7 +28,14 @@ import {
   SwfYamlOffsets,
 } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { SwfLanguageServiceChannelApi, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 
 let swfOffsetsApi: SwfOffsetsApi | undefined = undefined;
 
@@ -205,12 +212,21 @@ export async function setupDiagramEditorControls(args: {
   }
 
   vscode.window.onDidChangeTextEditorSelection((e) => {
+    const uri = e.textEditor.document.uri;
     const offset = e.textEditor.document.offsetAt(e.selections[0].active);
 
     initSwfOffetsApi(e.textEditor.document);
 
     const nodeName = swfOffsetsApi?.getStateNameFromOffset(offset);
 
-    debugger;
+    // const swfServiceCatalogEnvelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer< ServerlessWorkflowDiagramEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi >;
+    // const swfServiceCatalogEnvelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer< SwfLanguageServiceChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi >;
+    const swfServiceCatalogEnvelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer;
+
+    // swfServiceCatalogEnvelopeServer.envelopeApi.requests.kogitoSwfLanguageService__highlightNode.send({nodeName, documentUri: uri});
+    // args.kieToolsEditorStore.activeEditor?.envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send();
+    swfServiceCatalogEnvelopeServer?.envelopeApi.notifications.kogitoSwfLanguageService__highlightNode.send({
+      nodeName,
+    });
   });
 }
