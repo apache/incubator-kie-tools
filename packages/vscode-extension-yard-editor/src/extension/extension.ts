@@ -42,8 +42,6 @@ export async function activate(context: vscode.ExtensionContext) {
     extensionName: "kie-group.vscode-extension-yard-editor",
     context: context,
     viewType: WEBVIEW_EDITOR_VIEW_TYPE,
-    generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
-    silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
         "yard",

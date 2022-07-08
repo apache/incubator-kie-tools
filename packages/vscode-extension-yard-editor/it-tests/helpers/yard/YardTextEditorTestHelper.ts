@@ -14,9 +14,19 @@
  * limitations under the License.
  */
 
-export const COMMAND_IDS = {
-  openAsDiagram: "extension.kogito.yard.openAsDiagram",
-  openAsSource: "extension.kogito.yard.openAsSource",
-  setupAutomaticallyOpenDiagramEditorAlongsideTextEditor:
-    "extension.kogito.yard.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
-};
+import { TextEditor } from "vscode-extension-tester";
+
+/**
+ * Helper class to support work with yard text editor.
+ */
+export default class YardTextEditorTestHelper {
+  constructor(private readonly textEditor: TextEditor) {}
+
+  public async isDirty(): Promise<boolean> {
+    return this.textEditor.isDirty();
+  }
+
+  public async getText(): Promise<string> {
+    return this.textEditor.getText();
+  }
+}

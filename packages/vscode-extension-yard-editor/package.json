@@ -11,12 +11,14 @@
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
     "build:dev": "rimraf dist && webpack --env dev",
     "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_yard_editor_$npm_package_version.vsix",
     "compile": "webpack --env dev",
     "watch": "webpack --env dev",
-    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
+    "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
+    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
+    "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix"
   },
   "dependencies": {
     "@kie-tools-core/backend": "0.0.0",
@@ -31,7 +33,7 @@
     "@kie-tools-core/workspace": "0.0.0",
     "@kie-tools/yard-editor": "0.0.0",
     "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^3.2.1",
+    "monaco-yaml": "^4.0.0",
     "openapi-types": "^7.0.1",
     "vscode-languageserver-textdocument": "^1.0.4",
     "vscode-languageserver-types": "^3.16.0",
