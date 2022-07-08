@@ -121,7 +121,7 @@ importers:
       uniforms-bridge-simple-schema-2: ^3.5.5
       url-loader: ^4.1.1
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.2.3
+      vscode-extension-tester: ^4.3.0
       vscode-test: ^1.6.1
       webpack: ^5.36.2
       webpack-cli: ^4.7.0
@@ -243,7 +243,7 @@ importers:
       uniforms-bridge-simple-schema-2: 3.6.2
       url-loader: 4.1.1_plzek67nbn24rjxjp577ruq77e
       vsce: 2.6.5
-      vscode-extension-tester: 4.2.3_jvempbdbjtvhoodinnen4jiyly
+      vscode-extension-tester: 4.3.0_jvempbdbjtvhoodinnen4jiyly
       vscode-test: 1.6.1
       webpack: 5.70.0_webpack-cli@4.7.0
       webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
@@ -651,9 +651,7 @@ importers:
       "@kie-tools/serverless-workflow-text-editor": 0.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      monaco-yaml: ^4.0.0
     devDependencies:
       "@kie-tools-core/chrome-extension": link:../chrome-extension
       "@kie-tools-core/editor": link:../editor
@@ -668,10 +666,8 @@ importers:
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       monaco-editor: 0.33.0
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
 
   packages/cors-proxy-image:
     specifiers:
@@ -940,7 +936,7 @@ importers:
       "@patternfly/react-icons": ^4.11.17
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       vscode-json-languageservice: ^4.2.1
@@ -955,14 +951,14 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       vscode-json-languageservice: 4.2.1
 
   packages/dashbuilder-images:
@@ -1813,7 +1809,7 @@ importers:
       json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       vscode-json-languageservice: ^4.2.1
@@ -1837,7 +1833,7 @@ importers:
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       json-schema: 0.4.0
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       vscode-languageserver-types: 3.16.0
@@ -1846,7 +1842,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       vscode-json-languageservice: 4.2.1
 
   packages/serverless-workflow-diagram-editor:
@@ -1993,7 +1989,7 @@ importers:
       json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       vscode-json-languageservice: ^4.2.1
@@ -2012,7 +2008,7 @@ importers:
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       json-schema: 0.4.0
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       vscode-languageserver-types: 3.16.0
@@ -2021,7 +2017,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       vscode-json-languageservice: 4.2.1
 
   packages/stunner-editors:
@@ -2430,7 +2426,7 @@ importers:
       "@rhoas/registry-instance-sdk": ^0.34.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
@@ -2453,7 +2449,7 @@ importers:
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
       "@rhoas/registry-instance-sdk": 0.34.1
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       openapi-types: 7.2.3
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
@@ -2463,7 +2459,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/vscode-extension-yard-editor:
     specifiers:
@@ -2483,7 +2479,7 @@ importers:
       "@kie-tools/yard-editor": 0.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
@@ -2501,7 +2497,7 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/yard-editor": link:../yard-editor
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       openapi-types: 7.2.3
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
@@ -2510,7 +2506,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/vscode-java-code-completion:
     specifiers:
@@ -2571,7 +2567,7 @@ importers:
       json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -2587,7 +2583,7 @@ importers:
       csstype: 3.0.11
       json-schema: 0.4.0
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
@@ -2595,7 +2591,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
 packages:
   /@actions/core/1.6.0:
@@ -2740,6 +2736,7 @@ packages:
     transitivePeerDependencies:
       - "@swc/core"
       - "@types/express"
+      - bluebird
       - bufferutil
       - chokidar
       - debug
@@ -2856,6 +2853,7 @@ packages:
       symbol-observable: 4.0.0
       uuid: 8.3.2
     transitivePeerDependencies:
+      - bluebird
       - chokidar
       - supports-color
     dev: true
@@ -2904,6 +2902,7 @@ packages:
     engines: { node: ^12.20.0 || ^14.15.0 || >=16.10.0 }
     dependencies:
       tslib: 2.3.1
+    dev: false
 
   /@angular/core/13.1.1_rxjs@7.5.2+zone.js@0.11.4:
     resolution:
@@ -4432,12 +4431,14 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/xvfb/1.2.4:
+  /@cypress/xvfb/1.2.4_supports-color@8.1.1:
     resolution:
       { integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q== }
     dependencies:
-      debug: 3.2.7
+      debug: 3.2.7_supports-color@8.1.1
       lodash.once: 4.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@discoveryjs/json-ext/0.5.6:
@@ -4890,6 +4891,8 @@ packages:
       promise-retry: 2.0.1
       semver: 7.3.5
       which: 2.0.2
+    transitivePeerDependencies:
+      - bluebird
     dev: true
 
   /@npmcli/installed-package-contents/1.0.7:
@@ -4932,6 +4935,7 @@ packages:
       node-gyp: 8.4.1
       read-package-json-fast: 2.0.2
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -5900,11 +5904,6 @@ packages:
     resolution:
       { integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA== }
 
-  /@types/selenium-webdriver/3.0.17:
-    resolution:
-      { integrity: sha512-tGomyEuzSC1H28y2zlW6XPCaDaXFaD6soTdb4GNdmte2qfHtrKqhy0ZFs4r/1hpazCfEZqeTSRLvSasmEx89uw== }
-    dev: true
-
   /@types/selenium-webdriver/4.1.1:
     resolution:
       { integrity: sha512-NxxZZek50ylIACiXebKQYHD3D4One3WXOasEXWazL6aTfYbZob7ClNKxUpg8I4/oWArX87oPWvj1cHKqfel3Hg== }
@@ -6672,6 +6671,8 @@ packages:
     dependencies:
       micromatch: 3.1.10
       normalize-path: 2.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /anymatch/3.1.2:
@@ -7055,6 +7056,8 @@ packages:
       private: 0.1.8
       slash: 1.0.0
       source-map: 0.5.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-generator/6.26.1:
@@ -7077,6 +7080,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-builder-binary-assignment-operator-visitor/6.24.1:
@@ -7085,6 +7090,8 @@ packages:
       babel-helper-explode-assignable-expression: 6.24.1
       babel-runtime: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-call-delegate/6.24.1:
@@ -7094,6 +7101,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-define-map/6.26.0:
@@ -7103,6 +7112,8 @@ packages:
       babel-runtime: 6.26.0
       babel-types: 6.26.0
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-explode-assignable-expression/6.24.1:
@@ -7111,6 +7122,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-explode-class/6.24.1:
@@ -7120,6 +7133,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-function-name/6.24.1:
@@ -7130,6 +7145,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-get-function-arity/6.24.1:
@@ -7169,6 +7186,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-replace-supers/6.24.1:
@@ -7180,6 +7199,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helpers/6.24.1:
@@ -7187,6 +7208,8 @@ packages:
     dependencies:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-jest/26.6.3_@babel+core@7.16.12:
@@ -7362,6 +7385,8 @@ packages:
       babel-helper-remap-async-to-generator: 6.24.1
       babel-plugin-syntax-async-generators: 6.13.0
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-async-to-generator/6.24.1:
@@ -7370,6 +7395,8 @@ packages:
       babel-helper-remap-async-to-generator: 6.24.1
       babel-plugin-syntax-async-functions: 6.13.0
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-class-constructor-call/6.24.1:
@@ -7378,6 +7405,8 @@ packages:
       babel-plugin-syntax-class-constructor-call: 6.18.0
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-class-properties/6.24.1:
@@ -7387,6 +7416,8 @@ packages:
       babel-plugin-syntax-class-properties: 6.13.0
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-decorators/6.24.1:
@@ -7397,6 +7428,8 @@ packages:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-do-expressions/6.22.0:
@@ -7426,6 +7459,8 @@ packages:
       babel-traverse: 6.26.0
       babel-types: 6.26.0
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-classes/6.24.1:
@@ -7440,6 +7475,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-computed-properties/6.24.1:
@@ -7447,6 +7484,8 @@ packages:
     dependencies:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-destructuring/6.23.0:
@@ -7474,6 +7513,8 @@ packages:
       babel-helper-function-name: 6.24.1
       babel-runtime: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-literals/6.22.0:
@@ -7488,6 +7529,8 @@ packages:
       babel-plugin-transform-es2015-modules-commonjs: 6.26.2
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-commonjs/6.26.2:
@@ -7498,6 +7541,8 @@ packages:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-systemjs/6.24.1:
@@ -7506,6 +7551,8 @@ packages:
       babel-helper-hoist-variables: 6.24.1
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-umd/6.24.1:
@@ -7514,6 +7561,8 @@ packages:
       babel-plugin-transform-es2015-modules-amd: 6.24.1
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-object-super/6.24.1:
@@ -7521,6 +7570,8 @@ packages:
     dependencies:
       babel-helper-replace-supers: 6.24.1
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-parameters/6.24.1:
@@ -7532,6 +7583,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-shorthand-properties/6.24.1:
@@ -7581,6 +7634,8 @@ packages:
       babel-helper-builder-binary-assignment-operator-visitor: 6.24.1
       babel-plugin-syntax-exponentiation-operator: 6.13.0
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-export-extensions/6.22.0:
@@ -7666,6 +7721,8 @@ packages:
       babel-plugin-transform-es2015-typeof-symbol: 6.23.0
       babel-plugin-transform-es2015-unicode-regex: 6.24.1
       babel-plugin-transform-regenerator: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-jest/26.6.2_@babel+core@7.16.12:
@@ -7686,6 +7743,8 @@ packages:
       babel-plugin-transform-do-expressions: 6.22.0
       babel-plugin-transform-function-bind: 6.22.0
       babel-preset-stage-1: 6.24.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-stage-1/6.24.1:
@@ -7694,6 +7753,8 @@ packages:
       babel-plugin-transform-class-constructor-call: 6.24.1
       babel-plugin-transform-export-extensions: 6.22.0
       babel-preset-stage-2: 6.24.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-stage-2/6.24.1:
@@ -7703,6 +7764,8 @@ packages:
       babel-plugin-transform-class-properties: 6.24.1
       babel-plugin-transform-decorators: 6.24.1
       babel-preset-stage-3: 6.24.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-stage-3/6.24.1:
@@ -7713,6 +7776,8 @@ packages:
       babel-plugin-transform-async-to-generator: 6.24.1
       babel-plugin-transform-exponentiation-operator: 6.24.1
       babel-plugin-transform-object-rest-spread: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-register/6.26.0:
@@ -7725,6 +7790,8 @@ packages:
       lodash: 4.17.21
       mkdirp: 0.5.5
       source-map-support: 0.4.18
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-runtime/6.26.0:
@@ -7742,6 +7809,8 @@ packages:
       babel-types: 6.26.0
       babylon: 6.18.0
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-traverse/6.26.0:
@@ -7756,6 +7825,8 @@ packages:
       globals: 9.18.0
       invariant: 2.2.4
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-types/6.26.0:
@@ -7905,6 +7976,8 @@ packages:
       qs: 6.7.0
       raw-body: 2.4.0
       type-is: 1.6.18
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /body-parser/1.19.1:
@@ -7922,6 +7995,8 @@ packages:
       qs: 6.9.6
       raw-body: 2.4.2
       type-is: 1.6.18
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /bonjour/3.5.0:
@@ -7966,6 +8041,8 @@ packages:
       snapdragon-node: 2.1.1
       split-string: 3.1.0
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /braces/3.0.2:
@@ -8015,6 +8092,8 @@ packages:
       { integrity: sha512-AO+mECXsW4QcqC9bxwM29O7qWa7bJT94uBFzeb5brylIQwawuEziwq20dPYbins95GlWzOawgyDNdjYAo32EKg== }
     dependencies:
       https-proxy-agent: 2.2.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /bs-logger/0.2.6:
@@ -8130,6 +8209,8 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
       unique-filename: 1.1.1
+    transitivePeerDependencies:
+      - bluebird
     dev: true
 
   /cache-base/1.0.1:
@@ -8387,6 +8468,8 @@ packages:
       lighthouse-logger: 1.2.0
       mkdirp: 0.5.5
       rimraf: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /chrome-remote-interface/0.27.2:
@@ -8396,6 +8479,9 @@ packages:
     dependencies:
       commander: 2.11.0
       ws: 6.2.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: true
 
   /chrome-trace-event/1.0.2:
@@ -8780,6 +8866,8 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /concat-map/0.0.1:
@@ -8819,6 +8907,8 @@ packages:
       finalhandler: 1.1.2
       parseurl: 1.3.3
       utils-merge: 1.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /console-control-strings/1.1.0:
@@ -9073,6 +9163,8 @@ packages:
       babel-register: 6.26.0
       cross-spawn: 5.1.0
       exit: 0.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /css-blank-pseudo/3.0.3_postcss@8.4.5:
@@ -9270,6 +9362,9 @@ packages:
     dependencies:
       chalk: 2.4.2
       chrome-remote-interface: 0.27.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: true
 
   /cypress-real-events/1.7.0:
@@ -9287,7 +9382,7 @@ packages:
     requiresBuild: true
     dependencies:
       "@cypress/request": 2.88.10
-      "@cypress/xvfb": 1.2.4
+      "@cypress/xvfb": 1.2.4_supports-color@8.1.1
       "@types/node": 14.17.0
       "@types/sinonjs__fake-timers": 8.1.1
       "@types/sizzle": 2.3.2
@@ -9926,19 +10021,47 @@ packages:
   /debug/2.6.9:
     resolution:
       { integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA== }
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
 
   /debug/3.2.7:
     resolution:
       { integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ== }
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
+
+  /debug/3.2.7_supports-color@8.1.1:
+    resolution:
+      { integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ== }
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+      supports-color: 8.1.1
+    dev: true
 
   /debug/4.1.0:
     resolution:
       { integrity: sha512-heNPJUJIqC+xB6ayLAMHaIrmN9HKa7aQO8MGqKpvCA+uJYVcvR6l5kgdrhRuwPFHU7P5/A1w0BjByPHwpfTDKg== }
     deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
     dev: true
@@ -10241,10 +10364,6 @@ packages:
 
   /delegates/1.0.0:
     resolution: { integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o= }
-
-  /denodeify/1.2.1:
-    resolution: { integrity: sha1-OjYof1A05pnnV3kBBSwubJQlFjE= }
-    dev: true
 
   /depd/1.1.1:
     resolution: { integrity: sha1-V4O04cRZ8G+lyif5kfPQbnoxA1k= }
@@ -10592,6 +10711,8 @@ packages:
       isbinaryfile: 3.0.3
       minimist: 1.2.6
       plist: 3.0.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /electron-packager/15.2.0:
@@ -10754,11 +10875,6 @@ packages:
 
   /ent/2.2.0:
     resolution: { integrity: sha1-6WQhkyWiHQX0RGai9obtbOX13R0= }
-    dev: true
-
-  /entities/2.0.3:
-    resolution:
-      { integrity: sha512-MyoZ0jgnLvB2X3Lg5HqpFmn1kybDiIfEQmKzTb5apr51Rb+T3KdmMiqa70T+bhGnyv7bQ6WMj2QMHpGMmlrUYQ== }
     dev: true
 
   /entities/2.1.0:
@@ -11087,6 +11203,7 @@ packages:
       esbuild-windows-64: 0.14.22
       esbuild-windows-arm64: 0.14.22
     dev: true
+    optional: true
 
   /escalade/3.1.1:
     resolution:
@@ -11429,6 +11546,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /expand-template/2.0.3:
@@ -11485,6 +11604,8 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /extend-shallow/2.0.1:
@@ -11529,6 +11650,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /extract-zip/1.7.0:
@@ -11540,6 +11663,8 @@ packages:
       debug: 2.6.9
       mkdirp: 0.5.5
       yauzl: 2.10.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /extract-zip/2.0.1:
@@ -11803,6 +11928,8 @@ packages:
       parseurl: 1.3.3
       statuses: 1.5.0
       unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /find-cache-dir/3.3.1:
@@ -12168,6 +12295,8 @@ packages:
       debug: 2.6.9
       lodash.get: 4.4.2
       read-pkg-up: 2.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /get-port/5.1.1:
@@ -12632,6 +12761,11 @@ packages:
       wbuf: 1.7.3
     dev: true
 
+  /hpagent/0.1.2:
+    resolution:
+      { integrity: sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ== }
+    dev: true
+
   /html-encoding-sniffer/2.0.1:
     resolution:
       { integrity: sha512-D5JbOMBIR/TVZkubHT+OyT2705QvogUW4IBn6nHd756OwieSF9aDYFj4dv6HHEVGYbHaLETa3WggZYWWMyy3ZQ== }
@@ -12860,6 +12994,8 @@ packages:
     dependencies:
       agent-base: 4.3.0
       debug: 3.2.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /https-proxy-agent/4.0.0:
@@ -13798,6 +13934,8 @@ packages:
       walker: 1.0.7
     optionalDependencies:
       fsevents: 2.3.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-image-snapshot/4.2.0:
@@ -13924,6 +14062,8 @@ packages:
       "@jest/types": 26.6.2
       jest-regex-util: 26.0.0
       jest-snapshot: 26.6.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-resolve/26.6.2:
@@ -14045,6 +14185,8 @@ packages:
       natural-compare: 1.4.0
       pretty-format: 26.6.2
       semver: 7.3.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-util/26.6.2:
@@ -14326,7 +14468,6 @@ packages:
   /jsonc-parser/3.0.0:
     resolution:
       { integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA== }
-    dev: true
 
   /jsonfile/4.0.0:
     resolution: { integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss= }
@@ -14668,6 +14809,8 @@ packages:
     resolution: { integrity: sha1-CAUuDODYOdPEMXi5CluzQkvvH5k= }
     dependencies:
       morgan: 1.10.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /koa-mount/4.0.0:
@@ -14778,6 +14921,8 @@ packages:
       mime: 1.6.0
       needle: 2.9.1
       source-map: 0.6.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /leven/3.1.0:
@@ -14830,17 +14975,12 @@ packages:
     dependencies:
       debug: 2.6.9
       marky: 1.2.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /lines-and-columns/1.1.6:
     resolution: { integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA= }
-
-  /linkify-it/2.2.0:
-    resolution:
-      { integrity: sha512-GnAl/knGn+i1U/wjBz3akz2stz+HrHLsxMwHQGofCDfPvlf+gDKN58UtfmUquTY4/MXeE2x7k19KQmeoZi94Iw== }
-    dependencies:
-      uc.micro: 1.0.6
-    dev: true
 
   /linkify-it/3.0.3:
     resolution:
@@ -15151,6 +15291,8 @@ packages:
       node-pre-gyp: 0.11.0
       readable-stream: 2.3.7
       rimraf: 2.7.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /magic-string/0.25.7:
@@ -15210,6 +15352,7 @@ packages:
       socks-proxy-agent: 6.1.1
       ssri: 8.0.1
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -15233,18 +15376,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       object-visit: 1.0.1
-    dev: true
-
-  /markdown-it/10.0.0:
-    resolution:
-      { integrity: sha512-YWOP1j7UbDNz+TumYP1kpwnP0aEa711cJjrAQrzd0UXlbJfc5aAq0F/PZHjiioqDC1NKgvIMX+o+9Bk7yuM2dg== }
-    hasBin: true
-    dependencies:
-      argparse: 1.0.10
-      entities: 2.0.3
-      linkify-it: 2.2.0
-      mdurl: 1.0.1
-      uc.micro: 1.0.6
     dev: true
 
   /markdown-it/12.3.2:
@@ -15375,6 +15506,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /micromatch/4.0.4:
@@ -15668,7 +15801,7 @@ packages:
       { integrity: sha512-UgzG4rvxYpN15jgCmVJwac49h9ly9NurikMWGPdVxm8GZD6XjkKPxDTjQQ43gtGgnV3X0cAyWDdP2Wexoquifg== }
     dev: false
 
-  /monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm:
+  /monaco-editor-webpack-plugin/7.0.1_cnxsqw4hy73v5lwn7lflrwex4q:
     resolution:
       { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
     peerDependencies:
@@ -15678,7 +15811,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
     dev: true
 
   /monaco-editor/0.23.0:
@@ -15690,36 +15823,55 @@ packages:
     resolution:
       { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
 
-  /monaco-page-objects/1.9.0_hka5vqvaes6dno5lo3xs7pan7y:
+  /monaco-marker-data-provider/1.1.0_monaco-editor@0.33.0:
     resolution:
-      { integrity: sha512-CVTbG5GAMv6Gh704/h0bL+VK8NkYwy/bga/5JG1uqc7TM426PCG5ssHe7gyTEYQx4iCgWQFg8+obQqn//d1ohQ== }
+      { integrity: sha512-g5YH4FLItl3usf0Qxr1Td/vCd4XZmPOFh+dFpo8d+Q5mp8nJZTPFMVA7kwz0vWAy0zBd7bzQYUmfdvHfR1ETBw== }
     peerDependencies:
-      selenium-webdriver: ^3.0.0
+      monaco-editor: ">=0.30.0"
+    dependencies:
+      monaco-editor: 0.33.0
+
+  /monaco-page-objects/2.0.0_rbm5onw4rdv3wixpn2nzow77om:
+    resolution:
+      { integrity: sha512-+nMHbbQIsxpBqn0semRpAaa24L+RORi+RKD3yoTIzZQLCBqhsgjksqX+c3mIFpvIQDLGUxS5MKZoo1xRpkKd2g== }
+    peerDependencies:
+      selenium-webdriver: ^4.2.0
     dependencies:
       clipboardy: 2.3.0
       clone-deep: 4.0.1
       compare-versions: 3.6.0
       fs-extra: 10.0.0
-      selenium-webdriver: 3.6.0
+      selenium-webdriver: 4.2.0
       ts-essentials: 8.1.0_typescript@4.5.4
     transitivePeerDependencies:
       - typescript
     dev: true
 
-  /monaco-yaml/3.2.1_monaco-editor@0.33.0:
+  /monaco-worker-manager/2.0.1_monaco-editor@0.33.0:
     resolution:
-      { integrity: sha512-2geAd5I7H1SMgwTHBuyPAPK9WTAzxbl9XwDl5h6NY6n9j4qnlLLQKK1i0P9cAmUiV2uaiViz69RLNWqVU5BVsg== }
+      { integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg== }
     peerDependencies:
-      monaco-editor: ">=0.22"
+      monaco-editor: ">=0.30.0"
+    dependencies:
+      monaco-editor: 0.33.0
+
+  /monaco-yaml/4.0.0_monaco-editor@0.33.0:
+    resolution:
+      { integrity: sha512-7/CbvZIHE1iOQF6ny+uPclcsrBnkK54lcZugIB9SzqADljhb3TliJyYs7vouaGNDF73RWvrtZrMsWCC5N/GW+g== }
+    peerDependencies:
+      monaco-editor: ">=0.30"
     dependencies:
       "@types/json-schema": 7.0.11
-      js-yaml: 4.1.0
+      jsonc-parser: 3.0.0
       monaco-editor: 0.33.0
+      monaco-marker-data-provider: 1.1.0_monaco-editor@0.33.0
+      monaco-worker-manager: 2.0.1_monaco-editor@0.33.0
       path-browserify: 1.0.1
-      prettier: 2.0.5
+      prettier: 2.3.0
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
-      yaml-language-server-parser: 0.1.3
+      vscode-uri: 3.0.3
+      yaml: 2.0.1
 
   /mongo-object/0.1.4:
     resolution:
@@ -15736,6 +15888,8 @@ packages:
       depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /mri/1.1.6:
@@ -15827,6 +15981,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /napi-build-utils/1.0.2:
@@ -15847,6 +16003,8 @@ packages:
       debug: 3.2.7
       iconv-lite: 0.4.24
       sax: 1.2.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /negotiator/0.6.2:
@@ -15972,6 +16130,7 @@ packages:
       tar: 6.1.11
       which: 2.0.2
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -16014,6 +16173,8 @@ packages:
       rimraf: 2.7.1
       semver: 5.7.1
       tar: 4.4.19
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /node-releases/2.0.3:
@@ -16160,6 +16321,7 @@ packages:
       minizlib: 2.1.2
       npm-package-arg: 8.1.5
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -16600,6 +16762,7 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -17036,6 +17199,8 @@ packages:
       async: 2.6.4
       debug: 3.2.7
       mkdirp: 0.5.5
+    transitivePeerDependencies:
+      - supports-color
 
   /posix-character-classes/0.1.1:
     resolution: { integrity: sha1-AerA/jta9xoqbAL+q7jB/vfgDqs= }
@@ -17507,12 +17672,6 @@ packages:
     resolution: { integrity: sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc= }
     engines: { node: ">=4" }
 
-  /prettier/2.0.5:
-    resolution:
-      { integrity: sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-
   /prettier/2.3.0:
     resolution:
       { integrity: sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w== }
@@ -17595,6 +17754,11 @@ packages:
 
   /promise-inflight/1.0.1:
     resolution: { integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM= }
+    peerDependencies:
+      bluebird: "*"
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
     dev: true
 
   /promise-retry/2.0.1:
@@ -18804,6 +18968,8 @@ packages:
       micromatch: 3.1.10
       minimist: 1.2.6
       walker: 1.0.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /sanitize-filename/1.6.3:
@@ -18908,17 +19074,6 @@ packages:
     resolution: { integrity: sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo= }
     dev: true
 
-  /selenium-webdriver/3.6.0:
-    resolution:
-      { integrity: sha512-WH7Aldse+2P5bbFBO4Gle/nuQOdVwpHMTL6raL3uuBj/vPG07k6uzt3aiahu352ONBr5xXh0hDlM3LhtXPOC4Q== }
-    engines: { node: ">= 6.9.0" }
-    dependencies:
-      jszip: 3.7.1
-      rimraf: 2.7.1
-      tmp: 0.0.30
-      xml2js: 0.4.23
-    dev: true
-
   /selenium-webdriver/4.2.0:
     resolution:
       { integrity: sha512-gPPXYSz4jJBM2kANRQ9cZW6KFBzR/ptxqGLtyC75eXtdgOsWWRRRyZz5F2pqdnwNmAjrCSFMMXfisJaZeWVejg== }
@@ -18986,6 +19141,8 @@ packages:
       on-finished: 2.3.0
       range-parser: 1.2.1
       statuses: 1.5.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /serialize-error/7.0.1:
@@ -19029,6 +19186,8 @@ packages:
       http-errors: 1.6.3
       mime-types: 2.1.34
       parseurl: 1.3.3
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /serve-static/1.14.1:
@@ -19040,6 +19199,8 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.17.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /set-blocking/2.0.0:
@@ -19275,6 +19436,8 @@ packages:
       source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /socket.io-adapter/2.3.3:
@@ -20055,6 +20218,8 @@ packages:
     dependencies:
       debug: 4.1.0
       is2: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /temp-fs/0.9.9:
@@ -20214,13 +20379,6 @@ packages:
     dependencies:
       popper.js: 1.16.1
     dev: false
-
-  /tmp/0.0.30:
-    resolution: { integrity: sha1-ckGdSovn1s51FI/YsyTlk6cRwu0= }
-    engines: { node: ">=0.4.0" }
-    dependencies:
-      os-tmpdir: 1.0.2
-    dev: true
 
   /tmp/0.0.33:
     resolution:
@@ -20803,10 +20961,6 @@ packages:
     deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
 
-  /url-join/1.1.0:
-    resolution: { integrity: sha1-dBxsL0WWxIMNZxhGCSDQySIC3Hg= }
-    dev: true
-
   /url-join/4.0.1:
     resolution:
       { integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA== }
@@ -21224,37 +21378,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vsce/1.103.1:
-    resolution:
-      { integrity: sha512-98oKQKKRp7J/vTIk1cuzom5cezZpYpRHs3WlySdsrTCrAEipB/HvaPTc4VZ3hGZHzHXS9P5p2L0IllntJeXwiQ== }
-    engines: { node: ">= 10" }
-    hasBin: true
-    dependencies:
-      azure-devops-node-api: 11.0.1
-      chalk: 2.4.2
-      cheerio: 1.0.0-rc.10
-      commander: 6.2.1
-      denodeify: 1.2.1
-      glob: 7.2.0
-      hosted-git-info: 4.1.0
-      keytar: 7.7.0
-      leven: 3.1.0
-      lodash: 4.17.21
-      markdown-it: 10.0.0
-      mime: 1.6.0
-      minimatch: 3.0.5
-      osenv: 0.1.5
-      parse-semver: 1.1.1
-      read: 1.0.7
-      semver: 5.7.1
-      tmp: 0.2.1
-      typed-rest-client: 1.8.4
-      url-join: 1.1.0
-      xml2js: 0.4.23
-      yauzl: 2.10.0
-      yazl: 2.5.1
-    dev: true
-
   /vsce/2.6.5:
     resolution:
       { integrity: sha512-KB3m0CDlWZCKwjQx2oSg35vWgTNrcOPcL6DGLVGewKhadwbL2OWGRoMRKUUFFtPFKwp3BwuTvEM5fENG/AQ5Lg== }
@@ -21283,41 +21406,44 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /vscode-extension-tester-locators/1.62.0_bwl5ocqujumeeyxdjdsy5dboba:
+  /vscode-extension-tester-locators/2.0.0_q7aqd6epe36dorcswu5mv7hqau:
     resolution:
-      { integrity: sha512-7mGTy2Fm5VA5Go6tXnt4RrItmJnygWmlGHstWmwsYqtxEkJ5hHC4Cc59FhnaPtl/j0NlgQ+iSqPBoiQNC+J8cw== }
+      { integrity: sha512-ljmevi7R1K5uCiMpstKydh/sCA9TEiohxLmzX30ZZU5qE/ZNWz/5oLrxTdqN3EcSVW9ZXhExvrQFvHoYZxy9Ng== }
     peerDependencies:
-      monaco-page-objects: ^1.0.0
-      selenium-webdriver: ^3.0.0
+      monaco-page-objects: ^2.0.0
+      selenium-webdriver: ^4.2.0
     dependencies:
-      monaco-page-objects: 1.9.0_hka5vqvaes6dno5lo3xs7pan7y
-      selenium-webdriver: 3.6.0
+      monaco-page-objects: 2.0.0_rbm5onw4rdv3wixpn2nzow77om
+      selenium-webdriver: 4.2.0
     dev: true
 
-  /vscode-extension-tester/4.2.3_jvempbdbjtvhoodinnen4jiyly:
+  /vscode-extension-tester/4.3.0_jvempbdbjtvhoodinnen4jiyly:
     resolution:
-      { integrity: sha512-VNJTw4I1uGULiUdAlyf47zZ+J5nYnqkcHI9rjk/gjpymphYob5rRHk1og1vPUUT7rYTv5fYL2cJ8xpw7POe+5A== }
+      { integrity: sha512-Ih12B4j64l/XQMQ4SdWI+UpltzaCmHlX1u9yv9iIIUi/y401jgjQLbIoFxCUNas0SzG767hVjkzKsKbmzFPMXw== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
     dependencies:
-      "@types/selenium-webdriver": 3.0.17
+      "@types/selenium-webdriver": 4.1.1
       commander: 8.3.0
       compare-versions: 3.6.0
       fs-extra: 10.0.0
       glob: 7.2.0
       got: 11.8.2
+      hpagent: 0.1.2
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 1.9.0_hka5vqvaes6dno5lo3xs7pan7y
+      monaco-page-objects: 2.0.0_rbm5onw4rdv3wixpn2nzow77om
       sanitize-filename: 1.6.3
-      selenium-webdriver: 3.6.0
+      selenium-webdriver: 4.2.0
       targz: 1.0.1
       unzip-stream: 0.3.1
-      vsce: 1.103.1
-      vscode-extension-tester-locators: 1.62.0_bwl5ocqujumeeyxdjdsy5dboba
+      vsce: 2.6.5
+      vscode-extension-tester-locators: 2.0.0_q7aqd6epe36dorcswu5mv7hqau
     transitivePeerDependencies:
+      - bufferutil
       - typescript
+      - utf-8-validate
     dev: true
 
   /vscode-json-languageservice/4.2.1:
@@ -21361,7 +21487,6 @@ packages:
   /vscode-uri/3.0.3:
     resolution:
       { integrity: sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA== }
-    dev: true
 
   /w3c-hr-time/1.0.2:
     resolution:
@@ -21942,6 +22067,14 @@ packages:
   /ws/6.2.2:
     resolution:
       { integrity: sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw== }
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
     dependencies:
       async-limiter: 1.0.1
     dev: true
@@ -22079,6 +22212,7 @@ packages:
   /yaml-language-server-parser/0.1.3:
     resolution:
       { integrity: sha512-xD2I+6M/vqQvcy4ded8JpXUaDHXmZMdhIO3OpuiFxstutwnW4whrfDzNcrsfXVdgMWqOUpdv3747Q081PFN1+g== }
+    dev: false
 
   /yaml/1.10.2:
     resolution:
@@ -22089,7 +22223,6 @@ packages:
     resolution:
       { integrity: sha512-1NpAYQ3wjzIlMs0mgdBmYzLkFgWBIWrzYVDYfrixhoFNNgJ444/jT2kUT2sicRbJES3oQYRZugjB6Ro8SjKeFg== }
     engines: { node: ">= 14" }
-    dev: false
 
   /yargs-parser/18.1.3:
     resolution:

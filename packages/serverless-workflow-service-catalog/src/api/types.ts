@@ -17,15 +17,12 @@
 export enum AuthProviderType {
   NONE = "none",
   RH_ACCOUNT = "red-hat-account",
-  OIDC = "oidc",
 }
 
 export interface SwfServiceRegistrySettings {
   name: string;
   url: string;
   authProvider: AuthProviderType;
-  authUrl?: string;
-  clientId?: string;
 }
 
 export interface SwfServiceRegistriesSettings {

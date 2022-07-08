@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
+import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasInlineTextEditorControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ClipboardControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.ContainmentAcceptorControl;
@@ -123,6 +124,7 @@ public class DefaultEditorSessionTest {
         tested.init(metadata,
                     command);
         verify(managedSession, times(1)).registerCanvasControl(eq(MediatorsControl.class));
+        verify(managedSession, times(1)).registerCanvasControl(eq(AlertsControl.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(SelectionControl.class),
                                                                       eq(MultipleSelection.class));
         verify(managedSession, times(1)).registerCanvasHandlerControl(eq(ResizeControl.class));

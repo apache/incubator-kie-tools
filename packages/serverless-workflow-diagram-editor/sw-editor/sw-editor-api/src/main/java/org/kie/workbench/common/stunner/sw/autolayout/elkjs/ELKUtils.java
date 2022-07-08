@@ -84,6 +84,7 @@ public class ELKUtils {
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
                                   ELKLayoutProperties.layeringStrategyType.INTERACTIVE.getValue(),
                                   ELKLayoutProperties.nodePlacementStrategyType.BRANDES_KOEPF.getValue(),
+                                  ELKLayoutProperties.directionCongruencyType.ROTATION.getValue(),
                                   CANVAS_TOPDOWN_BETWEEN_LAYERS_SPACING,
                                   CANVAS_TOPDOWN_BASE_SPACING,
                                   CANVAS_TOPDOWN_TOP_PADDING,
@@ -100,6 +101,7 @@ public class ELKUtils {
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
                                   ELKLayoutProperties.layeringStrategyType.INTERACTIVE.getValue(),
                                   ELKLayoutProperties.nodePlacementStrategyType.NETWORK_SIMPLEX.getValue(),
+                                  ELKLayoutProperties.directionCongruencyType.READING_DIRECTION.getValue(),
                                   CANVAS_LEFTTORIGHT_BETWEEN_LAYERS_SPACING,
                                   CANVAS_LEFTTORIGHT_BASE_SPACING,
                                   CANVAS_LEFTTORIGHT_TOP_PADDING,
@@ -116,6 +118,7 @@ public class ELKUtils {
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
                                   ELKLayoutProperties.layeringStrategyType.INTERACTIVE.getValue(),
                                   ELKLayoutProperties.nodePlacementStrategyType.NETWORK_SIMPLEX.getValue(),
+                                  ELKLayoutProperties.directionCongruencyType.READING_DIRECTION.getValue(),
                                   CONTAINER_TOPDOWN_BETWEEN_LAYERS_SPACING,
                                   CONTAINER_TOPDOWN_BASE_SPACING,
                                   CONTAINER_TOPDOWN_TOP_PADDING,
@@ -132,6 +135,7 @@ public class ELKUtils {
                                   ELKLayoutProperties.fixedAlignmentType.BALANCED.getValue(),
                                   ELKLayoutProperties.layeringStrategyType.NETWORK_SIMPLEX.getValue(),
                                   ELKLayoutProperties.nodePlacementStrategyType.BRANDES_KOEPF.getValue(),
+                                  ELKLayoutProperties.directionCongruencyType.READING_DIRECTION.getValue(),
                                   CONTAINER_LEFTTORIGHT_BETWEEN_LAYERS_SPACING,
                                   CONTAINER_LEFTTORIGHT_BASE_SPACING,
                                   CONTAINER_LEFTTORIGHT_TOP_PADDING,
@@ -147,6 +151,7 @@ public class ELKUtils {
                                              final String fixedAlignment,
                                              final String layeringStrategy,
                                              final String nodePlacementStrategy,
+                                             final String directionCongruency,
                                              final double nodeNodeBetweenLayersSpacing,
                                              final double baseValueSpacing,
                                              final double topPadding,
@@ -162,6 +167,7 @@ public class ELKUtils {
                                          + fixedAlignment + ", "
                                          + layeringStrategy + ", "
                                          + nodePlacementStrategy + ", "
+                                         + directionCongruency + ", "
                                          + ELKLayoutProperties.getBaseValueSpacing(baseValueSpacing) + ", "
                                          + ELKLayoutProperties.getNodeNodeBetweenLayersSpacing(nodeNodeBetweenLayersSpacing) + ", "
                                          + ELKLayoutProperties.getMergeEdges(mergeEdges) + ", "

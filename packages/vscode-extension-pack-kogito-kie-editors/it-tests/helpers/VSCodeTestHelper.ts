@@ -131,6 +131,7 @@ export default class VSCodeTestHelper {
         await fileItem.click();
       }
     }
+    await sleep(3000);
 
     const webview = new WebView(this.workbench.getEditorView(), By.linkText(fileName));
     await this.waitUntilKogitoEditorIsLoaded(webview);

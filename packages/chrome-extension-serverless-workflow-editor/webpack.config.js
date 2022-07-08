@@ -93,7 +93,7 @@ module.exports = async (env) => {
             entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
             worker: {
               id: "monaco-yaml/yamlWorker",
-              entry: "monaco-yaml/lib/esm/yaml.worker",
+              entry: "monaco-yaml/yaml.worker.js",
             },
           },
         ],
