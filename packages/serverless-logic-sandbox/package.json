@@ -43,7 +43,7 @@
     "minimatch": "^3.0.4",
     "moment": "^2.29.1",
     "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^3.2.1",
+    "monaco-yaml": "^4.0.0",
     "openapi-types": "^7.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
