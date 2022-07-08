@@ -18,7 +18,7 @@
     "@kie-tools-core/webpack-base": "0.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^3.2.1"
+    "monaco-yaml": "^4.0.0"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
