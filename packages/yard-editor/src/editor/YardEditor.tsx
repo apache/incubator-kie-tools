@@ -16,18 +16,35 @@
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import {
+  Button,
   Drawer,
   DrawerContent,
   DrawerContentBody,
   DrawerPanelBody,
   DrawerPanelContent,
-} from "@patternfly/react-core/dist/js/components/Drawer";
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  Tab,
+  Tabs,
+  TabTitleText,
+  Title,
+} from "@patternfly/react-core";
+import {
+  useBoxedExpressionEditorI18n,
+  yardEditorDictionaries,
+  YardEditorI18nContext,
+  yardEditorI18nDefaults,
+} from "../i18n";
+import { CubesIcon } from "@patternfly/react-icons";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTextEditorController";
 import { YardTextEditor } from "../textEditor/YardTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import { YardUIEditor } from "../uiEditor";
 
 interface Props {
   /**
@@ -185,9 +202,14 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   );
 
   const yardUIContainer = (
-    <>
-      <p>Future UI here</p>
-    </>
+    <I18nDictionariesProvider
+      defaults={yardEditorI18nDefaults}
+      dictionaries={yardEditorDictionaries}
+      initialLocale={navigator.language}
+      ctx={YardEditorI18nContext}
+    >
+      <YardUIEditor />
+    </I18nDictionariesProvider>
   );
 
   return (
@@ -197,7 +219,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody>{yardUIContainer}</DrawerPanelBody>
+                <DrawerPanelBody style={{ padding: 5 }}>{yardUIContainer}</DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
