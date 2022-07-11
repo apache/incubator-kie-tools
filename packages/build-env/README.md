@@ -6,7 +6,7 @@ This package contains the tooling to handle environment variables and other buil
 
 #### Packages dependency graph
 
-![KIE Tools packages dependency graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fkiegroup%2Fkie-tools%2Fmain%2Fpackages%2Fbuild-env%2Fgraph.dot)
+![KIE Tools packages dependency graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fkiegroup%2Fkie-tools%2Fmain%2Frepo%2Fgraph.dot)
 
 Nodes:
 

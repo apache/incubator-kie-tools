@@ -17,10 +17,6 @@
  */
 
 const buildEnv = require("./index");
-const graphviz = require("graphviz");
-const { getPackagesSync } = require("@lerna/project");
-const fs = require("fs");
-const path = require("path");
 const { spawnSync } = require("child_process");
 
 async function main() {
@@ -37,110 +33,6 @@ async function main() {
       ...checkCliTool("mvn", ["-v"]),
     };
     console.info(checks);
-    process.exit(0);
-  }
-
-  if (opt === "--build-graph") {
-    const packages = getPackagesSync();
-    const packageMap = new Map(packages.map((p) => [p.name, p]));
-    const packageNames = new Set(packages.map((p) => p.name));
-
-    const adjMatrix = {};
-    for (const pkg of packages) {
-      adjMatrix[pkg.name] = adjMatrix[pkg.name] ?? {};
-      const dependencies = Object.keys(pkg.dependencies ?? {}).sort();
-      for (const depName of dependencies) {
-        if (packageNames.has(depName)) {
-          adjMatrix[pkg.name][depName] = "dependency";
-        }
-      }
-      const devDependencies = Object.keys(pkg.devDependencies ?? {}).sort();
-      for (const depName of devDependencies) {
-        if (packageNames.has(depName)) {
-          adjMatrix[pkg.name][depName] = "devDependency";
-        }
-      }
-    }
-
-    // transitive reduction
-    const trMatrix = JSON.parse(JSON.stringify(adjMatrix));
-    for (const s in trMatrix)
-      for (const u in trMatrix)
-        if (trMatrix[u][s] === "dependency" || trMatrix[u][s] === "devDependency" || trMatrix[u][s] === "transitive")
-          for (const v in trMatrix)
-            if (
-              trMatrix[s][v] === "dependency" ||
-              trMatrix[s][v] === "devDependency" ||
-              trMatrix[s][v] === "transitive"
-            ) {
-              trMatrix[u][v] = "transitive";
-            }
-
-    const resMatrix = trMatrix;
-
-    // print graph
-    const g = graphviz.digraph("G");
-
-    g.use = "dot";
-    g.set("ranksep", "2");
-    g.set("splines", "polyline");
-    g.set("rankdir", "TB");
-    g.set("ordering", "out");
-
-    g.setNodeAttribut("shape", "box");
-
-    g.setEdgeAttribut("headport", "n");
-    g.setEdgeAttribut("tailport", "s");
-    g.setEdgeAttribut("arrowhead", "dot");
-    g.setEdgeAttribut("arrowsize", "0.5");
-
-    const root = g.addNode("kiegroup/kie-tools");
-    root.set("shape", "folder");
-
-    for (const pkgName in resMatrix) {
-      const displayPkgName = pkgName;
-
-      const pkgProperties = (() => {
-        if (pkgName.startsWith("@kie-tools-examples") || pkgName.startsWith("kie-tools-examples-")) {
-          return { color: "orange", nodeStyle: "dashed, rounded" };
-        } else if (packageMap.get(pkgName)?.private) {
-          return { color: "black", nodeStyle: "dashed, rounded" };
-        } else if (pkgName.startsWith("@kie-tools-core")) {
-          return { color: "purple", nodeStyle: "rounded" };
-        } else {
-          return { color: "blue", nodeStyle: "rounded" };
-        }
-      })();
-
-      const node = g.addNode(displayPkgName);
-      node.set("color", pkgProperties.color);
-      node.set("fontcolor", pkgProperties.color);
-      node.set("style", pkgProperties.nodeStyle);
-
-      if (Object.keys(resMatrix[pkgName]).length === 0) {
-        g.addEdge(displayPkgName, root, {});
-      }
-
-      for (const depName in resMatrix[pkgName]) {
-        const displayDepName = depName;
-        if (resMatrix[pkgName][depName] === "dependency") {
-          const edge = g.addEdge(displayPkgName, displayDepName, {});
-          edge.set("style", "solid");
-          edge.set("color", pkgProperties.color);
-        } else if (resMatrix[pkgName][depName] === "devDependency") {
-          const edge = g.addEdge(displayPkgName, displayDepName, {});
-          edge.set("style", "dashed");
-          edge.set("color", pkgProperties.color);
-        } else if (resMatrix[pkgName][depName] === "transitive") {
-          // ignore
-        }
-      }
-    }
-
-    const outputFilePath = path.resolve(__dirname, "graph.dot");
-    fs.writeFileSync(outputFilePath, g.to_dot());
-
-    console.info(`[build-env] Wrote dependency graph to '${outputFilePath}'`);
     process.exit(0);
   }
 
