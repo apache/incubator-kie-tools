@@ -28,6 +28,7 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 import { useCallback } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
+import "./YardUIEditor.css";
 
 export const YardUIEditor = () => {
   const { i18n } = useBoxedExpressionEditorI18n();
@@ -55,25 +56,28 @@ export const YardUIEditor = () => {
   }, []);
 
   return (
-    <Tabs isBox={false} aria-label="yard menu tabs">
-      <Tab eventKey={0} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
-        <div style={{ padding: 10 }}>
-          <Button onClick={onNewElementButtonClicked} variant="primary">
-            {i18n.decisionElementsTab.addDecisionElementsButton}
-          </Button>{" "}
-          <Button isDisabled={true} variant="danger">
-            {i18n.decisionElementsTab.removeDecisionElementButton}
-          </Button>
-        </div>
-        <div style={{ padding: 10 }}>
-          <EmptyStep
-            emptyStateTitleText={i18n.decisionElementsTab.emptyStateTitle}
-            emptyStateBodyText={i18n.decisionElementsTab.emptyStateBody}
-          ></EmptyStep>
-        </div>
-      </Tab>
-      <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}></Tab>
-      <Tab eventKey={2} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}></Tab>
-    </Tabs>
+    <div className={"yard-ui-editor"}>
+      <Tabs isBox={false} aria-label="yard menu tabs">
+        <Tab eventKey={0} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
+          <div className={"decision-element-header"}>
+            <Button onClick={onNewElementButtonClicked} variant="primary">
+              {i18n.decisionElementsTab.addDecisionElementsButton}
+            </Button>
+            <div className={"divider"} />
+            <Button isDisabled={true} variant="danger">
+              {i18n.decisionElementsTab.removeDecisionElementButton}
+            </Button>
+          </div>
+          <div className={"decision-element-body"}>
+            <EmptyStep
+              emptyStateTitleText={i18n.decisionElementsTab.emptyStateTitle}
+              emptyStateBodyText={i18n.decisionElementsTab.emptyStateBody}
+            />
+          </div>
+        </Tab>
+        <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}></Tab>
+        <Tab eventKey={2} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}></Tab>
+      </Tabs>
+    </div>
   );
 };
