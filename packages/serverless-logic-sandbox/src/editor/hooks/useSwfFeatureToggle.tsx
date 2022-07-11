@@ -18,7 +18,10 @@ import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { ServerlessWorkflowEditorChannelApi, SwfFeatureToggle } from "@kie-tools/serverless-workflow-editor/dist/api";
+import {
+  ServerlessWorkflowCombinedEditorChannelApi,
+  SwfFeatureToggle,
+} from "@kie-tools/serverless-workflow-combined-editor/dist/api";
 import { useEffect, useMemo, useState } from "react";
 import { useSettings } from "../../settings/SettingsContext";
 
@@ -29,10 +32,10 @@ export function useSwfFeatureToggle(editor?: EmbeddedEditorRef): SwfFeatureToggl
     stunnerEnabled: settings.featurePreview.config.stunnerEnabled,
   });
 
-  const swfServiceCatalogEnvelopeServer = useMemo(
+  const envelopeServer = useMemo(
     () =>
       editor?.getEnvelopeServer() as unknown as EnvelopeServer<
-        ServerlessWorkflowEditorChannelApi,
+        ServerlessWorkflowCombinedEditorChannelApi,
         KogitoEditorEnvelopeApi
       >,
     [editor]
@@ -42,11 +45,7 @@ export function useSwfFeatureToggle(editor?: EmbeddedEditorRef): SwfFeatureToggl
     setFeatureToggle((prevState) => ({ ...prevState, stunnerEnabled: settings.featurePreview.config.stunnerEnabled }));
   }, [settings.featurePreview.config.stunnerEnabled]);
 
-  useStateAsSharedValue(
-    featureToggle,
-    setFeatureToggle,
-    swfServiceCatalogEnvelopeServer?.shared?.kogitoSwfFeatureToggle_get
-  );
+  useStateAsSharedValue(featureToggle, setFeatureToggle, envelopeServer?.shared?.kogitoSwfFeatureToggle_get);
 
   return featureToggle;
 }

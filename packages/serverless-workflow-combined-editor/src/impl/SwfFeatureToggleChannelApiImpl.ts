@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { SwfFeatureToggle, SwfFeatureToggleChannelApi } from "../api";
 
-export interface AuthProvider {
-  login(): Promise<void>;
+export class SwfFeatureToggleChannelApiImpl implements SwfFeatureToggleChannelApi {
+  constructor(private readonly featureToggle: SwfFeatureToggle | undefined) {}
 
-  getAuthHeader(): Promise<any>;
-
-  subscribeToSessionChange(substrciption: () => void): vscode.Disposable;
-
-  shouldLogin(): boolean;
+  public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
+    return {
+      defaultValue: this.featureToggle ?? { stunnerEnabled: false },
+    };
+  }
 }

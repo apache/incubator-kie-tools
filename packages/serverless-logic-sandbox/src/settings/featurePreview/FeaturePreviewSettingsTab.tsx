@@ -15,8 +15,7 @@
  */
 
 import * as React from "react";
-import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
-import { Form, FormAlert } from "@patternfly/react-core/dist/js/components/Form";
+import { Form } from "@patternfly/react-core/dist/js/components/Form";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { useCallback, useEffect, useState } from "react";
@@ -29,11 +28,6 @@ export function FeaturePreviewSettingsTab() {
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.featurePreview.config);
   const [stunnerEnabled, setStunnerEnabled] = useState(config.stunnerEnabled);
-  const [showPageRefreshAlert, setShowPageRefreshAlert] = useState(false);
-
-  useEffect(() => {
-    setShowPageRefreshAlert(false);
-  }, []);
 
   useEffect(() => {
     settingsDispatch.featurePreview.setConfig(config);
@@ -43,7 +37,6 @@ export function FeaturePreviewSettingsTab() {
   const onStunnerEnabledChanged = useCallback(
     (isEnabled: boolean) => {
       setStunnerEnabled(isEnabled);
-      setShowPageRefreshAlert(true);
       setConfig({ ...config, stunnerEnabled: isEnabled });
     },
     [config]
@@ -54,16 +47,6 @@ export function FeaturePreviewSettingsTab() {
       <PageSection>
         <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
           <Form>
-            {showPageRefreshAlert && (
-              <FormAlert>
-                <Alert
-                  variant="info"
-                  title={"The new configuration will be set after the editor is reopened or the page is refreshed."}
-                  aria-live="polite"
-                  isInline
-                />
-              </FormAlert>
-            )}
             <TextContent>
               <Text component={TextVariants.h3}>Feature Preview</Text>
             </TextContent>

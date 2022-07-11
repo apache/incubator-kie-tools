@@ -20,6 +20,9 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
   KogitoEdit,
   ResourceContent,
@@ -27,22 +30,19 @@ import {
   ResourceListRequest,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
-import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { ServerlessWorkflowEditorChannelApi, SwfFeatureToggle } from "@kie-tools/serverless-workflow-editor/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfFeatureToggleChannelApi } from "../api";
 
-export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowEditorChannelApi {
+export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly swfFeatureToggle: SwfFeatureToggle,
+    private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi
   ) {}
@@ -135,6 +135,10 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
   }
 
+  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
+    this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__moveCursorToNode(args);
+  }
+
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return (
       this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {
@@ -152,8 +156,10 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   }
 
   public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
-    return {
-      defaultValue: this.swfFeatureToggle,
-    };
+    return (
+      this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
+        defaultValue: { stunnerEnabled: false },
+      }
+    );
   }
 }

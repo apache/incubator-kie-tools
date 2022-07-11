@@ -14,5 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./editor";
-export * from "./impl";
+export * from "./SwfCombinedEditorChannelApiImpl";
+export * from "./SwfFeatureToggleChannelApiImpl";
+export * from "./SwfLanguageServiceChannelApiImpl";
+export * from "./SwfServiceCatalogChannelApiImpl";

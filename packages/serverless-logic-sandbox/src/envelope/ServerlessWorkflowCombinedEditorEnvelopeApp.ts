@@ -15,10 +15,12 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowEditorFactory } from "@kie-tools/serverless-workflow-editor";
+import { NoOpKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
+import { ServerlessWorkflowCombinedEditorFactory } from "@kie-tools/serverless-workflow-combined-editor/dist/editor";
 
 init({
-  container: document.getElementById("swf-editor-envelope-app")!,
+  container: document.getElementById("swf-combined-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowEditorFactory(),
+  editorFactory: new ServerlessWorkflowCombinedEditorFactory(),
+  keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });

@@ -19,19 +19,14 @@ import {
   EditorEnvelopeLocator,
   EditorTheme,
   EnvelopeMapping,
-  StateControlCommand,
+  useKogitoEditorEnvelopeContext,
 } from "@kie-tools-core/editor/dist/api";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import {
-  KogitoEdit,
-  ResourceContent,
-  ResourceContentRequest,
-  ResourceListRequest,
-  ResourcesList,
-} from "@kie-tools-core/workspace/dist/api";
+import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import {
   Drawer,
   DrawerContent,
@@ -51,6 +46,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
+import { useCustomSwfChannelApi } from "./hooks/useCustomSwfChannelApi";
 
 interface Props {
   locale: string;
@@ -58,10 +55,6 @@ interface Props {
   channelType: ChannelType;
   resourcesPathPrefix: string;
   onNewEdit: (edit: KogitoEdit) => void;
-  onStateControlCommandUpdate: (command: StateControlCommand) => void;
-  setNotifications: (path: string, notifications: Notification[]) => void;
-  kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
-  kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
@@ -75,10 +68,6 @@ interface File {
 
 const ENVELOPE_LOCATOR_TYPE = "swf";
 
-// Value fixed to `false` until this is integrated with Serverless Logic Sandbox.
-// Then, it can be enabled/disabed through channel request.
-const IS_STUNNER_VIEWER_ENABLED = false;
-
 const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   ServerlessWorkflowCombinedEditorRef | undefined,
   Props
@@ -88,6 +77,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const [embeddedDiagramEditorFile, setEmbeddedDiagramEditorFile] = useState<EmbeddedEditorFile>();
   const { editor: textEditor, editorRef: textEditorRef } = useEditorRef();
   const { editor: diagramEditor, editorRef: diagramEditorRef } = useEditorRef();
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowCombinedEditorChannelApi>();
+  const [featureToggle] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfFeatureToggle_get);
   const lastContent = useRef<string>();
 
   const [isTextEditorReady, setTextEditorReady] = useState(false);
@@ -119,7 +110,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   );
 
   const diagramEditorEnvelopeLocator = useMemo(() => {
-    const diagramEnvelopeMappingConfig = IS_STUNNER_VIEWER_ENABLED
+    const diagramEnvelopeMappingConfig = featureToggle?.stunnerEnabled
       ? {
           resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
           envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
@@ -142,7 +133,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
       ),
     ]);
-  }, [props.resourcesPathPrefix, targetOrigin]);
+  }, [featureToggle, props.resourcesPathPrefix, targetOrigin]);
 
   useImperativeHandle(
     forwardedRef,
@@ -274,6 +265,13 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     console.error("Error setting content on diagram editor");
   }, []);
 
+  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useCustomSwfChannelApi({
+    channelApi: editorEnvelopeCtx.channelApi,
+    locale: props.locale,
+    embeddedEditorFile: embeddedTextEditorFile,
+    onEditorReady: onTextEditorReady,
+  });
+
   return (
     <div style={{ height: "100%" }}>
       <LoadingScreen loading={!isCombinedEditorReady} />
@@ -288,8 +286,6 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
                     file={embeddedDiagramEditorFile}
                     channelType={props.channelType}
                     kogitoEditor_ready={onDiagramEditorReady}
-                    kogitoWorkspace_resourceContentRequest={props.kogitoWorkspace_resourceContentRequest}
-                    kogitoWorkspace_resourceListRequest={props.kogitoWorkspace_resourceListRequest}
                     kogitoEditor_setContentError={onDiagramEditorSetContentError}
                     editorEnvelopeLocator={diagramEditorEnvelopeLocator}
                     locale={props.locale}
@@ -306,11 +302,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
                 file={embeddedTextEditorFile}
                 channelType={props.channelType}
                 kogitoEditor_ready={onTextEditorReady}
-                kogitoWorkspace_resourceContentRequest={props.kogitoWorkspace_resourceContentRequest}
-                kogitoWorkspace_resourceListRequest={props.kogitoWorkspace_resourceListRequest}
                 kogitoEditor_setContentError={onTextEditorSetContentError}
                 editorEnvelopeLocator={textEditorEnvelopeLocator}
                 locale={props.locale}
+                customChannelApiImpl={textEditorChannelApi}
+                stateControl={textEditorStateControl}
+                isReady={isTextEditorReady}
               />
             )}
           </DrawerContentBody>

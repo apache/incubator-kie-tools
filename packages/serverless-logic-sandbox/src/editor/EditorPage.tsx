@@ -24,7 +24,6 @@ import {
   useStateControlSubscription,
 } from "@kie-tools-core/editor/dist/embedded";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { ResourceContentRequest, ResourceListRequest } from "@kie-tools-core/workspace/dist/api";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -43,7 +42,6 @@ import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
 import { SandboxSwfJsonLanguageService } from "./api/SandboxSwfJsonLanguageService";
-import { ServerlessWorkflowEditorChannelApiImpl } from "./api/ServerlessWorkflowEditorChannelApiImpl";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
@@ -53,6 +51,10 @@ import { useUpdateWorkspaceRegistryGroupFile } from "../workspace/services/virtu
 import { useVirtualServiceRegistry } from "../workspace/services/virtualServiceRegistry/VirtualServiceRegistryContext";
 import { DiagnosticSeverity } from "vscode-languageserver-types";
 import { useSwfFeatureToggle } from "./hooks/useSwfFeatureToggle";
+import {
+  SwfCombinedEditorChannelApiImpl,
+  SwfFeatureToggleChannelApiImpl,
+} from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
 
 export interface Props {
   workspaceId: string;
@@ -163,6 +165,11 @@ export function EditorPage(props: Props) {
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 
+  const isSwfJson = useMemo(
+    () => workspaceFilePromise.data && isServerlessWorkflowJson(workspaceFilePromise.data.name),
+    [workspaceFilePromise.data]
+  );
+
   useStateControlSubscription(
     editor,
     useCallback(
@@ -175,68 +182,12 @@ export function EditorPage(props: Props) {
       },
       [saveContent]
     ),
-    { throttle: 200 }
+    { throttle: isSwfJson && swfFeatureToggle.stunnerEnabled ? 400 : 200 }
   );
 
   useEffect(() => {
     alerts?.closeAll();
   }, [alerts]);
-
-  const handleResourceContentRequest = useCallback(
-    async (request: ResourceContentRequest) => {
-      return workspaces.resourceContentGet({
-        fs: await workspaces.fsService.getFs(props.workspaceId),
-        workspaceId: props.workspaceId,
-        relativePath: request.path,
-        opts: request.opts,
-      });
-    },
-    [props.workspaceId, workspaces]
-  );
-
-  const handleResourceListRequest = useCallback(
-    async (request: ResourceListRequest) => {
-      return workspaces.resourceContentList({
-        fs: await workspaces.fsService.getFs(props.workspaceId),
-        workspaceId: props.workspaceId,
-        globPattern: request.pattern,
-        opts: request.opts,
-      });
-    },
-    [workspaces, props.workspaceId]
-  );
-
-  const handleOpenFile = useCallback(
-    async (relativePath: string) => {
-      if (!workspaceFilePromise.data) {
-        return;
-      }
-
-      const file = await workspaces.getFile({
-        fs: await workspaces.fsService.getFs(workspaceFilePromise.data.workspaceId),
-        workspaceId: workspaceFilePromise.data.workspaceId,
-        relativePath,
-      });
-
-      if (!file) {
-        throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
-      }
-
-      history.push({
-        pathname: routes.workspaceWithFilePath.path({
-          workspaceId: file.workspaceId,
-          fileRelativePath: file.relativePathWithoutExtension,
-          extension: file.extension,
-        }),
-      });
-    },
-    [workspaceFilePromise, workspaces, history, routes]
-  );
-
-  const handleSetContentError = useCallback((e) => {
-    // Nothing to do for now
-    console.log(e);
-  }, []);
 
   const stateControl = useMemo(() => new StateControl(), [embeddedEditorFile?.getFileContents]);
 
@@ -247,20 +198,8 @@ export function EditorPage(props: Props) {
         kogitoEditor_ready: () => {
           setReady(true);
         },
-        kogitoWorkspace_openFile: handleOpenFile,
-        kogitoWorkspace_resourceContentRequest: handleResourceContentRequest,
-        kogitoWorkspace_resourceListRequest: handleResourceListRequest,
-        kogitoEditor_setContentError: handleSetContentError,
       }),
-    [
-      embeddedEditorFile,
-      handleOpenFile,
-      handleResourceContentRequest,
-      handleResourceListRequest,
-      handleSetContentError,
-      locale,
-      stateControl,
-    ]
+    [embeddedEditorFile, locale, stateControl]
   );
 
   useEffect(() => {
@@ -276,11 +215,6 @@ export function EditorPage(props: Props) {
   }, [settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry, workspaceFilePromise.data]);
 
   // SWF-specific code should be isolated when having more capabilities for other editors.
-
-  const isSwfJson = useMemo(
-    () => workspaceFilePromise.data && isServerlessWorkflowJson(workspaceFilePromise.data.name),
-    [workspaceFilePromise.data]
-  );
 
   const swfJsonLanguageService = useMemo(() => {
     if (!isSwfJson) {
@@ -301,6 +235,11 @@ export function EditorPage(props: Props) {
     [settingsDispatch.serviceRegistry.catalogStore]
   );
 
+  const swfFeatureToggleChannelApiImpl = useMemo(
+    () => new SwfFeatureToggleChannelApiImpl(swfFeatureToggle),
+    [swfFeatureToggle]
+  );
+
   useEffect(() => {
     if (embeddedEditorFile && !isServerlessWorkflowJson(embeddedEditorFile.path || "") && !isReady) {
       setReady(true);
@@ -312,9 +251,9 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    return new ServerlessWorkflowEditorChannelApiImpl(
+    return new SwfCombinedEditorChannelApiImpl(
       kogitoEditorChannelApiImpl,
-      swfFeatureToggle,
+      swfFeatureToggleChannelApiImpl,
       swfServiceCatalogChannelApiImpl,
       swfLanguageServiceChannelApiImpl
     );
@@ -322,7 +261,7 @@ export function EditorPage(props: Props) {
     kogitoEditorChannelApiImpl,
     swfJsonLanguageService,
     swfServiceCatalogChannelApiImpl,
-    swfFeatureToggle,
+    swfFeatureToggleChannelApiImpl,
     swfLanguageServiceChannelApiImpl,
   ]);
 

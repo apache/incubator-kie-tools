@@ -35,8 +35,6 @@ export enum SettingsTabs {
   FEATURE_PREVIEW = "featurePreview",
 }
 
-const FEATURE_PREVIEW_TAB_ENABLED = false;
-
 export function SettingsModalBody() {
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
@@ -90,15 +88,13 @@ export function SettingsModalBody() {
       >
         <ApacheKafkaSettingsTab />
       </Tab>
-      {FEATURE_PREVIEW_TAB_ENABLED && (
-        <Tab
-          className="kie-tools--settings-tab"
-          eventKey={SettingsTabs.FEATURE_PREVIEW}
-          title={<TabTitleText>Feature Preview</TabTitleText>}
-        >
-          <FeaturePreviewSettingsTab />
-        </Tab>
-      )}
+      <Tab
+        className="kie-tools--settings-tab"
+        eventKey={SettingsTabs.FEATURE_PREVIEW}
+        title={<TabTitleText>Feature Preview</TabTitleText>}
+      >
+        <FeaturePreviewSettingsTab />
+      </Tab>
     </Tabs>
   );
 }

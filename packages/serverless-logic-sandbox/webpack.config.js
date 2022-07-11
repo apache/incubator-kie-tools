@@ -25,6 +25,7 @@ const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
 
 module.exports = async (env) => {
   const buildInfo = getBuildInfo();
@@ -51,10 +52,13 @@ module.exports = async (env) => {
   return merge(common(env), {
     entry: {
       index: "./src/index.tsx",
-      "swf-editor-envelope": "./src/envelope/SwfEditorEnvelopeApp.ts",
       "dashbuilder-editor-envelope": "./src/envelope/DashbuilderEditorEnvelopeApp.ts",
       "text-editor-envelope": "./src/envelope/TextEditorEnvelopeApp.ts",
       "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
+      "serverless-workflow-combined-editor-envelope": "./src/envelope/ServerlessWorkflowCombinedEditorEnvelopeApp.ts",
+      "serverless-workflow-diagram-editor-envelope": "./src/envelope/ServerlessWorkflowDiagramEditorEnvelopeApp.ts",
+      "serverless-workflow-text-editor-envelope": "./src/envelope/ServerlessWorkflowTextEditorEnvelopeApp.ts",
+      "serverless-workflow-mermaid-viewer-envelope": "./src/envelope/ServerlessWorkflowMermaidViewerEnvelopeApp.ts",
     },
     plugins: [
       new HtmlWebpackPlugin({
@@ -87,11 +91,32 @@ module.exports = async (env) => {
           { from: "./static/resources", to: "./resources" },
           { from: "./static/images", to: "./images" },
           { from: "./static/samples", to: "./samples" },
-          { from: "./static/envelope/swf-editor-envelope.html", to: "./swf-editor-envelope.html" },
+          {
+            from: "./static/envelope/serverless-workflow-combined-editor-envelope.html",
+            to: "./serverless-workflow-combined-editor-envelope.html",
+          },
+          {
+            from: "./static/envelope/serverless-workflow-diagram-editor-envelope.html",
+            to: "./serverless-workflow-diagram-editor-envelope.html",
+          },
+          {
+            from: "./static/envelope/serverless-workflow-mermaid-viewer-envelope.html",
+            to: "./serverless-workflow-mermaid-viewer-envelope.html",
+          },
+          {
+            from: "./static/envelope/serverless-workflow-text-editor-envelope.html",
+            to: "./serverless-workflow-text-editor-envelope.html",
+          },
           { from: "./static/envelope/dashbuilder-editor-envelope.html", to: "./dashbuilder-editor-envelope.html" },
           { from: "./static/envelope/text-editor-envelope.html", to: "./text-editor-envelope.html" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
           { from: "./static/env.json", to: "./env.json" },
+          // This is used for development only.
+          {
+            from: swEditor.swEditorPath(),
+            to: "./diagram",
+            globOptions: { ignore: ["**/WEB-INF/**/*"] },
+          },
           // dashbuilder bundle
           {
             from: "../dashbuilder-client/dist/",

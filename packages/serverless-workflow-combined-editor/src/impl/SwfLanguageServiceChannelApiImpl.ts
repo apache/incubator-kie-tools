@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
-  constructor(private readonly ls: SwfJsonLanguageService) {}
+  constructor(private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>) {}
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
@@ -27,14 +28,14 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems(args);
+    return this.channelApi.requests.kogitoSwfLanguageService__getCompletionItems(args);
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    return this.ls.getCodeLenses(args);
+    return this.channelApi.requests.kogitoSwfLanguageService__getCodeLenses(args);
   }
 
   public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
-    // No-op
+    this.channelApi.notifications.kogitoSwfLanguageService__moveCursorToNode.send(args);
   }
 }

@@ -1823,8 +1823,12 @@ importers:
       "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/kie-sandbox-fs": 0.0.0
       "@kie-tools/serverless-workflow-combined-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools/serverless-workflow-text-editor": 0.0.0
       "@kie-tools/text-editor": 0.0.0
       "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
@@ -1874,8 +1878,12 @@ importers:
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       "@kie-tools/text-editor": link:../text-editor
       "@octokit/plugin-rest-endpoint-methods": 5.0.1
       "@octokit/rest": 18.5.3
