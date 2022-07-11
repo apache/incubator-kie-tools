@@ -31,17 +31,20 @@ import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import { Envelope, EnvelopeApiFactory } from "@kie-tools-core/envelope";
 import { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import { getOperatingSystem } from "@kie-tools-core/operating-system";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/src/envelope/KeyboardShortcutsService";
 
 /**
  * Starts the Editor envelope at a given container. Uses `bus` to send messages out of the Envelope and creates Editors based on the editorFactory provided.
  * @param args.container The DOM element where the envelope should be rendered.
  * @param args.bus The implementation of EnvelopeBus to send messages out of the envelope.
  * @param args.editorFactory The factory of Editors provided by this EditorEnvelope.
+ * @param args.keyboardShortcutsService Custom KeyboardShortcutsService to use, otherwise DefaultKeyboardShortcutsService will be used.
  */
 export function init(args: {
   container: HTMLElement;
   bus: EnvelopeBus;
   editorFactory: EditorFactory<Editor, KogitoEditorChannelApi>;
+  keyboardShortcutsService?: KeyboardShortcutsService;
 }) {
   initCustom({
     container: args.container,
@@ -49,6 +52,7 @@ export function init(args: {
     apiImplFactory: {
       create: (createArgs) => new KogitoEditorEnvelopeApiImpl(createArgs, args.editorFactory),
     },
+    keyboardShortcutsService: args.keyboardShortcutsService,
   });
 }
 
@@ -65,8 +69,10 @@ export function initCustom<
     EditorEnvelopeViewApi<E>,
     KogitoEditorEnvelopeContextType<ChannelApi>
   >;
+  keyboardShortcutsService?: KeyboardShortcutsService;
 }) {
-  const defaultKeyboardShortcuts = new DefaultKeyboardShortcutsService({ os: getOperatingSystem() });
+  const keyboardShortcutsService =
+    args.keyboardShortcutsService ?? new DefaultKeyboardShortcutsService({ os: getOperatingSystem() });
   const i18nService = new I18nService();
   const envelope = new Envelope<
     EnvelopeApi,
@@ -75,9 +81,10 @@ export function initCustom<
     KogitoEditorEnvelopeContextType<ChannelApi>
   >(args.bus);
 
-  return new KogitoEditorEnvelope(args.apiImplFactory, defaultKeyboardShortcuts, i18nService, envelope).start(
+  return new KogitoEditorEnvelope(args.apiImplFactory, keyboardShortcutsService, i18nService, envelope).start(
     args.container
   );
 }
 export { EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 export * from "./KogitoEditorEnvelopeApiImpl";
+export * from "./LoadingScreen";

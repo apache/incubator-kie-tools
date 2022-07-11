@@ -16,3 +16,5 @@
 
 export * from "./DefaultKeyboardShortcutsService";
 export * from "./KeyboardShortcutRegisterOpts";
+export * from "./KeyboardShortcutsService";
+export * from "./NoOpKeyboardShortcutsService";

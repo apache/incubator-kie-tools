@@ -15,6 +15,8 @@
  */
 
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import * as vscode from "vscode";
+import { COMMAND_IDS } from "../commandIds";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
@@ -36,5 +38,9 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
     return this.args.ls.getCodeLenses(args);
+  }
+
+  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
+    vscode.commands.executeCommand(COMMAND_IDS.moveCursorToNode, args);
   }
 }

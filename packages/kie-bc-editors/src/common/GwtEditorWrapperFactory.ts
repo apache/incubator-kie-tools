@@ -34,13 +34,12 @@ import {
   StateControlApi,
   WorkspaceServiceApi,
 } from "./api";
-import { DefaultXmlFormatter } from "./DefaultXmlFormatter";
+import { DefaultTextFormatter, TextFormatter } from "./TextFormatter";
 import { GwtAppFormerApi } from "./GwtAppFormerApi";
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlService } from "./gwtStateControl";
 import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
-import { XmlFormatter } from "./XmlFormatter";
 
 export interface CustomWindow extends Window {
   startStandaloneEditor?: () => void;
@@ -65,7 +64,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
     private readonly languageData: GwtLanguageData,
     private readonly gwtEditorDelegate: (factory: GwtEditorWrapperFactory<E>, initArgs: EditorInitArgs) => E,
     public readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean },
-    public readonly xmlFormatter: XmlFormatter = new DefaultXmlFormatter(),
+    public readonly textFormatter: TextFormatter = new DefaultTextFormatter(),
     public readonly gwtAppFormerApi = new GwtAppFormerApi(),
     public readonly gwtStateControlService = new GwtStateControlService(),
     public readonly kieBcEditorsI18n = new I18n(kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries)

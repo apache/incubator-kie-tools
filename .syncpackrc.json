@@ -3,7 +3,8 @@
     {
       "dependencies": ["monaco-editor"],
       "packages": [
-        "@kie-tools/serverless-workflow-editor",
+        "@kie-tools/serverless-workflow-text-editor",
+        "@kie-tools/serverless-workflow-combined-editor",
         "@kie-tools/yard-editor",
         "chrome-extension-serverless-workflow-editor",
         "vscode-extension-serverless-workflow-editor",

@@ -22,6 +22,7 @@ export const COMMAND_IDS = {
   swfLsCommand: "extension.kogito.swf.ls.command",
   setupAutomaticallyOpenDiagramEditorAlongsideTextEditor:
     "extension.kogito.swf.setupAutomaticallyOpenDiagramEditorAlongsideTextEditor",
+  moveCursorToNode: "extension.kogito.swf.moveCursorToNode",
   serviceRegistriesLogin: "extension.kogito.swf.serviceRegistries.login",
   serviceRegistriesRefresh: "extension.kogito.swf.serviceRegistries.refresh",
   serviceRegistriesConfig: "extension.kogito.swf.serviceRegistries.config",

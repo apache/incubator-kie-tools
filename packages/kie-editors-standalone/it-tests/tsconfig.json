@@ -12,7 +12,7 @@
     "noImplicitThis": false,
     "strictNullChecks": true,
     "experimentalDecorators": false,
-    "downlevelIteration": false
+    "downlevelIteration": true
   },
   "include": ["src"]
 }
