@@ -25,10 +25,10 @@ startExtension({
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
     new EnvelopeMapping(
-      "sw",
+      "swf",
       "**/*.sw.+(json|yml|yaml)",
-      `${resourcesPathPrefix}/sw`,
-      `${resourcesPathPrefix}/serverless-workflow-editor-envelope.html`
+      `${resourcesPathPrefix}`,
+      `${resourcesPathPrefix}/serverless-workflow-combined-editor-envelope.html`
     ),
   ]),
 });

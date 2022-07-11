@@ -31,6 +31,7 @@ import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI1
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { getOperatingSystem } from "@kie-tools-core/operating-system";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/src/envelope/KeyboardShortcutsService";
 
 export class KogitoEditorEnvelope<
   E extends Editor,
@@ -44,7 +45,7 @@ export class KogitoEditorEnvelope<
       EditorEnvelopeViewApi<E>,
       KogitoEditorEnvelopeContextType<ChannelApi>
     >,
-    private readonly keyboardShortcutsService: DefaultKeyboardShortcutsService,
+    private readonly keyboardShortcutsService: KeyboardShortcutsService,
     private readonly i18nService: I18nService,
     private readonly envelope: Envelope<
       EnvelopeApi,
@@ -78,7 +79,13 @@ export class KogitoEditorEnvelope<
           initialLocale={navigator.language}
         >
           <EditorEnvelopeI18nContext.Consumer>
-            {({ setLocale }) => <EditorEnvelopeView ref={editorEnvelopeViewRef} setLocale={setLocale} />}
+            {({ setLocale }) => (
+              <EditorEnvelopeView
+                ref={editorEnvelopeViewRef}
+                setLocale={setLocale}
+                showKeyBindingsOverlay={this.keyboardShortcutsService.isEnabled()}
+              />
+            )}
           </EditorEnvelopeI18nContext.Consumer>
         </I18nDictionariesProvider>
       </KogitoEditorEnvelopeContext.Provider>

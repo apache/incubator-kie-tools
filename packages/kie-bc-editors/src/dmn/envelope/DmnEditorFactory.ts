@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { GwtEditorWrapperFactory } from "../../common";
+import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
 import { DmnEditorChannelApi, getDmnLanguageData } from "../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DmnEditor, DmnEditorImpl } from "./DmnEditor";
@@ -49,7 +49,7 @@ export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChann
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),
           ctx.channelApi,
-          self.xmlFormatter,
+          new XmlFormatter(),
           self.gwtStateControlService,
           self.kieBcEditorsI18n
         ),

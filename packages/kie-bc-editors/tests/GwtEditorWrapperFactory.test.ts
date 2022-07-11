@@ -22,6 +22,7 @@ import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapper";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { XmlFormatter } from "@kie-tools/kie-bc-editors/dist/common/XmlFormatter";
 
 const cssResource: Resource = {
   type: "css",
@@ -88,7 +89,7 @@ describe("GwtEditorWrapperFactory", () => {
           testLanguageData.editorId,
           self.gwtAppFormerApi.getEditor(testLanguageData.editorId),
           channelApiMock,
-          self.xmlFormatter,
+          new XmlFormatter(),
           self.gwtStateControlService,
           self.kieBcEditorsI18n
         );

@@ -18,9 +18,9 @@ import * as React from "react";
 import { useContext } from "react";
 import { ApiDefinition, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
-import { DefaultKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/src/envelope/KeyboardShortcutsService";
 
 export interface KogitoEditorEnvelopeContextType<
   ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>
@@ -28,7 +28,7 @@ export interface KogitoEditorEnvelopeContextType<
   channelApi: MessageBusClientApi<ChannelApi>;
   operatingSystem?: OperatingSystem;
   services: {
-    keyboardShortcuts: DefaultKeyboardShortcutsService;
+    keyboardShortcuts: KeyboardShortcutsService;
     i18n: I18nService;
   };
 }

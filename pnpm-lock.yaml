@@ -639,22 +639,32 @@ importers:
     specifiers:
       "@kie-tools-core/chrome-extension": 0.0.0
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-editor": 0.0.0
+      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
+      "@kie-tools/serverless-workflow-text-editor": 0.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
     devDependencies:
       "@kie-tools-core/chrome-extension": link:../chrome-extension
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
+      "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       monaco-editor: 0.33.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
@@ -1812,7 +1822,7 @@ importers:
       "@kie-tools/dashbuilder-editor": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/kie-sandbox-fs": 0.0.0
-      "@kie-tools/serverless-workflow-editor": 0.0.0
+      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
       "@kie-tools/text-editor": 0.0.0
@@ -1863,7 +1873,7 @@ importers:
       "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
-      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
+      "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
       "@kie-tools/text-editor": link:../text-editor
@@ -1952,19 +1962,12 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
 
-  packages/serverless-workflow-diagram-editor:
-    specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../build-env
-
-  packages/serverless-workflow-editor:
+  packages/serverless-workflow-combined-editor:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/operating-system": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
@@ -1972,15 +1975,16 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools/serverless-workflow-text-editor": 0.0.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
-      "@types/mermaid": ^8.2.9
-      csstype: ^3.0.11
       json-schema: ^0.4.0
-      mermaid: ^9.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -1992,17 +1996,20 @@ importers:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      csstype: 3.0.11
       json-schema: 0.4.0
-      mermaid: 9.0.0
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
@@ -2013,28 +2020,111 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
-      "@types/mermaid": 8.2.9
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       vscode-json-languageservice: 4.2.1
+
+  packages/serverless-workflow-diagram-editor:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
+  packages/serverless-workflow-diagram-editor-envelope:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/vscode-java-code-completion": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/kie-bc-editors": 0.0.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/kie-bc-editors": link:../kie-bc-editors
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
 
   packages/serverless-workflow-language-service:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@types/json-to-ast": ^2.1.2
+      json-to-ast: ^2.1.0
+      jsonata: ^1.8.3
       jsonc-parser: ^3.0.0
       vscode-json-languageservice: ^4.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
+      yaml-language-server-parser: ^0.1.3
     dependencies:
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      json-to-ast: 2.1.0
+      jsonata: 1.8.3
+      yaml-language-server-parser: 0.1.3
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      "@types/json-to-ast": 2.1.2
       jsonc-parser: 3.0.0
       vscode-json-languageservice: 4.2.1
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
+
+  packages/serverless-workflow-mermaid-viewer:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/mermaid": ^8.2.9
+      mermaid: ^9.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      mermaid: 9.0.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@types/mermaid": 8.2.9
 
   packages/serverless-workflow-service-catalog:
     specifiers:
@@ -2056,6 +2146,57 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
+
+  packages/serverless-workflow-text-editor:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/json-schema": ^7.0.11
+      json-schema: ^0.4.0
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^4.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      vscode-json-languageservice: ^4.2.1
+      vscode-languageserver-types: ^3.16.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      json-schema: 0.4.0
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      vscode-languageserver-types: 3.16.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@types/json-schema": 7.0.11
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
+      vscode-json-languageservice: 4.2.1
 
   packages/stunner-editors:
     specifiers:
@@ -2479,6 +2620,7 @@ importers:
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/guided-tour": 0.0.0
       "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
@@ -2487,8 +2629,10 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
       "@rhoas/registry-instance-sdk": ^0.34.1
       monaco-editor: ^0.33.0
@@ -2504,13 +2648,15 @@ importers:
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
       "@rhoas/registry-instance-sdk": 0.34.1
       monaco-editor: 0.33.0
@@ -2523,6 +2669,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/vscode-extension-yard-editor:
@@ -6008,6 +6155,11 @@ packages:
       { integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ== }
     dev: true
 
+  /@types/json-to-ast/2.1.2:
+    resolution:
+      { integrity: sha512-GEjR5l9wZGS74KhL1a1tZuyRJqdLB7LGgOXzWspJx9xxC/iyCFTwwKv71Lz8fzZyGuVW8FjASQGoYFi6XZJWLQ== }
+    dev: true
+
   /@types/keyv/3.1.1:
     resolution:
       { integrity: sha512-MPtoySlAZQ37VoLaPcTHCu1RWJ4llDkULYZIzOYxlhxBqYPB0RsRlmMU0R6tahtFe27mIdkHV+551ZWV4PLmVw== }
@@ -8987,6 +9139,12 @@ packages:
     resolution: { integrity: sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ= }
     engines: { iojs: ">= 1.0.0", node: ">= 0.12.0" }
     dev: true
+
+  /code-error-fragment/0.0.230:
+    resolution:
+      { integrity: sha512-cadkfKp6932H8UkhzE/gcUqhRMNf8jHzkAN7+5Myabswaghu4xABTgPHDCjW+dBAJxj/SpkTYokpzDqY4pCzQw== }
+    engines: { node: ">= 4" }
+    dev: false
 
   /code-point-at/1.1.0:
     resolution: { integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c= }
@@ -12900,7 +13058,6 @@ packages:
   /grapheme-splitter/1.0.4:
     resolution:
       { integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ== }
-    dev: true
 
   /graphlib/2.1.8:
     resolution:
@@ -14767,6 +14924,15 @@ packages:
   /json-stringify-safe/5.0.1:
     resolution: { integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus= }
 
+  /json-to-ast/2.1.0:
+    resolution:
+      { integrity: sha512-W9Lq347r8tA1DfMvAGn9QNcgYm4Wm7Yc+k8e6vezpMnRT+NHbtlxgNBXRVjXe9YM6eTn6+p/MKOlV/aABJcSnQ== }
+    engines: { node: ">= 4" }
+    dependencies:
+      code-error-fragment: 0.0.230
+      grapheme-splitter: 1.0.4
+    dev: false
+
   /json5/0.5.1:
     resolution: { integrity: sha1-Hq3nrMASA0rYTiOWdn6tn6VJWCE= }
     hasBin: true
@@ -15310,8 +15476,7 @@ packages:
     dev: true
 
   /lines-and-columns/1.1.6:
-    resolution:
-      { integrity: sha512-8ZmlJFVK9iCmtLz19HpSsR8HaAMWBT284VMNednLwlIMDP2hJDCIhUp0IZ2xUcZ+Ob6BM0VvCSJwzASDM45NLQ== }
+    resolution: { integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA= }
 
   /linkify-it/3.0.3:
     resolution:
@@ -19252,7 +19417,8 @@ packages:
     dev: true
 
   /rw/1.3.3:
-    resolution: { integrity: sha1-P4Yt+pGrdmsUiF700BEkv9oHT7Q= }
+    resolution:
+      { integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ== }
     dev: false
 
   /rxjs/6.6.7:
@@ -20089,6 +20255,7 @@ packages:
   /stable/0.1.8:
     resolution:
       { integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w== }
+    deprecated: "Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility"
     dev: true
 
   /stack-utils/2.0.4:
@@ -22568,6 +22735,11 @@ packages:
   /yallist/4.0.0:
     resolution:
       { integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A== }
+
+  /yaml-language-server-parser/0.1.3:
+    resolution:
+      { integrity: sha512-xD2I+6M/vqQvcy4ded8JpXUaDHXmZMdhIO3OpuiFxstutwnW4whrfDzNcrsfXVdgMWqOUpdv3747Q081PFN1+g== }
+    dev: false
 
   /yaml/1.10.2:
     resolution:

@@ -16,7 +16,7 @@
 
 import { SceSimEditor, SceSimEditorImpl } from "./SceSimEditor";
 import { getSceSimLanguageData, SceSimEditorChannelApi } from "../api";
-import { GwtEditorWrapperFactory } from "../../common";
+import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 
 export class SceSimEditorFactory implements EditorFactory<SceSimEditor, SceSimEditorChannelApi> {
@@ -34,7 +34,7 @@ export class SceSimEditorFactory implements EditorFactory<SceSimEditor, SceSimEd
           languageData.editorId,
           self.gwtAppFormerApi.getEditor(languageData.editorId),
           ctx.channelApi,
-          self.xmlFormatter,
+          new XmlFormatter(),
           self.gwtStateControlService,
           self.kieBcEditorsI18n
         ),

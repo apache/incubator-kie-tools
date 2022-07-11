@@ -17,6 +17,7 @@
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { ChannelKeyboardEvent } from "../api";
 import { KeyboardShortcutRegisterOpts } from "./KeyboardShortcutRegisterOpts";
+import { KeyboardShortcutsService } from "./KeyboardShortcutsService";
 
 export interface KeyBinding {
   combination: string;
@@ -82,7 +83,7 @@ const KEY_CODES = new Map<string, string>([
 
 const IGNORED_TAGS = ["INPUT", "TEXTAREA", "SELECT", "OPTION"];
 
-export class DefaultKeyboardShortcutsService {
+export class DefaultKeyboardShortcutsService implements KeyboardShortcutsService {
   private eventIdentifiers = 1;
 
   private readonly keyBindings = new Map<number, KeyBinding>();
@@ -242,6 +243,10 @@ export class DefaultKeyboardShortcutsService {
 
   public registered() {
     return Array.from(this.keyBindings.values());
+  }
+
+  public isEnabled(): boolean {
+    return true;
   }
 }
 
