@@ -15,28 +15,8 @@
  */
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import {
-  Button,
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerPanelBody,
-  DrawerPanelContent,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateIcon,
-  Tab,
-  Tabs,
-  TabTitleText,
-  Title,
-} from "@patternfly/react-core";
-import {
-  useBoxedExpressionEditorI18n,
-  yardEditorDictionaries,
-  YardEditorI18nContext,
-  yardEditorI18nDefaults,
-} from "../i18n";
-import { CubesIcon } from "@patternfly/react-icons";
+import { Drawer, DrawerContent, DrawerContentBody, DrawerPanelBody, DrawerPanelContent } from "@patternfly/react-core";
+import { yardEditorDictionaries, YardEditorI18nContext, yardEditorI18nDefaults } from "../i18n";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTextEditorController";

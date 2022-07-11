@@ -25,7 +25,7 @@ import {
   TabTitleText,
   Title,
 } from "@patternfly/react-core";
-import { CubesIcon, MinusIcon, PlusIcon } from "@patternfly/react-icons";
+import { CubesIcon } from "@patternfly/react-icons";
 import { useCallback } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 
@@ -55,13 +55,13 @@ export const YardUIEditor = () => {
   }, []);
 
   return (
-    <Tabs isBox={false} aria-label="Tabs in the default example">
+    <Tabs isBox={false} aria-label="yard menu tabs">
       <Tab eventKey={0} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
         <div style={{ padding: 10 }}>
-          <Button variant="primary" icon={PlusIcon} onClick={onNewElementButtonClicked}>
+          <Button onClick={onNewElementButtonClicked} variant="primary">
             {i18n.decisionElementsTab.addDecisionElementsButton}
           </Button>{" "}
-          <Button icon={MinusIcon} isDisabled={true} variant="danger">
+          <Button isDisabled={true} variant="danger">
             {i18n.decisionElementsTab.removeDecisionElementButton}
           </Button>
         </div>
