@@ -262,7 +262,7 @@ jobs:
           cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-pack-kogito-kie-editors/dist/{bpmn,dmn,scesim,fonts,*-envelope.*} $DEPLOYMENT_DIR/chrome-extension
 
           echo "Copy SWF Editor Chrome Extension resources to the deployment directory"
-          cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,*-envelope.*,*.bundle.js,*.worker.js} $DEPLOYMENT_DIR/swf-chrome-extension
+          cp -r ${{ github.workspace }}/kie-tools/packages/chrome-extension-serverless-workflow-editor/dist/{fonts,diagram,*-envelope.*,*.bundle.js,*.worker.js} $DEPLOYMENT_DIR/swf-chrome-extension
 
           echo "Remove gwt-editors from the Online Editor deployment"
           rm -rf $DEPLOYMENT_DIR/gwt-editors

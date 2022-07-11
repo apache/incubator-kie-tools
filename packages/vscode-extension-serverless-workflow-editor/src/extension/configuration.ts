@@ -28,6 +28,7 @@ export const CONFIGURATION_SECTIONS = {
   specsStoragePath: "kogito.swf.specsStoragePath",
   shouldReferenceServiceRegistryFunctionsWithUrls: "kogito.swf.shouldReferenceServiceRegistryFunctionsWithUrls",
   automaticallyOpenDiagramEditorAlongsideTextEditor: "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor",
+  enableKogitoServerlessWorkflowVisualizationPreview: "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview",
 };
 
 type ShouldOpenDiagramEditorAutomaticallyType = "Ask next time" | "Do not open" | "Open automatically";
@@ -104,5 +105,11 @@ export class SwfVsCodeExtensionConfiguration {
       currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
       value: this.getConfiguredSpecsDirPath(),
     });
+  }
+
+  public isKogitoServerlessWorkflowVisualizationPreviewEnabled(): boolean {
+    return vscode.workspace
+      .getConfiguration()
+      .get(CONFIGURATION_SECTIONS.enableKogitoServerlessWorkflowVisualizationPreview, false);
   }
 }

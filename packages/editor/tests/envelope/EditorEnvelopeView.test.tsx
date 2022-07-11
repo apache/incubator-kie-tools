@@ -26,7 +26,9 @@ function renderEditorEnvelopeView(): EditorEnvelopeViewApi<Editor> {
   const setLocale = jest.fn();
   render(
     usingEditorEnvelopeI18nContext(
-      usingEnvelopeContext(<EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} />).wrapper
+      usingEnvelopeContext(
+        <EditorEnvelopeView ref={editorEnvelopeRef} setLocale={setLocale} showKeyBindingsOverlay={true} />
+      ).wrapper
     ).wrapper
   );
   return editorEnvelopeRef.current!;

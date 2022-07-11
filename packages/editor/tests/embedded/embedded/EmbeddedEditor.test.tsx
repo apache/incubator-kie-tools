@@ -80,7 +80,7 @@ describe("EmbeddedEditor::ONLINE", () => {
 
     expect(spyOnContentChangedNotification).toBeCalledWith(
       { content: "content", path: "path" },
-      { showLoadingOverlay: true }
+      { showLoadingOverlay: false }
     );
   });
 

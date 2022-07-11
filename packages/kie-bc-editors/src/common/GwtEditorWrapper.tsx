@@ -18,7 +18,7 @@ import * as React from "react";
 import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
 import { Editor, EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
-import { XmlFormatter } from "./XmlFormatter";
+import { TextFormatter } from "./TextFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
@@ -33,7 +33,7 @@ export class GwtEditorWrapper implements Editor {
   public readonly editorId: string;
 
   private readonly gwtEditor: GwtEditor;
-  private readonly xmlFormatter: XmlFormatter;
+  private readonly textFormatter: TextFormatter;
   private readonly channelApi: MessageBusClientApi<KogitoEditorChannelApi>;
   private readonly stateControlService: GwtStateControlService;
   private readonly kieBcEditorsI18n: I18n<KieBcEditorsI18n>;
@@ -42,7 +42,7 @@ export class GwtEditorWrapper implements Editor {
     editorId: string,
     gwtEditor: GwtEditor,
     channelApi: MessageBusClientApi<KogitoEditorChannelApi>,
-    xmlFormatter: XmlFormatter,
+    textFormatter: TextFormatter,
     stateControlService: GwtStateControlService,
     kieBcEditorsI18n: I18n<KieBcEditorsI18n>
   ) {
@@ -52,7 +52,7 @@ export class GwtEditorWrapper implements Editor {
     this.gwtEditor = gwtEditor;
     this.channelApi = channelApi;
     this.editorId = editorId;
-    this.xmlFormatter = xmlFormatter;
+    this.textFormatter = textFormatter;
     this.kieBcEditorsI18n = kieBcEditorsI18n;
   }
 
@@ -79,7 +79,7 @@ export class GwtEditorWrapper implements Editor {
   }
 
   public getContent() {
-    return this.gwtEditor.getContent().then((content) => this.xmlFormatter.format(content));
+    return this.gwtEditor.getContent().then((content) => this.textFormatter.format(content));
   }
 
   public getElementPosition(selector: string) {
