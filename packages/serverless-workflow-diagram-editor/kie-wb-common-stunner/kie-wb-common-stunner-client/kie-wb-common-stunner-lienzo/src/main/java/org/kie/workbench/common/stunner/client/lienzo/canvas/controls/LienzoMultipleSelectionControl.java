@@ -110,7 +110,7 @@ public class LienzoMultipleSelectionControl<H extends AbstractCanvasHandler>
                 getSelectionControl().deselect(deselectList);
                 List<String> selectList = new ArrayList<>(shapesToIdentifiers(changedItems.getAddedShapes().toList()));
                 selectList.addAll(shapesToIdentifiers(changedItems.getAddedConnectors().toList()));
-                getSelectionControl().select(selectList);
+                getSelectionControl().select(selectList, true);
                 defaultSelectionListener.onChanged(selectedItems);
 
                 if (getSelectionControl().getSelectedItems().isEmpty()) {

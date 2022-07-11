@@ -30,7 +30,7 @@ import org.kie.workbench.common.stunner.core.graph.Element;
 public interface SelectionControl<C extends CanvasHandler, E extends Element>
         extends CanvasControl<C> {
 
-    SelectionControl<C, E> select(String itemId);
+    SelectionControl<C, E> select(String itemId, boolean fireEvents);
 
     SelectionControl<C, E> deselect(String itemId);
 

@@ -96,7 +96,7 @@ public class LienzoSelectionControl<H extends AbstractCanvasHandler>
         if (!getSelectedItems().isEmpty()) {
             clearSelection();
         }
-        select(element.getUUID());
+        select(element.getUUID(), true);
     }
 
     @Override

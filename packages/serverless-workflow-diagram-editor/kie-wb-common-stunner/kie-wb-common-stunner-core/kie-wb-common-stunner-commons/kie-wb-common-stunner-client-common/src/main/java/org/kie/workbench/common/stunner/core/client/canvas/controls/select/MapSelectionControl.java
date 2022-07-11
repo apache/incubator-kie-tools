@@ -117,8 +117,8 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public SelectionControl<H, Element> select(final String uuid) {
-        return select(Collections.singletonList(uuid));
+    public SelectionControl<H, Element> select(final String uuid, boolean fireEvents) {
+        return select(Collections.singletonList(uuid), fireEvents);
     }
 
     @Override
@@ -188,12 +188,14 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
         this.readonly = readonly;
     }
 
-    public SelectionControl<H, Element> select(final Collection<String> uuids) {
+    public SelectionControl<H, Element> select(final Collection<String> uuids, boolean fireEvents) {
         uuids.stream()
                 .filter(itemsRegistered())
                 .forEach(uuid -> items.put(uuid, true));
         updateViewShapesState(getSelectedItems());
-        fireSelectedItemsEvent();
+        if (fireEvents) {
+            fireSelectedItemsEvent();
+        }
         return this;
     }
 
@@ -269,8 +271,8 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
                 .map(Map.Entry::getKey)
                 .anyMatch(uuid -> event.getIdentifiers().contains(uuid));
         if (isSameCtxt && !isCanvasRoot && !equals) {
-            this.clearSelection(false);
-            select(event.getIdentifiers());
+            this.clearSelection(true);
+            select(event.getIdentifiers(), true);
         }
     }
 

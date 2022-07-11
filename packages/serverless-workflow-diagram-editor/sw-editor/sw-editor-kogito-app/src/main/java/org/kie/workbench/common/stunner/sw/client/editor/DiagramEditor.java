@@ -270,7 +270,7 @@ public class DiagramEditor {
         while (iterator.hasNext()) {
             final Node<View<?>, Edge> node = (Node<View<?>, Edge>) iterator.next();
             if (selection.contains(node.getUUID())) {
-                session.getSelectionControl().select(node.getUUID());
+                session.getSelectionControl().select(node.getUUID(), false);
             }
         }
 

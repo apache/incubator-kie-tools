@@ -347,7 +347,7 @@ public class DiagramEditorTest {
         verify(selectionControl, times(1)).clear();
         verify(commandManager, times(1)).execute(eq(canvasHandler2), any(ClearAllCommand.class));
         // Keep selection
-        verify(selectionControl, times(1)).select("uuid");
+        verify(selectionControl, times(1)).select("uuid", false);
         // Center selected node
         verify(jsCanvas, times(1)).centerNode("uuid");
     }

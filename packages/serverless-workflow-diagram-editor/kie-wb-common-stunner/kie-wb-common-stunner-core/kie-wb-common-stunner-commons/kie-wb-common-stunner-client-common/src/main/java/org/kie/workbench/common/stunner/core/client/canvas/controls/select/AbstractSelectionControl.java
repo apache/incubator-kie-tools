@@ -97,8 +97,8 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
-    public SelectionControl<H, Element> select(final String uuid) {
-        selectionControl.select(uuid);
+    public SelectionControl<H, Element> select(final String uuid, boolean fireEvents) {
+        selectionControl.select(uuid, fireEvents);
         onSelect(Collections.singletonList(uuid));
         return this;
     }

@@ -221,7 +221,7 @@ public class MapSelectionControlTest {
     public void testSelect() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         assertEquals(1, tested.getSelectedItems().size());
         assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
         verify(shape, times(1)).applyState(ShapeState.SELECTED);
@@ -242,8 +242,8 @@ public class MapSelectionControlTest {
     public void testSelectOnlyOnce() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
+        tested.select(element.getUUID(), true);
 
         assertEquals(1, tested.getSelectedItems().size());
         assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
@@ -267,7 +267,7 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.setReadonly(true);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         verify(shape, never()).applyState(ShapeState.SELECTED);
         verify(shape, never()).applyState(ShapeState.NONE);
         verify(shape, never()).applyState(ShapeState.INVALID);
@@ -279,7 +279,7 @@ public class MapSelectionControlTest {
     public void testDeselect() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         tested.deselect(element.getUUID());
         assertTrue(tested.getSelectedItems().isEmpty());
         verify(shape, times(1)).applyState(ShapeState.SELECTED);
@@ -292,7 +292,7 @@ public class MapSelectionControlTest {
     public void testClearSelection() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         tested.clearSelection();
         assertTrue(tested.getSelectedItems().isEmpty());
         verify(shape, times(1)).applyState(ShapeState.SELECTED);
@@ -328,7 +328,7 @@ public class MapSelectionControlTest {
     public void testGetSelectedItemDefinitionWithOneItemSelected() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
 
         when(index.get(ELEMENT_UUID)).thenReturn(element);
 
@@ -342,7 +342,7 @@ public class MapSelectionControlTest {
         tested.init(canvasHandler);
         tested.register(element);
         tested.register(rootElement);
-        tested.select(Stream.of(ROOT_UUID, ELEMENT_UUID).collect(Collectors.toSet()));
+        tested.select(Stream.of(ROOT_UUID, ELEMENT_UUID).collect(Collectors.toSet()), true);
 
         when(index.get(ELEMENT_UUID)).thenReturn(element);
         when(index.get(ROOT_UUID)).thenReturn(rootElement);
@@ -356,7 +356,7 @@ public class MapSelectionControlTest {
     public void testOnShapeRemovedEvent() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         CanvasShapeRemovedEvent shapeRemovedEvent = new CanvasShapeRemovedEvent(canvas,
                                                                                 shape);
         tested.onShapeRemoved(shapeRemovedEvent);
@@ -368,7 +368,7 @@ public class MapSelectionControlTest {
     public void testOnClearSelectionEvent() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         CanvasClearSelectionEvent event = new CanvasClearSelectionEvent(canvasHandler);
         tested.onCanvasClearSelection(event);
         assertTrue(tested.getSelectedItems().isEmpty());
@@ -406,7 +406,7 @@ public class MapSelectionControlTest {
     public void testClear() {
         tested.init(canvasHandler);
         tested.register(element);
-        tested.select(element.getUUID());
+        tested.select(element.getUUID(), true);
         tested.clear();
         assertTrue(tested.getSelectedItems().isEmpty());
         verify(clearSelectionEvent,
