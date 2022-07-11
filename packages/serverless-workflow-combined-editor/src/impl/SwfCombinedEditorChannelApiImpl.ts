@@ -139,6 +139,10 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__moveCursorToNode(args);
   }
 
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
+    this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__moveCursorToNode(args);
+  }
+
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return (
       this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {

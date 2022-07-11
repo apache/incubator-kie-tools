@@ -219,13 +219,24 @@ export async function setupDiagramEditorControls(args: {
 
     const nodeName = swfOffsetsApi?.getStateNameFromOffset(offset);
 
-    // const swfServiceCatalogEnvelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer< ServerlessWorkflowDiagramEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi >;
-    // const swfServiceCatalogEnvelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer< SwfLanguageServiceChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi >;
-    const swfServiceCatalogEnvelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer;
+    if (!nodeName) {
+      return;
+    }
 
-    // swfServiceCatalogEnvelopeServer.envelopeApi.requests.kogitoSwfLanguageService__highlightNode.send({nodeName, documentUri: uri});
-    // args.kieToolsEditorStore.activeEditor?.envelopeServer.envelopeApi.notifications.kogitoEditor_editorRedo.send();
-    swfServiceCatalogEnvelopeServer?.envelopeApi.notifications.kogitoSwfLanguageService__highlightNode.send({
+    const envelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
+      ServerlessWorkflowDiagramEditorChannelApi,
+      ServerlessWorkflowDiagramEditorEnvelopeApi
+    >;
+
+    if (!envelopeServer) {
+      return;
+    }
+
+    envelopeServer.envelopeApi.notifications.kogitoSwfLanguageService__highlightNode2.send({
+      nodeName,
+    });
+
+    envelopeServer.envelopeApi.requests.kogitoSwfLanguageService__highlightNode3({
       nodeName,
     });
   });

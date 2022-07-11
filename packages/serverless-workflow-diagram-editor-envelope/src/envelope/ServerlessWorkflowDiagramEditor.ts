@@ -71,4 +71,12 @@ export class ServerlessWorkflowDiagramEditorImpl extends GwtEditorWrapper implem
   public centerNode(uuid: string) {
     window.canvas.centerNode(uuid);
   }
+
+  public kogitoSwfLanguageService__highlightNode2(args: { nodeName: string; documentUri?: string }) {
+    debugger;
+  }
+
+  public kogitoSwfLanguageService__highlightNode3(args: { nodeName: string; documentUri?: string }) {
+    debugger;
+  }
 }
