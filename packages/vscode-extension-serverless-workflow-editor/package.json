@@ -1,7 +1,7 @@
 {
   "name": "vscode-extension-serverless-workflow-editor",
   "publisher": "redhat",
-  "displayName": "Serverless Workflow Editor",
+  "displayName": "Kogito Serverless Workflow Editor",
   "description": "Edit Serverless Workflow definitions",
   "version": "0.0.0",
   "license": "Apache-2.0",
