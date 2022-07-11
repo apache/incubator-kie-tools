@@ -15,21 +15,31 @@
  */
 
 import * as vscode from "vscode";
-import { AuthProvider } from "./AuthProvider";
-import { RHCCAuthProvider } from "./RHCCAuthProvider";
 import { AuthProviderType } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { AuthProvider } from "./AuthProvider";
+import { RhhccAuthProvider } from "./RhhccAuthProvider";
 import { NoOpAuthProvider } from "./NoOpAuthProvider";
+import { RedHatAuthExtensionStateStore } from "../../../RedHatAuthExtensionStateStore";
 
-export const lookupAuthProvider = (args: {
-  context: vscode.ExtensionContext;
-  settings: {
+export class AuthProviderFactory {
+  public constructor(
+    private readonly args: {
+      redhatAuthExtensionStateStore: RedHatAuthExtensionStateStore;
+    }
+  ) {}
+
+  public lookupAuthProvider(args: {
+    context: vscode.ExtensionContext;
     authProvider: AuthProviderType;
-    authUrl?: string;
-    clientId?: string;
-  };
-}): AuthProvider => {
-  if (args.settings && args.settings.authProvider === AuthProviderType.RH_ACCOUNT) {
-    return new RHCCAuthProvider(args.context);
+  }): AuthProvider | undefined {
+    if (args.authProvider === AuthProviderType.NONE) {
+      return new NoOpAuthProvider();
+    }
+
+    if (this.args.redhatAuthExtensionStateStore.isRedHatAuthExtensionEnabled) {
+      return new RhhccAuthProvider(args.context);
+    }
+
+    return undefined;
   }
-  return new NoOpAuthProvider();
-};
+}

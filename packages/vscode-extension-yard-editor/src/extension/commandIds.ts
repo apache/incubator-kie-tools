@@ -15,8 +15,6 @@
  */
 
 export const COMMAND_IDS = {
-  getPreviewSvg: "extension.kogito.yard.getPreviewSvg",
-  silentlyGetPreviewSvg: "extension.kogito.yard.silentlyGenerateSvg",
   openAsDiagram: "extension.kogito.yard.openAsDiagram",
   openAsSource: "extension.kogito.yard.openAsSource",
   setupAutomaticallyOpenDiagramEditorAlongsideTextEditor:

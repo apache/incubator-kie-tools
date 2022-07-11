@@ -25,7 +25,7 @@
     "@kie-tools/serverless-workflow-service-catalog": "0.0.0",
     "@kie-tools/serverless-workflow-language-service": "0.0.0",
     "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^3.2.1",
+    "monaco-yaml": "^4.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "vscode-languageserver-types": "^3.16.0",

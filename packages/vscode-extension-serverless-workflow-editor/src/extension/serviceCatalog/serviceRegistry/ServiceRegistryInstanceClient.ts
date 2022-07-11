@@ -89,7 +89,7 @@ export class ServiceRegistryInstanceClient {
         swfServices.push(swfService);
       }
     } catch (err) {
-      console.log(`Cannot load services: ${err}`);
+      console.debug(`Cannot load services: ${err}`);
     }
 
     return Promise.resolve(swfServices);

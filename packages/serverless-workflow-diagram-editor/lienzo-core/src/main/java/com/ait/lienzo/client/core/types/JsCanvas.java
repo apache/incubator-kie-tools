@@ -27,6 +27,7 @@ import com.ait.lienzo.client.core.shape.Viewport;
 import com.ait.lienzo.client.core.shape.wires.WiresManager;
 import com.ait.lienzo.client.core.shape.wires.WiresShape;
 import com.ait.lienzo.client.core.shape.wires.types.JsWiresShape;
+import com.ait.lienzo.client.widget.panel.Bounds;
 import com.ait.lienzo.client.widget.panel.LienzoPanel;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.tools.client.collection.NFastArrayList;
@@ -274,14 +275,24 @@ public class JsCanvas implements JsCanvasNodeLister {
         }
     }
 
-    public void centerNode(String UUID) {
+    public void centerNode(String uuid) {
+        if (!isShapeVisible(uuid)) {
+            final double[] center = calculateCenter(uuid);
+            layer.getViewport().getTransform().translate(center[0], center[1]);
+            ((ScrollablePanel) panel).refresh();
+        }
+    }
+
+    @SuppressWarnings("all")
+    public double[] calculateCenter(String UUID) {
         NFastArrayList<Double> absoluteLocation = getAbsoluteLocation(UUID);
+        final Bounds visibleBounds = ((ScrollablePanel) panel).getVisibleBounds();
+        final double visibleAreaX = visibleBounds.getX();
+        final double visibleAreaY = visibleBounds.getY();
+        final double areaMaxX = visibleAreaX + visibleBounds.getWidth();
+        final double areaMaxY = visibleAreaY + visibleBounds.getHeight();
 
         if (absoluteLocation != null) {
-
-            double width = layer.getViewport().getWidth();
-            double height = layer.getViewport().getHeight();
-
             NFastArrayList<Double> dimensions = getDimensions(UUID);
             double nodeWidth = 0;
             double nodeHeight = 0;
@@ -291,15 +302,40 @@ public class JsCanvas implements JsCanvasNodeLister {
                 nodeHeight = dimensions.get(1);
             }
 
-            double translatedX = -absoluteLocation.get(0) + (width / 2) - (nodeWidth / 2);
-            double translatedY = -absoluteLocation.get(1) + (height / 2) - (nodeHeight / 2);
+            double adjustX = visibleAreaX / 2;
+            double adjustY = visibleAreaY / 2;
 
-            if (translatedX <= 0 && translatedY <= 0) { // prevent moving (0,0) Dotten Line right/below
-                layer.getViewport().getTransform().translate(-layer.getViewport().getTransform().getTranslateX(), -layer.getViewport().getTransform().getTranslateY());
-                layer.getViewport().getTransform().translate(translatedX, translatedY);
-                ((ScrollablePanel) panel).refresh();
-            }
+            // Calculate absolute center
+            double translatedX = (-absoluteLocation.get(0) + (areaMaxX / 2) - (nodeWidth / 2)) + adjustX;
+            double translatedY = (-absoluteLocation.get(1) + (areaMaxY / 2) - (nodeHeight / 2)) + adjustY;
+
+            // Do not exceed min bounds
+            translatedX = Math.min(translatedX, visibleAreaX);
+            translatedY = Math.min(translatedY, visibleAreaY);
+
+            return new double[]{translatedX, translatedY};
         }
+        return null;
+    }
+
+    public boolean isShapeVisible(String uuid) {
+        final Bounds visibleBounds = ((ScrollablePanel) panel).getVisibleBounds();
+        final JsWiresShape wiresShape = getWiresShape(uuid);
+        final BoundingBox shapeBounds = wiresShape.getBoundingBox();
+        final double shapeX = wiresShape.getLocation().getX();
+        final double shapeY = wiresShape.getLocation().getY();
+        final double shapeMaxX = shapeX + shapeBounds.getWidth();
+        final double shapeMaxY = shapeY + shapeBounds.getHeight();
+        final double visibleAreaX = visibleBounds.getX();
+        final double visibleAreaY = visibleBounds.getY();
+        final double areaMaxX = visibleAreaX + visibleBounds.getWidth();
+        final double areaMaxY = visibleAreaY + visibleBounds.getHeight();
+
+        if ((shapeX >= visibleAreaX && shapeMaxX <= areaMaxX) &&
+                (shapeY >= visibleAreaY && shapeMaxY <= areaMaxY)) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -310,5 +346,14 @@ public class JsCanvas implements JsCanvasNodeLister {
             ids.add(shapes[i].getID());
         }
         return ids;
+    }
+
+    public void close() {
+        if (null != layer) {
+            layer.clear();
+            layer = null;
+        }
+        panel = null;
+        stateApplier = null;
     }
 }
