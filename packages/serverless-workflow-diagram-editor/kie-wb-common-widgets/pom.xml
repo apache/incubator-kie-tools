@@ -5,7 +5,7 @@
   <parent>
     <artifactId>stunner-editors-parent</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-    <version>0.0.0</version>
+    <version>0.21.0</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

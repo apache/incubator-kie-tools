@@ -21,7 +21,7 @@
   <parent>
     <artifactId>sw-editor</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-    <version>0.0.0</version>
+    <version>0.21.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
   <modelVersion>4.0.0</modelVersion>

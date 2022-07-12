@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/unitables",
-  "version": "0.0.0",
+  "version": "0.21.0",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -18,26 +18,26 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools/boxed-expression-component": "0.0.0",
-    "@kie-tools/i18n-common-dictionary": "0.0.0",
-    "@kie-tools/form": "0.0.0",
+    "@kie-tools-core/i18n": "0.21.0",
+    "@kie-tools-core/notifications": "0.21.0",
+    "@kie-tools/boxed-expression-component": "0.21.0",
+    "@kie-tools/form": "0.21.0",
+    "@kie-tools/i18n-common-dictionary": "0.21.0",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "@types/lodash": "^4.14.168",
     "@types/react-table": "^7.0.25",
     "ajv": "^6.12.6",
     "ajv-errors": "^1.0.1",
+    "deep-object-diff": "^1.1.0",
     "lodash": "^4.17.21",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-id-generator": "^3.0.1",
     "react-table": "^7.6.2",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5",
-    "uniforms-patternfly": "^4.7.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "@patternfly/react-core": "^4.157.3",
-    "@patternfly/react-icons": "^4.11.17",
-    "react-id-generator": "^3.0.1",
-    "deep-object-diff": "^1.1.0",
-    "@types/lodash": "^4.14.168"
+    "uniforms-patternfly": "^4.7.5"
   },
   "files": [
     "dist"

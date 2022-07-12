@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/import-java-classes-component",
-  "version": "0.0.0",
+  "version": "0.21.0",
   "description": "This component import Java classes as DMN data types",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -16,18 +16,18 @@
     "deploy": "gh-pages -d dist-dev"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
-    "@kie-tools/i18n-common-dictionary": "0.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "@kie-tools-core/i18n": "0.21.0",
+    "@kie-tools-core/vscode-java-code-completion": "0.21.0",
+    "@kie-tools/i18n-common-dictionary": "0.21.0",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
-    "@patternfly/react-table": "^4.27.15"
+    "@patternfly/react-table": "^4.27.15",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.21.0",
+    "@kie-tools-core/webpack-base": "0.21.0",
+    "@kie-tools/build-env": "0.21.0"
   }
 }

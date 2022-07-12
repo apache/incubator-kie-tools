@@ -254,13 +254,13 @@ importers:
 
   examples/base64png-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       react: ^17.0.2
@@ -281,14 +281,14 @@ importers:
 
   examples/base64png-editor-chrome-extension:
     specifiers:
-      "@kie-tools-core/chrome-extension": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/base64png-editor": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/chrome-extension": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-examples/base64png-editor": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/chrome-extension": link:../../packages/chrome-extension
       "@kie-tools-core/editor": link:../../packages/editor
@@ -302,15 +302,15 @@ importers:
 
   examples/base64png-editor-vscode-extension:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/base64png-editor": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-examples/base64png-editor": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/backend": link:../../packages/backend
       "@kie-tools-core/editor": link:../../packages/editor
@@ -325,10 +325,10 @@ importers:
 
   examples/ping-pong-view:
     specifiers:
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -354,11 +354,11 @@ importers:
       "@angular/platform-browser": ^13.1.1
       "@angular/platform-browser-dynamic": ^13.1.1
       "@angular/router": ^13.1.1
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-examples/ping-pong-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-examples/ping-pong-view": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       rxjs: ^7.4.0
       zone.js: ^0.11.4
     dependencies:
@@ -385,11 +385,11 @@ importers:
 
   examples/ping-pong-view-react:
     specifiers:
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-examples/ping-pong-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-examples/ping-pong-view": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -404,10 +404,10 @@ importers:
 
   examples/todo-list-view:
     specifiers:
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -421,13 +421,13 @@ importers:
 
   examples/todo-list-view-vscode-extension:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/todo-list-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-examples/todo-list-view": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
       "@kie-tools-core/vscode-extension": link:../../packages/vscode-extension
@@ -440,21 +440,21 @@ importers:
 
   examples/webapp:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/base64png-editor": 0.0.0
-      "@kie-tools-examples/ping-pong-view": 0.0.0
-      "@kie-tools-examples/ping-pong-view-angular": 0.0.0
-      "@kie-tools-examples/ping-pong-view-react": 0.0.0
-      "@kie-tools-examples/todo-list-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/kie-editors-standalone": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-examples/base64png-editor": 0.21.0
+      "@kie-tools-examples/ping-pong-view": 0.21.0
+      "@kie-tools-examples/ping-pong-view-angular": 0.21.0
+      "@kie-tools-examples/ping-pong-view-react": 0.21.0
+      "@kie-tools-examples/todo-list-view": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/kie-editors-standalone": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@types/react-router-dom": ^5.1.7
       monaco-editor: ^0.23.0
@@ -487,11 +487,11 @@ importers:
 
   packages/backend:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       axios: ^0.27.2
       fast-xml-parser: ^3.17.4
       portfinder: ^1.0.27
@@ -508,22 +508,22 @@ importers:
 
   packages/backend-extended-services:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/boxed-expression-component:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/feel-input-component": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/feel-input-component": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@patternfly/react-styles": ^4.18.8
@@ -587,12 +587,12 @@ importers:
 
   packages/chrome-extension:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@octokit/rest": ^18.5.3
       "@types/minimatch": ^3.0.4
       minimatch: ^3.0.4
@@ -614,15 +614,15 @@ importers:
 
   packages/chrome-extension-pack-kogito-kie-editors:
     specifiers:
-      "@kie-tools-core/chrome-extension": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/chrome-extension": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
     dependencies:
       "@kie-tools-core/chrome-extension": link:../chrome-extension
       "@kie-tools-core/editor": link:../editor
@@ -637,18 +637,18 @@ importers:
 
   packages/chrome-extension-serverless-workflow-editor:
     specifiers:
-      "@kie-tools-core/chrome-extension": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-text-editor": 0.0.0
+      "@kie-tools-core/chrome-extension": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/serverless-workflow-combined-editor": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.21.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.21.0
+      "@kie-tools/serverless-workflow-text-editor": 0.21.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -672,8 +672,8 @@ importers:
   packages/cors-proxy-image:
     specifiers:
       "@isomorphic-git/cors-proxy": ^2.7.1
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       patch-package: ^6.4.7
     devDependencies:
       "@isomorphic-git/cors-proxy": 2.7.1
@@ -683,9 +683,9 @@ importers:
 
   packages/dashbuilder:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-assembler": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-assembler": 0.21.0
     dependencies:
       "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
@@ -694,9 +694,9 @@ importers:
 
   packages/dashbuilder-client:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -704,8 +704,8 @@ importers:
 
   packages/dashbuilder-component-api:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -717,15 +717,15 @@ importers:
 
   packages/dashbuilder-component-assembler:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-echarts": 0.0.0
-      "@kie-tools/dashbuilder-component-svg-heatmap": 0.0.0
-      "@kie-tools/dashbuilder-component-table": 0.0.0
-      "@kie-tools/dashbuilder-component-timeseries": 0.0.0
-      "@kie-tools/dashbuilder-component-uniforms": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-echarts": 0.21.0
+      "@kie-tools/dashbuilder-component-svg-heatmap": 0.21.0
+      "@kie-tools/dashbuilder-component-table": 0.21.0
+      "@kie-tools/dashbuilder-component-timeseries": 0.21.0
+      "@kie-tools/dashbuilder-component-uniforms": 0.21.0
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -740,9 +740,9 @@ importers:
 
   packages/dashbuilder-component-dev:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -755,13 +755,13 @@ importers:
 
   packages/dashbuilder-component-echarts:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
-      "@kie-tools/dashbuilder-component-echarts-base": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-dev": 0.21.0
+      "@kie-tools/dashbuilder-component-echarts-base": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -778,8 +778,8 @@ importers:
 
   packages/dashbuilder-component-echarts-base:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -791,12 +791,12 @@ importers:
 
   packages/dashbuilder-component-svg-heatmap:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-dev": 0.21.0
       heatmap.js: ^2.0.5
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -814,12 +814,12 @@ importers:
 
   packages/dashbuilder-component-table:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-dev": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       react: ^17.0.2
@@ -839,13 +839,13 @@ importers:
 
   packages/dashbuilder-component-timeseries:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
-      "@kie-tools/dashbuilder-component-echarts-base": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-dev": 0.21.0
+      "@kie-tools/dashbuilder-component-echarts-base": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -862,12 +862,12 @@ importers:
 
   packages/dashbuilder-component-uniforms:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-dev": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       ajv: ^6.12.6
@@ -897,12 +897,12 @@ importers:
 
   packages/dashbuilder-component-victory-charts:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-component-api": 0.21.0
+      "@kie-tools/dashbuilder-component-dev": 0.21.0
       "@patternfly/react-charts": ^6.15.23
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
@@ -924,16 +924,16 @@ importers:
 
   packages/dashbuilder-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-client": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-client": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       monaco-editor: ^0.33.0
@@ -965,9 +965,9 @@ importers:
 
   packages/dashbuilder-images:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder": 0.21.0
     dependencies:
       "@kie-tools/dashbuilder": link:../dashbuilder
     devDependencies:
@@ -976,9 +976,9 @@ importers:
 
   packages/dashbuilder-swf-monitoring-dashboard:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-client": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-client": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -986,16 +986,16 @@ importers:
 
   packages/desktop:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       electron: ^12.0.11
@@ -1025,10 +1025,10 @@ importers:
 
   packages/dmn-dev-sandbox-deployment-base-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dmn-dev-sandbox-form-webapp": 0.0.0
-      "@kie-tools/dmn-dev-sandbox-quarkus": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dmn-dev-sandbox-form-webapp": 0.21.0
+      "@kie-tools/dmn-dev-sandbox-quarkus": 0.21.0
     dependencies:
       "@kie-tools/dmn-dev-sandbox-form-webapp": link:../dmn-dev-sandbox-form-webapp
       "@kie-tools/dmn-dev-sandbox-quarkus": link:../dmn-dev-sandbox-quarkus
@@ -1038,13 +1038,13 @@ importers:
 
   packages/dmn-dev-sandbox-form-webapp:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/form-dmn": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/form-dmn": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
@@ -1073,26 +1073,26 @@ importers:
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/minimatch": ^3.0.4
@@ -1124,9 +1124,9 @@ importers:
 
   packages/envelope:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       csstype: ^3.0.11
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1141,8 +1141,8 @@ importers:
 
   packages/envelope-bus:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1154,8 +1154,8 @@ importers:
 
   packages/extended-services:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@kie-tools/jitexecutor-native": 1.12.0-Final
       cross-env: ^5.2.1
     dependencies:
@@ -1167,12 +1167,12 @@ importers:
 
   packages/feel-input-component:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       monaco-editor: ^0.23.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1190,12 +1190,12 @@ importers:
 
   packages/form:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -1231,13 +1231,13 @@ importers:
 
   packages/form-dmn:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/form": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -1274,11 +1274,11 @@ importers:
 
   packages/form-generation-tool:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/uniforms-bootstrap4-codegen": 0.0.0
-      "@kie-tools/uniforms-patternfly-codegen": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/uniforms-bootstrap4-codegen": 0.21.0
+      "@kie-tools/uniforms-patternfly-codegen": 0.21.0
       "@types/lodash": ^4.14.168
       inquirer: ^8.1.1
       lodash: ^4.17.21
@@ -1299,11 +1299,11 @@ importers:
 
   packages/guided-tour:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       react: ^17.0.2
@@ -1322,8 +1322,8 @@ importers:
 
   packages/i18n:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1335,9 +1335,9 @@ importers:
 
   packages/i18n-common-dictionary:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
     devDependencies:
@@ -1346,9 +1346,9 @@ importers:
 
   packages/image-env-to-json:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       commander: ^8.3.0
     dependencies:
       commander: 8.3.0
@@ -1359,12 +1359,12 @@ importers:
 
   packages/import-java-classes-component:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-java-code-completion": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@patternfly/react-table": ^4.27.15
@@ -1386,10 +1386,10 @@ importers:
 
   packages/keyboard-shortcuts:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1403,18 +1403,18 @@ importers:
 
   packages/kie-bc-editors:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/pmml-editor-marshaller": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-java-code-completion": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/pmml-editor-marshaller": 0.21.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1436,19 +1436,19 @@ importers:
 
   packages/kie-editors-standalone:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
       "@types/minimatch": ^3.0.4
       "@types/react-router-dom": ^5.1.7
       minimatch: ^3.0.4
@@ -1478,9 +1478,9 @@ importers:
 
   packages/kie-sandbox-extended-services-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/extended-services": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/extended-services": 0.21.0
     dependencies:
       "@kie-tools/extended-services": link:../extended-services
     devDependencies:
@@ -1490,8 +1490,8 @@ importers:
   packages/kie-sandbox-fs:
     specifiers:
       "@isomorphic-git/idb-keyval": ^3.3.2
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       dexie: ^3.0.3
       isomorphic-textencoder: ^1.0.1
       just-debounce-it: ^3.0.1
@@ -1534,10 +1534,10 @@ importers:
 
   packages/kie-sandbox-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/image-env-to-json": 0.0.0
-      "@kie-tools/online-editor": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/image-env-to-json": 0.21.0
+      "@kie-tools/online-editor": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -1546,16 +1546,16 @@ importers:
 
   packages/kn-plugin-workflow:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/monaco-editor:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       monaco-editor: ^0.23.0
     dependencies:
       monaco-editor: 0.23.0
@@ -1565,10 +1565,10 @@ importers:
 
   packages/notifications:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/workspace": link:../workspace
@@ -1578,29 +1578,29 @@ importers:
 
   packages/online-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/extended-services": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/form-dmn": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/kie-sandbox-fs": 0.0.0
-      "@kie-tools/pmml-editor": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/unitables": 0.0.0
-      "@kie-tools/unitables-dmn": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/boxed-expression-component": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/extended-services": 0.21.0
+      "@kie-tools/form": 0.21.0
+      "@kie-tools/form-dmn": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/kie-sandbox-fs": 0.21.0
+      "@kie-tools/pmml-editor": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
+      "@kie-tools/unitables": 0.21.0
+      "@kie-tools/unitables-dmn": 0.21.0
       "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
       "@patternfly/react-core": ^4.157.3
@@ -1675,45 +1675,45 @@ importers:
 
   packages/openjdk11-mvn-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/operating-system:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/patternfly-base:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/pmml-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/pmml-editor-marshaller": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/pmml-editor-marshaller": 0.21.0
       "@patternfly/react-charts": ^6.15.23
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -1784,8 +1784,8 @@ importers:
 
   packages/pmml-editor-marshaller:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       jsonata: ^1.8.3
       xml-js: ^1.6.11
     dependencies:
@@ -1797,7 +1797,7 @@ importers:
 
   packages/run-script-if:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": 0.21.0
       yargs: ^17.0.1
     dependencies:
       yargs: 17.3.1
@@ -1806,30 +1806,30 @@ importers:
 
   packages/serverless-logic-sandbox:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-client": 0.0.0
-      "@kie-tools/dashbuilder-editor": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-sandbox-fs": 0.0.0
-      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      "@kie-tools/serverless-workflow-text-editor": 0.0.0
-      "@kie-tools/text-editor": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-client": 0.21.0
+      "@kie-tools/dashbuilder-editor": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
+      "@kie-tools/kie-sandbox-fs": 0.21.0
+      "@kie-tools/serverless-workflow-combined-editor": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.21.0
+      "@kie-tools/serverless-workflow-language-service": 0.21.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.21.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.21.0
+      "@kie-tools/serverless-workflow-text-editor": 0.21.0
+      "@kie-tools/text-editor": 0.21.0
       "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
       "@patternfly/react-core": ^4.157.3
@@ -1927,10 +1927,10 @@ importers:
 
   packages/serverless-logic-sandbox-base-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-swf-monitoring-dashboard": 0.0.0
-      "@kie-tools/serverless-logic-sandbox-deployment-webapp": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/dashbuilder-swf-monitoring-dashboard": 0.21.0
+      "@kie-tools/serverless-logic-sandbox-deployment-webapp": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -1939,12 +1939,12 @@ importers:
 
   packages/serverless-logic-sandbox-deployment-webapp:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
@@ -1972,23 +1972,23 @@ importers:
 
   packages/serverless-workflow-combined-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      "@kie-tools/serverless-workflow-text-editor": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.21.0
+      "@kie-tools/serverless-workflow-language-service": 0.21.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.21.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.21.0
+      "@kie-tools/serverless-workflow-text-editor": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
@@ -2033,26 +2033,26 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/serverless-workflow-diagram-editor-envelope:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-java-code-completion": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope": link:../envelope
@@ -2070,9 +2070,9 @@ importers:
 
   packages/serverless-workflow-language-service:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.21.0
       "@types/json-to-ast": ^2.1.2
       json-to-ast: ^2.1.0
       jsonata: ^1.8.3
@@ -2097,17 +2097,17 @@ importers:
 
   packages/serverless-workflow-mermaid-viewer:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/mermaid": ^8.2.9
@@ -2136,9 +2136,9 @@ importers:
 
   packages/serverless-workflow-service-catalog:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@types/js-yaml": ^4.0.5
       "@types/lodash": ^4.14.168
       js-yaml: ^4.1.0
@@ -2157,18 +2157,18 @@ importers:
 
   packages/serverless-workflow-text-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/serverless-workflow-language-service": 0.21.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
@@ -2208,9 +2208,9 @@ importers:
 
   packages/stunner-editors:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/stunner-editors-dmn-loader": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/stunner-editors-dmn-loader": 0.21.0
     dependencies:
       "@kie-tools/stunner-editors-dmn-loader": link:../stunner-editors-dmn-loader
     devDependencies:
@@ -2219,14 +2219,14 @@ importers:
 
   packages/stunner-editors-dmn-loader:
     specifiers:
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/import-java-classes-component": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/boxed-expression-component": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/import-java-classes-component": 0.21.0
       "@types/lodash": ^4.14.168
       lodash: ^4.17.21
       monaco-editor: ^0.23.0
@@ -2250,15 +2250,15 @@ importers:
 
   packages/text-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@patternfly/react-core": ^4.157.3
       monaco-editor: ^0.33.0
       monaco-yaml: ^4.0.0
@@ -2283,9 +2283,9 @@ importers:
 
   packages/uniforms-bootstrap4-codegen:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@types/lodash": ^4.14.168
       lodash: ^4.17.21
       prettier: ^2.2.1
@@ -2308,9 +2308,9 @@ importers:
 
   packages/uniforms-patternfly-codegen:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@types/lodash": ^4.14.168
       lodash: ^4.17.21
       prettier: ^2.2.1
@@ -2331,11 +2331,11 @@ importers:
 
   packages/unitables:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools/boxed-expression-component": 0.21.0
+      "@kie-tools/form": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -2375,13 +2375,13 @@ importers:
 
   packages/unitables-dmn:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/form-dmn": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/unitables": 0.0.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools/boxed-expression-component": 0.21.0
+      "@kie-tools/form": 0.21.0
+      "@kie-tools/form-dmn": 0.21.0
+      "@kie-tools/i18n-common-dictionary": 0.21.0
+      "@kie-tools/unitables": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -2421,17 +2421,17 @@ importers:
 
   packages/vscode-extension:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-java-code-completion": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@types/minimatch": ^3.0.4
       minimatch: ^3.0.4
     dependencies:
@@ -2452,12 +2452,12 @@ importers:
 
   packages/vscode-extension-backend:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/backend-extended-services": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/backend-extended-services": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/vscode-extension": link:../vscode-extension
@@ -2469,17 +2469,17 @@ importers:
 
   packages/vscode-extension-bpmn-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
+      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.21.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -2496,17 +2496,17 @@ importers:
 
   packages/vscode-extension-dmn-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
+      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.21.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -2523,9 +2523,9 @@ importers:
 
   packages/vscode-extension-kie-ba-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -2533,9 +2533,9 @@ importers:
 
   packages/vscode-extension-kogito-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -2543,22 +2543,22 @@ importers:
 
   packages/vscode-extension-pack-kogito-kie-editors:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/pmml-editor": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/kie-bc-editors": 0.21.0
+      "@kie-tools/pmml-editor": 0.21.0
+      "@kie-tools/stunner-editors": 0.21.0
+      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.21.0
       "@types/minimatch": ^3.0.4
       minimatch: ^3.0.4
       monaco-editor: ^0.23.0
@@ -2586,17 +2586,17 @@ importers:
 
   packages/vscode-extension-pmml-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/pmml-editor": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/monaco-editor": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/pmml-editor": 0.21.0
     dependencies:
       "@kie-tools-core/backend": link:../backend
       "@kie-tools-core/editor": link:../editor
@@ -2613,9 +2613,9 @@ importers:
 
   packages/vscode-extension-red-hat-business-automation-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
@@ -2623,25 +2623,25 @@ importers:
 
   packages/vscode-extension-serverless-workflow-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/keyboard-shortcuts": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/vscode-java-code-completion": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.21.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.21.0
+      "@kie-tools/serverless-workflow-language-service": 0.21.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.21.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.21.0
       "@rhoas/registry-instance-sdk": ^0.34.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -2682,20 +2682,20 @@ importers:
 
   packages/vscode-extension-yard-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/yard-editor": 0.0.0
+      "@kie-tools-core/backend": 0.21.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/i18n": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/vscode-extension": 0.21.0
+      "@kie-tools-core/vscode-java-code-completion": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
+      "@kie-tools/yard-editor": 0.21.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -2729,16 +2729,16 @@ importers:
 
   packages/vscode-java-code-completion:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@types/glob": ^7.1.3
       glob: ^7.1.6
     dependencies:
@@ -2750,17 +2750,17 @@ importers:
 
   packages/webpack-base:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/workspace:
     specifiers:
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools/build-env": 0.21.0
     dependencies:
       "@kie-tools-core/operating-system": link:../operating-system
     devDependencies:
@@ -2769,16 +2769,16 @@ importers:
 
   packages/yard-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": 0.21.0
+      "@kie-tools-core/envelope-bus": 0.21.0
+      "@kie-tools-core/guided-tour": 0.21.0
+      "@kie-tools-core/notifications": 0.21.0
+      "@kie-tools-core/operating-system": 0.21.0
+      "@kie-tools-core/patternfly-base": 0.21.0
+      "@kie-tools-core/run-script-if": 0.21.0
+      "@kie-tools-core/webpack-base": 0.21.0
+      "@kie-tools-core/workspace": 0.21.0
+      "@kie-tools/build-env": 0.21.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11

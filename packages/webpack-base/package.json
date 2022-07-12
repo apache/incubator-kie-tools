@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-core/webpack-base",
-  "version": "0.0.0",
+  "version": "0.21.0",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -12,8 +12,8 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.21.0",
+    "@kie-tools/build-env": "0.21.0"
   },
   "babel": {
     "presets": [

@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/kn-plugin-workflow",
-  "version": "0.0.0",
+  "version": "0.21.0",
   "description": "",
   "license": "Apache-2.0",
   "private": true,
@@ -20,7 +20,7 @@
     "build:prod": "rimraf dist && pnpm build"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.21.0",
+    "@kie-tools/build-env": "0.21.0"
   }
 }

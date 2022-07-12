@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/kie-sandbox-extended-services-image",
-  "version": "0.0.0",
+  "version": "0.21.0",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -21,10 +21,10 @@
     "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-os"
   },
   "dependencies": {
-    "@kie-tools/extended-services": "0.0.0"
+    "@kie-tools/extended-services": "0.21.0"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools-core/run-script-if": "0.21.0",
+    "@kie-tools/build-env": "0.21.0"
   }
 }
