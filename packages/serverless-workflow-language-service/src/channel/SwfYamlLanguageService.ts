@@ -24,15 +24,17 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { FileLanguage } from "../editor";
 import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode } from "./SwfLanguageService";
 
-export class SwfYamlLanguageService extends SwfLanguageService {
+export class SwfYamlLanguageService {
   fileLanguage = FileLanguage.YAML;
   protected fileMatch = ["*.sw.yaml", "*.sw.yml"];
+  private ls: SwfLanguageService;
 
   constructor(args: SwfLanguageServiceArgs) {
-    super(args);
+    this.ls = new SwfLanguageService(args);
   }
 
   parseContent(content: string): SwfLSNode | undefined {
@@ -44,6 +46,43 @@ export class SwfYamlLanguageService extends SwfLanguageService {
     }
 
     return astConvert(ast);
+  }
+
+  public getCompletionItems(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+  }): Promise<CompletionItem[]> {
+    const rootNode = this.parseContent(args.content);
+
+    if (!rootNode) {
+      return Promise.resolve([]);
+    }
+    return this.ls.getCompletionItems({
+      ...args,
+      rootNode,
+    });
+  }
+
+  public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
+    const rootNode = this.parseContent(args.content);
+
+    if (!rootNode) {
+      return Promise.resolve([]);
+    }
+    return this.ls.getCodeLenses({
+      ...args,
+      rootNode,
+    });
+  }
+
+  public async getDiagnostics(args: { content: string; uriPath: string }) {
+    return this.ls.getDiagnostics(args);
+  }
+
+  public dispose() {
+    return this.ls.dispose();
   }
 }
 

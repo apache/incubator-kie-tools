@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
-import { COMMAND_IDS } from "./commandIds";
-import * as ls from "vscode-languageserver-types";
 import {
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  SwfJsonLanguageService,
+  SwfLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import * as vscode from "vscode";
+import * as ls from "vscode-languageserver-types";
+import { debounce } from "../debounce";
+import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { debounce } from "../debounce";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  swfLanguageService: () => SwfLanguageService;
+  swfLanguageService: () => SwfJsonLanguageService | SwfYamlLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
@@ -208,7 +212,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 }
 
 async function setSwfJsonDiagnostics(
-  swfLanguageService: SwfLanguageService,
+  swfLanguageService: SwfJsonLanguageService | SwfYamlLanguageService,
   uri: vscode.Uri,
   diganosticsCollection: vscode.DiagnosticCollection
 ) {

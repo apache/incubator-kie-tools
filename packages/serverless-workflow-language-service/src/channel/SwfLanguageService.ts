@@ -78,29 +78,27 @@ export type SwfLanguageServiceArgs = {
   config: SwfLanguageServiceConfig;
 };
 
-export abstract class SwfLanguageService {
-  protected abstract fileMatch: string[];
-  public abstract fileLanguage: FileLanguage;
+export class SwfLanguageService {
+  protected fileMatch: string[];
+  public fileLanguage: FileLanguage;
 
   constructor(private readonly args: SwfLanguageServiceArgs) {}
-
-  public abstract parseContent(content: string): SwfLSNode | undefined;
 
   public async getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
+    rootNode: SwfLSNode;
   }): Promise<CompletionItem[]> {
     const doc = TextDocument.create(args.uri, this.fileLanguage, 0, args.content);
-    const rootNode = this.parseContent(args.content);
-    if (!rootNode) {
+    if (!args.rootNode) {
       return [];
     }
 
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
-    const currentNode = findNodeAtOffset(rootNode, cursorOffset);
+    const currentNode = findNodeAtOffset(args.rootNode, cursorOffset);
     if (!currentNode) {
       return [];
     }
@@ -129,18 +127,18 @@ export abstract class SwfLanguageService {
       }))
     );
 
-    const nodeAtOffset = findNodeAtOffset(rootNode, cursorOffset);
+    const nodeAtOffset = findNodeAtOffset(args.rootNode, cursorOffset);
 
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => matchNodeWithLocation(rootNode, nodeAtOffset, path))
+        .filter(([path, _]) => matchNodeWithLocation(args.rootNode, nodeAtOffset, path))
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
             cursorPosition: args.cursorPosition,
             currentNode,
             currentNodePosition,
-            rootNode,
+            rootNode: args.rootNode,
             overwriteRange,
             swfCompletionItemServiceCatalogServices,
             langServiceConfig: this.args.config,
@@ -175,17 +173,16 @@ export abstract class SwfLanguageService {
     return await jsonLanguageService.doValidation(textDocument, jsonDocument);
   }
 
-  public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
+  public async getCodeLenses(args: { content: string; uri: string; rootNode: SwfLSNode }): Promise<CodeLens[]> {
     const document = TextDocument.create(args.uri, this.fileLanguage, 0, args.content);
 
-    const rootNode = this.parseContent(document.getText());
-    if (!rootNode) {
+    if (!args.rootNode) {
       return [];
     }
 
     const addFunction = this.createCodeLenses({
       document,
-      rootNode,
+      rootNode: args.rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ node }) => {
@@ -209,7 +206,7 @@ export abstract class SwfLanguageService {
 
     const setupServiceRegistries = this.createCodeLenses({
       document,
-      rootNode,
+      rootNode: args.rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ position, node }) => {
@@ -233,7 +230,7 @@ export abstract class SwfLanguageService {
 
     const logInServiceRegistries = this.createCodeLenses({
       document,
-      rootNode,
+      rootNode: args.rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ position, node }) => {
@@ -261,7 +258,7 @@ export abstract class SwfLanguageService {
 
     const refreshServiceRegistries = this.createCodeLenses({
       document,
-      rootNode,
+      rootNode: args.rootNode,
       jsonPath: ["functions"],
       positionLensAt: "begin",
       commandDelegates: ({ position, node }) => {

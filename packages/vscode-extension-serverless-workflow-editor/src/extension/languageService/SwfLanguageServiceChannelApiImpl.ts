@@ -17,13 +17,17 @@
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import * as vscode from "vscode";
 import { COMMAND_IDS } from "../commandIds";
-import { SwfLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfLanguageService,
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
   constructor(
     private readonly args: {
-      ls: SwfLanguageService;
+      ls: SwfJsonLanguageService | SwfYamlLanguageService;
     }
   ) {}
 

@@ -48,7 +48,7 @@ export class VsCodeSwfLanguageService {
     this.initLs(vscode.window.activeTextEditor?.document);
   }
 
-  public get ls(): SwfLanguageService {
+  public get ls(): SwfJsonLanguageService | SwfYamlLanguageService {
     return this.fileLanguage === FileLanguage.YAML ? this._yamlLs : this._jsonLs;
   }
 
