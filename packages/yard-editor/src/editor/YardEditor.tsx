@@ -25,6 +25,7 @@ import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/e
 import { editor } from "monaco-editor";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { YardUIEditor } from "../uiEditor";
+import "./YardEditor.css";
 
 interface Props {
   /**
@@ -195,15 +196,15 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   return (
     <>
       {(isVscode() && yardUIContainer) || (
-        <Drawer isExpanded={true} isInline={true}>
+        <Drawer className={"yard-drawer"} isExpanded={true} isInline={true}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
-                <DrawerPanelBody style={{ padding: 5 }}>{yardUIContainer}</DrawerPanelBody>
+                <DrawerPanelBody>{yardUIContainer}</DrawerPanelBody>
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody style={{ overflowY: "hidden" }}>{yardTextEditor}</DrawerContentBody>
+            <DrawerContentBody className={"drawer-content-body"}>{yardTextEditor}</DrawerContentBody>
           </DrawerContent>
         </Drawer>
       )}
