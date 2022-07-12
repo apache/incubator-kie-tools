@@ -65,16 +65,6 @@ export class ServerlessWorkflowCombinedEditorView implements Editor {
         channelType={this.initArgs.channel}
         resourcesPathPrefix={this.initArgs.resourcesPathPrefix}
         onNewEdit={this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send}
-        onStateControlCommandUpdate={
-          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send
-        }
-        setNotifications={this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send}
-        kogitoWorkspace_resourceContentRequest={
-          this.envelopeContext.channelApi.requests.kogitoWorkspace_resourceContentRequest
-        }
-        kogitoWorkspace_resourceListRequest={
-          this.envelopeContext.channelApi.requests.kogitoWorkspace_resourceListRequest
-        }
       />
     );
   }

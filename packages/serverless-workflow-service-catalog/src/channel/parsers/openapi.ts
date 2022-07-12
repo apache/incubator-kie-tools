@@ -27,7 +27,7 @@ import {
 import * as yaml from "js-yaml";
 import { OpenAPIV3 } from "openapi-types";
 import { posix as posixPath } from "path";
-import get from "lodash/get";
+import { get } from "lodash";
 
 const APPLICATION_JSON = "application/json";
 

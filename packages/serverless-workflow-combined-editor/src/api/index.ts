@@ -15,3 +15,4 @@
  */
 
 export * from "./ServerlessWorkflowCombinedEditorChannelApi";
+export * from "./SwfFeatureToggleChannelApi";
