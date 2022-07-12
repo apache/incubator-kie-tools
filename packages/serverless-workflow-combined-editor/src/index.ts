@@ -15,3 +15,4 @@
  */
 
 export * from "./editor";
+export * from "./impl";

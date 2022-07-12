@@ -268,6 +268,101 @@ const ENV_VARS = {
     default: "dist",
     description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",
   },
+  SERVERLESS_LOGIC_SANDBOX__buildInfo: {
+    name: "SERVERLESS_LOGIC_SANDBOX__buildInfo",
+    default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__gtmId: {
+    name: "SERVERLESS_LOGIC_SANDBOX__gtmId",
+    default: undefined,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__deploymentGtmId: {
+    name: "SERVERLESS_LOGIC_SANDBOX__deploymentGtmId",
+    default: undefined,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion",
+    default: "2.10.1.Final",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__baseImageAccount: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageAccount",
+    default: "kie-tools",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__baseImageName: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageName",
+    default: "serverless-logic-sandbox-base-image",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__baseImageTag: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageTag",
+    default: "latest",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: {
+    name: "SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags",
+    default: "latest",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux",
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs",
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows",
+    default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
+    name: "SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion",
+    default: version,
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry",
+    default: "quay.io",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount",
+    default: "kie-tools",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName",
+    default: "openjdk11-mvn-image",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag",
+    default: "latest",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags",
+    default: "latest",
+    description: "",
+  },
+  SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion: {
+    name: "SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion",
+    default: "4.10.0-0.okd-2022-06-24-212905",
+    description: "",
+  },
   KN_PLUGIN_WORKFLOW__quarkusVersion: {
     name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
     default: "2.10.0.Final",
@@ -441,6 +536,44 @@ module.exports = {
   serverlessWorkflowMermaidViewer: {
     dev: {
       port: 9004,
+    },
+  },
+
+  serverlessLogicSandbox: {
+    buildInfo: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__buildInfo),
+    gtmId: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__gtmId),
+    deployment: {
+      gtmId: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__deploymentGtmId),
+      dev: {
+        port: 9021,
+      },
+    },
+    dev: {
+      port: 9020,
+    },
+    baseImage: {
+      quarkusVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion),
+      registry: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry),
+      account: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageAccount),
+      name: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageName),
+      tag: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageTag),
+      buildTags: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags),
+    },
+    openJdk11MvnImage: {
+      registry: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry),
+      account: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount),
+      name: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName),
+      tag: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag),
+      buildTags: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags),
+      okdVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion),
+    },
+    kieSandboxExtendedServices: {
+      compatibleVersion: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion),
+      downloadUrl: {
+        linux: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
+        macOs: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
+        windows: getOrDefault(ENV_VARS.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
+      },
     },
   },
 

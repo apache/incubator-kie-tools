@@ -21,8 +21,6 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
@@ -39,12 +37,14 @@ import {
   WorkspaceApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 

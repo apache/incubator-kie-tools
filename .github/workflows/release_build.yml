@@ -24,7 +24,7 @@ on:
       runners:
         type: string
         required: false
-        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","kn_plugin_workflow":"false"}'
+        default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false","kn_plugin_workflow":"false"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -76,6 +76,9 @@ jobs:
       extended_services: ${{ steps.set_runners.outputs.extended_services }}
       dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}
       dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}
+      serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}
+      serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}
+      openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}
       kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}
 
     steps:
@@ -97,6 +100,9 @@ jobs:
           echo "::set-output name=extended_services::${{ fromJSON(inputs.runners).extended_services }}"
           echo "::set-output name=dashbuilder::${{ fromJSON(inputs.runners).dashbuilder }}"
           echo "::set-output name=dashbuilder_images::${{ fromJSON(inputs.runners).dashbuilder_images }}"
+          echo "::set-output name=serverless_logic_sandbox::${{ fromJSON(inputs.runners).serverless_logic_sandbox }}"
+          echo "::set-output name=serverless_logic_sandbox_base_image::${{ fromJSON(inputs.runners).serverless_logic_sandbox_base_image }}"
+          echo "::set-output name=openjdk11_mvn_image::${{ fromJSON(inputs.runners).openjdk11_mvn_image }}"
           echo "::set-output name=kn_plugin_workflow::${{ fromJSON(inputs.runners).kn_plugin_workflow }}"
 
       - name: "Print Runners"
@@ -116,6 +122,9 @@ jobs:
           echo "extended_services: ${{ steps.set_runners.outputs.extended_services }}"
           echo "dashbuilder: ${{ steps.set_runners.outputs.dashbuilder }}"
           echo "dashbuilder_images: ${{ steps.set_runners.outputs.dashbuilder_images }}"
+          echo "serverless_logic_sandbox: ${{ steps.set_runners.outputs.serverless_logic_sandbox }}"
+          echo "serverless_logic_sandbox_base_image: ${{ steps.set_runners.outputs.serverless_logic_sandbox_base_image }}"
+          echo "openjdk11_mvn_image: ${{ steps.set_runners.outputs.openjdk11_mvn_image }}"
           echo "kn_plugin_workflow: ${{ steps.set_runners.outputs.kn_plugin_workflow }}"
 
   dmn_dev_sandbox_image:
@@ -1159,7 +1168,6 @@ jobs:
         shell: bash
         run: |
           pnpm -F @kie-tools/kn-plugin-workflow... build:prod
-
       - name: "Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
@@ -1192,3 +1200,172 @@ jobs:
           asset_path: "./packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe"
           asset_name: "kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream
+
+  serverless_logic_sandbox_base_image:
+    env:
+      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
+      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "latest ${{ inputs.tag }}"
+
+    if: ${{ needs.extract_runners.outputs.serverless_logic_sandbox_base_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout kie-tools"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          fetch-depth: 0
+
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Cache Maven packages"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-serverless-logic-sandbox-base-image-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-serverless-logic-sandbox-base-image-m2
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm -F @kie-tools/serverless-logic-sandbox-base-image... build:prod
+      - name: "Push serverless-logic-sandbox-base-image to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+  openjdk11_mvn_image:
+    env:
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "latest ${{ inputs.tag }}"
+
+    if: ${{ needs.extract_runners.outputs.openjdk11_mvn_image == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners]
+    steps:
+      - name: "Checkout kie-tools"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          fetch-depth: 0
+
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Build"
+        shell: bash
+        run: |
+          pnpm -F @kie-tools/openjdk11-mvn-image... build:prod
+      - name: "Push openjdk11-mvn-image to quay.io"
+        if: ${{ !inputs.dry_run }}
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          password: "${{ secrets.quay_registry_password }}"
+
+  serverless_logic_sandbox:
+    env:
+      SERVERLESS_LOGIC_SANDBOX__buildInfo: ""
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_linux_${{ inputs.tag }}.tar.gz"
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_SANDBOX__gtmId: "GTM-5W2QP3C"
+      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
+      SERVERLESS_LOGIC_SANDBOX__baseImageTag: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}"
+
+    if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') && (needs.openjdk11_mvn_image.result == 'success' || needs.openjdk11_mvn_image.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    needs: [extract_runners, serverless_logic_sandbox_base_image, openjdk11_mvn_image, extended_services]
+    steps:
+      - name: "Checkout kie-tools"
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ inputs.base_ref }}
+          path: ${{ github.workspace }}/kie-tools
+          fetch-depth: 0
+
+      - name: "Setup kie-tools-bot"
+        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./kie-tools/.github/actions/merge-pr-changes
+        with:
+          path: kie-tools
+
+      - name: "Checkout serverless-logic-sandbox-deployment"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/serverless-logic-sandbox-deployment
+          fetch-depth: 0
+          token: ${{ secrets.kie_tools_bot_token }}
+          repository: kiegroup/serverless-logic-sandbox-deployment
+          ref: gh-pages
+
+      - name: "Cache Maven packages"
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-serverless-logic-sandbox-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-serverless-logic-sandbox-m2
+
+      - name: "Setup environment"
+        uses: ./kie-tools/.github/actions/setup-env
+        with:
+          path: kie-tools
+          os: ubuntu-latest
+
+      - name: "Build"
+        working-directory: ${{ github.workspace }}/kie-tools
+        run: |
+          pnpm -F @kie-tools/serverless-logic-sandbox... build:prod
+      - name: "Deploy to GitHub Pages (serverless-logic-sandbox-deployment)"
+        if: ${{ !inputs.dry_run }}
+        working-directory: ${{ github.workspace }}/serverless-logic-sandbox-deployment
+        shell: bash
+        run: |
+          echo "Reset deployment dir"
+          shopt -s extglob
+          rm -rf -- !("dev"|"staging"|".nojekyll"|"CNAME")
+          echo "Copy resources"
+          cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist/* .
+          echo "Commit changes and push"
+          git add .
+          git commit -m "Deploy ${{ inputs.tag }}"
+          git push origin gh-pages

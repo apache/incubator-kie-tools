@@ -48,6 +48,9 @@ export type Props = EmbeddedEditorChannelApiOverrides & {
   editorEnvelopeLocator: EditorEnvelopeLocator;
   channelType: ChannelType;
   locale: string;
+  customChannelApiImpl?: KogitoEditorChannelApi;
+  stateControl?: StateControl;
+  isReady?: boolean;
 };
 
 /**
@@ -77,7 +80,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   forwardedRef
 ) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(() => new StateControl(), [props.file.getFileContents]);
+  const stateControl = useMemo(
+    () => props.stateControl ?? new StateControl(),
+    [props.file.getFileContents, props.stateControl]
+  );
   const [isReady, setReady] = useState(false);
   const envelopeMapping = useMemo(
     () => props.editorEnvelopeLocator.getEnvelopeMapping(props.file.path ?? props.file.fileName),
@@ -86,13 +92,16 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
   //Setup envelope bus communication
   const kogitoEditorChannelApiImpl = useMemo(() => {
-    return new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
-      ...props,
-      kogitoEditor_ready: () => {
-        setReady(true);
-        props.kogitoEditor_ready?.();
-      },
-    });
+    return (
+      props.customChannelApiImpl ??
+      new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
+        ...props,
+        kogitoEditor_ready: () => {
+          setReady(true);
+          props.kogitoEditor_ready?.();
+        },
+      })
+    );
   }, [stateControl, props]);
 
   const envelopeServer = useMemo(() => {
@@ -151,7 +160,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 
       return {
         iframeRef,
-        isReady: isReady,
+        isReady: props.isReady ?? isReady,
         getStateControl: () => stateControl,
         getEnvelopeServer: () => envelopeServer,
         getElementPosition: (s) =>
@@ -169,7 +178,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
         setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       };
     },
-    [envelopeServer, stateControl, isReady]
+    [props.isReady, isReady, stateControl, envelopeServer]
   );
 
   return (

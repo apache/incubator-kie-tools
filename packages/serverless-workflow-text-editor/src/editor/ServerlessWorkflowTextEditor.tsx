@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useRef, useState } from "react";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { SwfTextEditorApi, SwfTextEditorOperation } from "../editor/textEditor/SwfTextEditorController";
-import { SwfTextEditor } from "../editor/textEditor/SwfTextEditor";
+import { SwfTextEditorApi, SwfTextEditorOperation } from "./textEditor/SwfTextEditorController";
+import { SwfTextEditor } from "./textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
 
