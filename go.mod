@@ -12,7 +12,10 @@ require (
 	sigs.k8s.io/controller-runtime v0.11.2
 )
 
-require knative.dev/serving v0.32.0
+require (
+	knative.dev/pkg v0.0.0-20220524202603-19adf798efb8
+	knative.dev/serving v0.32.0
+)
 
 require (
 	cloud.google.com/go/compute v1.5.0 // indirect
@@ -76,7 +79,6 @@ require (
 	k8s.io/kube-openapi v0.0.0-20220124234850-424119656bbf // indirect
 	k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9 // indirect
 	knative.dev/networking v0.0.0-20220524205304-22d1b933cf73 // indirect
-	knative.dev/pkg v0.0.0-20220524202603-19adf798efb8 // indirect
 	sigs.k8s.io/json v0.0.0-20211208200746-9f7c6b3444d2 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
