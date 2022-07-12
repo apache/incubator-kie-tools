@@ -38,6 +38,7 @@ import org.kie.workbench.common.stunner.sw.client.editor.DiagramEditorActivity;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 import org.uberfire.client.views.pfly.PatternFlyEntryPoint;
 import org.uberfire.client.workbench.WorkbenchEntryPoint;
+import org.uberfire.ext.editor.commons.client.file.exports.FileExportProducer;
 import org.uberfire.ext.widgets.common.client.CommonsEntryPoint;
 import org.uberfire.ext.widgets.table.client.TableEntryPoint;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;
@@ -55,6 +56,9 @@ public class MainEntryPoint {
 
     @Inject
     private WorkbenchEntryPoint workbenchEntryPoint;
+
+    //@Inject
+    //private FileExportProducer fileExportProducer;
 
     @GWT3EntryPoint
     public void onModuleLoad() {
@@ -76,6 +80,9 @@ public class MainEntryPoint {
         new ToggleSwitchEntryPoint().onModuleLoad();
         new TableEntryPoint().startApp();
         new CommonsEntryPoint().startApp();
+
+        //fileExportProducer.init();
+
         diagramEditor.onStartup(new DefaultPlaceRequest());
 
         Reflect.set(DomGlobal.window, "setContent", (Serialize) (path, value) -> diagramEditor.setContent(path, value));

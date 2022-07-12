@@ -20,16 +20,28 @@ import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
+import jsinterop.base.JsPropertyMap;
 
 /**
  * Represents the constructor parameter to be used on the {@link C2S}.
  */
-@JsType(isNative = true, name = "Object", namespace = JsPackage.GLOBAL)
+@JsType(isNative = true, name = "C2SSettings", namespace = JsPackage.GLOBAL)
 class C2SSettings {
+
+    private C2SSettings() {
+
+    }
+
+    @JsOverlay
+    static C2SSettings create() {
+        return Js.uncheckedCast(JsPropertyMap.of());
+    }
+
 
     @JsOverlay
     protected static C2SSettings create(double width, double height, Object ctx) {
-        final C2SSettings instance = new C2SSettings();
+        final C2SSettings instance = create();
         instance.setWidth(width);
         instance.setHeight(height);
         instance.setCtx(ctx);

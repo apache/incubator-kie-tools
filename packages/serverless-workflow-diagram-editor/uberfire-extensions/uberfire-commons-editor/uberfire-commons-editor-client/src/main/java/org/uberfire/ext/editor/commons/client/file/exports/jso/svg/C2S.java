@@ -41,7 +41,7 @@ class C2S {
 
     @JsOverlay
     protected static final C2S create(double width, double height, Object nativeContext) {
-        C2SSettings settings = new C2SSettings();
+        C2SSettings settings = C2SSettings.create();
         settings.setWidth(width);
         settings.setHeight(height);
         settings.setEnableMirroring(true);
