@@ -639,25 +639,35 @@ importers:
     specifiers:
       "@kie-tools-core/chrome-extension": 0.0.0
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-editor": 0.0.0
+      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
+      "@kie-tools/serverless-workflow-text-editor": 0.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
     devDependencies:
       "@kie-tools-core/chrome-extension": link:../chrome-extension
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
+      "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       monaco-editor: 0.33.0
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
 
   packages/cors-proxy-image:
     specifiers:
@@ -686,9 +696,11 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder": 0.0.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder": link:../dashbuilder
 
   packages/dashbuilder-component-api:
     specifiers:
@@ -926,7 +938,7 @@ importers:
       "@patternfly/react-icons": ^4.11.17
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       vscode-json-languageservice: ^4.2.1
@@ -941,14 +953,14 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       vscode-json-languageservice: 4.2.1
 
   packages/dashbuilder-images:
@@ -961,6 +973,16 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+
+  packages/dashbuilder-swf-monitoring-dashboard:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-client": 0.0.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
 
   packages/desktop:
     specifiers:
@@ -1651,6 +1673,14 @@ importers:
       "@types/uuid": 8.3.0
       cypress-real-events: 1.7.0
 
+  packages/openjdk11-mvn-image:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
   packages/operating-system:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
@@ -1774,19 +1804,13 @@ importers:
     devDependencies:
       "@kie-tools/build-env": link:../build-env
 
-  packages/serverless-workflow-diagram-editor:
-    specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../build-env
-
-  packages/serverless-workflow-editor:
+  packages/serverless-logic-sandbox:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/operating-system": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
@@ -1794,18 +1818,184 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-client": 0.0.0
+      "@kie-tools/dashbuilder-editor": 0.0.0
+      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools/kie-sandbox-fs": 0.0.0
+      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools/serverless-workflow-text-editor": 0.0.0
+      "@kie-tools/text-editor": 0.0.0
+      "@octokit/plugin-rest-endpoint-methods": ^5.0.1
+      "@octokit/rest": ^18.5.3
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@patternfly/react-tokens": ^4.33.1
+      "@rhoas/registry-instance-sdk": ^0.34.1
+      "@svgr/webpack": 6.2.1
+      "@types/history": ^4.7.3
+      "@types/js-yaml": ^4.0.5
+      "@types/minimatch": ^3.0.4
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      "@types/uuid": ^8.3.0
+      axios: ^0.27.2
+      buffer: ^6.0.3
+      history: ^4.9.0
+      isomorphic-git: ^1.11.1
+      js-yaml: ^4.1.0
+      jszip: ^3.7.1
+      minimatch: ^3.0.4
+      moment: ^2.29.1
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^4.0.0
+      openapi-types: ^7.0.1
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-dropzone: ^11.4.2
+      react-router: ^5.2.1
+      react-router-dom: ^5.2.1
+      uuid: ^8.3.2
+      vscode-languageserver-textdocument: ^1.0.4
+      vscode-languageserver-types: ^3.16.0
+      yaml: ^2.0.1
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-editor": link:../dashbuilder-editor
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
+      "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
+      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
+      "@kie-tools/text-editor": link:../text-editor
+      "@octokit/plugin-rest-endpoint-methods": 5.0.1
+      "@octokit/rest": 18.5.3
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-tokens": 4.33.1
+      "@rhoas/registry-instance-sdk": 0.34.1
+      "@types/js-yaml": 4.0.5
+      axios: 0.27.2
+      buffer: 6.0.3
+      history: 4.10.1
+      isomorphic-git: 1.11.1
+      js-yaml: 4.1.0
+      jszip: 3.7.1
+      minimatch: 3.0.5
+      moment: 2.29.2
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      openapi-types: 7.2.3
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-dropzone: 11.4.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+      uuid: 8.3.2
+      vscode-languageserver-textdocument: 1.0.4
+      vscode-languageserver-types: 3.16.0
+      yaml: 2.0.1
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@svgr/webpack": 6.2.1
+      "@types/history": 4.7.5
+      "@types/minimatch": 3.0.4
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      "@types/uuid": 8.3.0
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
+
+  packages/serverless-logic-sandbox-base-image:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dashbuilder-swf-monitoring-dashboard": 0.0.0
+      "@kie-tools/serverless-logic-sandbox-deployment-webapp": 0.0.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dashbuilder-swf-monitoring-dashboard": link:../dashbuilder-swf-monitoring-dashboard
+      "@kie-tools/serverless-logic-sandbox-deployment-webapp": link:../serverless-logic-sandbox-deployment-webapp
+
+  packages/serverless-logic-sandbox-deployment-webapp:
+    specifiers:
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/react-router": ^5.1.14
+      "@types/react-router-dom": ^5.1.7
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      react-router: ^5.2.1
+      react-router-dom: ^5.2.1
+    dependencies:
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      "@types/react-router": 5.1.14
+      "@types/react-router-dom": 5.1.7
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-router: 5.2.1_react@17.0.2
+      react-router-dom: 5.3.0_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+
+  packages/serverless-workflow-combined-editor:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
+      "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools/serverless-workflow-text-editor": 0.0.0
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
-      "@types/mermaid": ^8.2.9
-      csstype: ^3.0.11
       json-schema: ^0.4.0
-      mermaid: ^9.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       vscode-json-languageservice: ^4.2.1
@@ -1814,19 +2004,22 @@ importers:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      csstype: 3.0.11
       json-schema: 0.4.0
-      mermaid: 9.0.0
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       vscode-languageserver-types: 3.16.0
@@ -1835,28 +2028,111 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
-      "@types/mermaid": 8.2.9
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       vscode-json-languageservice: 4.2.1
+
+  packages/serverless-workflow-diagram-editor:
+    specifiers:
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+
+  packages/serverless-workflow-diagram-editor-envelope:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/vscode-java-code-completion": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/kie-bc-editors": 0.0.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/kie-bc-editors": link:../kie-bc-editors
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
 
   packages/serverless-workflow-language-service:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@types/json-to-ast": ^2.1.2
+      json-to-ast: ^2.1.0
+      jsonata: ^1.8.3
       jsonc-parser: ^3.0.0
       vscode-json-languageservice: ^4.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
+      yaml-language-server-parser: ^0.1.3
     dependencies:
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      json-to-ast: 2.1.0
+      jsonata: 1.8.3
+      yaml-language-server-parser: 0.1.3
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      "@types/json-to-ast": 2.1.2
       jsonc-parser: 3.0.0
       vscode-json-languageservice: 4.2.1
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
+
+  packages/serverless-workflow-mermaid-viewer:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/mermaid": ^8.2.9
+      mermaid: ^9.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      mermaid: 9.0.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@types/mermaid": 8.2.9
 
   packages/serverless-workflow-service-catalog:
     specifiers:
@@ -1878,6 +2154,57 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
+
+  packages/serverless-workflow-text-editor:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/webpack-base": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@types/json-schema": ^7.0.11
+      json-schema: ^0.4.0
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^4.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      vscode-json-languageservice: ^4.2.1
+      vscode-languageserver-types: ^3.16.0
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      json-schema: 0.4.0
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      vscode-languageserver-types: 3.16.0
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/build-env": link:../build-env
+      "@types/json-schema": 7.0.11
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
+      vscode-json-languageservice: 4.2.1
 
   packages/stunner-editors:
     specifiers:
@@ -1920,6 +2247,39 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
+
+  packages/text-editor:
+    specifiers:
+      "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope-bus": 0.0.0
+      "@kie-tools-core/guided-tour": 0.0.0
+      "@kie-tools-core/notifications": 0.0.0
+      "@kie-tools-core/operating-system": 0.0.0
+      "@kie-tools-core/patternfly-base": 0.0.0
+      "@kie-tools-core/run-script-if": 0.0.0
+      "@kie-tools-core/workspace": 0.0.0
+      "@kie-tools/build-env": 0.0.0
+      "@patternfly/react-core": ^4.157.3
+      monaco-editor: ^0.33.0
+      monaco-yaml: ^4.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
 
   packages/uniforms-bootstrap4-codegen:
     specifiers:
@@ -2268,6 +2628,7 @@ importers:
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/guided-tour": 0.0.0
       "@kie-tools-core/i18n": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": 0.0.0
       "@kie-tools-core/notifications": 0.0.0
       "@kie-tools-core/patternfly-base": 0.0.0
       "@kie-tools-core/run-script-if": 0.0.0
@@ -2276,13 +2637,15 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
       "@kie-tools/serverless-workflow-language-service": 0.0.0
+      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
       "@kie-tools/serverless-workflow-service-catalog": 0.0.0
       "@rhoas/registry-instance-sdk": ^0.34.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
@@ -2293,17 +2656,19 @@ importers:
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/vscode-extension": link:../vscode-extension
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/serverless-workflow-editor": link:../serverless-workflow-editor
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
+      "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-service-catalog": link:../serverless-workflow-service-catalog
       "@rhoas/registry-instance-sdk": 0.34.1
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       openapi-types: 7.2.3
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
@@ -2312,7 +2677,8 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/vscode-extension-yard-editor:
     specifiers:
@@ -2332,7 +2698,7 @@ importers:
       "@kie-tools/yard-editor": 0.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       openapi-types: ^7.0.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
@@ -2350,7 +2716,7 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/yard-editor": link:../yard-editor
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       openapi-types: 7.2.3
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
@@ -2359,7 +2725,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/vscode-java-code-completion:
     specifiers:
@@ -2420,7 +2786,7 @@ importers:
       json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^3.2.1
+      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -2436,7 +2802,7 @@ importers:
       csstype: 3.0.11
       json-schema: 0.4.0
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
@@ -2444,7 +2810,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/json-schema": 7.0.11
-      monaco-editor-webpack-plugin: 7.0.1_xaucyy2rqq33fyrllhuadbirwm
+      monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
 packages:
   /@actions/core/1.6.0:
@@ -2589,6 +2955,7 @@ packages:
     transitivePeerDependencies:
       - "@swc/core"
       - "@types/express"
+      - bluebird
       - bufferutil
       - chokidar
       - debug
@@ -2705,6 +3072,7 @@ packages:
       symbol-observable: 4.0.0
       uuid: 8.3.2
     transitivePeerDependencies:
+      - bluebird
       - chokidar
       - supports-color
     dev: true
@@ -2753,6 +3121,7 @@ packages:
     engines: { node: ^12.20.0 || ^14.15.0 || >=16.10.0 }
     dependencies:
       tslib: 2.3.1
+    dev: false
 
   /@angular/core/13.1.1_rxjs@7.5.2+zone.js@0.11.4:
     resolution:
@@ -2968,6 +3337,25 @@ packages:
       - supports-color
     dev: true
 
+  /@babel/helper-create-class-features-plugin/7.18.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-Kh8zTGR9de3J63e5nS0rQUdRs/kbtwoeQQ0sriS0lItjC96u8XXZN6lKpuyWd2coKSU13py/y+LTmThLuVX0Pg== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-annotate-as-pure": 7.16.7
+      "@babel/helper-environment-visitor": 7.16.7
+      "@babel/helper-function-name": 7.17.9
+      "@babel/helper-member-expression-to-functions": 7.17.7
+      "@babel/helper-optimise-call-expression": 7.16.7
+      "@babel/helper-replace-supers": 7.16.7
+      "@babel/helper-split-export-declaration": 7.16.7
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@babel/helper-create-regexp-features-plugin/7.17.0_@babel+core@7.16.12:
     resolution:
       { integrity: sha512-awO2So99wG6KnlE+TPs6rn83gCz5WlEePJDTnLEqbchMVrBeAujURVphRdigsk094VhvZehFoNOihSlcBjwsXA== }
@@ -3076,6 +3464,12 @@ packages:
   /@babel/helper-plugin-utils/7.16.7:
     resolution:
       { integrity: sha512-Qg3Nk7ZxpgMrsox6HreY1ZNKdBq7K72tDSliA6dCl5f007jR4ne8iD5UzuNnCJH2xBf2BEEVGr+/OL6Gdp7RxA== }
+    engines: { node: ">=6.9.0" }
+    dev: true
+
+  /@babel/helper-plugin-utils/7.17.12:
+    resolution:
+      { integrity: sha512-JDkf04mqtN3y4iAbO1hv9U2ARpPyPL1zqyWs/2WG1pgSq9llHFjStX5jdxb84himgJm+8Ng+x0oiWF/nw/XQKA== }
     engines: { node: ">=6.9.0" }
     dev: true
 
@@ -3588,6 +3982,17 @@ packages:
       "@babel/helper-plugin-utils": 7.16.7
     dev: true
 
+  /@babel/plugin-syntax-typescript/7.17.12_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-TYY0SXFiO31YXtNg3HtFwNJHjLsAyIIhAhNWkQ5whPPS7HWUFlg9z0Ta4qAQNjQbP1wsSt/oKkmZ/4/WWdMUpw== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-plugin-utils": 7.17.12
+    dev: true
+
   /@babel/plugin-transform-arrow-functions/7.16.7_@babel+core@7.16.12:
     resolution:
       { integrity: sha512-9ffkFFMbvzTvv+7dTp/66xvZAWASuPD5Tl9LK3Z9vhOmANo6j94rik+5YMBt4CwHVMWLWpMsriIc2zsa3WW3xQ== }
@@ -3879,6 +4284,17 @@ packages:
       "@babel/helper-plugin-utils": 7.16.7
     dev: true
 
+  /@babel/plugin-transform-react-constant-elements/7.17.12_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-maEkX2xs2STuv2Px8QuqxqjhV2LsFobT1elCgyU5704fcyTu9DyD/bJXxD/mrRiVyhpHweOQ00OJ5FKhHq9oEw== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-plugin-utils": 7.17.12
+    dev: true
+
   /@babel/plugin-transform-react-display-name/7.16.0_@babel+core@7.16.12:
     resolution:
       { integrity: sha512-FJFdJAqaCpndL+pIf0aeD/qlQwT7QXOvR6Cc8JPvNhKJBi2zc/DPc4g05Y3fbD/0iWAMQFGij4+Xw+4L/BMpTg== }
@@ -4024,6 +4440,21 @@ packages:
       "@babel/helper-plugin-utils": 7.16.7
     dev: true
 
+  /@babel/plugin-transform-typescript/7.18.4_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-l4vHuSLUajptpHNEOUDEGsnpl9pfRLsN1XUoDQDD/YBuXTM+v37SHGS+c6n4jdcZy96QtuUuSvZYMLSSsjH8Mw== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-create-class-features-plugin": 7.18.0_@babel+core@7.16.12
+      "@babel/helper-plugin-utils": 7.17.12
+      "@babel/plugin-syntax-typescript": 7.17.12_@babel+core@7.16.12
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@babel/plugin-transform-unicode-escapes/7.16.7_@babel+core@7.16.12:
     resolution:
       { integrity: sha512-TAV5IGahIz3yZ9/Hfv35TV2xEm+kaBDaZQCn2S/hG9/CZ0DktxJv9eKfPc7yYCvOYR4JGx1h8C+jcSOvgaaI/Q== }
@@ -4163,6 +4594,21 @@ packages:
       "@babel/plugin-transform-react-pure-annotations": 7.16.0_@babel+core@7.16.12
     dev: true
 
+  /@babel/preset-typescript/7.17.12_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-S1ViF8W2QwAKUGJXxP9NAfNaqGDdEBJKpYkxHf5Yy2C4NPPzXGeR3Lhk7G8xJaaLcFTRfNjVbtbVtm8Gb0mqvg== }
+    engines: { node: ">=6.9.0" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/helper-plugin-utils": 7.17.12
+      "@babel/helper-validator-option": 7.16.7
+      "@babel/plugin-transform-typescript": 7.18.4_@babel+core@7.16.12
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@babel/runtime-corejs3/7.14.0:
     resolution:
       { integrity: sha512-0R0HTZWHLk6G8jIk0FtoX+AatCtKnswS98VhXwGImFc759PJRp4Tru0PQYZofyijTFUr+gT8Mu7sgXVJLQ0ceg== }
@@ -4281,12 +4727,14 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/xvfb/1.2.4:
+  /@cypress/xvfb/1.2.4_supports-color@8.1.1:
     resolution:
       { integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q== }
     dependencies:
-      debug: 3.2.7
+      debug: 3.2.7_supports-color@8.1.1
       lodash.once: 4.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@discoveryjs/json-ext/0.5.6:
@@ -4739,6 +5187,8 @@ packages:
       promise-retry: 2.0.1
       semver: 7.3.5
       which: 2.0.2
+    transitivePeerDependencies:
+      - bluebird
     dev: true
 
   /@npmcli/installed-package-contents/1.0.7:
@@ -4781,6 +5231,7 @@ packages:
       node-gyp: 8.4.1
       read-package-json-fast: 2.0.2
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -5139,6 +5590,171 @@ packages:
     engines: { node: ">= 0.6.0" }
     dev: true
 
+  /@svgr/babel-plugin-add-jsx-attribute/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-MdPdhdWLtQsjd29Wa4pABdhWbaRMACdM1h31BY+c6FghTZqNGT7pEYdBoaGeKtdTOBC/XNFQaKVj+r/Ei2ryWA== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-remove-jsx-attribute/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-aVdtfx9jlaaxc3unA6l+M9YRnKIZjOhQPthLKqmTXC8UVkBLDRGwPKo+r8n3VZN8B34+yVajzPTZ+ptTSuZZCw== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-remove-jsx-empty-expression/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-Ccj42ApsePD451AZJJf1QzTD1B/BOU392URJTeXFxSK709i0KUsGtbwyiqsKu7vsYxpTM0IA5clAKDyf9RCZyA== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-replace-jsx-attribute-value/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-88V26WGyt1Sfd1emBYmBJRWMmgarrExpKNVmI9vVozha4kqs6FzQJ/Kp5+EYli1apgX44518/0+t9+NU36lThQ== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-svg-dynamic-title/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-F7YXNLfGze+xv0KMQxrl2vkNbI9kzT9oDK55/kUuymh1ACyXkMV+VZWX1zEhSTfEKh7VkHVZGmVtHg8eTZ6PRg== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-svg-em-dimensions/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-+rghFXxdIqJNLQK08kwPBD3Z22/0b2tEZ9lKiL/yTfuyj1wW8HUXu4bo/XkogATIYuXSghVQOOCwURXzHGKyZA== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-transform-react-native-svg/6.0.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-VaphyHZ+xIKv5v0K0HCzyfAaLhPGJXSk2HkpYfXIOKb7DjLBv0soHDxNv6X0vr2titsxE7klb++u7iOf7TSrFQ== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-plugin-transform-svg-component/6.2.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-bhYIpsORb++wpsp91fymbFkf09Z/YEKR0DnFjxvN+8JHeCUD2unnh18jIMKnDJTWtvpTaGYPXELVe4OOzFI0xg== }
+    engines: { node: ">=12" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+    dev: true
+
+  /@svgr/babel-preset/6.2.0_@babel+core@7.16.12:
+    resolution:
+      { integrity: sha512-4WQNY0J71JIaL03DRn0vLiz87JXx0b9dYm2aA8XHlQJQoixMl4r/soYHm8dsaJZ3jWtkCiOYy48dp9izvXhDkQ== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@babel/core": ^7.0.0-0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@svgr/babel-plugin-add-jsx-attribute": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-remove-jsx-attribute": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-remove-jsx-empty-expression": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-replace-jsx-attribute-value": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-svg-dynamic-title": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-svg-em-dimensions": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-transform-react-native-svg": 6.0.0_@babel+core@7.16.12
+      "@svgr/babel-plugin-transform-svg-component": 6.2.0_@babel+core@7.16.12
+    dev: true
+
+  /@svgr/core/6.2.1:
+    resolution:
+      { integrity: sha512-NWufjGI2WUyrg46mKuySfviEJ6IxHUOm/8a3Ph38VCWSp+83HBraCQrpEM3F3dB6LBs5x8OElS8h3C0oOJaJAA== }
+    engines: { node: ">=10" }
+    dependencies:
+      "@svgr/plugin-jsx": 6.2.1_@svgr+core@6.2.1
+      camelcase: 6.2.0
+      cosmiconfig: 7.0.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@svgr/hast-util-to-babel-ast/6.2.1:
+    resolution:
+      { integrity: sha512-pt7MMkQFDlWJVy9ULJ1h+hZBDGFfSCwlBNW1HkLnVi7jUhyEXUaGYWi1x6bM2IXuAR9l265khBT4Av4lPmaNLQ== }
+    engines: { node: ">=10" }
+    dependencies:
+      "@babel/types": 7.17.0
+      entities: 3.0.1
+    dev: true
+
+  /@svgr/plugin-jsx/6.2.1_@svgr+core@6.2.1:
+    resolution:
+      { integrity: sha512-u+MpjTsLaKo6r3pHeeSVsh9hmGRag2L7VzApWIaS8imNguqoUwDq/u6U/NDmYs/KAsrmtBjOEaAAPbwNGXXp1g== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@svgr/core": ^6.0.0
+    dependencies:
+      "@babel/core": 7.16.12
+      "@svgr/babel-preset": 6.2.0_@babel+core@7.16.12
+      "@svgr/core": 6.2.1
+      "@svgr/hast-util-to-babel-ast": 6.2.1
+      svg-parser: 2.0.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@svgr/plugin-svgo/6.2.0_@svgr+core@6.2.1:
+    resolution:
+      { integrity: sha512-oDdMQONKOJEbuKwuy4Np6VdV6qoaLLvoY86hjvQEgU82Vx1MSWRyYms6Sl0f+NtqxLI/rDVufATbP/ev996k3Q== }
+    engines: { node: ">=10" }
+    peerDependencies:
+      "@svgr/core": ^6.0.0
+    dependencies:
+      "@svgr/core": 6.2.1
+      cosmiconfig: 7.0.1
+      deepmerge: 4.2.2
+      svgo: 2.8.0
+    dev: true
+
+  /@svgr/webpack/6.2.1:
+    resolution:
+      { integrity: sha512-h09ngMNd13hnePwgXa+Y5CgOjzlCvfWLHg+MBnydEedAnuLRzUHUJmGS3o2OsrhxTOOqEsPOFt5v/f6C5Qulcw== }
+    engines: { node: ">=10" }
+    dependencies:
+      "@babel/core": 7.16.12
+      "@babel/plugin-transform-react-constant-elements": 7.17.12_@babel+core@7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@babel/preset-typescript": 7.17.12_@babel+core@7.16.12
+      "@svgr/core": 6.2.1
+      "@svgr/plugin-jsx": 6.2.1_@svgr+core@6.2.1
+      "@svgr/plugin-svgo": 6.2.0_@svgr+core@6.2.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@szmarczak/http-timer/1.1.2:
     resolution:
       { integrity: sha512-XIB2XbzHTN6ieIjfIMV9hlVcfPU26s2vafYWQcZHWXHOxiaRZYEDKEwdl129Zyg50+foYV2jCgtrqSA6qNuNSA== }
@@ -5234,6 +5850,12 @@ packages:
     resolution:
       { integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A== }
     engines: { node: ">= 10" }
+    dev: true
+
+  /@trysound/sax/0.2.0:
+    resolution:
+      { integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA== }
+    engines: { node: ">=10.13.0" }
     dev: true
 
   /@types/aria-query/4.2.1:
@@ -5541,6 +6163,11 @@ packages:
       { integrity: sha512-qcUXuemtEu+E5wZSJHNxUXeCZhAfXKQ41D+duX+VYPde7xyEVZci+/oXKJL13tnRs9lR2pr4fod59GT6/X1/yQ== }
     dev: true
 
+  /@types/json-to-ast/2.1.2:
+    resolution:
+      { integrity: sha512-GEjR5l9wZGS74KhL1a1tZuyRJqdLB7LGgOXzWspJx9xxC/iyCFTwwKv71Lz8fzZyGuVW8FjASQGoYFi6XZJWLQ== }
+    dev: true
+
   /@types/keyv/3.1.1:
     resolution:
       { integrity: sha512-MPtoySlAZQ37VoLaPcTHCu1RWJ4llDkULYZIzOYxlhxBqYPB0RsRlmMU0R6tahtFe27mIdkHV+551ZWV4PLmVw== }
@@ -5743,11 +6370,6 @@ packages:
   /@types/scheduler/0.16.1:
     resolution:
       { integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA== }
-
-  /@types/selenium-webdriver/3.0.17:
-    resolution:
-      { integrity: sha512-tGomyEuzSC1H28y2zlW6XPCaDaXFaD6soTdb4GNdmte2qfHtrKqhy0ZFs4r/1hpazCfEZqeTSRLvSasmEx89uw== }
-    dev: true
 
   /@types/selenium-webdriver/4.1.1:
     resolution:
@@ -6516,6 +7138,8 @@ packages:
     dependencies:
       micromatch: 3.1.10
       normalize-path: 2.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /anymatch/3.1.2:
@@ -6899,6 +7523,8 @@ packages:
       private: 0.1.8
       slash: 1.0.0
       source-map: 0.5.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-generator/6.26.1:
@@ -6921,6 +7547,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-builder-binary-assignment-operator-visitor/6.24.1:
@@ -6929,6 +7557,8 @@ packages:
       babel-helper-explode-assignable-expression: 6.24.1
       babel-runtime: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-call-delegate/6.24.1:
@@ -6938,6 +7568,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-define-map/6.26.0:
@@ -6947,6 +7579,8 @@ packages:
       babel-runtime: 6.26.0
       babel-types: 6.26.0
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-explode-assignable-expression/6.24.1:
@@ -6955,6 +7589,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-explode-class/6.24.1:
@@ -6964,6 +7600,8 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-function-name/6.24.1:
@@ -6974,6 +7612,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-get-function-arity/6.24.1:
@@ -7013,6 +7653,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helper-replace-supers/6.24.1:
@@ -7024,6 +7666,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-helpers/6.24.1:
@@ -7031,6 +7675,8 @@ packages:
     dependencies:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-jest/26.6.3_@babel+core@7.16.12:
@@ -7206,6 +7852,8 @@ packages:
       babel-helper-remap-async-to-generator: 6.24.1
       babel-plugin-syntax-async-generators: 6.13.0
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-async-to-generator/6.24.1:
@@ -7214,6 +7862,8 @@ packages:
       babel-helper-remap-async-to-generator: 6.24.1
       babel-plugin-syntax-async-functions: 6.13.0
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-class-constructor-call/6.24.1:
@@ -7222,6 +7872,8 @@ packages:
       babel-plugin-syntax-class-constructor-call: 6.18.0
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-class-properties/6.24.1:
@@ -7231,6 +7883,8 @@ packages:
       babel-plugin-syntax-class-properties: 6.13.0
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-decorators/6.24.1:
@@ -7241,6 +7895,8 @@ packages:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-do-expressions/6.22.0:
@@ -7270,6 +7926,8 @@ packages:
       babel-traverse: 6.26.0
       babel-types: 6.26.0
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-classes/6.24.1:
@@ -7284,6 +7942,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-computed-properties/6.24.1:
@@ -7291,6 +7951,8 @@ packages:
     dependencies:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-destructuring/6.23.0:
@@ -7318,6 +7980,8 @@ packages:
       babel-helper-function-name: 6.24.1
       babel-runtime: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-literals/6.22.0:
@@ -7332,6 +7996,8 @@ packages:
       babel-plugin-transform-es2015-modules-commonjs: 6.26.2
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-commonjs/6.26.2:
@@ -7342,6 +8008,8 @@ packages:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-systemjs/6.24.1:
@@ -7350,6 +8018,8 @@ packages:
       babel-helper-hoist-variables: 6.24.1
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-umd/6.24.1:
@@ -7358,6 +8028,8 @@ packages:
       babel-plugin-transform-es2015-modules-amd: 6.24.1
       babel-runtime: 6.26.0
       babel-template: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-object-super/6.24.1:
@@ -7365,6 +8037,8 @@ packages:
     dependencies:
       babel-helper-replace-supers: 6.24.1
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-parameters/6.24.1:
@@ -7376,6 +8050,8 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-shorthand-properties/6.24.1:
@@ -7425,6 +8101,8 @@ packages:
       babel-helper-builder-binary-assignment-operator-visitor: 6.24.1
       babel-plugin-syntax-exponentiation-operator: 6.13.0
       babel-runtime: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-plugin-transform-export-extensions/6.22.0:
@@ -7510,6 +8188,8 @@ packages:
       babel-plugin-transform-es2015-typeof-symbol: 6.23.0
       babel-plugin-transform-es2015-unicode-regex: 6.24.1
       babel-plugin-transform-regenerator: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-jest/26.6.2_@babel+core@7.16.12:
@@ -7530,6 +8210,8 @@ packages:
       babel-plugin-transform-do-expressions: 6.22.0
       babel-plugin-transform-function-bind: 6.22.0
       babel-preset-stage-1: 6.24.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-stage-1/6.24.1:
@@ -7538,6 +8220,8 @@ packages:
       babel-plugin-transform-class-constructor-call: 6.24.1
       babel-plugin-transform-export-extensions: 6.22.0
       babel-preset-stage-2: 6.24.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-stage-2/6.24.1:
@@ -7547,6 +8231,8 @@ packages:
       babel-plugin-transform-class-properties: 6.24.1
       babel-plugin-transform-decorators: 6.24.1
       babel-preset-stage-3: 6.24.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-preset-stage-3/6.24.1:
@@ -7557,6 +8243,8 @@ packages:
       babel-plugin-transform-async-to-generator: 6.24.1
       babel-plugin-transform-exponentiation-operator: 6.24.1
       babel-plugin-transform-object-rest-spread: 6.26.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-register/6.26.0:
@@ -7569,6 +8257,8 @@ packages:
       lodash: 4.17.21
       mkdirp: 0.5.5
       source-map-support: 0.4.18
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-runtime/6.26.0:
@@ -7586,6 +8276,8 @@ packages:
       babel-types: 6.26.0
       babylon: 6.18.0
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-traverse/6.26.0:
@@ -7600,6 +8292,8 @@ packages:
       globals: 9.18.0
       invariant: 2.2.4
       lodash: 4.17.21
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /babel-types/6.26.0:
@@ -7749,6 +8443,8 @@ packages:
       qs: 6.7.0
       raw-body: 2.4.0
       type-is: 1.6.18
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /body-parser/1.19.1:
@@ -7766,6 +8462,8 @@ packages:
       qs: 6.9.6
       raw-body: 2.4.2
       type-is: 1.6.18
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /bonjour/3.5.0:
@@ -7780,7 +8478,8 @@ packages:
     dev: true
 
   /boolbase/1.0.0:
-    resolution: { integrity: sha1-aN/1++YMUes3cl6p4+0xDcwed24= }
+    resolution:
+      { integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww== }
     dev: true
 
   /boolean/3.0.4:
@@ -7810,6 +8509,8 @@ packages:
       snapdragon-node: 2.1.1
       split-string: 3.1.0
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /braces/3.0.2:
@@ -7859,6 +8560,8 @@ packages:
       { integrity: sha512-AO+mECXsW4QcqC9bxwM29O7qWa7bJT94uBFzeb5brylIQwawuEziwq20dPYbins95GlWzOawgyDNdjYAo32EKg== }
     dependencies:
       https-proxy-agent: 2.2.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /bs-logger/0.2.6:
@@ -7974,6 +8677,8 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
       unique-filename: 1.1.1
+    transitivePeerDependencies:
+      - bluebird
     dev: true
 
   /cache-base/1.0.1:
@@ -8231,6 +8936,8 @@ packages:
       lighthouse-logger: 1.2.0
       mkdirp: 0.5.5
       rimraf: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /chrome-remote-interface/0.27.2:
@@ -8240,6 +8947,9 @@ packages:
     dependencies:
       commander: 2.11.0
       ws: 6.2.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: true
 
   /chrome-trace-event/1.0.2:
@@ -8438,6 +9148,12 @@ packages:
     engines: { iojs: ">= 1.0.0", node: ">= 0.12.0" }
     dev: true
 
+  /code-error-fragment/0.0.230:
+    resolution:
+      { integrity: sha512-cadkfKp6932H8UkhzE/gcUqhRMNf8jHzkAN7+5Myabswaghu4xABTgPHDCjW+dBAJxj/SpkTYokpzDqY4pCzQw== }
+    engines: { node: ">= 4" }
+    dev: false
+
   /code-point-at/1.1.0:
     resolution: { integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c= }
     engines: { node: ">=0.10.0" }
@@ -8618,6 +9334,8 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /concat-map/0.0.1:
@@ -8657,6 +9375,8 @@ packages:
       finalhandler: 1.1.2
       parseurl: 1.3.3
       utils-merge: 1.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /console-control-strings/1.1.0:
@@ -8815,6 +9535,18 @@ packages:
       path-type: 4.0.0
       yaml: 1.10.2
 
+  /cosmiconfig/7.0.1:
+    resolution:
+      { integrity: sha512-a1YWNUV2HwGimB7dU2s1wUMurNKjpx60HxBB6xUM8Re+2s1g1IIfJvFR0/iCF+XHdE0GMTKTuLR32UQff4TEyQ== }
+    engines: { node: ">=10" }
+    dependencies:
+      "@types/parse-json": 4.0.0
+      import-fresh: 3.3.0
+      parse-json: 5.0.0
+      path-type: 4.0.0
+      yaml: 1.10.2
+    dev: true
+
   /cpr/3.0.1:
     resolution: { integrity: sha1-uaVQOLfNgaNcF7l2GJW9hJau8eU= }
     hasBin: true
@@ -8911,6 +9643,8 @@ packages:
       babel-register: 6.26.0
       cross-spawn: 5.1.0
       exit: 0.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /css-blank-pseudo/3.0.3_postcss@8.4.5:
@@ -9002,6 +9736,15 @@ packages:
       { integrity: sha512-Md+Juc7M3uOdbAFwOYlTrccIZ7oCFuzrhKYQjdeUEW/sE1hv17Jp/Bws+ReOPpGVBTYCBoYo+G17V5Qo8QQ75A== }
     dev: true
 
+  /css-tree/1.1.3:
+    resolution:
+      { integrity: sha512-tRpdppF7TRazZrjJ6v3stzv93qxRcSsFmW6cX0Zm2NVKpxE1WV1HblnghVv9TreireHkqI/VDEsfolRF1p6y7Q== }
+    engines: { node: ">=8.0.0" }
+    dependencies:
+      mdn-data: 2.0.14
+      source-map: 0.6.1
+    dev: true
+
   /css-value/0.0.1:
     resolution: { integrity: sha1-Xv1sLupeof1rasV+wEJ7GEUkJOo= }
     dev: true
@@ -9041,6 +9784,14 @@ packages:
       { integrity: sha512-/Tb/JcjK111nNScGob5MNtsntNM1aCNUDipB/TkwZFhyDrrE47SOx/18wF2bbjgc3ZzCSKW1T5nt5EbFoAz/Vg== }
     engines: { node: ">=4" }
     hasBin: true
+    dev: true
+
+  /csso/4.2.0:
+    resolution:
+      { integrity: sha512-wvlcdIbf6pwKEk7vHj8/Bkc0B4ylXZruLvOgs9doS5eOsOpuodOV2zJChSpkp+pRpYQLQMeF04nr3Z68Sta9jA== }
+    engines: { node: ">=8.0.0" }
+    dependencies:
+      css-tree: 1.1.3
     dev: true
 
   /cssom/0.3.8:
@@ -9108,6 +9859,9 @@ packages:
     dependencies:
       chalk: 2.4.2
       chrome-remote-interface: 0.27.2
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
     dev: true
 
   /cypress-real-events/1.7.0:
@@ -9125,7 +9879,7 @@ packages:
     requiresBuild: true
     dependencies:
       "@cypress/request": 2.88.10
-      "@cypress/xvfb": 1.2.4
+      "@cypress/xvfb": 1.2.4_supports-color@8.1.1
       "@types/node": 14.17.0
       "@types/sinonjs__fake-timers": 8.1.1
       "@types/sizzle": 2.3.2
@@ -9764,19 +10518,47 @@ packages:
   /debug/2.6.9:
     resolution:
       { integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA== }
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.0.0
 
   /debug/3.2.7:
     resolution:
       { integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ== }
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
+
+  /debug/3.2.7_supports-color@8.1.1:
+    resolution:
+      { integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ== }
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.3
+      supports-color: 8.1.1
+    dev: true
 
   /debug/4.1.0:
     resolution:
       { integrity: sha512-heNPJUJIqC+xB6ayLAMHaIrmN9HKa7aQO8MGqKpvCA+uJYVcvR6l5kgdrhRuwPFHU7P5/A1w0BjByPHwpfTDKg== }
     deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
+    peerDependencies:
+      supports-color: "*"
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
     dependencies:
       ms: 2.1.3
     dev: true
@@ -10079,10 +10861,6 @@ packages:
 
   /delegates/1.0.0:
     resolution: { integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o= }
-
-  /denodeify/1.2.1:
-    resolution: { integrity: sha1-OjYof1A05pnnV3kBBSwubJQlFjE= }
-    dev: true
 
   /depd/1.1.1:
     resolution: { integrity: sha1-V4O04cRZ8G+lyif5kfPQbnoxA1k= }
@@ -10430,6 +11208,8 @@ packages:
       isbinaryfile: 3.0.3
       minimist: 1.2.6
       plist: 3.0.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /electron-packager/15.2.0:
@@ -10594,11 +11374,6 @@ packages:
     resolution: { integrity: sha1-6WQhkyWiHQX0RGai9obtbOX13R0= }
     dev: true
 
-  /entities/2.0.3:
-    resolution:
-      { integrity: sha512-MyoZ0jgnLvB2X3Lg5HqpFmn1kybDiIfEQmKzTb5apr51Rb+T3KdmMiqa70T+bhGnyv7bQ6WMj2QMHpGMmlrUYQ== }
-    dev: true
-
   /entities/2.1.0:
     resolution:
       { integrity: sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w== }
@@ -10607,6 +11382,12 @@ packages:
   /entities/2.2.0:
     resolution:
       { integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A== }
+    dev: true
+
+  /entities/3.0.1:
+    resolution:
+      { integrity: sha512-WiyBqoomrwMdFG1e0kqvASYfnlb0lp8M5o5Fw2OFq1hNZxxcNk8Ik0Xm7LxzBhuidnZB/UtBqVCgUz3kBOP51Q== }
+    engines: { node: ">=0.12" }
     dev: true
 
   /env-paths/2.2.1:
@@ -10925,6 +11706,7 @@ packages:
       esbuild-windows-64: 0.14.22
       esbuild-windows-arm64: 0.14.22
     dev: true
+    optional: true
 
   /escalade/3.1.1:
     resolution:
@@ -11267,6 +12049,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /expand-template/2.0.3:
@@ -11323,6 +12107,8 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /extend-shallow/2.0.1:
@@ -11367,6 +12153,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /extract-zip/1.7.0:
@@ -11378,6 +12166,8 @@ packages:
       debug: 2.6.9
       mkdirp: 0.5.5
       yauzl: 2.10.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /extract-zip/2.0.1:
@@ -11641,6 +12431,8 @@ packages:
       parseurl: 1.3.3
       statuses: 1.5.0
       unpipe: 1.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /find-cache-dir/3.3.1:
@@ -12006,6 +12798,8 @@ packages:
       debug: 2.6.9
       lodash.get: 4.4.2
       read-pkg-up: 2.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /get-port/5.1.1:
@@ -12272,7 +13066,6 @@ packages:
   /grapheme-splitter/1.0.4:
     resolution:
       { integrity: sha512-bzh50DW9kTPM00T8y4o8vQg89Di9oLJVLW/KaOGIXJWP/iqCN6WKYkbNOF04vFLJhwcpYUh9ydh/+5vpOqV4YQ== }
-    dev: true
 
   /graphlib/2.1.8:
     resolution:
@@ -12469,6 +13262,11 @@ packages:
       obuf: 1.1.2
       readable-stream: 2.3.7
       wbuf: 1.7.3
+    dev: true
+
+  /hpagent/0.1.2:
+    resolution:
+      { integrity: sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ== }
     dev: true
 
   /html-encoding-sniffer/2.0.1:
@@ -12699,6 +13497,8 @@ packages:
     dependencies:
       agent-base: 4.3.0
       debug: 3.2.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /https-proxy-agent/4.0.0:
@@ -13000,7 +13800,8 @@ packages:
     dev: true
 
   /is-arrayish/0.2.1:
-    resolution: { integrity: sha1-d8mYQFJ6qOyxqLppe4BkWnqSap0= }
+    resolution:
+      { integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg== }
 
   /is-bigint/1.0.2:
     resolution:
@@ -13637,6 +14438,8 @@ packages:
       walker: 1.0.7
     optionalDependencies:
       fsevents: 2.3.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-image-snapshot/4.2.0:
@@ -13763,6 +14566,8 @@ packages:
       "@jest/types": 26.6.2
       jest-regex-util: 26.0.0
       jest-snapshot: 26.6.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-resolve/26.6.2:
@@ -13884,6 +14689,8 @@ packages:
       natural-compare: 1.4.0
       pretty-format: 26.6.2
       semver: 7.3.5
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /jest-util/26.6.2:
@@ -14125,6 +14932,15 @@ packages:
   /json-stringify-safe/5.0.1:
     resolution: { integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus= }
 
+  /json-to-ast/2.1.0:
+    resolution:
+      { integrity: sha512-W9Lq347r8tA1DfMvAGn9QNcgYm4Wm7Yc+k8e6vezpMnRT+NHbtlxgNBXRVjXe9YM6eTn6+p/MKOlV/aABJcSnQ== }
+    engines: { node: ">= 4" }
+    dependencies:
+      code-error-fragment: 0.0.230
+      grapheme-splitter: 1.0.4
+    dev: false
+
   /json5/0.5.1:
     resolution: { integrity: sha1-Hq3nrMASA0rYTiOWdn6tn6VJWCE= }
     hasBin: true
@@ -14156,7 +14972,6 @@ packages:
   /jsonc-parser/3.0.0:
     resolution:
       { integrity: sha512-fQzRfAbIBnR0IQvftw9FJveWiHp72Fg20giDrHz6TdfB12UH/uue0D3hm57UB5KgAVuniLMCaS8P1IMj9NR7cA== }
-    dev: true
 
   /jsonfile/4.0.0:
     resolution: { integrity: sha1-h3Gq4HmbZAdrdmQPygWPnBDjPss= }
@@ -14498,6 +15313,8 @@ packages:
     resolution: { integrity: sha1-CAUuDODYOdPEMXi5CluzQkvvH5k= }
     dependencies:
       morgan: 1.10.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /koa-mount/4.0.0:
@@ -14608,6 +15425,8 @@ packages:
       mime: 1.6.0
       needle: 2.9.1
       source-map: 0.6.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /leven/3.1.0:
@@ -14660,17 +15479,12 @@ packages:
     dependencies:
       debug: 2.6.9
       marky: 1.2.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /lines-and-columns/1.1.6:
     resolution: { integrity: sha1-HADHQ7QzzQpOgHWPe2SldEDZ/wA= }
-
-  /linkify-it/2.2.0:
-    resolution:
-      { integrity: sha512-GnAl/knGn+i1U/wjBz3akz2stz+HrHLsxMwHQGofCDfPvlf+gDKN58UtfmUquTY4/MXeE2x7k19KQmeoZi94Iw== }
-    dependencies:
-      uc.micro: 1.0.6
-    dev: true
 
   /linkify-it/3.0.3:
     resolution:
@@ -14981,6 +15795,8 @@ packages:
       node-pre-gyp: 0.11.0
       readable-stream: 2.3.7
       rimraf: 2.7.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /magic-string/0.25.7:
@@ -15040,6 +15856,7 @@ packages:
       socks-proxy-agent: 6.1.1
       ssri: 8.0.1
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -15063,18 +15880,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dependencies:
       object-visit: 1.0.1
-    dev: true
-
-  /markdown-it/10.0.0:
-    resolution:
-      { integrity: sha512-YWOP1j7UbDNz+TumYP1kpwnP0aEa711cJjrAQrzd0UXlbJfc5aAq0F/PZHjiioqDC1NKgvIMX+o+9Bk7yuM2dg== }
-    hasBin: true
-    dependencies:
-      argparse: 1.0.10
-      entities: 2.0.3
-      linkify-it: 2.2.0
-      mdurl: 1.0.1
-      uc.micro: 1.0.6
     dev: true
 
   /markdown-it/12.3.2:
@@ -15101,6 +15906,11 @@ packages:
     dependencies:
       escape-string-regexp: 4.0.0
     optional: true
+
+  /mdn-data/2.0.14:
+    resolution:
+      { integrity: sha512-dn6wd0uw5GsdswPFfsgMp5NSB0/aDe6fK94YJV/AJDYXL6HVLWBsxeq7js7Ad+mU2K9LAlwpk6kN2D5mwCPVow== }
+    dev: true
 
   /mdurl/1.0.1:
     resolution: { integrity: sha1-/oWy7HWlkDfyrf7BAP1sYBdhFS4= }
@@ -15205,6 +16015,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /micromatch/4.0.4:
@@ -15498,7 +16310,7 @@ packages:
       { integrity: sha512-UgzG4rvxYpN15jgCmVJwac49h9ly9NurikMWGPdVxm8GZD6XjkKPxDTjQQ43gtGgnV3X0cAyWDdP2Wexoquifg== }
     dev: false
 
-  /monaco-editor-webpack-plugin/7.0.1_xaucyy2rqq33fyrllhuadbirwm:
+  /monaco-editor-webpack-plugin/7.0.1_cnxsqw4hy73v5lwn7lflrwex4q:
     resolution:
       { integrity: sha512-M8qIqizltrPlIbrb73cZdTWfU9sIsUVFvAZkL3KGjAHmVWEJ0hZKa/uad14JuOckc0GwnCaoGHvMoYtJjVyCzw== }
     peerDependencies:
@@ -15508,7 +16320,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       monaco-editor: 0.33.0
-      monaco-yaml: 3.2.1_monaco-editor@0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
     dev: true
 
   /monaco-editor/0.23.0:
@@ -15519,6 +16331,14 @@ packages:
   /monaco-editor/0.33.0:
     resolution:
       { integrity: sha512-VcRWPSLIUEgQJQIE0pVT8FcGBIgFoxz7jtqctE+IiCxWugD0DwgyQBcZBhdSrdMC84eumoqMZsGl2GTreOzwqw== }
+
+  /monaco-marker-data-provider/1.1.0_monaco-editor@0.33.0:
+    resolution:
+      { integrity: sha512-g5YH4FLItl3usf0Qxr1Td/vCd4XZmPOFh+dFpo8d+Q5mp8nJZTPFMVA7kwz0vWAy0zBd7bzQYUmfdvHfR1ETBw== }
+    peerDependencies:
+      monaco-editor: ">=0.30.0"
+    dependencies:
+      monaco-editor: 0.33.0
 
   /monaco-page-objects/2.0.0_rbm5onw4rdv3wixpn2nzow77om:
     resolution:
@@ -15536,20 +16356,31 @@ packages:
       - typescript
     dev: true
 
-  /monaco-yaml/3.2.1_monaco-editor@0.33.0:
+  /monaco-worker-manager/2.0.1_monaco-editor@0.33.0:
     resolution:
-      { integrity: sha512-2geAd5I7H1SMgwTHBuyPAPK9WTAzxbl9XwDl5h6NY6n9j4qnlLLQKK1i0P9cAmUiV2uaiViz69RLNWqVU5BVsg== }
+      { integrity: sha512-kdPL0yvg5qjhKPNVjJoym331PY/5JC11aPJXtCZNwWRvBr6jhkIamvYAyiY5P1AWFmNOy0aRDRoMdZfa71h8kg== }
     peerDependencies:
-      monaco-editor: ">=0.22"
+      monaco-editor: ">=0.30.0"
+    dependencies:
+      monaco-editor: 0.33.0
+
+  /monaco-yaml/4.0.0_monaco-editor@0.33.0:
+    resolution:
+      { integrity: sha512-7/CbvZIHE1iOQF6ny+uPclcsrBnkK54lcZugIB9SzqADljhb3TliJyYs7vouaGNDF73RWvrtZrMsWCC5N/GW+g== }
+    peerDependencies:
+      monaco-editor: ">=0.30"
     dependencies:
       "@types/json-schema": 7.0.11
-      js-yaml: 4.1.0
+      jsonc-parser: 3.0.0
       monaco-editor: 0.33.0
+      monaco-marker-data-provider: 1.1.0_monaco-editor@0.33.0
+      monaco-worker-manager: 2.0.1_monaco-editor@0.33.0
       path-browserify: 1.0.1
-      prettier: 2.0.5
+      prettier: 2.3.0
       vscode-languageserver-textdocument: 1.0.4
       vscode-languageserver-types: 3.16.0
-      yaml-language-server-parser: 0.1.3
+      vscode-uri: 3.0.3
+      yaml: 2.0.1
 
   /mongo-object/0.1.4:
     resolution:
@@ -15566,6 +16397,8 @@ packages:
       depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /mri/1.1.6:
@@ -15657,6 +16490,8 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /napi-build-utils/1.0.2:
@@ -15677,6 +16512,8 @@ packages:
       debug: 3.2.7
       iconv-lite: 0.4.24
       sax: 1.2.4
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /negotiator/0.6.2:
@@ -15802,6 +16639,7 @@ packages:
       tar: 6.1.11
       which: 2.0.2
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -15844,6 +16682,8 @@ packages:
       rimraf: 2.7.1
       semver: 5.7.1
       tar: 4.4.19
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /node-releases/2.0.3:
@@ -15990,6 +16830,7 @@ packages:
       minizlib: 2.1.2
       npm-package-arg: 8.1.5
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -16430,6 +17271,7 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
     transitivePeerDependencies:
+      - bluebird
       - supports-color
     dev: true
 
@@ -16866,6 +17708,8 @@ packages:
       async: 2.6.4
       debug: 3.2.7
       mkdirp: 0.5.5
+    transitivePeerDependencies:
+      - supports-color
 
   /posix-character-classes/0.1.1:
     resolution: { integrity: sha1-AerA/jta9xoqbAL+q7jB/vfgDqs= }
@@ -17337,12 +18181,6 @@ packages:
     resolution: { integrity: sha1-6SQ0v6XqjBn0HN/UAddBo8gZ2Jc= }
     engines: { node: ">=4" }
 
-  /prettier/2.0.5:
-    resolution:
-      { integrity: sha512-7PtVymN48hGcO4fGjybyBSIWDsLU4H4XlvOHfq91pz9kkGlonzwTfYkaIEwiRg/dAJF9YlbsduBAgtYLi+8cFg== }
-    engines: { node: ">=10.13.0" }
-    hasBin: true
-
   /prettier/2.3.0:
     resolution:
       { integrity: sha512-kXtO4s0Lz/DW/IJ9QdWhAf7/NmPWQXkFr/r/WkR3vyI+0v8amTDxiaQSLzs8NBlytfLWX/7uQUMIW677yLKl4w== }
@@ -17425,6 +18263,11 @@ packages:
 
   /promise-inflight/1.0.1:
     resolution: { integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM= }
+    peerDependencies:
+      bluebird: "*"
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
     dev: true
 
   /promise-retry/2.0.1:
@@ -18582,7 +19425,8 @@ packages:
     dev: true
 
   /rw/1.3.3:
-    resolution: { integrity: sha1-P4Yt+pGrdmsUiF700BEkv9oHT7Q= }
+    resolution:
+      { integrity: sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ== }
     dev: false
 
   /rxjs/6.6.7:
@@ -18633,6 +19477,8 @@ packages:
       micromatch: 3.1.10
       minimist: 1.2.6
       walker: 1.0.7
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /sanitize-filename/1.6.3:
@@ -18737,17 +19583,6 @@ packages:
     resolution: { integrity: sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo= }
     dev: true
 
-  /selenium-webdriver/3.6.0:
-    resolution:
-      { integrity: sha512-WH7Aldse+2P5bbFBO4Gle/nuQOdVwpHMTL6raL3uuBj/vPG07k6uzt3aiahu352ONBr5xXh0hDlM3LhtXPOC4Q== }
-    engines: { node: ">= 6.9.0" }
-    dependencies:
-      jszip: 3.7.1
-      rimraf: 2.7.1
-      tmp: 0.0.30
-      xml2js: 0.4.23
-    dev: true
-
   /selenium-webdriver/4.2.0:
     resolution:
       { integrity: sha512-gPPXYSz4jJBM2kANRQ9cZW6KFBzR/ptxqGLtyC75eXtdgOsWWRRRyZz5F2pqdnwNmAjrCSFMMXfisJaZeWVejg== }
@@ -18815,6 +19650,8 @@ packages:
       on-finished: 2.3.0
       range-parser: 1.2.1
       statuses: 1.5.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /serialize-error/7.0.1:
@@ -18858,6 +19695,8 @@ packages:
       http-errors: 1.6.3
       mime-types: 2.1.34
       parseurl: 1.3.3
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /serve-static/1.14.1:
@@ -18869,6 +19708,8 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.17.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /set-blocking/2.0.0:
@@ -19104,6 +19945,8 @@ packages:
       source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /socket.io-adapter/2.3.3:
@@ -19415,6 +20258,12 @@ packages:
     engines: { node: ">= 8" }
     dependencies:
       minipass: 3.1.3
+    dev: true
+
+  /stable/0.1.8:
+    resolution:
+      { integrity: sha512-ji9qxRnOVfcuLDySj9qzhGSEFVobyt1kIOSkj1qZzYLzq7Tos/oUUWvotUPQLlrsidqsK6tBH89Bc9kL5zHA6w== }
+    deprecated: "Modern JS already guarantees Array#sort() is a stable sort, so this library is deprecated. See the compatibility table on MDN: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#browser_compatibility"
     dev: true
 
   /stack-utils/2.0.4:
@@ -19754,6 +20603,26 @@ packages:
       { integrity: sha512-JaKkGHHfGvRrcMPdJWkssLBeWqM+Isg/a09H7kgNNajT1cX5AztDTNs+C8UzpCxjCTRrG34WbquwaovZbmSk9g== }
     dev: true
 
+  /svg-parser/2.0.4:
+    resolution:
+      { integrity: sha512-e4hG1hRwoOdRb37cIMSgzNsxyzKfayW6VOflrwvR+/bzrkyxY/31WkbgnQpgtrNp1SdpJvpUAGTa/ZoiPNDuRQ== }
+    dev: true
+
+  /svgo/2.8.0:
+    resolution:
+      { integrity: sha512-+N/Q9kV1+F+UeWYoSiULYo4xYSDQlTgb+ayMobAXPwMnLvop7oxKMo9OzIrX5x3eS4L4f2UHhc9axXwY8DpChg== }
+    engines: { node: ">=10.13.0" }
+    hasBin: true
+    dependencies:
+      "@trysound/sax": 0.2.0
+      commander: 7.2.0
+      css-select: 4.3.0
+      css-tree: 1.1.3
+      csso: 4.2.0
+      picocolors: 1.0.0
+      stable: 0.1.8
+    dev: true
+
   /symbol-observable/4.0.0:
     resolution:
       { integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ== }
@@ -19884,6 +20753,8 @@ packages:
     dependencies:
       debug: 4.1.0
       is2: 2.0.1
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /temp-fs/0.9.9:
@@ -20043,13 +20914,6 @@ packages:
     dependencies:
       popper.js: 1.16.1
     dev: false
-
-  /tmp/0.0.30:
-    resolution: { integrity: sha1-ckGdSovn1s51FI/YsyTlk6cRwu0= }
-    engines: { node: ">=0.4.0" }
-    dependencies:
-      os-tmpdir: 1.0.2
-    dev: true
 
   /tmp/0.0.33:
     resolution:
@@ -20632,10 +21496,6 @@ packages:
     deprecated: Please see https://github.com/lydell/urix#deprecated
     dev: true
 
-  /url-join/1.1.0:
-    resolution: { integrity: sha1-dBxsL0WWxIMNZxhGCSDQySIC3Hg= }
-    dev: true
-
   /url-join/4.0.1:
     resolution:
       { integrity: sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA== }
@@ -21053,37 +21913,6 @@ packages:
     engines: { node: ">=0.10.0" }
     dev: true
 
-  /vsce/1.103.1:
-    resolution:
-      { integrity: sha512-98oKQKKRp7J/vTIk1cuzom5cezZpYpRHs3WlySdsrTCrAEipB/HvaPTc4VZ3hGZHzHXS9P5p2L0IllntJeXwiQ== }
-    engines: { node: ">= 10" }
-    hasBin: true
-    dependencies:
-      azure-devops-node-api: 11.0.1
-      chalk: 2.4.2
-      cheerio: 1.0.0-rc.10
-      commander: 6.2.1
-      denodeify: 1.2.1
-      glob: 7.2.0
-      hosted-git-info: 4.1.0
-      keytar: 7.7.0
-      leven: 3.1.0
-      lodash: 4.17.21
-      markdown-it: 10.0.0
-      mime: 1.6.0
-      minimatch: 3.0.5
-      osenv: 0.1.5
-      parse-semver: 1.1.1
-      read: 1.0.7
-      semver: 5.7.1
-      tmp: 0.2.1
-      typed-rest-client: 1.8.4
-      url-join: 1.1.0
-      xml2js: 0.4.23
-      yauzl: 2.10.0
-      yazl: 2.5.1
-    dev: true
-
   /vsce/2.6.5:
     resolution:
       { integrity: sha512-KB3m0CDlWZCKwjQx2oSg35vWgTNrcOPcL6DGLVGewKhadwbL2OWGRoMRKUUFFtPFKwp3BwuTvEM5fENG/AQ5Lg== }
@@ -21193,7 +22022,6 @@ packages:
   /vscode-uri/3.0.3:
     resolution:
       { integrity: sha512-EcswR2S8bpR7fD0YPeS7r2xXExrScVMxg4MedACaWHEtx9ftCF/qHG1xGkolzTPcEmjTavCQgbVzHUIdTMzFGA== }
-    dev: true
 
   /w3c-hr-time/1.0.2:
     resolution:
@@ -21774,6 +22602,14 @@ packages:
   /ws/6.2.2:
     resolution:
       { integrity: sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw== }
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
     dependencies:
       async-limiter: 1.0.1
     dev: true
@@ -21911,6 +22747,7 @@ packages:
   /yaml-language-server-parser/0.1.3:
     resolution:
       { integrity: sha512-xD2I+6M/vqQvcy4ded8JpXUaDHXmZMdhIO3OpuiFxstutwnW4whrfDzNcrsfXVdgMWqOUpdv3747Q081PFN1+g== }
+    dev: false
 
   /yaml/1.10.2:
     resolution:
@@ -21921,7 +22758,6 @@ packages:
     resolution:
       { integrity: sha512-1NpAYQ3wjzIlMs0mgdBmYzLkFgWBIWrzYVDYfrixhoFNNgJ444/jT2kUT2sicRbJES3oQYRZugjB6Ro8SjKeFg== }
     engines: { node: ">= 14" }
-    dev: false
 
   /yargs-parser/18.1.3:
     resolution:
@@ -22063,9 +22899,4 @@ packages:
       { integrity: sha512-7olqIjy0gWfznKr6vgfnGBk7y4UtdMvdwFmK92vVQsQeDPyzkHW1OlrLEKg6GHz1W5ePf0FeN1q2vkl/HFqhXw== }
     dependencies:
       tslib: 2.3.0
-    dev: true
-
-  /hpagent/0.1.2:
-    resolution:
-      { integrity: sha512-ePqFXHtSQWAFXYmj+JtOTHr84iNrII4/QRlAAPPE+zqnKy4xJo7Ie1Y4kC7AdB+LxLxSTTzBMASsEcy0q8YyvQ== }
     dev: true

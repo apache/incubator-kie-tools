@@ -21,8 +21,7 @@ import {
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfVsCodeExtensionConfiguration } from "./configuration";
-import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
+import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { debounce } from "../debounce";
@@ -186,6 +185,25 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       `:`,
       `"`
     )
+  );
+
+  args.context.subscriptions.push(
+    vscode.workspace.onDidChangeConfiguration(async (event) => {
+      if (event.affectsConfiguration(CONFIGURATION_SECTIONS.enableKogitoServerlessWorkflowVisualizationPreview)) {
+        const isStunnerEnabled = args.configuration.isKogitoServerlessWorkflowVisualizationPreviewEnabled();
+        const restartNowLabel = "Restart now";
+        const selection = await vscode.window.showInformationMessage(
+          `Kogito Serverless Workflow Visualization Preview will be ${
+            isStunnerEnabled ? "enabled" : "disabled"
+          } for JSON files after VS Code is restarted.`,
+          restartNowLabel
+        );
+        if (selection !== restartNowLabel) {
+          return;
+        }
+        vscode.commands.executeCommand("workbench.action.reloadWindow");
+      }
+    })
   );
 }
 

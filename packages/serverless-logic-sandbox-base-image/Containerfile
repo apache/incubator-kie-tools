@@ -1,0 +1,44 @@
+# Copyright 2022 Red Hat
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+FROM registry.access.redhat.com/openjdk/openjdk-11-rhel7:1.12
+
+ARG QUARKUS_PLATFORM_VERSION
+
+RUN mkdir /tmp/sandbox/
+
+WORKDIR /tmp/sandbox/
+
+COPY --chown=185:root dist-dev/mvnw mvnw
+COPY --chown=185:root dist-dev/.mvn/ .mvn/
+COPY --chown=185:root dist-dev/metrics/ metrics/
+COPY --chown=185:root dist-dev/webapp/ webapp/
+
+RUN ./mvnw io.quarkus:quarkus-maven-plugin:create -B -ntp \
+  -DplatformVersion=${QUARKUS_PLATFORM_VERSION} \
+  -DprojectGroupId=org.kie \
+  -DprojectArtifactId=serverless-logic-sandbox \
+  -DprojectVersion=0.0.0 \
+  -Dextensions="kogito-quarkus-serverless-workflow,quarkus-resteasy-jackson,quarkus-jsonp,quarkus-smallrye-openapi,quarkus-resteasy,smallrye-health" \
+  && cd serverless-logic-sandbox \
+  && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true' >> src/main/resources/application.properties \
+  && rm -rf src/main/docker/ src/main/java/ src/test/  \
+  && mv ../webapp/* ../metrics/ src/main/resources/META-INF/resources/ \
+  && sed  -i "s/<dependencies>/<dependencies>\n    <dependency>\n      <groupId>org.kie.kogito<\/groupId>\n      <artifactId>kogito-addons-quarkus-monitoring-prometheus<\/artifactId>\n      <version>1.22.1.Final<\/version>\n    <\/dependency>/g" pom.xml \
+  && ./mvnw clean package -B -ntp \
+  && cp target/quarkus-app/*.jar /deployments/ \
+  && cp -R target/quarkus-app/lib/ /deployments/ \
+  && cp -R target/quarkus-app/app/ /deployments/ \
+  && cp -R target/quarkus-app/quarkus/ /deployments/ \
+  && rm -rf target/

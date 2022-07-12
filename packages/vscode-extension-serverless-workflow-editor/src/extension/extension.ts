@@ -72,6 +72,19 @@ export async function activate(context: vscode.ExtensionContext) {
     swfServiceCatalogGlobalStore,
   });
 
+  const swEnvelopeType = "swf";
+  const baseEnvelopePath = "dist/webview/editors/serverless-workflow";
+
+  const diagramEnvelopeMappingConfig = configuration.isKogitoServerlessWorkflowVisualizationPreviewEnabled()
+    ? {
+        resourcesPathPrefix: baseEnvelopePath + "/diagram",
+        envelopePath: baseEnvelopePath + "/serverless-workflow-diagram-editor-envelope.js",
+      }
+    : {
+        resourcesPathPrefix: baseEnvelopePath,
+        envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
+      };
+
   const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
@@ -81,10 +94,16 @@ export async function activate(context: vscode.ExtensionContext) {
     silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
       new EnvelopeMapping(
-        "swf",
-        "**/*.sw.+(json|yml|yaml)",
-        "dist/webview/ServerlessWorkflowEditorEnvelopeApp.js",
-        "dist/webview/editors/serverless-workflow"
+        swEnvelopeType,
+        "**/*.sw.json",
+        diagramEnvelopeMappingConfig.envelopePath,
+        diagramEnvelopeMappingConfig.resourcesPathPrefix
+      ),
+      new EnvelopeMapping(
+        swEnvelopeType,
+        "**/*.sw.+(yml|yaml)",
+        baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
+        baseEnvelopePath
       ),
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({

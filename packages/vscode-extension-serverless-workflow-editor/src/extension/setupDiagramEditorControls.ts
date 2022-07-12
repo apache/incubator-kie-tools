@@ -22,9 +22,18 @@ import {
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
 import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
+import {
+  getFileLanguage,
+  SwfJsonOffsets,
+  SwfYamlOffsets,
+} from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+
+let swfOffsetsApi: SwfOffsetsApi | undefined = undefined;
 
 function isSwf(textDocument: vscode.TextDocument) {
-  return /^.*\.sw\.(json|yml|yaml)$/.test(textDocument.fileName);
+  return getFileLanguage(textDocument.fileName) !== null;
 }
 
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
@@ -114,6 +123,60 @@ export async function setupDiagramEditorControls(args: {
         background: false,
       });
     })
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(
+      COMMAND_IDS.moveCursorToNode,
+      async ({ nodeName, documentUri }: { nodeName: string; documentUri: string }) => {
+        const textEditor = vscode.window.visibleTextEditors.filter(
+          (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
+        )[0];
+
+        if (!textEditor) {
+          console.debug("TextEditor not found");
+          return;
+        }
+
+        const resourceUri = textEditor.document.uri;
+        const fileLanguage = getFileLanguage(textEditor.document.fileName);
+
+        if (!fileLanguage) {
+          return;
+        }
+
+        const editorContent = textEditor.document.getText();
+
+        if (!swfOffsetsApi || documentUri !== swfOffsetsApi.documentUri) {
+          swfOffsetsApi =
+            fileLanguage === FileLanguage.JSON ? new SwfJsonOffsets(documentUri) : new SwfYamlOffsets(documentUri);
+        }
+
+        swfOffsetsApi.parseContent(editorContent);
+
+        const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
+
+        if (!targetOffset) {
+          return;
+        }
+
+        const targetPosition = textEditor.document.positionAt(targetOffset);
+
+        if (targetPosition === null) {
+          return;
+        }
+
+        await vscode.commands.executeCommand("vscode.open", resourceUri, {
+          viewColumn: textEditor.viewColumn,
+          preserveFocus: false,
+        } as vscode.TextDocumentShowOptions);
+
+        const targetRange = new vscode.Range(targetPosition, targetPosition);
+
+        textEditor.revealRange(targetRange, vscode.TextEditorRevealType.InCenter);
+        textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
+      }
+    )
   );
 
   if (vscode.window.activeTextEditor) {
