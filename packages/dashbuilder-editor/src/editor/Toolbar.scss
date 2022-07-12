@@ -16,15 +16,14 @@
 
 .toolbar {
   position: absolute;
-  left: 0;
-  bottom: 20px;
+  left: 1.5px;
+  bottom: 30px;
   padding: 5px 5px 0 5px;
   background-color: white;
   z-index: 999;
 
   .selected {
-    background-color: blue;
-    color: white;
+    color: blue;
   }
 
   &__divider {

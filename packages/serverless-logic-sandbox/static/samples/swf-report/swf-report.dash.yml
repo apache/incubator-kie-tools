@@ -1,5 +1,11 @@
 properties:
   dataIndexUrl: https://your.data.index.url.com
+  cardTemplate: >-
+    >-
+                          <div id="${this}" class="card-pf card-pf-accented card-pf-aggregate-status" style="background-color: ${bgColor}; width: 95%; height:${height}px;">
+                            <h2 style="font-weight: 600;" id="${this}Value">${value}</h2>
+                            <p style="font-weight: 400" id="${this}Title">${title}</p>
+                          </div>
 datasets:
   - uuid: processInstances
     expression: >-
@@ -38,11 +44,35 @@ pages:
               - html: "Serverless Workflow Summary <hr />"
                 properties:
                   font-size: x-large
+              - html: "Filter"
+                properties:
+                  font-weight: bolder
+              - properties:
+                  width: "150px"
+                  margin-bottom: "20px"
+                settings:
+                  type: SELECTOR
+                  general:
+                    visible: "true"
+                    text: "Filter"
+                  filter:
+                    enabled: "true"
+                    notification: "true"
+                  dataSetLookup:
+                    uuid: processInstances
+                    group:
+                      - columnGroup:
+                          source: processId
+                        groupFunctions:
+                          - source: processId
+                            column: Workflow
       - columns:
           - span: "2"
             components:
               - settings:
                   type: METRIC
+                  html:
+                    html: ${cardTemplate}
                   filter:
                     enabled: "true"
                     listening: "true"
@@ -67,6 +97,8 @@ pages:
             components:
               - settings:
                   type: METRIC
+                  html:
+                    html: ${cardTemplate}
                   filter:
                     enabled: "true"
                     listening: "true"
@@ -96,6 +128,8 @@ pages:
             components:
               - settings:
                   type: METRIC
+                  html:
+                    html: ${cardTemplate}
                   filter:
                     enabled: "true"
                     listening: "true"
@@ -125,6 +159,8 @@ pages:
             components:
               - settings:
                   type: METRIC
+                  html:
+                    html: ${cardTemplate}
                   filter:
                     enabled: "true"
                     listening: "true"
@@ -154,6 +190,8 @@ pages:
             components:
               - settings:
                   type: METRIC
+                  html:
+                    html: ${cardTemplate}
                   filter:
                     enabled: "true"
                     listening: "true"
@@ -183,6 +221,8 @@ pages:
             components:
               - settings:
                   type: METRIC
+                  html:
+                    html: ${cardTemplate}
                   filter:
                     enabled: "true"
                     listening: "true"
@@ -314,29 +354,6 @@ pages:
                           - source: duration
                             function: AVERAGE
                             column: Total
-      - columns:
-          - span: "12"
-            components:
-              - properties:
-                  width: "150px"
-                  margin-top: "20px"
-                  float: "right"
-                settings:
-                  type: SELECTOR
-                  general:
-                    visible: "true"
-                    text: "Filter"
-                  filter:
-                    enabled: "true"
-                    notification: "true"
-                  dataSetLookup:
-                    uuid: processInstances
-                    group:
-                      - columnGroup:
-                          source: processId
-                        groupFunctions:
-                          - source: processId
-                            column: Workflow
           - layoutComponents:
               - html: "<hr />Workflows List"
                 properties:
@@ -345,7 +362,12 @@ pages:
       - columns:
           - components:
               - settings:
-                  type: TABLE
+                  component: table
+                  external:
+                    width: 100%
+                  filter:
+                    enabled: "true"
+                    listening: "true"
                   chart:
                     resizable: "true"
                   table:
@@ -353,3 +375,14 @@ pages:
                     enabled: "true"
                   dataSetLookup:
                     uuid: processInstances
+                    group:
+                      - functions:
+                          - source: id
+                          - source: processId
+                          - source: processName
+                          - source: serviceUrl
+                          - source: state
+                          - source: startDate
+                          - source: lastUpdate
+                          - source: duration
+                          - source: errorMessage
