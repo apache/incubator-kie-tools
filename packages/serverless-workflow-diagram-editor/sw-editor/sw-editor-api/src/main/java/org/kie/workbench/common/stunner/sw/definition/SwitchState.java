@@ -57,7 +57,6 @@ public class SwitchState extends State {
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
-        this.usedForCompensation = false;
     }
 
     public DefaultConditionTransition getDefaultCondition() {

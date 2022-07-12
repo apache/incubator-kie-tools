@@ -38,7 +38,6 @@ import org.kie.workbench.common.stunner.sw.client.editor.DiagramEditorActivity;
 import org.treblereel.j2cl.processors.annotations.GWT3EntryPoint;
 import org.uberfire.client.views.pfly.PatternFlyEntryPoint;
 import org.uberfire.client.workbench.WorkbenchEntryPoint;
-import org.uberfire.ext.editor.commons.client.file.exports.FileExportProducer;
 import org.uberfire.ext.widgets.common.client.CommonsEntryPoint;
 import org.uberfire.ext.widgets.table.client.TableEntryPoint;
 import org.uberfire.mvp.impl.DefaultPlaceRequest;

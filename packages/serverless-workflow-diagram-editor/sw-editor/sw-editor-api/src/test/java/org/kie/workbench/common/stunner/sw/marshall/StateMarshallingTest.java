@@ -16,16 +16,25 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import java.util.Optional;
+
+import jsinterop.base.JsPropertyMap;
+import org.junit.Test;
+import org.kie.workbench.common.stunner.sw.definition.End;
+import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
+import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-
-//TODO tests must be updated once the new marshaller is implemented
 public class StateMarshallingTest extends BaseMarshallingTest {
 
     @Override
@@ -39,7 +48,45 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                 });
     }
 
-    //@Test
+    //@Test TODO java.lang.Error: DefinitionTypeUtils.getEnd jsinterop.base.JsPropertyMap$MockitoMock$916208411
+    public void testEndObject() {
+        JsPropertyMap<Object> endObject = mock(JsPropertyMap.class);
+        when(endObject.get("terminate")).thenReturn(true);
+        when(endObject.get("continueAs")).thenReturn("{}");
+        when(endObject.get("compensate")).thenReturn(false);
+        when(endObject.get("produceEvents")).thenReturn("[]");
+        workflow.states[0].setEnd(endObject);
+        unmarshallWorkflow();
+        assertTrue(hasOutgoingEdges("State1"));
+        assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
+        assertTrue(workflow.states[0].end instanceof JsPropertyMap);
+        final JsPropertyMap end = (JsPropertyMap) workflow.states[0].end;
+        assertTrue((Boolean) end.get("terminate"));
+        assertTrue(end.get("continueAs").equals("{}"));
+        assertTrue(!((Boolean) end.get("compensate")));
+        assertTrue(end.get("produceEvents").equals("[]"));
+    }
+
+    @Test
+    public void testUnsetCompensatedBy() {
+        InjectState injectState = new InjectState();
+
+        injectState.setName("Inject State");
+        injectState.setUsedForCompensation(true);
+
+        Workflow workflow = new Workflow()
+                .setId("workflow1")
+                .setName("Workflow1")
+                .setStates(new State[]{
+                        injectState
+                });
+
+        unmarshallNode(builderContext, workflow);
+        assertEquals(injectState.usedForCompensation, true);
+        // specific case when usedForCompensation is equals to Js.undefined cannot be tested since value defaults to false
+    }
+
+    @Test
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
         assertDefinitionReferencedInNode(workflow, "Workflow1");
@@ -50,7 +97,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertFalse(hasOutgoingEdges("State1"));
     }
 
-    //@Test
+    @Test
     public void testUnmarshallStartState() {
         workflow.setStart("State1");
         unmarshallWorkflow();
@@ -58,7 +105,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
     }
 
-    //@Test
+    @Test
     public void testUnmarshallEndState() {
         workflow.states[0].setEnd(true);
         unmarshallWorkflow();
@@ -66,7 +113,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
     }
 
-    //@Test
+    @Test
     public void testMarshallGraph() {
         unmarshallWorkflow();
         Workflow workflow = marshallWorkflow();
@@ -79,7 +126,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         assertNull(state1.onErrors);
     }
 
-/*    @Test TODO
+    @Test
     public void testMarshallStateError() {
         // Unmarshall the graph for the workflow example.
         unmarshallWorkflow();
@@ -101,5 +148,5 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         ErrorTransition onError = state1.onErrors[0];
         assertNull(onError.transition);
         assertTrue(DefinitionTypeUtils.getEnd(onError.end));
-    }*/
+    }
 }

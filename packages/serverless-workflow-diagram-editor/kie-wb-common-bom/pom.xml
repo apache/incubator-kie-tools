@@ -172,6 +172,13 @@
 
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
+        <artifactId>kie-wb-common-stunner-core-common</artifactId>
+        <version>${project.version}</version>
+        <classifier>tests</classifier>
+      </dependency>
+
+      <dependency>
+        <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>kie-wb-common-stunner-svg-gen</artifactId>
         <version>${project.version}</version>
       </dependency>

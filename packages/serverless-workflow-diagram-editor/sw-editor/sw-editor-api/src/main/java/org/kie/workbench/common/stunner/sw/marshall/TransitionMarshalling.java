@@ -61,7 +61,11 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
                         if (targetDef instanceof End) {
                             sourceState.transition = null;
-                            sourceState.end = true;
+
+                            if (sourceState.end instanceof Boolean) {
+                                sourceState.end = true;
+                            } // else is Object
+
                         } else {
                             sourceState.transition = getStateNodeName(targetNode);
                             sourceState.end = false;
