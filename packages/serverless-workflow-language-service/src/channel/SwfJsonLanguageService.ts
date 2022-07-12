@@ -16,49 +16,37 @@
 
 import * as jsonc from "jsonc-parser";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { FileLanguage } from "../editor";
-import { SwfLanguageService, SwfLanguageServiceArgs, SwfLSNode } from "./SwfLanguageService";
+import { SwfLanguageService, SwfLanguageServiceArgs, SwfLsNode } from "./SwfLanguageService";
+import { FileLanguage } from "../api";
 
 export class SwfJsonLanguageService {
-  fileLanguage = FileLanguage.JSON;
-  protected fileMatch = ["*.sw.json"];
-  private ls: SwfLanguageService;
+  private readonly ls: SwfLanguageService;
 
-  constructor(args: SwfLanguageServiceArgs) {
-    this.ls = new SwfLanguageService(args);
+  constructor(args: Omit<SwfLanguageServiceArgs, "lang">) {
+    this.ls = new SwfLanguageService({
+      ...args,
+      lang: {
+        fileLanguage: FileLanguage.JSON,
+        fileMatch: ["*.sw.json"],
+      },
+    });
   }
 
-  parseContent(content: string): SwfLSNode | undefined {
+  parseContent(content: string): SwfLsNode | undefined {
     return jsonc.parseTree(content);
   }
 
-  public getCompletionItems(args: {
+  public async getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    const rootNode = this.parseContent(args.content);
-
-    if (!rootNode) {
-      return Promise.resolve([]);
-    }
-    return this.ls.getCompletionItems({
-      ...args,
-      rootNode,
-    });
+    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content) });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    const rootNode = this.parseContent(args.content);
-
-    if (!rootNode) {
-      return Promise.resolve([]);
-    }
-    return this.ls.getCodeLenses({
-      ...args,
-      rootNode,
-    });
+    return this.ls.getCodeLenses({ ...args, rootNode: this.parseContent(args.content) });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {

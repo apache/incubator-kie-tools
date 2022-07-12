@@ -30,24 +30,23 @@ import {
   SwfServiceCatalogService,
   SwfServiceCatalogServiceSourceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
+import { FileLanguage, SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
 import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { FileLanguage } from "../editor";
 
 // types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
-export declare type SwfJSONPath = (string | number)[];
-export declare type SwfLSNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
-export type SwfLSNode = {
-  type: SwfLSNodeType;
+export declare type SwfJsonPath = (string | number)[];
+export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
+export type SwfLsNode = {
+  type: SwfLsNodeType;
   value?: any;
   offset: number;
   length: number;
   colonOffset?: number;
-  parent?: SwfLSNode;
-  children?: SwfLSNode[];
+  parent?: SwfLsNode;
+  children?: SwfLsNode[];
 };
 
 export type SwfLanguageServiceConfig = {
@@ -63,6 +62,10 @@ export type SwfLanguageServiceConfig = {
 
 export type SwfLanguageServiceArgs = {
   fs: {};
+  lang: {
+    fileLanguage: FileLanguage;
+    fileMatch: string[];
+  };
   serviceCatalog: {
     global: {
       getServices: () => Promise<SwfServiceCatalogService[]>;
@@ -79,9 +82,6 @@ export type SwfLanguageServiceArgs = {
 };
 
 export class SwfLanguageService {
-  protected fileMatch: string[];
-  public fileLanguage: FileLanguage;
-
   constructor(private readonly args: SwfLanguageServiceArgs) {}
 
   public async getCompletionItems(args: {
@@ -89,13 +89,13 @@ export class SwfLanguageService {
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
-    rootNode: SwfLSNode;
+    rootNode: SwfLsNode | undefined;
   }): Promise<CompletionItem[]> {
-    const doc = TextDocument.create(args.uri, this.fileLanguage, 0, args.content);
     if (!args.rootNode) {
       return [];
     }
 
+    const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
     const currentNode = findNodeAtOffset(args.rootNode, cursorOffset);
@@ -138,7 +138,7 @@ export class SwfLanguageService {
             cursorPosition: args.cursorPosition,
             currentNode,
             currentNodePosition,
-            rootNode: args.rootNode,
+            rootNode: args.rootNode!,
             overwriteRange,
             swfCompletionItemServiceCatalogServices,
             langServiceConfig: this.args.config,
@@ -150,7 +150,12 @@ export class SwfLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    const textDocument = TextDocument.create(args.uriPath, `serverless-workflow-${this.fileLanguage}`, 1, args.content);
+    const textDocument = TextDocument.create(
+      args.uriPath,
+      `serverless-workflow-${this.args.lang.fileLanguage}`,
+      1,
+      args.content
+    );
 
     const schemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
 
@@ -165,7 +170,7 @@ export class SwfLanguageService {
 
     jsonLanguageService.configure({
       allowComments: false,
-      schemas: [{ fileMatch: this.fileMatch, uri: schemaUri }],
+      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: schemaUri }],
     });
 
     const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
@@ -173,12 +178,16 @@ export class SwfLanguageService {
     return await jsonLanguageService.doValidation(textDocument, jsonDocument);
   }
 
-  public async getCodeLenses(args: { content: string; uri: string; rootNode: SwfLSNode }): Promise<CodeLens[]> {
-    const document = TextDocument.create(args.uri, this.fileLanguage, 0, args.content);
-
+  public async getCodeLenses(args: {
+    content: string;
+    uri: string;
+    rootNode: SwfLsNode | undefined;
+  }): Promise<CodeLens[]> {
     if (!args.rootNode) {
       return [];
     }
+
+    const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
 
     const addFunction = this.createCodeLenses({
       document,
@@ -341,11 +350,11 @@ export class SwfLanguageService {
 
   public createCodeLenses(args: {
     document: TextDocument;
-    rootNode: SwfLSNode;
-    jsonPath: SwfJSONPath;
+    rootNode: SwfLsNode;
+    jsonPath: SwfJsonPath;
     commandDelegates: (args: {
       position: Position;
-      node: SwfLSNode;
+      node: SwfLsNode;
     }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
     positionLensAt: "begin" | "end";
   }): CodeLens[] {
@@ -382,15 +391,15 @@ type SwfCompletionItemServiceCatalogService = Omit<SwfServiceCatalogService, "fu
 };
 
 const completions = new Map<
-  SwfJSONPath,
+  SwfJsonPath,
   (args: {
     swfCompletionItemServiceCatalogServices: SwfCompletionItemServiceCatalogService[];
     document: TextDocument;
     cursorPosition: Position;
-    currentNode: SwfLSNode;
+    currentNode: SwfLsNode;
     overwriteRange: Range;
     currentNodePosition: { start: Position; end: Position };
-    rootNode: SwfLSNode;
+    rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
   }) => Promise<CompletionItem[]>
 >([
@@ -645,9 +654,9 @@ function toCompletionItemLabelPrefix(
  * @returns true if the node is in the location, false otherwise
  */
 export function matchNodeWithLocation(
-  root: SwfLSNode | undefined,
-  node: SwfLSNode | undefined,
-  path: SwfJSONPath
+  root: SwfLsNode | undefined,
+  node: SwfLsNode | undefined,
+  path: SwfJsonPath
 ): boolean {
   if (!root || !node || !path || !path.length) {
     return false;
@@ -666,12 +675,12 @@ export function matchNodeWithLocation(
 
 // This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
 // This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-export function findNodesAtLocation(root: SwfLSNode | undefined, path: SwfJSONPath): SwfLSNode[] {
+export function findNodesAtLocation(root: SwfLsNode | undefined, path: SwfJsonPath): SwfLsNode[] {
   if (!root) {
     return [];
   }
 
-  let nodes: SwfLSNode[] = [root];
+  let nodes: SwfLsNode[] = [root];
 
   for (const segment of path) {
     if (segment === "*") {
@@ -710,12 +719,12 @@ export function findNodesAtLocation(root: SwfLSNode | undefined, path: SwfJSONPa
   return nodes;
 }
 
-export function findNodeAtLocation(root: SwfLSNode, path: SwfJSONPath): SwfLSNode | undefined {
+export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
   return findNodesAtLocation(root, path)[0];
 }
 
-export function findNodeAtOffset(root: SwfLSNode, offset: number, includeRightBound?: boolean): SwfLSNode | undefined {
-  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLSNode;
+export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {
+  return jsonc.findNodeAtOffset(root as jsonc.Node, offset, includeRightBound) as SwfLsNode;
 }
 
 function toCompletionItemLabel(namespace: string, resource: string, operation: string) {

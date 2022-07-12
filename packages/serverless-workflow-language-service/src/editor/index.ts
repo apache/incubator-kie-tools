@@ -14,31 +14,5 @@
  * limitations under the License.
  */
 
-/**
- * File language for an opened file in the text editor.
- */
-export enum FileLanguage {
-  JSON = "json",
-  YAML = "yaml",
-}
-
-/**
- * Get the file language from a filename or path
- *
- * @param fileName the filename or path
- * @returns the file language, null if not found
- */
-export const getFileLanguage = (fileName: string): FileLanguage | null => {
-  if (/\.sw\.json$/i.test(fileName)) {
-    return FileLanguage.JSON;
-  }
-
-  if (/\.sw\.(yml|yaml)$/i.test(fileName)) {
-    return FileLanguage.YAML;
-  }
-
-  return null;
-};
-
 export * from "./SwfJsonOffsets";
 export * from "./SwfYamlOffsets";
