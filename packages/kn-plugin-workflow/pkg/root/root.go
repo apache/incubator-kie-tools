@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/quarkus"
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -41,9 +41,7 @@ func NewRootCommand() *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.AddCommand(command.NewCreateCommand())
-	cmd.AddCommand(command.NewBuildCommand())
-	cmd.AddCommand(command.NewDeployCommand())
+	cmd.AddCommand(quarkus.NewQuarkusCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)
