@@ -20,47 +20,160 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
-	knservingv1 "knative.dev/serving/pkg/apis/serving/v1"
 )
 
 type Constant struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 type Timeout struct {
+	WorkflowExecTimeout string `json:"workflowExecTimeout,omitempty"`
+	StateExecTimeout    string `json:"stateExecTimeout,omitempty"`
+	ActionExecTimeout   string `json:"actionExecTimeout,omitempty"`
+	BranchExecTimeout   string `json:"branchExecTimeout,omitempty"`
+	EventTimeout        string `json:"eventTimeout,omitempty"`
 }
 
 type Error struct {
+	Name        string `json:"name"`
+	Code        string `json:"code"`
+	Description string `json:"description,omitempty"`
+}
+
+type AuthProperties struct {
+	//TODO: Define AuthProperties attributes
 }
 
 type Auth struct {
+	Name   string `json:"name"`
+	Scheme string `json:"scheme"`
+	//TODO: AuthProperties to be defined
+	Properties AuthProperties `json:"properties"`
+}
+
+type EventKind string
+
+//TODO: Define EventKind values
+
+type EventCorrelationRule struct {
+}
+
+type Metadata struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type Event struct {
+	Name   string `json:"name"`
+	Source string `json:"source"`
+	Type   string `json:"type"`
+	//TODO: Kind should be an Enum
+	Kind EventKind `json:"kind,omitempty"`
+	//TODO: EventCorrelationRule to be defined
+	Correlation []EventCorrelationRule `json:"correlation,omitempty"`
+	DataOnly    bool                   `json:"dataOnly,omitempty"`
+	Metadata    []Metadata             `json:"metadata,omitempty"`
+}
+
+type FunctionType string
+
+const (
+	RestFunctionType       FunctionType = "rest"
+	AsyncApiFunctionType   FunctionType = "asyncapi"
+	RpcFunctionType        FunctionType = "rpc"
+	GraphQLFunctionType    FunctionType = "graphql"
+	ODataFunctionType      FunctionType = "odata"
+	ExpressionFunctionType FunctionType = "odata"
+)
+
+type Function struct {
+	Name      string       `json:"name"`
+	Operation string       `json:"operation"`
+	Type      FunctionType `json:"type"`
+	AuthRef   string       `json:"authRef,omitempty"`
+	Metadata  []Metadata   `json:"metadata,omitempty"`
 }
 
 type Retry struct {
+	Name        string  `json:"name"`
+	Delay       string  `json:"delay,omitempty"`
+	MaxAttempts int     `json:"maxAttempts,omitempty"`
+	MaxDelay    string  `json:"maxDelay,omitempty"`
+	Increment   string  `json:"increment,omitempty"`
+	Multiplier  float32 `json:"multiplier,omitempty"`
+	Jitter      float32 `json:"jitter,omitempty"`
 }
+
+type StateType string
+
+const (
+	EventStateType     StateType = "event"
+	OperationStateType StateType = "operation"
+	SwitchStateType    StateType = "switch"
+	SleepStateType     StateType = "sleep"
+	ParallelStateType  StateType = "parallel"
+	InjectStateType    StateType = "inject"
+	ForEachStateType   StateType = "foreach"
+)
+
+type ActionModeEnum string
+
+//TODO: Define ActionModeEnum values (Should actions be performed sequentially or in parallel?)
+
+type Action struct {
+}
+
+type CompletionTypeEnum string
+
+//TODO: Define CompletionTypeEnum values (Option types on how to complete branch execution. Default is "allOf")
+
+type IterationMode string
+
+//TODO: Define IterationMode values (Specifies how iterations are to be performed (sequentially or in parallel). Default is parallel)
 
 type State struct {
+	Name       string         `json:"name"`
+	Type       StateType      `json:"type"`
+	Exclusive  bool           `json:"exclusive,omitempty"`
+	ActionMode ActionModeEnum `json:"actionMode,omitempty"`
+	Actions    []Action       `json:"actions,omitempty"`
+	Data       []byte         `json:"data,omitempty"`
+	//TODO: Define a type for DataCondition objects
+	DataConditions []string `json:"dataConditions,omitempty"`
+	//TODO: Define a type for EventContitions objects
+	EventConditions []string `json:"eventConditions,omitempty"`
+	//TODO: Define a type for DefaultCondition object
+	DefaultCondition string `json:"defaultCondition,omitempty"`
+	//TODO: Double-check that we can use the Event type here
+	OnEvents         []Event            `json:"onEvents,omitempty"`
+	Duration         string             `json:"duration,omitempty"`
+	Branches         []string           `json:"branches,omitempty"`
+	CompletionType   CompletionTypeEnum `json:"completionType,omitempty"`
+	NumCompleted     int                `json:"numCompleted,omitempty"`
+	InputCollection  string             `json:"inputCollection,omitempty"`
+	OutputCollection string             `json:"outputCollection,omitempty"`
+	IterationParam   string             `json:"iterationParam,omitempty"`
+	BatchSize        int                `json:"batchSize,omitempty"`
+	Mode             IterationMode      `json:"mode,omitempty"`
+	EventRef         string             `json:"eventRef,omitempty"`
 }
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowSpec struct {
-	Constants   []Constant          `json:"conditions"`
-	Secrets     *[]v1.Secret        `json:"secrets"`
-	Start       string              `json:"start"`
-	Timeouts    []Timeout           `json:"timeouts"`
-	Errors      []Error             `json:"errors"`
-	KeepAlive   bool                `json:"keepAlive"`
-	Auth        Auth                `json:"auth"`
-	Events      *[]Event            `json:"events"`
-	Functions   knservingv1.Service `json:"functions"`
-	AutoRetries bool                `json:"autoRetries"`
-	Retries     Retry               `json:"retries"`
-	States      State               `json:"states"`
+	Constants   []Constant   `json:"conditions,omitempty"`
+	Secrets     *[]v1.Secret `json:"secrets,omitempty"`
+	Start       string       `json:"start"`
+	Timeouts    []Timeout    `json:"timeouts,omitempty"`
+	Errors      []Error      `json:"errors,omitempty"`
+	KeepAlive   bool         `json:"keepAlive"`
+	Auth        Auth         `json:"auth,omitempty"`
+	Events      *[]Event     `json:"events,omitempty"`
+	Functions   []Function   `json:"functions,omitempty"`
+	AutoRetries bool         `json:"autoRetries"`
+	Retries     Retry        `json:"retries,omitempty"`
+	States      State        `json:"states"`
 }
 
 type Endpoint struct {
@@ -70,9 +183,16 @@ type Endpoint struct {
 	Protocol string // "TCP" or "UDP"; never empty
 }
 
+type StatusCondition string
+
+const (
+	BuildingStatusCondition StatusCondition = "Building"
+	ReadyStatusCondition    StatusCondition = "Ready"
+)
+
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowStatus struct {
-	Conditions string             `json:"conditions,omitempty"`
+	Conditions StatusCondition    `json:"conditions,omitempty"`
 	Endpoints  []Endpoint         `json:"endpoints"`
 	Address    duckv1.Addressable `json:"address,omitempty"`
 }
