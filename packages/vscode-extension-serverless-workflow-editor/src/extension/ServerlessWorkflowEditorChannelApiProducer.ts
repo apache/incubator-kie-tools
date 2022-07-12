@@ -36,7 +36,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
-      swfLanguageService: SwfLanguageService;
+      swfLanguageService: () => SwfLanguageService;
       swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
@@ -72,7 +72,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
       new SwfLanguageServiceChannelApiImpl({
-        ls: this.args.swfLanguageService,
+        ls: this.args.swfLanguageService(),
       })
     );
   }

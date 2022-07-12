@@ -30,8 +30,11 @@ import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
 
 export class VsCodeSwfLanguageService {
-  private _ls: SwfLanguageService;
+  private _jsonLs: SwfJsonLanguageService;
+  private _yamlLs: SwfYamlLanguageService;
+  private fileLanguage: FileLanguage | null;
   private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
+
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
@@ -39,22 +42,22 @@ export class VsCodeSwfLanguageService {
     }
   ) {
     vscode.workspace.onDidOpenTextDocument((document) => {
-      this.reinitLs(document);
+      this.fileLanguage = getFileLanguage(document.uri.path);
     });
 
-    this.reinitLs(vscode.window.activeTextEditor?.document);
+    this.initLs(vscode.window.activeTextEditor?.document);
   }
 
   public get ls(): SwfLanguageService {
-    return this._ls;
+    return this.fileLanguage === FileLanguage.YAML ? this._yamlLs : this._jsonLs;
   }
 
-  private reinitLs(document: vscode.TextDocument | undefined) {
+  private initLs(document: vscode.TextDocument | undefined) {
     if (!document) {
       return;
     }
-    const filePath = document.uri.path;
-    const fileLanguage = getFileLanguage(filePath);
+    this.fileLanguage = getFileLanguage(document.uri.path);
+
     const lsArgs: SwfLanguageServiceArgs = {
       fs: {},
       serviceCatalog: {
@@ -109,11 +112,8 @@ export class VsCodeSwfLanguageService {
       },
     };
 
-    if (fileLanguage === FileLanguage.JSON) {
-      this._ls = new SwfJsonLanguageService(lsArgs);
-    } else if (fileLanguage === FileLanguage.YAML) {
-      this._ls = new SwfYamlLanguageService(lsArgs);
-    }
+    this._jsonLs = new SwfJsonLanguageService(lsArgs);
+    this._yamlLs = new SwfYamlLanguageService(lsArgs);
   }
 
   private getSpecsDirPosixPaths(document: TextDocument) {
@@ -132,7 +132,8 @@ export class VsCodeSwfLanguageService {
   }
 
   public dispose() {
-    this.ls.dispose();
+    this._jsonLs.dispose();
+    this._yamlLs.dispose();
     return Array.from(this.fsWatchingSwfServiceCatalogStore.values()).forEach((f) => f.dispose());
   }
 }

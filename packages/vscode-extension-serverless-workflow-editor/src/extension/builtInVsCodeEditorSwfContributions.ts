@@ -29,7 +29,7 @@ import { debounce } from "../debounce";
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  swfLanguageService: SwfLanguageService;
+  swfLanguageService: () => SwfLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
@@ -73,7 +73,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         swfJsonDiganosticsCollection.clear();
         return;
       }
-      setSwfJsonDiagnostics(args.swfLanguageService, doc.uri, swfJsonDiganosticsCollection);
+      setSwfJsonDiagnostics(args.swfLanguageService(), doc.uri, swfJsonDiganosticsCollection);
     })
   );
 
@@ -85,7 +85,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         swfJsonDiganosticsCollection.clear();
         return;
       }
-      doValidationOnChange(args.swfLanguageService, event.document.uri, swfJsonDiganosticsCollection);
+      doValidationOnChange(args.swfLanguageService(), event.document.uri, swfJsonDiganosticsCollection);
     })
   );
 
@@ -102,7 +102,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       { scheme: "file", pattern: "**/*.sw.json" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
-          const lsCodeLenses = await args.swfLanguageService.getCodeLenses({
+          const lsCodeLenses = await args.swfLanguageService().getCodeLenses({
             uri: document.uri.toString(),
             content: document.getText(),
           });
@@ -141,7 +141,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         ) => {
           const cursorWordRange = document.getWordRangeAtPosition(position);
 
-          const lsCompletionItems = await args.swfLanguageService.getCompletionItems({
+          const lsCompletionItems = await args.swfLanguageService().getCompletionItems({
             uri: document.uri.toString(),
             content: document.getText(),
             cursorPosition: position,
