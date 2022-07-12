@@ -129,12 +129,11 @@ export abstract class SwfLanguageService {
       }))
     );
 
-    const root = this.parseContent(args.content);
-    const nodeAtOffset = findNodeAtOffset(root!, cursorOffset);
+    const nodeAtOffset = findNodeAtOffset(rootNode, cursorOffset);
 
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => matchNodeWithLocation(root, nodeAtOffset, path))
+        .filter(([path, _]) => matchNodeWithLocation(rootNode, nodeAtOffset, path))
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
