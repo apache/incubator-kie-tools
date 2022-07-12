@@ -118,7 +118,6 @@ public interface StateMarshalling {
 
                 // TODO: Clear states here or on each marshaller?
                 state.transition = null;
-                state.end = false;
                 state.compensatedBy = null;
                 state.eventTimeout = null;
 

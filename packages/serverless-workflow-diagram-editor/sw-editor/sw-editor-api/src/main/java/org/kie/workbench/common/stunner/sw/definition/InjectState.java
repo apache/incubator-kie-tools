@@ -50,7 +50,6 @@ public class InjectState extends State {
 
     public InjectState() {
         this.type = TYPE_INJECT;
-        usedForCompensation = false;
     }
 
     public String getData() {
