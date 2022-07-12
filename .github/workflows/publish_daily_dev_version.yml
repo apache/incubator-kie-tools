@@ -315,6 +315,7 @@ jobs:
         run: |
           cd serverless-logic-sandbox-deployment
           rm -rf dev
+          mkdir dev
           cp -r ../kie-tools/packages/serverless-logic-sandbox/dist/* dev/
           git config --global user.email "kietoolsbot@gmail.com"
           git config --global user.name "KIE Tools Bot (kiegroup)"
