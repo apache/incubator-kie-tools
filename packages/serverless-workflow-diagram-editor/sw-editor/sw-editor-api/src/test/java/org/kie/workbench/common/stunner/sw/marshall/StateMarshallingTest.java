@@ -48,9 +48,9 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                 });
     }
 
-    //@Test TODO java.lang.Error: DefinitionTypeUtils.getEnd jsinterop.base.JsPropertyMap$MockitoMock$916208411
+    @Test
     public void testEndObject() {
-        JsPropertyMap<Object> endObject = mock(JsPropertyMap.class);
+        JsPropertyMap endObject = mock(JsPropertyMap.class);
         when(endObject.get("terminate")).thenReturn(true);
         when(endObject.get("continueAs")).thenReturn("{}");
         when(endObject.get("compensate")).thenReturn(false);
