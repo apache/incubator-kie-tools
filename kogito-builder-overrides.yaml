@@ -49,7 +49,7 @@ modules:
     version: "11"
   - name: org.kie.kogito.dynamic.resources
   - name: org.kie.kogito.maven
-    version: "3.8.1"
+    version: "3.8.6"
   - name: org.kie.kogito.s2i.core
   - name: org.kie.kogito.builder
 
