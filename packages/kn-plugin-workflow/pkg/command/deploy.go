@@ -110,9 +110,6 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			return err
 		}
 		fmt.Println("✅ Knative Eventing bindings successfully created")
-	} else if err != nil {
-		fmt.Println("Check the full logs with the -v | --verbose option")
-		return err
 	}
 
 	finish := time.Since(start)
