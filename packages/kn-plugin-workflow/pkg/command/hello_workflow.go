@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package quarkus
+package command
 
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 )
 
 type WorkflowStates struct {
@@ -36,7 +37,7 @@ type Workflow struct {
 	States      []WorkflowStates `json:"states"`
 }
 
-func GetWorkflowTemplate() (workflowJsonByte []byte, err error) {
+func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 	workflowStates := WorkflowStates{
 		Name:    "HelloWorld",
 		Type:    "operation",
@@ -56,5 +57,21 @@ func GetWorkflowTemplate() (workflowJsonByte []byte, err error) {
 	if err != nil {
 		fmt.Println("ERROR: marshaling the workflow json file.")
 	}
+	return
+}
+
+func GenerateWorkflow(workflowFilePath string) (err error) {
+	workflowFileData, err := getWorkflowTemplate()
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(workflowFilePath, workflowFileData, 0644)
+	if err != nil {
+		fmt.Println("ERROR: writing the workflow json file.")
+		return err
+	}
+
+	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
 	return
 }

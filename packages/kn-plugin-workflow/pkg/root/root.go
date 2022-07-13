@@ -21,6 +21,7 @@ import (
 	"os"
 
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/quarkus"
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/single"
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -42,6 +43,7 @@ func NewRootCommand() *cobra.Command {
 	}
 
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
+	cmd.AddCommand(single.NewCreateCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

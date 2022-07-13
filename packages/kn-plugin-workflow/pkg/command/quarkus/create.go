@@ -18,10 +18,10 @@ package quarkus
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os/exec"
 	"time"
 
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -111,7 +111,8 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	generateWorkflow(cfg)
+	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
+	command.GenerateWorkflow(workflowFilePath)
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Project creation took: %s \n", finish)
@@ -125,23 +126,6 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 		Extesions:   fmt.Sprintf("%s,%s", common.QUARKUS_DEFAULT_EXTENSIONS, viper.GetString("extension")),
 		Verbose:     viper.GetBool("verbose"),
 	}
-	return
-}
-
-func generateWorkflow(cfg CreateConfig) (err error) {
-	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
-	workflowFileData, err := GetWorkflowTemplate()
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(workflowFilePath, workflowFileData, 0644)
-	if err != nil {
-		fmt.Println("ERROR: writing the workflow json file.")
-		return err
-	}
-
-	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
 	return
 }
 
