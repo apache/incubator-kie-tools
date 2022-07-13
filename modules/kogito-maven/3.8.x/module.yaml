@@ -1,10 +1,10 @@
 schema_version: 1
 name: org.kie.kogito.maven
-version: "3.8.6"
+version: "3.8.1"
 
 envs:
   - name: "MAVEN_VERSION"
-    value: "3.8.6"
+    value: "3.8.1"
   - name: " MAVEN_HOME"
     value: "/usr/share/maven"
   - name: "MAVEN_SETTINGS_PATH"
@@ -70,9 +70,9 @@ envs:
     example: "true"
 # unfortunately by now the version needs to be hardcoded.
 artifacts:
-  - name: apache-maven-3.8.6-bin.tar.gz
-    url: https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
-    md5: 0e07de4a7b5c84ebed737a2002f52019
+  - name: apache-maven-3.8.1-bin.tar.gz
+    url: https://archive.apache.org/dist/maven/maven-3/3.8.1/binaries/apache-maven-3.8.1-bin.tar.gz
+    md5: 90197f18ed9036a1709ff0e09558c083
 
 execute:
   - script: configure
