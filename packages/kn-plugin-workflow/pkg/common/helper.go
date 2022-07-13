@@ -21,11 +21,20 @@ import (
 	"fmt"
 	"html/template"
 	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 )
+
+func GetOsCommand(command string) string {
+	var osCommand = "./" + command
+	if runtime.GOOS == "windows" {
+		osCommand = ".\\" + command
+	}
+	return osCommand
+}
 
 func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMessages []string) error {
 	stdout, _ := command.StdoutPipe()
