@@ -43,7 +43,7 @@ export function doInterpolation(tokens: Record<string, string>, value: string) {
 }
 
 export function getInterpolatedConfigurationValue(args: { currentFileAbsolutePosixPath: string; value: string }) {
-  const parsedPath = path.parse(args.currentFileAbsolutePosixPath);
+  const parsedPath = path.parse(path.normalize(args.currentFileAbsolutePosixPath));
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
         const relative = path.relative(workspace.uri.path, args.currentFileAbsolutePosixPath);
