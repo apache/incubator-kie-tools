@@ -22,13 +22,8 @@ import {
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
 import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
-import {
-  getFileLanguage,
-  SwfJsonOffsets,
-  SwfYamlOffsets,
-} from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { FileLanguage, getFileLanguage, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 
 let swfOffsetsApi: SwfOffsetsApi | undefined = undefined;
 
@@ -139,8 +134,8 @@ export async function setupDiagramEditorControls(args: {
         }
 
         const resourceUri = textEditor.document.uri;
-        const fileLanguage = getFileLanguage(textEditor.document.fileName);
 
+        const fileLanguage = getFileLanguage(textEditor.document.fileName);
         if (!fileLanguage) {
           return;
         }
@@ -155,13 +150,11 @@ export async function setupDiagramEditorControls(args: {
         swfOffsetsApi.parseContent(editorContent);
 
         const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
-
         if (!targetOffset) {
           return;
         }
 
         const targetPosition = textEditor.document.positionAt(targetOffset);
-
         if (targetPosition === null) {
           return;
         }

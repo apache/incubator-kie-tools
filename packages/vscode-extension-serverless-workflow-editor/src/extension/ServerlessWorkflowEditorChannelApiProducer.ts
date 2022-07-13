@@ -23,23 +23,19 @@ import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
-import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
-import {
-  SwfJsonLanguageService,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
+import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
-      swfLanguageService: () => SwfJsonLanguageService | SwfYamlLanguageService;
+      vsCodeSwfLanguageService: VsCodeSwfLanguageService;
       swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
     }
   ) {}
@@ -53,12 +49,8 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     viewType: string,
     i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
-    // TODO: This casting to `unknown` first is a workaround
-    // See https://issues.redhat.com/browse/KOGITO-6824
-    const swfServiceCatalogEnvelopeServer = editor.envelopeServer as unknown as EnvelopeServer<
-      SwfServiceCatalogChannelApi,
-      KogitoEditorEnvelopeApi
-    >;
+    const fileLanguage = getFileLanguageOrThrow(editor.document.document.uri.path);
+    const ls = this.args.vsCodeSwfLanguageService.getLs(fileLanguage);
 
     return new ServerlessWorkflowEditorChannelApiImpl(
       editor,
@@ -74,9 +66,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         configuration: this.args.configuration,
         swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
-      new SwfLanguageServiceChannelApiImpl({
-        ls: this.args.swfLanguageService(),
-      })
+      new SwfLanguageServiceChannelApiImpl({ ls })
     );
   }
 }

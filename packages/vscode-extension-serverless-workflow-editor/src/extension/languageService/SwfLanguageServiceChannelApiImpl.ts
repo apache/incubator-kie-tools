@@ -18,7 +18,6 @@ import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-lan
 import * as vscode from "vscode";
 import { COMMAND_IDS } from "../commandIds";
 import {
-  SwfLanguageService,
   SwfJsonLanguageService,
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
