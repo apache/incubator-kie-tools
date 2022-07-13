@@ -1,5 +1,9 @@
 lockfileVersion: 5.4
 
+overrides:
+  react-dropzone: ^11.4.2
+  "@types/react": ^17.0.6
+
 packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
 
 importers:
