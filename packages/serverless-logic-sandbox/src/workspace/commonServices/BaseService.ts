@@ -114,7 +114,7 @@ export abstract class BaseService<
 
   public async delete(descriptorId: string, broadcastArgs: { broadcast: boolean }): Promise<void> {
     await this.descriptorService.delete(descriptorId);
-    indexedDB.deleteDatabase(this.getDescriptorPath(descriptorId));
+    indexedDB.deleteDatabase(this.getDescriptorPath(descriptorId).replace("/", ""));
 
     if (broadcastArgs.broadcast) {
       this.broadcastMessage({ type: "DELETE", descriptorId });
