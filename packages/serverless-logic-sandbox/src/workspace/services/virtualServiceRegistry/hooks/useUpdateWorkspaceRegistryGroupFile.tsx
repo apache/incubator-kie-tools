@@ -78,23 +78,24 @@ export function useUpdateWorkspaceRegistryGroupFile(args: { workspaceFile: Works
           }
         }
         if (data.type === "UPDATE_FILE") {
-          if (currentFile) {
-            const vsrFunction = new VirtualServiceRegistryFunction(currentFile);
-            await virtualServiceRegistry.updateFile({
-              fs: await virtualServiceRegistry.vsrFsService.getFs(workspaceId),
-              file: currentFile,
-              getNewContents: () => vsrFunction.getOpenApiSpec(),
-            });
-          } else if (file) {
+          if (file) {
             const vsrFunction = new VirtualServiceRegistryFunction(file);
-            await virtualServiceRegistry.addFile({
-              fs: await virtualServiceRegistry.vsrFsService.getFs(workspaceId),
-              groupId: workspaceId,
-              name: vsrFunction.name,
-              destinationDirRelativePath: functionPath({ groupId: workspaceId }, vsrFunction),
-              content: await vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
-              extension: vsrFunction.file.extension,
-            });
+            if (currentFile) {
+              await virtualServiceRegistry.updateFile({
+                fs: await virtualServiceRegistry.vsrFsService.getFs(workspaceId),
+                file: currentFile,
+                getNewContents: async () => Promise.resolve(await vsrFunction.getOpenApiSpec()),
+              });
+            } else {
+              await virtualServiceRegistry.addFile({
+                fs: await virtualServiceRegistry.vsrFsService.getFs(workspaceId),
+                groupId: workspaceId,
+                name: vsrFunction.name,
+                destinationDirRelativePath: functionPath({ groupId: workspaceId }, vsrFunction),
+                content: await vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
+                extension: vsrFunction.file.extension,
+              });
+            }
           }
         }
         if (data.type === "ADD_FILE") {
