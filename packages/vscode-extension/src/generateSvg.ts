@@ -68,11 +68,11 @@ export async function generateSvg(args: {
   }
 
   const svgFileName = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.document.uri.path,
+    currentFileAbsolutePosixPath: editor.document.document.uri.fsPath,
     value: svgFilenameTemplate || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
   });
   const svgFilePath = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.document.uri.path,
+    currentFileAbsolutePosixPath: editor.document.document.uri.fsPath,
     value: svgFilePathTemplate || `${configurationTokenKeys["${fileDirname}"]}`,
   });
 
