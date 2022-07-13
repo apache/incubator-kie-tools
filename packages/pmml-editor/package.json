@@ -19,7 +19,7 @@
     "@kie-tools-core/guided-tour": "0.0.0",
     "@kie-tools-core/notifications": "0.0.0",
     "@kie-tools-core/workspace": "0.0.0",
-    "monaco-editor": "^0.23.0",
+    "monaco-editor": "^0.33.0",
     "@kie-tools-core/patternfly-base": "0.0.0",
     "@kie-tools/pmml-editor-marshaller": "0.0.0",
     "@types/lodash": "^4.14.168",
