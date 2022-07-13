@@ -29,6 +29,31 @@
   stroke: none;
 }
 
+#operationState #state-inner-circle-border {
+  fill: #0066cc;
+}
+#callbackState #state-inner-circle-border {
+  fill: #ec7a08;
+}
+#parallelState #state-inner-circle-border {
+  fill: #4cb140;
+}
+#eventState #state-inner-circle-border {
+  fill: #f4c145;
+}
+#switchState #state-inner-circle-border {
+  fill: #009596;
+}
+#sleepState #state-inner-circle-border {
+  fill: #5752d1;
+}
+#injectState #state-inner-circle-border {
+  fill: #8bc1f7;
+}
+#forEachState #state-inner-circle-border {
+  fill: #8f4700;
+}
+
 .state_group_inject {
   opacity: 0;
 }

@@ -439,13 +439,13 @@
           states: [
             {
               name: "Create Initial Data",
-              type: "inject",
+              type: "sleep",
               end: false,
               transition: "Inject data",
             },
             {
               name: "Inject data",
-              type: "inject",
+              type: "foreach",
               end: false,
               compensatedBy: "Compensate",
               transition: "Wait for Events",
@@ -485,7 +485,6 @@
                   ],
                 },
               ],
-              // eventTimeout: "PT1H",
               transition: "Run Operations",
               end: false,
             },
@@ -532,27 +531,27 @@
             },
             {
               name: "Handle Error3",
-              type: "inject",
+              type: "callback",
               end: true,
             },
             {
               name: "Event1 State",
-              type: "inject",
+              type: "event",
               end: true,
             },
             {
               name: "Event2 State",
-              type: "inject",
+              type: "event",
               end: true,
             },
             {
               name: "Default State",
-              type: "inject",
+              type: "parallel",
               end: true,
             },
             {
               name: "Compensate",
-              type: "inject",
+              type: "callback",
               end: true,
             },
           ],
