@@ -41,7 +41,7 @@ export class VirtualServiceRegistryGroupService extends DescriptorService<
   }
 
   public getDescriptorPath(id: string): string {
-    return groupPath({ groupId: id });
+    return `/${groupPath({ groupId: id })}`;
   }
 
   public createNewDescriptor(args: CreateGroupDescriptorArgs): VirtualServiceRegistryGroup {
