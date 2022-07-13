@@ -95,7 +95,7 @@ To interact with Kogito images, you would need to install the needed dependencie
             * if any dependency is missing CeKit will tell which one.
     * [Bats](https://github.com/sstephenson/bats) 
     * Java 11 or higher
-    * Maven 3.8.1 or higher
+    * Maven 3.8.6 or higher
             
 * Optional dependencies:
     * [source-to-image](https://github.com/openshift/source-to-image)
@@ -156,7 +156,7 @@ The Kogito Builder Image is equipped with the following components:
 
  * GraalVM 21.3.1-java11
  * OpenJDK 11.0.6
- * Maven 3.8.1
+ * Maven 3.8.6
  
 For more information about what is installed on this image, take a look [here](kogito-builder-overrides.yaml) in the
 **modules.install** section. 
