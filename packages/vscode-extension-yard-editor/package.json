@@ -1,7 +1,7 @@
 {
   "name": "vscode-extension-yard-editor",
   "publisher": "redhat",
-  "displayName": "yard Editor",
+  "displayName": "Kogito yard Editor",
   "description": "Edit yard definitions",
   "version": "0.0.0",
   "license": "Apache-2.0",

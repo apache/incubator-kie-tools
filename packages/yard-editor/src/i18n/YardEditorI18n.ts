@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-.divider {
-  width: 6px;
-  height: auto;
-  display: inline-block;
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+
+interface YardEditorDictionary extends ReferenceDictionary {
+  decisionElementsTab: {
+    tabTitle: string;
+    emptyStateTitle: string;
+    emptyStateBody: string;
+    addDecisionElementsButton: string;
+    removeDecisionElementButton: string;
+  };
+  decisionInputsTab: {
+    tabTitle: string;
+  };
+  generalTab: {
+    tabTitle: string;
+  };
 }
 
-.monaco-editor {
-  padding-left: 4px;
-}
+export interface YardEditorI18n extends YardEditorDictionary, CommonI18n {}

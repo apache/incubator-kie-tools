@@ -14,12 +14,4 @@
  * limitations under the License.
  */
 
-.divider {
-  width: 6px;
-  height: auto;
-  display: inline-block;
-}
-
-.monaco-editor {
-  padding-left: 4px;
-}
+export * from "./YardUIEditor";
