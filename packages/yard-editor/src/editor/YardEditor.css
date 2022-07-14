@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-.divider {
-  width: 6px;
-  height: auto;
-  display: inline-block;
+.yard-drawer {
+  --pf-c-drawer--child--PaddingTop: 5px;
+  --pf-c-drawer--child--PaddingRight: 5px;
+  --pf-c-drawer--child--PaddingBottom: 5px;
+  --pf-c-drawer--child--PaddingLeft: 5px;
 }
 
-.monaco-editor {
-  padding-left: 4px;
+.yard-drawer .drawer-content-body {
+  overflow-x: hidden;
 }

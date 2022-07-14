@@ -24,9 +24,11 @@ import { By, WebView } from "vscode-extension-tester";
 export default class YardEditorTestHelper {
   constructor(private readonly webview: WebView) {}
 
-  public async getTemporaryFutureUIElement(): Promise<WebElement> {
+  public async getYardTabElements(): Promise<WebElement[]> {
     await this.switchToEditorFrame();
-    const result = await this.webview.findWebElement(By.xpath(".//*[contains(text(), 'Future UI here')]"));
+    const result = await this.webview.findWebElements(
+      By.xpath(".//div[@aria-label='yard menu tabs']/ul/li/button/span")
+    );
     await this.switchBack();
     return Promise.resolve(result);
   }

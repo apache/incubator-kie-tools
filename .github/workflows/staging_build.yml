@@ -334,7 +334,7 @@ jobs:
           cp -r ${{ github.workspace }}/kie-tools/packages/serverless-logic-sandbox/dist $DEPLOYMENT_DIR
 
           echo "Commit changes and push"
-          git add ${{ inputs.tag }}-prerelease
+          git add $DEPLOYMENT_DIR
           git commit -m "Deploy ${{ inputs.tag }}-prerelease (staging)"
           git push origin gh-pages
 
