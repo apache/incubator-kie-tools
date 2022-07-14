@@ -132,6 +132,61 @@ public class SWEditorSeleniumIT {
         assertThatJson(json(actual)).isEqualTo(json(expected));
     }
 
+    @Test
+    public void testEventBasedGreetingsExample() throws Exception {
+        final String expected = loadResource("EventBasedGreetingExample.sw.json");
+        setContent(expected);
+
+        waitCanvasPanel();
+
+        final String actual = getContent();
+        assertThatJson(json(actual)).isEqualTo(json(expected));
+    }
+
+    @Test
+    public void testSolveMathProblemsExample() throws Exception {
+        final String expected = loadResource("SolveMathProblemsExample.sw.json");
+        setContent(expected);
+
+        waitCanvasPanel();
+
+        final String actual = getContent();
+        assertThatJson(json(actual)).isEqualTo(json(expected));
+    }
+
+    @Test
+    public void testParallelExecutionExample() throws Exception {
+        final String expected = loadResource("ParallelExecutionExample.sw.json");
+        setContent(expected);
+
+        waitCanvasPanel();
+
+        final String actual = getContent();
+        assertThatJson(json(actual)).isEqualTo(json(expected));
+    }
+
+    @Test
+    public void testAsyncFunctionInvocationExample() throws Exception {
+        final String expected = loadResource("AsyncFunctionInvocationExample.sw.json");
+        setContent(expected);
+
+        waitCanvasPanel();
+
+        final String actual = getContent();
+        assertThatJson(json(actual)).isEqualTo(json(expected));
+    }
+
+    @Test
+    public void testAsyncSubFlowInvocationExample() throws Exception {
+        final String expected = loadResource("AsyncSubFlowInvocationExample.sw.json");
+        setContent(expected);
+
+        waitCanvasPanel();
+
+        final String actual = getContent();
+        assertThatJson(json(actual)).isEqualTo(json(expected));
+    }
+
     private File initScreenshotDirectory() {
         if (SCREENSHOTS_DIR == null) {
             throw new IllegalStateException(
