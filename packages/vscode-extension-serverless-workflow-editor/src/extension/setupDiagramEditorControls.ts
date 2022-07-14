@@ -162,7 +162,7 @@ export async function setupDiagramEditorControls(args: {
         const textEditor = vscode.window.visibleTextEditors.filter(
           (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
         )[0];
-        const resourceUri = textEditor.document.uri.path;
+        const resourceUri = textEditor.document.uri;
 
         if (swfOffsetsApi && documentUri !== swfOffsetsApi.documentUri) {
           swfOffsetsApi = undefined;
