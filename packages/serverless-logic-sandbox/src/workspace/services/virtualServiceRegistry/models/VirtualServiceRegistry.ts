@@ -24,7 +24,7 @@ import { decoder, encoder } from "../../../commonServices/BaseFile";
 
 export const VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX = "sandbox::";
 
-export type GroupPath = `/${typeof VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${VirtualServiceRegistryGroup["groupId"]}`;
+export type GroupPath = `${typeof VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${VirtualServiceRegistryGroup["groupId"]}`;
 
 export type FunctionPath = `${GroupPath}/${VirtualServiceRegistryFunction["name"]}`;
 
@@ -55,7 +55,8 @@ export class VirtualServiceRegistryFunction {
         throw new Error("No workflow ID!");
       }
       return await generateOpenApiSpec(parsedContent["id"]);
-    } catch (_e) {
+    } catch (e) {
+      console.error(e);
       return "";
     }
   }
@@ -75,7 +76,7 @@ export interface VirtualServiceRegistryGroup extends DescriptorBase {
 export function groupPath(virtualServiceRegistryGroup: {
   groupId?: VirtualServiceRegistryGroup["groupId"];
 }): GroupPath {
-  return `/${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${virtualServiceRegistryGroup.groupId}`;
+  return `${VIRTUAL_SERVICE_REGISTRY_PATH_PREFIX}${virtualServiceRegistryGroup.groupId}`;
 }
 
 export function functionPath(
