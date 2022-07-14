@@ -18,9 +18,8 @@ import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { DiagramApi } from "../../api/DiagramApi";
 import { DiagramService } from "../../api/DiagramService";
-import { ServerlessWorkflowDiagramEditor } from "../ServerlessWorkflowDiagramEditor";
-import { ServerlessWorkflowDiagramEditorFactory } from "../ServerlessWorkflowDiagramEditorFactory";
-import { VsCodeServerlessWorkflowDiagramEditorChannelApi } from "./VsCodeServerlessWorkflowDiagramEditorChannelApi";
+import { ServerlessWorkflowDiagramEditor, ServerlessWorkflowDiagramEditorFactory } from "../../envelope";
+import { VsCodeServerlessWorkflowDiagramEditorChannelApi } from "../api/VsCodeServerlessWorkflowDiagramEditorChannelApi";
 
 export interface CustomWindow extends Window {
   envelope: {
@@ -62,7 +61,6 @@ export class VsCodeServerlessWorkflowDiagramEditorFactory
     };
 
     const factory = new ServerlessWorkflowDiagramEditorFactory(this.gwtEditorEnvelopeConfig);
-
     return factory.createEditor(ctx, initArgs);
   }
 }
