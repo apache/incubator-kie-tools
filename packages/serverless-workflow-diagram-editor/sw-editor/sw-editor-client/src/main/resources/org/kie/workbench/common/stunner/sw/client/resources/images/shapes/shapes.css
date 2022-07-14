@@ -21,7 +21,7 @@
  */
 .state_border {
   stroke: #d5d5d5;
-  stroke-width: 5.5px;
+  stroke-width: 2px;
 }
 
 .state_background {
@@ -59,7 +59,9 @@
 }
 
 .state_inject_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_switch {
@@ -67,7 +69,9 @@
 }
 
 .state_switch_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_operation {
@@ -75,7 +79,9 @@
 }
 
 .state_operation_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_event {
@@ -83,7 +89,9 @@
 }
 
 .state_event_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_callback {
@@ -91,7 +99,9 @@
 }
 
 .state_callback_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_for_each {
@@ -99,7 +109,9 @@
 }
 
 .state_for_each_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_parallel {
@@ -107,7 +119,9 @@
 }
 
 .state_parallel_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 .state_group_sleep {
@@ -115,7 +129,9 @@
 }
 
 .state_sleep_icon {
-  fill: #393f44;
+  fill: #fff;
+  stroke: #fff;
+  stroke-width: 3;
 }
 
 #injectState .state_group_inject {
