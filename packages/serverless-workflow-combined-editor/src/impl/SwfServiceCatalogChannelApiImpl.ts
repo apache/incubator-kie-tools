@@ -59,8 +59,4 @@ export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannel
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
     this.channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
   }
-
-  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
-    this.channelApi.notifications.kogitoSwfLanguageService__moveCursorToNode.send(args);
-  }
 }

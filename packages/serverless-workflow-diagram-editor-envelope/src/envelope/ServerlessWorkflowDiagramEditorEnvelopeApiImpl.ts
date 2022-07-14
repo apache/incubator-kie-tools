@@ -124,15 +124,6 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
   }
 
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
-    console.info("got it");
-  }
-
-  public kogitoSwfLanguageService__highlightNode2(args: { nodeName: string; documentUri?: string }) {
     debugger;
-  }
-
-  public kogitoSwfLanguageService__highlightNode3(args: { nodeName: string; documentUri?: string }): Promise<void> {
-    debugger;
-    return new Promise<void>((resolve) => resolve());
   }
 }

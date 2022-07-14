@@ -27,5 +27,4 @@ export interface SwfServiceCatalogChannelApi {
   }): void;
   kogitoSwfServiceCatalog_logInServiceRegistries(): void;
   kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void;
-  kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void;
 }
