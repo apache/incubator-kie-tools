@@ -36,8 +36,6 @@ import { TextEdit } from "vscode";
 import Correlation from "./helpers/bpmn/Correlation";
 import ProcessVariablesWidgetHelper from "./helpers/bpmn/ProcessVariablesWidgetHelper";
 import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
-import PropertiesPanelHelper from "./helpers/dmn/PropertiesPanelHelper";
-import { select } from "underscore";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
