@@ -4,6 +4,10 @@ on:
   push:
     branches: ["**-prerelease"]
 
+concurrency:
+  group: staging-publish
+  cancel-in-progress: true
+
 jobs:
   create_release:
     runs-on: ubuntu-latest
