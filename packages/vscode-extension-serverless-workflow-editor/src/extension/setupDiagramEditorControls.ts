@@ -212,6 +212,11 @@ export async function setupDiagramEditorControls(args: {
   }
 
   vscode.window.onDidChangeTextEditorSelection((e) => {
+    // prevent kogitoSwfLanguageService__moveCursorToNode to fire this event
+    if (e.kind === vscode.TextEditorSelectionChangeKind.Command) {
+      return;
+    }
+
     const uri = e.textEditor.document.uri;
     const offset = e.textEditor.document.offsetAt(e.selections[0].active);
 
@@ -232,11 +237,7 @@ export async function setupDiagramEditorControls(args: {
       return;
     }
 
-    envelopeServer.envelopeApi.notifications.kogitoSwfLanguageService__highlightNode2.send({
-      nodeName,
-    });
-
-    envelopeServer.envelopeApi.requests.kogitoSwfLanguageService__highlightNode3({
+    envelopeServer.envelopeApi.notifications.kogitoSwfLanguageService__highlightNode.send({
       nodeName,
     });
   });
