@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { EditorFactory, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { ServerlessWorkflowDiagramEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi } from "../api";
@@ -38,9 +38,9 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
 {
   constructor(
     private readonly serverlessWorkflowArgs: ServerlessWorkflowDiagramEnvelopeApiFactoryArgs,
-    gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }
+    editorFactory: EditorFactory<ServerlessWorkflowDiagramEditor, ServerlessWorkflowDiagramEditorChannelApi>
   ) {
-    super(serverlessWorkflowArgs, new ServerlessWorkflowDiagramEditorFactory(gwtEditorEnvelopeConfig));
+    super(serverlessWorkflowArgs, editorFactory);
   }
 
   public async canvas_getNodeIds() {
@@ -124,7 +124,7 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
   }
 
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
-    debugger;
+    console.info("got it");
   }
 
   public kogitoSwfLanguageService__highlightNode2(args: { nodeName: string; documentUri?: string }) {
