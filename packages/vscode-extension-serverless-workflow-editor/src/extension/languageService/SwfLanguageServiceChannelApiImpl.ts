@@ -43,4 +43,5 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
   public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
     vscode.commands.executeCommand(COMMAND_IDS.moveCursorToNode, args);
   }
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri: string }): void {}
 }
