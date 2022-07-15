@@ -22,12 +22,8 @@ import {
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
 import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
-import {
-  getFileLanguage,
-  SwfJsonOffsets,
-  SwfYamlOffsets,
-} from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { getFileLanguage, FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfLanguageServiceChannelApi, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
