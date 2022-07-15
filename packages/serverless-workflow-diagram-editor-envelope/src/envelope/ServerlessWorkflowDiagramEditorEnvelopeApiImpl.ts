@@ -124,6 +124,6 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
   }
 
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
-    debugger;
+    console.log("Received kogitoSwfLanguageService__highlightNode with args:", args);
   }
 }
