@@ -19,5 +19,5 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie</groupId>
   <artifactId>openjdk11-mvn-base-image</artifactId>
-  <version>0.21.0</version>
+  <version>0.21.1</version>
 </project>

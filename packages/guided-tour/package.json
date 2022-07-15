@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-core/guided-tour",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "Guided Tour component",
   "license": "Apache-2.0",
   "source": "src/index.tsx",
@@ -16,17 +16,17 @@
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test"
   },
   "dependencies": {
-    "@kie-tools-core/envelope-bus": "0.21.0",
-    "@kie-tools-core/i18n": "0.21.0",
-    "@kie-tools-core/patternfly-base": "0.21.0",
+    "@kie-tools-core/envelope-bus": "0.21.1",
+    "@kie-tools-core/i18n": "0.21.1",
+    "@kie-tools-core/patternfly-base": "0.21.1",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.21.0",
-    "@kie-tools/build-env": "0.21.0"
+    "@kie-tools-core/run-script-if": "0.21.1",
+    "@kie-tools/build-env": "0.21.1"
   },
   "presets": [
     [

@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-core/chrome-extension",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -15,18 +15,18 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.21.0",
-    "@kie-tools-core/i18n": "0.21.0",
-    "@kie-tools-core/patternfly-base": "0.21.0",
-    "@kie-tools-core/workspace": "0.21.0",
+    "@kie-tools-core/editor": "0.21.1",
+    "@kie-tools-core/i18n": "0.21.1",
+    "@kie-tools-core/patternfly-base": "0.21.1",
+    "@kie-tools-core/workspace": "0.21.1",
     "@octokit/rest": "^18.5.3",
     "minimatch": "^3.0.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.21.0",
-    "@kie-tools/build-env": "0.21.0",
+    "@kie-tools-core/run-script-if": "0.21.1",
+    "@kie-tools/build-env": "0.21.1",
     "@types/minimatch": "^3.0.4"
   },
   "scripts": {

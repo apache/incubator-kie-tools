@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/yard-editor",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "Core module of the YARD editor, Yet Another Rule Definition editor",
   "license": "Apache-2.0",
   "main": "./dist/editor/index.js",
@@ -26,13 +26,13 @@
     "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env yardEditor.dev.port) cy:run\""
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.21.0",
-    "@kie-tools-core/envelope-bus": "0.21.0",
-    "@kie-tools-core/guided-tour": "0.21.0",
-    "@kie-tools-core/notifications": "0.21.0",
-    "@kie-tools-core/operating-system": "0.21.0",
-    "@kie-tools-core/patternfly-base": "0.21.0",
-    "@kie-tools-core/workspace": "0.21.0",
+    "@kie-tools-core/editor": "0.21.1",
+    "@kie-tools-core/envelope-bus": "0.21.1",
+    "@kie-tools-core/guided-tour": "0.21.1",
+    "@kie-tools-core/notifications": "0.21.1",
+    "@kie-tools-core/operating-system": "0.21.1",
+    "@kie-tools-core/patternfly-base": "0.21.1",
+    "@kie-tools-core/workspace": "0.21.1",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "csstype": "^3.0.11",
@@ -43,9 +43,9 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.21.0",
-    "@kie-tools-core/webpack-base": "0.21.0",
-    "@kie-tools/build-env": "0.21.0",
+    "@kie-tools-core/run-script-if": "0.21.1",
+    "@kie-tools-core/webpack-base": "0.21.1",
+    "@kie-tools/build-env": "0.21.1",
     "@types/json-schema": "^7.0.11",
     "monaco-editor-webpack-plugin": "^7.0.1"
   },

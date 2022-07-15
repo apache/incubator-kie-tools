@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/unitables",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "description": "",
   "license": "Apache-2.0",
   "main": "./dist/index.js",
@@ -18,11 +18,11 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.21.0",
-    "@kie-tools-core/notifications": "0.21.0",
-    "@kie-tools/boxed-expression-component": "0.21.0",
-    "@kie-tools/form": "0.21.0",
-    "@kie-tools/i18n-common-dictionary": "0.21.0",
+    "@kie-tools-core/i18n": "0.21.1",
+    "@kie-tools-core/notifications": "0.21.1",
+    "@kie-tools/boxed-expression-component": "0.21.1",
+    "@kie-tools/form": "0.21.1",
+    "@kie-tools/i18n-common-dictionary": "0.21.1",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "@types/lodash": "^4.14.168",

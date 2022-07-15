@@ -1,6 +1,6 @@
 {
   "name": "vscode-extension-pack-kogito-kie-editors",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "private": true,
   "displayName": "BPMN, DMN, Test Scenario and (PMML) Scorecard Editors",
   "description": "",
@@ -188,26 +188,26 @@
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "0.21.0",
-    "@kie-tools-core/editor": "0.21.0",
-    "@kie-tools-core/envelope": "0.21.0",
-    "@kie-tools-core/i18n": "0.21.0",
-    "@kie-tools-core/monaco-editor": "0.21.0",
-    "@kie-tools-core/notifications": "0.21.0",
-    "@kie-tools-core/patternfly-base": "0.21.0",
-    "@kie-tools-core/vscode-extension": "0.21.0",
-    "@kie-tools-core/workspace": "0.21.0",
-    "@kie-tools/kie-bc-editors": "0.21.0",
-    "@kie-tools/pmml-editor": "0.21.0",
-    "@kie-tools/vscode-java-code-completion-extension-plugin": "0.21.0",
+    "@kie-tools-core/backend": "0.21.1",
+    "@kie-tools-core/editor": "0.21.1",
+    "@kie-tools-core/envelope": "0.21.1",
+    "@kie-tools-core/i18n": "0.21.1",
+    "@kie-tools-core/monaco-editor": "0.21.1",
+    "@kie-tools-core/notifications": "0.21.1",
+    "@kie-tools-core/patternfly-base": "0.21.1",
+    "@kie-tools-core/vscode-extension": "0.21.1",
+    "@kie-tools-core/workspace": "0.21.1",
+    "@kie-tools/kie-bc-editors": "0.21.1",
+    "@kie-tools/pmml-editor": "0.21.1",
+    "@kie-tools/vscode-java-code-completion-extension-plugin": "0.21.1",
     "minimatch": "^3.0.4",
     "monaco-editor": "^0.23.0"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.21.0",
-    "@kie-tools-core/webpack-base": "0.21.0",
-    "@kie-tools/build-env": "0.21.0",
-    "@kie-tools/stunner-editors": "0.21.0",
+    "@kie-tools-core/run-script-if": "0.21.1",
+    "@kie-tools-core/webpack-base": "0.21.1",
+    "@kie-tools/build-env": "0.21.1",
+    "@kie-tools/stunner-editors": "0.21.1",
     "@types/minimatch": "^3.0.4"
   }
 }

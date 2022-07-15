@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/openjdk11-mvn-image",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "private": true,
   "description": "",
   "license": "Apache-2.0",
@@ -20,7 +20,7 @@
     "build:prod": "run-script-os"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.21.0",
-    "@kie-tools/build-env": "0.21.0"
+    "@kie-tools-core/run-script-if": "0.21.1",
+    "@kie-tools/build-env": "0.21.1"
   }
 }
