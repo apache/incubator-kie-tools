@@ -14,5 +14,22 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonOffsets";
-export * from "./SwfYamlOffsets";
+import { YardEditorI18n } from "..";
+import { en as en_common } from "@kie-tools/i18n-common-dictionary";
+
+export const en: YardEditorI18n = {
+  ...en_common,
+  decisionElementsTab: {
+    tabTitle: "Decision Elements",
+    emptyStateTitle: "No decision elements",
+    emptyStateBody: "Your yard file doesn't have any Decision element. Please add a new element",
+    addDecisionElementsButton: "Add Element",
+    removeDecisionElementButton: "Remove Element",
+  },
+  decisionInputsTab: {
+    tabTitle: "Decision Inputs",
+  },
+  generalTab: {
+    tabTitle: "General",
+  },
+};

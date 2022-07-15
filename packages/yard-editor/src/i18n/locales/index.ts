@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonOffsets";
-export * from "./SwfYamlOffsets";
+export { en } from "./en";

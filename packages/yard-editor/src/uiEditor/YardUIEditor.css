@@ -14,5 +14,14 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonOffsets";
-export * from "./SwfYamlOffsets";
+.yard-ui-editor {
+  margin: 10px;
+}
+
+.decision-element-header {
+  margin-top: 10px;
+}
+
+.decision-element-body {
+  margin-top: 10px;
+}

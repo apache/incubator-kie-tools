@@ -14,5 +14,23 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonOffsets";
-export * from "./SwfYamlOffsets";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+
+interface YardEditorDictionary extends ReferenceDictionary {
+  decisionElementsTab: {
+    tabTitle: string;
+    emptyStateTitle: string;
+    emptyStateBody: string;
+    addDecisionElementsButton: string;
+    removeDecisionElementButton: string;
+  };
+  decisionInputsTab: {
+    tabTitle: string;
+  };
+  generalTab: {
+    tabTitle: string;
+  };
+}
+
+export interface YardEditorI18n extends YardEditorDictionary, CommonI18n {}

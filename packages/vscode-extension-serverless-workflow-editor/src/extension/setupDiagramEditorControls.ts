@@ -159,6 +159,12 @@ export async function setupDiagramEditorControls(args: {
         const textEditor = vscode.window.visibleTextEditors.filter(
           (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
         )[0];
+
+        if (!textEditor) {
+          console.debug("TextEditor not found");
+          return;
+        }
+
         const resourceUri = textEditor.document.uri;
 
         if (swfOffsetsApi && documentUri !== swfOffsetsApi.documentUri) {
@@ -172,13 +178,11 @@ export async function setupDiagramEditorControls(args: {
         }
 
         const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
-
         if (!targetOffset) {
           return;
         }
 
         const targetPosition = textEditor.document.positionAt(targetOffset);
-
         if (targetPosition === null) {
           return;
         }
