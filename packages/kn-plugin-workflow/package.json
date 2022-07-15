@@ -13,9 +13,9 @@
   },
   "scripts": {
     "build": "run-script-os",
-    "build:linux": "GOOS=linux GOARCH=amd64 go build -ldflags \"-X 'github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common.QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion)'\" -o dist/kn-workflow-linux-amd64 cmd/main.go",
-    "build:darwin": "GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -ldflags \"-X 'github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common.QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion)'\" -o dist/kn-workflow-darwin-amd64 cmd/main.go",
-    "build:win32": "make",
+    "build:linux": "make build-linux",
+    "build:darwin": "make build-darwin",
+    "build:win32": "make build-win32",
     "build:dev": "rimraf dist && pnpm build",
     "build:prod": "rimraf dist && pnpm build"
   },

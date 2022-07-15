@@ -366,7 +366,12 @@ const ENV_VARS = {
   KN_PLUGIN_WORKFLOW__quarkusVersion: {
     name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
     default: "2.10.0.Final",
-    description: "version to be used when creating the Quarkus workflow project",
+    description: "Quarkus version to be used when creating the Kogito Serverless Workflow project",
+  },
+  KN_PLUGIN_WORKFLOW__kogitoVersion: {
+    name: "KN_PLUGIN_WORKFLOW__kogitoVersion",
+    default: "1.24.0.Final",
+    description: "Kogito version to be used when creating the Kogito Serverless Workflow project",
   },
 };
 
@@ -492,6 +497,7 @@ module.exports = {
 
   knPluginWorkflow: {
     quarkusVersion: getOrDefault(ENV_VARS.KN_PLUGIN_WORKFLOW__quarkusVersion),
+    kogitoVersion: getOrDefault(ENV_VARS.KN_PLUGIN_WORKFLOW__kogitoVersion),
   },
 
   corsProxy: {

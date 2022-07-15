@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	"os"
 	"os/exec"
 	"time"
 
@@ -99,4 +100,11 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
 		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
 	}
+}
+
+func GetEnv(key string, fallback string) string {
+	if value, ok := os.LookupEnv(key); ok {
+		return value
+	}
+	return fallback
 }

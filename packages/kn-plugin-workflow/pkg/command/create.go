@@ -122,10 +122,22 @@ func runCreate(cmd *cobra.Command, args []string) error {
 func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	cfg = CreateConfig{
 		ProjectName: viper.GetString("name"),
-		Extesions:   fmt.Sprintf("%s,%s", common.QUARKUS_DEFAULT_EXTENSIONS, viper.GetString("extension")),
+		Extesions:   fmt.Sprintf("%s,%s", getProjectDefaultExntensions(), viper.GetString("extension")),
 		Verbose:     viper.GetBool("verbose"),
 	}
 	return
+}
+
+func getProjectDefaultExntensions() string {
+	quarkusVersion := common.GetEnv("KN_PLUGIN_WORKFLOW__quarkusVersion", common.QUARKUS_VERSION)
+	kogitoVersion := common.GetEnv("KN_PLUGIN_WORKFLOW__kogitoVersion", common.KOGITO_VERSION)
+
+	return fmt.Sprintf("%s:%s,%s:%s,%s:%s,%s:%s",
+		common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion,
+		common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion,
+		common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion,
+		common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, kogitoVersion,
+	)
 }
 
 func generateWorkflow(cfg CreateConfig) (err error) {

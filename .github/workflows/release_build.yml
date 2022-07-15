@@ -25,6 +25,10 @@ on:
         type: string
         required: false
         default: '{"dmn_dev_sandbox_image":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","desktop":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","dashbuilder":"false","dashbuilder_images":"false","serverless_logic_sandbox":"false","serverless_logic_sandbox_base_image":"false","openjdk11_mvn_image":"false","kn_plugin_workflow":"false"}'
+      kn_plugin_workflow_versions:
+        type: string
+        required: false
+        default: '{"quarkus_version":"2.10.0.Final","kogito_version":"1.24.0.Final"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -1134,7 +1138,8 @@ jobs:
 
   kn_plugin_workflow:
     env:
-      KN_PLUGIN_WORKFLOW__quarkusVersion: "2.9.2.Final"
+      KN_PLUGIN_WORKFLOW__quarkusVersion: ${{ fromJSON(inputs.kn_plugin_workflow_versions).quarkus_version }}
+      KN_PLUGIN_WORKFLOW__kogitoVersion: ${{ fromJSON(inputs.kn_plugin_workflow_versions).kogito_version }}
 
     if: ${{ needs.extract_runners.outputs.kn_plugin_workflow == 'true' }}
     runs-on: ${{ matrix.os }}
