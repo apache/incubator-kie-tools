@@ -51,10 +51,10 @@ export interface SwfTextEditorInstance {
 
 export class SwfTextEditorController implements SwfTextEditorApi {
   private readonly model: editor.ITextModel;
+  private swfJsonOffsets = new SwfJsonOffsets();
+  private swfYamlOffsets = new SwfYamlOffsets();
 
   public editor: editor.IStandaloneCodeEditor | undefined;
-
-  private swfOffsetsApi: SwfOffsetsApi;
 
   constructor(
     content: string,
@@ -80,8 +80,10 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     editor.onDidCreateEditor((codeEditor) => {
       codeEditor.onMouseDown((event) => this.highlightNodeOnDiagram(event));
     });
+  }
 
-    this.swfOffsetsApi = this.language === FileLanguage.JSON ? new SwfJsonOffsets() : new SwfYamlOffsets();
+  private get swfOffsetsApi(): SwfJsonOffsets | SwfYamlOffsets {
+    return this.language === FileLanguage.YAML ? this.swfYamlOffsets : this.swfJsonOffsets;
   }
 
   public redo(): void {

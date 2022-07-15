@@ -27,22 +27,21 @@ import { getFileLanguage, FileLanguage } from "@kie-tools/serverless-workflow-la
 import { SwfLanguageServiceChannelApi, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 
-let swfOffsetsApi: SwfOffsetsApi | undefined = undefined;
+const swfJsonOffsets = new SwfJsonOffsets();
+const swfYamlOffsets = new SwfYamlOffsets();
 
 function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
 }
 
-function initSwfOffetsApi(textDocument: vscode.TextDocument) {
+function initSwfOffetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | SwfYamlOffsets | undefined {
   if (!textDocument) {
     console.debug("TextDocument not found");
     return;
   }
 
-  const resourceUri = textDocument.uri.path;
   const fileLanguage = getFileLanguage(textDocument.fileName);
 
   if (!fileLanguage) {
@@ -51,12 +50,11 @@ function initSwfOffetsApi(textDocument: vscode.TextDocument) {
 
   const editorContent = textDocument.getText();
 
-  if (!swfOffsetsApi) {
-    swfOffsetsApi =
-      fileLanguage === FileLanguage.JSON ? new SwfJsonOffsets(resourceUri) : new SwfYamlOffsets(resourceUri);
-  }
+  const swfOffsetsApi = fileLanguage === FileLanguage.JSON ? swfJsonOffsets : swfYamlOffsets;
 
-  swfOffsetsApi?.parseContent(editorContent);
+  swfOffsetsApi.parseContent(editorContent);
+
+  return swfOffsetsApi;
 }
 
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
@@ -163,11 +161,7 @@ export async function setupDiagramEditorControls(args: {
 
         const resourceUri = textEditor.document.uri;
 
-        if (swfOffsetsApi && documentUri !== swfOffsetsApi.documentUri) {
-          swfOffsetsApi = undefined;
-        }
-
-        initSwfOffetsApi(textEditor.document);
+        const swfOffsetsApi = initSwfOffetsApi(textEditor.document);
 
         if (!swfOffsetsApi) {
           return;
@@ -217,9 +211,13 @@ export async function setupDiagramEditorControls(args: {
     const uri = e.textEditor.document.uri;
     const offset = e.textEditor.document.offsetAt(e.selections[0].active);
 
-    initSwfOffetsApi(e.textEditor.document);
+    const swfOffsetsApi = initSwfOffetsApi(e.textEditor.document);
 
-    const nodeName = swfOffsetsApi?.getStateNameFromOffset(offset);
+    if (!swfOffsetsApi) {
+      return;
+    }
+
+    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
 
     if (!nodeName) {
       return;
