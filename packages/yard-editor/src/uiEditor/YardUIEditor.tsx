@@ -23,15 +23,31 @@ import {
   Tab,
   Tabs,
   TabTitleText,
+  Text,
+  TextArea,
+  TextInput,
   Title,
+  TitleSizes,
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
+import { parse } from "yaml";
 import "./YardUIEditor.css";
 
-export const YardUIEditor = () => {
+interface Props {
+  content: string | undefined;
+  isReadOnly: boolean;
+}
+
+export const YardUIEditor = ({ content, isReadOnly }: Props) => {
   const { i18n } = useBoxedExpressionEditorI18n();
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const handleTabClick = useCallback((event, tabIndex) => setActiveTabIndex(tabIndex), []);
+  let yamlParsed = undefined;
+  if (content) {
+    yamlParsed = parse(content);
+  }
 
   const EmptyStep = ({
     emptyStateBodyText,
@@ -57,7 +73,7 @@ export const YardUIEditor = () => {
 
   return (
     <div className={"yard-ui-editor"}>
-      <Tabs isBox={false} aria-label="yard menu tabs">
+      <Tabs activeKey={activeTabIndex} aria-label="yard menu tabs" isBox={false} onSelect={handleTabClick}>
         <Tab eventKey={0} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
           <div className={"decision-element-header"}>
             <Button onClick={onNewElementButtonClicked} variant="primary">
@@ -75,8 +91,42 @@ export const YardUIEditor = () => {
             />
           </div>
         </Tab>
-        <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}></Tab>
-        <Tab eventKey={2} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}></Tab>
+        <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}>
+          <div className={"decision-input-body"}>
+            <EmptyStep
+              emptyStateTitleText={i18n.decisionInputsTab.emptyStateTitle}
+              emptyStateBodyText={i18n.decisionInputsTab.emptyStateBody}
+            />
+          </div>
+        </Tab>
+        <Tab eventKey={2} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}>
+          <div className={"general-header"}>
+            <Text>Asda</Text>
+          </div>
+          <div className={"general-body"}>
+            <Title headingLevel="h6" size={TitleSizes.md}>
+              {i18n.generalTab.expressionLang}
+            </Title>
+            <TextInput></TextInput>
+            <div className={"divider"}></div>
+            <Title headingLevel="h6" size={TitleSizes.md}>
+              {i18n.generalTab.name}
+            </Title>
+            <TextInput></TextInput>
+            <div className={"divider"}></div>
+            <Title headingLevel="h6" size={TitleSizes.md}>
+              {i18n.generalTab.specVersion}
+            </Title>
+            <TextInput></TextInput>
+            <div className={"divider"}></div>
+            <Title headingLevel="h6" size={TitleSizes.md}>
+              {i18n.generalTab.kind}
+            </Title>
+            <TextInput></TextInput>
+            <div className={"divider"}></div>
+            <TextArea>{yamlParsed !== undefined ? yamlParsed.text : content}</TextArea>
+          </div>
+        </Tab>
       </Tabs>
     </div>
   );
