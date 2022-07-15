@@ -209,10 +209,10 @@ public class Parser {
         ActionNode action = null;
         if (null != jso.functionRef) {
             action = parse(CallFunctionAction.class, jso);
-            action.setName(jso.functionRef);
+            action.setFunctionRef(jso.functionRef);
         } else if (null != jso.subFlowRef) {
             action = parse(CallSubflowAction.class, jso);
-            action.setName(jso.subFlowRef);
+            action.setSubFlowRef(jso.subFlowRef);
         }
         return action;
     }
