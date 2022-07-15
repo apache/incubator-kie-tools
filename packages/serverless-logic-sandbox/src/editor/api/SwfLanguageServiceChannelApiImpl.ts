@@ -37,4 +37,8 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
   public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
     // No-op
   }
+
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
+    // No-op
+  }
 }
