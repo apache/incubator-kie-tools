@@ -418,8 +418,8 @@ describe("Editors are loading properly", () => {
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
 
-    const explorerPanel = await bpmnEditorTester.openDiagramExplorer();
-    await explorerPanel.selectDiagramNode("User Task");
+    let diagramExplorer = await bpmnEditorTester.openDiagramExplorer();
+    await diagramExplorer.selectDiagramNode("User Task");
 
     let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
@@ -437,7 +437,8 @@ describe("Editors are loading properly", () => {
     await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitAction, "textarea");
     await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitLanguage, "select");
 
-    await bpmnEditorTester.openDiagramExplorer();
+    diagramExplorer = await bpmnEditorTester.openDiagramExplorer();
+    await diagramExplorer.selectDiagramNode("User Task");
     propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
