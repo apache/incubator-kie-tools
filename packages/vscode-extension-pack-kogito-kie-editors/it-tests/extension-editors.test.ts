@@ -413,7 +413,7 @@ describe("Editors are loading properly", () => {
   });
 
   it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
-    this.timeout(40000);
+    this.timeout(30000);
     webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -422,7 +422,6 @@ describe("Editors are loading properly", () => {
     await explorerPanel.selectDiagramNode("User Task");
 
     let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
-
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
     let onExitActionSection = await propertiesPanel.getProperty("On Exit Action", "div");
@@ -439,7 +438,7 @@ describe("Editors are loading properly", () => {
     await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitLanguage, "select");
 
     await bpmnEditorTester.openDiagramExplorer();
-    await bpmnEditorTester.openDiagramProperties();
+    propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
     // Asserts
