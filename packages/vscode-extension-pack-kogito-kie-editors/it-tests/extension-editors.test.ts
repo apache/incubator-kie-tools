@@ -345,7 +345,7 @@ describe("Editors are loading properly", () => {
 
   it("Opens MultipleInstanceSubprocess.bpmn file in BPMN Editor and test Implementation/Execution value change", async function () {
     this.timeout(40000);
-    // Inicialization
+    // Initialization
     webview = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -413,7 +413,7 @@ describe("Editors are loading properly", () => {
   });
 
   it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
-    this.timeout(20000);
+    this.timeout(40000);
     webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -502,7 +502,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens ProcessWithGenerics and diplays the generic types", async function () {
+  it("Opens ProcessWithGenerics and displays the generic types", async function () {
     this.timeout(40000);
     webview = await testHelper.openFileFromSidebar("ProcessWithGenerics.bpmn");
     await testHelper.switchWebviewToFrame(webview);
