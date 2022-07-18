@@ -151,6 +151,31 @@ public class SWEditorSeleniumIT {
         testExample("AsyncSubFlowInvocationExample.sw.json");
     }
 
+    @Test
+    public void testEventBasedSwitchStateExample() throws Exception {
+        testExample("EventBasedSwitchStateExample.sw.json");
+    }
+
+    @Test
+    public void testProvisionOrdersExample() throws Exception {
+        testExample("ProvisionOrdersExample.sw.json");
+    }
+
+    @Test
+    public void testCustomerCreditCheckExample() throws Exception {
+        testExample("CustomerCreditCheckExample.sw.json");
+    }
+
+    @Test
+    public void testJobMonitoringExample() throws Exception {
+        testExample("JobMonitoringExample.sw.json");
+    }
+
+    @Test
+    public void testSendCloudEventOnProvisionExample() throws Exception {
+        testExample("SendCloudEventOnProvisionExample.sw.json");
+    }  
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);
