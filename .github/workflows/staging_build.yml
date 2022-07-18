@@ -25,10 +25,6 @@ on:
         type: string
         required: false
         default: ""
-      kn_plugin_workflow_versions:
-        type: string
-        required: false
-        default: '{"quarkus_version":"2.10.0.Final","kogito_version":"1.24.0.Final"}'
     secrets:
       kie_tools_bot_token:
         required: false
@@ -177,8 +173,6 @@ jobs:
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
-          KN_PLUGIN_WORKFLOW__quarkusVersion: ${{ fromJSON(inputs.kn_plugin_workflow_versions).quarkus_version }}
-          KN_PLUGIN_WORKFLOW__kogitoVersion: ${{ fromJSON(inputs.kn_plugin_workflow_versions).kogito_version }}
         run: |
           pnpm -r build:prod
 

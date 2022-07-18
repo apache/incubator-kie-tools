@@ -23,7 +23,7 @@ var (
 
 const (
 	QUARKUS_KUBERNETES_EXTENSION                     = "io.quarkus:quarkus-kubernetes"
-	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "io.quarkus.resteasy.reactive:resteasy-reactive-jackson"
+	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "io.quarkus:quarkus-resteasy-reactive-jackson"
 	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "org.kie.kogito:kogito-quarkus-serverless-workflow"
 	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "org.kie.kogito:kogito-addons-quarkus-knative-eventing"
 	JAVA_VERSION                                     = 11

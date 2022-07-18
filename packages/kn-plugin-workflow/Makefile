@@ -24,7 +24,7 @@ SET_QUARKUS_VERSION='github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common
 SET_KOGITO_VERSION='github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common.KOGITO_VERSION=${KOGITO_VERSION}'
 
 build-linux:
-	GOOS=linux GOARCH=amd64 go build -ldflags "-X ${SET_QUARKUS_VERSION} ${SET_KOGITO_VERSION}" -o ${BINARY_PATH}/${BINARY_NAME}-linux-amd64 cmd/main.go
+	GOOS=linux GOARCH=amd64 go build -ldflags "-X ${SET_QUARKUS_VERSION} -X ${SET_KOGITO_VERSION}" -o ${BINARY_PATH}/${BINARY_NAME}-linux-amd64 cmd/main.go
 
 build-darwin:
 	GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -ldflags "-X ${SET_QUARKUS_VERSION} -X ${SET_KOGITO_VERSION}" -o ${BINARY_PATH}/${BINARY_NAME}-darwin-amd64 cmd/main.go

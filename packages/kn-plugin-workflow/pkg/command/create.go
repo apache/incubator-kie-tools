@@ -96,6 +96,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", common.QUARKUS_VERSION),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
+		fmt.Sprintf("-DplatformVersion=%s", common.QUARKUS_VERSION),
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
@@ -129,14 +130,11 @@ func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 }
 
 func getProjectDefaultExntensions() string {
-	quarkusVersion := common.GetEnv("KN_PLUGIN_WORKFLOW__quarkusVersion", common.QUARKUS_VERSION)
-	kogitoVersion := common.GetEnv("KN_PLUGIN_WORKFLOW__kogitoVersion", common.KOGITO_VERSION)
-
 	return fmt.Sprintf("%s:%s,%s:%s,%s:%s,%s:%s",
-		common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion,
-		common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion,
-		common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion,
-		common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, kogitoVersion,
+		common.QUARKUS_KUBERNETES_EXTENSION, common.QUARKUS_VERSION,
+		common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, common.QUARKUS_VERSION,
+		common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, common.KOGITO_VERSION,
+		common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, common.KOGITO_VERSION,
 	)
 }
 

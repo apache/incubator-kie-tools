@@ -125,7 +125,7 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		if err := common.CheckPodman(); err != nil {
 			return err
 		}
-	} else if cfg.Jib && !cfg.Push {
+	} else if (cfg.Jib && !cfg.Push) || (!cfg.Jib) {
 		if err := common.CheckDocker(); err != nil {
 			return err
 		}
@@ -177,12 +177,12 @@ func runAddExtension(cfg BuildConfig) error {
 	var addExtension *exec.Cmd
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
-		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
-			"-Dextensions=container-image-jib")
+		addExtension = exec.Command("mvn", "quarkus:add-extension",
+			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-jib:%s", common.QUARKUS_VERSION))
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
-		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
-			"-Dextensions=container-image-docker")
+		addExtension = exec.Command("mvn", "quarkus:add-extension",
+			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-docker:%s", common.QUARKUS_VERSION))
 	}
 
 	if err := common.RunCommand(
@@ -203,7 +203,7 @@ func runBuildImage(cfg BuildConfig) error {
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := exec.Command("./mvnw", "package",
+	build := exec.Command("mvn", "package",
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
