@@ -28,14 +28,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func GetOsCommand(command string) string {
-	var osCommand = "./" + command
-	if runtime.GOOS == "windows" {
-		osCommand = ".\\" + command
-	}
-	return osCommand
-}
-
 func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMessages []string) error {
 	stdout, _ := command.StdoutPipe()
 	stderr, _ := command.StderrPipe()
@@ -108,4 +100,12 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
 		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
 	}
+}
+
+func GetOsCommand(command string) string {
+	var osCommand = "./" + command
+	if runtime.GOOS == "windows" {
+		osCommand = ".\\" + command
+	}
+	return osCommand
 }
