@@ -339,7 +339,6 @@
       <plugin>
         <groupId>com.vertispan.j2cl</groupId>
         <artifactId>j2cl-maven-plugin</artifactId>
-        <version>0.19</version>
         <executions>
           <execution>
             <id>build-js</id>
@@ -380,47 +379,5 @@
     </plugins>
 
   </build>
-
-  <profiles>
-    <profile>
-      <id>j2cl-build</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>com.vertispan.j2cl</groupId>
-            <artifactId>j2cl-maven-plugin</artifactId>
-            <version>0.19</version>
-            <executions>
-              <execution>
-                <id>build-js</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>build</goal>
-                </goals>
-              </execution>
-            </executions>
-            <configuration>
-              <webappDirectory>${project.build.directory}/gwt/launcherDir/</webappDirectory>
-              <compilationLevel>ADVANCED</compilationLevel>
-            </configuration>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>3.3.2</version>
-            <configuration>
-              <webResources>
-                <resource>
-                  <!-- this is relative to the pom.xml directory -->
-                  <directory>target/gwt/launcherDir/sw-editor-kogito-app/</directory>
-                </resource>
-              </webResources>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-  </profiles>
 
 </project>
