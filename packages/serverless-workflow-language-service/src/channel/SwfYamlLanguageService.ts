@@ -25,7 +25,8 @@ import {
   YAMLSequence,
 } from "yaml-language-server-parser";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs, SwfLsNode } from "./SwfLanguageService";
+import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { SwfLsNode } from "./SwfLanguageUtilMethods";
 import { FileLanguage } from "../api";
 
 export class SwfYamlLanguageService {

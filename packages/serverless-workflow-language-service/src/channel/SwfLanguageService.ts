@@ -35,19 +35,8 @@ import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-
-// types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
-export declare type SwfJsonPath = (string | number)[];
-export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
-export type SwfLsNode = {
-  type: SwfLsNodeType;
-  value?: any;
-  offset: number;
-  length: number;
-  colonOffset?: number;
-  parent?: SwfLsNode;
-  children?: SwfLsNode[];
-};
+import { doCustomValidation } from "./customValidations";
+import { findNodesAtLocation, matchNodeWithLocation, SwfJsonPath, SwfLsNode } from "./SwfLanguageUtilMethods";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -175,7 +164,10 @@ export class SwfLanguageService {
 
     const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
 
-    return await jsonLanguageService.doValidation(textDocument, jsonDocument);
+    const schemaValidationResults = await jsonLanguageService.doValidation(textDocument, jsonDocument);
+    const customValidationResults = doCustomValidation(args.content, textDocument);
+
+    return [...schemaValidationResults, ...customValidationResults];
   }
 
   public async getCodeLenses(args: {
@@ -643,81 +635,6 @@ function toCompletionItemLabelPrefix(
     default:
       return "";
   }
-}
-
-/**
- * Check if a Node is in Location.
- *
- * @param root root node
- * @param node the Node to check
- * @param path the location to verify
- * @returns true if the node is in the location, false otherwise
- */
-export function matchNodeWithLocation(
-  root: SwfLsNode | undefined,
-  node: SwfLsNode | undefined,
-  path: SwfJsonPath
-): boolean {
-  if (!root || !node || !path || !path.length) {
-    return false;
-  }
-
-  const nodesAtLocation = findNodesAtLocation(root, path);
-
-  if (nodesAtLocation.some((currentNode) => currentNode === node)) {
-    return true;
-  }
-  if (path[path.length - 1] === "*" && node.type == "array" && node.children) {
-    return matchNodeWithLocation(root, node, path.slice(0, -1));
-  }
-
-  return false;
-}
-
-// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
-// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-export function findNodesAtLocation(root: SwfLsNode | undefined, path: SwfJsonPath): SwfLsNode[] {
-  if (!root) {
-    return [];
-  }
-
-  let nodes: SwfLsNode[] = [root];
-
-  for (const segment of path) {
-    if (segment === "*") {
-      nodes = nodes.flatMap((s) => s.children ?? []);
-      continue;
-    }
-
-    if (typeof segment === "number") {
-      const index = segment as number;
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
-          return [];
-        }
-
-        return [n.children[index]];
-      });
-    }
-
-    if (typeof segment === "string") {
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "object" || !Array.isArray(n.children)) {
-          return [];
-        }
-
-        for (const prop of n.children) {
-          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
-            return [prop.children[1]];
-          }
-        }
-
-        return [];
-      });
-    }
-  }
-
-  return nodes;
 }
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
