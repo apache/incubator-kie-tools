@@ -15,23 +15,25 @@
 #
 
 BINARY_NAME=kn-workflow
-BINARY_PATH=dist
 
 QUARKUS_VERSION := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
 KOGITO_VERSION := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
+CLI_VERSION := $(shell pnpm build-env global.version)
 
-SET_QUARKUS_VERSION='github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common.QUARKUS_VERSION=${QUARKUS_VERSION}'
-SET_KOGITO_VERSION='github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common.KOGITO_VERSION=${KOGITO_VERSION}'
+SET_QUARKUS_VERSION := github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/cmd.quarkusVersion=$(QUARKUS_VERSION)
+SET_KOGITO_VERSION := github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/cmd.kogitoVersion=$(KOGITO_VERSION)
+SET_CLI_VERISON := github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/cmd.cliVersion=$(CLI_VERSION)
+LDFLAGS := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_CLI_VERISON)"
 
 build-linux:
-	GOOS=linux GOARCH=amd64 go build -ldflags "-X ${SET_QUARKUS_VERSION} -X ${SET_KOGITO_VERSION}" -o ${BINARY_PATH}/${BINARY_NAME}-linux-amd64 cmd/main.go
+	GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BINARY_NAME)-linux-amd64 cmd/main.go
 
 build-darwin:
-	GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -ldflags "-X ${SET_QUARKUS_VERSION} -X ${SET_KOGITO_VERSION}" -o ${BINARY_PATH}/${BINARY_NAME}-darwin-amd64 cmd/main.go
+	GO111MODULE=on GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BINARY_NAME)-darwin-amd64 cmd/main.go
 
 build-win32:
-	GO111MODULE=on GOOS=windows GOARCH=amd64 go build -ldflags "-X ${SET_QUARKUS_VERSION} -X ${SET_KOGITO_VERSION}" -o ${BINARY_PATH}/${BINARY_NAME}-windows-amd64.exe cmd/main.go
+	GO111MODULE=on GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BINARY_NAME)-windows-amd64.exe cmd/main.go
 
 clean:
 	go clean
-	rm -rf ${BINARY_PATH} 
+	rm -rf $(BINARY_PATH) 

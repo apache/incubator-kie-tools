@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package main
+package command
 
 import (
-	"fmt"
-	"os"
-
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/root"
+	"github.com/spf13/cobra"
 )
 
-var quarkusVersion, kogitoVersion, cliVersion string
+type ConfigCmdConfig struct {
+	// Versions
+	QuarkusVersion string
+	KogitoVersion  string
 
-func main() {
-	cfg := root.RootCmdConfig{
-		DependenciesVersion: common.DependenciesVersion{
-			QuarkusVersion: quarkusVersion,
-			KogitoVersion:  kogitoVersion,
-		},
-		Version: cliVersion,
+	// Plugin options
+	Verbose bool
+}
+
+func NewConfigCommand() *cobra.Command {
+	var cmd = &cobra.Command{
+		Use:        "config",
+		Short:      "",
+		Long:       ``,
+		SuggestFor: []string{"confgi"},
 	}
 
-	if err := root.NewRootCommand(cfg).Execute(); err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
-		}
-		os.Exit(1)
+	cmd.RunE = func(cmd *cobra.Command, args []string) error {
+		return nil
 	}
+
+	return cmd
 }

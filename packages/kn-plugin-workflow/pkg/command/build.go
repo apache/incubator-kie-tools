@@ -28,7 +28,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type BuildConfig struct {
+type BuildCmdConfig struct {
 	// Image options
 	Image      string // full image name
 	Registry   string // image registry (overrides image name)
@@ -112,7 +112,7 @@ func NewBuildCommand() *cobra.Command {
 func runBuild(cmd *cobra.Command, args []string) error {
 	start := time.Now()
 
-	cfg, err := runBuildConfig(cmd)
+	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
 		return fmt.Errorf("initializing build config: %w", err)
 	}
@@ -144,8 +144,8 @@ func runBuild(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
-	cfg = BuildConfig{
+func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
+	cfg = BuildCmdConfig{
 		Image:      viper.GetString("image"),
 		Registry:   viper.GetString("registry"),
 		Repository: viper.GetString("repository"),
@@ -173,16 +173,16 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 	return
 }
 
-func runAddExtension(cfg BuildConfig) error {
+func runAddExtension(cfg BuildCmdConfig) error {
 	var addExtension *exec.Cmd
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		addExtension = exec.Command("mvn", "quarkus:add-extension",
-			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-jib:%s", common.QUARKUS_VERSION))
+			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-jib:%s", quarkusVersion))
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
 		addExtension = exec.Command("mvn", "quarkus:add-extension",
-			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-docker:%s", common.QUARKUS_VERSION))
+			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-docker:%s", quarkusVersion))
 	}
 
 	if err := common.RunCommand(
@@ -198,7 +198,7 @@ func runAddExtension(cfg BuildConfig) error {
 	return nil
 }
 
-func runBuildImage(cfg BuildConfig) error {
+func runBuildImage(cfg BuildCmdConfig) error {
 	registry, repository, name, tag := getImageConfig(cfg)
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
@@ -241,7 +241,7 @@ func runBuildImage(cfg BuildConfig) error {
 }
 
 // Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
-func getImageConfig(cfg BuildConfig) (string, string, string, string) {
+func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 	imageTagArray := strings.Split(cfg.Image, ":")
 	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
 
@@ -289,7 +289,7 @@ func getImage(registry string, repository string, name string, tag string) strin
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
 }
 
-func getBuilderConfig(cfg BuildConfig) string {
+func getBuilderConfig(cfg BuildCmdConfig) string {
 	builder := "-Dquarkus.container-image.builder="
 	if cfg.Jib || cfg.JibPodman {
 		builder += "jib"
@@ -300,7 +300,7 @@ func getBuilderConfig(cfg BuildConfig) string {
 	return builder
 }
 
-func getExecutableNameConfig(cfg BuildConfig) string {
+func getExecutableNameConfig(cfg BuildCmdConfig) string {
 	executableName := "-Dquarkus.jib.docker-executable-name="
 	if cfg.JibPodman {
 		executableName += "podman"

@@ -26,7 +26,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRootCommand() *cobra.Command {
+type RootCmdConfig struct {
+	DependenciesVersion common.DependenciesVersion
+	Version             string
+}
+
+func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "kn-workflow",
 		Short: "Serverless Workflow",
@@ -41,7 +46,10 @@ func NewRootCommand() *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.AddCommand(command.NewCreateCommand())
+	cmd.Version = cfg.Version
+	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
+
+	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewBuildCommand())
 	cmd.AddCommand(command.NewDeployCommand())
 

@@ -27,7 +27,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type CreateConfig struct {
+type CreateCmdConfig struct {
 	// Quarkus project options
 	ProjectName string // Project name
 	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
@@ -36,7 +36,7 @@ type CreateConfig struct {
 	Verbose bool
 }
 
-func NewCreateCommand() *cobra.Command {
+func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
 		Short: "Create a Kogito Serverless Workflow project",
@@ -64,7 +64,7 @@ func NewCreateCommand() *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runCreate(cmd, args)
+		return runCreate(cmd, args, dependenciesVersion)
 	}
 
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
@@ -74,10 +74,10 @@ func NewCreateCommand() *cobra.Command {
 	return cmd
 }
 
-func runCreate(cmd *cobra.Command, args []string) error {
+func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
 	start := time.Now()
 
-	cfg, err := runCreateConfig(cmd)
+	cfg, err := runCreateCmdConfig(cmd)
 	if err != nil {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
@@ -113,15 +113,16 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	generateWorkflow(cfg)
+	generateConfig(cfg)
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Project creation took: %s \n", finish)
 	return nil
 }
 
-// runCreateConfig returns the configs from the current execution context
-func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
-	cfg = CreateConfig{
+// runCreateCmdConfig returns the configs from the current execution context
+func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
+	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
 		Extesions:   fmt.Sprintf("%s,%s", getProjectDefaultExntensions(), viper.GetString("extension")),
 		Verbose:     viper.GetBool("verbose"),
@@ -138,7 +139,7 @@ func getProjectDefaultExntensions() string {
 	)
 }
 
-func generateWorkflow(cfg CreateConfig) (err error) {
+func generateWorkflow(cfg CreateCmdConfig) (err error) {
 	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
 	workflowFileData, err := GetWorkflowTemplate()
 	if err != nil {
@@ -152,6 +153,23 @@ func generateWorkflow(cfg CreateConfig) (err error) {
 	}
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
+	return
+}
+
+func generateConfig(cfg CreateCmdConfig) (err error) {
+	var configFilePath = fmt.Sprintf("./%s/workflow.yaml", cfg.ProjectName)
+	configFileData, err := GetConfigTemplate()
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile(configFilePath, configFileData, 0644)
+	if err != nil {
+		fmt.Println("ERROR: writing the config yaml file.")
+		return err
+	}
+
+	fmt.Printf("Config file created on %s \n", configFilePath)
 	return
 }
 

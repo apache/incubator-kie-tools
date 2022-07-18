@@ -14,31 +14,9 @@
  * limitations under the License.
  */
 
-package main
+package command
 
-import (
-	"fmt"
-	"os"
+func GetConfigTemplate() (workflowJsonByte []byte, err error) {
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/root"
-)
-
-var quarkusVersion, kogitoVersion, cliVersion string
-
-func main() {
-	cfg := root.RootCmdConfig{
-		DependenciesVersion: common.DependenciesVersion{
-			QuarkusVersion: quarkusVersion,
-			KogitoVersion:  kogitoVersion,
-		},
-		Version: cliVersion,
-	}
-
-	if err := root.NewRootCommand(cfg).Execute(); err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
-		}
-		os.Exit(1)
-	}
+	return
 }

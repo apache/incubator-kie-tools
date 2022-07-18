@@ -16,10 +16,10 @@
 
 package common
 
-var (
-	QUARKUS_VERSION = "2.10.0.Final"
-	KOGITO_VERSION  = "1.24.0.Final"
-)
+type DependenciesVersion struct {
+	QuarkusVersion string
+	KogitoVersion  string
+}
 
 const (
 	QUARKUS_KUBERNETES_EXTENSION                     = "io.quarkus:quarkus-kubernetes"
