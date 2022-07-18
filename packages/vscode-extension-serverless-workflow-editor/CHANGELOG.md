@@ -1,3 +1,7 @@
+# 0.21.1 (alpha)
+
+- [KOGITO-7586](https://issues.redhat.com/browse/KOGITO-7586) - [SWF Editor] Replace MAS SSO with RH SSO in the Service Registry authentication
+
 # 0.21.0 (alpha)
 
 - [KOGITO-7119](https://issues.redhat.com/browse/KOGITO-7119) - Establish test runner for serverless tooling in vscode
