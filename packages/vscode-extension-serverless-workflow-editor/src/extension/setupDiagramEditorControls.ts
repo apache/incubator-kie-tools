@@ -37,12 +37,6 @@ function isSwf(textDocument: vscode.TextDocument) {
 }
 
 function initSwfOffsetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | SwfYamlOffsets {
-  /* TODO: setupDiagramEditorControls: No need to test that, as the type system doesn't allow undefined values */
-  if (!textDocument) {
-    console.debug("TextDocument not found");
-    return;
-  }
-
   const fileLanguage = getFileLanguageOrThrow(textDocument.fileName);
 
   const editorContent = textDocument.getText();
