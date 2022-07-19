@@ -176,6 +176,61 @@ public class SWEditorSeleniumIT {
         testExample("SendCloudEventOnProvisionExample.sw.json");
     }  
 
+    @Test
+    public void testApplicantRequestDecisionExample() throws Exception {
+        testExample("ApplicantRequestDecisionExample.sw.json");
+    }
+
+    @Test
+    public void testMonitorPatientVitalSignsExample() throws Exception {
+        testExample("MonitorPatientVitalSignsExample.sw.json");
+    }
+
+    @Test
+    public void testFinalizeCollegeExample() throws Exception {
+        testExample("FinalizeCollegeApplicationExample.sw.json");
+    }
+    
+    @Test
+    public void testHandleCarAuctionBidExample() throws Exception {
+        testExample("HandleCarAuctionBidExample.sw.json");
+    } 
+
+    @Test
+    public void testCheckInboxPeriodicallyExample() throws Exception {
+        testExample("CheckInboxPeriodicallyExample.sw.json");
+    }
+    
+    @Test
+    public void testEventBasedServiceInvocation() throws Exception {
+        testExample("EventBasedServiceInvocationExample.sw.json");
+    }
+
+    @Test
+    public void testNewPatientOnboardingExample() throws Exception {
+        testExample("NewPatientOnboardingExample.sw.json");
+    }
+
+    @Test
+    public void testPurchaseOrderDeadlineExample() throws Exception {
+        testExample("PurchaseOrderDeadlineExample.sw.json");
+    }
+
+    @Test
+    public void testAccumulateRoomReadingsExample() throws Exception {
+        testExample("AccumulateRoomReadingsExample.sw.json");
+    }
+
+    @Test
+    public void testCarVitalsCheckExample() throws Exception {
+        testExample("CarVitalsCheckExample.sw.json");
+    }
+
+    @Test
+    public void testBookLendingExample() throws Exception {
+        testExample("BookLendingExample.sw.json");
+    }
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);
