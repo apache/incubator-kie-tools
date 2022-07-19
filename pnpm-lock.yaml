@@ -1181,6 +1181,7 @@ importers:
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/monaco-editor": link:../monaco-editor
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       monaco-editor: 0.33.0
       react: 17.0.2
