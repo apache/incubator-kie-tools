@@ -36,7 +36,7 @@ function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
 }
 
-function initSwfOffetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | SwfYamlOffsets | undefined {
+function initSwfOffsetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | SwfYamlOffsets {
   if (!textDocument) {
     console.debug("TextDocument not found");
     return;
