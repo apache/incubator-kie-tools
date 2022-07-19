@@ -158,11 +158,6 @@ export async function setupDiagramEditorControls(args: {
 
         const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
 
-        /* TODO: setupDiagramEditorControls: Can be removed once the signature changes. */
-        if (!swfOffsetsApi) {
-          return;
-        }
-
         const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
         if (!targetOffset) {
           return;
