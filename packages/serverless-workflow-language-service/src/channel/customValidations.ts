@@ -1,11 +1,18 @@
 import * as jsonc from "jsonc-parser";
 import { sourcePaths, targetPaths } from "./validationPaths";
-import { findNodesAtLocation, SwfLsNode } from "./SwfLanguageUtilMethods";
+import { findNodesAtLocation } from "./findNodesAtLocation";
+import { SwfLsNode } from "./matchNodeWithLocation";
 import { Position, TextDocument } from "vscode-json-languageservice";
 
 export type TargetPathType = {
   path: string[];
-  type: string;
+  type: "string" | "string[]" | "number" | "boolean";
+};
+
+export type TargetValueType = {
+  length: number;
+  offset: number;
+  value: string;
 };
 
 export type validationResultType = {
@@ -22,104 +29,87 @@ export const doCustomValidation = (content: string, textDocument: TextDocument) 
   if (!rootNode) {
     return [];
   }
-  const customValidationResults: validationResultType[] = [];
+  const customValidationResults: any[] = [];
 
   sourcePaths.forEach((value: string[], key: string) => {
-    const source = sourcePathValues(rootNode, value);
+    const sourceValues = sourcePathValues(rootNode, value);
     const targetElements = targetPaths.get(key);
-    targetElements.forEach((targetElement: TargetPathType) => {
-      targetPathValues(textDocument, customValidationResults, source, rootNode, targetElement, key);
+    if (!targetElements) {
+      return [];
+    }
+    const collection = targetElements.flatMap((targetElement: TargetPathType) => {
+      return targetPathValues(textDocument, sourceValues, rootNode, targetElement, key);
+    });
+    collection.filter((element) => {
+      if (element) {
+        customValidationResults.push(element);
+      }
     });
   });
-
   return customValidationResults;
 };
 
 const targetPathValues = (
   textDocument: TextDocument,
-  customValidationResults: validationResultType[],
-  source: any,
+  sourceValues: string[],
   rootNode: SwfLsNode | undefined,
   targetElement: TargetPathType,
-  key: string
+  nodeElement: string
 ) => {
   const targetNodes = findNodesAtLocation(rootNode, targetElement.path);
 
-  const targetValues = targetNodes.flatMap((targetNode: any) => {
-    let temp: any = {};
-    const targetArr: any = [];
-    if (targetNode.type === "string") {
-      temp = {
+  const targetValues = targetNodes.flatMap((targetNode: jsonc.Node) => {
+    let targetValue: TargetValueType = {} as TargetValueType;
+    const targetArr: TargetValueType[] = [];
+    if (targetNode.type === targetElement.type) {
+      targetValue = {
         length: targetNode.length,
         offset: targetNode.offset,
         value: targetNode.value,
       };
-      targetArr.push(temp);
-    } else if (targetNode.type === "array") {
-      targetNode.children?.forEach((child: any) => {
-        temp = {
+      console.log("targetValue-string,", targetElement.path, targetValue, targetNode);
+      targetArr.push(targetValue);
+    } else if (targetElement.type === "string[]") {
+      targetNode.children?.forEach((child: jsonc.Node) => {
+        targetValue = {
           length: child.length,
           offset: child.offset,
           value: child.value,
         };
-        targetArr.push(temp);
+        console.log("targetValue-string[]", targetValue);
+        targetArr.push(targetValue);
       });
     }
     return targetArr;
   });
-  compareValues(textDocument, customValidationResults, source, targetValues.flat(), key);
+
+  return compareValues(textDocument, sourceValues, targetValues.flat(), nodeElement);
 };
 
 const compareValues = (
   textDocument: TextDocument,
-  customValidationResults: validationResultType[],
-  source: any,
-  target: any,
-  key: string
+  sourceValues: string[],
+  targetValues: TargetValueType[],
+  nodeElement: string
 ) => {
-  target.forEach((ele: any) => {
-    if (typeof ele.value === "string") {
-      if (source.indexOf(ele.value) === -1) {
-        const errObj = {
-          message: `Missing ${ele.value} in ${key}`,
-          range: {
-            start: textDocument.positionAt(ele.offset),
-            end: textDocument.positionAt(ele.offset + ele.length),
-          },
-        };
-        customValidationResults.push(errObj);
-      }
-    } else if (typeof ele.value === "object") {
-      if (source.indexOf(ele.value?.refName) === -1) {
-        const errObj = {
-          message: `Missing ${ele.value} in ${key}`,
-          range: {
-            start: textDocument.positionAt(ele.offset),
-            end: textDocument.positionAt(ele.offset + ele.length),
-          },
-        };
-        customValidationResults.push(errObj);
-      } else {
-        if (source.indexOf(ele.value[0]) === -1) {
-          const errObj = {
-            message: `Missing ${ele.value} in ${key}`,
-            range: {
-              start: textDocument.positionAt(ele.offset),
-              end: textDocument.positionAt(ele.offset + ele.length),
-            },
-          };
-          customValidationResults.push(errObj);
-        }
-      }
+  return targetValues.map((targetValue: TargetValueType) => {
+    if (sourceValues.indexOf(targetValue.value) === -1) {
+      const errObj = {
+        message: `Missing ${targetValue.value} in ${nodeElement}`,
+        range: {
+          start: textDocument.positionAt(targetValue.offset),
+          end: textDocument.positionAt(targetValue.offset + targetValue.length),
+        },
+      };
+      return errObj;
     }
   });
 };
 
 const sourcePathValues = (rootNode: SwfLsNode | undefined, path: string[]) => {
   const sourceNodes = findNodesAtLocation(rootNode, path);
-  const sourceFunctions: string[] = [];
-  sourceNodes.flatMap((sourceNode: any) => {
-    sourceFunctions.push(jsonc.getNodeValue(sourceNode));
+  const sourceValues = sourceNodes.flatMap((sourceNode: jsonc.Node) => {
+    return jsonc.getNodeValue(sourceNode);
   });
-  return sourceFunctions;
+  return sourceValues;
 };

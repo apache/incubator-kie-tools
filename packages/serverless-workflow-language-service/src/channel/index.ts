@@ -1,4 +1,5 @@
 export * from "./SwfJsonLanguageService";
 export * from "./SwfLanguageService";
 export * from "./SwfYamlLanguageService";
-export * from "./SwfLanguageUtilMethods";
+export * from "./matchNodeWithLocation";
+export * from "./findNodesAtLocation";

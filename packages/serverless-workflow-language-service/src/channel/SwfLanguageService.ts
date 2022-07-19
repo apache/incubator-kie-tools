@@ -36,7 +36,8 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
 import { doCustomValidation } from "./customValidations";
-import { findNodesAtLocation, matchNodeWithLocation, SwfJsonPath, SwfLsNode } from "./SwfLanguageUtilMethods";
+import { matchNodeWithLocation, SwfJsonPath, SwfLsNode } from "./matchNodeWithLocation";
+import { findNodesAtLocation } from "./findNodesAtLocation";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107

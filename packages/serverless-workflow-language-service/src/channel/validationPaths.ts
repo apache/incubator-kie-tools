@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-export const sourcePaths: any = new Map([
+export type TargetPathType = { path: string[]; type: "string[]" } | { path: string[]; type: "string" };
+
+export const sourcePaths: Map<string, string[]> = new Map([
   ["auth", ["auth", "*", "name"]],
   ["retries", ["retries", "*", "name"]],
   ["events", ["events", "*", "name"]],
@@ -23,7 +25,7 @@ export const sourcePaths: any = new Map([
   ["states", ["states", "*", "name"]],
 ]);
 
-export const targetPaths: any = new Map([
+export const targetPaths: Map<string, TargetPathType[]> = new Map([
   ["auth", [{ path: ["functions", "*", "authRef"], type: "string" }]],
   [
     "retries",

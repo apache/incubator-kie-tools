@@ -24,5 +24,5 @@ init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
   editorFactory: new ServerlessWorkflowMermaidViewerFactory(),
-  keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
+  // keyboardShortcutsService: new NoOpKeyboardShortcutsService(),
 });
