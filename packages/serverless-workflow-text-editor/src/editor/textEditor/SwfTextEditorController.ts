@@ -63,6 +63,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
     private readonly setValidationErrors: (errors: editor.IMarker[]) => void,
+    /* TODO: SwfTextEditorController: Maybe rename to onNodeSelected */
     private readonly onEditorSelectedNode: (nodeName: string) => void
   ) {
     this.model = editor.createModel(content, this.language);
@@ -177,6 +178,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.editor?.setPosition(targetPosition);
   }
 
+  /* TODO: SwfTextEditorController: I don't think this method's name is very good. Our SWF Text Editor can work without a Diagram companion, so, in theory, it doesn't even know what a Diagram is */
   public highlightNodeOnDiagram(event: editor.IEditorMouseEvent): void {
     const position = event.target.position;
 

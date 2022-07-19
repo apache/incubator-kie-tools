@@ -158,8 +158,9 @@ export async function setupDiagramEditorControls(args: {
 
         const resourceUri = textEditor.document.uri;
 
-        const swfOffsetsApi = initSwfOffetsApi(textEditor.document);
+        const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
 
+        /* TODO: setupDiagramEditorControls: Can be removed once the signature changes. */
         if (!swfOffsetsApi) {
           return;
         }
@@ -209,7 +210,7 @@ export async function setupDiagramEditorControls(args: {
     const uri = e.textEditor.document.uri;
     const offset = e.textEditor.document.offsetAt(e.selections[0].active);
 
-    const swfOffsetsApi = initSwfOffetsApi(e.textEditor.document);
+    const swfOffsetsApi = initSwfOffsetsApi(e.textEditor.document);
 
     /* TODO: setupDiagramEditorControls: always return a SwfOffsetsApi implementation, never undefined */
     if (!swfOffsetsApi) {
