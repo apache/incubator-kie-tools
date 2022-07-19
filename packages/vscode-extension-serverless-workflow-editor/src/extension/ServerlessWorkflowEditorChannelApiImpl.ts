@@ -48,6 +48,7 @@ import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-lan
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
+/* TODO: ServerlessWorkflowEditorChannelApiImpl: ServerlessWorkflowEditorChannelApiImpl.ts should be renamed to ServerlessWorkflowDiagramEditorChannelApiImpl.ts */
 export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
 

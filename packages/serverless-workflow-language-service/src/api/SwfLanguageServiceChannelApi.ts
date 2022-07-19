@@ -26,7 +26,9 @@ export interface SwfLanguageServiceChannelApi {
   }): Promise<CompletionItem[]>;
 
   kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]>;
+  /* TODO: SwfLanguageServiceChannelApi: kogitoSwfLanguageService__moveCursorToNode should only exist at ServerlessWorkflowDiagramEditorChannelApi */
   kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void;
+  /* TODO: SwfLanguageServiceChannelApi: kogitoSwfLanguageService__highlightNode should only exist at ServerlessWorkflowDiagramEditorEnvelopeApi */
   kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void;
 }
 

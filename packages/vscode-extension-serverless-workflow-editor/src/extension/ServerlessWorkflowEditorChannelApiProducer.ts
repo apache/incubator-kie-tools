@@ -31,6 +31,7 @@ import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageS
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 
+/* TODO: ServerlessWorkflowEditorChannelApiProducer: ServerlessWorkflowEditorChannelApiProducer.ts should be renamed to ServerlessWorkflowDiagramEditorChannelApiProducer */
 export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {

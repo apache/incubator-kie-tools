@@ -37,6 +37,7 @@ function isSwf(textDocument: vscode.TextDocument) {
 }
 
 function initSwfOffetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | SwfYamlOffsets | undefined {
+  /* TODO: setupDiagramEditorControls: No need to test that, as the type system doesn't allow undefined values */
   if (!textDocument) {
     console.debug("TextDocument not found");
     return;
@@ -203,6 +204,7 @@ export async function setupDiagramEditorControls(args: {
   }
 
   vscode.window.onDidChangeTextEditorSelection((e) => {
+    /* TODO: setupDiagramEditorControls: I think we could include a new guard clause here to ignore this event if the file is not SWF. */
     // prevent kogitoSwfLanguageService__moveCursorToNode to fire this event
     if (e.kind === vscode.TextEditorSelectionChangeKind.Command) {
       return;
@@ -213,6 +215,7 @@ export async function setupDiagramEditorControls(args: {
 
     const swfOffsetsApi = initSwfOffetsApi(e.textEditor.document);
 
+    /* TODO: setupDiagramEditorControls: always return a SwfOffsetsApi implementation, never undefined */
     if (!swfOffsetsApi) {
       return;
     }
