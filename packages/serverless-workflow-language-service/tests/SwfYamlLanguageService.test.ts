@@ -27,7 +27,6 @@ import {
   SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import { SwfLanguageServiceConfig } from "../src/channel";
 import { trim, treat } from "./testUtils";
@@ -367,6 +366,27 @@ functions: [🎯]`);
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
       expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
       expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
+    });
+
+    describe("matching functions array with 1 function", () => {
+      // NOTE: despite JSON in YAML there is no need to test the case without newline after "functions:"
+      test("with cursorOffset at the first function", () => {
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+        let { content, cursorOffset } = treat(`
+---
+functions:
+🎯- name: function1
+  operation: openapi.yml#getGreeting`);
+        const root = ls.parseContent(content);
+        const node = findNodeAtOffset(root!, cursorOffset);
+
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+      });
     });
 
     test("matching refName", () => {
