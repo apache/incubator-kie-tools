@@ -77,7 +77,10 @@ func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
 	start := time.Now()
 
-	cfg, err := runCreateCmdConfig(cmd)
+	quarkusVersion := common.GetQuarkusVersion(dependenciesVersion.QuarkusVersion)
+	kogitoVersion := common.GetKogitoVersion(dependenciesVersion.KogitoVersion)
+
+	cfg, err := runCreateCmdConfig(cmd, quarkusVersion, kogitoVersion)
 	if err != nil {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
@@ -93,10 +96,10 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 
 	create := exec.Command(
 		"mvn",
-		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", common.QUARKUS_VERSION),
+		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", quarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
-		fmt.Sprintf("-DplatformVersion=%s", common.QUARKUS_VERSION),
+		fmt.Sprintf("-DplatformVersion=%s", quarkusVersion),
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
@@ -113,7 +116,6 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 	}
 
 	generateWorkflow(cfg)
-	generateConfig(cfg)
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Project creation took: %s \n", finish)
@@ -121,22 +123,18 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 }
 
 // runCreateCmdConfig returns the configs from the current execution context
-func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
+func runCreateCmdConfig(cmd *cobra.Command, quarkusVersion string, kogitoVersion string) (cfg CreateCmdConfig, err error) {
 	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
-		Extesions:   fmt.Sprintf("%s,%s", getProjectDefaultExntensions(), viper.GetString("extension")),
-		Verbose:     viper.GetBool("verbose"),
+		Extesions: fmt.Sprintf("%s,%s,%s,%s,%s",
+			common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion),
+			common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion),
+			common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion),
+			common.GetVersionedExtension(common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, kogitoVersion),
+			viper.GetString("extension")),
+		Verbose: viper.GetBool("verbose"),
 	}
 	return
-}
-
-func getProjectDefaultExntensions() string {
-	return fmt.Sprintf("%s:%s,%s:%s,%s:%s,%s:%s",
-		common.QUARKUS_KUBERNETES_EXTENSION, common.QUARKUS_VERSION,
-		common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, common.QUARKUS_VERSION,
-		common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, common.KOGITO_VERSION,
-		common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, common.KOGITO_VERSION,
-	)
 }
 
 func generateWorkflow(cfg CreateCmdConfig) (err error) {
@@ -153,23 +151,6 @@ func generateWorkflow(cfg CreateCmdConfig) (err error) {
 	}
 
 	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
-	return
-}
-
-func generateConfig(cfg CreateCmdConfig) (err error) {
-	var configFilePath = fmt.Sprintf("./%s/workflow.yaml", cfg.ProjectName)
-	configFileData, err := GetConfigTemplate()
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(configFilePath, configFileData, 0644)
-	if err != nil {
-		fmt.Println("ERROR: writing the config yaml file.")
-		return err
-	}
-
-	fmt.Printf("Config file created on %s \n", configFilePath)
 	return
 }
 

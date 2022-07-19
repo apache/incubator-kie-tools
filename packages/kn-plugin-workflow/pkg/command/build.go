@@ -45,7 +45,7 @@ type BuildCmdConfig struct {
 	Verbose bool
 }
 
-func NewBuildCommand() *cobra.Command {
+func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
 		Short: "Build a Kogito Serverless Workflow project and generate a container image",
@@ -92,7 +92,7 @@ func NewBuildCommand() *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runBuild(cmd, args)
+		return runBuild(cmd, args, dependenciesVersion)
 	}
 
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
@@ -109,7 +109,7 @@ func NewBuildCommand() *cobra.Command {
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string) error {
+func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
 	start := time.Now()
 
 	cfg, err := runBuildCmdConfig(cmd)
@@ -131,7 +131,8 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if err := runAddExtension(cfg); err != nil {
+	quarkusVersion := common.GetQuarkusVersion(dependenciesVersion.QuarkusVersion)
+	if err := runAddExtension(cfg, quarkusVersion); err != nil {
 		return err
 	}
 
@@ -173,16 +174,16 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	return
 }
 
-func runAddExtension(cfg BuildCmdConfig) error {
+func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	var addExtension *exec.Cmd
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		addExtension = exec.Command("mvn", "quarkus:add-extension",
-			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-jib:%s", quarkusVersion))
+			fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion)))
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
 		addExtension = exec.Command("mvn", "quarkus:add-extension",
-			fmt.Sprintf("-Dextensions=io.quarkus:quarkus-container-image-docker:%s", quarkusVersion))
+			fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion)))
 	}
 
 	if err := common.RunCommand(

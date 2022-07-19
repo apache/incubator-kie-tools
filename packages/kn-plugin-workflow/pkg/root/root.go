@@ -50,7 +50,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
 	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
-	cmd.AddCommand(command.NewBuildCommand())
+	cmd.AddCommand(command.NewBuildCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewDeployCommand())
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {

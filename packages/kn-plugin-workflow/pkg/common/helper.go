@@ -102,7 +102,19 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	}
 }
 
-func GetEnv(key string, fallback string) string {
+func GetVersionedExtension(extension string, version string) string {
+	return fmt.Sprintf("%s:%s", extension, version)
+}
+
+func GetQuarkusVersion(quarkusDefaultVersion string) string {
+	return getEnv(WORKFLOW_QUARKUS_VERISON, quarkusDefaultVersion)
+}
+
+func GetKogitoVersion(kogitoDefaultVersion string) string {
+	return getEnv(WORKFLOW_KOGITO_VERISON, kogitoDefaultVersion)
+}
+
+func getEnv(key string, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
 		return value
 	}

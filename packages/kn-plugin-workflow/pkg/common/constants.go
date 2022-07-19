@@ -24,6 +24,8 @@ type DependenciesVersion struct {
 const (
 	QUARKUS_KUBERNETES_EXTENSION                     = "io.quarkus:quarkus-kubernetes"
 	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "io.quarkus:quarkus-resteasy-reactive-jackson"
+	QUARKUS_CONTAINER_IMAGE_JIB                      = "io.quarkus:quarkus-container-image-jib"
+	QUARKUS_CONTAINER_IMAGE_DOCKER                   = "io.quarkus:quarkus-container-image-docker"
 	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "org.kie.kogito:kogito-quarkus-serverless-workflow"
 	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "org.kie.kogito:kogito-addons-quarkus-knative-eventing"
 	JAVA_VERSION                                     = 11
@@ -31,4 +33,6 @@ const (
 	MAVEN_MINOR_VERSION                              = 8
 	DEFAULT_REGISTRY                                 = "quay.io"
 	DEFAULT_TAG                                      = "latest"
+	WORKFLOW_QUARKUS_VERISON                         = "WORKFLOW_QUARKUS_VERISON"
+	WORKFLOW_KOGITO_VERISON                          = "WORKFLOW_KOGITO_VERISON"
 )
