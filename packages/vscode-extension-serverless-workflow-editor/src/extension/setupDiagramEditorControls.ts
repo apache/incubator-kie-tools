@@ -42,11 +42,7 @@ function initSwfOffetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | S
     return;
   }
 
-  const fileLanguage = getFileLanguage(textDocument.fileName);
-
-  if (!fileLanguage) {
-    return;
-  }
+  const fileLanguage = getFileLanguageOrThrow(textDocument.fileName);
 
   const editorContent = textDocument.getText();
 
