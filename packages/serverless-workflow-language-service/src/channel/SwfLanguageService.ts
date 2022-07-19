@@ -129,23 +129,6 @@ export class SwfLanguageService {
 
     const nodeAtOffset = findNodeAtOffset(args.rootNode, cursorOffset);
 
-    console.log("7578 getCompletionItems", {
-      ce: completions.entries(),
-      nodeAtOffset,
-      cursorOffset,
-      strAtOffset: args.content.slice(cursorOffset, cursorOffset + 10),
-      result: Array.from(completions.entries()).filter(([path, _]) => {
-        path.toString() == "functions,*" &&
-          console.log("7578 filter", {
-            path: path.toString(),
-            nodeAtOffset,
-            rootNode: args.rootNode,
-            result: matchNodeWithLocation(args.rootNode, nodeAtOffset, path),
-          });
-        return matchNodeWithLocation(args.rootNode, nodeAtOffset, path);
-      }),
-    });
-
     const result = await Promise.all(
       Array.from(completions.entries())
         .filter(([path, _]) => matchNodeWithLocation(args.rootNode, nodeAtOffset, path))
@@ -684,13 +667,8 @@ export function matchNodeWithLocation(
   if (nodesAtLocation.some((currentNode) => currentNode === node)) {
     return true;
   }
-  if (path[path.length - 1] === "*") {
-    if (node.type == "array" && node.children) {
-      return matchNodeWithLocation(root, node, path.slice(0, -1));
-    }
-    // if (!nodesAtLocation.length) {
-    //   return matchNodeWithLocation(root, node, path.slice(0, -1));
-    // }
+  if (path[path.length - 1] === "*" && node.type == "array" && node.children) {
+    return matchNodeWithLocation(root, node, path.slice(0, -1));
   }
 
   return false;

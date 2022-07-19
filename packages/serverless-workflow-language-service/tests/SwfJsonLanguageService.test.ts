@@ -30,7 +30,6 @@ import {
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import { SwfLanguageServiceConfig } from "../src/channel";
 import { trim, treat } from "./testUtils";
-import * as jsonc from "jsonc-parser";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",
@@ -516,66 +515,5 @@ describe("SWF LS JSON", () => {
       },
       insertTextFormat: InsertTextFormat.Snippet,
     } as CompletionItem);
-  });
-});
-
-describe("findNodeAtOffset", () => {
-  test("with newline after functions", () => {
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-    });
-    const content = `{
-  "functions": [
-    {
-      "name": "function1",
-      "operation": "openapi.yml#getGreeting"
-    },
-    {
-      "name": "function2",
-      "operation": "openapi.yml#getGreeting"
-    },
-    {
-      "name": "function3",
-      "operation": "openapi.yml#getGreeting"
-    }
-}`;
-    const cursorOffset = content.indexOf("[");
-    const root = ls.parseContent(content);
-    const node = jsonc.findNodeAtOffset(root!, cursorOffset);
-
-    expect(node).not.toBeUndefined();
-    expect(node?.type).toBe("array");
-    expect(node?.children?.length).toBe(3);
-  });
-
-  test("without newline after functions", () => {
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
-    });
-    const content = `{
-  "functions": [{
-      "name": "function1",
-      "operation": "openapi.yml#getGreeting"
-    },
-    {
-      "name": "function2",
-      "operation": "openapi.yml#getGreeting"
-    },
-    {
-      "name": "function3",
-      "operation": "openapi.yml#getGreeting"
-    }
-}`;
-    const cursorOffset = content.indexOf("[");
-    const root = ls.parseContent(content);
-    const node = jsonc.findNodeAtOffset(root!, cursorOffset);
-
-    expect(node).not.toBeUndefined();
-    expect(node?.type).toBe("array");
-    expect(node?.children?.length).toBe(3);
   });
 });
