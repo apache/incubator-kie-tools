@@ -26,7 +26,7 @@
     "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs -Pno-showcase && pnpm dist",
     "build:dev:win32": "yarn powershell mvn clean install `-DskipTests `-DskipITs `-Pno-showcase && pnpm dist",
     "build:dev": "run-script-os",
-    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env global.build.test --not) -DskipITs -Pno-showcase && pnpm dist",
+    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env global.build.test --not) -Pno-showcase && pnpm dist",
     "build:prod:win32": "pnpm lint && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs `-Pno-showcase && pnpm dist",
     "build:prod": "run-script-os",
     "dist": "rimraf dist && mkdir dist && pnpm dist:bpmn && pnpm dist:dmn && pnpm dist:scesim",
