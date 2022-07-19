@@ -231,6 +231,21 @@ public class SWEditorSeleniumIT {
         testExample("BookLendingExample.sw.json");
     }
 
+    @Test
+    public void testFillGlassOfWaterExample() throws Exception {
+        testExample("FillGlassOfWaterExample.sw.json");
+    }
+
+    @Test
+    public void testNotifyCustomerWorkflowExample() throws Exception {
+        testExample("NotifyCustomerWorkflowExample.sw.json");
+    }
+
+    @Test
+    public void testProcessTransactionsExample() throws Exception {
+        testExample("ProcessTransactionsExample.sw.json");
+    }
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);

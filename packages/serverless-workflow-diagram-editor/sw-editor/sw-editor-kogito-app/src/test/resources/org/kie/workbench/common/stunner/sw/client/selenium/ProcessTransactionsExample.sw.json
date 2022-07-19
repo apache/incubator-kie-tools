@@ -1,0 +1,43 @@
+{
+  "id": "customerbankingtransactions",
+  "name": "Customer Banking Transactions Workflow",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "autoRetries": true,
+  "constants": {
+    "largetxamount": 5000
+  },
+  "states": [
+    {
+      "name": "ProcessTransactions",
+      "type": "foreach",
+      "inputCollection": "${ .customer.transactions }",
+      "iterationParam": "${ .tx }",
+      "actions": [
+        {
+          "name": "Process Larger Transaction",
+          "functionRef": "Banking Service - Larger Tx",
+          "condition": "${ .tx >= $CONST.largetxamount }"
+        },
+        {
+          "name": "Process Smaller Transaction",
+          "functionRef": "Banking Service - Smaller Tx",
+          "condition": "${ .tx < $CONST.largetxamount }"
+        }
+      ],
+      "end": true
+    }
+  ],
+  "functions": [
+    {
+      "name": "Banking Service - Larger Tx",
+      "type": "asyncapi",
+      "operation": "banking.yaml#largerTransation"
+    },
+    {
+      "name": "Banking Service - Smaller T",
+      "type": "asyncapi",
+      "operation": "banking.yaml#smallerTransation"
+    }
+  ]
+}
