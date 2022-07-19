@@ -107,11 +107,11 @@ func GetVersionedExtension(extension string, version string) string {
 }
 
 func GetQuarkusVersion(quarkusDefaultVersion string) string {
-	return getEnv(WORKFLOW_QUARKUS_VERISON, quarkusDefaultVersion)
+	return getEnv(WORKFLOW_QUARKUS_VERSION, quarkusDefaultVersion)
 }
 
 func GetKogitoVersion(kogitoDefaultVersion string) string {
-	return getEnv(WORKFLOW_KOGITO_VERISON, kogitoDefaultVersion)
+	return getEnv(WORKFLOW_KOGITO_VERSION, kogitoDefaultVersion)
 }
 
 func getEnv(key string, fallback string) string {

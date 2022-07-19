@@ -20,9 +20,9 @@ QUARKUS_VERSION := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
 KOGITO_VERSION := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
 CLI_VERSION := $(shell pnpm build-env global.version)
 
-SET_QUARKUS_VERSION := github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/cmd.quarkusVersion=$(QUARKUS_VERSION)
-SET_KOGITO_VERSION := github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/cmd.kogitoVersion=$(KOGITO_VERSION)
-SET_CLI_VERISON := github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/cmd.cliVersion=$(CLI_VERSION)
+SET_QUARKUS_VERSION := main.quarkusVersion=$(QUARKUS_VERSION)
+SET_KOGITO_VERSION := main.kogitoVersion=$(KOGITO_VERSION)
+SET_CLI_VERISON := main.cliVersion=$(CLI_VERSION)
 LDFLAGS := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_CLI_VERISON)"
 
 build-linux:

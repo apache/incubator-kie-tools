@@ -33,6 +33,6 @@ const (
 	MAVEN_MINOR_VERSION                              = 8
 	DEFAULT_REGISTRY                                 = "quay.io"
 	DEFAULT_TAG                                      = "latest"
-	WORKFLOW_QUARKUS_VERISON                         = "WORKFLOW_QUARKUS_VERISON"
-	WORKFLOW_KOGITO_VERISON                          = "WORKFLOW_KOGITO_VERISON"
+	WORKFLOW_QUARKUS_VERSION                         = "WORKFLOW_QUARKUS_VERSION"
+	WORKFLOW_KOGITO_VERSION                          = "WORKFLOW_KOGITO_VERSION"
 )
