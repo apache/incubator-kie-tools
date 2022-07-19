@@ -14,22 +14,27 @@
  * limitations under the License.
  */
 
-import * as vscode from "vscode";
-import { COMMAND_IDS } from "./commandIds";
-import * as ls from "vscode-languageserver-types";
 import {
+  getFileLanguageOrThrow,
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import * as vscode from "vscode";
+import * as ls from "vscode-languageserver-types";
+import { debounce } from "../debounce";
+import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import { debounce } from "../debounce";
+import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  swfLanguageService: SwfJsonLanguageService;
+  vsCodeSwfLanguageService: VsCodeSwfLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
@@ -65,15 +70,19 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
   };
 
-  const swfJsonDiganosticsCollection = vscode.languages.createDiagnosticCollection("SWF-JSON-DIAGNOSTICS-COLLECTION");
+  const swfJsonDiagnosticsCollection = vscode.languages.createDiagnosticCollection("SWF-JSON-DIAGNOSTICS-COLLECTION");
 
   args.context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
       if (!doc.uri.path.match(/\.(sw.json)$/i) || doc.languageId !== "serverless-workflow-json") {
-        swfJsonDiganosticsCollection.clear();
+        swfJsonDiagnosticsCollection.clear();
         return;
       }
-      setSwfJsonDiagnostics(args.swfLanguageService, doc.uri, swfJsonDiganosticsCollection);
+      setSwfJsonDiagnostics(
+        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(doc.uri.path)),
+        doc.uri,
+        swfJsonDiagnosticsCollection
+      );
     })
   );
 
@@ -82,10 +91,14 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   args.context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
       if (!event.document.uri.path.match(/\.(sw.json)$/i) || event.document.languageId !== "serverless-workflow-json") {
-        swfJsonDiganosticsCollection.clear();
+        swfJsonDiagnosticsCollection.clear();
         return;
       }
-      doValidationOnChange(args.swfLanguageService, event.document.uri, swfJsonDiganosticsCollection);
+      doValidationOnChange(
+        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(event.document.uri.path)),
+        event.document.uri,
+        swfJsonDiagnosticsCollection
+      );
     })
   );
 
@@ -102,10 +115,12 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       { scheme: "file", pattern: "**/*.sw.json" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
-          const lsCodeLenses = await args.swfLanguageService.getCodeLenses({
-            uri: document.uri.toString(),
-            content: document.getText(),
-          });
+          const lsCodeLenses = await args.vsCodeSwfLanguageService
+            .getLs(getFileLanguageOrThrow(document.uri.path))
+            .getCodeLenses({
+              uri: document.uri.toString(),
+              content: document.getText(),
+            });
 
           const vscodeCodeLenses: vscode.CodeLens[] = lsCodeLenses.map((lsCodeLens) => {
             return new vscode.CodeLens(
@@ -141,15 +156,17 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         ) => {
           const cursorWordRange = document.getWordRangeAtPosition(position);
 
-          const lsCompletionItems = await args.swfLanguageService.getCompletionItems({
-            uri: document.uri.toString(),
-            content: document.getText(),
-            cursorPosition: position,
-            cursorWordRange: {
-              start: cursorWordRange?.start ?? position,
-              end: cursorWordRange?.end ?? position,
-            },
-          });
+          const lsCompletionItems = await args.vsCodeSwfLanguageService
+            .getLs(getFileLanguageOrThrow(document.uri.path))
+            .getCompletionItems({
+              uri: document.uri.toString(),
+              content: document.getText(),
+              cursorPosition: position,
+              cursorWordRange: {
+                start: cursorWordRange?.start ?? position,
+                end: cursorWordRange?.end ?? position,
+              },
+            });
 
           const vscodeCompletionItems: vscode.CompletionItem[] = lsCompletionItems.map((lsCompletionItem) => {
             const rangeStart = (lsCompletionItem.textEdit as ls.TextEdit).range.start;
@@ -208,9 +225,9 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 }
 
 async function setSwfJsonDiagnostics(
-  swfLanguageService: SwfJsonLanguageService,
+  swfLanguageService: SwfJsonLanguageService | SwfYamlLanguageService,
   uri: vscode.Uri,
-  diganosticsCollection: vscode.DiagnosticCollection
+  diagnosticsCollection: vscode.DiagnosticCollection
 ) {
   const content = vscode.window.activeTextEditor?.document.getText();
 
@@ -227,6 +244,6 @@ async function setSwfJsonDiagnostics(
     return new vscode.Diagnostic(lsDiagnostic.range, lsDiagnostic.message, vscode.DiagnosticSeverity.Warning);
   });
 
-  diganosticsCollection.clear();
-  diganosticsCollection.set(uri, diagnostics);
+  diagnosticsCollection.clear();
+  diagnosticsCollection.set(uri, diagnostics);
 }

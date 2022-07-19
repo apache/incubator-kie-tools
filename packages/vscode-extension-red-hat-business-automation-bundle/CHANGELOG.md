@@ -1,3 +1,7 @@
+# 0.21.0 (alpha)
+
+- [KOGITO-7375](https://issues.redhat.com/browse/KOGITO-7375) - [DMN Designer] Import Java Classes Fix cases with special characters in PATH
+
 # 0.20.0 (alpha)
 
 - [KOGITO-7109](https://issues.redhat.com/browse/KOGITO-7109) - [DMN Designer] New Boxed Expression editor - Copy & paste values with newline

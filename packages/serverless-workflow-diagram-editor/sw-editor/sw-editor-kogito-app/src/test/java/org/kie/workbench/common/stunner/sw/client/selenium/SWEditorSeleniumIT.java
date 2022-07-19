@@ -123,7 +123,36 @@ public class SWEditorSeleniumIT {
 
     @Test
     public void testHelloWorldExample() throws Exception {
-        final String expected = loadResource("HelloWorldExample.sw.json");
+        testExample("HelloWorldExample.sw.json");
+    }
+
+    @Test
+    public void testEventBasedGreetingsExample() throws Exception {
+        testExample("EventBasedGreetingExample.sw.json");
+    }
+
+    @Test
+    public void testSolveMathProblemsExample() throws Exception {
+        testExample("SolveMathProblemsExample.sw.json");
+    }
+
+    @Test
+    public void testParallelExecutionExample() throws Exception {
+        testExample("ParallelExecutionExample.sw.json");
+    }
+
+    @Test
+    public void testAsyncFunctionInvocationExample() throws Exception {
+        testExample("AsyncFunctionInvocationExample.sw.json");
+    }
+
+    @Test
+    public void testAsyncSubFlowInvocationExample() throws Exception {
+        testExample("AsyncSubFlowInvocationExample.sw.json");
+    }
+
+    private void testExample(String exampleName) throws Exception {
+        final String expected = loadResource(exampleName);
         setContent(expected);
 
         waitCanvasPanel();
@@ -131,7 +160,6 @@ public class SWEditorSeleniumIT {
         final String actual = getContent();
         assertThatJson(json(actual)).isEqualTo(json(expected));
     }
-
     private File initScreenshotDirectory() {
         if (SCREENSHOTS_DIR == null) {
             throw new IllegalStateException(

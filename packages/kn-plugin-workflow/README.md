@@ -76,7 +76,7 @@ kn workflow deploy
 ## Building from Source
 
 ```bash
-git clone git@github.com:kie-group/kie-tools.git
+git clone git@github.com:kiegroup/kie-tools.git
 cd kie-tools
 yarn bootstrap
 cd packages/kn-plugin-workflow
