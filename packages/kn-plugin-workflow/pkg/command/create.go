@@ -77,10 +77,7 @@ func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
 	start := time.Now()
 
-	quarkusVersion := common.GetQuarkusVersion(dependenciesVersion.QuarkusVersion)
-	kogitoVersion := common.GetKogitoVersion(dependenciesVersion.KogitoVersion)
-
-	cfg, err := runCreateCmdConfig(cmd, quarkusVersion, kogitoVersion)
+	cfg, err := runCreateCmdConfig(cmd, dependenciesVersion)
 	if err != nil {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
@@ -96,10 +93,10 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 
 	create := exec.Command(
 		"mvn",
-		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", quarkusVersion),
+		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", dependenciesVersion.QuarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
-		fmt.Sprintf("-DplatformVersion=%s", quarkusVersion),
+		fmt.Sprintf("-DplatformVersion=%s", dependenciesVersion.QuarkusVersion),
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
@@ -123,14 +120,14 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 }
 
 // runCreateCmdConfig returns the configs from the current execution context
-func runCreateCmdConfig(cmd *cobra.Command, quarkusVersion string, kogitoVersion string) (cfg CreateCmdConfig, err error) {
+func runCreateCmdConfig(cmd *cobra.Command, dependenciesVersion common.DependenciesVersion) (cfg CreateCmdConfig, err error) {
 	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
 		Extesions: fmt.Sprintf("%s,%s,%s,%s,%s",
-			common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion),
-			common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion),
-			common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion),
-			common.GetVersionedExtension(common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, kogitoVersion),
+			common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, dependenciesVersion.QuarkusVersion),
+			common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, dependenciesVersion.QuarkusVersion),
+			common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, dependenciesVersion.KogitoVersion),
+			common.GetVersionedExtension(common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, dependenciesVersion.KogitoVersion),
 			viper.GetString("extension")),
 		Verbose: viper.GetBool("verbose"),
 	}

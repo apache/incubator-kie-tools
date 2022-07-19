@@ -131,8 +131,7 @@ func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.Depe
 		}
 	}
 
-	quarkusVersion := common.GetQuarkusVersion(dependenciesVersion.QuarkusVersion)
-	if err := runAddExtension(cfg, quarkusVersion); err != nil {
+	if err := runAddExtension(cfg, dependenciesVersion.QuarkusVersion); err != nil {
 		return err
 	}
 
