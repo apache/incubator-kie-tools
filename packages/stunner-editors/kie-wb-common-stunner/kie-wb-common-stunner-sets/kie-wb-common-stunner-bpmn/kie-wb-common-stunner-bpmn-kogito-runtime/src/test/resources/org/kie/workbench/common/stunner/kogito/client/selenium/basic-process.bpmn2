@@ -3,6 +3,9 @@
   <bpmn2:interface id="_E486B83F-1225-436D-94D5-C6817A74884C_ServiceInterface" name="" implementationRef="">
     <bpmn2:operation id="_E486B83F-1225-436D-94D5-C6817A74884C_ServiceOperation" name="" implementationRef=""/>
   </bpmn2:interface>
+  <bpmn2:collaboration id="_08979A00-BDE5-4176-8FB2-52E500C65209" name="Default Collaboration">
+      <bpmn2:participant id="_B1EC8F09-91C0-4F32-85CC-1AB4EF037D5F" name="Pool Participant" processRef="AddUserBasicService" />
+   </bpmn2:collaboration>
   <bpmn2:process id="AddUserBasicService" drools:packageName="org.project" drools:version="1.0" drools:adHoc="false" name="BasicModel" isExecutable="true" processType="Public">
     <bpmn2:sequenceFlow id="_945FC403-B19A-4AB1-9A9A-B13E6CD19D4B" sourceRef="_E486B83F-1225-436D-94D5-C6817A74884C" targetRef="_96CAC0E9-FA73-4154-84A6-A963ACD1ED04">
       <bpmn2:extensionElements>
