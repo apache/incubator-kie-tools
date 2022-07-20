@@ -22,19 +22,24 @@ type DependenciesVersion struct {
 }
 
 const (
+	// Extensions
 	QUARKUS_KUBERNETES_EXTENSION                     = "io.quarkus:quarkus-kubernetes"
 	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "io.quarkus:quarkus-resteasy-reactive-jackson"
 	QUARKUS_CONTAINER_IMAGE_JIB                      = "io.quarkus:quarkus-container-image-jib"
 	QUARKUS_CONTAINER_IMAGE_DOCKER                   = "io.quarkus:quarkus-container-image-docker"
 	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "org.kie.kogito:kogito-quarkus-serverless-workflow"
 	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "org.kie.kogito:kogito-addons-quarkus-knative-eventing"
-	JAVA_VERSION                                     = 11
-	MAVEN_MAJOR_VERSION                              = 3
-	MAVEN_MINOR_VERSION                              = 8
-	DEFAULT_REGISTRY                                 = "quay.io"
-	DEFAULT_TAG                                      = "latest"
-	WORKFLOW_QUARKUS_VERSION                         = "WORKFLOW_QUARKUS_VERSION"
-	WORKFLOW_KOGITO_VERSION                          = "WORKFLOW_KOGITO_VERSION"
-	WORKFLOW_CONFIG_YML                              = "workflow.config.yml"
-	WORKFLOW_SW_JSON                                 = "workflow.sw.json"
+
+	// Versions
+	JAVA_VERSION        = 11
+	MAVEN_MAJOR_VERSION = 3
+	MAVEN_MINOR_VERSION = 8
+
+	// Default values
+	DEFAULT_REGISTRY = "quay.io"
+	DEFAULT_TAG      = "latest"
+
+	// Filenames
+	WORKFLOW_CONFIG_YML = "workflow.config.yml"
+	WORKFLOW_SW_JSON    = "workflow.sw.json"
 )

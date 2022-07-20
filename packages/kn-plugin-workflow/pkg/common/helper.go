@@ -20,9 +20,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
-	"os"
 	"os/exec"
-	"runtime"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -105,27 +103,4 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 
 func GetVersionedExtension(extension string, version string) string {
 	return fmt.Sprintf("%s:%s", extension, version)
-}
-
-func GetQuarkusVersion(quarkusDefaultVersion string) string {
-	return getEnv(WORKFLOW_QUARKUS_VERSION, quarkusDefaultVersion)
-}
-
-func GetKogitoVersion(kogitoDefaultVersion string) string {
-	return getEnv(WORKFLOW_KOGITO_VERSION, kogitoDefaultVersion)
-}
-
-func getEnv(key string, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
-}
-
-func GetOsCommand(command string) string {
-	var osCommand = "./" + command
-	if runtime.GOOS == "windows" {
-		osCommand = ".\\" + command
-	}
-	return osCommand
 }

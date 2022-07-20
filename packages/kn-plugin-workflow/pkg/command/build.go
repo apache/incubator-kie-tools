@@ -20,7 +20,6 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -349,13 +348,6 @@ func getExecutableNameConfig(cfg BuildCmdConfig) string {
 		executableName += "docker"
 	}
 	return executableName
-}
-
-func getMavenCommand() string {
-	if runtime.GOOS == "windows" {
-		return common.GetOsCommand("mvnw.cmd")
-	}
-	return common.GetOsCommand("mvnw")
 }
 
 func getAddExtensionFriendlyMessages() []string {
