@@ -14,10 +14,11 @@
 # limitations under the License.
 #
 
-BIN 		 := kn-workflow
-BIN_DARWIN   ?= $(BIN)-darwin-amd64
-BIN_LINUX  	 ?= $(BIN)-linux-amd64
-BIN_WINDOWS	 ?= $(BIN)-windows-amd64.exe
+BIN 		 	 := kn-workflow
+BIN_DARWIN_AMD64 ?= $(BIN)-darwin-amd64
+BIN_DARWIN_ARM64 ?= $(BIN)-darwin-arm64
+BIN_LINUX  	 	 ?= $(BIN)-linux-amd64
+BIN_WINDOWS	 	 ?= $(BIN)-windows-amd64.exe
 
 QUARKUS_VERSION := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
 KOGITO_VERSION := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
@@ -25,16 +26,19 @@ VERSION := $(shell pnpm build-env knPluginWorkflow.version)
 
 SET_QUARKUS_VERSION := main.quarkusVersion=$(QUARKUS_VERSION)
 SET_KOGITO_VERSION := main.kogitoVersion=$(KOGITO_VERSION)
-SET_CLI_VERISON := main.cliVersion=$(CLI_VERSION)
-LDFLAGS := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_CLI_VERISON)"
+SET_VERSION := main.version=$(VERSION)
+LDFLAGS := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_VERSION)"
 
-build-all: build-linux build-darwin build-win32
+build-all: build-linux build-darwin-amd build-darwin-arm build-win32
 
 build-linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_LINUX) cmd/main.go
 
-build-darwin:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN) cmd/main.go
+build-darwin-amd:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
+
+build-darwin-arm:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_ARM64) cmd/main.go
 
 build-win32:
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_WINDOWS) cmd/main.go

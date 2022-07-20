@@ -1134,16 +1134,9 @@ jobs:
 
   kn_plugin_workflow:
     if: ${{ needs.extract_runners.outputs.kn_plugin_workflow == 'true' }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [extract_runners]
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: "Support longpaths (Windows only)"
-        if: matrix.os == 'windows-latest'
-        run: git config --system core.longpaths true
-
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
@@ -1159,14 +1152,14 @@ jobs:
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
-          os: ${{ matrix.os }}
+          os: ubuntu-latest
 
       - name: "Build"
         shell: bash
         run: |
           pnpm -F @kie-tools/kn-plugin-workflow... build:prod
-      - name: "Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+      - name: "Upload Knative CLI Workflow Plugin for Linux"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1176,8 +1169,8 @@ jobs:
           asset_name: kn-workflow-linux-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "Upload Knative CLI Workflow Plugin for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+      - name: "Upload Knative CLI Workflow Plugin for macOS"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1187,8 +1180,19 @@ jobs:
           asset_name: kn-workflow-darwin-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "Upload Knative CLI Workflow Plugin for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+      - name: "Upload Knative CLI Workflow Plugin for macOS M1"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/kn-plugin-workflow/dist/kn-workflow-darwin-arm64
+          asset_name: kn-workflow-darwin-arm64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Knative CLI Workflow Plugin for Windows"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
