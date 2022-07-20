@@ -1,8 +1,8 @@
 import * as jsonc from "jsonc-parser";
 import { sourcePaths, targetPaths } from "./validationPaths";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfLsNode } from "./matchNodeWithLocation";
 import { Position, TextDocument } from "vscode-json-languageservice";
+import { SwfLsNode } from "./types";
 
 export type TargetPathType = {
   path: string[];
@@ -49,6 +49,12 @@ export const doCustomValidation = (content: string, textDocument: TextDocument) 
   return customValidationResults;
 };
 
+function isArrayOfStrings(value: jsonc.Node) {
+  if (value.type === "array" && value?.children?.every((item: any) => typeof item.value === "string")) {
+    return "string[]";
+  }
+}
+
 const targetPathValues = (
   textDocument: TextDocument,
   sourceValues: string[],
@@ -67,23 +73,21 @@ const targetPathValues = (
         offset: targetNode.offset,
         value: targetNode.value,
       };
-      console.log("targetValue-string,", targetElement.path, targetValue, targetNode);
       targetArr.push(targetValue);
-    } else if (targetElement.type === "string[]") {
+    } else if (targetElement.type === isArrayOfStrings(targetNode)) {
       targetNode.children?.forEach((child: jsonc.Node) => {
         targetValue = {
           length: child.length,
           offset: child.offset,
           value: child.value,
         };
-        console.log("targetValue-string[]", targetValue);
         targetArr.push(targetValue);
       });
     }
     return targetArr;
   });
 
-  return compareValues(textDocument, sourceValues, targetValues.flat(), nodeElement);
+  return compareValues(textDocument, sourceValues, targetValues, nodeElement);
 };
 
 const compareValues = (

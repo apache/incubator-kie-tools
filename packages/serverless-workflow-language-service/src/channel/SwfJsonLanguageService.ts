@@ -17,7 +17,7 @@
 import * as jsonc from "jsonc-parser";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode } from "./matchNodeWithLocation";
+import { SwfLsNode } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfJsonLanguageService {

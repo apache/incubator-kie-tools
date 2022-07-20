@@ -15,20 +15,7 @@
  */
 
 import { findNodesAtLocation } from "./findNodesAtLocation";
-
-// types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
-export declare type SwfJsonPath = (string | number)[];
-export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
-
-export type SwfLsNode = {
-  type: SwfLsNodeType;
-  value?: any;
-  offset: number;
-  length: number;
-  colonOffset?: number;
-  parent?: SwfLsNode;
-  children?: SwfLsNode[];
-};
+import { SwfJsonPath, SwfLsNode } from "./types";
 
 /**
  * Check if a Node is in Location.
