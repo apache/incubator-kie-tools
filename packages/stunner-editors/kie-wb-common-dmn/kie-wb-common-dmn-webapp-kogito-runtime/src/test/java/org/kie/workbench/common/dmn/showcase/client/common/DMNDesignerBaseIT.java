@@ -40,7 +40,9 @@ import org.kie.workbench.common.dmn.showcase.client.selenium.component.DecisionN
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.CommonCSSLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.EditorXPathLocator;
 import org.kie.workbench.common.dmn.showcase.client.selenium.locator.PropertiesPanelXPathLocator;
+import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -175,6 +177,14 @@ public class DMNDesignerBaseIT {
         return (String) result;
     }
 
+    protected void selectAutomaticLayout() {
+        try {
+            driver.findElement(By.xpath("//button[@data-field='yes-button']")).click();
+        } catch (NoSuchElementException e) {
+            // if there is no button, allow test to continue
+        }
+    }
+
     protected void executeDMNTestCase(final String directory,
                                       final String file,
                                       final String logMessage) throws IOException {
@@ -182,6 +192,8 @@ public class DMNDesignerBaseIT {
 
         LOG.trace(logMessage);
         setContent(loadResource(directory + "/" + file));
+
+        selectAutomaticLayout();
 
         final String actual = getContent();
         assertThat(actual).isNotBlank();
