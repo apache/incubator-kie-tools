@@ -14,11 +14,11 @@
 # limitations under the License.
 #
 
-BIN 		 	 := kn-workflow
+BIN              := kn-workflow
 BIN_DARWIN_AMD64 ?= $(BIN)-darwin-amd64
 BIN_DARWIN_ARM64 ?= $(BIN)-darwin-arm64
-BIN_LINUX  	 	 ?= $(BIN)-linux-amd64
-BIN_WINDOWS	 	 ?= $(BIN)-windows-amd64.exe
+BIN_LINUX        ?= $(BIN)-linux-amd64
+BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 
 QUARKUS_VERSION := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
 KOGITO_VERSION := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
