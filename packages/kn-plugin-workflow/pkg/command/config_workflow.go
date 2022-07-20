@@ -65,7 +65,7 @@ func CreateConfig(configFilePath string, quarkusVersion string, kogitoVersion st
 }
 
 func ReadConfig(dependenciesVersion common.DependenciesVersion) (quarkusVersion string, kogitoVersion string, err error) {
-	configFile, err := ioutil.ReadFile("workflow.config.yml")
+	configFile, err := ioutil.ReadFile(common.WORKFLOW_CONFIG_YML)
 	if err != nil {
 		fmt.Println("ERROR: reading the config yml file.")
 		return
@@ -98,7 +98,7 @@ func ReadConfig(dependenciesVersion common.DependenciesVersion) (quarkusVersion 
 }
 
 func UpdateConfig(quarkusVersion string, kogitoVersion string) (err error) {
-	configFile, err := ioutil.ReadFile("workflow.config.yml")
+	configFile, err := ioutil.ReadFile(common.WORKFLOW_CONFIG_YML)
 	if err != nil {
 		fmt.Println("ERROR: reading the config yml file.")
 		return
@@ -115,7 +115,7 @@ func UpdateConfig(quarkusVersion string, kogitoVersion string) (err error) {
 	config.Versions.KogitoVersion = kogitoVersion
 
 	configJsonByte, err := yaml.Marshal(config)
-	err = ioutil.WriteFile("./workflow.config.yml", configJsonByte, 0644)
+	err = ioutil.WriteFile(common.WORKFLOW_CONFIG_YML, configJsonByte, 0644)
 	if err != nil {
 		fmt.Println("ERROR: unmarshaling the config yml file.")
 		return

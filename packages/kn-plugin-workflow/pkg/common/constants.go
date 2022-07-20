@@ -35,4 +35,6 @@ const (
 	DEFAULT_TAG                                      = "latest"
 	WORKFLOW_QUARKUS_VERSION                         = "WORKFLOW_QUARKUS_VERSION"
 	WORKFLOW_KOGITO_VERSION                          = "WORKFLOW_KOGITO_VERSION"
+	WORKFLOW_CONFIG_YML                              = "workflow.config.yml"
+	WORKFLOW_SW_JSON                                 = "workflow.sw.json"
 )

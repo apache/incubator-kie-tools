@@ -117,10 +117,10 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
+	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/%s", cfg.ProjectName, common.WORKFLOW_SW_JSON)
 	CreateWorkflow(workflowFilePath)
 
-	configFilePath := fmt.Sprintf("./%s/workflow.config.yml", cfg.ProjectName)
+	configFilePath := fmt.Sprintf("./%s/%s", cfg.ProjectName, common.WORKFLOW_CONFIG_YML)
 	CreateConfig(configFilePath, cfg.QuarkusVersion, cfg.KogitoVersion)
 
 	finish := time.Since(start)
