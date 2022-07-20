@@ -23,6 +23,8 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.core.util.StringUtils;
+import org.kie.workbench.common.stunner.core.util.UUID;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.Start;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
@@ -84,7 +86,12 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> WORKFLOW_UNMARSHALLER =
             (context, workflow) -> {
-                Node<View<Workflow>, Edge> workflowNode = context.addNodeByUUID(workflow.name, workflow);
+                String workflowId = workflow.id != null ? workflow.id : workflow.key;
+                if (StringUtils.isEmpty(workflowId)) {
+                    workflowId = UUID.uuid();
+                    workflow.id = workflowId;
+                }
+                Node<View<Workflow>, Edge> workflowNode = context.addNodeByUUID(workflowId, workflow);
                 workflowNode.getContent().setBounds(Bounds.create(0, 0, 950, 950));
 
                 // Set workflow node into the context state.
