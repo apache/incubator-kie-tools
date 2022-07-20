@@ -76,7 +76,7 @@ public class SWEditorSeleniumIT {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().setup();
+        WebDriverManager.firefoxdriver().useMirror().setup();
     }
 
     @Before
