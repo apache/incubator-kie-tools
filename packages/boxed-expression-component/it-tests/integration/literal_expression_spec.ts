@@ -54,11 +54,9 @@ describe("Literal Expression Tests", () => {
   });
 
   it("Check monaco-editor autocompletion", () => {
-    cy.get(".literal-expression").within(() => {
-      cy.get(".literal-expression-body").dblclick().type("abs");
-      cy.get("div[class='monaco-list-rows']:contains('abs(n)')").should("be.visible").click();
-      cy.get("div[class='monaco-list-rows']").should("not.be.visible");
-      cy.get(".literal-expression-body").should("have.text", "abs(n)");
-    });
+    cy.get(".literal-expression-body").dblclick().type("abs");
+    cy.get("div[class='monaco-list-rows']:contains('abs(n)')").should("be.visible").click();
+    cy.get("div[class='monaco-list-rows']").should("not.be.visible");
+    cy.get(".editable-cell-value").should("have.text", "abs()");
   });
 });
