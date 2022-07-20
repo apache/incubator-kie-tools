@@ -36,7 +36,7 @@ func NewConfigCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 		Use:   "config",
 		Short: "Updates the config workflow file in the current directory",
 		Long: `
-	 Updates a config workflow file in the current directory.
+	 Updates the config workflow file in the current directory.
 		 `,
 		Example: `
 	 # Update the Quarkus Version
