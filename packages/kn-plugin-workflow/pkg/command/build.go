@@ -19,6 +19,7 @@ package command
 import (
 	"fmt"
 	"os/exec"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -168,45 +169,47 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 		fmt.Println("ERROR: either --image or --image-name should be used")
 		err = fmt.Errorf("missing flags")
 	}
+
 	if cfg.JibPodman && cfg.Push {
 		fmt.Println("ERROR: can't use --jib-podman with --push")
 		err = fmt.Errorf("invalid flags")
 	}
+
 	if cfg.JibPodman && cfg.Jib {
 		fmt.Println("ERROR: can't use --jib-podman with --jib")
 		err = fmt.Errorf("invalid flags")
 	}
+
 	return
 }
 
+// Maven doesn't upgrade the version in the pom.xml.
+// This function removes the existent version and add the new one.
 func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	var addExtension *exec.Cmd
+	var removeExtension *exec.Cmd
 
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
-		addExtension = exec.Command("mvn", "quarkus:add-extension",
-			fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion)))
+		removeExtension, addExtension = removeAndAddQuarkusExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion)
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
-		addExtension = exec.Command("mvn", "quarkus:add-extension",
-			fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion)))
-	}
-	if err := common.RunCommand(
-		addExtension,
-		cfg.Verbose,
-		"build",
-		getAddExtensionFriendlyMessages(),
-	); err != nil {
-		fmt.Println("ERROR: It was't possible to add Quarkus extensios to build the project.")
-		return err
+		removeExtension, addExtension = removeAndAddQuarkusExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion)
 	}
 
-	fmt.Println("✅ Quarkus extension was successfully add to the project")
+	runManageExtension(removeExtension, cfg.Verbose)
+	runManageExtension(addExtension, cfg.Verbose)
+
+	fmt.Println("✅ Quarkus extension was successfully add to the project pom.xml")
 	return nil
 }
 
 func runBuildImage(cfg BuildCmdConfig) error {
 	registry, repository, name, tag := getImageConfig(cfg)
+	if err := checkImageName(name); err != nil {
+		return err
+	}
+
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
@@ -245,6 +248,37 @@ func runBuildImage(cfg BuildCmdConfig) error {
 
 	fmt.Println("✅ Build success")
 	return nil
+}
+
+func removeAndAddQuarkusExtension(extension string, version string) (removeExtension *exec.Cmd, addExtension *exec.Cmd) {
+	removeExtension = exec.Command("mvn", "quarkus:remove-extension",
+		fmt.Sprintf("-Dextensions=%s", extension))
+	addExtension = exec.Command("mvn", "quarkus:add-extension",
+		fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(extension, version)))
+
+	return
+}
+
+func runManageExtension(command *exec.Cmd, verbose bool) error {
+	if err := common.RunCommand(
+		command,
+		verbose,
+		"build",
+		getAddExtensionFriendlyMessages(),
+	); err != nil {
+		fmt.Println("ERROR: It wasn't possible to add Quarkus extension in your pom.xml.")
+		return err
+	}
+	return nil
+}
+
+func checkImageName(name string) (err error) {
+	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
+	if !matched {
+		fmt.Println("ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?")
+		err = fmt.Errorf("invalid image name")
+	}
+	return
 }
 
 // Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
@@ -326,12 +360,12 @@ func getMavenCommand() string {
 
 func getAddExtensionFriendlyMessages() []string {
 	return []string{
-		" Downloading Quarkus extension...",
-		" Still downloading Quarkus extension",
-		" Still downloading Quarkus extension",
-		" Yes, still downloading Quarkus extension",
+		" Adding Quarkus extension...",
+		" Still Adding Quarkus extension",
+		" Still Adding Quarkus extension",
+		" Yes, still Adding Quarkus extension",
 		" Don't give up on me",
-		" Still downloading Quarkus extension",
+		" Still Adding Quarkus extension",
 		" This is taking a while",
 	}
 }
