@@ -42,6 +42,5 @@ func NewVersionCommand(version string) *cobra.Command {
 }
 
 func runVersion(cmd *cobra.Command, args []string, version string) {
-	// verbose := viper.GetBool("verbose")
 	fmt.Printf("Version %s\n", version)
 }

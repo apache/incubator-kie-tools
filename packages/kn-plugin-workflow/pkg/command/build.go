@@ -131,7 +131,12 @@ func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.Depe
 		}
 	}
 
-	if err := runAddExtension(cfg, dependenciesVersion.QuarkusVersion); err != nil {
+	quarkusVersion, _, err := ReadConfig(dependenciesVersion)
+	if err != nil {
+		return err
+	}
+
+	if err := runAddExtension(cfg, quarkusVersion); err != nil {
 		return err
 	}
 
@@ -191,6 +196,7 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		"build",
 		getAddExtensionFriendlyMessages(),
 	); err != nil {
+		fmt.Println("ERROR: It was't possible to add Quarkus extensios to build the project.")
 		return err
 	}
 

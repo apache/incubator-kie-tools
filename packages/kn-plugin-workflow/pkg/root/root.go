@@ -49,8 +49,9 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
-	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewBuildCommand(cfg.DependenciesVersion))
+	cmd.AddCommand(command.NewConfigCommand(cfg.DependenciesVersion))
+	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewDeployCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 

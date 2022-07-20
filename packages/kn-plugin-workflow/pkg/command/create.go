@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os/exec"
 	"time"
 
@@ -31,6 +30,10 @@ type CreateCmdConfig struct {
 	// Quarkus project options
 	ProjectName string // Project name
 	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
+
+	// Dependencies versions
+	QuarkusVersion string
+	KogitoVersion  string
 
 	// Plugin options
 	Verbose bool
@@ -60,24 +63,26 @@ func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 	{{.Name}} create --extensions kogito-addons-quarkus-persistence-postgresql,quarkus-core
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name", "extension"),
+		PreRunE:    common.BindEnv("name", "extension", "quarkus-version", "kogito-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runCreate(cmd, args, dependenciesVersion)
+		return runCreate(cmd, args)
 	}
 
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
+	cmd.Flags().String("quarkus-version", dependenciesVersion.QuarkusVersion, "Quarkus version to be set in the config file.")
+	cmd.Flags().String("kogito-version", dependenciesVersion.KogitoVersion, "Kogito version to be set in the config file.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
 
-func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
+func runCreate(cmd *cobra.Command, args []string) error {
 	start := time.Now()
 
-	cfg, err := runCreateCmdConfig(cmd, dependenciesVersion)
+	cfg, err := runCreateCmdConfig(cmd)
 	if err != nil {
 		return fmt.Errorf("initializing create config: %w", err)
 	}
@@ -93,10 +98,10 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 
 	create := exec.Command(
 		"mvn",
-		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", dependenciesVersion.QuarkusVersion),
+		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", cfg.QuarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
-		fmt.Sprintf("-DplatformVersion=%s", dependenciesVersion.QuarkusVersion),
+		fmt.Sprintf("-DplatformVersion=%s", cfg.QuarkusVersion),
 		fmt.Sprintf("-DprojectArtifactId=%s", cfg.ProjectName),
 		fmt.Sprintf("-Dextensions=%s", cfg.Extesions))
 
@@ -112,7 +117,11 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 		return err
 	}
 
-	generateWorkflow(cfg)
+	workflowFilePath := fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
+	CreateWorkflow(workflowFilePath)
+
+	configFilePath := fmt.Sprintf("./%s/workflow.config.yml", cfg.ProjectName)
+	CreateConfig(configFilePath, cfg.QuarkusVersion, cfg.KogitoVersion)
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Project creation took: %s \n", finish)
@@ -120,34 +129,25 @@ func runCreate(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 }
 
 // runCreateCmdConfig returns the configs from the current execution context
-func runCreateCmdConfig(cmd *cobra.Command, dependenciesVersion common.DependenciesVersion) (cfg CreateCmdConfig, err error) {
+func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
+	quarkusVersion := viper.GetString("quarkus-version")
+	kogitoVersion := viper.GetString("kogito-version")
+
 	cfg = CreateCmdConfig{
 		ProjectName: viper.GetString("name"),
 		Extesions: fmt.Sprintf("%s,%s,%s,%s,%s",
-			common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, dependenciesVersion.QuarkusVersion),
-			common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, dependenciesVersion.QuarkusVersion),
-			common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, dependenciesVersion.KogitoVersion),
-			common.GetVersionedExtension(common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, dependenciesVersion.KogitoVersion),
-			viper.GetString("extension")),
+			common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion),
+			common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion),
+			common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion),
+			common.GetVersionedExtension(common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, kogitoVersion),
+			viper.GetString("extension"),
+		),
+
+		QuarkusVersion: quarkusVersion,
+		KogitoVersion:  kogitoVersion,
+
 		Verbose: viper.GetBool("verbose"),
 	}
-	return
-}
-
-func generateWorkflow(cfg CreateCmdConfig) (err error) {
-	var workflowFilePath = fmt.Sprintf("./%s/src/main/resources/workflow.sw.json", cfg.ProjectName)
-	workflowFileData, err := GetWorkflowTemplate()
-	if err != nil {
-		return err
-	}
-
-	err = ioutil.WriteFile(workflowFilePath, workflowFileData, 0644)
-	if err != nil {
-		fmt.Println("ERROR: writing the workflow json file.")
-		return err
-	}
-
-	fmt.Printf("Workflow file created on %s \n", workflowFilePath)
 	return
 }
 

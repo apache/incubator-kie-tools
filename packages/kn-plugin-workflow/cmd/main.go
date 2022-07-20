@@ -29,8 +29,8 @@ var quarkusVersion, kogitoVersion, cliVersion string
 func main() {
 	cfg := root.RootCmdConfig{
 		DependenciesVersion: common.DependenciesVersion{
-			QuarkusVersion: common.GetQuarkusVersion(quarkusVersion),
-			KogitoVersion:  common.GetKogitoVersion(kogitoVersion),
+			QuarkusVersion: quarkusVersion,
+			KogitoVersion:  kogitoVersion,
 		},
 		Version: cliVersion,
 	}
