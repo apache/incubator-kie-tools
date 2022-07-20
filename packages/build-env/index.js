@@ -363,6 +363,11 @@ const ENV_VARS = {
     default: "4.10.0-0.okd-2022-06-24-212905",
     description: "",
   },
+  KN_PLUGIN_WORKFLOW__version: {
+    name: "KN_PLUGIN_WORKFLOW__version",
+    default: version,
+    description: "Knative Workflow plugin version",
+  },
   KN_PLUGIN_WORKFLOW__quarkusVersion: {
     name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
     default: "2.10.0.Final",
@@ -496,6 +501,7 @@ module.exports = {
   },
 
   knPluginWorkflow: {
+    version: getOrDefault(ENV_VARS.KN_PLUGIN_WORKFLOW__version),
     quarkusVersion: getOrDefault(ENV_VARS.KN_PLUGIN_WORKFLOW__quarkusVersion),
     kogitoVersion: getOrDefault(ENV_VARS.KN_PLUGIN_WORKFLOW__kogitoVersion),
   },
