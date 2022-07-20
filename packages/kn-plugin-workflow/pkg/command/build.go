@@ -19,6 +19,7 @@ package command
 import (
 	"fmt"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -180,6 +181,7 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 
 func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	var addExtension *exec.Cmd
+
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		addExtension = exec.Command("mvn", "quarkus:add-extension",
@@ -189,7 +191,6 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		addExtension = exec.Command("mvn", "quarkus:add-extension",
 			fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion)))
 	}
-
 	if err := common.RunCommand(
 		addExtension,
 		cfg.Verbose,
@@ -314,6 +315,13 @@ func getExecutableNameConfig(cfg BuildCmdConfig) string {
 		executableName += "docker"
 	}
 	return executableName
+}
+
+func getMavenCommand() string {
+	if runtime.GOOS == "windows" {
+		return common.GetOsCommand("mvnw.cmd")
+	}
+	return common.GetOsCommand("mvnw")
 }
 
 func getAddExtensionFriendlyMessages() []string {

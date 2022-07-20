@@ -22,6 +22,7 @@ import (
 	"html/template"
 	"os"
 	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -119,4 +120,12 @@ func getEnv(key string, fallback string) string {
 		return value
 	}
 	return fallback
+}
+
+func GetOsCommand(command string) string {
+	var osCommand = "./" + command
+	if runtime.GOOS == "windows" {
+		osCommand = ".\\" + command
+	}
+	return osCommand
 }

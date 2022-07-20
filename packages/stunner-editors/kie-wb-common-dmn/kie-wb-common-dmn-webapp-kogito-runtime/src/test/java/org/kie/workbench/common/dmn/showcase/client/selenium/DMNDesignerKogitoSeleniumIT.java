@@ -344,6 +344,8 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         final String fixture = loadResource("single-diagram-without-dmndi.xml");
         setContent(fixture);
 
+        selectAutomaticLayout();
+
         final String actual = getContent();
         assertThat(actual).isNotBlank();
         XmlAssert.assertThat(actual)
@@ -1705,6 +1707,8 @@ public class DMNDesignerKogitoSeleniumIT extends DMNDesignerBaseIT {
         final List<String> ignoredAttributes = asList("id", "dmnElementRef");
 
         setContent(fixture);
+
+        selectAutomaticLayout();
 
         final String actual = getContent();
         assertThat(actual).isNotBlank();

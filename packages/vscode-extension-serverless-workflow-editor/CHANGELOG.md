@@ -1,3 +1,17 @@
+# 0.21.1 (alpha)
+
+- [KOGITO-7586](https://issues.redhat.com/browse/KOGITO-7586) - [SWF Editor] Replace MAS SSO with RH SSO in the Service Registry authentication
+
+# 0.21.0 (alpha)
+
+- [KOGITO-7119](https://issues.redhat.com/browse/KOGITO-7119) - Establish test runner for serverless tooling in vscode
+- [KOGITO-7477](https://issues.redhat.com/browse/KOGITO-7477) - Better error handling VS Code Service Registry integration
+- [KOGITO-7084](https://issues.redhat.com/browse/KOGITO-7084) - SWF Viewer - UI blinks and state is lost, once reloading diagram continuously
+- [KOGITO-7500](https://issues.redhat.com/browse/KOGITO-7500) - [SWF Editor] Enable integrations tests for SWF editor extension
+- [KOGITO-6903](https://issues.redhat.com/browse/KOGITO-6903) - Integrate stunner-based SWF Diagram Editor with multiplying architecture
+- [KOGITO-7331](https://issues.redhat.com/browse/KOGITO-7331) - Missing data when the serverless workflow definition is unmarshalled
+- [KOGITO-7332](https://issues.redhat.com/browse/KOGITO-7332) - Editor adds non-required attribute to serverless workflow definition
+
 # 0.20.0 (alpha)
 
 - [KOGITO-7157](https://issues.redhat.com/browse/KOGITO-7157) - Autocompletion does not work in Serverless Workflow editor

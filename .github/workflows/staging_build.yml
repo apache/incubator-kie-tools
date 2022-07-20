@@ -579,7 +579,7 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: ${{ github.workspace }}/kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-darwin-amd64
-          asset_name: STAGING__kie_sandbox_kn-workflow-darwin-amd64-${{ inputs.tag }}
+          asset_name: STAGING__kn-workflow-darwin-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
       - name: "STAGING: Knative CLI Workflow Plugin for Windows (Windows only)"
@@ -590,5 +590,5 @@ jobs:
         with:
           upload_url: ${{ inputs.upload_asset_url }}
           asset_path: "${{ github.workspace }}/kie-tools/packages/kn-plugin-workflow/dist/kn-workflow-windows-amd64.exe"
-          asset_name: "STAGING__kie_sandbox_kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
+          asset_name: "STAGING__kn-workflow-windows-amd64-${{ inputs.tag }}.exe"
           asset_content_type: application/octet-stream

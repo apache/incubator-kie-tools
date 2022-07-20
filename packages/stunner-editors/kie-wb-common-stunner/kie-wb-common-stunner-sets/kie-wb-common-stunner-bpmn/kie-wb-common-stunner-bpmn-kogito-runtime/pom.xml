@@ -33,8 +33,10 @@
   <properties>
     <skipITs>false</skipITs>
     <org.kie.bpmn.kogito.browser.headless>true</org.kie.bpmn.kogito.browser.headless>
-    <!-- We do not want to run selenium tests in default profile -->
-    <kogito.it.tests.excludes>**/*IT.java</kogito.it.tests.excludes>
+    <kogito.selenium.it.tests>**/selenium/*IT.java</kogito.selenium.it.tests>
+
+    <!-- this module is just and "integration" of components, to minimize CI times, we skip sonar here -->
+    <sonar.skip>true</sonar.skip>
   </properties>
 
 
@@ -680,9 +682,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>${kogito.it.tests.excludes}</exclude>
-          </excludes>
           <systemPropertyVariables>
             <org.kie.bpmn.kogito.browser.headless>${org.kie.bpmn.kogito.browser.headless}</org.kie.bpmn.kogito.browser.headless>
             <org.kie.bpmn.kogito.screenshots.dir>${project.build.directory}/screenshots</org.kie.bpmn.kogito.screenshots.dir>
@@ -749,17 +748,14 @@
         </plugins>
       </build>
     </profile>
+
+    <!-- We skip tests and jacoco coverage reports for this module as it contains just selenium tests -->
+    <!-- Selenium tests can not be used for coverage measurement we collect on sonarcloud -->
     <profile>
-      <id>kogito-it-tests</id>
-      <activation>
-        <property>
-          <name>integration-tests</name>
-          <value>true</value>
-        </property>
-      </activation>
+      <id>run-code-coverage</id>
       <properties>
-        <!-- We want to run selenium tests in kogito-tests profile -->
-        <kogito.it.tests.excludes></kogito.it.tests.excludes>
+        <skipITs>true</skipITs>
+        <code.coverage.disabled>true</code.coverage.disabled>
       </properties>
     </profile>
   </profiles>
