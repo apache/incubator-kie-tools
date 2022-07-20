@@ -251,7 +251,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 
 func removeAndAddQuarkusExtension(extension string, version string) (removeExtension *exec.Cmd, addExtension *exec.Cmd) {
 	removeExtension = exec.Command("mvn", "quarkus:remove-extension",
-		fmt.Sprintf("-Dextensions=%s", extension))
+		fmt.Sprintf("-Dextensions=%s,%s", common.QUARKUS_CONTAINER_IMAGE_JIB, common.QUARKUS_CONTAINER_IMAGE_DOCKER))
 	addExtension = exec.Command("mvn", "quarkus:add-extension",
 		fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(extension, version)))
 
