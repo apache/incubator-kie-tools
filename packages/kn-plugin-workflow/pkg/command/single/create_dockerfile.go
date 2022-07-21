@@ -29,19 +29,46 @@ func GenerateDockerfile(dockerfilePath string) (err error) {
 
 	defer file.Close()
 	_, err = file.WriteString(`
-	FROM quay.io/lmotta/kn-plugin-workflow:0.0.1
+	FROM quay.io/lmotta/kn-workflow:0.0.1 as builder
 
-	WORKDIR /tmp/kn-workflow/
-
+	WORKDIR /tmp/kn-plugin-workflow/
 	ARG WORKFLOW_FILE
-
-	COPY ${WORKFLOW_FILE} ./serverless-workflow/src/main/resources/
-
-	RUN cd serverless-workflow && ./mvnw package -Dquarkus.kubernetes.deployment-target=knative
-
+	COPY ${WORKFLOW_FILE} ./kogito-workflow/src/main/resources/
+	# copy application.properties if exists
+	# get project name
+	# quarkus version
+	# kogito version
+	# extension
+	# write command in args, and put in run. ./mvnw quarkus:add-extension ...
+	
+	RUN cd kogito-workflow && ./mvnw package -Dnative -Dquarkus.kubernetes.deployment-target=knative
+	
+	# docker build -f Dockerfile.workflow --target=kubernetes --output type=local,dest=kubernetes .
+	FROM scratch as kubernetes
+	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/kubernetes .
+	
+	FROM quay.io/quarkus/quarkus-micro-image:1.0 as runner
+	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/*-runner /tmp/runner
 	EXPOSE 8080
-
-	ENTRYPOINT [\"/tmp/kn-workflow/serverless-workflow/target/serverless-workflow-0.0.0-runner\"]`)
+	CMD ["/tmp/runner", "-Dquarkus.http.host=0.0.0.0"]
+	
+	# change to minimal image
+	# docker build -f Dockerfile.workflow --target=dev -t lmotta/abc:dev .
+	# docker container run -it --mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/kogito-workflow/src/main/resources lmotta/abc:dev
+	FROM openjdk:11 as dev
+	
+	WORKDIR /tmp/kn-plugin-workflow/
+	COPY --from=builder /root/.m2/ /root/.m2/
+	COPY --from=builder /tmp/kn-plugin-workflow/ .
+	
+	EXPOSE 8080
+	# VOLUME
+	# EXPOSE 	
+	# make a volume between current folder and resources folder
+	WORKDIR /tmp/kn-plugin-workflow/kogito-workflow
+	CMD ["./mvnw", "quarkus:dev"]
+	
+`)
 
 	if err != nil {
 		return fmt.Errorf("error creating Dockerfile.workflow: %w", err)
