@@ -94,7 +94,7 @@ $ build-env myOtherProperty
 bar
 
 # With custom value:
-export MY_VAR='fooz'
+$ export MY_VAR='fooz'
 $ cd ~/[my-repo]/packages/a
 $ build-env myProperty
 fooz
