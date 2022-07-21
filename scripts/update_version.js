@@ -74,6 +74,7 @@ Promise.resolve()
   })
   .then((version) => {
     console.info(`[update-version] Updated to '${version}'.`);
+    console.info(`[update-version] Done.`);
   })
   .catch((error) => {
     console.error(error);
