@@ -98,14 +98,13 @@ const compareValues = (
 ) => {
   return targetValues.map((targetValue: TargetValueType) => {
     if (sourceValues.indexOf(targetValue.value) === -1) {
-      const errObj = {
+      return {
         message: `Missing ${targetValue.value} in ${nodeElement}`,
         range: {
           start: textDocument.positionAt(targetValue.offset),
           end: textDocument.positionAt(targetValue.offset + targetValue.length),
         },
       };
-      return errObj;
     }
   });
 };
