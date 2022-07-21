@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
+import * as buildEnv from "../../env";
 
 describe("List Expression Tests", () => {
   beforeEach(() => {

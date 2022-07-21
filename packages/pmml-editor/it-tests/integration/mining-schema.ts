@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as buildEnv from "@kie-tools/build-env";
+import * as buildEnv from "../../env";
 
 describe("Mining Schema Test", () => {
   beforeEach(() => {
