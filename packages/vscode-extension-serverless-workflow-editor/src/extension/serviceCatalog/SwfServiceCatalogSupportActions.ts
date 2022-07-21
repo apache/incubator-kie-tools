@@ -52,6 +52,7 @@ export class SwfServiceCatalogSupportActions {
     });
 
     const serviceFileAbsolutePosixPath = posixPath.join(specsDirAbsolutePosixPath, serviceFileName);
+    console.log({ specsDirAbsolutePosixPath, serviceFileAbsolutePosixPath });
     vscode.workspace.fs.writeFile(
       vscode.Uri.parse(serviceFileAbsolutePosixPath),
       encoder.encode(args.containingService.rawContent)

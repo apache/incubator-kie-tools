@@ -21,7 +21,11 @@ import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
-import { configurationTokenKeys, getInterpolatedConfigurationValue } from "./ConfigurationInterpolation";
+import {
+  configurationTokenKeys,
+  definitelyPosixPath,
+  getInterpolatedConfigurationValue,
+} from "./ConfigurationInterpolation";
 
 const encoder = new TextEncoder();
 
@@ -68,15 +72,16 @@ export async function generateSvg(args: {
   }
 
   const svgFileName = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.document.uri.fsPath,
-    value: svgFilenameTemplate || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
+    currentFileAbsolutePosixPath: editor.document.document.uri.path,
+    value:
+      definitelyPosixPath(svgFilenameTemplate) || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
   });
   const svgFilePath = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.document.uri.fsPath,
-    value: svgFilePathTemplate || `${configurationTokenKeys["${fileDirname}"]}`,
+    currentFileAbsolutePosixPath: editor.document.document.uri.path,
+    value: definitelyPosixPath(svgFilePathTemplate) || `${configurationTokenKeys["${fileDirname}"]}`,
   });
 
-  const svgUri = editor.document.document.uri.with({ path: __path.resolve(svgFilePath, svgFileName) });
+  const svgUri = editor.document.document.uri.with({ path: __path.posix.resolve(svgFilePath, svgFileName) });
 
   await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
 

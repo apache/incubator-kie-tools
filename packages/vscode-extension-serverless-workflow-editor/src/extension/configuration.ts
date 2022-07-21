@@ -17,8 +17,10 @@
 import {
   configurationTokenKeys,
   getInterpolatedConfigurationValue,
+  definitelyPosixPath,
 } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 import * as vscode from "vscode";
+import * as path from "path";
 import { SwfServiceRegistriesSettings } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 
 export const WEBVIEW_EDITOR_VIEW_TYPE = "kieKogitoWebviewEditorsServerlessWorkflow";
@@ -85,13 +87,13 @@ export class SwfVsCodeExtensionConfiguration {
 
     await vscode.workspace
       .getConfiguration()
-      .update(CONFIGURATION_SECTIONS.automaticallyOpenDiagramEditorAlongsideTextEditor, picked);
+      .update(CONFIGURATION_SECTIONS.automaticallyOpenDiagramEditorAlongsideTextEditor, picked, true);
   }
 
   public getConfiguredSpecsDirPath() {
     return vscode.workspace
       .getConfiguration()
-      .get(CONFIGURATION_SECTIONS.specsStoragePath, `${configurationTokenKeys["${fileDirname}"]}/specs`);
+      .get(CONFIGURATION_SECTIONS.specsStoragePath, path.join(configurationTokenKeys["${fileDirname}"], "/specs"));
   }
 
   public getConfiguredFlagShouldReferenceServiceRegistryFunctionsWithUrls() {
@@ -101,9 +103,13 @@ export class SwfVsCodeExtensionConfiguration {
   }
 
   public getInterpolatedSpecsDirAbsolutePosixPath(args: { baseFileAbsolutePosixPath: string }) {
+    console.log({
+      value: vscode.Uri.parse(this.getConfiguredSpecsDirPath()).path,
+      config: this.getConfiguredSpecsDirPath(),
+    });
     return getInterpolatedConfigurationValue({
       currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
-      value: this.getConfiguredSpecsDirPath(),
+      value: definitelyPosixPath(this.getConfiguredSpecsDirPath()),
     });
   }
 
