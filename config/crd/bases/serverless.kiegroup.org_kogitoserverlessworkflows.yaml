@@ -1,0 +1,592 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: kogitoserverlessworkflows.serverless.kiegroup.org
+spec:
+  group: serverless.kiegroup.org
+  names:
+    kind: KogitoServerlessWorkflow
+    listKind: KogitoServerlessWorkflowList
+    plural: kogitoserverlessworkflows
+    singular: kogitoserverlessworkflow
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows
+          API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: KogitoServerlessWorkflowSpec defines the desired state of
+              KogitoServerlessWorkflow
+            properties:
+              auth:
+                properties:
+                  name:
+                    type: string
+                  properties:
+                    description: 'TODO: AuthProperties to be defined'
+                    type: object
+                  scheme:
+                    type: string
+                required:
+                - name
+                - properties
+                - scheme
+                type: object
+              autoRetries:
+                type: boolean
+              conditions:
+                items:
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+                  required:
+                  - name
+                  - value
+                  type: object
+                type: array
+              errors:
+                items:
+                  properties:
+                    code:
+                      type: string
+                    description:
+                      type: string
+                    name:
+                      type: string
+                  required:
+                  - code
+                  - name
+                  type: object
+                type: array
+              events:
+                items:
+                  properties:
+                    correlation:
+                      description: 'TODO: EventCorrelationRule to be defined'
+                      items:
+                        type: object
+                      type: array
+                    dataOnly:
+                      type: boolean
+                    kind:
+                      description: 'TODO: Kind should be an Enum'
+                      type: string
+                    metadata:
+                      items:
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                        required:
+                        - key
+                        - value
+                        type: object
+                      type: array
+                    name:
+                      type: string
+                    source:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - name
+                  - source
+                  - type
+                  type: object
+                type: array
+              functions:
+                items:
+                  properties:
+                    authRef:
+                      type: string
+                    metadata:
+                      items:
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                        required:
+                        - key
+                        - value
+                        type: object
+                      type: array
+                    name:
+                      type: string
+                    operation:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - name
+                  - operation
+                  - type
+                  type: object
+                type: array
+              keepAlive:
+                type: boolean
+              retries:
+                properties:
+                  delay:
+                    type: string
+                  increment:
+                    type: string
+                  jitter:
+                    type: string
+                  maxAttempts:
+                    type: integer
+                  maxDelay:
+                    type: string
+                  multiplier:
+                    type: string
+                  name:
+                    type: string
+                required:
+                - name
+                type: object
+              secrets:
+                items:
+                  description: Secret holds secret data of a certain type. The total
+                    bytes of the values in the Data field must be less than MaxSecretSize
+                    bytes.
+                  properties:
+                    apiVersion:
+                      description: 'APIVersion defines the versioned schema of this
+                        representation of an object. Servers should convert recognized
+                        schemas to the latest internal value, and may reject unrecognized
+                        values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                      type: string
+                    data:
+                      additionalProperties:
+                        format: byte
+                        type: string
+                      description: Data contains the secret data. Each key must consist
+                        of alphanumeric characters, '-', '_' or '.'. The serialized
+                        form of the secret data is a base64 encoded string, representing
+                        the arbitrary (possibly non-string) data value here. Described
+                        in https://tools.ietf.org/html/rfc4648#section-4
+                      type: object
+                    immutable:
+                      description: Immutable, if set to true, ensures that data stored
+                        in the Secret cannot be updated (only object metadata can
+                        be modified). If not set to true, the field can be modified
+                        at any time. Defaulted to nil.
+                      type: boolean
+                    kind:
+                      description: 'Kind is a string value representing the REST resource
+                        this object represents. Servers may infer this from the endpoint
+                        the client submits requests to. Cannot be updated. In CamelCase.
+                        More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                      type: string
+                    metadata:
+                      description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                      type: object
+                    stringData:
+                      additionalProperties:
+                        type: string
+                      description: stringData allows specifying non-binary secret
+                        data in string form. It is provided as a write-only input
+                        field for convenience. All keys and values are merged into
+                        the data field on write, overwriting any existing values.
+                        The stringData field is never output when reading from the
+                        API.
+                      type: object
+                    type:
+                      description: 'Used to facilitate programmatic handling of secret
+                        data. More info: https://kubernetes.io/docs/concepts/configuration/secret/#secret-types'
+                      type: string
+                  type: object
+                type: array
+              start:
+                type: string
+              states:
+                properties:
+                  actionMode:
+                    type: string
+                  actions:
+                    items:
+                      type: object
+                    type: array
+                  batchSize:
+                    type: integer
+                  branches:
+                    items:
+                      type: string
+                    type: array
+                  completionType:
+                    type: string
+                  data:
+                    format: byte
+                    type: string
+                  dataConditions:
+                    description: 'TODO: Define a type for DataCondition objects'
+                    items:
+                      type: string
+                    type: array
+                  defaultCondition:
+                    description: 'TODO: Define a type for DefaultCondition object'
+                    type: string
+                  duration:
+                    type: string
+                  eventConditions:
+                    description: 'TODO: Define a type for EventContitions objects'
+                    items:
+                      type: string
+                    type: array
+                  eventRef:
+                    type: string
+                  exclusive:
+                    type: boolean
+                  inputCollection:
+                    type: string
+                  iterationParam:
+                    type: string
+                  mode:
+                    type: string
+                  name:
+                    type: string
+                  numCompleted:
+                    type: integer
+                  onEvents:
+                    description: 'TODO: Double-check that we can use the Event type
+                      here'
+                    items:
+                      properties:
+                        correlation:
+                          description: 'TODO: EventCorrelationRule to be defined'
+                          items:
+                            type: object
+                          type: array
+                        dataOnly:
+                          type: boolean
+                        kind:
+                          description: 'TODO: Kind should be an Enum'
+                          type: string
+                        metadata:
+                          items:
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: string
+                            required:
+                            - key
+                            - value
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        source:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                      - name
+                      - source
+                      - type
+                      type: object
+                    type: array
+                  outputCollection:
+                    type: string
+                  type:
+                    type: string
+                required:
+                - name
+                - type
+                type: object
+              test:
+                description: BaseWorkflow describes the partial Workflow definition
+                  that does not rely on generic interfaces to make it easy for custom
+                  unmarshalers implementations to unmarshal the common data structure.
+                properties:
+                  annotations:
+                    description: Annotations List of helpful terms describing the
+                      workflows intended purpose, subject areas, or other important
+                      qualities
+                    items:
+                      type: string
+                    type: array
+                  auth:
+                    description: Auth definitions can be used to define authentication
+                      information that should be applied to resources defined in the
+                      operation property of function definitions. It is not used as
+                      authentication information for the function invocation, but
+                      just to access the resource containing the function invocation
+                      information.
+                    properties:
+                      name:
+                        description: Name Unique auth definition name
+                        type: string
+                      properties:
+                        description: Properties ...
+                      scheme:
+                        description: Scheme Defines the auth type
+                        type: string
+                    required:
+                    - name
+                    - properties
+                    type: object
+                  autoRetries:
+                    description: AutoRetries If set to true, actions should automatically
+                      be retried on unchecked errors. Default is false
+                    type: boolean
+                  constants:
+                    additionalProperties:
+                      description: RawMessage is a raw encoded JSON value. It implements
+                        Marshaler and Unmarshaler and can be used to delay JSON decoding
+                        or precompute a JSON encoding.
+                      format: byte
+                      type: string
+                    description: Constants Workflow constants are used to define static,
+                      and immutable, data which is available to Workflow Expressions.
+                    type: object
+                  dataInputSchema:
+                    description: DataInputSchema URI of the JSON Schema used to validate
+                      the workflow data input
+                    properties:
+                      failOnValidationErrors:
+                        type: boolean
+                      schema:
+                        type: string
+                    required:
+                    - failOnValidationErrors
+                    - schema
+                    type: object
+                  description:
+                    description: Workflow description
+                    type: string
+                  errors:
+                    description: Errors declarations for this Workflow definition
+                    items:
+                      description: Error declaration for workflow definitions
+                      properties:
+                        code:
+                          description: Code OnError code. Can be used in addition
+                            to the name to help runtimes resolve to technical errors/exceptions.
+                            Should not be defined if error is set to '*'
+                          type: string
+                        description:
+                          description: OnError description
+                          type: string
+                        name:
+                          description: Name Domain-specific error name
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                  expressionLang:
+                    description: Identifies the expression language used for workflow
+                      expressions. Default is 'jq'
+                    type: string
+                  id:
+                    description: Workflow unique identifier
+                    type: string
+                  keepActive:
+                    description: If 'true', workflow instances is not terminated when
+                      there are no active execution paths. Instance can be terminated
+                      via 'terminate end definition' or reaching defined 'execTimeout'
+                    type: boolean
+                  key:
+                    description: Key Domain-specific workflow identifier
+                    type: string
+                  metadata:
+                    description: Metadata custom information shared with the runtime
+                  name:
+                    description: Workflow name
+                    type: string
+                  secrets:
+                    description: Secrets allow you to access sensitive information,
+                      such as passwords, OAuth tokens, ssh keys, etc inside your Workflow
+                      Expressions.
+                    items:
+                      type: string
+                    type: array
+                  specVersion:
+                    description: Serverless Workflow schema version
+                    type: string
+                  start:
+                    description: Start definition
+                    properties:
+                      schedule:
+                        description: Schedule ...
+                        properties:
+                          cron:
+                            description: Cron ...
+                            properties:
+                              expression:
+                                description: Repeating interval (cron expression)
+                                  describing when the workflow instance should be
+                                  created
+                                type: string
+                              validUntil:
+                                description: Specific date and time (ISO 8601 format)
+                                  when the cron expression invocation is no longer
+                                  valid
+                                type: string
+                            required:
+                            - expression
+                            type: object
+                          interval:
+                            description: Time interval (must be repeating interval)
+                              described with ISO 8601 format. Declares when workflow
+                              instances will be automatically created.
+                            type: string
+                          timezone:
+                            description: 'Timezone name used to evaluate the interval
+                              & cron-expression. (default: UTC)'
+                            type: string
+                        type: object
+                      stateName:
+                        type: string
+                    required:
+                    - stateName
+                    type: object
+                  timeouts:
+                    description: Timeouts definition for Workflow, State, Action,
+                      Branch, and Event consumption.
+                    properties:
+                      actionExecTimeout:
+                        description: ActionExecTimeout Single actions definition execution
+                          timeout duration (ISO 8601 duration format)
+                        type: string
+                      branchExecTimeout:
+                        description: BranchExecTimeout Single branch execution timeout
+                          duration (ISO 8601 duration format)
+                        type: string
+                      eventTimeout:
+                        description: EventTimeout Timeout duration to wait for consuming
+                          defined events (ISO 8601 duration format)
+                        type: string
+                      stateExecTimeout:
+                        description: StateExecTimeout Total state execution timeout
+                          (including retries) (ISO 8601 duration format)
+                        properties:
+                          single:
+                            description: Single state execution timeout, not including
+                              retries (ISO 8601 duration format)
+                            type: string
+                          total:
+                            description: Total state execution timeout, including
+                              retries (ISO 8601 duration format)
+                            type: string
+                        required:
+                        - total
+                        type: object
+                      workflowExecTimeout:
+                        description: WorkflowExecTimeout Workflow execution timeout
+                          duration (ISO 8601 duration format). If not specified should
+                          be 'unlimited'
+                        properties:
+                          duration:
+                            description: Duration Workflow execution timeout duration
+                              (ISO 8601 duration format). If not specified should
+                              be 'unlimited'
+                            type: string
+                          interrupt:
+                            description: If `false`, workflow instance is allowed
+                              to finish current execution. If `true`, current workflow
+                              execution is abrupted.
+                            type: boolean
+                          runBefore:
+                            description: Name of a workflow state to be executed before
+                              workflow instance is terminated
+                            type: string
+                        type: object
+                    type: object
+                  version:
+                    description: Workflow version
+                    type: string
+                required:
+                - id
+                - name
+                - start
+                - version
+                type: object
+              timeouts:
+                items:
+                  properties:
+                    actionExecTimeout:
+                      type: string
+                    branchExecTimeout:
+                      type: string
+                    eventTimeout:
+                      type: string
+                    stateExecTimeout:
+                      type: string
+                    workflowExecTimeout:
+                      type: string
+                  type: object
+                type: array
+            required:
+            - autoRetries
+            - keepAlive
+            - start
+            - states
+            - test
+            type: object
+          status:
+            description: KogitoServerlessWorkflowStatus defines the observed state
+              of KogitoServerlessWorkflow
+            properties:
+              address:
+                description: "Addressable provides a generic mechanism for a custom
+                  resource definition to indicate a destination for message delivery.
+                  \n Addressable is the schema for the destination information. This
+                  is typically stored in the object's `status`, as this information
+                  may be generated by the controller."
+                properties:
+                  url:
+                    type: string
+                type: object
+              conditions:
+                type: string
+              endpoints:
+                items:
+                  properties:
+                    ip:
+                      type: string
+                    port:
+                      type: integer
+                    portName:
+                      type: string
+                    protocol:
+                      type: string
+                  type: object
+                type: array
+            required:
+            - endpoints
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

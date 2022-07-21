@@ -41,14 +41,49 @@ type Error struct {
 	Description string `json:"description,omitempty"`
 }
 
+type BasicAuthProperties struct {
+	Username string     `json:"username"`
+	Password string     `json:"password"`
+	Metadata []Metadata `json:"metadata,omitempty"`
+}
+
+type BearerAuthProperties struct {
+	Token    string     `json:"token"`
+	Metadata []Metadata `json:"metadata,omitempty"`
+}
+
+type GrantType string
+
+const (
+	PasswordGrantType          GrantType = "password"
+	ClientCredentialsGrantType GrantType = "clientCredentials"
+	TokenExchangeGrantType     GrantType = "tokenExchange"
+)
+
+type OAuth2Properties struct {
+	Authority        string     `json:"basic,omitempty"`
+	GrantType        GrantType  `json:"grantType"`
+	ClientId         string     `json:"clientId"`
+	ClientSecret     string     `json:"clientSecret"`
+	Scopes           []string   `json:"scopes,omitempty"`
+	Username         string     `json:"username,omitempty"`
+	Password         string     `json:"password,omitempty"`
+	Audiences        []string   `json:"audiences,omitempty"`
+	SubjectToken     string     `json:"subjectToken,omitempty"`
+	RequestedSubject string     `json:"requestedSubject,omitempty"`
+	RequestedIssuer  string     `json:"requestedIssuer,omitempty"`
+	Metadata         []Metadata `json:"metadata,omitempty"`
+}
+
 type AuthProperties struct {
-	//TODO: Define AuthProperties attributes
+	Basic  BasicAuthProperties  `json:"basic,omitempty"`
+	Bearer BearerAuthProperties `json:"bearer,omitempty"`
+	Oauth2 OAuth2Properties     `json:"oauth2,omitempty"`
 }
 
 type Auth struct {
-	Name   string `json:"name"`
-	Scheme string `json:"scheme"`
-	//TODO: AuthProperties to be defined
+	Name       string         `json:"name"`
+	Scheme     string         `json:"scheme"`
 	Properties AuthProperties `json:"properties"`
 }
 
@@ -96,13 +131,13 @@ type Function struct {
 }
 
 type Retry struct {
-	Name        string  `json:"name"`
-	Delay       string  `json:"delay,omitempty"`
-	MaxAttempts int     `json:"maxAttempts,omitempty"`
-	MaxDelay    string  `json:"maxDelay,omitempty"`
-	Increment   string  `json:"increment,omitempty"`
-	Multiplier  float32 `json:"multiplier,omitempty"`
-	Jitter      float32 `json:"jitter,omitempty"`
+	Name        string `json:"name"`
+	Delay       string `json:"delay,omitempty"`
+	MaxAttempts int    `json:"maxAttempts,omitempty"`
+	MaxDelay    string `json:"maxDelay,omitempty"`
+	Increment   string `json:"increment,omitempty"`
+	Multiplier  string `json:"multiplier,omitempty"`
+	Jitter      string `json:"jitter,omitempty"`
 }
 
 type StateType string
@@ -117,28 +152,28 @@ const (
 	ForEachStateType   StateType = "foreach"
 )
 
-type ActionModeEnum string
+type ActionMode string
 
-//TODO: Define ActionModeEnum values (Should actions be performed sequentially or in parallel?)
+//TODO: Define ActionMode values (Should actions be performed sequentially or in parallel?)
 
 type Action struct {
 }
 
-type CompletionTypeEnum string
+type CompletionType string
 
-//TODO: Define CompletionTypeEnum values (Option types on how to complete branch execution. Default is "allOf")
+//TODO: Define CompletionType values (Option types on how to complete branch execution. Default is "allOf")
 
 type IterationMode string
 
 //TODO: Define IterationMode values (Specifies how iterations are to be performed (sequentially or in parallel). Default is parallel)
 
 type State struct {
-	Name       string         `json:"name"`
-	Type       StateType      `json:"type"`
-	Exclusive  bool           `json:"exclusive,omitempty"`
-	ActionMode ActionModeEnum `json:"actionMode,omitempty"`
-	Actions    []Action       `json:"actions,omitempty"`
-	Data       []byte         `json:"data,omitempty"`
+	Name       string     `json:"name"`
+	Type       StateType  `json:"type"`
+	Exclusive  bool       `json:"exclusive,omitempty"`
+	ActionMode ActionMode `json:"actionMode,omitempty"`
+	Actions    []Action   `json:"actions,omitempty"`
+	Data       []byte     `json:"data,omitempty"`
 	//TODO: Define a type for DataCondition objects
 	DataConditions []string `json:"dataConditions,omitempty"`
 	//TODO: Define a type for EventContitions objects
@@ -146,19 +181,18 @@ type State struct {
 	//TODO: Define a type for DefaultCondition object
 	DefaultCondition string `json:"defaultCondition,omitempty"`
 	//TODO: Double-check that we can use the Event type here
-	OnEvents         []Event            `json:"onEvents,omitempty"`
-	Duration         string             `json:"duration,omitempty"`
-	Branches         []string           `json:"branches,omitempty"`
-	CompletionType   CompletionTypeEnum `json:"completionType,omitempty"`
-	NumCompleted     int                `json:"numCompleted,omitempty"`
-	InputCollection  string             `json:"inputCollection,omitempty"`
-	OutputCollection string             `json:"outputCollection,omitempty"`
-	IterationParam   string             `json:"iterationParam,omitempty"`
-	BatchSize        int                `json:"batchSize,omitempty"`
-	Mode             IterationMode      `json:"mode,omitempty"`
-	EventRef         string             `json:"eventRef,omitempty"`
+	OnEvents         []Event        `json:"onEvents,omitempty"`
+	Duration         string         `json:"duration,omitempty"`
+	Branches         []string       `json:"branches,omitempty"`
+	CompletionType   CompletionType `json:"completionType,omitempty"`
+	NumCompleted     int            `json:"numCompleted,omitempty"`
+	InputCollection  string         `json:"inputCollection,omitempty"`
+	OutputCollection string         `json:"outputCollection,omitempty"`
+	IterationParam   string         `json:"iterationParam,omitempty"`
+	BatchSize        int            `json:"batchSize,omitempty"`
+	Mode             IterationMode  `json:"mode,omitempty"`
+	EventRef         string         `json:"eventRef,omitempty"`
 }
-
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowSpec struct {
@@ -173,14 +207,14 @@ type KogitoServerlessWorkflowSpec struct {
 	Functions   []Function   `json:"functions,omitempty"`
 	AutoRetries bool         `json:"autoRetries"`
 	Retries     Retry        `json:"retries,omitempty"`
-	States      State        `json:"states"`
+	States      []State      `json:"states"`
 }
 
 type Endpoint struct {
-	IP       string
-	Port     int
-	PortName string
-	Protocol string // "TCP" or "UDP"; never empty
+	IP       string `json:"ip,omitempty"`
+	Port     int    `json:"port,omitempty"`
+	PortName string `json:"portName,omitempty"`
+	Protocol string `json:"protocol,omitempty"` // "TCP" or "UDP"; never empty
 }
 
 type StatusCondition string

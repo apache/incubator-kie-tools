@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - serverless.kiegroup.org
+  resources:
+  - kogitoserverlessworkflows
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - serverless.kiegroup.org
+  resources:
+  - kogitoserverlessworkflows/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - serverless.kiegroup.org
+  resources:
+  - kogitoserverlessworkflows/status
+  verbs:
+  - get
+  - patch
+  - update
