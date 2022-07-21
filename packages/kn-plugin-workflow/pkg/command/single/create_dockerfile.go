@@ -37,7 +37,7 @@ func GenerateDockerfile(dockerfilePath string) (err error) {
 
 	COPY ${WORKFLOW_FILE} ./serverless-workflow/src/main/resources/
 
-	RUN cd serverless-workflow && ./mvnw package -Dquarkus.kubernetes.deployment-target=knative
+	RUN cd serverless-workflow && ./mvnw package -Dnative -Dquarkus.kubernetes.deployment-target=knative
 
 	EXPOSE 8080
 
