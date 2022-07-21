@@ -103,10 +103,6 @@ export class SwfVsCodeExtensionConfiguration {
   }
 
   public getInterpolatedSpecsDirAbsolutePosixPath(args: { baseFileAbsolutePosixPath: string }) {
-    console.log({
-      value: vscode.Uri.parse(this.getConfiguredSpecsDirPath()).path,
-      config: this.getConfiguredSpecsDirPath(),
-    });
     return getInterpolatedConfigurationValue({
       currentFileAbsolutePosixPath: args.baseFileAbsolutePosixPath,
       value: definitelyPosixPath(this.getConfiguredSpecsDirPath()),
