@@ -19,7 +19,7 @@
 const { spawnSync } = require("child_process");
 
 async function main() {
-  console.info(`[build-env] CLI Tools:`);
+  console.info(`[check-cli-tools] Checking CLI tools...`);
   const checks = {
     ...checkCliTool("node", ["-v"]),
     ...checkCliTool("npm", ["-v"]),
@@ -27,7 +27,12 @@ async function main() {
     ...checkCliTool("go", ["version"]),
     ...checkCliTool("mvn", ["-v"]),
   };
-  console.info(checks);
+
+  for (const c in checks) {
+    console.info(c, checks[c]);
+  }
+
+  console.info("[check-cli-tools] Done.");
   process.exit(0);
 }
 
