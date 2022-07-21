@@ -182,22 +182,42 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	return
 }
 
-// Maven doesn't upgrade the version in the pom.xml.
-// This function removes the existent version and add the new one.
 func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
-	var addExtension *exec.Cmd
-	var removeExtension *exec.Cmd
-
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
-		removeExtension, addExtension = removeAndAddQuarkusExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion)
+		if err := common.RunExtensionCommand(
+			cfg.Verbose,
+			"quarkus:remove-extension",
+			getAddExtensionFriendlyMessages(),
+			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
+		); err != nil {
+			return err
+		}
+		if err := common.UpdateProjectExtensionsVersions(
+			cfg.Verbose,
+			getAddExtensionFriendlyMessages(),
+			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion),
+		); err != nil {
+			return err
+		}
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
-		removeExtension, addExtension = removeAndAddQuarkusExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion)
+		if err := common.RunExtensionCommand(
+			cfg.Verbose,
+			"quarkus:remove-extension",
+			getAddExtensionFriendlyMessages(),
+			common.QUARKUS_CONTAINER_IMAGE_JIB,
+		); err != nil {
+			return err
+		}
+		if err := common.UpdateProjectExtensionsVersions(
+			cfg.Verbose,
+			getAddExtensionFriendlyMessages(),
+			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion),
+		); err != nil {
+			return err
+		}
 	}
-
-	runManageExtension(removeExtension, cfg.Verbose)
-	runManageExtension(addExtension, cfg.Verbose)
 
 	fmt.Println("✅ Quarkus extension was successfully add to the project pom.xml")
 	return nil
@@ -246,28 +266,6 @@ func runBuildImage(cfg BuildCmdConfig) error {
 	}
 
 	fmt.Println("✅ Build success")
-	return nil
-}
-
-func removeAndAddQuarkusExtension(extension string, version string) (removeExtension *exec.Cmd, addExtension *exec.Cmd) {
-	removeExtension = exec.Command("mvn", "quarkus:remove-extension",
-		fmt.Sprintf("-Dextensions=%s,%s", common.QUARKUS_CONTAINER_IMAGE_JIB, common.QUARKUS_CONTAINER_IMAGE_DOCKER))
-	addExtension = exec.Command("mvn", "quarkus:add-extension",
-		fmt.Sprintf("-Dextensions=%s", common.GetVersionedExtension(extension, version)))
-
-	return
-}
-
-func runManageExtension(command *exec.Cmd, verbose bool) error {
-	if err := common.RunCommand(
-		command,
-		verbose,
-		"build",
-		getAddExtensionFriendlyMessages(),
-	); err != nil {
-		fmt.Println("ERROR: It wasn't possible to add Quarkus extension in your pom.xml.")
-		return err
-	}
 	return nil
 }
 
@@ -353,11 +351,11 @@ func getExecutableNameConfig(cfg BuildCmdConfig) string {
 func getAddExtensionFriendlyMessages() []string {
 	return []string{
 		" Adding Quarkus extension...",
-		" Still Adding Quarkus extension",
-		" Still Adding Quarkus extension",
-		" Yes, still Adding Quarkus extension",
+		" Still adding Quarkus extension",
+		" Still adding Quarkus extension",
+		" Yes, still adding Quarkus extension",
 		" Don't give up on me",
-		" Still Adding Quarkus extension",
+		" Still adding Quarkus extension",
 		" This is taking a while",
 	}
 }

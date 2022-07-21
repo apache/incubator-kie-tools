@@ -17,6 +17,8 @@
 package command
 
 import (
+	"fmt"
+
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -60,7 +62,9 @@ func NewConfigCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 	return cmd
 }
 
+// Updates the workflow.config.yml and the pom.xml default extensions
 func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
+	verbose := viper.GetBool("verbose")
 	quarkusVersion, kogitoVersion, err := ReadConfig(dependenciesVersion)
 	if err != nil {
 		return err
@@ -76,9 +80,33 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 		kogitoVersion = newKogitoVersion
 	}
 
-	err = UpdateConfig(quarkusVersion, kogitoVersion)
-	if err != nil {
+	if err := UpdateConfig(quarkusVersion, kogitoVersion); err != nil {
 		return err
 	}
+
+	if err := common.UpdateProjectExtensionsVersions(
+		verbose,
+		getUpdateExtensionFriendlyMessages(),
+		common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion),
+		common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion),
+		common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion),
+		common.GetVersionedExtension(common.KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION, kogitoVersion),
+	); err != nil {
+		return err
+	}
+
+	fmt.Println("✅ Quarkus extensions were successfully updated in the pom.xml")
 	return nil
+}
+
+func getUpdateExtensionFriendlyMessages() []string {
+	return []string{
+		" Updating Quarkus extension...",
+		" Still updating Quarkus extension",
+		" Still updating Quarkus extension",
+		" Yes, still updating Quarkus extension",
+		" Don't give up on me",
+		" Still updating Quarkus extension",
+		" This is taking a while",
+	}
 }
