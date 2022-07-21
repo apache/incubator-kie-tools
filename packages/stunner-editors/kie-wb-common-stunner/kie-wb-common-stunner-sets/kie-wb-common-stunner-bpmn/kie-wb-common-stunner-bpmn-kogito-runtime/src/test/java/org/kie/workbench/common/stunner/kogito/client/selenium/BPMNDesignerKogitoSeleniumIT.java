@@ -36,8 +36,8 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -92,14 +92,14 @@ public class BPMNDesignerKogitoSeleniumIT {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        WebDriverManager.chromedriver().setup();
     }
 
     @Before
     public void openBPMNDesigner() {
-        final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
-        driver = new FirefoxDriver(firefoxOptions);
+        final ChromeOptions chromeDriver = new ChromeOptions();
+        chromeDriver.setHeadless(HEADLESS);
+        driver = new ChromeDriver(chromeDriver);
         driver.manage().window().maximize();
 
         driver.get(INDEX_HTML_PATH);
