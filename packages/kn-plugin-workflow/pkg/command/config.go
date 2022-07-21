@@ -18,6 +18,7 @@ package command
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
@@ -89,6 +90,21 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 		return err
 	}
 
+	updateProjectVersion := exec.Command("mvn",
+		"versions:set-property",
+		"-Dproperty=quarkus.platform.version",
+		fmt.Sprintf("-DnewVersion=%s", quarkusVersion))
+	if err := common.RunCommand(
+		updateProjectVersion,
+		cfg.Verbose,
+		"config",
+		getUpdateProjectFriendlyMessages(),
+	); err != nil {
+		fmt.Println("ERROR: Updating project version.")
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
+	}
+
 	if err := common.UpdateProjectExtensionsVersions(
 		cfg.Verbose,
 		getUpdateExtensionFriendlyMessages(),
@@ -124,6 +140,18 @@ func getUpdateExtensionFriendlyMessages() []string {
 		" Yes, still updating Quarkus extension",
 		" Don't give up on me",
 		" Still updating Quarkus extension",
+		" This is taking a while",
+	}
+}
+
+func getUpdateProjectFriendlyMessages() []string {
+	return []string{
+		" Updating project version...",
+		" Still updating project version",
+		" Still updating project version",
+		" Yes, still updating project version",
+		" Don't give up on me",
+		" Still updating project version",
 		" This is taking a while",
 	}
 }
