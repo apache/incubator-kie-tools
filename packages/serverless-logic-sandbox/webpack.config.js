@@ -21,11 +21,12 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
-const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = async (env) => {
   const buildInfo = getBuildInfo();

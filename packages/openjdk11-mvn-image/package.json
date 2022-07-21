@@ -13,7 +13,7 @@
     "install:mvnw": "cd dist-dev/ && mvn wrapper:wrapper",
     "copy:pom": "cp pom.xml dist-dev/",
     "copy:assets": "pnpm copy:pom",
-    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env serverlessLogicSandbox.openJdk11MvnImage.buildTags) | xargs printf -- \"-t $(build-env serverlessLogicSandbox.openJdk11MvnImage.registry)/$(build-env serverlessLogicSandbox.openJdk11MvnImage.account)/$(build-env serverlessLogicSandbox.openJdk11MvnImage.name):%s\n\" | xargs echo) --build-arg OKD_VERSION=$(build-env serverlessLogicSandbox.openJdk11MvnImage.okdVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
+    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env openJdk11MvnImage.buildTags) | xargs printf -- \"-t $(build-env openJdk11MvnImage.registry)/$(build-env openJdk11MvnImage.account)/$(build-env openJdk11MvnImage.name):%s\n\" | xargs echo) --build-arg OKD_VERSION=$(build-env openJdk11MvnImage.okdVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\"",
     "build:dev": "echo Nothing to do",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "build:prod:darwin:linux": "pnpm cleanup && pnpm copy:assets && pnpm install:mvnw && pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm podman:build\"",

@@ -46,12 +46,6 @@ const logs = {
   propertyNotFound(propertyPath: string) {
     return `[build-env] Config property '${propertyPath}' not found.`;
   },
-  printEnvTitle() {
-    return "[build-env] CLI-accessible env:";
-  },
-  printVarsTitle() {
-    return "[build-env] Environment variables:";
-  },
 };
 
 async function requireEnv(curDir: string): Promise<EnvAndVarsWithName<any> | undefined> {
@@ -109,13 +103,11 @@ async function main() {
       }
     }
 
-    console.log(logs.printVarsTitle());
     console.log(JSON.stringify(flattenObj(result), undefined, 2));
     process.exit(0);
   }
 
   if (opt === "--print-env") {
-    console.log(logs.printEnvTitle());
     console.log(JSON.stringify(flattenObj(env), undefined, 2));
     process.exit(0);
   }

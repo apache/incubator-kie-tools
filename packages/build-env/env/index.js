@@ -81,6 +81,68 @@ module.exports = {
       quarkusPlatform: {
         version: getOrDefault(this.vars.QUARKUS_PLATFORM_version),
       },
+
+      //
+
+      boxedExpressionComponent: {
+        dev: {
+          port: 3015,
+        },
+      },
+      feelInputComponent: {
+        dev: {
+          port: 3016,
+          REACT_APP_FEEL_SERVER: "",
+        },
+      },
+      importJavaClassesComponent: {
+        dev: {
+          port: 3017,
+        },
+      },
+      dmnDevSandboxFormWebapp: {
+        dev: {
+          port: 9008,
+        },
+      },
+      standaloneEditors: {
+        dev: {
+          port: 9006,
+        },
+      },
+      pmmlEditor: {
+        dev: {
+          port: 9005,
+        },
+      },
+      serverlessWorkflowCombinedEditor: {
+        dev: {
+          port: 9002,
+        },
+      },
+      serverlessWorkflowTextEditor: {
+        dev: {
+          port: 9003,
+        },
+      },
+      serverlessWorkflowMermaidViewer: {
+        dev: {
+          port: 9004,
+        },
+      },
+      yardEditor: {
+        dev: {
+          port: 9009,
+        },
+      },
+      examples: {
+        chromeExtensionEnvelope: {
+          port: 9101,
+        },
+        webapp: {
+          port: 9100,
+        },
+      },
     };
   },
 };

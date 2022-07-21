@@ -20,8 +20,9 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const packageJson = require("./package.json");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) => {
   const router_targetOrigin = `https://localhost:${buildEnv.examples.chromeExtensionEnvelope.port}`;

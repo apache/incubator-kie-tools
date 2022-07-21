@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-const { envVars, getOrDefault, str2bool, compositeEnv } = require("@kie-tools/build-env");
+const { envVars, getOrDefault, compositeEnv } = require("@kie-tools/build-env");
 
 const buildEnv = require("@kie-tools/build-env/env");
-const webpackBaseEnv = require("@kie-tools-core/webpack-base/env");
 
-module.exports = compositeEnv([buildEnv, webpackBaseEnv], {
+module.exports = compositeEnv([buildEnv], {
   get vars() {
     return envVars({
       ONLINE_EDITOR__buildInfo: {
