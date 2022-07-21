@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "../../env";
+import { env } from "../../env";
+const buildEnv = env;
 
 describe("Relation Expression Tests", () => {
   beforeEach(() => {

@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as buildEnv from "../../env";
+import { env } from "../../env";
+const buildEnv = env;
 
 describe("Data Dictionary Test", () => {
   beforeEach(() => {

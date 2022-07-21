@@ -52,7 +52,7 @@ async function requireEnv(curDir: string): Promise<EnvAndVarsWithName<any> | und
   const envPath = path.resolve(curDir, "env", "index.js");
 
   if (!fs.existsSync(envPath)) {
-    console.debug(logs.envNotFound(envPath));
+    // console.debug(logs.envNotFound(envPath));
     return undefined;
   }
 
