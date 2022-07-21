@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-const { envVars, getOrDefault, compositeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
 const buildEnv = require("@kie-tools/build-env/env");
 
-module.exports = compositeEnv([buildEnv], {
-  vars: envVars({
+module.exports = composeEnv([buildEnv], {
+  vars: varsWithName({
     DMN_LOADER__outputPath: {
       default: "dist",
       description: "Directory path used to output build artifacts of stunner-editors-dmn-loader",

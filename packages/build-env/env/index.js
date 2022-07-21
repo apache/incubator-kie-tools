@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-const { envVars, getOrDefault, str2bool } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, str2bool } = require("@kie-tools/build-env");
 const packageJson = require("@kie-tools/build-env/package.json");
 
 module.exports = {
-  vars: envVars({
+  vars: varsWithName({
     KIE_TOOLS_BUILD_lint: {
       default: `${true}`,
       description: "",

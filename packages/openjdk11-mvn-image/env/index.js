@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-const { envVars, getOrDefault, compositeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
 const buildEnv = require("@kie-tools/build-env/env");
 
-module.exports = compositeEnv([buildEnv], {
-  vars: envVars({
+module.exports = composeEnv([buildEnv], {
+  vars: varsWithName({
     SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: {
       default: "quay.io",
       description: "",

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-const { envVars, get, str2bool } = require("@kie-tools/build-env");
+const { varsWithName, get, str2bool } = require("@kie-tools/build-env");
 
 module.exports = {
-  vars: envVars({
+  vars: varsWithName({
     WEBPACK__minimize: {
       default: undefined,
       description: "",

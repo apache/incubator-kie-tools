@@ -37,7 +37,7 @@ export function getOrDefault(envVar: VarWithName) {
   return get(envVar) ?? envVar.default;
 }
 
-export function envVars<T>(obj: { [K in keyof T]: Var }) {
+export function varsWithName<T>(obj: { [K in keyof T]: Var }) {
   [...Object.keys(obj)].forEach((key) => {
     (obj[key as keyof T] as VarWithName)["name"] = key;
   });
@@ -45,7 +45,7 @@ export function envVars<T>(obj: { [K in keyof T]: Var }) {
   return obj as { [K in keyof T]: VarWithName };
 }
 
-export function compositeEnv<T>(deps: EnvAndVarsWithName<any>[], obj: EnvAndVarsWithName<T>) {
+export function composeEnv<T>(deps: EnvAndVarsWithName<any>[], obj: EnvAndVarsWithName<T>) {
   return {
     vars: { ...obj.vars, ...deps.reduce((acc, d) => ({ ...acc, ...d.vars }), {}) },
     env: { ...obj.env, ...deps.reduce((acc, d) => ({ ...acc, ...d.env }), {}) },

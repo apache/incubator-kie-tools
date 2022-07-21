@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-const { envVars, getOrDefault, compositeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
 const buildEnv = require("@kie-tools/build-env/env");
 
-module.exports = compositeEnv([buildEnv], {
+module.exports = composeEnv([buildEnv], {
   get vars() {
-    return envVars({
+    return varsWithName({
       ONLINE_EDITOR__buildInfo: {
         default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
         description: "",

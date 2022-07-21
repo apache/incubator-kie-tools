@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-const { envVars, getOrDefault, compositeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
 const buildEnv = require("@kie-tools/build-env/env");
 const { version } = require("@kie-tools/build-env/package.json");
 
-module.exports = compositeEnv([buildEnv], {
-  vars: envVars({
+module.exports = composeEnv([buildEnv], {
+  vars: varsWithName({
     SERVERLESS_LOGIC_SANDBOX__buildInfo: {
       default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
       description: "",
