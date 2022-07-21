@@ -4,20 +4,20 @@
   "private": true,
   "description": "",
   "license": "Apache-2.0",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "files": [
-    "index.js",
-    "cli.js"
+    "dist",
+    "src"
   ],
-  "bin": "./cli.js",
+  "bin": "./dist/bin.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "print-build-env": "rimraf dist && node ./cli.js --print-cli-tools-check && node ./cli.js --print-env && node ./cli.js --print-config",
-    "build:dev": "pnpm print-build-env",
-    "build:prod": "pnpm print-build-env"
+    "print": "node dist/bin.js --print-vars && node dist/bin.js --print-env",
+    "build:dev": "rimraf dist && tsc -p tsconfig.dev.json && pnpm print",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test && pnpm print"
   },
   "dependencies": {
     "@lerna/project": "^4.0.0"

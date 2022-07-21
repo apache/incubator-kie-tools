@@ -21,10 +21,12 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const stunnerEditors = require("@kie-tools/stunner-editors");
 const { EnvironmentPlugin } = require("webpack");
-const buildEnv = require("@kie-tools/build-env");
+const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { ProvidePlugin } = require("webpack");
+
+const buildEnv = env;
 
 module.exports = async (env, argv) => {
   const buildInfo = getBuildInfo();
