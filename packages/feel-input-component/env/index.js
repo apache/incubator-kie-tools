@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools/build-env");
+const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools/build-env");
 
 module.exports = composeEnv([require("@kie-tools/build-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: {
+      default: "",
+      description: "",
+    },
+  }),
   get env() {
-    return {};
+    return {
+      feelInputComponent: {
+        dev: {
+          port: 3016,
+          feelServerUrl: getOrDefault(this.vars.FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl),
+        },
+      },
+    };
   },
 });

@@ -52,7 +52,7 @@ module.exports = (env) => [
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.examples.webapp.port,
+      port: buildEnv.exampleWebapp.port,
     },
   }),
 ];

@@ -19,6 +19,12 @@ const { varsWithName, composeEnv } = require("@kie-tools/build-env");
 module.exports = composeEnv([require("@kie-tools/build-env/env")], {
   vars: varsWithName({}),
   get env() {
-    return {};
+    return {
+      importJavaClassesComponent: {
+        dev: {
+          port: 3017,
+        },
+      },
+    };
   },
 });

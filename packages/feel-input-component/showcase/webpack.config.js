@@ -37,7 +37,7 @@ module.exports = (env) =>
         patterns: [{ from: path.resolve(__dirname, "./static"), to: "./" }],
       }),
       new EnvironmentPlugin({
-        REACT_APP_FEEL_SERVER: buildEnv.feelInputComponent.dev.REACT_APP_FEEL_SERVER,
+        WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: buildEnv.feelInputComponent.dev.feelServerUrl,
       }),
     ],
     module: {
