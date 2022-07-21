@@ -34,17 +34,17 @@ const logs = {
   envRecursionStopped: (startDir: string, curDir: string, envRecursionStopPath: string) => {
     return `[build-env] Couldn't load env from '${startDir}' to '${curDir}'. Stopped at '${envRecursionStopPath}'`;
   },
-  cantNegateNonBoolean(configPropertyValue: string) {
-    return `[build-env] Cannot negate non-boolean value '${configPropertyValue}'`;
+  cantNegateNonBoolean(envPropertyValue: string) {
+    return `[build-env] Cannot negate non-boolean value '${envPropertyValue}'`;
   },
-  pleaseProvideConfigPropertyPath() {
-    return `[build-env] Please provide a config property path.`;
+  pleaseProvideEnvPropertyPath() {
+    return `[build-env] Please provide an env property path.`;
   },
-  seeAllConfigs() {
-    return `[build-env] See all config properties with 'build-env --print-config'`;
+  seeAllEnvProperties() {
+    return `[build-env] See all env properties with 'build-env --print-env'`;
   },
   propertyNotFound(propertyPath: string) {
-    return `[build-env] Config property '${propertyPath}' not found.`;
+    return `[build-env] Env property '${propertyPath}' not found.`;
   },
 };
 
@@ -114,33 +114,33 @@ async function main() {
 
   const propertyPath = opt;
   if (!propertyPath) {
-    console.error(logs.pleaseProvideConfigPropertyPath());
-    console.error(logs.seeAllConfigs());
+    console.error(logs.pleaseProvideEnvPropertyPath());
+    console.error(logs.seeAllEnvProperties());
     process.exit(1);
   }
 
-  let configPropertyValue: any = env;
+  let envPropertyValue: any = env;
   for (const p of propertyPath.split(".")) {
-    configPropertyValue = configPropertyValue[p];
-    if (configPropertyValue === undefined || typeof configPropertyValue === "function") {
+    envPropertyValue = envPropertyValue[p];
+    if (envPropertyValue === undefined || typeof envPropertyValue === "function") {
       console.error(logs.propertyNotFound(propertyPath));
-      console.error(logs.seeAllConfigs());
+      console.error(logs.seeAllEnvProperties());
       process.exit(1);
     }
   }
 
   if (flags === "--not") {
-    const isBoolean = `${configPropertyValue}` === "true" || `${configPropertyValue}` === "false";
+    const isBoolean = `${envPropertyValue}` === "true" || `${envPropertyValue}` === "false";
     if (isBoolean) {
-      console.log(!(`${configPropertyValue}` === "true"));
+      console.log(!(`${envPropertyValue}` === "true"));
       process.exit(0);
     } else {
-      console.error(logs.cantNegateNonBoolean(configPropertyValue));
+      console.error(logs.cantNegateNonBoolean(envPropertyValue));
       process.exit(0);
     }
   }
 
-  console.log(configPropertyValue);
+  console.log(envPropertyValue);
 }
 
 function flattenObj(obj: any, parent: any = undefined, res: any = {}): any {
