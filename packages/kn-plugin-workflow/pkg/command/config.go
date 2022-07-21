@@ -25,6 +25,8 @@ import (
 )
 
 type ConfigCmdConfig struct {
+	Apply bool
+
 	// Dependencies versions
 	QuarkusVersion string
 	KogitoVersion  string
@@ -48,13 +50,14 @@ func NewConfigCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 	 {{.Name}} config --kogito-version 1.24.0.Final
 		 `,
 		SuggestFor: []string{"confgi", "cofngi", "cofnig"},
-		PreRunE:    common.BindEnv("verbose", "quarkus-version", "kogito-version"),
+		PreRunE:    common.BindEnv("verbose", "apply", "quarkus-version", "kogito-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runConfig(cmd, args, dependenciesVersion)
 	}
 
+	cmd.Flags().BoolP("apply", "a", false, "Apply the config file changes.")
 	cmd.Flags().String("quarkus-version", "", "Quarkus version to be set in the config file.")
 	cmd.Flags().String("kogito-version", "", "Kogito version to be set in the config file.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
@@ -64,20 +67,22 @@ func NewConfigCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 
 // Updates the workflow.config.yml and the pom.xml default extensions
 func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
-	verbose := viper.GetBool("verbose")
+	cfg, err := runConfigCmdConfig(cmd)
+	if err != nil {
+		return fmt.Errorf("initializing config: %w", err)
+	}
+
 	quarkusVersion, kogitoVersion, err := ReadConfig(dependenciesVersion)
 	if err != nil {
 		return err
 	}
 
-	newQuarkusVersion := viper.GetString("quarkus-version")
-	if len(newQuarkusVersion) > 0 {
-		quarkusVersion = newQuarkusVersion
+	if len(cfg.QuarkusVersion) > 0 {
+		quarkusVersion = cfg.QuarkusVersion
 	}
 
-	newKogitoVersion := viper.GetString("kogito-version")
-	if len(newKogitoVersion) > 0 {
-		kogitoVersion = newKogitoVersion
+	if len(cfg.KogitoVersion) > 0 {
+		kogitoVersion = cfg.KogitoVersion
 	}
 
 	if err := UpdateConfig(quarkusVersion, kogitoVersion); err != nil {
@@ -85,7 +90,7 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 	}
 
 	if err := common.UpdateProjectExtensionsVersions(
-		verbose,
+		cfg.Verbose,
 		getUpdateExtensionFriendlyMessages(),
 		common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion),
 		common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion),
@@ -97,6 +102,18 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 
 	fmt.Println("✅ Quarkus extensions were successfully updated in the pom.xml")
 	return nil
+}
+
+func runConfigCmdConfig(cmd *cobra.Command) (cfg ConfigCmdConfig, err error) {
+	cfg = ConfigCmdConfig{
+		Apply: viper.GetBool("apply"),
+
+		QuarkusVersion: viper.GetString("quarkus-version"),
+		KogitoVersion:  viper.GetString("kogito-version"),
+
+		Verbose: viper.GetBool("verbose"),
+	}
+	return
 }
 
 func getUpdateExtensionFriendlyMessages() []string {
