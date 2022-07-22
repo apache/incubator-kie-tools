@@ -73,8 +73,13 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 		return fmt.Errorf("initializing config: %w", err)
 	}
 
+	if err := common.CheckJavaDependencies(); err != nil {
+		return err
+	}
+
 	quarkusVersion, kogitoVersion, err := ReadConfig(dependenciesVersion)
 	if err != nil {
+		fmt.Printf("ERROR: Ensure that you're in the project directory")
 		return err
 	}
 
@@ -98,7 +103,7 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 		updateProjectVersion,
 		cfg.Verbose,
 		"config",
-		getUpdateProjectFriendlyMessages(),
+		common.GetFriendlyMessages("updating Quarkus extension"),
 	); err != nil {
 		fmt.Println("ERROR: Updating project version.")
 		fmt.Println("Check the full logs with the -v | --verbose option")
@@ -107,7 +112,7 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 
 	if err := common.UpdateProjectExtensionsVersions(
 		cfg.Verbose,
-		getUpdateExtensionFriendlyMessages(),
+		common.GetFriendlyMessages("updating project version"),
 		common.GetVersionedExtension(common.QUARKUS_KUBERNETES_EXTENSION, quarkusVersion),
 		common.GetVersionedExtension(common.QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION, quarkusVersion),
 		common.GetVersionedExtension(common.KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION, kogitoVersion),
@@ -130,28 +135,4 @@ func runConfigCmdConfig(cmd *cobra.Command) (cfg ConfigCmdConfig, err error) {
 		Verbose: viper.GetBool("verbose"),
 	}
 	return
-}
-
-func getUpdateExtensionFriendlyMessages() []string {
-	return []string{
-		" Updating Quarkus extension...",
-		" Still updating Quarkus extension",
-		" Still updating Quarkus extension",
-		" Yes, still updating Quarkus extension",
-		" Don't give up on me",
-		" Still updating Quarkus extension",
-		" This is taking a while",
-	}
-}
-
-func getUpdateProjectFriendlyMessages() []string {
-	return []string{
-		" Updating project version...",
-		" Still updating project version",
-		" Still updating project version",
-		" Yes, still updating project version",
-		" Don't give up on me",
-		" Still updating project version",
-		" This is taking a while",
-	}
 }

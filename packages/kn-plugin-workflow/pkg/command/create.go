@@ -111,7 +111,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		create,
 		cfg.Verbose,
 		"create",
-		getCreateFriendlyMessages(),
+		common.GetFriendlyMessages("creating"),
 	); err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
@@ -149,16 +149,4 @@ func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 		Verbose: viper.GetBool("verbose"),
 	}
 	return
-}
-
-func getCreateFriendlyMessages() []string {
-	return []string{
-		" Creating...",
-		" Still creating project",
-		" Still creating project",
-		" Yes, still creating project",
-		" Don't give up on me",
-		" Still creating project",
-		" This is taking a while",
-	}
 }

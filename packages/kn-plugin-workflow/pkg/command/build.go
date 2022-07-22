@@ -188,14 +188,14 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		if err := common.RunExtensionCommand(
 			cfg.Verbose,
 			"quarkus:remove-extension",
-			getAddExtensionFriendlyMessages(),
+			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
 		}
 		if err := common.UpdateProjectExtensionsVersions(
 			cfg.Verbose,
-			getAddExtensionFriendlyMessages(),
+			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion),
 		); err != nil {
 			return err
@@ -205,14 +205,14 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		if err := common.RunExtensionCommand(
 			cfg.Verbose,
 			"quarkus:remove-extension",
-			getAddExtensionFriendlyMessages(),
+			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
 		}
 		if err := common.UpdateProjectExtensionsVersions(
 			cfg.Verbose,
-			getAddExtensionFriendlyMessages(),
+			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion),
 		); err != nil {
 			return err
@@ -249,7 +249,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		build,
 		cfg.Verbose,
 		"build",
-		getBuildFriendlyMessages(),
+		common.GetFriendlyMessages("building"),
 	); err != nil {
 		if cfg.Push {
 			fmt.Println("ERROR: Image build failed.")
@@ -272,7 +272,12 @@ func runBuildImage(cfg BuildCmdConfig) error {
 func checkImageName(name string) (err error) {
 	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
 	if !matched {
-		fmt.Println("ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?")
+		fmt.Println(`
+ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
+The name needs to start with a lower case letter and then it can be composed exclusvely of lower case letters, numbers or dashes ('-')
+Example of valid names: "test-0-0-1", "test", "t1"
+Example of invalid names: "1-test", "test.1", "test/1"
+		`)
 		err = fmt.Errorf("invalid image name")
 	}
 	return
@@ -346,28 +351,4 @@ func getExecutableNameConfig(cfg BuildCmdConfig) string {
 		executableName += "docker"
 	}
 	return executableName
-}
-
-func getAddExtensionFriendlyMessages() []string {
-	return []string{
-		" Adding Quarkus extension...",
-		" Still adding Quarkus extension",
-		" Still adding Quarkus extension",
-		" Yes, still adding Quarkus extension",
-		" Don't give up on me",
-		" Still adding Quarkus extension",
-		" This is taking a while",
-	}
-}
-
-func getBuildFriendlyMessages() []string {
-	return []string{
-		" Building...",
-		" Still building",
-		" Still building",
-		" Yes, still building",
-		" Don't give up on me",
-		" Still building",
-		" This is taking a while",
-	}
 }

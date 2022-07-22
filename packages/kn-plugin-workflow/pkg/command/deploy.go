@@ -90,7 +90,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		createService,
 		cfg.Verbose,
 		"deploy",
-		getDeployFriendlyMessages(),
+		common.GetFriendlyMessages("deploying"),
 	); err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
@@ -104,7 +104,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			deploy,
 			cfg.Verbose,
 			"deploy",
-			getDeployFriendlyMessages(),
+			common.GetFriendlyMessages("deploying"),
 		); err != nil {
 			fmt.Println("Check the full logs with the -v | --verbose option")
 			return err
@@ -131,17 +131,5 @@ func checkIfKogitoFileExists(cfg DeployCmdConfig) (bool, error) {
 		return true, nil
 	} else {
 		return false, err
-	}
-}
-
-func getDeployFriendlyMessages() []string {
-	return []string{
-		" Deploying...",
-		" Still deploying",
-		" Still deploying",
-		" Yes, still deploying",
-		" Don't give up on me",
-		" Still deploying",
-		" This is taking a while",
 	}
 }

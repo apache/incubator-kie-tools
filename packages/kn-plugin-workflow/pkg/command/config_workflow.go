@@ -56,7 +56,7 @@ func CreateConfig(configFilePath string, quarkusVersion string, kogitoVersion st
 
 	err = ioutil.WriteFile(configFilePath, configFileData, 0644)
 	if err != nil {
-		fmt.Println("ERROR: writing the config yml file.")
+		fmt.Printf("ERROR: writing the %s file.\n", common.WORKFLOW_CONFIG_YML)
 		return
 	}
 
@@ -67,14 +67,14 @@ func CreateConfig(configFilePath string, quarkusVersion string, kogitoVersion st
 func ReadConfig(dependenciesVersion common.DependenciesVersion) (quarkusVersion string, kogitoVersion string, err error) {
 	configFile, err := ioutil.ReadFile(common.WORKFLOW_CONFIG_YML)
 	if err != nil {
-		fmt.Println("ERROR: reading the config yml file.")
+		fmt.Printf("ERROR: reading the %s file.\n", common.WORKFLOW_CONFIG_YML)
 		return
 	}
 
 	config := Config{}
 	err = yaml.Unmarshal(configFile, &config)
 	if err != nil {
-		fmt.Println("ERROR: unmarshaling the config yml file.")
+		fmt.Printf("ERROR: unmarshaling the %s file.\n", common.WORKFLOW_CONFIG_YML)
 		return
 	}
 
@@ -100,14 +100,14 @@ func ReadConfig(dependenciesVersion common.DependenciesVersion) (quarkusVersion 
 func UpdateConfig(quarkusVersion string, kogitoVersion string) (err error) {
 	configFile, err := ioutil.ReadFile(common.WORKFLOW_CONFIG_YML)
 	if err != nil {
-		fmt.Println("ERROR: reading the config yml file.")
+		fmt.Printf("ERROR: reading the %s file.\n", common.WORKFLOW_CONFIG_YML)
 		return
 	}
 
 	config := Config{}
 	err = yaml.Unmarshal(configFile, &config)
 	if err != nil {
-		fmt.Println("ERROR: unmarshaling the config yml file.")
+		fmt.Printf("ERROR: unmarshaling the %s file.\n", common.WORKFLOW_CONFIG_YML)
 		return
 	}
 
@@ -117,7 +117,7 @@ func UpdateConfig(quarkusVersion string, kogitoVersion string) (err error) {
 	configJsonByte, err := yaml.Marshal(config)
 	err = ioutil.WriteFile(common.WORKFLOW_CONFIG_YML, configJsonByte, 0644)
 	if err != nil {
-		fmt.Println("ERROR: unmarshaling the config yml file.")
+		fmt.Printf("ERROR: marshaling the %s file.\n", common.WORKFLOW_CONFIG_YML)
 		return
 	}
 
