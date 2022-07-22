@@ -38,7 +38,7 @@ public class ShapeEventsHandler {
             if (event.getIdentifiers().size() == 1) {
                 final String uuid = event.getIdentifiers().iterator().next();
                 String stateName = obtainStateName(event.getCanvasHandler(), uuid);
-                diagramApi.moveCursorToNode(stateName);
+                diagramApi.onNodeSelected(stateName);
             }
         }
     }

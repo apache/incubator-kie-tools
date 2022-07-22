@@ -24,6 +24,7 @@ import { SwfCombinedEditorChannelApiImpl } from "../../impl/SwfCombinedEditorCha
 import { SwfFeatureToggleChannelApiImpl } from "../../impl/SwfFeatureToggleChannelApiImpl";
 import { SwfLanguageServiceChannelApiImpl } from "../../impl/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "../../impl/SwfServiceCatalogChannelApiImpl";
+import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
 
 export function useCustomSwfChannelApi(args: {
   locale: string;
@@ -69,15 +70,29 @@ export function useCustomSwfChannelApi(args: {
     [args.channelApi]
   );
 
+  const swfTextEditorChannelApiImpl = useMemo(
+    () =>
+      // kogitoEditorChannelApiImpl &&
+      // args.channelApi &&
+      // services &&
+      // serviceRegistriesSettings &&
+      // new ServerlessWorkflowTextEditorChannelApiImpl(kogitoEditorChannelApiImpl, args.channelApi, services, serviceRegistriesSettings),
+      args.channelApi && new ServerlessWorkflowTextEditorChannelApiImpl(args.channelApi),
+    // [kogitoEditorChannelApiImpl, args.channelApi, services, serviceRegistriesSettings]
+    [args.channelApi]
+  );
+
   const channelApi = useMemo(
     () =>
       args.channelApi &&
       kogitoEditorChannelApiImpl &&
+      (console.log("7365 swfTextEditorChannelApiImpl", swfTextEditorChannelApiImpl), true) &&
       new SwfCombinedEditorChannelApiImpl(
         kogitoEditorChannelApiImpl,
         swfFeatureToggleChannelApiImpl,
         swfServiceCatalogChannelApiImpl,
-        swfLanguageServiceChannelApiImpl
+        swfLanguageServiceChannelApiImpl,
+        swfTextEditorChannelApiImpl
       ),
     [
       args.channelApi,
@@ -85,6 +100,7 @@ export function useCustomSwfChannelApi(args: {
       swfFeatureToggleChannelApiImpl,
       swfLanguageServiceChannelApiImpl,
       swfServiceCatalogChannelApiImpl,
+      swfTextEditorChannelApiImpl,
     ]
   );
 

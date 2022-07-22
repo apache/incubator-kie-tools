@@ -27,13 +27,14 @@ export class DiagramService implements DiagramApi {
   ) {}
 
   /**
-   * Move the cursor in the text editor to a specified node
-   * @param nodeName the name of the target node
+   * Event fired when a node is selected
+   * @param stateName the name node
    */
-  public moveCursorToNode(nodeName: string) {
+  public onNodeSelected(nodeName: string) {
+    /* TODO: DiagramService: rename this method*/
     if (!nodeName) {
       return;
     }
-    this.envelopeContext.channelApi.notifications.kogitoSwfLanguageService__moveCursorToNode.send({ nodeName });
+    this.envelopeContext.channelApi.notifications.kogitoSwfDiagramEditor__onNodeSelected.send({ nodeName });
   }
 }

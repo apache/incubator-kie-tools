@@ -22,9 +22,9 @@ package org.appformer.kogito.bridge.client.diagramApi;
 public class DiagramApiService implements DiagramApi {
 
     @Override
-    public void moveCursorToNode(final String stateName) {
+    public void onNodeSelected(final String stateName) {
         if (stateName != null) {
-            DiagramApiInteropWrapper.get().moveCursorToNode(stateName);
+            DiagramApiInteropWrapper.get().onNodeSelected(stateName);
         }
     }
 }

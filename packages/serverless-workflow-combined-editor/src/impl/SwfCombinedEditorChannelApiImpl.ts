@@ -36,6 +36,7 @@ import {
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfFeatureToggleChannelApi } from "../api";
 
@@ -44,7 +45,8 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     private readonly defaultApiImpl: KogitoEditorChannelApi,
     private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi
+    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
+    private readonly swfTextEditorChannelApiImpl?: Partial<ServerlessWorkflowTextEditorChannelApi>
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -135,10 +137,6 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
   }
 
-  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
-    this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__moveCursorToNode(args);
-  }
-
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
     this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__highlightNode(args);
   }
@@ -162,8 +160,19 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
   public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
     return (
       this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
-        defaultValue: { stunnerEnabled: false },
+        defaultValue: { stunnerEnabled: true },
       }
     );
+  }
+
+  public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
+    console.log("7365 combined ed chan kogitoSwfDiagramEditor__onNodeSelected");
+    this.swfTextEditorChannelApiImpl?.kogitoSwfTextEditor__onNodeSelected?.(args);
+  }
+  public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
+    console.log("7365 combined ed chan kogitoSwfTextEditor__moveCursorToNode");
+  }
+  public kogitoSwfTextEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
+    console.log("7365 combined ed chan kogitoSwfTextEditor__onNodeSelected");
   }
 }

@@ -19,8 +19,8 @@
  */
 export interface DiagramApi {
   /**
-   * Move the cursor in the text editor to a specified node
-   * @param stateName the name of the target node
+   * Event fired when a node is selected
+   * @param stateName the name node
    */
-  moveCursorToNode: (nodeName: string) => void;
+  onNodeSelected: (nodeName: string) => void;
 }

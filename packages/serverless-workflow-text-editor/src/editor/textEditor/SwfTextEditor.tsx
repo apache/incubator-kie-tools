@@ -107,8 +107,17 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
   ]);
 
   useSubscription(
-    editorEnvelopeCtx.channelApi?.notifications.kogitoSwfLanguageService__moveCursorToNode,
+    editorEnvelopeCtx.channelApi?.notifications.kogitoSwfTextEditor__onNodeSelected,
     ({ nodeName }: { nodeName: string }) => {
+      console.log("7365 received kogitoSwfTextEditor__onNodeSelected");
+      controller.moveCursorToNode(nodeName);
+    }
+  );
+
+  useSubscription(
+    editorEnvelopeCtx.channelApi?.notifications.kogitoSwfDiagramEditor__onNodeSelected,
+    ({ nodeName }: { nodeName: string }) => {
+      console.log("7365 received kogitoSwfDiagramEditor__onNodeSelected");
       controller.moveCursorToNode(nodeName);
     }
   );
