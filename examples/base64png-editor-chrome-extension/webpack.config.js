@@ -25,7 +25,7 @@ const { env } = require("./env");
 const buildEnv = env;
 
 module.exports = (env) => {
-  const router_targetOrigin = `https://localhost:${buildEnv.examples.exampleChromeExtension.envelope.port}`;
+  const router_targetOrigin = `https://localhost:${buildEnv.exampleChromeExtension.envelope.port}`;
 
   return merge(common(env), {
     entry: {
@@ -35,7 +35,7 @@ module.exports = (env) => {
     devServer: {
       compress: true,
       https: true,
-      port: buildEnv.examples.exampleChromeExtension.envelope.port,
+      port: buildEnv.exampleChromeExtension.envelope.port,
     },
     plugins: [
       new CopyPlugin({
