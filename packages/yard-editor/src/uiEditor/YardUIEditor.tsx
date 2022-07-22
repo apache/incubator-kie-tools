@@ -23,7 +23,6 @@ import {
   Tab,
   Tabs,
   TabTitleText,
-  Text,
   TextInput,
   Title,
   TitleSizes,
@@ -109,7 +108,6 @@ export const YardUIEditor = () => {
               {i18n.generalTab.kind}
             </Title>
             <TextInput></TextInput>
-            <div className={"divider"}></div>
           </div>
         </Tab>
       </Tabs>
