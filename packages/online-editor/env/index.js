@@ -18,47 +18,45 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env
 
 const buildEnv = require("@kie-tools/build-env/env");
 
-module.exports = composeEnv([buildEnv], require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env"), {
-  get vars() {
-    return varsWithName({
-      ONLINE_EDITOR__buildInfo: {
-        default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
-        description: "",
-      },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_linux_${buildEnv.env.global.version}.tar.gz`,
-        description: "",
-      },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_macos_${buildEnv.env.global.version}.dmg`,
-        description: "",
-      },
-      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
-        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_windows_${buildEnv.env.global.version}.exe`,
-        description: "",
-      },
-      ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
-        default: buildEnv.env.global.version,
-        description: "",
-      },
-      ONLINE_EDITOR__gtmId: {
-        default: undefined,
-        description: "",
-      },
-      ONLINE_EDITOR__cypressUrl: {
-        default: "https://localhost:9001/",
-        description: "",
-      },
-      DMN_DEV_SANDBOX__baseImageTag: {
-        default: "latest",
-        description: "",
-      },
-      DMN_DEV_SANDBOX__onlineEditorUrl: {
-        default: `https://0.0.0.0:9001`,
-        description: "",
-      },
-    });
-  },
+module.exports = composeEnv([buildEnv, require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env")], {
+  vars: varsWithName({
+    ONLINE_EDITOR__buildInfo: {
+      default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+      description: "",
+    },
+    ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
+      default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_linux_${buildEnv.env.global.version}.tar.gz`,
+      description: "",
+    },
+    ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
+      default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_macos_${buildEnv.env.global.version}.dmg`,
+      description: "",
+    },
+    ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
+      default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_windows_${buildEnv.env.global.version}.exe`,
+      description: "",
+    },
+    ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
+      default: buildEnv.env.global.version,
+      description: "",
+    },
+    ONLINE_EDITOR__gtmId: {
+      default: undefined,
+      description: "",
+    },
+    ONLINE_EDITOR__cypressUrl: {
+      default: "https://localhost:9001/",
+      description: "",
+    },
+    DMN_DEV_SANDBOX__baseImageTag: {
+      default: "latest",
+      description: "",
+    },
+    DMN_DEV_SANDBOX__onlineEditorUrl: {
+      default: `https://0.0.0.0:9001`,
+      description: "",
+    },
+  }),
   get env() {
     return {
       onlineEditor: {
