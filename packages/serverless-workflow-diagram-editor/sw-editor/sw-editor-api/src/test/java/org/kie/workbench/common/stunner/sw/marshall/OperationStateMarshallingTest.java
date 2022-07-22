@@ -28,11 +28,13 @@ import static org.junit.Assert.assertTrue;
 
 public class OperationStateMarshallingTest extends BaseMarshallingTest {
 
+    private static final String WORKFLOW_ID = "workflow1";
+    private static final String WORKFLOW_NAME = "Workflow1";
     @Override
     protected Workflow createWorkflow() {
         return new Workflow()
-                .setId("workflow1")
-                .setName("Workflow1")
+                .setId(WORKFLOW_ID)
+                .setName(WORKFLOW_NAME)
                 .setStart("State1")
                 .setStates(new State[]{
                         new OperationState()
@@ -50,11 +52,11 @@ public class OperationStateMarshallingTest extends BaseMarshallingTest {
     @Test
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
-        assertDefinitionReferencedInNode(workflow, "Workflow1");
-        assertEquals(4, countChildren("Workflow1"));
+        assertDefinitionReferencedInNode(workflow, WORKFLOW_ID);
+        assertEquals(4, countChildren(WORKFLOW_ID));
         OperationState state = (OperationState) workflow.states[0];
         assertDefinitionReferencedInNode(state, "State1");
-        assertParentOf("Workflow1", "State1");
+        assertParentOf(WORKFLOW_ID, "State1");
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
