@@ -31,7 +31,6 @@ export class DiagramService implements DiagramApi {
    * @param stateName the name node
    */
   public onNodeSelected(nodeName: string) {
-    /* TODO: DiagramService: rename this method*/
     if (!nodeName) {
       return;
     }

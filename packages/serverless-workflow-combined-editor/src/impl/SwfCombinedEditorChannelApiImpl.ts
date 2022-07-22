@@ -30,6 +30,7 @@ import {
   ResourceListRequest,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
+import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
@@ -46,7 +47,8 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
-    private readonly swfTextEditorChannelApiImpl?: Partial<ServerlessWorkflowTextEditorChannelApi>
+    private readonly swfTextEditorChannelApiImpl?: Partial<ServerlessWorkflowTextEditorChannelApi>,
+    private readonly swfDiagramEditorChannelApiImpl?: ServerlessWorkflowDiagramEditorChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {

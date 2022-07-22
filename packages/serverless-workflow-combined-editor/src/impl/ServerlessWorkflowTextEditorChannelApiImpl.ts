@@ -41,9 +41,8 @@ import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 export class ServerlessWorkflowTextEditorChannelApiImpl implements Partial<ServerlessWorkflowTextEditorChannelApi> {
   constructor(
     // private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>
-  ) // private readonly services: SwfServiceCatalogService[],
-  // private readonly serviceRegistriesSettings: SwfServiceRegistriesSettings
+    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi> // private readonly services: SwfServiceCatalogService[],
+  ) // private readonly serviceRegistriesSettings: SwfServiceRegistriesSettings
   {}
 
   // public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -151,18 +150,17 @@ export class ServerlessWorkflowTextEditorChannelApiImpl implements Partial<Serve
   // }
 
   public kogitoSwfTextEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    this.channelApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
-  }
-
-  public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
+    console.log("7365 kogitoSwfTextEditor__onNodeSelected");
     this.channelApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
   }
 
   public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
+    console.log("7365 kogitoSwfDiagramEditor__onNodeSelected");
     this.channelApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
   }
 
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string | undefined }): void {
+    console.log("7365 kogitoSwfLanguageService__highlightNode");
     this.channelApi.notifications.kogitoSwfLanguageService__highlightNode.send(args);
   }
 }
