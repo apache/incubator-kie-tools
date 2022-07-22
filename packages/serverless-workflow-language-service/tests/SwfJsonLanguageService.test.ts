@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfJsonLanguageService,
+  findNodeAtOffset,
+  matchNodeWithLocation,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
   SwfServiceCatalogFunctionSourceType,
@@ -23,9 +27,9 @@ import {
   SwfServiceCatalogServiceSourceType,
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
-import { SwfJsonLanguageServiceConfig } from "../src/channel";
+import { SwfLanguageServiceConfig } from "../src/channel";
+import { trim, treat } from "./testUtils";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
   name: "testRelativeFunction1",
@@ -55,7 +59,7 @@ const defaultServiceCatalogConfig = {
     `${serviceId}.yaml`,
 };
 
-const defaultConfig: SwfJsonLanguageServiceConfig = {
+const defaultConfig: SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => false,
   shouldServiceRegistriesLogIn: () => false,
   canRefreshServices: () => false,
@@ -64,7 +68,124 @@ const defaultConfig: SwfJsonLanguageServiceConfig = {
   shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
 };
 
-describe("SWF LS", () => {
+describe("SWF LS JSON", () => {
+  describe("matchNodeWithLocation", () => {
+    test("matching root node with empty content", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`🎯{}`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
+      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
+    });
+
+    test("matching empty functions array", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
+{
+  "functions": [🎯]
+}`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
+    });
+
+    describe("matching functions array with 1 function", () => {
+      test("with cursorOffset at the functions array", () => {
+        const ls = new SwfJsonLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+        let { content, cursorOffset } = treat(`
+{
+  "functions": [🎯
+  {
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`);
+        const root = ls.parseContent(content);
+        const node = findNodeAtOffset(root!, cursorOffset);
+
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+      });
+
+      test("with cursorOffset at the first function", () => {
+        const ls = new SwfJsonLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+        let { content, cursorOffset } = treat(`
+{
+  "functions": [{🎯
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`);
+        const root = ls.parseContent(content);
+        const node = findNodeAtOffset(root!, cursorOffset);
+
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      });
+    });
+
+    test("matching refName", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
+{
+  "functions": [
+    {
+      "name": "myFunc",
+      "operation": "./specs/myService#myFunc",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"🎯"
+          }
+        }
+      ]
+    },
+  ]
+}`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      expect(
+        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
+      ).toBeTruthy();
+    });
+  });
+
   test("basic", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
@@ -357,7 +478,7 @@ describe("SWF LS", () => {
         {
           "name": "testStateAction",
           "functionRef": {
-            "refName":🎯
+            "refName":"🎯"
           }
         }
       ]
@@ -381,22 +502,18 @@ describe("SWF LS", () => {
       sortText: `"myFunc"`,
       textEdit: {
         newText: `"myFunc"`,
-        range: { start: cursorPosition, end: cursorPosition },
+        range: {
+          start: {
+            ...cursorPosition,
+            character: cursorPosition.character - 1,
+          },
+          end: {
+            ...cursorPosition,
+            character: cursorPosition.character + 1,
+          },
+        },
       },
       insertTextFormat: InsertTextFormat.Snippet,
     } as CompletionItem);
   });
 });
-
-type ContentWithCursor = `${string}🎯${string}`;
-
-function treat(content: ContentWithCursor) {
-  const trimmedContent = content.trim();
-  const treatedContent = trimmedContent.replace("🎯", "");
-  const doc = TextDocument.create("", "json", 0, trimmedContent);
-  return { content: treatedContent, cursorPosition: doc.positionAt(trimmedContent.indexOf("🎯")) };
-}
-
-function trim(content: string) {
-  return { content: content.trim() };
-}

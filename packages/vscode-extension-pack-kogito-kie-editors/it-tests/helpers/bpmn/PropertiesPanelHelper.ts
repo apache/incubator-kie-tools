@@ -38,7 +38,7 @@ export enum PropertiesPanelSection {
   PROCESS = "Process",
   PROCESS_DATA = "Process Data",
   IMPLEMENTATION_EXECUTION = "Implementation/Execution",
-  Advanced = "Advanced",
+  ADVANCED = "Advanced",
   DATA_ASSIGNMENTS = "Data Assignments",
 }
 
@@ -46,7 +46,7 @@ export enum PropertiesPanelSection {
  * Class for accessing expanded BPMN Properties panel
  */
 export default class PropertiesPanelHelper {
-  constructor(private readonly root: WebElement) {}
+  constructor(protected readonly root: WebElement) {}
 
   public get rootElement() {
     return this.root;
@@ -54,6 +54,7 @@ export default class PropertiesPanelHelper {
 
   /**
    * Expand desired section of property panel.
+   * When desired section is already open, collapse the section instead.
    *
    * @param sectionName
    */
@@ -89,7 +90,7 @@ export default class PropertiesPanelHelper {
       const customDataTypeInput = await this.root.findElement(By.xpath("//input[@data-field='customDataType']"));
       await customDataTypeInput.sendKeys(dataType);
     } else {
-      const dataTypeOption = await this.root.findElement(By.xpath(`//select/option[@value='${dataType}']`));
+      const dataTypeOption = await this.root.findElement(By.xpath("//td/select/option[@value='" + dataType + "']"));
       await dataTypeOption.click();
     }
 
@@ -149,6 +150,7 @@ export default class PropertiesPanelHelper {
    *
    * @param propertyName
    * @param propertyValue
+   * @param propertyType Type of property (select, textarea etc.).
    */
   public async changeProperty(
     propertyName: string,
@@ -156,8 +158,55 @@ export default class PropertiesPanelHelper {
     propertyType?: string
   ): Promise<PropertiesPanelHelper> {
     const property = await this.getProperty(propertyName, propertyType);
-    await property.clear();
-    await property.sendKeys(propertyValue);
+    if (propertyType == "select") {
+      property.click();
+      const propertyOption = await property.findElement(
+        By.xpath(
+          "//label[contains(.,'" +
+            propertyName +
+            "')]/following-sibling::div[@data-field='fieldContainer']/select/option[@value='" +
+            propertyValue +
+            "']"
+        )
+      );
+      await propertyOption.click();
+    } else {
+      await property.clear();
+      await property.sendKeys(propertyValue);
+    }
+
+    return this;
+  }
+
+  /**
+   * Change a widgeted property to a provided value. The Original value is replaced by the new value completely.
+   * Just visible properties are assumed. Accordion view hidden content can not be changed by this method.
+   *
+   * @param propertyName
+   * @param propertyValue
+   * @param propertyType Type of property (select, textarea etc.).
+   */
+  public async changeWidgetedProperty(
+    propertyName: string,
+    propertyValue: string,
+    propertyType?: string
+  ): Promise<PropertiesPanelHelper> {
+    const property = await this.getProperty(propertyName, "/" + propertyType);
+    if (propertyType == "select") {
+      const propertyOption = await property.findElement(
+        By.xpath(
+          "//label[contains(.,'" +
+            propertyName +
+            "')]/following-sibling::div[@data-field='fieldContainer']//select/option[@value='" +
+            propertyValue +
+            "']"
+        )
+      );
+      await propertyOption.click();
+    } else {
+      await property.clear();
+      await property.sendKeys(propertyValue);
+    }
 
     return this;
   }
@@ -167,9 +216,37 @@ export default class PropertiesPanelHelper {
    *
    * @param propertyName
    * @param expectedValue
+   * @param propertyType Type of property (select, textarea etc.).
    */
   public async assertPropertyValue(propertyName: string, expectedValue: string, propertyType?: string): Promise<void> {
     const property = await this.getProperty(propertyName, propertyType);
+    const actualValue = await property.getAttribute("value");
+    assert.equal(
+      actualValue,
+      expectedValue,
+      "Value of " +
+        propertyName +
+        " property did not match the expected value. Actual value is [" +
+        actualValue +
+        "]. Expected value is [" +
+        expectedValue +
+        "]"
+    );
+  }
+
+  /**
+   * Asserts that value of a widgeted property matches expectedValue provided as argument.
+   *
+   * @param propertyName
+   * @param expectedValue
+   * @param propertyType Type of property (select, textarea etc.).
+   */
+  public async assertWidgetedPropertyValue(
+    propertyName: string,
+    expectedValue: string,
+    propertyType?: string
+  ): Promise<void> {
+    const property = await this.getProperty(propertyName, "/" + propertyType);
     const actualValue = await property.getAttribute("value");
     assert.equal(
       actualValue,

@@ -35,6 +35,7 @@ import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 import { TextEdit } from "vscode";
 import Correlation from "./helpers/bpmn/Correlation";
 import ProcessVariablesWidgetHelper from "./helpers/bpmn/ProcessVariablesWidgetHelper";
+import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
 
 describe("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
@@ -44,8 +45,8 @@ describe("Editors are loading properly", () => {
   const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";
   const DEMO_SCESIM: string = "demo.scesim";
   const DEMO_PMML: string = "demo.pmml";
-
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
+  const USER_TASK_BPMN: string = "UserTask.bpmn";
 
   const REUSABLE_DMN: string = "reusable-model.dmn";
   const WID_BPMN: string = "process-wid.bpmn";
@@ -193,6 +194,7 @@ describe("Editors are loading properly", () => {
   /**
    * As the opened sceism file is empty, a prompt to specify file under test should be shown
    */
+
   it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
@@ -331,7 +333,7 @@ describe("Editors are loading properly", () => {
     );
     assertWebElementIsDisplayedEnabled(customDataTypeEditOption);
 
-    propertiesPanel = await propertiesPanel.expandPropertySection(PropertiesPanelSection.Advanced);
+    propertiesPanel = await propertiesPanel.expandPropertySection(PropertiesPanelSection.ADVANCED);
     propertiesPanel = await propertiesPanel.addGlobalVariable(
       "used_fuel_accelerator",
       dataTypeTypeBracketFormat,
@@ -341,8 +343,9 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens MultipleInstanceSubprocess.bpmn file in BPMN Editor and test value change", async function () {
+  it("Opens MultipleInstanceSubprocess.bpmn file in BPMN Editor and test Implementation/Execution value change", async function () {
     this.timeout(40000);
+    // Inicialization
     webview = await testHelper.openFileFromSidebar(MULTIPLE_INSTANCE_BPMN);
     await testHelper.switchWebviewToFrame(webview);
     const bpmnEditorTester = new BpmnEditorTestHelper(webview);
@@ -352,21 +355,98 @@ describe("Editors are loading properly", () => {
 
     let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
 
-    const newProcessName = "Changed Multiple Instance Sub-Process";
-    await propertiesPanel.changeProperty("Name", newProcessName, "textarea");
-    await propertiesPanel.assertPropertyValue("Name", newProcessName, "textarea");
+    // Implementation/Execution
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
+    let onEntryActionSection = await propertiesPanel.getProperty("On Entry Action", "div");
+    await bpmnEditorTester.scrollElementIntoView(onEntryActionSection);
+
+    const implementationExecutionHelper = new ImplementationExecutionHelper(propertiesPanel.rootElement);
+
+    const newProcessMIExecutionValue = "Sequential";
+    await implementationExecutionHelper.changeProperty("MI Execution mode", newProcessMIExecutionValue, "select");
+
+    const newProcessMICollectionInput = "subProcessInput";
+    await implementationExecutionHelper.changeProperty("MI Collection input", newProcessMICollectionInput, "select");
+
+    const newProcessMIDataInputName = "newInput";
+    const newProcessMIDataInputType = "java.util.List<String>";
+    let MIDataInputWidget = await implementationExecutionHelper.getMIDataInputWidget();
+    await MIDataInputWidget.setMIDataInput(newProcessMIDataInputName);
+    await MIDataInputWidget.setMIDataInputDataType(newProcessMIDataInputType);
+
+    const newProcessMICollectionOutput = "subProcessOutput";
+    await propertiesPanel.changeProperty("MI Collection output", newProcessMICollectionOutput, "select");
+
+    const newProcessMIDataOutputName = "newOutput";
+    const newProcessMIDataOutputType = "java.util.List<String>";
+    let MIDataOutputWidget = await implementationExecutionHelper.getMIDataOutputWidget();
+    await MIDataOutputWidget.setMIDataInput(newProcessMIDataOutputName);
+    await MIDataOutputWidget.setMIDataInputDataType(newProcessMIDataOutputType);
+
+    const newMvelExpression = "0 == 0;";
+    await propertiesPanel.changeProperty("MI Completion Condition (mvel)", newMvelExpression, "textarea");
+
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION); // collapse section
+
+    // Process Data
+    await propertiesPanel.addProcessVariable("123", "Integer", false);
+
+    await bpmnEditorTester.openDiagramExplorer();
+    await bpmnEditorTester.openDiagramProperties();
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
+
+    // Asserts
+    await implementationExecutionHelper.assertPropertyValue("MI Execution mode", newProcessMIExecutionValue, "select");
+    await implementationExecutionHelper.assertPropertyValue(
+      "MI Collection input",
+      newProcessMICollectionInput,
+      "select"
+    );
+    await propertiesPanel.assertPropertyValue("MI Collection output", newProcessMICollectionOutput, "select");
+    MIDataInputWidget = await implementationExecutionHelper.getMIDataInputWidget();
+    await MIDataInputWidget.assertMiDataInput(newProcessMIDataInputName, newProcessMIDataInputType);
+    MIDataOutputWidget = await implementationExecutionHelper.getMIDataOutputWidget();
+    await MIDataOutputWidget.assertMiDataInput(newProcessMIDataOutputName, newProcessMIDataOutputType);
+    await propertiesPanel.assertPropertyValue("MI Completion Condition (mvel)", newMvelExpression, "textarea");
+
+    await webview.switchBack();
+  });
+
+  it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
+    this.timeout(20000);
+    webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
+    await testHelper.switchWebviewToFrame(webview);
+    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
+
+    const explorerPanel = await bpmnEditorTester.openDiagramExplorer();
+    await explorerPanel.selectDiagramNode("User Task");
+
+    let propertiesPanel = await bpmnEditorTester.openDiagramProperties();
 
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
-    const newProcessMIExecutionValue = "Sequential";
-    let processMIExecutionMode = await propertiesPanel.getProperty("MI Execution mode", "select");
-    await bpmnEditorTester.scrollElementIntoView(processMIExecutionMode);
-    const customProcessMIExecutionOption = await processMIExecutionMode.findElement(
-      By.xpath("//select/option[@value='" + newProcessMIExecutionValue + "']")
-    );
-    await customProcessMIExecutionOption.click();
+    let onExitActionSection = await propertiesPanel.getProperty("On Exit Action", "div");
+    await bpmnEditorTester.scrollElementIntoView(onExitActionSection);
 
-    await propertiesPanel.assertPropertyValue("MI Execution mode", newProcessMIExecutionValue, "select");
+    const newOnEntryAction = "console.log('On Entry Action test log');";
+    const newOnEntryLanguage = "javascript";
+    await propertiesPanel.changeWidgetedProperty("On Entry Action", newOnEntryAction, "textarea");
+    await propertiesPanel.changeWidgetedProperty("On Entry Action", newOnEntryLanguage, "select");
+
+    const newOnExitAction = "console.log('On Exit Action test log');";
+    const newOnExitLanguage = "javascript";
+    await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitAction, "textarea");
+    await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitLanguage, "select");
+
+    await bpmnEditorTester.openDiagramExplorer();
+    await bpmnEditorTester.openDiagramProperties();
+    await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
+
+    // Asserts
+    await propertiesPanel.assertWidgetedPropertyValue("On Entry Action", newOnEntryAction, "textarea");
+    await propertiesPanel.assertWidgetedPropertyValue("On Entry Action", newOnEntryLanguage, "select");
+    await propertiesPanel.assertWidgetedPropertyValue("On Exit Action", newOnExitAction, "textarea");
+    await propertiesPanel.assertWidgetedPropertyValue("On Exit Action", newOnExitLanguage, "select");
 
     await webview.switchBack();
   });

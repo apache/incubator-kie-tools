@@ -108,7 +108,7 @@ export async function activate(context: vscode.ExtensionContext) {
     ]),
     channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
       configuration,
-      swfLanguageService: vsCodeSwfLanguageService.ls,
+      vsCodeSwfLanguageService,
       swfServiceCatalogSupportActions,
     }),
     backendProxy,
@@ -116,7 +116,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   setupBuiltInVsCodeEditorSwfContributions({
     context,
-    swfLanguageService: vsCodeSwfLanguageService.ls,
+    vsCodeSwfLanguageService,
     configuration,
     swfServiceCatalogSupportActions,
   });

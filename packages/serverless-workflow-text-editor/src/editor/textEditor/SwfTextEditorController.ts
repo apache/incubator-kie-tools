@@ -16,11 +16,8 @@
 
 import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { SwfLanguageServiceCommandIds, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import {
-  FileLanguage,
-  SwfJsonOffsets,
-  SwfYamlOffsets,
-} from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
 import { OperatingSystem } from "@kie-tools-core/operating-system";

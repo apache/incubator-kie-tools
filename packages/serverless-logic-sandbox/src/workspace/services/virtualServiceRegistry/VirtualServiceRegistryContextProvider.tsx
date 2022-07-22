@@ -105,7 +105,7 @@ export function VirtualServiceRegistryContextProvider(props: Props) {
           const filesSpecs = workflowFiles.map((file) => {
             const vsrFunction = new VirtualServiceRegistryFunction(file);
             return new StorageFile({
-              path: functionPath(vsrGroup, vsrFunction),
+              path: `/${functionPath(vsrGroup, vsrFunction)}`,
               getFileContents: () => vsrFunction.getOpenApiSpec().then((content) => encoder.encode(content)),
             });
           });

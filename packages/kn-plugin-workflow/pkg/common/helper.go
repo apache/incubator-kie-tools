@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"html/template"
 	"os/exec"
+	"runtime"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -99,4 +100,12 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
 		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
 	}
+}
+
+func GetOsCommand(command string) string {
+	var osCommand = "./" + command
+	if runtime.GOOS == "windows" {
+		osCommand = ".\\" + command
+	}
+	return osCommand
 }
