@@ -18,7 +18,7 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env
 
 const buildEnv = require("@kie-tools/build-env/env");
 
-module.exports = composeEnv([buildEnv], {
+module.exports = composeEnv([buildEnv], require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env"), {
   get vars() {
     return varsWithName({
       ONLINE_EDITOR__buildInfo: {
@@ -49,23 +49,7 @@ module.exports = composeEnv([buildEnv], {
         default: "https://localhost:9001/",
         description: "",
       },
-      DMN_DEV_SANDBOX__baseImageRegistry: {
-        default: "quay.io",
-        description: "",
-      },
-      DMN_DEV_SANDBOX__baseImageAccount: {
-        default: "kie-tools",
-        description: "",
-      },
-      DMN_DEV_SANDBOX__baseImageName: {
-        default: "dmn-dev-sandbox-deployment-base-image",
-        description: "",
-      },
       DMN_DEV_SANDBOX__baseImageTag: {
-        default: "latest",
-        description: "",
-      },
-      DMN_DEV_SANDBOX__baseImageBuildTags: {
         default: "latest",
         description: "",
       },
@@ -96,11 +80,7 @@ module.exports = composeEnv([buildEnv], {
       dmnDevSandbox: {
         onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),
         baseImage: {
-          registry: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageRegistry),
-          account: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageAccount),
-          name: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageName),
           tag: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageTag),
-          buildTags: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageBuildTags),
         },
       },
     };

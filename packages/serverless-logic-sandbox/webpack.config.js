@@ -177,9 +177,9 @@ module.exports = async (env) => {
 };
 
 function getServerlessLogicSandboxBaseImageArgs() {
-  const baseImageRegistry = buildEnv.serverlessLogicSandbox.baseImage.registry;
-  const baseImageAccount = buildEnv.serverlessLogicSandbox.baseImage.account;
-  const baseImageName = buildEnv.serverlessLogicSandbox.baseImage.name;
+  const baseImageRegistry = buildEnv.serverlessLogicSandboxBaseImageEnv.registry;
+  const baseImageAccount = buildEnv.serverlessLogicSandboxBaseImageEnv.account;
+  const baseImageName = buildEnv.serverlessLogicSandboxBaseImageEnv.name;
   const baseImageTag = buildEnv.serverlessLogicSandbox.baseImage.tag;
 
   console.info("Serverless Logic Sandbox :: Base Image Registry: " + baseImageRegistry);
@@ -191,9 +191,9 @@ function getServerlessLogicSandboxBaseImageArgs() {
 }
 
 function getServerlessLogicSandboxOpenJdk11MvnImageArgs() {
-  const openJdk11MvnImageRegistry = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.registry;
-  const openJdk11MvnImageAccount = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.account;
-  const openJdk11MvnImageName = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.name;
+  const openJdk11MvnImageRegistry = buildEnv.openJdk11MvnImageEnv.registry;
+  const openJdk11MvnImageAccount = buildEnv.openJdk11MvnImageEnv.account;
+  const openJdk11MvnImageName = buildEnv.openJdk11MvnImageEnv.name;
   const openJdk11MvnImageTag = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.tag;
 
   console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Registry: " + openJdk11MvnImageRegistry);

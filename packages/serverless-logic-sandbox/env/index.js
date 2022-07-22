@@ -16,55 +16,75 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
-const buildEnv = require("@kie-tools/build-env/env");
 const { version } = require("@kie-tools/build-env/package.json");
 
-module.exports = composeEnv([buildEnv], {
-  vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__buildInfo: {
-      default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__gtmId: {
-      default: undefined,
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
-      default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
-      default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
-      default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
-      default: version,
-      description: "",
-    },
-  }),
-  get env() {
-    return {
-      serverlessLogicSandbox: {
-        buildInfo: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__buildInfo),
-        gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__gtmId),
-        dev: {
-          port: 9020,
-        },
-        kieSandboxExtendedServices: {
-          compatibleVersion: getOrDefault(
-            this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion
-          ),
-          downloadUrl: {
-            linux: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
-            macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
-            windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
+module.exports = composeEnv(
+  [
+    require("@kie-tools/build-env/env"),
+    require("@kie-tools/serverless-logic-sandbox-base-image-env/env"),
+    require("@kie-tools/openjdk11-mvn-image-env/env"),
+  ],
+  {
+    vars: varsWithName({
+      SERVERLESS_LOGIC_SANDBOX__buildInfo: {
+        default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__gtmId: {
+        default: undefined,
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: {
+        default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_linux_${version}.tar.gz`,
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: {
+        default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_macos_${version}.dmg`,
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: {
+        default: `https://github.com/kiegroup/kie-tools/releases/download/${version}/kie_sandbox_extended_services_windows_${version}.exe`,
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: {
+        default: version,
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__baseImageTag: {
+        default: "latest",
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: {
+        default: "latest",
+        description: "",
+      },
+    }),
+    get env() {
+      return {
+        serverlessLogicSandbox: {
+          buildInfo: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__buildInfo),
+          gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__gtmId),
+          dev: {
+            port: 9020,
+          },
+          baseImage: {
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageTag),
+          },
+          openJdk11MvnImage: {
+            tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag),
+          },
+          kieSandboxExtendedServices: {
+            compatibleVersion: getOrDefault(
+              this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion
+            ),
+            downloadUrl: {
+              linux: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux),
+              macOs: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs),
+              windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
+            },
           },
         },
-      },
-    };
-  },
-});
+      };
+    },
+  }
+);

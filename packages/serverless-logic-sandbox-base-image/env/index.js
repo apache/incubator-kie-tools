@@ -16,45 +16,26 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
-  vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
-      default: "2.10.1.Final",
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: {
-      default: "quay.io",
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__baseImageAccount: {
-      default: "kie-tools",
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__baseImageName: {
-      default: "serverless-logic-sandbox-base-image",
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__baseImageTag: {
-      default: "latest",
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: {
-      default: "latest",
-      description: "",
-    },
-  }),
-  get env() {
-    return {
-      serverlessLogicSandboxBaseImage: {
-        baseImage: {
+module.exports = composeEnv(
+  [require("@kie-tools/build-env/env"), require("@kie-tools/serverless-logic-sandbox-base-image-env/env")],
+  {
+    vars: varsWithName({
+      SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
+        default: "2.10.1.Final",
+        description: "",
+      },
+      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: {
+        default: "latest",
+        description: "",
+      },
+    }),
+    get env() {
+      return {
+        serverlessLogicSandboxBaseImage: {
           quarkusVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion),
-          registry: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry),
-          account: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageAccount),
-          name: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageName),
-          tag: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageTag),
           buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags),
         },
-      },
-    };
-  },
-});
+      };
+    },
+  }
+);

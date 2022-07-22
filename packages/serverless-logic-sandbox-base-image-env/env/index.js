@@ -16,22 +16,27 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env"), require("@kie-tools/openjdk11-mvn-image-env/env")], {
+module.exports = composeEnv([require("@kie-tools/build-env/env")], {
   vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: {
-      default: "latest",
+    SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: {
+      default: "quay.io",
       description: "",
     },
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion: {
-      default: "4.10.0-0.okd-2022-06-24-212905",
+    SERVERLESS_LOGIC_SANDBOX__baseImageAccount: {
+      default: "kie-tools",
+      description: "",
+    },
+    SERVERLESS_LOGIC_SANDBOX__baseImageName: {
+      default: "serverless-logic-sandbox-base-image",
       description: "",
     },
   }),
   get env() {
     return {
-      openJdk11MvnImage: {
-        buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags),
-        okdVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion),
+      serverlessLogicSandboxBaseImageEnv: {
+        registry: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry),
+        account: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageAccount),
+        name: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__baseImageName),
       },
     };
   },

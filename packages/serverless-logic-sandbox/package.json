@@ -70,7 +70,9 @@
     "@types/uuid": "^8.3.0",
     "@types/history": "^4.7.3",
     "@svgr/webpack": "6.2.1",
-    "monaco-editor-webpack-plugin": "^7.0.1"
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "@kie-tools/serverless-logic-sandbox-base-image-env": "0.0.0",
+    "@kie-tools/openjdk11-mvn-image-env": "0.0.0"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",

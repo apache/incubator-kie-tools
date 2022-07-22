@@ -16,9 +16,21 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {};
-  },
-});
+module.exports = composeEnv(
+  [require("@kie-tools/build-env/env"), require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env")],
+  {
+    vars: varsWithName({
+      DMN_DEV_SANDBOX__baseImageBuildTags: {
+        default: "latest",
+        description: "",
+      },
+    }),
+    get env() {
+      return {
+        dmnDevSandboxDeploymentBaseImage: {
+          buildTags: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageBuildTags),
+        },
+      };
+    },
+  }
+);

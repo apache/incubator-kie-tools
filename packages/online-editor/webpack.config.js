@@ -186,9 +186,9 @@ function getKieSandboxExtendedServicesArgs() {
 }
 
 function getDmnDevSandboxArgs(argv) {
-  const baseImageRegistry = buildEnv.dmnDevSandbox.baseImage.registry;
-  const baseImageAccount = buildEnv.dmnDevSandbox.baseImage.account;
-  const baseImageName = buildEnv.dmnDevSandbox.baseImage.name;
+  const baseImageRegistry = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.registry;
+  const baseImageAccount = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.account;
+  const baseImageName = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.name;
   const baseImageTag = buildEnv.dmnDevSandbox.baseImage.tag;
   const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
 

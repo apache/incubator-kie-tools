@@ -1027,6 +1027,7 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": 0.0.0
       "@kie-tools/dmn-dev-sandbox-form-webapp": 0.0.0
       "@kie-tools/dmn-dev-sandbox-quarkus": 0.0.0
     dependencies:
@@ -1034,6 +1035,13 @@ importers:
       "@kie-tools/dmn-dev-sandbox-quarkus": link:../dmn-dev-sandbox-quarkus
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
+
+  packages/dmn-dev-sandbox-deployment-base-image-env:
+    specifiers:
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
       "@kie-tools/build-env": link:../build-env
 
   packages/dmn-dev-sandbox-form-webapp:
@@ -1591,6 +1599,7 @@ importers:
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/boxed-expression-component": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": 0.0.0
       "@kie-tools/extended-services": 0.0.0
       "@kie-tools/form": 0.0.0
       "@kie-tools/form-dmn": 0.0.0
@@ -1664,6 +1673,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
+      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
       "@kie-tools/extended-services": link:../extended-services
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/history": 4.7.5
@@ -1677,8 +1687,16 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
+      "@kie-tools/openjdk11-mvn-image-env": 0.0.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
+      "@kie-tools/build-env": link:../build-env
+      "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
+
+  packages/openjdk11-mvn-image-env:
+    specifiers:
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
       "@kie-tools/build-env": link:../build-env
 
   packages/operating-system:
@@ -1822,6 +1840,8 @@ importers:
       "@kie-tools/dashbuilder-editor": 0.0.0
       "@kie-tools/i18n-common-dictionary": 0.0.0
       "@kie-tools/kie-sandbox-fs": 0.0.0
+      "@kie-tools/openjdk11-mvn-image-env": 0.0.0
+      "@kie-tools/serverless-logic-sandbox-base-image-env": 0.0.0
       "@kie-tools/serverless-workflow-combined-editor": 0.0.0
       "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
       "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
@@ -1917,6 +1937,8 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
+      "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
       "@svgr/webpack": 6.2.1
       "@types/history": 4.7.5
       "@types/minimatch": 3.0.4
@@ -1930,12 +1952,20 @@ importers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": 0.0.0
+      "@kie-tools/serverless-logic-sandbox-base-image-env": 0.0.0
       "@kie-tools/serverless-logic-sandbox-deployment-webapp": 0.0.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": link:../dashbuilder-swf-monitoring-dashboard
+      "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
       "@kie-tools/serverless-logic-sandbox-deployment-webapp": link:../serverless-logic-sandbox-deployment-webapp
+
+  packages/serverless-logic-sandbox-base-image-env:
+    specifiers:
+      "@kie-tools/build-env": 0.0.0
+    devDependencies:
+      "@kie-tools/build-env": link:../build-env
 
   packages/serverless-logic-sandbox-deployment-webapp:
     specifiers:
