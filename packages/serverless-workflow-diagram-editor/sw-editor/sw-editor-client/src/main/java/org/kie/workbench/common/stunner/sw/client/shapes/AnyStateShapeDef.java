@@ -222,7 +222,8 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .margins(o -> new HashMap<Enum, Double>() {{
                         put(DirectionLayout.HorizontalAlignment.LEFT, 85d);
                     }})
-                    .alpha(bean -> 1d);
+                    .alpha(bean -> 1d)
+                    .strokeAlpha(bean -> 0d);
         }
 
         private void initInsideCenterWithAlpha() {
@@ -232,7 +233,8 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
                     .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
-                    .alpha(bean -> 0.4d);
+                    .alpha(bean -> 0.4d)
+                    .strokeAlpha(bean -> 0d);
         }
 
         private void initInsideCenter() {
@@ -242,7 +244,8 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
                     .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
-                    .alpha(bean -> 1d);
+                    .alpha(bean -> 1d)
+                    .strokeAlpha(bean -> 0d);
         }
 
         private void initOutsideCenterBottom() {
@@ -252,7 +255,8 @@ public class AnyStateShapeDef<W> implements ShapeViewDef<W, SVGShapeView>,
                     .orientation(bean -> HasTitle.Orientation.HORIZONTAL)
                     .textSizeConstraints(bean -> new HasTitle.Size(95, 95, HasTitle.Size.SizeType.PERCENTAGE))
                     .textWrapperStrategy(bean -> TextWrapperStrategy.TRUNCATE_WITH_LINE_BREAK)
-                    .alpha(bean -> 1d);
+                    .alpha(bean -> 1d)
+                    .strokeAlpha(bean -> 0d);
         }
     }
 }
