@@ -74,8 +74,10 @@ export async function setupDiagramEditorControls(args: {
       }
 
       if (
-        args.configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
-        ShouldOpenDiagramEditorAutomaticallyConfiguration.OPEN_AUTOMATICALLY
+        [
+          ShouldOpenDiagramEditorAutomaticallyConfiguration.OPEN_AUTOMATICALLY,
+          ShouldOpenDiagramEditorAutomaticallyConfiguration.ASK,
+        ].includes(args.configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor())
       ) {
         args.kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
           if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
@@ -85,6 +87,10 @@ export async function setupDiagramEditorControls(args: {
       }
 
       if (!textEditor) {
+        return;
+      }
+
+      if (!isYard(textEditor.document)) {
         return;
       }
 
