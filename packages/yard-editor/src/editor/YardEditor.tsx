@@ -189,7 +189,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
       initialLocale={navigator.language}
       ctx={YardEditorI18nContext}
     >
-      <YardUIEditor content={initialContent?.originalContent} isReadOnly={false} />
+      <YardUIEditor />
     </I18nDictionariesProvider>
   );
 

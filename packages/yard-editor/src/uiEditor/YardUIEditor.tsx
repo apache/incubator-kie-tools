@@ -24,7 +24,6 @@ import {
   Tabs,
   TabTitleText,
   Text,
-  TextArea,
   TextInput,
   Title,
   TitleSizes,
@@ -32,22 +31,12 @@ import {
 import { CubesIcon } from "@patternfly/react-icons";
 import { useCallback, useState } from "react";
 import { useBoxedExpressionEditorI18n } from "../i18n";
-import { parse } from "yaml";
 import "./YardUIEditor.css";
 
-interface Props {
-  content: string | undefined;
-  isReadOnly: boolean;
-}
-
-export const YardUIEditor = ({ content, isReadOnly }: Props) => {
+export const YardUIEditor = () => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const handleTabClick = useCallback((event, tabIndex) => setActiveTabIndex(tabIndex), []);
-  let yamlParsed = undefined;
-  if (content) {
-    yamlParsed = parse(content);
-  }
 
   const EmptyStep = ({
     emptyStateBodyText,
@@ -124,7 +113,6 @@ export const YardUIEditor = ({ content, isReadOnly }: Props) => {
             </Title>
             <TextInput></TextInput>
             <div className={"divider"}></div>
-            <TextArea>{yamlParsed !== undefined ? yamlParsed.text : content}</TextArea>
           </div>
         </Tab>
       </Tabs>
