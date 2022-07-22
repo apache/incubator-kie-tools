@@ -89,9 +89,6 @@ export const YardUIEditor = () => {
           </div>
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}>
-          <div className={"general-header"}>
-            <Text>Asda</Text>
-          </div>
           <div className={"general-body"}>
             <Title headingLevel="h6" size={TitleSizes.md}>
               {i18n.generalTab.expressionLang}
