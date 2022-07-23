@@ -41,16 +41,20 @@ func GenerateDockerfile(dockerfilePath string) (err error) {
 	# extension
 	# write command in args, and put in run. ./mvnw quarkus:add-extension ...
 	
-	RUN cd kogito-workflow && ./mvnw package -Dnative -Dquarkus.kubernetes.deployment-target=knative
+	RUN cd kogito-workflow && ./mvnw package -Dquarkus.kubernetes.deployment-target=knative
 	
 	# docker build -f Dockerfile.workflow --target=kubernetes --output type=local,dest=kubernetes .
 	FROM scratch as kubernetes
 	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/kubernetes .
 	
-	FROM quay.io/quarkus/quarkus-micro-image:1.0 as runner
-	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/*-runner /tmp/runner
+	FROM openjdk:11 as runner
+	
+	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/quarkus-app/lib/ /deployments/lib/
+	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/quarkus-app/*.jar /deployments/
+	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/quarkus-app/app/ /deployments/app/
+	COPY --from=builder /tmp/kn-plugin-workflow/kogito-workflow/target/quarkus-app/quarkus/ /deployments/quarkus/
 	EXPOSE 8080
-	CMD ["/tmp/runner", "-Dquarkus.http.host=0.0.0.0"]
+	CMD ["java", "-jar", "/deployments/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]
 	
 	# change to minimal image
 	# docker build -f Dockerfile.workflow --target=dev -t lmotta/abc:dev .
