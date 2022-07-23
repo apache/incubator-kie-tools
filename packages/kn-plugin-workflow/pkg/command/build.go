@@ -182,6 +182,9 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	return
 }
 
+// This function removes the extension that is not going to be used (if present)
+// and updates the chosen one. The entire operation is handled as an extension addition.
+// Therefore the removal is hidden from the user
 func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
