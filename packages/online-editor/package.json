@@ -34,7 +34,7 @@
     "isomorphic-git": "^1.11.1",
     "jszip": "^3.7.1",
     "buffer": "^6.0.3",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "history": "^4.9.0",
     "react-dropzone": "^11.4.2",
     "react-router": "^5.2.1",

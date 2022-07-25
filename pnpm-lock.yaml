@@ -1617,7 +1617,7 @@ importers:
       isomorphic-git: ^1.11.1
       jszip: ^3.7.1
       minimatch: ^3.0.4
-      moment: ^2.29.1
+      moment: ^2.29.4
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -1653,7 +1653,7 @@ importers:
       isomorphic-git: 1.11.1
       jszip: 3.7.1
       minimatch: 3.0.5
-      moment: 2.29.2
+      moment: 2.29.4
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-dropzone: 11.4.2_react@17.0.2
@@ -1850,7 +1850,7 @@ importers:
       js-yaml: ^4.1.0
       jszip: ^3.7.1
       minimatch: ^3.0.4
-      moment: ^2.29.1
+      moment: ^2.29.4
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -1899,7 +1899,7 @@ importers:
       js-yaml: 4.1.0
       jszip: 3.7.1
       minimatch: 3.0.5
-      moment: 2.29.2
+      moment: 2.29.4
       monaco-editor: 0.33.0
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
       openapi-types: 7.2.3
@@ -3125,7 +3125,6 @@ packages:
     engines: { node: ^12.20.0 || ^14.15.0 || >=16.10.0 }
     dependencies:
       tslib: 2.3.1
-    dev: false
 
   /@angular/core/13.1.1_rxjs@7.5.2+zone.js@0.11.4:
     resolution:
@@ -11710,7 +11709,6 @@ packages:
       esbuild-windows-64: 0.14.22
       esbuild-windows-arm64: 0.14.22
     dev: true
-    optional: true
 
   /escalade/3.1.1:
     resolution:
@@ -16309,9 +16307,9 @@ packages:
       { integrity: sha512-9ARkWHBs+6YJIvrIp0Ik5tyTTtP9PoV0Ssu2Ocq5y9v8+NOOpWiRshAp8c4rZVWTOe+157on/5G+zj5pwIQFEQ== }
     dev: false
 
-  /moment/2.29.2:
+  /moment/2.29.4:
     resolution:
-      { integrity: sha512-UgzG4rvxYpN15jgCmVJwac49h9ly9NurikMWGPdVxm8GZD6XjkKPxDTjQQ43gtGgnV3X0cAyWDdP2Wexoquifg== }
+      { integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w== }
     dev: false
 
   /monaco-editor-webpack-plugin/7.0.1_cnxsqw4hy73v5lwn7lflrwex4q:
