@@ -38,7 +38,8 @@ export function matchNodeWithLocation(
 
   if (nodesAtLocation.some((currentNode) => currentNode === node)) {
     return true;
-  } else if (path[path.length - 1] === "*" && !nodesAtLocation.length) {
+  }
+  if (path[path.length - 1] === "*" && node.type == "array" && node.children) {
     return matchNodeWithLocation(root, node, path.slice(0, -1));
   }
 
