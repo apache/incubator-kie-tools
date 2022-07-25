@@ -22,7 +22,7 @@ import {
   DrawerPanelBody,
   DrawerPanelContent,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { MonacoEditorOperation, DashbuilderMonacoEditorApi } from "../monaco/DashbuilderMonacoEditorApi";
 import { DashbuilderMonacoEditor } from "../monaco/DashbuilderMonacoEditor";
@@ -92,7 +92,7 @@ interface Props {
    * that a change has taken place. Increases the decoupling of the DashbuilderEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 
   /**
    * Delegation for NotificationsChannelApi.kogigotNotifications_setNotifications(path, notifications) to report all validation
@@ -178,7 +178,7 @@ const RefForwardingDashbuilderEditor: React.ForwardRefRenderFunction<Dashbuilder
   const onContentChanged = useCallback(
     (newContent: string, operation?: MonacoEditorOperation) => {
       if (operation === MonacoEditorOperation.EDIT) {
-        props.onNewEdit(new KogitoEdit(newContent));
+        props.onNewEdit(new WorkspaceEdit(newContent));
       } else if (operation === MonacoEditorOperation.UNDO) {
         if (!isVSCode()) {
           dashbuilderMonacoEditorRef.current?.undo();

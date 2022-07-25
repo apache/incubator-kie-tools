@@ -15,7 +15,7 @@
  */
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { SwfTextEditorApi, SwfTextEditorOperation } from "./textEditor/SwfTextEditorController";
 import { SwfTextEditor } from "./textEditor/SwfTextEditor";
@@ -35,7 +35,7 @@ interface Props {
    * that a change has taken place. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 
   /**
    * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
@@ -140,7 +140,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
     (newContent: string, operation?: SwfTextEditorOperation) => {
       switch (operation) {
         case SwfTextEditorOperation.EDIT:
-          props.onNewEdit(new KogitoEdit(newContent));
+          props.onNewEdit(new WorkspaceEdit(newContent));
           break;
         case SwfTextEditorOperation.UNDO:
           if (!isVscode()) {

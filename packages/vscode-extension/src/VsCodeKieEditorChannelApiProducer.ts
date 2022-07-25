@@ -15,20 +15,20 @@
  */
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { KogitoEditor } from "./KogitoEditor";
+import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
 import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
-import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
+import { DefaultVsCodeKieEditorChannelApiImpl } from "./DefaultVsCodeKieEditorChannelApiImpl";
 
 /**
  * Produces instances of KogitoEditorChannelApi to be used if we want to provide the extension a Channel API with
  * custom features.
  */
-export interface KogitoEditorChannelApiProducer {
+export interface VsCodeKieEditorChannelApiProducer {
   /**
    * Method to obtain the KogitoEditorChannelApi instance.
    * @param editor
@@ -41,7 +41,7 @@ export interface KogitoEditorChannelApiProducer {
    * @param i18n
    */
   get(
-    editor: KogitoEditor,
+    editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     workspaceApi: WorkspaceChannelApi,
     backendProxy: BackendProxy,
@@ -52,9 +52,9 @@ export interface KogitoEditorChannelApiProducer {
   ): KogitoEditorChannelApi;
 }
 
-export class DefaultKogitoEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
+export class DefaultVsCodeEditorChannelApiProducer implements VsCodeKieEditorChannelApiProducer {
   get(
-    editor: KogitoEditor,
+    editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     workspaceApi: WorkspaceChannelApi,
     backendProxy: BackendProxy,
@@ -63,7 +63,7 @@ export class DefaultKogitoEditorChannelApiProducer implements KogitoEditorChanne
     viewType: string,
     i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
-    return new KogitoEditorChannelApiImpl(
+    return new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
       workspaceApi,

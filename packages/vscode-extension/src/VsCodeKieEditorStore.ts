@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-import { KogitoEditor } from "./KogitoEditor";
+import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
 import { Uri } from "vscode";
 
-export class KogitoEditorStore {
-  public activeEditor?: KogitoEditor;
-  public openEditors: Set<KogitoEditor>;
+export class VsCodeKieEditorStore {
+  public activeEditor?: VsCodeKieEditorController;
+  public openEditors: Set<VsCodeKieEditorController>;
 
   constructor() {
     this.openEditors = new Set();
   }
 
-  public addAsActive(editor: KogitoEditor) {
+  public addAsActive(editor: VsCodeKieEditorController) {
     this.activeEditor = editor;
     this.openEditors.add(editor);
   }
 
-  public setActive(editor: KogitoEditor) {
+  public setActive(editor: VsCodeKieEditorController) {
     this.activeEditor = editor;
   }
 
-  public isActive(editor: KogitoEditor) {
+  public isActive(editor: VsCodeKieEditorController) {
     return this.activeEditor === editor;
   }
 
@@ -42,7 +42,7 @@ export class KogitoEditorStore {
     this.activeEditor = undefined;
   }
 
-  public close(editor: KogitoEditor) {
+  public close(editor: VsCodeKieEditorController) {
     this.openEditors.delete(editor);
 
     if (this.isActive(editor)) {
@@ -51,7 +51,7 @@ export class KogitoEditorStore {
   }
 
   public get(uri: Uri) {
-    let found: KogitoEditor | undefined;
+    let found: VsCodeKieEditorController | undefined;
 
     this.openEditors.forEach((editor) => {
       if (editor.hasUri(uri)) {

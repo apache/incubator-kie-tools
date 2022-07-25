@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export class KogitoEdit {
+export class WorkspaceEdit {
   public readonly id: string;
 
   constructor(id: string) {

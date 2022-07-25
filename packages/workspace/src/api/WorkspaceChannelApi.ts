@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "../api";
+import { WorkspaceEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "../api";
 
 export interface WorkspaceChannelApi {
-  kogitoWorkspace_newEdit(edit: KogitoEdit): void;
+  kogitoWorkspace_newEdit(edit: WorkspaceEdit): void;
   kogitoWorkspace_openFile(path: string): void;
   kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;
   kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList>;

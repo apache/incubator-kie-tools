@@ -31,7 +31,7 @@ import { RelativePattern, WorkspaceFolder } from "vscode";
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
  */
-export class VsCodeResourceContentService implements ResourceContentService {
+export class VsCodeResourceContentServiceImpl implements ResourceContentService {
   private readonly currentAssetFolder: string;
 
   constructor(currentAssetFolder: string) {

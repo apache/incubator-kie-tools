@@ -22,13 +22,13 @@ import * as vscode from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";
 import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
-import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoTextEditorWebviewProvider } from "./KogitoTextEditorWebviewProvider";
+import { VsCodeKieEditorControllerFactory } from "./VsCodeKieEditorControllerFactory";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
+import { VsCodeKieEditorsTextEditorProvider } from "./VsCodeKieEditorsTextEditorProvider";
 import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import { VsCodeJavaCodeCompletionApiImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
-import { KogitoEditorChannelApiProducer } from "./KogitoEditorChannelApiProducer";
-import { KogitoCustomEditorWebviewProvider } from "./KogitoCustomEditorWebviewProvider";
+import { VsCodeKieEditorChannelApiProducer } from "./VsCodeKieEditorChannelApiProducer";
+import { VsCodeKieEditorsCustomEditorProvider } from "./VsCodeKieEditorsCustomEditorProvider";
 import { executeOnSaveHook } from "./onSaveHook";
 
 /**
@@ -49,19 +49,19 @@ export async function startExtension(args: {
   silentlyGenerateSvgCommandId?: string;
   editorEnvelopeLocator: EditorEnvelopeLocator;
   backendProxy: VsCodeBackendProxy;
-  channelApiProducer?: KogitoEditorChannelApiProducer;
+  channelApiProducer?: VsCodeKieEditorChannelApiProducer;
   editorDocumentType?: "text" | "custom";
 }) {
   await args.backendProxy.tryLoadBackendExtension(true);
 
-  const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
+  const i18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
   const workspaceApi = new VsCodeWorkspaceChannelApiImpl();
-  const editorStore = new KogitoEditorStore();
+  const editorStore = new VsCodeKieEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
   const vsCodeNotificationsApi = new VsCodeNotificationsChannelApiImpl(workspaceApi);
   const vsCodeJavaCodeCompletionChannelApi = new VsCodeJavaCodeCompletionApiImpl();
 
-  const editorFactory = new KogitoEditorFactory(
+  const editorFactory = new VsCodeKieEditorControllerFactory(
     args.context,
     editorStore,
     args.editorEnvelopeLocator,
@@ -71,7 +71,7 @@ export async function startExtension(args: {
     vsCodeNotificationsApi,
     vsCodeJavaCodeCompletionChannelApi,
     args.viewType,
-    vsCodeI18n,
+    i18n,
     args.channelApiProducer
   );
 
@@ -79,12 +79,12 @@ export async function startExtension(args: {
     args.context.subscriptions.push(
       vscode.window.registerCustomEditorProvider(
         args.viewType,
-        new KogitoCustomEditorWebviewProvider(
+        new VsCodeKieEditorsCustomEditorProvider(
           args.context,
           args.viewType,
           editorStore,
           editorFactory,
-          vsCodeI18n,
+          i18n,
           vsCodeNotificationsApi,
           args.editorEnvelopeLocator
         ),
@@ -97,7 +97,7 @@ export async function startExtension(args: {
     args.context.subscriptions.push(
       vscode.window.registerCustomEditorProvider(
         args.viewType,
-        new KogitoTextEditorWebviewProvider(args.context, args.viewType, editorFactory),
+        new VsCodeKieEditorsTextEditorProvider(args.context, args.viewType, editorFactory),
         {
           webviewOptions: { retainContextWhenHidden: true },
         }
@@ -122,7 +122,7 @@ export async function startExtension(args: {
         generateSvg({
           editorStore: editorStore,
           workspaceApi: workspaceApi,
-          vsCodeI18n: vsCodeI18n,
+          vsCodeI18n: i18n,
           displayNotification: true,
           editorEnvelopeLocator: args.editorEnvelopeLocator,
         })
@@ -136,7 +136,7 @@ export async function startExtension(args: {
         generateSvg({
           editorStore: editorStore,
           workspaceApi: workspaceApi,
-          vsCodeI18n: vsCodeI18n,
+          vsCodeI18n: i18n,
           displayNotification: false,
           editorEnvelopeLocator: args.editorEnvelopeLocator,
         })
@@ -147,4 +147,4 @@ export async function startExtension(args: {
   return editorStore;
 }
 
-export * from "./KogitoEditorStore";
+export * from "./VsCodeKieEditorStore";

@@ -15,7 +15,7 @@
  */
 
 import {
-  KogitoEdit,
+  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
@@ -37,7 +37,7 @@ export class VsCodeWorkspaceChannelApiImpl implements WorkspaceChannelApi {
     throw new Error("This is not implemented yet.");
   }
 
-  public async kogitoWorkspace_newEdit(edit: KogitoEdit) {
+  public async kogitoWorkspace_newEdit(edit: WorkspaceEdit) {
     throw new Error("This is not implemented yet.");
   }
 

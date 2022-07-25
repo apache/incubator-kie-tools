@@ -37,7 +37,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const configuration = new YardVsCodeExtensionConfiguration();
 
-  const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
+  const kieEditorsStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-yard-editor",
     context: context,
@@ -56,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
   await setupDiagramEditorControls({
     context,
     configuration,
-    kieToolsEditorStore,
+    kieEditorsStore,
   });
 
   console.info("Extension is successfully setup.");

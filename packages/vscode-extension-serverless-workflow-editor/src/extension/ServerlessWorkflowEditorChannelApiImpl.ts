@@ -28,7 +28,7 @@ import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
-  KogitoEdit,
+  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceContentService,
@@ -125,7 +125,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
+  public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 

@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-import { KogitoCommandRegistry } from "../gwtStateControl";
-
 /**
  * EXPOSED INTEROP API
  *
  * This API is exposed from the Envelope to be consumed on Java code.
  *
- * GWT State Control API for command-based editors. It gives access to the {@link KogitoCommandRegistry} and allows setting
+ * GWT State Control API for command-based editors. It gives access to the {@link StateControlCommandRegistry} and allows setting
  * the editor undo & redo commands for a correct integration with the envelope.
  */
 export interface StateControlExposedInteropApi {
-  registry: KogitoCommandRegistry<any>;
+  registry: StateControlCommandRegistry<any>;
   setUndoCommand(undoCommand: () => void): void;
   setRedoCommand(redoCommand: () => void): void;
+}
+
+export interface StateControlCommandRegistry<T> {
+  register(id: string, command: T): void;
+  peek(): T | null;
+  pop(): T | null;
+  isEmpty(): boolean;
+  getCommands(): T[];
+  clear(): void;
+  setMaxSize(size: number): void;
 }

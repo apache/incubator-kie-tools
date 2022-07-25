@@ -17,7 +17,7 @@ import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { Drawer, DrawerContent, DrawerContentBody, DrawerPanelBody, DrawerPanelContent } from "@patternfly/react-core";
 import { yardEditorDictionaries, YardEditorI18nContext, yardEditorI18nDefaults } from "../i18n";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTextEditorController";
 import { YardTextEditor } from "../textEditor/YardTextEditor";
@@ -40,7 +40,7 @@ interface Props {
    * that a change has taken place. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 
   /**
    * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
@@ -143,7 +143,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
     (newContent: string, operation?: YardTextEditorOperation) => {
       switch (operation) {
         case YardTextEditorOperation.EDIT:
-          props.onNewEdit(new KogitoEdit(newContent));
+          props.onNewEdit(new WorkspaceEdit(newContent));
           break;
         case YardTextEditorOperation.UNDO:
           if (!isVscode()) {

@@ -25,11 +25,11 @@ import {
   KogitoEditorChannelApi,
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
-import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { VsCodeKieEditorCustomDocument } from "./VsCodeKieEditorCustomDocument";
 
 function fileExtension(documentUri: vscode.Uri) {
   const lastSlashIndex = documentUri.fsPath.lastIndexOf("/");
@@ -48,12 +48,12 @@ export type KogitoEditorDocument =
     }
   | {
       type: "custom";
-      document: KogitoEditableDocument;
+      document: VsCodeKieEditorCustomDocument;
     };
 
 const decoder = new TextDecoder("utf-8");
 
-export class KogitoEditor implements EditorApi {
+export class VsCodeKieEditorController implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
   private changeDocumentSubscription: vscode.Disposable | undefined;
 
@@ -61,7 +61,7 @@ export class KogitoEditor implements EditorApi {
     public readonly document: KogitoEditorDocument,
     public readonly panel: vscode.WebviewPanel,
     private readonly context: vscode.ExtensionContext,
-    private readonly editorStore: KogitoEditorStore,
+    private readonly editorStore: VsCodeKieEditorStore,
     private readonly envelopeMapping: EnvelopeMapping,
     private readonly envelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,

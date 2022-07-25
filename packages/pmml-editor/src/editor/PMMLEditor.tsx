@@ -39,7 +39,7 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { toNotifications, ValidationContext, ValidationRegistry } from "./validation";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Builder } from "./paths";
 
@@ -64,7 +64,7 @@ interface Props {
    * that a change has taken place. Increases the decoupling of the PMMLEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  newEdit: (edit: KogitoEdit) => void;
+  newEdit: (edit: WorkspaceEdit) => void;
 
   /**
    * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
@@ -87,7 +87,7 @@ export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
   private readonly history: HistoryService = new HistoryService([
     (id: string) => {
-      this.props.newEdit(new KogitoEdit(id));
+      this.props.newEdit(new WorkspaceEdit(id));
     },
     () => {
       this.props.setNotifications(this.state.path, this.validate());

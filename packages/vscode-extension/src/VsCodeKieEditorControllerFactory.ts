@@ -22,22 +22,22 @@ import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { EditorEnvelopeLocator, EnvelopeMapping, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
-import { KogitoEditor, KogitoEditorDocument } from "./KogitoEditor";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { VsCodeNodeResourceContentService } from "./VsCodeNodeResourceContentService";
-import { VsCodeResourceContentService } from "./VsCodeResourceContentService";
+import { VsCodeKieEditorController, KogitoEditorDocument } from "./VsCodeKieEditorController";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
+import { VsCodeNodeResourceContentServiceImpl } from "./VsCodeNodeResourceContentServiceImpl";
+import { VsCodeResourceContentServiceImpl } from "./VsCodeResourceContentServiceImpl";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeI18n } from "./i18n";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
-  DefaultKogitoEditorChannelApiProducer,
-  KogitoEditorChannelApiProducer,
-} from "./KogitoEditorChannelApiProducer";
+  DefaultVsCodeEditorChannelApiProducer,
+  VsCodeKieEditorChannelApiProducer,
+} from "./VsCodeKieEditorChannelApiProducer";
 
-export class KogitoEditorFactory {
+export class VsCodeKieEditorControllerFactory {
   constructor(
     private readonly context: vscode.ExtensionContext,
-    private readonly editorStore: KogitoEditorStore,
+    private readonly editorStore: VsCodeKieEditorStore,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly workspaceApi: WorkspaceChannelApi,
@@ -46,7 +46,7 @@ export class KogitoEditorFactory {
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>,
-    private readonly channelApiProducer: KogitoEditorChannelApiProducer = new DefaultKogitoEditorChannelApiProducer()
+    private readonly channelApiProducer: VsCodeKieEditorChannelApiProducer = new DefaultVsCodeEditorChannelApiProducer()
   ) {}
 
   public configureNew(webviewPanel: vscode.WebviewPanel, document: KogitoEditorDocument) {
@@ -67,7 +67,7 @@ export class KogitoEditorFactory {
       throw new Error(`No envelope mapping found for '${document.document.uri}'`);
     }
 
-    const editor = new KogitoEditor(
+    const editor = new VsCodeKieEditorController(
       document,
       webviewPanel,
       this.context,
@@ -91,13 +91,16 @@ export class KogitoEditorFactory {
 
   public createResourceContentService(path: string, workspacePath: string): ResourceContentService {
     if (this.isAssetInWorkspace(path)) {
-      return new VsCodeResourceContentService(this.getParentFolder(workspacePath));
+      return new VsCodeResourceContentServiceImpl(this.getParentFolder(workspacePath));
     } else {
-      return new VsCodeNodeResourceContentService(this.getParentFolder(path));
+      return new VsCodeNodeResourceContentServiceImpl(this.getParentFolder(path));
     }
   }
 
-  private getChannelApi(editor: KogitoEditor, resourceContentService: ResourceContentService): KogitoEditorChannelApi {
+  private getChannelApi(
+    editor: VsCodeKieEditorController,
+    resourceContentService: ResourceContentService
+  ): KogitoEditorChannelApi {
     return this.channelApiProducer.get(
       editor,
       resourceContentService,

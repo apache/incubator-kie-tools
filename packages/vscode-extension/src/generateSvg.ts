@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
@@ -30,7 +30,7 @@ import {
 const encoder = new TextEncoder();
 
 export async function generateSvg(args: {
-  editorStore: KogitoEditorStore;
+  editorStore: VsCodeKieEditorStore;
   workspaceApi: WorkspaceChannelApi;
   vsCodeI18n: I18n<VsCodeI18n>;
   displayNotification: boolean;

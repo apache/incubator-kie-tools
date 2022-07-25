@@ -20,7 +20,7 @@ export * from "./ResourceListOptions";
 export * from "./SearchType";
 export * from "./ResourceContentRequest";
 export * from "./ResourceContentService";
-export * from "./KogitoEdit";
+export * from "./WorkspaceEdit";
 export * from "./ResourcesList";
 export * from "./ResourceListRequest";
 export * from "./ResourceContent";

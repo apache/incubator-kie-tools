@@ -25,23 +25,25 @@ import {
   Uri,
   WebviewPanel,
 } from "vscode";
-import { KogitoEditorFactory } from "./KogitoEditorFactory";
-import { KogitoEditorStore } from "./KogitoEditorStore";
-import { KogitoEditableDocument } from "./KogitoEditableDocument";
+import { VsCodeKieEditorControllerFactory } from "./VsCodeKieEditorControllerFactory";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
+import { VsCodeKieEditorCustomDocument } from "./VsCodeKieEditorCustomDocument";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 
-export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
-  private readonly _onDidChangeCustomDocument = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
+export class VsCodeKieEditorsCustomEditorProvider implements CustomEditorProvider<VsCodeKieEditorCustomDocument> {
+  private readonly _onDidChangeCustomDocument = new EventEmitter<
+    CustomDocumentEditEvent<VsCodeKieEditorCustomDocument>
+  >();
   public readonly onDidChangeCustomDocument = this._onDidChangeCustomDocument.event;
 
   public constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly viewType: string,
-    private readonly editorStore: KogitoEditorStore,
-    private readonly editorFactory: KogitoEditorFactory,
+    private readonly editorStore: VsCodeKieEditorStore,
+    private readonly editorFactory: VsCodeKieEditorControllerFactory,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
     private readonly vsCodeNotificationsApi: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
@@ -56,7 +58,7 @@ export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<K
   }
 
   public async resolveCustomEditor(
-    document: KogitoEditableDocument,
+    document: VsCodeKieEditorCustomDocument,
     webviewPanel: WebviewPanel,
     cancellation: CancellationToken
   ) {
@@ -65,7 +67,7 @@ export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<K
 
   public async openCustomDocument(uri: Uri, openContext: CustomDocumentOpenContext, cancellation: CancellationToken) {
     await this.createStorageFolder();
-    const document = new KogitoEditableDocument(
+    const document = new VsCodeKieEditorCustomDocument(
       uri,
       this.resolveBackupUri(openContext.backupId),
       this.editorStore,
@@ -77,20 +79,24 @@ export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<K
     return document;
   }
 
-  public async saveCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
+  public async saveCustomDocument(document: VsCodeKieEditorCustomDocument, cancellation: CancellationToken) {
     return document.save(document.uri, cancellation);
   }
 
-  public async saveCustomDocumentAs(document: KogitoEditableDocument, dest: Uri, cancellation: CancellationToken) {
+  public async saveCustomDocumentAs(
+    document: VsCodeKieEditorCustomDocument,
+    dest: Uri,
+    cancellation: CancellationToken
+  ) {
     return document.save(dest, cancellation);
   }
 
-  public async revertCustomDocument(document: KogitoEditableDocument, cancellation: CancellationToken) {
+  public async revertCustomDocument(document: VsCodeKieEditorCustomDocument, cancellation: CancellationToken) {
     return document.revert(cancellation);
   }
 
   public backupCustomDocument(
-    document: KogitoEditableDocument,
+    document: VsCodeKieEditorCustomDocument,
     context: CustomDocumentBackupContext,
     cancellation: CancellationToken
   ) {
@@ -101,7 +107,7 @@ export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<K
     await vscode.workspace.fs.createDirectory(this.context.storageUri ?? this.context.globalStorageUri);
   }
 
-  private setupListeners(document: KogitoEditableDocument) {
+  private setupListeners(document: VsCodeKieEditorCustomDocument) {
     const listeners = [document.onDidChange((e) => this._onDidChangeCustomDocument.fire({ ...e, document }))];
     document.onDidDispose(() => listeners.forEach((listener) => listener.dispose()));
   }

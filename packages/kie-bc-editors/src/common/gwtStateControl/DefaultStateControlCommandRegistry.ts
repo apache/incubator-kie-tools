@@ -17,24 +17,10 @@
 import { GwtStateControlCommand } from "./GwtStateControlCommand";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import { StateControlCommandRegistry } from "../exposedInteropApi";
 
-/**
- * EXPOSED INTEROP API
- *
- * Represents a command registry API to be used on command-based editors.
- */
-export interface KogitoCommandRegistry<T> {
-  register(id: string, command: T): void;
-  peek(): T | null;
-  pop(): T | null;
-  isEmpty(): boolean;
-  getCommands(): T[];
-  clear(): void;
-  setMaxSize(size: number): void;
-}
-
-export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T> {
+export class DefaultStateControlCommandRegistry<T> implements StateControlCommandRegistry<T> {
   private maxStackSize = 200;
   private commands: Array<GwtStateControlCommand<T>> = [];
   private undoneCommands: string[] = [];
@@ -45,7 +31,7 @@ export class DefaultKogitoCommandRegistry<T> implements KogitoCommandRegistry<T>
     if (!this.undoneCommands.includes(newCommand.getId())) {
       // Only notifying if the command is a new command. Also clearing the removedCommands registry, since the undone
       // commands won't be redone
-      this.channelApi.notifications.kogitoWorkspace_newEdit.send(new KogitoEdit(newCommand.getId()));
+      this.channelApi.notifications.kogitoWorkspace_newEdit.send(new WorkspaceEdit(newCommand.getId()));
       this.undoneCommands = [];
     } else {
       // Removing the command from the removedCommands registry since it's been registered again (redo).

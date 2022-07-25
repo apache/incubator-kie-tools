@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
+import { DefaultStateControlCommandRegistry } from "./DefaultStateControlCommandRegistry";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { StateControlExposedInteropApi } from "../exposedInteropApi";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
@@ -37,7 +37,7 @@ export class GwtStateControlService {
 
   public getExposedInteropApi(channelApi: MessageBusClientApi<KogitoEditorChannelApi>): StateControlExposedInteropApi {
     return {
-      registry: new DefaultKogitoCommandRegistry<unknown>(channelApi),
+      registry: new DefaultStateControlCommandRegistry<unknown>(channelApi),
       setUndoCommand: (undoCommand) => (this.undoCommand = undoCommand),
       setRedoCommand: (redoCommand) => (this.redoCommand = redoCommand),
     };

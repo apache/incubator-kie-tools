@@ -16,7 +16,7 @@
 
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import {
-  KogitoEdit,
+  WorkspaceEdit,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
@@ -26,7 +26,7 @@ import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
-import { KogitoEditor } from "./KogitoEditor";
+import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
@@ -37,9 +37,9 @@ import {
   JavaCodeCompletionClass,
 } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
-export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
+export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   constructor(
-    private readonly editor: KogitoEditor,
+    private readonly editor: VsCodeKieEditorController,
     private readonly resourceContentService: ResourceContentService,
     private readonly workspaceApi: WorkspaceChannelApi,
     private readonly backendProxy: BackendProxy,
@@ -49,9 +49,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
     private readonly i18n: I18n<VsCodeI18n>
   ) {}
 
-  public async kogitoWorkspace_newEdit(kogitoEdit: KogitoEdit) {
+  public async kogitoWorkspace_newEdit(workspaceEdit: WorkspaceEdit) {
     if (this.editor.document.type === "custom") {
-      this.editor.document.document.notifyEdit(this.editor, kogitoEdit);
+      this.editor.document.document.notifyEdit(this.editor, workspaceEdit);
       return;
     }
 

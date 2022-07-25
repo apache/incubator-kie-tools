@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import * as vscode from "vscode";
@@ -28,28 +28,28 @@ import {
 } from "vscode";
 import { VsCodeI18n } from "./i18n";
 import * as __path from "path";
-import { KogitoEditor } from "./KogitoEditor";
-import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeKieEditorController } from "./VsCodeKieEditorController";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import { VsCodeOutputLogger } from "./VsCodeOutputLogger";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { executeOnSaveHook } from "./onSaveHook";
 
-export class KogitoEditableDocument implements CustomDocument {
+export class VsCodeKieEditorCustomDocument implements CustomDocument {
   private readonly encoder = new TextEncoder();
   private readonly decoder = new TextDecoder("utf-8");
 
-  private readonly vsCodeLogger = new VsCodeOutputLogger(KogitoEditableDocument.name);
+  private readonly vsCodeLogger = new VsCodeOutputLogger(VsCodeKieEditorCustomDocument.name);
 
   private readonly _onDidDispose = new EventEmitter<void>();
   public readonly onDidDispose = this._onDidDispose.event;
 
-  private readonly _onDidChange = new EventEmitter<CustomDocumentEditEvent<KogitoEditableDocument>>();
+  private readonly _onDidChange = new EventEmitter<CustomDocumentEditEvent<VsCodeKieEditorCustomDocument>>();
   public readonly onDidChange = this._onDidChange.event;
 
   public constructor(
     public readonly uri: Uri,
     public readonly initialBackup: Uri | undefined,
-    public readonly editorStore: KogitoEditorStore,
+    public readonly editorStore: VsCodeKieEditorStore,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
     private readonly vsCodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
@@ -141,7 +141,7 @@ export class KogitoEditableDocument implements CustomDocument {
     }
   }
 
-  public notifyEdit(editor: KogitoEditor, edit: KogitoEdit) {
+  public notifyEdit(editor: VsCodeKieEditorController, edit: WorkspaceEdit) {
     this._onDidChange.fire({
       label: "edit",
       document: this,

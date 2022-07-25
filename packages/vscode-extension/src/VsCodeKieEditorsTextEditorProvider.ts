@@ -16,13 +16,13 @@
 
 import * as vscode from "vscode";
 import { CancellationToken, CustomTextEditorProvider, TextDocument, WebviewPanel } from "vscode";
-import { KogitoEditorFactory } from "./KogitoEditorFactory";
+import { VsCodeKieEditorControllerFactory } from "./VsCodeKieEditorControllerFactory";
 
-export class KogitoTextEditorWebviewProvider implements CustomTextEditorProvider {
+export class VsCodeKieEditorsTextEditorProvider implements CustomTextEditorProvider {
   public constructor(
     private readonly context: vscode.ExtensionContext,
     private readonly viewType: string,
-    private readonly editorFactory: KogitoEditorFactory
+    private readonly editorFactory: VsCodeKieEditorControllerFactory
   ) {}
 
   public register() {

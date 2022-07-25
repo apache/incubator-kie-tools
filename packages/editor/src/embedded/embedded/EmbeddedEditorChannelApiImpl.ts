@@ -14,35 +14,30 @@
  * limitations under the License.
  */
 
+import { StateControl } from "../../channel";
+import { KogitoGuidedTour } from "@kie-tools-core/guided-tour/dist/channel";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { KogitoEditorChannelApi, StateControlCommand, EditorContent } from "../../api";
 import {
-  ContentType,
-  KogitoEdit,
+  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
-import {
-  EditorContent,
-  EditorTheme,
-  KogitoEditorChannelApi,
-  StateControlCommand,
-} from "@kie-tools-core/editor/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
-import { Minimatch } from "minimatch";
+import { EmbeddedEditorFile } from "../../channel";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
+import { EditorTheme } from "../../api";
 
-export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
+export class EmbeddedEditorChannelApiImpl implements KogitoEditorChannelApi {
   constructor(
     private readonly stateControl: StateControl,
     private readonly file: EmbeddedEditorFile,
     private readonly locale: string,
-    private readonly overrides: Partial<KogitoEditorChannelApi>,
-    private readonly resources?: Map<string, { contentType: ContentType; content: Promise<string> }>
+    private readonly overrides: Partial<KogitoEditorChannelApi>
   ) {}
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit) {
+  public kogitoWorkspace_newEdit(edit: WorkspaceEdit) {
     this.stateControl.updateCommandStack({ id: edit.id });
     this.overrides.kogitoWorkspace_newEdit?.(edit);
   }
@@ -63,11 +58,11 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction) {
-    /* unsupported */
+    KogitoGuidedTour.getInstance().onUserInteraction(userInteraction);
   }
 
   public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial) {
-    /* unsupported */
+    KogitoGuidedTour.getInstance().registerTutorial(tutorial);
   }
 
   public async kogitoEditor_contentRequest() {
@@ -76,35 +71,13 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
   }
 
   public async kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest) {
-    const resource = this.resources?.get(request.path);
-
-    if (!resource) {
-      console.warn("The editor requested an unspecified resource: " + request.path);
-      return new ResourceContent(request.path, undefined);
-    }
-
-    const requestedContentType = request.opts?.type ?? resource.contentType;
-    if (requestedContentType !== resource.contentType) {
-      console.warn(
-        "The editor requested a resource with a different content type from the one specified: " +
-          request.path +
-          ". Content type requested: " +
-          requestedContentType
-      );
-      return new ResourceContent(request.path, undefined);
-    }
-
-    return new ResourceContent(request.path, await resource.content, resource.contentType);
+    return (
+      this.overrides.kogitoWorkspace_resourceContentRequest?.(request) ?? new ResourceContent(request.path, undefined)
+    );
   }
 
   public async kogitoWorkspace_resourceListRequest(request: ResourceListRequest) {
-    if (!this.resources) {
-      return new ResourcesList(request.pattern, []);
-    }
-
-    const matcher = new Minimatch(request.pattern);
-    const matches = Array.from(this.resources.keys()).filter((path) => matcher.match(path));
-    return new ResourcesList(request.pattern, matches);
+    return this.overrides.kogitoWorkspace_resourceListRequest?.(request) ?? new ResourcesList(request.pattern, []);
   }
 
   public kogitoWorkspace_openFile(path: string): void {
@@ -115,12 +88,12 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi {
     this.overrides.kogitoEditor_ready?.();
   }
 
-  public kogitoEditor_theme() {
-    return this.overrides.kogitoEditor_theme?.() ?? { defaultValue: EditorTheme.LIGHT };
-  }
-
   public kogitoEditor_setContentError(editorContent: EditorContent): void {
     this.overrides.kogitoEditor_setContentError?.(editorContent);
+  }
+
+  public kogitoEditor_theme() {
+    return this.overrides.kogitoEditor_theme?.() ?? { defaultValue: EditorTheme.LIGHT };
   }
 
   public kogitoI18n_getLocale(): Promise<string> {
