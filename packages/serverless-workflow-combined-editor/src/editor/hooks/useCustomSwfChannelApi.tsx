@@ -39,7 +39,7 @@ export function useCustomSwfChannelApi(args: {
 
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
-  const kogitoEditorChannelApiImpl = useMemo(
+  const channelApiImpl = useMemo(
     () =>
       args.embeddedEditorFile &&
       new EmbeddedEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
@@ -72,16 +72,16 @@ export function useCustomSwfChannelApi(args: {
   const channelApi = useMemo(
     () =>
       args.channelApi &&
-      kogitoEditorChannelApiImpl &&
+      channelApiImpl &&
       new SwfCombinedEditorChannelApiImpl(
-        kogitoEditorChannelApiImpl,
+        channelApiImpl,
         swfFeatureToggleChannelApiImpl,
         swfServiceCatalogChannelApiImpl,
         swfLanguageServiceChannelApiImpl
       ),
     [
       args.channelApi,
-      kogitoEditorChannelApiImpl,
+      channelApiImpl,
       swfFeatureToggleChannelApiImpl,
       swfLanguageServiceChannelApiImpl,
       swfServiceCatalogChannelApiImpl,

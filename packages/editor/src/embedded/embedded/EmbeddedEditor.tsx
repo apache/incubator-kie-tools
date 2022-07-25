@@ -91,7 +91,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   );
 
   //Setup envelope bus communication
-  const kogitoEditorChannelApiImpl = useMemo(() => {
+  const channelApiImpl = useMemo(() => {
     return (
       props.customChannelApiImpl ??
       new EmbeddedEditorChannelApiImpl(stateControl, props.file, props.locale, {
@@ -129,7 +129,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     envelopeMapping?.resourcesPathPrefix,
   ]);
 
-  useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
+  useConnectedEnvelopeServer(envelopeServer, channelApiImpl);
 
   useEffectAfterFirstRender(() => {
     envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange.send(props.locale);
