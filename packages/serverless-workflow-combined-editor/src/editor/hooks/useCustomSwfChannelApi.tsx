@@ -15,7 +15,7 @@
  */
 
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
-import { KogitoEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { useMemo } from "react";
@@ -42,7 +42,7 @@ export function useCustomSwfChannelApi(args: {
   const kogitoEditorChannelApiImpl = useMemo(
     () =>
       args.embeddedEditorFile &&
-      new KogitoEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
+      new EmbeddedEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
         kogitoEditor_ready: () => {
           args.onEditorReady();
         },
