@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+
+import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 /**
- * PUBLIC ENVELOPE API
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
  */
-export interface GuidedTourApi {
-  refresh(userInteraction: UserInteraction): void;
-  registerTutorial(tutorial: Tutorial): void;
-  isEnabled(): boolean;
+export interface EditorContextExposedInteropApi {
+  channel: ChannelType;
+  operatingSystem?: OperatingSystem;
+  readOnly: boolean;
 }

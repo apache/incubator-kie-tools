@@ -16,7 +16,12 @@
 
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 
-export interface NotificationsApi {
+/**
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
+ */
+export interface NotificationsExposedInteropApi {
   /**
    * Creates a single notification. This action does not replace an existent notification.
    * @param notification The notification itself

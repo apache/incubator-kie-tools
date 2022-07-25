@@ -16,7 +16,7 @@
 
 import { DefaultKogitoCommandRegistry } from "./KogitoCommandRegistry";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { StateControlApi } from "../api/StateControlApi";
+import { StateControlExposedInteropApi } from "../exposedInteropApi";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export class GwtStateControlService {
@@ -35,7 +35,7 @@ export class GwtStateControlService {
     }
   }
 
-  public exposeApi(channelApi: MessageBusClientApi<KogitoEditorChannelApi>): StateControlApi {
+  public getExposedInteropApi(channelApi: MessageBusClientApi<KogitoEditorChannelApi>): StateControlExposedInteropApi {
     return {
       registry: new DefaultKogitoCommandRegistry<unknown>(channelApi),
       setUndoCommand: (undoCommand) => (this.undoCommand = undoCommand),

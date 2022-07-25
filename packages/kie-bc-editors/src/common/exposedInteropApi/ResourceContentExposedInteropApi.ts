@@ -17,9 +17,11 @@
 import { ResourceContentOptions, ResourceListOptions } from "@kie-tools-core/workspace/dist/api";
 
 /**
- * PUBLIC ENVELOPE API
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
  */
-export interface ResourceContentApi {
+export interface ResourceContentExposedInteropApi {
   get(path: string, opts?: ResourceContentOptions): Promise<string | undefined>;
   list(pattern: string, opts?: ResourceListOptions): Promise<string[]>;
 }

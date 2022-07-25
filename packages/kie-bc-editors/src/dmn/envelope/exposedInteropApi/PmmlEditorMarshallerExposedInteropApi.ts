@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
+import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller";
+
 /**
- * PUBLIC ENVELOPE API
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
  */
-export interface I18nServiceApi {
-  onLocaleChange(callback: (locale: string) => void): void;
-  getLocale(): Promise<string>;
+export interface PmmlEditorMarshallerExposedInteropApi {
+  /**
+   * It performs the marshall of a xmlContent retrieved from a PMML file returning a PMMLDocumentData
+   * * @param xmlContent
+   */
+  getPMMLDocumentData(xmlContent: string): PMMLDocumentData;
 }

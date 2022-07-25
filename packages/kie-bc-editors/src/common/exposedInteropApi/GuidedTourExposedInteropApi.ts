@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-export * from "./EditorContextApi";
-export * from "./GuidedTourApi";
-export * from "./I18nServiceApi";
-export * from "./KeyboardShorcutsApi";
-export * from "./ResourceContentApi";
-export * from "./StateControlApi";
-export * from "./WorkspaceServiceApi";
-export * from "./NotificationsApi";
-export * from "./PMMLEditorMarshallerApi";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+
+/**
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
+ */
+export interface GuidedTourExposedInteropApi {
+  refresh(userInteraction: UserInteraction): void;
+  registerTutorial(tutorial: Tutorial): void;
+  isEnabled(): boolean;
+}

@@ -20,7 +20,8 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 
 /**
- * PUBLIC GWT EDITORS API
+ * EXPOSED INTEROP API
+ *
  * Represents a command registry API to be used on command-based editors.
  */
 export interface KogitoCommandRegistry<T> {

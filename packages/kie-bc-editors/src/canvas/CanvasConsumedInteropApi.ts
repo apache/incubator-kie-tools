@@ -18,7 +18,7 @@
  * Javascript API for lienzo that allows interactions with nodes and connectors
  * in Kogito editors.
  */
-export interface CanvasApi {
+export interface CanvasConsumedInteropApi {
   /**
    * Returns ID attributes of all nodes displayed in editors canvas.
    */
@@ -95,30 +95,4 @@ export interface CanvasApi {
    * @param uuid ID attribute of a target node
    */
   centerNode(uuid: string): void;
-}
-
-/**
- * Bridge for Envelope to connect Javascript API for Lienzo with envelope.
- * See {@see CanvasApi} for full documentation for the API.
- */
-export interface CanvasEnvelopeApi {
-  canvas_getNodeIds(): Promise<string[]>;
-
-  canvas_getBackgroundColor(uuid: string): Promise<string>;
-
-  canvas_setBackgroundColor(uuid: string, backgroundColor: string): Promise<void>;
-
-  canvas_getBorderColor(uuid: string): Promise<string>;
-
-  canvas_setBorderColor(uuid: string, borderColor: string): Promise<void>;
-
-  canvas_getLocation(uuid: string): Promise<number[]>;
-
-  canvas_getAbsoluteLocation(uuid: string): Promise<number[]>;
-
-  canvas_getDimensions(uuid: string): Promise<number[]>;
-
-  canvas_applyState(uuid: string, state: string): Promise<void>;
-
-  canvas_centerNode(uuid: string): Promise<void>;
 }

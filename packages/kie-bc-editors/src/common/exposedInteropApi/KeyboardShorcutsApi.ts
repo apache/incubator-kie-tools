@@ -15,9 +15,11 @@
  */
 
 /**
- * PUBLIC ENVELOPE API
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
  */
-export interface KeyboardShortcutsApi {
+export interface KeyboardShortcutsExposedInteropApi {
   /**
    * Register a Keyboard Shortcuts for a keypress event.
    * @param combination The combination of keys that trigger 'onKeyDown' action. This is shown on the Keyboard Shortcuts panel.
@@ -56,7 +58,9 @@ export interface KeyboardShortcutsApi {
 }
 
 /**
- * PUBLIC ENVELOPE API
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
  */
 export interface Opts {
   hidden?: boolean;

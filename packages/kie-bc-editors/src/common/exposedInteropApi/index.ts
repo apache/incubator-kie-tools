@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller";
-
-/**
- * PUBLIC ENVELOPE API
- */
-export interface PMMLEditorMarshallerApi {
-  /**
-   * It performs the marshall of a xmlContent retrieved from a PMML file returning a PMMLDocumentData
-   * * @param xmlContent
-   */
-  getPMMLDocumentData(xmlContent: string): PMMLDocumentData;
-}
+export * from "./EditorContextExposedInteropApi";
+export * from "./GuidedTourExposedInteropApi";
+export * from "./I18nExposedInteropApi";
+export * from "./KeyboardShorcutsApi";
+export * from "./ResourceContentExposedInteropApi";
+export * from "./StateControlExposedInteropApi";
+export * from "./WorkspaceExposedInteropApi";
+export * from "./NotificationsExposedInteropApi";

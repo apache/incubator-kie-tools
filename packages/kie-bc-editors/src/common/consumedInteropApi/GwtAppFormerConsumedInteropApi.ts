@@ -18,7 +18,7 @@ import { Rect } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 declare global {
-  //Exposed API of AppFormerGwt
+  //Exposed API from AppFormerGwt
   interface Window {
     gwtEditorBeans: Map<string, { get(): GwtEditor }>;
     appFormerGwtFinishedLoading: () => any;
@@ -46,7 +46,7 @@ export interface GwtEditor {
   validate(): Promise<Notification[]>;
 }
 
-export class GwtAppFormerApi {
+export class GwtAppFormerConsumedInteropApi {
   public onFinishedLoading(callback: () => Promise<any>) {
     window.appFormerGwtFinishedLoading = callback;
   }
