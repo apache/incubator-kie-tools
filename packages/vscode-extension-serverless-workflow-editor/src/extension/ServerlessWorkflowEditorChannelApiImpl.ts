@@ -24,8 +24,8 @@ import {
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
-import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
-import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
+import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
   WorkspaceEdit,
@@ -52,7 +52,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   private readonly defaultApiImpl: KogitoEditorChannelApi;
 
   constructor(
-    private readonly editor: KogitoEditor,
+    private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     workspaceApi: WorkspaceChannelApi,
     backendProxy: BackendProxy,
@@ -63,7 +63,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
   ) {
-    this.defaultApiImpl = new KogitoEditorChannelApiImpl(
+    this.defaultApiImpl = new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
       workspaceApi,

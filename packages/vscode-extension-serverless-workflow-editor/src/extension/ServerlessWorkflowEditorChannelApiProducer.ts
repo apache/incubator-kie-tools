@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
+import { VsCodeKieEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorChannelApiProducer";
 import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
-import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
+import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
 import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
@@ -31,7 +31,7 @@ import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageS
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 
-export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
+export class ServerlessWorkflowEditorChannelApiProducer implements VsCodeKieEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
@@ -40,7 +40,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     }
   ) {}
   get(
-    editor: KogitoEditor,
+    editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     workspaceApi: WorkspaceChannelApi,
     backendProxy: BackendProxy,
