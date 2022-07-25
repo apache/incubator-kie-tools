@@ -15,7 +15,7 @@ The library is separated into two submodules:
 
   to use the core:
 
-  - `import { NotificationsChanelApi } from "@kie-tools-core/notifications/dist/api"`
+  - `import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api"`
   - `import { Notification } from "@kie-tools-core/notifications/dist/api"`
   - `import { NotificationSeverity } from "@kie-tools-core/notifications/dist/api"`
   - `import { NotificationType } from "@kie-tools-core/notifications/dist/api"`
@@ -29,7 +29,7 @@ The library is separated into two submodules:
   ```ts
   import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/vscode";
 
-  const api: NotificationsChanelApi = new VsCodeNotificationsChannelApiImpl(workspaceApi, i18n);
+  const api: NotificationsChannelApi = new VsCodeNotificationsChannelApiImpl(workspaceApi, i18n);
   ```
 
 ## API
