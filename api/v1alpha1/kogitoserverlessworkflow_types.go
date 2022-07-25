@@ -89,9 +89,14 @@ type Auth struct {
 
 type EventKind string
 
-//TODO: Define EventKind values
+const (
+	ProducedEventKind EventKind = "produced"
+	ConsumedEventKind EventKind = "consumed"
+)
 
 type EventCorrelationRule struct {
+	ContextAttributeName  string `json:"contextAttributeName"`
+	ContextAttributeValue string `json:"contextAttributeValue"`
 }
 
 type Metadata struct {
@@ -100,12 +105,10 @@ type Metadata struct {
 }
 
 type Event struct {
-	Name   string `json:"name"`
-	Source string `json:"source"`
-	Type   string `json:"type"`
-	//TODO: Kind should be an Enum
-	Kind EventKind `json:"kind,omitempty"`
-	//TODO: EventCorrelationRule to be defined
+	Name        string                 `json:"name"`
+	Source      string                 `json:"source"`
+	Type        string                 `json:"type"`
+	Kind        EventKind              `json:"kind,omitempty"`
 	Correlation []EventCorrelationRule `json:"correlation,omitempty"`
 	DataOnly    bool                   `json:"dataOnly,omitempty"`
 	Metadata    []Metadata             `json:"metadata,omitempty"`
