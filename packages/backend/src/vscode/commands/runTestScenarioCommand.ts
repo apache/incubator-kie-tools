@@ -15,8 +15,8 @@
  */
 
 import { I18n } from "@kie-tools-core/i18n/dist/core/I18n";
-import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
-import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import * as vscode from "vscode";
 import { CapabilityResponseStatus } from "../../api";
 import { ServiceId, TestResult, TestScenarioRunnerCapability } from "../../channel-api";
@@ -29,15 +29,15 @@ import { VsCodeBackendProxy } from "../VsCodeBackendProxy";
  * @param args.context The `vscode.ExtensionContext` provided on the activate method of the extension.
  * @param args.backendProxy The proxy between channels and available backend services.
  * @param args.backendI18n I18n for backend services.
- * @param args.workspaceApi Workspace API.
+ * @param args.workspaceApi Workspace Channel API.
  */
 export function registerTestScenarioRunnerCommand(args: {
   command: string;
   context: vscode.ExtensionContext;
   backendProxy: VsCodeBackendProxy;
   backendI18n: I18n<BackendI18n>;
-  workspaceApi: WorkspaceApi;
-  notificationsApi: NotificationsApi;
+  workspaceApi: WorkspaceChannelApi;
+  notificationsApi: NotificationsChannelApi;
 }) {
   args.context.subscriptions.push(
     vscode.commands.registerCommand(args.command, () => run(args.backendProxy, args.backendI18n, args.notificationsApi))
@@ -47,7 +47,7 @@ export function registerTestScenarioRunnerCommand(args: {
 async function run(
   backendProxy: VsCodeBackendProxy,
   backendI18n: I18n<BackendI18n>,
-  notificationsApi: NotificationsApi
+  notificationsApi: NotificationsChannelApi
 ) {
   const i18n = backendI18n.getCurrent();
 

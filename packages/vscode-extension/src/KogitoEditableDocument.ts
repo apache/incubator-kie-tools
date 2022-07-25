@@ -16,7 +16,7 @@
 
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import * as vscode from "vscode";
 import {
   CancellationToken,
@@ -51,7 +51,7 @@ export class KogitoEditableDocument implements CustomDocument {
     public readonly initialBackup: Uri | undefined,
     public readonly editorStore: KogitoEditorStore,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vsCodeNotifications: VsCodeNotificationsApi,
+    private readonly vsCodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
   ) {}
 

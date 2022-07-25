@@ -88,14 +88,14 @@ interface Props {
   onStateControlCommandUpdate: (command: StateControlCommand) => void;
 
   /**
-   * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
+   * Delegation for WorkspaceChannelApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the DashbuilderEditor from the Channel.
    * @param edit An object representing the unique change.
    */
   onNewEdit: (edit: KogitoEdit) => void;
 
   /**
-   * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
+   * Delegation for NotificationsChannelApi.kogigotNotifications_setNotifications(path, notifications) to report all validation
    * notifications to the Channel that will replace existing notification for the path. Increases the
    * decoupling of the DashbuilderEditor from the Channel.
    * @param path The path that references the Notification

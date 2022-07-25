@@ -30,7 +30,7 @@ import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoEditableDocument } from "./KogitoEditableDocument";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 
 export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<KogitoEditableDocument> {
@@ -43,7 +43,7 @@ export class KogitoCustomEditorWebviewProvider implements CustomEditorProvider<K
     private readonly editorStore: KogitoEditorStore,
     private readonly editorFactory: KogitoEditorFactory,
     private readonly vsCodeI18n: I18n<VsCodeI18n>,
-    private readonly vsCodeNotificationsApi: VsCodeNotificationsApi,
+    private readonly vsCodeNotificationsApi: VsCodeNotificationsChannelApiImpl,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator
   ) {}
 

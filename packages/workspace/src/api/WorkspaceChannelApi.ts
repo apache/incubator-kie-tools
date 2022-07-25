@@ -16,7 +16,7 @@
 
 import { KogitoEdit, ResourceContent, ResourceContentRequest, ResourceListRequest, ResourcesList } from "../api";
 
-export interface WorkspaceApi {
+export interface WorkspaceChannelApi {
   kogitoWorkspace_newEdit(edit: KogitoEdit): void;
   kogitoWorkspace_openFile(path: string): void;
   kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined>;

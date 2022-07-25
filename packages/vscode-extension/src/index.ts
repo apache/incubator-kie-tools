@@ -17,7 +17,7 @@
 import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeWorkspaceApi } from "@kie-tools-core/workspace/dist/vscode";
+import { VsCodeWorkspaceChannelApiImpl } from "@kie-tools-core/workspace/dist/vscode";
 import * as vscode from "vscode";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { generateSvg } from "./generateSvg";
@@ -25,8 +25,8 @@ import { vsCodeI18nDefaults, vsCodeI18nDictionaries } from "./i18n";
 import { KogitoEditorFactory } from "./KogitoEditorFactory";
 import { KogitoEditorStore } from "./KogitoEditorStore";
 import { KogitoTextEditorWebviewProvider } from "./KogitoTextEditorWebviewProvider";
-import { VsCodeNotificationsApi } from "@kie-tools-core/notifications/dist/vscode";
-import { VsCodeJavaCodeCompletionImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
+import { VsCodeNotificationsChannelApiImpl } from "@kie-tools-core/notifications/dist/vscode";
+import { VsCodeJavaCodeCompletionApiImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
 import { KogitoEditorChannelApiProducer } from "./KogitoEditorChannelApiProducer";
 import { KogitoCustomEditorWebviewProvider } from "./KogitoCustomEditorWebviewProvider";
 import { executeOnSaveHook } from "./onSaveHook";
@@ -55,11 +55,11 @@ export async function startExtension(args: {
   await args.backendProxy.tryLoadBackendExtension(true);
 
   const vsCodeI18n = new I18n(vsCodeI18nDefaults, vsCodeI18nDictionaries, vscode.env.language);
-  const workspaceApi = new VsCodeWorkspaceApi();
+  const workspaceApi = new VsCodeWorkspaceChannelApiImpl();
   const editorStore = new KogitoEditorStore();
   const messageBroadcaster = new EnvelopeBusMessageBroadcaster();
-  const vsCodeNotificationsApi = new VsCodeNotificationsApi(workspaceApi);
-  const vsCodeJavaCodeCompletionChannelApi = new VsCodeJavaCodeCompletionImpl();
+  const vsCodeNotificationsApi = new VsCodeNotificationsChannelApiImpl(workspaceApi);
+  const vsCodeJavaCodeCompletionChannelApi = new VsCodeJavaCodeCompletionApiImpl();
 
   const editorFactory = new KogitoEditorFactory(
     args.context,

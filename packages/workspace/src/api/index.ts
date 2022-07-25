@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export * from "./WorkspaceApi";
+export * from "./WorkspaceChannelApi";
 export * from "./ResourceContentOptions";
 export * from "./ResourceListOptions";
 export * from "./SearchType";

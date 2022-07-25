@@ -22,7 +22,7 @@ import {
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
@@ -34,7 +34,7 @@ import {
   ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceApi,
+  WorkspaceChannelApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import {
@@ -54,9 +54,9 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   constructor(
     private readonly editor: KogitoEditor,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceApi,
+    workspaceApi: WorkspaceChannelApi,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsApi,
+    notificationsApi: NotificationsChannelApi,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,

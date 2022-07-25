@@ -20,14 +20,14 @@ import {
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
-  WorkspaceApi,
+  WorkspaceChannelApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { KogitoEditor } from "./KogitoEditor";
-import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import {
@@ -41,9 +41,9 @@ export class KogitoEditorChannelApiImpl implements KogitoEditorChannelApi, JavaC
   constructor(
     private readonly editor: KogitoEditor,
     private readonly resourceContentService: ResourceContentService,
-    private readonly workspaceApi: WorkspaceApi,
+    private readonly workspaceApi: WorkspaceChannelApi,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: NotificationsApi,
+    private readonly notificationsApi: NotificationsChannelApi,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>

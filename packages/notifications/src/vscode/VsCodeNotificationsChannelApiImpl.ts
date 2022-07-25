@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Notification, NotificationsApi, NotificationType } from "../api";
-import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { Notification, NotificationsChannelApi, NotificationType } from "../api";
+import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { PopupMessagesNotificationHandler } from "./PopupMessagesNotificationHandler";
 import { ProblemsTabNotificationHandler } from "./ProblemsTabNotificationHandler";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
@@ -22,14 +22,14 @@ import * as vscode from "vscode";
 import { notificationsApiVsCodeI18nDefaults, notificationsApiVsCodeI18nDictionaries } from "./i18n";
 
 type NotificationsApiHandlersMap = {
-  [K in NotificationType]: NotificationsApi;
+  [K in NotificationType]: NotificationsChannelApi;
 };
 
-export class VsCodeNotificationsApi implements NotificationsApi {
+export class VsCodeNotificationsChannelApiImpl implements NotificationsChannelApi {
   private readonly strategies: NotificationsApiHandlersMap;
 
   constructor(
-    private readonly workspaceApi: WorkspaceApi,
+    private readonly workspaceApi: WorkspaceChannelApi,
     private readonly i18n = new I18n(
       notificationsApiVsCodeI18nDefaults,
       notificationsApiVsCodeI18nDictionaries,
@@ -58,11 +58,11 @@ export class VsCodeNotificationsApi implements NotificationsApi {
     this.get("PROBLEM").kogitoNotifications_removeNotifications(path);
   }
 
-  private handle(notification: Notification): NotificationsApi {
+  private handle(notification: Notification): NotificationsChannelApi {
     return this.get(notification.type);
   }
 
-  private get(type: NotificationType): NotificationsApi {
+  private get(type: NotificationType): NotificationsChannelApi {
     return this.strategies[type] ?? new ProblemsTabNotificationHandler();
   }
 }

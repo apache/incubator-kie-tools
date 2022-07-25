@@ -20,11 +20,11 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceApi,
+  WorkspaceChannelApi,
 } from "../api";
 import * as vscode from "vscode";
 
-export class VsCodeWorkspaceApi implements WorkspaceApi {
+export class VsCodeWorkspaceChannelApiImpl implements WorkspaceChannelApi {
   public kogitoWorkspace_openFile(path: string) {
     try {
       vscode.commands.executeCommand("vscode.open", vscode.Uri.parse(path));

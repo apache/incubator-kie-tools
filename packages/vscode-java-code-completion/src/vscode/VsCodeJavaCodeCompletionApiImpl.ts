@@ -18,7 +18,7 @@ import * as vscode from "vscode";
 import { JavaCodeCompletionAccessor, JavaCodeCompletionApi, JavaCodeCompletionClass } from "../api";
 import { JavaCodeCompletionConstants } from "./JavaCodeCompletionConstants";
 
-export class VsCodeJavaCodeCompletionImpl implements JavaCodeCompletionApi {
+export class VsCodeJavaCodeCompletionApiImpl implements JavaCodeCompletionApi {
   getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]> {
     const command = vscode.commands.executeCommand(
       JavaCodeCompletionConstants.WORKSPACE_COMMAND,

@@ -98,8 +98,8 @@ export interface CanvasApi {
 }
 
 /**
- * Bridge for Envelope to connect Javascript API for lienzo with envelope.
- * See {@see CanvasApi} for full documenation for the API.
+ * Bridge for Envelope to connect Javascript API for Lienzo with envelope.
+ * See {@see CanvasApi} for full documentation for the API.
  */
 export interface CanvasEnvelopeApi {
   canvas_getNodeIds(): Promise<string[]>;

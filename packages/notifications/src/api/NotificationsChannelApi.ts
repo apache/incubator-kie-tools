@@ -16,7 +16,7 @@
 
 import { Notification } from "./Notification";
 
-export interface NotificationsApi {
+export interface NotificationsChannelApi {
   /**
    * Creates a single notification. This action does not replace an existent notification.
    * @param notification The notification itself

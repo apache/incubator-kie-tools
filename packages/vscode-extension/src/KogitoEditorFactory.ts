@@ -15,11 +15,11 @@
  */
 
 import * as vscode from "vscode";
-import { TextDocument, Uri, Webview } from "vscode";
+import { Uri, Webview } from "vscode";
 import * as __path from "path";
-import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { EditorEnvelopeLocator, EnvelopeMapping, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { EnvelopeBusMessageBroadcaster } from "./EnvelopeBusMessageBroadcaster";
 import { KogitoEditor, KogitoEditorDocument } from "./KogitoEditor";
@@ -40,9 +40,9 @@ export class KogitoEditorFactory {
     private readonly editorStore: KogitoEditorStore,
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
-    private readonly workspaceApi: WorkspaceApi,
+    private readonly workspaceApi: WorkspaceChannelApi,
     private readonly backendProxy: BackendProxy,
-    private readonly notificationsApi: NotificationsApi,
+    private readonly notificationsApi: NotificationsChannelApi,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
     private readonly i18n: I18n<VsCodeI18n>,
