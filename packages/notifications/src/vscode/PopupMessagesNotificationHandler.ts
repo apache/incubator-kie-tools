@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import * as vscode from "vscode";
-import { Notification, NotificationsApi, NotificationSeverity } from "../api";
+import { Notification, NotificationsChannelApi, NotificationSeverity } from "../api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
 
-export class PopupMessagesNotificationHandler implements NotificationsApi {
+export class PopupMessagesNotificationHandler implements NotificationsChannelApi {
   constructor(
-    private readonly workspaceApi: WorkspaceApi,
+    private readonly workspaceApi: WorkspaceChannelApi,
     private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
   ) {}
 

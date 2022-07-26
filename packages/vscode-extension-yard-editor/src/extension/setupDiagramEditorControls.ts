@@ -21,7 +21,7 @@ import {
   WEBVIEW_EDITOR_VIEW_TYPE,
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
-import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
+import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 
 function isYard(textDocument: vscode.TextDocument) {
   return /^.*\.yard\.(json|yml|yaml)$/.test(textDocument.fileName);
@@ -65,11 +65,11 @@ async function maybeOpenAsDiagramIfYard(args: {
 export async function setupDiagramEditorControls(args: {
   context: vscode.ExtensionContext;
   configuration: YardVsCodeExtensionConfiguration;
-  kieToolsEditorStore: KogitoEditorStore;
+  kieEditorsStore: VsCodeKieEditorStore;
 }) {
   args.context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
-      if (args.kieToolsEditorStore.activeEditor) {
+      if (args.kieEditorsStore.activeEditor) {
         return;
       }
 
@@ -79,9 +79,9 @@ export async function setupDiagramEditorControls(args: {
           ShouldOpenDiagramEditorAutomaticallyConfiguration.ASK,
         ].includes(args.configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor())
       ) {
-        args.kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
-          if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
-            kieToolsEditor.close();
+        args.kieEditorsStore.openEditors.forEach((kieEditor) => {
+          if (textEditor?.document.uri.toString() !== kieEditor.document.document.uri.toString()) {
+            kieEditor.close();
           }
         });
       }

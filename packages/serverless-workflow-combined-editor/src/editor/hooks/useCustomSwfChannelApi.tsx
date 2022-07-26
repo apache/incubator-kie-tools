@@ -15,7 +15,7 @@
  */
 
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
-import { KogitoEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { useMemo } from "react";
@@ -39,10 +39,10 @@ export function useCustomSwfChannelApi(args: {
 
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
-  const kogitoEditorChannelApiImpl = useMemo(
+  const channelApiImpl = useMemo(
     () =>
       args.embeddedEditorFile &&
-      new KogitoEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
+      new EmbeddedEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
         kogitoEditor_ready: () => {
           args.onEditorReady();
         },
@@ -72,16 +72,16 @@ export function useCustomSwfChannelApi(args: {
   const channelApi = useMemo(
     () =>
       args.channelApi &&
-      kogitoEditorChannelApiImpl &&
+      channelApiImpl &&
       new SwfCombinedEditorChannelApiImpl(
-        kogitoEditorChannelApiImpl,
+        channelApiImpl,
         swfFeatureToggleChannelApiImpl,
         swfServiceCatalogChannelApiImpl,
         swfLanguageServiceChannelApiImpl
       ),
     [
       args.channelApi,
-      kogitoEditorChannelApiImpl,
+      channelApiImpl,
       swfFeatureToggleChannelApiImpl,
       swfLanguageServiceChannelApiImpl,
       swfServiceCatalogChannelApiImpl,

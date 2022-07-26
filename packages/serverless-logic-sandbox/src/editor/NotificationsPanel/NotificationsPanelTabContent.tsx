@@ -16,7 +16,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
-import { Notification, NotificationsApi, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationsChannelApi, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import {
   NotificationDrawer,
   NotificationDrawerBody,
@@ -49,7 +49,7 @@ function variant(severity: NotificationSeverity) {
   }
 }
 
-export const NotificationPanelTabContent = React.forwardRef<NotificationsApi, Props>((props, forwardedRef) => {
+export const NotificationPanelTabContent = React.forwardRef<NotificationsChannelApi, Props>((props, forwardedRef) => {
   const [tabNotifications, setTabNotifications] = useState<Notification[]>([]);
 
   const createNotification = useCallback(

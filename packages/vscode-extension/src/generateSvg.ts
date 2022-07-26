@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { KogitoEditorStore } from "./KogitoEditorStore";
+import { VsCodeKieEditorStore } from "./VsCodeKieEditorStore";
 import * as __path from "path";
 import * as vscode from "vscode";
-import { WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { VsCodeI18n } from "./i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeLocator } from "@kie-tools-core/editor/dist/api";
@@ -30,8 +30,8 @@ import {
 const encoder = new TextEncoder();
 
 export async function generateSvg(args: {
-  editorStore: KogitoEditorStore;
-  workspaceApi: WorkspaceApi;
+  editorStore: VsCodeKieEditorStore;
+  workspaceApi: WorkspaceChannelApi;
   vsCodeI18n: I18n<VsCodeI18n>;
   displayNotification: boolean;
   editorEnvelopeLocator: EditorEnvelopeLocator;

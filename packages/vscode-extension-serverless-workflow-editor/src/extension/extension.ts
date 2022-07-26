@@ -85,7 +85,7 @@ export async function activate(context: vscode.ExtensionContext) {
         envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
       };
 
-  const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
+  const kieEditorsStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-serverless-workflow-editor",
     context: context,
@@ -130,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
   await setupDiagramEditorControls({
     context,
     configuration,
-    kieToolsEditorStore,
+    kieEditorsStore,
   });
 
   console.info("Extension is successfully setup.");
