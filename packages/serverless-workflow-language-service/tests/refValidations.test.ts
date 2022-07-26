@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
-import { doCustomValidation } from "../dist/channel/customValidations";
+import { doRefValidation } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { trim } from "./testUtils";
+import * as jsonc from "jsonc-parser";
+
+function textDoc(content: string) {
+  return TextDocument.create("", "serverless-workflow-json", 0, content);
+}
 
 describe("test custom validation method against source and target paths", () => {
   test("check functionRef against functions array", () => {
@@ -45,15 +50,14 @@ describe("test custom validation method against source and target paths", () => 
   ]
 }
             `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing testFunction in functions",
+        message: "Missing 'testFunction' in 'functions'",
         range: { end: { character: 36, line: 16 }, start: { character: 22, line: 16 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
   test("check eventRef against events array", () => {
     const { content } = trim(`
 {
@@ -69,15 +73,14 @@ describe("test custom validation method against source and target paths", () => 
   }],
 }
           `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing HighBloodPressure in events",
+        message: "Missing 'HighBloodPressure' in 'events'",
         range: { end: { character: 38, line: 9 }, start: { character: 19, line: 9 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
   test("check resultEventRef against events array", () => {
     const { content } = trim(`
 {
@@ -99,15 +102,14 @@ describe("test custom validation method against source and target paths", () => 
   }],
 }
         `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing VetAppointmentInfo in events",
+        message: "Missing 'VetAppointmentInfo' in 'events'",
         range: { end: { character: 46, line: 13 }, start: { character: 26, line: 13 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
   test("check triggerEventRef against events array", () => {
     const { content } = trim(`
 {
@@ -129,15 +131,14 @@ describe("test custom validation method against source and target paths", () => 
   }],
 }
         `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing MakeVetAppointment in events",
+        message: "Missing 'MakeVetAppointment' in 'events'",
         range: { end: { character: 47, line: 11 }, start: { character: 27, line: 11 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
   test("check retryRef against retries array", () => {
     const { content } = trim(`
 {
@@ -181,15 +182,14 @@ describe("test custom validation method against source and target paths", () => 
   }],
 }
         `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing SecondRetryStrategy in retries",
+        message: "Missing 'SecondRetryStrategy' in 'retries'",
         range: { end: { character: 39, line: 35 }, start: { character: 18, line: 35 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
   test("check retryableErrors against errors array", () => {
     const { content } = trim(`
 {
@@ -228,15 +228,14 @@ describe("test custom validation method against source and target paths", () => 
   }],
 }
         `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing SomeErrorTwo in errors",
+        message: "Missing 'SomeErrorTwo' in 'errors'",
         range: { end: { character: 56, line: 31 }, start: { character: 42, line: 31 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
   test("check transition against states array", () => {
     const { content } = trim(`
 {
@@ -264,13 +263,50 @@ describe("test custom validation method against source and target paths", () => 
   ]
 }
       `);
-    const doc = TextDocument.create("", "serverless-workflow-json", 0, content);
-    const validationResults = [
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
       {
-        message: "Missing end in states",
+        message: "Missing 'end' in 'states'",
         range: { end: { character: 25, line: 12 }, start: { character: 20, line: 12 } },
       },
-    ];
-    expect(doCustomValidation(content, doc)).toEqual(validationResults);
+    ]);
   });
+
+  test("check invalid functions declaration against states array", () => {
+    const { content } = trim(`
+{
+  "functions": [
+    [
+      { "foo": "bar" }
+    ]
+  ],
+  "states": [
+    {
+      "name": "testState",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        }
+      ]
+    },
+  ]
+}
+      `);
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+      {
+        message: "Missing 'myFunc' in 'functions'",
+        range: { end: { character: 30, line: 15 }, start: { character: 22, line: 15 } },
+      },
+      {
+        message: "Missing 'end' in 'states'",
+        range: { end: { character: 25, line: 10 }, start: { character: 20, line: 10 } },
+      },
+    ]);
+  });
+
+  // TODO: Add tests for YAML as well.
 });

@@ -67,7 +67,7 @@ export class SwfYamlLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics(args);
+    return this.ls.getDiagnostics({ ...args, rootNode: this.parseContent(args.content) });
   }
 
   public dispose() {

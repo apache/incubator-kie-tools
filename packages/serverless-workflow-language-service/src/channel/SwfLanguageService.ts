@@ -35,7 +35,7 @@ import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { doCustomValidation } from "./customValidations";
+import { doRefValidation } from "./refValidation";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { SwfJsonPath, SwfLsNode } from "./types";
@@ -140,7 +140,11 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }) {
+  public async getDiagnostics(args: { content: string; uriPath: string; rootNode: SwfLsNode | undefined }) {
+    if (!args.rootNode) {
+      return [];
+    }
+
     const textDocument = TextDocument.create(
       args.uriPath,
       `serverless-workflow-${this.args.lang.fileLanguage}`,
@@ -148,28 +152,32 @@ export class SwfLanguageService {
       args.content
     );
 
-    const schemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
+    const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
 
-    const jsonLanguageService = getLanguageService({
-      schemaRequestService: (uri) => {
-        if (uri === schemaUri) {
-          return Promise.resolve(JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA));
+    if (this.args.lang.fileLanguage === FileLanguage.YAML) {
+      //TODO: Include JSON Schema validation for YAML as well. Probably use what the YAML extension uses?
+      return refValidationResults;
+    }
+
+    const jsonLs = getLanguageService({
+      schemaRequestService: async (uri) => {
+        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
+          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
+        } else {
+          throw new Error(`Unable to load schema from '${uri}'`);
         }
-        return Promise.reject(`Unabled to load schema at ${uri}`);
       },
     });
 
-    jsonLanguageService.configure({
+    jsonLs.configure({
       allowComments: false,
-      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: schemaUri }],
+      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
     });
 
-    const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
+    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
+    const schemaValidationResults = await jsonLs.doValidation(textDocument, jsonDocument);
 
-    const schemaValidationResults = await jsonLanguageService.doValidation(textDocument, jsonDocument);
-    const customValidationResults = doCustomValidation(args.content, textDocument);
-
-    return [...schemaValidationResults, ...customValidationResults];
+    return [...schemaValidationResults, ...refValidationResults];
   }
 
   public async getCodeLenses(args: {

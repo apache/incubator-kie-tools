@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-// types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
+// types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
 export declare type SwfJsonPath = (string | number)[];
 export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 
