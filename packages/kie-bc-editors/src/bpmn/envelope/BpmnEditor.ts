@@ -15,15 +15,15 @@
  */
 
 import { GwtEditorWrapper } from "../../common";
-import { CanvasApi } from "../../jslienzo/CanvasApi";
+import { CanvasConsumedInteropApi } from "../../canvas/CanvasConsumedInteropApi";
 
 interface CustomWindow extends Window {
-  canvas: CanvasApi;
+  canvas: CanvasConsumedInteropApi;
 }
 
 declare let window: CustomWindow;
 
-export interface BpmnEditor extends GwtEditorWrapper, CanvasApi {
+export interface BpmnEditor extends GwtEditorWrapper, CanvasConsumedInteropApi {
   myBpmnMethod(): string;
 }
 

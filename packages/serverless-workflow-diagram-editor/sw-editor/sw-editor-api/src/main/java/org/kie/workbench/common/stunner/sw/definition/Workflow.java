@@ -60,6 +60,12 @@ public class Workflow {
     public String id;
 
     /**
+     *  Domain-specific workflow identifier
+     */
+    @Property
+    public String key;
+
+    /**
      * Workflow name.
      */
     @Property(meta = PropertyMetaTypes.NAME)
@@ -91,6 +97,15 @@ public class Workflow {
 
     public Workflow setId(String id) {
         this.id = id;
+        return this;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public Workflow setKey(String key) {
+        this.key = key;
         return this;
     }
 

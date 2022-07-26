@@ -16,7 +16,7 @@
 
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { editor } from "monaco-editor";
 import * as React from "react";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
@@ -25,7 +25,7 @@ import { MonacoEditorApi, MonacoEditorOperation } from "./monaco/MonacoEditorCon
 
 interface Props {
   onStateControlCommandUpdate: (command: StateControlCommand) => void;
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
   setNotifications: (path: string, notifications: Notification[]) => void;
   channelType: ChannelType;
   isReadOnly: boolean;
@@ -113,7 +113,7 @@ const RefForwardingTextEditor: React.ForwardRefRenderFunction<TextEditorRef | un
     (newContent: string, operation?: MonacoEditorOperation) => {
       switch (operation) {
         case MonacoEditorOperation.EDIT:
-          props.onNewEdit(new KogitoEdit(newContent));
+          props.onNewEdit(new WorkspaceEdit(newContent));
           break;
         case MonacoEditorOperation.UNDO:
           if (!isVscode()) {

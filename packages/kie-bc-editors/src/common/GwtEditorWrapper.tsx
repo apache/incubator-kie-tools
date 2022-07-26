@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { getGuidedTourElementPosition, GwtEditor } from "./GwtAppFormerApi";
+import { getGuidedTourElementPosition, GwtEditor } from "./consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { Editor, EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { editors } from "./GwtEditorMapping";
 import { TextFormatter } from "./TextFormatter";

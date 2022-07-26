@@ -20,7 +20,7 @@ import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/ch
 import {
   EmbeddedEditor,
   EmbeddedEditorRef,
-  KogitoEditorChannelApiImpl,
+  EmbeddedEditorChannelApiImpl,
   useStateControlSubscription,
 } from "@kie-tools-core/editor/dist/embedded";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -191,10 +191,10 @@ export function EditorPage(props: Props) {
 
   const stateControl = useMemo(() => new StateControl(), [embeddedEditorFile?.getFileContents]);
 
-  const kogitoEditorChannelApiImpl = useMemo(
+  const channelApiImpl = useMemo(
     () =>
       embeddedEditorFile &&
-      new KogitoEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {
+      new EmbeddedEditorChannelApiImpl(stateControl, embeddedEditorFile, locale, {
         kogitoEditor_ready: () => {
           setReady(true);
         },
@@ -247,18 +247,18 @@ export function EditorPage(props: Props) {
   }, [embeddedEditorFile, isReady, settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry]);
 
   const apiImpl = useMemo(() => {
-    if (!kogitoEditorChannelApiImpl || !swfJsonLanguageService || !swfServiceCatalogChannelApiImpl) {
+    if (!channelApiImpl || !swfJsonLanguageService || !swfServiceCatalogChannelApiImpl) {
       return;
     }
 
     return new SwfCombinedEditorChannelApiImpl(
-      kogitoEditorChannelApiImpl,
+      channelApiImpl,
       swfFeatureToggleChannelApiImpl,
       swfServiceCatalogChannelApiImpl,
       swfLanguageServiceChannelApiImpl
     );
   }, [
-    kogitoEditorChannelApiImpl,
+    channelApiImpl,
     swfJsonLanguageService,
     swfServiceCatalogChannelApiImpl,
     swfFeatureToggleChannelApiImpl,

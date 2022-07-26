@@ -32,7 +32,7 @@ export class SceSimEditorFactory implements EditorFactory<SceSimEditor, SceSimEd
       (self) =>
         new SceSimEditorImpl(
           languageData.editorId,
-          self.gwtAppFormerApi.getEditor(languageData.editorId),
+          self.gwtAppFormerConsumedInteropApi.getEditor(languageData.editorId),
           ctx.channelApi,
           new XmlFormatter(),
           self.gwtStateControlService,

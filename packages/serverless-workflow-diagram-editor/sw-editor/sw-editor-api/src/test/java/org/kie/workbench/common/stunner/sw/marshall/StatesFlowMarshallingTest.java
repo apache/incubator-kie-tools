@@ -25,11 +25,14 @@ import static org.junit.Assert.assertTrue;
 
 public class StatesFlowMarshallingTest extends BaseMarshallingTest {
 
+    private static final String WORKFLOW_ID = "workflow1";
+    private static final String WORKFLOW_NAME = "Workflow1";
+
     @Override
     protected Workflow createWorkflow() {
         return new Workflow()
-                .setId("workflow1")
-                .setName("Workflow1")
+                .setId(WORKFLOW_ID)
+                .setName(WORKFLOW_NAME)
                 .setStart("State1")
                 .setStates(new State[]{
                         new State()
@@ -47,20 +50,20 @@ public class StatesFlowMarshallingTest extends BaseMarshallingTest {
     @Test
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
-        assertDefinitionReferencedInNode(workflow, "Workflow1");
-        assertEquals(5, countChildren("Workflow1"));
+        assertDefinitionReferencedInNode(workflow, WORKFLOW_ID);
+        assertEquals(5, countChildren(WORKFLOW_ID));
         assertDefinitionReferencedInNode(workflow.states[0], "State1");
-        assertParentOf("Workflow1", "State1");
+        assertParentOf(WORKFLOW_ID, "State1");
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
         assertTrue(hasOutgoingEdges("State1"));
         assertDefinitionReferencedInNode(workflow.states[1], "State2");
-        assertParentOf("Workflow1", "State2");
+        assertParentOf(WORKFLOW_ID, "State2");
         assertTrue(hasIncomingEdges("State2"));
         assertTrue(hasIncomingEdgeFrom("State2", "State1"));
         assertTrue(hasOutgoingEdges("State2"));
         assertDefinitionReferencedInNode(workflow.states[2], "State3");
-        assertParentOf("Workflow1", "State3");
+        assertParentOf(WORKFLOW_ID, "State3");
         assertTrue(hasIncomingEdges("State3"));
         assertTrue(hasIncomingEdgeFrom("State3", "State2"));
         assertTrue(hasOutgoingEdges("State3"));

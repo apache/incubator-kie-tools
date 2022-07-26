@@ -30,14 +30,14 @@ Linux, macOS, and Windows.
 
 __NOTE FOR WINDOWS USAGE__:
 Because 'run-script-if' was created with pnpm/Yarn/NPM scripts, environment
-variables and sub-expression syntax (`$(expr)`) in mind, 'run-script-if' will
-force the provided commands to be executed on PowerShell.
+variables and Command Substitution syntax (`$(expr)`) in mind, 'run-script-if'
+will force the provided commands to be executed on PowerShell.
 
 This is because pnpm, Yarn, and NPM default to the CMD shell on Windows, making
-it not ideal for sub-expression-dependent commands.
+it not ideal for Command Substitution-dependent commands.
 
-Apart from using it on commands, it's also possible to use the sub-expression
-syntax on boolean conditions, like:
+Apart from using it on commands, it's also possible to use the Command
+Substitution syntax on boolean conditions, like:
 
 $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
 ```

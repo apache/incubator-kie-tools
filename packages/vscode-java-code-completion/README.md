@@ -27,9 +27,9 @@ The library is separated into two submodules:
 
   ```ts
   import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-  import { VsCodeJavaCodeCompletionImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
+  import { VsCodeJavaCodeCompletionApiImpl } from "@kie-tools-core/vscode-java-code-completion/dist/vscode";
 
-  const api: VsCodeJavaCodeCompletionApi = new VsCodeJavaCodeCompletionImpl();
+  const api: JavaCodeCompletionApi = new VsCodeJavaCodeCompletionApiImpl();
   ```
 
 ## API

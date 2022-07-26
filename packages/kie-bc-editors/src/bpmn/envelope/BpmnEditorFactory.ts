@@ -32,7 +32,7 @@ export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorCh
       (self) =>
         new BpmnEditorImpl(
           languageData.editorId,
-          self.gwtAppFormerApi.getEditor(languageData.editorId),
+          self.gwtAppFormerConsumedInteropApi.getEditor(languageData.editorId),
           ctx.channelApi,
           new XmlFormatter(),
           self.gwtStateControlService,

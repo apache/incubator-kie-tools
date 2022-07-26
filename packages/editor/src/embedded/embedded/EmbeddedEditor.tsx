@@ -28,7 +28,7 @@ import * as React from "react";
 import { useImperativeHandle, useMemo, useRef, useState } from "react";
 import { EmbeddedEditorFile, StateControl } from "../../channel";
 import { useEffectAfterFirstRender } from "../common";
-import { KogitoEditorChannelApiImpl } from "./KogitoEditorChannelApiImpl";
+import { EmbeddedEditorChannelApiImpl } from "./EmbeddedEditorChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
 
@@ -91,10 +91,10 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   );
 
   //Setup envelope bus communication
-  const kogitoEditorChannelApiImpl = useMemo(() => {
+  const channelApiImpl = useMemo(() => {
     return (
       props.customChannelApiImpl ??
-      new KogitoEditorChannelApiImpl(stateControl, props.file, props.locale, {
+      new EmbeddedEditorChannelApiImpl(stateControl, props.file, props.locale, {
         ...props,
         kogitoEditor_ready: () => {
           setReady(true);
@@ -129,7 +129,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     envelopeMapping?.resourcesPathPrefix,
   ]);
 
-  useConnectedEnvelopeServer(envelopeServer, kogitoEditorChannelApiImpl);
+  useConnectedEnvelopeServer(envelopeServer, channelApiImpl);
 
   useEffectAfterFirstRender(() => {
     envelopeServer.envelopeApi.notifications.kogitoI18n_localeChange.send(props.locale);

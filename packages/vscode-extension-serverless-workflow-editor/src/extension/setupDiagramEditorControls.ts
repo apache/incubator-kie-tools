@@ -21,7 +21,7 @@ import {
   WEBVIEW_EDITOR_VIEW_TYPE,
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
-import { KogitoEditorStore } from "@kie-tools-core/vscode-extension";
+import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 import { FileLanguage, getFileLanguage, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 
@@ -69,26 +69,32 @@ async function maybeOpenAsDiagramIfSwf(args: {
 export async function setupDiagramEditorControls(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
-  kieToolsEditorStore: KogitoEditorStore;
+  kieEditorsStore: VsCodeKieEditorStore;
 }) {
   args.context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor(async (textEditor) => {
-      if (args.kieToolsEditorStore.activeEditor) {
+      if (args.kieEditorsStore.activeEditor) {
         return;
       }
 
       if (
-        args.configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor() ===
-        ShouldOpenDiagramEditorAutomaticallyConfiguration.OPEN_AUTOMATICALLY
+        [
+          ShouldOpenDiagramEditorAutomaticallyConfiguration.OPEN_AUTOMATICALLY,
+          ShouldOpenDiagramEditorAutomaticallyConfiguration.ASK,
+        ].includes(args.configuration.shouldAutomaticallyOpenDiagramEditorAlongsideTextEditor())
       ) {
-        args.kieToolsEditorStore.openEditors.forEach((kieToolsEditor) => {
-          if (textEditor?.document.uri.toString() !== kieToolsEditor.document.document.uri.toString()) {
-            kieToolsEditor.close();
+        args.kieEditorsStore.openEditors.forEach((kieEditor) => {
+          if (textEditor?.document.uri.toString() !== kieEditor.document.document.uri.toString()) {
+            kieEditor.close();
           }
         });
       }
 
       if (!textEditor) {
+        return;
+      }
+
+      if (!isSwf(textEditor.document)) {
         return;
       }
 

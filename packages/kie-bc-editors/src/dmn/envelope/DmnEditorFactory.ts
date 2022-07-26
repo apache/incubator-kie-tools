@@ -18,12 +18,12 @@ import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
 import { DmnEditorChannelApi, getDmnLanguageData } from "../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DmnEditor, DmnEditorImpl } from "./DmnEditor";
-import { PMMLEditorMarshallerApi } from "../../common/api/PMMLEditorMarshallerApi";
+import { PmmlEditorMarshallerExposedInteropApi } from "./exposedInteropApi/PmmlEditorMarshallerExposedInteropApi";
 import { PMMLEditorMarshallerService } from "@kie-tools/pmml-editor-marshaller";
 
 export interface CustomWindow extends Window {
   envelope: {
-    pmmlEditorMarshallerService: PMMLEditorMarshallerApi;
+    pmmlEditorMarshallerService: PmmlEditorMarshallerExposedInteropApi;
   };
 }
 
@@ -36,9 +36,13 @@ export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChann
     ctx: KogitoEditorEnvelopeContextType<DmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<DmnEditor> {
+    const exposedInteropApi: CustomWindow["envelope"] = {
+      pmmlEditorMarshallerService: new PMMLEditorMarshallerService(),
+    };
+
     window.envelope = {
       ...(window.envelope ?? {}),
-      ...{ pmmlEditorMarshallerService: new PMMLEditorMarshallerService() },
+      ...exposedInteropApi,
     };
 
     const languageData = getDmnLanguageData(initArgs.resourcesPathPrefix);
@@ -47,7 +51,7 @@ export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChann
       (self) =>
         new DmnEditorImpl(
           languageData.editorId,
-          self.gwtAppFormerApi.getEditor(languageData.editorId),
+          self.gwtAppFormerConsumedInteropApi.getEditor(languageData.editorId),
           ctx.channelApi,
           new XmlFormatter(),
           self.gwtStateControlService,

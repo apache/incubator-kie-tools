@@ -17,7 +17,8 @@
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
-const buildEnv = require("@kie-tools/build-env");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {

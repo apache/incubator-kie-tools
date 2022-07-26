@@ -18,10 +18,18 @@
   margin: 10px;
 }
 
-.decision-element-header {
+.yard-ui-editor .decision-element-header {
   margin-top: 10px;
 }
 
-.decision-element-body {
+.yard-ui-editor .decision-element-body {
+  margin-top: 10px;
+}
+
+.yard-ui-editor .decision-input-header {
+  margin-top: 10px;
+}
+
+.yard-ui-editor .general-body {
   margin-top: 10px;
 }

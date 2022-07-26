@@ -15,10 +15,11 @@
  */
 
 const path = require("path");
-const buildEnv = require("@kie-tools/build-env");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) => {
   const outputPath = buildEnv.stunnerEditors.dmnLoader.outputPath;

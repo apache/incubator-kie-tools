@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-const buildEnv = require("@kie-tools/build-env");
 const path = require("path");
 const fs = require("fs");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = {
   quarkusRunnerPath: () => {
