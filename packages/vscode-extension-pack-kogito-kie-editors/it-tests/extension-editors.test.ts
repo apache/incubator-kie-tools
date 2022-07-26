@@ -37,7 +37,7 @@ import Correlation from "./helpers/bpmn/Correlation";
 import ProcessVariablesWidgetHelper from "./helpers/bpmn/ProcessVariablesWidgetHelper";
 import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
 
-describe("Editors are loading properly", () => {
+describe.skip("Editors are loading properly", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
