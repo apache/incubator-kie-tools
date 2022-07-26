@@ -480,10 +480,11 @@ jobs:
     env:
       CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ inputs.tag }}"
-      CHROME_EXTENSION__SW_routerTargetOrigin: "https://kiegroup.github.io"
-      CHROME_EXTENSION__SW_routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
-      CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
+      CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+      SWF_CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
+      SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
+      SWF_CHROME_EXTENSION__manifestFile: "manifest.prod.json"
 
     if: ${{ always() && needs.extract_runners.outputs.chrome_extensions == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest

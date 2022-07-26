@@ -19,7 +19,8 @@ const path = require("path");
 const execSync = require("child_process").execSync;
 const { getPackagesSync } = require("@lerna/project");
 const yaml = require("js-yaml");
-const buildEnv = require("../packages/build-env");
+const { env } = require("../packages/build-env/env");
+const buildEnv = env;
 
 const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
@@ -73,6 +74,7 @@ Promise.resolve()
   })
   .then((version) => {
     console.info(`[update-version] Updated to '${version}'.`);
+    console.info(`[update-version] Done.`);
   })
   .catch((error) => {
     console.error(error);
