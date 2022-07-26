@@ -25,7 +25,7 @@ envs:
     example: "-Dquarkus.log.level=DEBUG"
     description: JVM options passed to the Java command.
   - name: BINARY_BUILD
-    value: "true"
+    example: "true"
     description: Enables binary builds for this image, meaning that the application binaries (e.g. maven target directory) will be uploaded to it.
 
 ports:

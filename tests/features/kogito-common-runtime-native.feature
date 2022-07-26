@@ -6,7 +6,7 @@ Feature: Kogito-runtime-native feature.
     Given s2i build /tmp/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld-native/ from target
       | variable            | value                     |
       | NATIVE              | true                      |
-      | BINARY              | true                      |
+      | BINARY_BUILD        | true                      |
       | RUNTIME_TYPE        | quarkus                   |
       | JAVA_OPTIONS        | -Dquarkus.log.level=DEBUG |
     Then check that page is served
