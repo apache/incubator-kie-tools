@@ -78,7 +78,7 @@ func ReadConfig(dependenciesVersion common.DependenciesVersion) (quarkusVersion 
 		return
 	}
 
-	// check if quarkus and kogito versions in the config file
+	// check if quarkus and kogito versions are in the config file
 	// if it's empty replace with the built version
 	quarkusVersion = config.Versions.QuarkusVersion
 	if len(quarkusVersion) == 0 {

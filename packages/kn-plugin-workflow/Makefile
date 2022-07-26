@@ -22,11 +22,11 @@ BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 
 QUARKUS_VERSION := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
 KOGITO_VERSION := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
-VERSION := $(shell pnpm build-env knPluginWorkflow.version)
+PLUGIN_VERSION := $(shell pnpm build-env knPluginWorkflow.version)
 
 SET_QUARKUS_VERSION := main.quarkusVersion=$(QUARKUS_VERSION)
 SET_KOGITO_VERSION := main.kogitoVersion=$(KOGITO_VERSION)
-SET_VERSION := main.version=$(VERSION)
+SET_VERSION := main.pluginVersion=$(PLUGIN_VERSION)
 LDFLAGS := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_VERSION)"
 
 build-all: build-linux build-darwin-amd build-darwin-arm build-win32

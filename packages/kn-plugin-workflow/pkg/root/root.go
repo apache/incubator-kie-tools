@@ -28,7 +28,7 @@ import (
 
 type RootCmdConfig struct {
 	DependenciesVersion common.DependenciesVersion
-	Version             string
+	PluginVersion       string
 }
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
@@ -46,14 +46,14 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.Version = cfg.Version
+	cmd.Version = cfg.PluginVersion
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
 	cmd.AddCommand(command.NewBuildCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewConfigCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewDeployCommand())
-	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
+	cmd.AddCommand(command.NewVersionCommand(cfg.PluginVersion))
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

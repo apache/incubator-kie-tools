@@ -222,7 +222,7 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		}
 	}
 
-	fmt.Println("✅ Quarkus extension was successfully add to the project pom.xml")
+	fmt.Println("✅ Quarkus extension was successfully added to the project pom.xml")
 	return nil
 }
 

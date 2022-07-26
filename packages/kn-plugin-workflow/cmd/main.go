@@ -24,7 +24,7 @@ import (
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/root"
 )
 
-var quarkusVersion, kogitoVersion, version string
+var quarkusVersion, kogitoVersion, pluginVersion string
 
 func main() {
 	cfg := root.RootCmdConfig{
@@ -32,7 +32,7 @@ func main() {
 			QuarkusVersion: quarkusVersion,
 			KogitoVersion:  kogitoVersion,
 		},
-		Version: version,
+		PluginVersion: pluginVersion,
 	}
 
 	if err := root.NewRootCommand(cfg).Execute(); err != nil {
