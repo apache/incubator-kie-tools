@@ -100,7 +100,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   }
 
   public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 kogitoSwfDiagramEditor__onNodeSelected");
     return this.textEditorEnvelopeApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
   }
 }

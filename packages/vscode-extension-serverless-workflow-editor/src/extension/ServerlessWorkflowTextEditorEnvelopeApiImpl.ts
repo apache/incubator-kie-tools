@@ -20,7 +20,6 @@ import { COMMAND_IDS } from "./commandIds";
 
 export class ServerlessWorkflowTextEditorEnvelopeApiImpl implements ServerlessWorkflowTextEditorEnvelopeApi {
   public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
-    console.log("ServerlessWorkflowTextEditorEnvelopeApiImpl.kogitoSwfTextEditor__moveCursorToNode called", args);
     vscode.commands.executeCommand(COMMAND_IDS.moveCursorToNode, args);
   }
 }

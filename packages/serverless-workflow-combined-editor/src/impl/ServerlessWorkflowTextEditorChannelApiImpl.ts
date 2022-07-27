@@ -151,7 +151,7 @@ export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWor
   public kogitoSwfTextEditor__moveCursorToNode(_args: { nodeName: string; documentUri?: string }): void {}
 
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 kogitoSwfLanguageService__highlightNode");
+    console.log("kogitoSwfLanguageService__highlightNode");
     // this.channelApi.notifications.kogitoSwfLanguageService__highlightNode.send(args);
   }
 }
