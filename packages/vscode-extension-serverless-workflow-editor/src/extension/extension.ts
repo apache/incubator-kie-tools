@@ -20,7 +20,7 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
+import { ServerlessWorkflowDiagramEditorChannelApiProducer } from "./ServerlessWorkflowDiagramEditorChannelApiProducer";
 import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
@@ -106,7 +106,7 @@ export async function activate(context: vscode.ExtensionContext) {
         baseEnvelopePath
       ),
     ]),
-    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
+    channelApiProducer: new ServerlessWorkflowDiagramEditorChannelApiProducer({
       configuration,
       vsCodeSwfLanguageService,
       swfServiceCatalogSupportActions,

@@ -35,11 +35,6 @@ export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChann
     return this.channelApi.requests.kogitoSwfLanguageService__getCodeLenses(args);
   }
 
-  /* TODO: SwfLanguageServiceChannelApiImpl: Last thing I noticed is that on the SWF Combined Editor, the moveCursorToNode is forwarding the call to its Channel, where in fact it should handle it and communicate the SWF Text Editor that this occurred. Same thing for the highlightNode method, which should not forward, but instead communicate the Diagram that the selection changed on the SWF Text Editor. */
-  // public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
-  //   this.channelApi.notifications.kogitoSwfLanguageService__moveCursorToNode.send(args);
-  // }
-
   public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
     this.channelApi.notifications.kogitoSwfLanguageService__highlightNode.send(args);
   }

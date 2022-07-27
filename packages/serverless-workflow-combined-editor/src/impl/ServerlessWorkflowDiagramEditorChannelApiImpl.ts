@@ -31,12 +31,12 @@ import {
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
+import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 
 export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>
+    private readonly textEditorEnvelopeApi: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -101,6 +101,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
 
   public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
     console.log("7365 kogitoSwfDiagramEditor__onNodeSelected");
-    this.channelApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
+    return this.textEditorEnvelopeApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
   }
 }

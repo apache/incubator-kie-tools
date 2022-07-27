@@ -30,14 +30,12 @@ import {
   ResourceListRequest,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
-import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfFeatureToggleChannelApi } from "../api";
 
@@ -46,9 +44,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     private readonly defaultApiImpl: KogitoEditorChannelApi,
     private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi,
-    private readonly swfTextEditorChannelApiImpl?: Partial<ServerlessWorkflowTextEditorChannelApi>,
-    private readonly swfDiagramEditorChannelApiImpl?: ServerlessWorkflowDiagramEditorChannelApi
+    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -167,14 +163,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     );
   }
 
-  public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 combined ed chan kogitoSwfDiagramEditor__onNodeSelected");
-    this.swfTextEditorChannelApiImpl?.kogitoSwfTextEditor__onNodeSelected?.(args);
-  }
-  public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 combined ed chan kogitoSwfTextEditor__moveCursorToNode");
-  }
-  public kogitoSwfTextEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 combined ed chan kogitoSwfTextEditor__onNodeSelected");
-  }
+  public kogitoSwfDiagramEditor__onNodeSelected(): void {}
+  public kogitoSwfTextEditor__moveCursorToNode(): void {}
+  public kogitoSwfTextEditor__onNodeSelected(): void {}
 }

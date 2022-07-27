@@ -21,6 +21,8 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
@@ -37,19 +39,17 @@ import {
   WorkspaceApi,
 } from "@kie-tools-core/workspace/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
-/* TODO: ServerlessWorkflowEditorChannelApiImpl: ServerlessWorkflowEditorChannelApiImpl.ts should be renamed to ServerlessWorkflowDiagramEditorChannelApiImpl.ts */
-export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
+export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
 
   constructor(
@@ -62,7 +62,8 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     viewType: string,
     i18n: I18n<VsCodeI18n>,
     private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
+    private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi,
+    private readonly swfTextEditorEnvelopeApiImpl: ServerlessWorkflowTextEditorEnvelopeApi
   ) {
     this.defaultApiImpl = new KogitoEditorChannelApiImpl(
       editor,
@@ -173,8 +174,9 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
   }
 
-  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string }): void {
-    this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__moveCursorToNode({
+  public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
+    console.log("7365 kogitoSwfDiagramEditor__onNodeSelected", args);
+    this.swfTextEditorEnvelopeApiImpl.kogitoSwfTextEditor__moveCursorToNode({
       ...args,
       documentUri: this.editor.document.document.uri.path,
     });

@@ -32,135 +32,126 @@ import {
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
 import {
+  SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 
-export class ServerlessWorkflowTextEditorChannelApiImpl implements Partial<ServerlessWorkflowTextEditorChannelApi> {
+export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWorkflowTextEditorChannelApi {
   constructor(
-    // private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi> // private readonly services: SwfServiceCatalogService[],
-  ) // private readonly serviceRegistriesSettings: SwfServiceRegistriesSettings
-  {}
+    private readonly defaultApiImpl: KogitoEditorChannelApi,
+    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
+    private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi
+  ) {}
 
-  // public kogitoEditor_contentRequest(): Promise<EditorContent> {
-  //   return this.defaultApiImpl.kogitoEditor_contentRequest();
-  // }
-  //
-  // public kogitoEditor_ready(): void {
-  //   this.defaultApiImpl.kogitoEditor_ready();
-  // }
-  //
-  // public kogitoEditor_setContentError(content: EditorContent): void {
-  //   this.defaultApiImpl.kogitoEditor_setContentError(content);
-  // }
-  //
-  // public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
-  //   this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
-  // }
-  //
-  // public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
-  //   this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
-  // }
-  //
-  // public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
-  //   this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
-  // }
-  //
-  // public kogitoI18n_getLocale(): Promise<string> {
-  //   return this.defaultApiImpl.kogitoI18n_getLocale();
-  // }
-  //
-  // public kogitoNotifications_createNotification(notification: Notification): void {
-  //   this.defaultApiImpl.kogitoNotifications_createNotification(notification);
-  // }
-  //
-  // public kogitoNotifications_removeNotifications(path: string): void {
-  //   this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
-  // }
-  //
-  // public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
-  //   this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
-  // }
-  //
-  // public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
-  //   this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
-  // }
-  //
-  // public kogitoWorkspace_openFile(path: string): void {
-  //   this.defaultApiImpl.kogitoWorkspace_openFile(path);
-  // }
-  //
-  // public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
-  //   return this.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
-  // }
-  //
-  // public kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
-  //   return this.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
-  // }
-  //
-  // public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
-  //   return this.defaultApiImpl.kogitoEditor_theme();
-  // }
-  //
-  // public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
-  //   return {
-  //     defaultValue: this.serviceRegistriesSettings,
-  //   };
-  // }
-  //
-  // public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
-  //   return {
-  //     defaultValue: this.services,
-  //   };
-  // }
-  //
-  // public kogitoSwfServiceCatalog_refresh(): void {
-  //   this.channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
-  // }
-  //
-  // public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
-  //   containingService: SwfServiceCatalogService;
-  //   documentUri: string;
-  // }): void {
-  //   this.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
-  // }
-  //
-  // public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
-  //   this.channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
-  // }
-  //
-  // public async kogitoSwfLanguageService__getCompletionItems(args: {
-  //   content: string;
-  //   uri: string;
-  //   cursorPosition: Position;
-  //   cursorWordRange: Range;
-  // }): Promise<CompletionItem[]> {
-  //   return this.channelApi.requests.kogitoSwfLanguageService__getCompletionItems(args);
-  // }
-  //
-  // public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-  //   return this.channelApi.requests.kogitoSwfLanguageService__getCodeLenses(args);
-  // }
-  //
-  // public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
-  //   this.channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
-  // }
-
-  public kogitoSwfTextEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 kogitoSwfTextEditor__onNodeSelected");
-    this.channelApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
+  public kogitoEditor_contentRequest(): Promise<EditorContent> {
+    return this.defaultApiImpl.kogitoEditor_contentRequest();
   }
 
-  public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    console.log("7365 kogitoSwfDiagramEditor__onNodeSelected");
-    this.channelApi.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
+  public kogitoEditor_ready(): void {
+    this.defaultApiImpl.kogitoEditor_ready();
   }
 
-  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string | undefined }): void {
+  public kogitoEditor_setContentError(content: EditorContent): void {
+    this.defaultApiImpl.kogitoEditor_setContentError(content);
+  }
+
+  public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
+    this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
+  }
+
+  public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
+    this.defaultApiImpl.kogitoGuidedTour_guidedTourRegisterTutorial(tutorial);
+  }
+
+  public kogitoGuidedTour_guidedTourUserInteraction(userInteraction: UserInteraction): void {
+    this.defaultApiImpl.kogitoGuidedTour_guidedTourUserInteraction(userInteraction);
+  }
+
+  public kogitoI18n_getLocale(): Promise<string> {
+    return this.defaultApiImpl.kogitoI18n_getLocale();
+  }
+
+  public kogitoNotifications_createNotification(notification: Notification): void {
+    this.defaultApiImpl.kogitoNotifications_createNotification(notification);
+  }
+
+  public kogitoNotifications_removeNotifications(path: string): void {
+    this.defaultApiImpl.kogitoNotifications_removeNotifications(path);
+  }
+
+  public kogitoNotifications_setNotifications(path: string, notifications: Notification[]): void {
+    this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
+  }
+
+  public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
+    this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
+  }
+
+  public kogitoWorkspace_openFile(path: string): void {
+    this.defaultApiImpl.kogitoWorkspace_openFile(path);
+  }
+
+  public kogitoWorkspace_resourceContentRequest(request: ResourceContentRequest): Promise<ResourceContent | undefined> {
+    return this.defaultApiImpl.kogitoWorkspace_resourceContentRequest(request);
+  }
+
+  public kogitoWorkspace_resourceListRequest(request: ResourceListRequest): Promise<ResourcesList> {
+    return this.defaultApiImpl.kogitoWorkspace_resourceListRequest(request);
+  }
+
+  public kogitoEditor_theme(): SharedValueProvider<EditorTheme> {
+    return this.defaultApiImpl.kogitoEditor_theme();
+  }
+
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return {
+      defaultValue: { registries: [] },
+    };
+  }
+
+  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
+    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_services() ?? { defaultValue: [] };
+  }
+
+  public kogitoSwfServiceCatalog_refresh(): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
+  }
+
+  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
+    containingService: SwfServiceCatalogService;
+    documentUri: string;
+  }): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
+  }
+
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
+  }
+
+  public async kogitoSwfLanguageService__getCompletionItems(args: {
+    content: string;
+    uri: string;
+    cursorPosition: Position;
+    cursorWordRange: Range;
+  }): Promise<CompletionItem[]> {
+    return this.channelApi.requests.kogitoSwfLanguageService__getCompletionItems(args);
+  }
+
+  public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
+    return this.channelApi.requests.kogitoSwfLanguageService__getCodeLenses(args);
+  }
+
+  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
+  }
+
+  public kogitoSwfTextEditor__moveCursorToNode(_args: { nodeName: string; documentUri?: string }): void {}
+
+  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
     console.log("7365 kogitoSwfLanguageService__highlightNode");
-    this.channelApi.notifications.kogitoSwfLanguageService__highlightNode.send(args);
+    // this.channelApi.notifications.kogitoSwfLanguageService__highlightNode.send(args);
   }
 }

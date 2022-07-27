@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
-import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
-import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
-import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
-import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
+import { KogitoEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiProducer";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { ResourceContentService, WorkspaceApi } from "@kie-tools-core/workspace/dist/api";
+import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
-import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
-import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "./ServerlessWorkflowDiagramEditorChannelApiImpl";
+import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "./ServerlessWorkflowTextEditorEnvelopeApiImpl";
+import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 
-/* TODO: ServerlessWorkflowEditorChannelApiProducer: ServerlessWorkflowEditorChannelApiProducer.ts should be renamed to ServerlessWorkflowDiagramEditorChannelApiProducer */
-export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
+export class ServerlessWorkflowDiagramEditorChannelApiProducer implements KogitoEditorChannelApiProducer {
   constructor(
     private readonly args: {
       configuration: SwfVsCodeExtensionConfiguration;
@@ -53,7 +53,7 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
     const fileLanguage = getFileLanguageOrThrow(editor.document.document.uri.path);
     const ls = this.args.vsCodeSwfLanguageService.getLs(fileLanguage);
 
-    return new ServerlessWorkflowEditorChannelApiImpl(
+    return new ServerlessWorkflowDiagramEditorChannelApiImpl(
       editor,
       resourceContentService,
       workspaceApi,
@@ -67,7 +67,8 @@ export class ServerlessWorkflowEditorChannelApiProducer implements KogitoEditorC
         configuration: this.args.configuration,
         swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
-      new SwfLanguageServiceChannelApiImpl({ ls })
+      new SwfLanguageServiceChannelApiImpl({ ls }),
+      new ServerlessWorkflowTextEditorEnvelopeApiImpl()
     );
   }
 }

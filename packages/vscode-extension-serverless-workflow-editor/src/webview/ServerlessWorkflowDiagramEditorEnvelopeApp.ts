@@ -27,6 +27,8 @@ import {
 
 declare const acquireVsCodeApi: any;
 
+console.log("7365 ServerlessWorkflowDiagramEditorEnvelopeApp execution");
+
 initCustom<
   ServerlessWorkflowDiagramEditor,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
@@ -36,6 +38,7 @@ initCustom<
   bus: acquireVsCodeApi(),
   apiImplFactory: {
     create: (args) =>
+      (console.log("7365 ServerlessWorkflowDiagramEditorEnvelopeApA create"), 1) &&
       new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(
         args,
         new VsCodeServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true })

@@ -47,7 +47,8 @@ import {
   useState,
 } from "react";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
-import { useCustomSwfChannelApi } from "./hooks/useCustomSwfChannelApi";
+import { useCustomSwfDiagramEditorChannelApi } from "./hooks/useCustomSwfDiagramEditorChannelApi";
+import { useCustomSwfTextEditorChannelApi } from "./hooks/useCustomSwfTextEditorChannelApi";
 
 interface Props {
   locale: string;
@@ -265,11 +266,20 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     console.error("Error setting content on diagram editor");
   }, []);
 
-  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useCustomSwfChannelApi({
+  const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
+    useCustomSwfDiagramEditorChannelApi({
+      channelApi: editorEnvelopeCtx.channelApi,
+      textEditor,
+      locale: props.locale,
+      embeddedEditorFile: embeddedDiagramEditorFile,
+      onEditorReady: onDiagramEditorReady,
+    });
+
+  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useCustomSwfTextEditorChannelApi({
     channelApi: editorEnvelopeCtx.channelApi,
     locale: props.locale,
-    embeddedEditorFile: embeddedTextEditorFile,
-    onEditorReady: onTextEditorReady,
+    embeddedEditorFile: embeddedDiagramEditorFile,
+    onEditorReady: onDiagramEditorReady,
   });
 
   return (
@@ -289,6 +299,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
                     kogitoEditor_setContentError={onDiagramEditorSetContentError}
                     editorEnvelopeLocator={diagramEditorEnvelopeLocator}
                     locale={props.locale}
+                    customChannelApiImpl={diagramEditorChannelApi}
+                    stateControl={diagramEditorStateControl}
                   />
                 )}
               </DrawerPanelBody>

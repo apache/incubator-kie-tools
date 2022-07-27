@@ -20,26 +20,19 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { useMemo } from "react";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../../api";
-import { SwfCombinedEditorChannelApiImpl } from "../../impl/SwfCombinedEditorChannelApiImpl";
-import { SwfFeatureToggleChannelApiImpl } from "../../impl/SwfFeatureToggleChannelApiImpl";
-import { SwfLanguageServiceChannelApiImpl } from "../../impl/SwfLanguageServiceChannelApiImpl";
-import { SwfServiceCatalogChannelApiImpl } from "../../impl/SwfServiceCatalogChannelApiImpl";
 import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
-import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "../../impl/ServerlessWorkflowDiagramEditorChannelApiImpl";
 
-/* TODO: useCustomSwfChannelApi: remove this file after verify is not needed */
-export function useCustomSwfChannelApi(args: {
+/* TODO: useCustomSwfDiagramEditorChannelApi: rename it without custom */
+export function useCustomSwfTextEditorChannelApi(args: {
   locale: string;
   channelApi?: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>;
   embeddedEditorFile?: EmbeddedEditorFile;
   onEditorReady: () => void;
 }) {
-  const [featureToggle] = useSharedValue(args.channelApi?.shared.kogitoSwfFeatureToggle_get);
   const [services] = useSharedValue(args.channelApi?.shared.kogitoSwfServiceCatalog_services);
   const [serviceRegistriesSettings] = useSharedValue(
     args.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistriesSettings
   );
-
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
   const kogitoEditorChannelApiImpl = useMemo(
@@ -53,42 +46,14 @@ export function useCustomSwfChannelApi(args: {
     [args, stateControl]
   );
 
-  const swfFeatureToggleChannelApiImpl = useMemo(
-    () => featureToggle && new SwfFeatureToggleChannelApiImpl(featureToggle),
-    [featureToggle]
-  );
-
-  const swfServiceCatalogChannelApiImpl = useMemo(
+  const channelApi = useMemo(
     () =>
+      kogitoEditorChannelApiImpl &&
       args.channelApi &&
       services &&
       serviceRegistriesSettings &&
-      new SwfServiceCatalogChannelApiImpl(args.channelApi, services, serviceRegistriesSettings),
-    [args.channelApi, serviceRegistriesSettings, services]
-  );
-
-  const swfLanguageServiceChannelApiImpl = useMemo(
-    () => args.channelApi && new SwfLanguageServiceChannelApiImpl(args.channelApi),
-    [args.channelApi]
-  );
-
-  const channelApi = useMemo(
-    () =>
-      args.channelApi &&
-      kogitoEditorChannelApiImpl &&
-      new SwfCombinedEditorChannelApiImpl(
-        kogitoEditorChannelApiImpl,
-        swfFeatureToggleChannelApiImpl,
-        swfServiceCatalogChannelApiImpl,
-        swfLanguageServiceChannelApiImpl
-      ),
-    [
-      args.channelApi,
-      kogitoEditorChannelApiImpl,
-      swfFeatureToggleChannelApiImpl,
-      swfLanguageServiceChannelApiImpl,
-      swfServiceCatalogChannelApiImpl,
-    ]
+      new ServerlessWorkflowTextEditorChannelApiImpl(kogitoEditorChannelApiImpl, args.channelApi),
+    [kogitoEditorChannelApiImpl, args.channelApi, services, serviceRegistriesSettings]
   );
 
   return {
