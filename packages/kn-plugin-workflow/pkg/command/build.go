@@ -19,7 +19,7 @@ package command
 import (
 	"fmt"
 	"os/exec"
-	"runtime"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -29,7 +29,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type BuildConfig struct {
+type BuildCmdConfig struct {
 	// Image options
 	Image      string // full image name
 	Registry   string // image registry (overrides image name)
@@ -46,7 +46,7 @@ type BuildConfig struct {
 	Verbose bool
 }
 
-func NewBuildCommand() *cobra.Command {
+func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
 		Short: "Build a Kogito Serverless Workflow project and generate a container image",
@@ -93,7 +93,7 @@ func NewBuildCommand() *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runBuild(cmd, args)
+		return runBuild(cmd, args, dependenciesVersion)
 	}
 
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
@@ -110,10 +110,10 @@ func NewBuildCommand() *cobra.Command {
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string) error {
+func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
 	start := time.Now()
 
-	cfg, err := runBuildConfig(cmd)
+	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
 		return fmt.Errorf("initializing build config: %w", err)
 	}
@@ -126,13 +126,18 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		if err := common.CheckPodman(); err != nil {
 			return err
 		}
-	} else if cfg.Jib && !cfg.Push {
+	} else if (cfg.Jib && !cfg.Push) || (!cfg.Jib) {
 		if err := common.CheckDocker(); err != nil {
 			return err
 		}
 	}
 
-	if err := runAddExtension(cfg); err != nil {
+	quarkusVersion, _, err := ReadConfig(dependenciesVersion)
+	if err != nil {
+		return err
+	}
+
+	if err := runAddExtension(cfg, quarkusVersion); err != nil {
 		return err
 	}
 
@@ -145,8 +150,8 @@ func runBuild(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
-	cfg = BuildConfig{
+func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
+	cfg = BuildCmdConfig{
 		Image:      viper.GetString("image"),
 		Registry:   viper.GetString("registry"),
 		Repository: viper.GetString("repository"),
@@ -163,50 +168,74 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 		fmt.Println("ERROR: either --image or --image-name should be used")
 		err = fmt.Errorf("missing flags")
 	}
+
 	if cfg.JibPodman && cfg.Push {
 		fmt.Println("ERROR: can't use --jib-podman with --push")
 		err = fmt.Errorf("invalid flags")
 	}
+
 	if cfg.JibPodman && cfg.Jib {
 		fmt.Println("ERROR: can't use --jib-podman with --jib")
 		err = fmt.Errorf("invalid flags")
 	}
+
 	return
 }
 
-func runAddExtension(cfg BuildConfig) error {
-	var addExtension *exec.Cmd
-
-	osCommand := getMavenCommand()
+// This function removes the extension that is not going to be used (if present)
+// and updates the chosen one. The entire operation is handled as an extension addition.
+// Therefore the removal is hidden from the user
+func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
-		addExtension = exec.Command(osCommand, "quarkus:add-extension",
-			"-Dextensions=container-image-jib")
+		if err := common.RunExtensionCommand(
+			cfg.Verbose,
+			"quarkus:remove-extension",
+			common.GetFriendlyMessages("adding Quarkus extension"),
+			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
+		); err != nil {
+			return err
+		}
+		if err := common.UpdateProjectExtensionsVersions(
+			cfg.Verbose,
+			common.GetFriendlyMessages("adding Quarkus extension"),
+			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion),
+		); err != nil {
+			return err
+		}
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
-		addExtension = exec.Command(osCommand, "quarkus:add-extension",
-			"-Dextensions=container-image-docker")
-	}
-	if err := common.RunCommand(
-		addExtension,
-		cfg.Verbose,
-		"build",
-		getAddExtensionFriendlyMessages(),
-	); err != nil {
-		return err
+		if err := common.RunExtensionCommand(
+			cfg.Verbose,
+			"quarkus:remove-extension",
+			common.GetFriendlyMessages("adding Quarkus extension"),
+			common.QUARKUS_CONTAINER_IMAGE_JIB,
+		); err != nil {
+			return err
+		}
+		if err := common.UpdateProjectExtensionsVersions(
+			cfg.Verbose,
+			common.GetFriendlyMessages("adding Quarkus extension"),
+			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion),
+		); err != nil {
+			return err
+		}
 	}
 
-	fmt.Println("✅ Quarkus extension was successfully add to the project")
+	fmt.Println("✅ Quarkus extension was successfully added to the project pom.xml")
 	return nil
 }
 
-func runBuildImage(cfg BuildConfig) error {
+func runBuildImage(cfg BuildCmdConfig) error {
 	registry, repository, name, tag := getImageConfig(cfg)
+	if err := checkImageName(name); err != nil {
+		return err
+	}
+
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	osCommand := getMavenCommand()
-	build := exec.Command(osCommand, "package",
+	build := exec.Command("mvn", "package",
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
@@ -223,7 +252,7 @@ func runBuildImage(cfg BuildConfig) error {
 		build,
 		cfg.Verbose,
 		"build",
-		getBuildFriendlyMessages(),
+		common.GetFriendlyMessages("building"),
 	); err != nil {
 		if cfg.Push {
 			fmt.Println("ERROR: Image build failed.")
@@ -243,8 +272,22 @@ func runBuildImage(cfg BuildConfig) error {
 	return nil
 }
 
+func checkImageName(name string) (err error) {
+	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
+	if !matched {
+		fmt.Println(`
+ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
+The name needs to start with a lower case letter and then it can be composed exclusvely of lower case letters, numbers or dashes ('-')
+Example of valid names: "test-0-0-1", "test", "t1"
+Example of invalid names: "1-test", "test.1", "test/1"
+		`)
+		err = fmt.Errorf("invalid image name")
+	}
+	return
+}
+
 // Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
-func getImageConfig(cfg BuildConfig) (string, string, string, string) {
+func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 	imageTagArray := strings.Split(cfg.Image, ":")
 	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
 
@@ -292,7 +335,7 @@ func getImage(registry string, repository string, name string, tag string) strin
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
 }
 
-func getBuilderConfig(cfg BuildConfig) string {
+func getBuilderConfig(cfg BuildCmdConfig) string {
 	builder := "-Dquarkus.container-image.builder="
 	if cfg.Jib || cfg.JibPodman {
 		builder += "jib"
@@ -303,7 +346,7 @@ func getBuilderConfig(cfg BuildConfig) string {
 	return builder
 }
 
-func getExecutableNameConfig(cfg BuildConfig) string {
+func getExecutableNameConfig(cfg BuildCmdConfig) string {
 	executableName := "-Dquarkus.jib.docker-executable-name="
 	if cfg.JibPodman {
 		executableName += "podman"
@@ -311,35 +354,4 @@ func getExecutableNameConfig(cfg BuildConfig) string {
 		executableName += "docker"
 	}
 	return executableName
-}
-
-func getMavenCommand() string {
-	if runtime.GOOS == "windows" {
-		return common.GetOsCommand("mvnw.cmd")
-	}
-	return common.GetOsCommand("mvnw")
-}
-
-func getAddExtensionFriendlyMessages() []string {
-	return []string{
-		" Downloading Quarkus extension...",
-		" Still downloading Quarkus extension",
-		" Still downloading Quarkus extension",
-		" Yes, still downloading Quarkus extension",
-		" Don't give up on me",
-		" Still downloading Quarkus extension",
-		" This is taking a while",
-	}
-}
-
-func getBuildFriendlyMessages() []string {
-	return []string{
-		" Building...",
-		" Still building",
-		" Still building",
-		" Yes, still building",
-		" Don't give up on me",
-		" Still building",
-		" This is taking a while",
-	}
 }
