@@ -71,7 +71,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	workflowPath := fmt.Sprintf("./%s/workflow.sw.json", name)
-	command.GenerateWorkflow(workflowPath)
+	command.CreateWorkflow(workflowPath)
 
 	dockerfilePath := fmt.Sprintf("./%s/Dockerfile.workflow", name)
 	GenerateDockerfile(dockerfilePath)

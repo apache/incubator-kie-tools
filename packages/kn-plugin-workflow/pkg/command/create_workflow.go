@@ -60,7 +60,7 @@ func getWorkflowTemplate() (workflowJsonByte []byte, err error) {
 	return
 }
 
-func GenerateWorkflow(workflowFilePath string) (err error) {
+func CreateWorkflow(workflowFilePath string) (err error) {
 	workflowFileData, err := getWorkflowTemplate()
 	if err != nil {
 		return err

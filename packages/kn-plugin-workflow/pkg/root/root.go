@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/quarkus"
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/single"
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
@@ -27,7 +28,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRootCommand() *cobra.Command {
+type RootCmdConfig struct {
+	DependenciesVersion common.DependenciesVersion
+	PluginVersion       string
+}
+
+func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "kn-workflow",
 		Short: "Serverless Workflow",
@@ -42,8 +48,12 @@ func NewRootCommand() *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.AddCommand(quarkus.NewQuarkusCommand())
+	cmd.AddCommand(quarkus.NewQuarkusCommand(cfg.DependenciesVersion))
+	cmd.AddCommand(command.NewVersionCommand(cfg.PluginVersion))
 	single.NewSingleCommand(cmd)
+
+	cmd.Version = cfg.PluginVersion
+	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)
