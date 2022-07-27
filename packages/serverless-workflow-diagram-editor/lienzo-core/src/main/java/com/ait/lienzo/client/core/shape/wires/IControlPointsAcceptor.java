@@ -13,8 +13,8 @@ public interface IControlPointsAcceptor {
                 int index,
                 Point2D location);
 
-    boolean move(WiresConnector connector,
-                 Point2DArray pointsLocation);
+    boolean update(WiresConnector connector,
+                   Point2DArray pointsLocation);
 
     boolean delete(WiresConnector connector,
                    int index);
@@ -38,13 +38,10 @@ public interface IControlPointsAcceptor {
         }
 
         @Override
-        public boolean move(final WiresConnector connector,
-                            final Point2DArray pointsLocation) {
+        public boolean update(final WiresConnector connector,
+                              final Point2DArray pointsLocation) {
             if (accept) {
-                for (int i = 0; i < pointsLocation.size(); i++) {
-                    Point2D point = pointsLocation.get(i);
-                    connector.moveControlPoint(i, new Point2D(point.getX(), point.getY()));
-                }
+                connector.setPoints(pointsLocation);
             }
             return accept;
         }

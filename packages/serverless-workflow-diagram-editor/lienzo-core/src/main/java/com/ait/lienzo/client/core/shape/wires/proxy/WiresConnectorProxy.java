@@ -26,7 +26,6 @@ import com.ait.lienzo.client.core.shape.wires.handlers.WiresConnectionControl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectionControlImpl;
 import com.ait.lienzo.client.core.shape.wires.handlers.impl.WiresConnectorControlImpl;
 import com.ait.lienzo.client.core.types.Point2D;
-import com.ait.lienzo.client.core.types.Point2DArray;
 
 public class WiresConnectorProxy
         extends AbstractWiresProxy
@@ -102,10 +101,7 @@ public class WiresConnectorProxy
 
     private void setLocation(Point2D location) {
         getTailShape().setLocation(location);
-        Point2DArray points = connector.getLine().getPoint2DArray();
-        Point2D point = points.get(points.size() - 1);
-        point.setX(location.getX());
-        point.setY(location.getY());
+        connector.getTailConnection().move(location.getX(), location.getY());
         connector.getLine().refresh();
     }
 

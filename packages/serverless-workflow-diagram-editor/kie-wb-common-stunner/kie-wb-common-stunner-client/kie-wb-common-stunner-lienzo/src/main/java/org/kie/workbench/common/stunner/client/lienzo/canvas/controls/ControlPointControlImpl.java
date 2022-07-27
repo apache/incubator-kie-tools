@@ -150,8 +150,8 @@ public class ControlPointControlImpl
         }
 
         @Override
-        public boolean move(final WiresConnector connector,
-                            final Point2DArray pointsLocation) {
+        public boolean update(final WiresConnector connector,
+                              final Point2DArray pointsLocation) {
             completeAddOrMove(connector, pointsLocation);
             resetAddingOp();
             return true;

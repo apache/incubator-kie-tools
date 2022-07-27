@@ -52,6 +52,8 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
 
     private Point2D m_adjust;
 
+    private Point2D m_adjust_instance;
+
     private String m_colorKey;
 
     private boolean m_allowed;
@@ -72,8 +74,9 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
         m_connector = connector;
         m_manager = wiresManager;
         m_head = isHeadNotTail;
-        m_adjust = new Point2D(0,
-                               0);
+        m_adjust = null;
+        m_adjust_instance = new Point2D(0,
+                                        0);
         m_initial_magnet = null;
         m_current_magnet = null;
     }
@@ -131,6 +134,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
             m_magnets.hide();
         }
 
+        m_adjust = null;
         m_shapesBacking = null;// uses lots of memory, so let it GC
         m_magnetsBacking = null;// uses lots of memory, so let it GC
         m_magnets = null;// if this is not nulled, the Mangets reference could stop Magnets being GC, when not used anywhere else
@@ -262,8 +266,7 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
 
         final Point2D dxy = new Point2D(dx,
                                         dy);
-        m_adjust = new Point2D(0,
-                               0);
+        m_adjust = null;
 
         // this is redetermined on each drag adjust
         m_current_magnet = null;
@@ -327,15 +330,50 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
                     double tx = targetX - m_startX - dxy.getX();
                     double ty = targetY - m_startY - dxy.getY();
                     if (tx != 0 || ty != 0) {
-                        m_adjust = new Point2D(dxy.getX() + tx,
-                                               dxy.getY() + ty);
+                        m_adjust_instance.setX(dxy.getX() + tx).setY(dxy.getY() + ty);
+                        m_adjust = m_adjust_instance;
+                        highlightMagnet(m_current_magnet);
                     }
                 }
+
+                unhighlightCardinalMagnets();
+
                 return true;
             }
         }
 
         return false;
+    }
+
+    private void highlightMagnet(WiresMagnet candidate) {
+        if (null != m_magnets) {
+            int size = m_magnets.size();
+            for (int i = 0; i < size; i++) {
+                WiresMagnet magnet = m_magnets.getMagnet(i);
+                if (magnet.getIndex() != candidate.getIndex()) {
+                    magnet.getControl().setAlpha(0.5);
+                } else {
+                    magnet.getControl().setAlpha(1);
+                }
+                if (i == size - 1) {
+                    magnet.getControl().batch();
+                }
+            }
+        }
+    }
+
+    private void unhighlightCardinalMagnets() {
+        if (null != m_magnets) {
+            m_magnets.getMagnet(0).getControl().setAlpha(0.5);
+            int size = m_magnets.size();
+            for (int i = 1; i < size; i++) {
+                WiresMagnet magnet = m_magnets.getMagnet(i);
+                magnet.getControl().setAlpha(1);
+                if (i == size - 1) {
+                    magnet.getControl().batch();
+                }
+            }
+        }
     }
 
     @Override
@@ -350,6 +388,8 @@ public class WiresConnectionControlImpl implements WiresConnectionControl {
         m_initial_magnet = null;
         m_current_magnet = null;
         m_allowed = false;
+        m_adjust = null;
+        m_adjust_instance = null;
         m_shape_color_map.clear();
         m_magnet_color_map.clear();
     }

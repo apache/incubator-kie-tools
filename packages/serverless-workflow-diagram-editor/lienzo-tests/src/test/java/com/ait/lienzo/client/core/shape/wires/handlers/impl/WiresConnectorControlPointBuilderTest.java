@@ -30,6 +30,7 @@ import com.ait.lienzo.client.core.shape.PolyLine;
 import com.ait.lienzo.client.core.shape.Rectangle;
 import com.ait.lienzo.client.core.shape.Shape;
 import com.ait.lienzo.client.core.shape.Viewport;
+import com.ait.lienzo.client.core.shape.wires.IControlHandleList;
 import com.ait.lienzo.client.core.shape.wires.WiresConnector;
 import com.ait.lienzo.client.core.shape.wires.decorator.IShapeDecorator;
 import com.ait.lienzo.client.core.shape.wires.decorator.PointHandleDecorator;
@@ -102,8 +103,10 @@ public class WiresConnectorControlPointBuilderTest {
         layer.add(connector.getGroup());
         when(control.getPointHandleDecorator()).thenReturn(pointHandleDecorator);
         when(control.areControlPointsVisible()).thenReturn(false);
-        when(control.getControlPointEventRegistrationManager()).thenReturn(controlEvents);
         tested = new WiresConnectorControlPointBuilder(TRUE_PREDICATE, TRUE_PREDICATE, connector);
+        IControlHandleList pointHandles = mock(IControlHandleList.class);
+        when(connector.getPointHandles()).thenReturn(pointHandles);
+        when(pointHandles.getHandlerRegistrationManager()).thenReturn(controlEvents);
     }
 
     @Test
@@ -117,7 +120,7 @@ public class WiresConnectorControlPointBuilderTest {
         assertTrue(tested.isEnabled());
         verify(control, times(1)).showControlPoints();
         verify(control, never()).hideControlPoints();
-        verify(controlEvents, times(8)).register(any(HandlerRegistration.class));
+        verify(controlEvents, times(4)).register(any(HandlerRegistration.class));
         verify(exitTimer, times(1)).run();
         assertNull(tested.exitTimer);
     }
@@ -211,7 +214,7 @@ public class WiresConnectorControlPointBuilderTest {
         tested.moveControlPointTo(0, 0);
 
         assertNotNull(tested.exitTimer);
-        verify(layer, never()).batch();
-        verify(overLayer, never()).batch();
+        verify(layer, atLeastOnce()).batch();
+        verify(overLayer, atLeastOnce()).batch();
     }
 }

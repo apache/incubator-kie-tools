@@ -82,7 +82,10 @@ public class WiresConnectorControlPointBuilder {
     }
 
     public void enable() {
-        forceRunExitTimer();
+        // Ensure control handles are rebuilt before showing again.
+        if (!forceRunExitTimer()) {
+            exit();
+        }
         if (canShowControlPoints.test(connector)) {
             connector.getControl().showControlPoints();
         }
@@ -216,7 +219,7 @@ public class WiresConnectorControlPointBuilder {
     }
 
     private void listenForControlPoints() {
-        final HandlerRegistrationManager events = getControl().getControlPointEventRegistrationManager();
+        final HandlerRegistrationManager events = connector.getPointHandles().getHandlerRegistrationManager();
         if (null != events) {
             // Listen for CP events.
             final IControlHandleList pointHandles = connector.getPointHandles();
@@ -225,6 +228,14 @@ public class WiresConnectorControlPointBuilder {
                 listenForControlPoint(events,
                                       handle.getControl());
             }
+
+            IControlHandleList offsetHandles = connector.getOffsetHandles();
+            for (int i = 0; i < offsetHandles.size(); i++) {
+                final IControlHandle handle = offsetHandles.getHandle(i);
+                listenForControlPoint(events,
+                                      handle.getControl());
+            }
+
             // Listen for head connection events.
             final WiresConnection headConnection = connector.getHeadConnection();
             listenForConnection(events, headConnection);
@@ -307,11 +318,13 @@ public class WiresConnectorControlPointBuilder {
         }
     }
 
-    private void forceRunExitTimer() {
+    private boolean forceRunExitTimer() {
         if (null != exitTimer && !exitTimer.isRunning()) {
             exitTimer.run();
             exitTimer = null;
+            return true;
         }
+        return false;
     }
 
     private void batch() {

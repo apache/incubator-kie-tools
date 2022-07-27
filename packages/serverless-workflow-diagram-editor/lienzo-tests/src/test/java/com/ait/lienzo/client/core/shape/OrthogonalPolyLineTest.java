@@ -8,7 +8,7 @@ import com.ait.lienzo.test.LienzoMockitoTestRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.ait.lienzo.client.core.shape.OrthogonalPolyLine.correctEndWithOffset;
+import static com.ait.lienzo.client.core.shape.OrthogonalLineUtils.correctEndWithOffset;
 import static com.ait.lienzo.shared.core.types.Direction.EAST;
 import static com.ait.lienzo.shared.core.types.Direction.NONE;
 import static com.ait.lienzo.shared.core.types.Direction.NORTH;

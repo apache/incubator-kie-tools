@@ -122,17 +122,6 @@ public class WiresConnectorTest {
     }
 
     @Test
-    public void testMoveControlPoint() {
-        final Point2D point = new Point2D(25, 50);
-        tested.moveControlPoint(0, point);
-        final Point2DArray points = line.getPoints();
-        assertEquals(3, points.size());
-        assertEquals(point, points.get(0));
-        assertEquals(CP1, points.get(1));
-        assertEquals(CP2, points.get(2));
-    }
-
-    @Test
     public void testDestroyControlPoint() {
         tested.destroyControlPoints(new int[]{0, 2});
         final Point2DArray points = line.getPoints();

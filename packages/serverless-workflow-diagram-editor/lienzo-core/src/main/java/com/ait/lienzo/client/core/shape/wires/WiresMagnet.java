@@ -98,6 +98,7 @@ public class WiresMagnet extends AbstractControlHandle implements Iterable<Wires
                 WiresConnection h = m_connections.get(i);
 
                 h.move(m_x + x, m_y + y);
+                h.getLine().refresh();
             }
         }
     }

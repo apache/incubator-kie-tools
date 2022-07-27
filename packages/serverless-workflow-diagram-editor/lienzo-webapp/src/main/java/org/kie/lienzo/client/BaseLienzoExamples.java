@@ -22,8 +22,10 @@ public class BaseLienzoExamples {
     private Example test;
 
     public void doLoad() {
-        createTests(new BasicShapesExample("Shapes"),
+        createTests(new BasicLinesExample("Lines"),
+                    new BasicShapesExample("Shapes"),
                     new BasicWiresExample("Wires"),
+                    new OrthogonalLinesExample("Orthogonal Lines"),
                     new LineSpliceExample("Line Splice"),
                     new ToolboxExample("Toolbox"),
                     new PerformanceTests("Performance tests"),

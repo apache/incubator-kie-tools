@@ -82,6 +82,8 @@ public interface IControlHandle extends IActivatable {
 
         public static final ControlHandleType POINT = new ControlHandleStandardType("POINT");
 
+        public static final ControlHandleType OFFSET = new ControlHandleStandardType("OFFSET");
+
         public static final ControlHandleType ROTATE = new ControlHandleStandardType("ROTATE");
 
         public static final ControlHandleType RESIZE = new ControlHandleStandardType("RESIZE");

@@ -131,13 +131,18 @@ public class WiresConnectorView<T> extends WiresConnector
 
     @Override
     public T updateControlPoints(final ControlPoint[] controlPoints) {
+        Point2DArray actual = getControlPoints();
+        Point2DArray array = new Point2DArray();
+        array.push(actual.get(0));
         for (int i = 0; i < controlPoints.length; i++) {
             final Point2D location = controlPoints[i].getLocation();
             final com.ait.lienzo.client.core.types.Point2D lienzoPoint =
                     new com.ait.lienzo.client.core.types.Point2D(location.getX(),
                                                                  location.getY());
-            moveControlPoint(i + 1, lienzoPoint);
+            array.push(lienzoPoint);
         }
+        array.push(actual.get(actual.size() - 1));
+        setPoints(array);
         refreshControlPoints();
         return cast();
     }
