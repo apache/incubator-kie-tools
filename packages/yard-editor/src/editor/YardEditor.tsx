@@ -15,19 +15,17 @@
  */
 import * as React from "react";
 import { useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-  DrawerPanelBody,
-  DrawerPanelContent,
-} from "@patternfly/react-core/dist/js/components/Drawer";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { Drawer, DrawerContent, DrawerContentBody, DrawerPanelBody, DrawerPanelContent } from "@patternfly/react-core";
+import { yardEditorDictionaries, YardEditorI18nContext, yardEditorI18nDefaults } from "../i18n";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { YardTextEditorApi, YardTextEditorOperation } from "../textEditor/YardTextEditorController";
 import { YardTextEditor } from "../textEditor/YardTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import { YardUIEditor } from "../uiEditor";
+import "./YardEditor.css";
 
 interface Props {
   /**
@@ -38,14 +36,14 @@ interface Props {
   onStateControlCommandUpdate: (command: StateControlCommand) => void;
 
   /**
-   * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
+   * Delegation for WorkspaceChannelApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 
   /**
-   * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
+   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
    * notifications to the Channel that will replace existing notification for the path. Increases the
    * decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param path The path that references the Notification
@@ -145,7 +143,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
     (newContent: string, operation?: YardTextEditorOperation) => {
       switch (operation) {
         case YardTextEditorOperation.EDIT:
-          props.onNewEdit(new KogitoEdit(newContent));
+          props.onNewEdit(new WorkspaceEdit(newContent));
           break;
         case YardTextEditorOperation.UNDO:
           if (!isVscode()) {
@@ -185,15 +183,20 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
   );
 
   const yardUIContainer = (
-    <>
-      <p>Future UI here</p>
-    </>
+    <I18nDictionariesProvider
+      defaults={yardEditorI18nDefaults}
+      dictionaries={yardEditorDictionaries}
+      initialLocale={navigator.language}
+      ctx={YardEditorI18nContext}
+    >
+      <YardUIEditor />
+    </I18nDictionariesProvider>
   );
 
   return (
     <>
       {(isVscode() && yardUIContainer) || (
-        <Drawer isExpanded={true} isInline={true}>
+        <Drawer className={"yard-drawer"} isExpanded={true} isInline={true}>
           <DrawerContent
             panelContent={
               <DrawerPanelContent isResizable={true} defaultSize={"50%"}>
@@ -201,7 +204,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
               </DrawerPanelContent>
             }
           >
-            <DrawerContentBody style={{ overflowY: "hidden" }}>{yardTextEditor}</DrawerContentBody>
+            <DrawerContentBody className={"drawer-content-body"}>{yardTextEditor}</DrawerContentBody>
           </DrawerContent>
         </Drawer>
       )}

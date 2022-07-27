@@ -19,8 +19,9 @@ const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
-const buildEnv = require("@kie-tools/build-env");
 const stunnerEditors = require("@kie-tools/stunner-editors");
+const { env } = require("./env");
+const buildEnv = env;
 
 module.exports = (env) => [
   merge(common(env), {
@@ -51,7 +52,7 @@ module.exports = (env) => [
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.examples.webapp.port,
+      port: buildEnv.exampleWebapp.port,
     },
   }),
 ];

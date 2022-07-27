@@ -42,6 +42,18 @@ jobs:
       OPENSHIFT_PART_OF: "daily-dev-kie-sandbox-app"
       DEPLOY_TAG: "daily-dev"
 
+      SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
+      SERVERLESS_LOGIC_SANDBOX__baseImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__baseImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__baseImageName: "serverless-logic-sandbox-base-image"
+      SERVERLESS_LOGIC_SANDBOX__baseImageTag: "daily-dev"
+      SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: "daily-dev"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry: "quay.io"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "daily-dev"
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: "daily-dev"
+
     steps:
       - name: "Support longpaths (Windows only)"
         if: matrix.os == 'windows-latest'
@@ -79,14 +91,19 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
           CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
-          CHROME_EXTENSION__SW_routerTargetOrigin: "https://kiegroup.github.io"
-          CHROME_EXTENSION__SW_routerRelativePath: "kogito-online/dev/editors/"
+          SWF_CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
+          SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online/dev/editors/"
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_linux_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.tar.gz"
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_macos_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.dmg"
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_windows_${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}.exe"
           ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION }}"
           ONLINE_EDITOR__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
           DISPLAY: ":99.0"
+          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlLinux: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_linux_${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}.tar.gz"
+          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_macos_${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}.dmg"
+          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}/kie_sandbox_extended_services_windows_${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}.exe"
+          SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ env.SERVERLESS_LOGIC_SANDBOX_EXTENDED_SERVICES_VERSION }}"
+          SERVERLESS_LOGIC_SANDBOX__buildInfo: "${{ steps.version.outputs.version }} (daily-dev) @ ${{ github.sha }}"
         run: |
           cd kie-tools
           pnpm -r build:prod
@@ -129,6 +146,26 @@ jobs:
           tags: "${{ env.KIE_SANDBOX__imageBuildTags }}"
           registry: "${{ env.KIE_SANDBOX__imageRegistry }}/${{ env.KIE_SANDBOX__imageAccount }}"
           username: "${{ env.KIE_SANDBOX__imageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "Push serverless-logic-sandbox-base-image to quay.io (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__baseImageAccount }}"
+          password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
+
+      - name: "Push openjdk11-mvn-image to quay.io (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName }}"
+          tags: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags }}"
+          registry: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageRegistry }}/${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
+          username: "${{ env.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount }}"
           password: "${{ secrets.QUAY_REGISTRY_PASSWORD }}"
 
       - name: "Deploy kie-sandbox-extended-services-image to OpenShift (Ubuntu only)"
@@ -257,6 +294,29 @@ jobs:
           cp -r ../kie-tools/packages/online-editor/dist/* dev/
           rm -rf dev/gwt-editors
           ln -s editors dev/gwt-editors
+          git config --global user.email "kietoolsbot@gmail.com"
+          git config --global user.name "KIE Tools Bot (kiegroup)"
+          today=$(date -I)
+          git add . && git commit -m "KIE Tools Daily Dev Build resources - $today" || echo "No changes."
+          git push origin gh-pages
+          cd -
+
+      - name: "Checkout serverless-logic-sandbox-deployment (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.KIE_TOOLS_BOT_TOKEN }}
+          path: serverless-logic-sandbox-deployment
+          repository: kiegroup/serverless-logic-sandbox-deployment
+          ref: gh-pages
+
+      - name: "Update serverless-logic-sandbox-deployment resources (Ubuntu only)"
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          cd serverless-logic-sandbox-deployment
+          rm -rf dev
+          mkdir dev
+          cp -r ../kie-tools/packages/serverless-logic-sandbox/dist/* dev/
           git config --global user.email "kietoolsbot@gmail.com"
           git config --global user.name "KIE Tools Bot (kiegroup)"
           today=$(date -I)

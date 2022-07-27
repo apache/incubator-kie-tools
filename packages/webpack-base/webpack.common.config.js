@@ -15,14 +15,16 @@
  */
 
 const path = require("path");
-const buildEnv = require("@kie-tools/build-env");
+const webpackBaseEnv = require("./env");
 
 module.exports = (env) => {
-  const transpileOnly = buildEnv.global.webpack(env).transpileOnly;
-  const minimize = buildEnv.global.webpack(env).minimize;
-  const sourceMaps = buildEnv.global.webpack(env).sourceMaps;
-  const mode = buildEnv.global.webpack(env).mode;
-  const live = buildEnv.global.webpack(env).live;
+  const webpackEnv = env.dev ? webpackBaseEnv.env.webpack.dev : webpackBaseEnv.env.webpack.prod;
+
+  const transpileOnly = webpackEnv.transpileOnly;
+  const minimize = webpackEnv.minimize;
+  const sourceMaps = webpackEnv.sourceMaps;
+  const mode = webpackEnv.mode;
+  const live = env.live;
 
   console.info(`Webpack :: ts-loader :: transpileOnly: ${transpileOnly}`);
   console.info(`Webpack :: minimize: ${minimize}`);

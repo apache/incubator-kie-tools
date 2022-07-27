@@ -18,9 +18,11 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.Optional;
 
+import jsinterop.base.JsPropertyMap;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
+import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 
@@ -29,14 +31,20 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StateMarshallingTest extends BaseMarshallingTest {
+
+    private static final String WORKFLOW_ID = "workflow1";
+    private static final String WORKFLOW_NAME = "Workflow1";
 
     @Override
     protected Workflow createWorkflow() {
         return new Workflow()
-                .setId("workflow1")
-                .setName("Workflow1")
+                .setId(WORKFLOW_ID)
+                .setName(WORKFLOW_NAME)
                 .setStates(new State[]{
                         new State()
                                 .setName("State1")
@@ -44,12 +52,50 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     }
 
     @Test
+    public void testEndObject() {
+        JsPropertyMap<Object> endObject = mock(JsPropertyMap.class);
+        when(endObject.get("terminate")).thenReturn(true);
+        when(endObject.get("continueAs")).thenReturn("{}");
+        when(endObject.get("compensate")).thenReturn(false);
+        when(endObject.get("produceEvents")).thenReturn("[]");
+        workflow.states[0].setEnd(endObject);
+        unmarshallWorkflow();
+        assertTrue(hasOutgoingEdges("State1"));
+        assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
+        assertTrue(workflow.states[0].end instanceof JsPropertyMap);
+        final JsPropertyMap end = (JsPropertyMap) workflow.states[0].end;
+        assertTrue((Boolean) end.get("terminate"));
+        assertTrue(end.get("continueAs").equals("{}"));
+        assertTrue(!((Boolean) end.get("compensate")));
+        assertTrue(end.get("produceEvents").equals("[]"));
+    }
+
+    @Test
+    public void testUnsetCompensatedBy() {
+        InjectState injectState = new InjectState();
+
+        injectState.setName("Inject State");
+        injectState.setUsedForCompensation(true);
+
+        Workflow workflow = new Workflow()
+                .setId(WORKFLOW_ID)
+                .setName(WORKFLOW_NAME)
+                .setStates(new State[]{
+                        injectState
+                });
+
+        unmarshallNode(builderContext, workflow);
+        assertEquals(injectState.usedForCompensation, true);
+        // specific case when usedForCompensation is equals to Js.undefined cannot be tested since value defaults to false
+    }
+
+    @Test
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
-        assertDefinitionReferencedInNode(workflow, "Workflow1");
+        assertDefinitionReferencedInNode(workflow, WORKFLOW_ID);
         assertDefinitionReferencedInNode(workflow.states[0], "State1");
-        assertEquals(2, countChildren("Workflow1"));
-        assertParentOf("Workflow1", "State1");
+        assertEquals(2, countChildren(WORKFLOW_ID));
+        assertParentOf(WORKFLOW_ID, "State1");
         assertTrue(hasIncomingEdges("State1"));
         assertFalse(hasOutgoingEdges("State1"));
     }
@@ -58,7 +104,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     public void testUnmarshallStartState() {
         workflow.setStart("State1");
         unmarshallWorkflow();
-        assertEquals(3, countChildren("Workflow1"));
+        assertEquals(3, countChildren(WORKFLOW_ID));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
     }
 

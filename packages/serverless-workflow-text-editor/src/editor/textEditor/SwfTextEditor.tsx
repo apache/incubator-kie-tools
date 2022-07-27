@@ -22,7 +22,7 @@ import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue, useSubscription } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/editor";
+import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { ServerlessWorkflowTextEditorChannelApi } from "../../api";
 import { editor } from "monaco-editor";
 
@@ -79,11 +79,13 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
-    initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
-    initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
+    const jsonCompletion = initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
+    const codeLenses = initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
     return () => {
       controller.dispose();
+      codeLenses.dispose();
+      jsonCompletion.dispose();
     };
 
     // TODO: Add support to YAML

@@ -15,16 +15,16 @@
  */
 
 import * as __path from "path";
-import { VsCodeNodeResourceContentService } from "@kie-tools-core/vscode-extension/dist/VsCodeNodeResourceContentService";
+import { VsCodeNodeResourceContentServiceImpl } from "@kie-tools-core/vscode-extension/dist/VsCodeNodeResourceContentServiceImpl";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 
 const testWorkspace = __path.resolve(__dirname, "test-workspace") + __path.sep;
 
-let resourceContentService: VsCodeNodeResourceContentService;
+let resourceContentService: VsCodeNodeResourceContentServiceImpl;
 
 describe("VsCodeNodeResourceContentService", () => {
   beforeEach(() => {
-    resourceContentService = new VsCodeNodeResourceContentService(testWorkspace);
+    resourceContentService = new VsCodeNodeResourceContentServiceImpl(testWorkspace);
   });
 
   test("Test list", async () => {
@@ -46,7 +46,7 @@ describe("VsCodeNodeResourceContentService", () => {
   });
 
   test("Test list with errors", async () => {
-    resourceContentService = new VsCodeNodeResourceContentService("/probably/an/unexisting/path/");
+    resourceContentService = new VsCodeNodeResourceContentServiceImpl("/probably/an/unexisting/path/");
 
     const pattern = "*.txt";
     const resourcesList = await resourceContentService.list(pattern);
@@ -83,7 +83,7 @@ describe("VsCodeNodeResourceContentService", () => {
   });
 
   test("Test get with errors", async () => {
-    resourceContentService = new VsCodeNodeResourceContentService("/probably/an/unexisting/path/");
+    resourceContentService = new VsCodeNodeResourceContentServiceImpl("/probably/an/unexisting/path/");
 
     const txtResourcePath = "resource1.txt";
     const txtResourceContent = await resourceContentService.get(txtResourcePath);

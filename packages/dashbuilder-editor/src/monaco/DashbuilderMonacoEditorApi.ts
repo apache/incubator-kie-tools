@@ -99,7 +99,7 @@ export class DefaultDashbuilderMonacoEditorController implements DashbuilderMona
       theme: this.getMonacoThemeByEditorTheme(theme),
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
+    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
       this.onContentChange(this.model.getValue(), MonacoEditorOperation.UNDO);
     });
 

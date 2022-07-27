@@ -56,7 +56,6 @@ public class OperationState extends State {
 
     public OperationState() {
         this.type = TYPE_OPERATION;
-        this.usedForCompensation = false;
     }
 
     public String getActionMode() {

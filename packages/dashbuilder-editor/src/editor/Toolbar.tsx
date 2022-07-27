@@ -36,7 +36,8 @@ export const Toolbar = (props: ToolbarProps) => {
       <Split hasGutter={true}>
         <SplitItem>
           <Button
-            variant="secondary"
+            variant="plain"
+            style={{ width: "auto", padding: "0px", textAlign: "left" }}
             onClick={(e) => {
               setPreviewButtonSelected(!previewButtonSelected);
             }}

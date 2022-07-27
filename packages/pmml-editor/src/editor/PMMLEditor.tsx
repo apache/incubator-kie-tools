@@ -39,7 +39,7 @@ import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
 import { Operation, OperationContext } from "./components/EditorScorecard";
 import { toNotifications, ValidationContext, ValidationRegistry } from "./validation";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Builder } from "./paths";
 
@@ -60,14 +60,14 @@ interface Props {
   ready: () => void;
 
   /**
-   * Delegation for KIEToolsWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
+   * Delegation for WorkspaceChannelApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the PMMLEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  newEdit: (edit: KogitoEdit) => void;
+  newEdit: (edit: WorkspaceEdit) => void;
 
   /**
-   * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
+   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
    * notifications to the Channel that  will replace existing notification for the path. Increases the
    * decoupling of the PMMLEditor from the Channel.
    * @param path The path that references the Notification
@@ -87,7 +87,7 @@ export class PMMLEditor extends React.Component<Props, State> {
   private store: Store<PMML, AllActions> | undefined;
   private readonly history: HistoryService = new HistoryService([
     (id: string) => {
-      this.props.newEdit(new KogitoEdit(id));
+      this.props.newEdit(new WorkspaceEdit(id));
     },
     () => {
       this.props.setNotifications(this.state.path, this.validate());

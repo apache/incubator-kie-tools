@@ -19,8 +19,9 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
-const buildEnv = require("@kie-tools/build-env");
 const { EnvironmentPlugin } = require("webpack");
+const { env } = require("../env");
+const buildEnv = env;
 
 module.exports = (env) =>
   merge(common(env), {
@@ -36,7 +37,7 @@ module.exports = (env) =>
         patterns: [{ from: path.resolve(__dirname, "./static"), to: "./" }],
       }),
       new EnvironmentPlugin({
-        REACT_APP_FEEL_SERVER: buildEnv.feelInputComponent.dev.REACT_APP_FEEL_SERVER,
+        WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: buildEnv.feelInputComponent.dev.feelServerUrl,
       }),
     ],
     module: {

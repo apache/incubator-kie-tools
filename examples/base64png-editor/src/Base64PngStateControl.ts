@@ -15,12 +15,12 @@
  */
 
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 
 /**
  * A Base64PngEdit is a object containing all Editor information necessary to update the current state.
  */
-export interface Base64PngEdit extends KogitoEdit {
+export interface Base64PngEdit extends WorkspaceEdit {
   filter: string;
   contrast: string;
   brightness: string;

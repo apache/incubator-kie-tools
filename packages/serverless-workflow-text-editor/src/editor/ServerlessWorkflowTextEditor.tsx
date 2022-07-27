@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { useCallback, useImperativeHandle, useRef, useState } from "react";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { SwfTextEditorApi, SwfTextEditorOperation } from "../editor/textEditor/SwfTextEditorController";
-import { SwfTextEditor } from "../editor/textEditor/SwfTextEditor";
+import { SwfTextEditorApi, SwfTextEditorOperation } from "./textEditor/SwfTextEditorController";
+import { SwfTextEditor } from "./textEditor/SwfTextEditor";
 import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { editor } from "monaco-editor";
 
@@ -31,14 +31,14 @@ interface Props {
   onStateControlCommandUpdate: (command: StateControlCommand) => void;
 
   /**
-   * Delegation for KogitoToolingWorkspaceApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
+   * Delegation for WorkspaceChannelApi.kogitoWorkspace_newEdit(edit) to signal to the Channel
    * that a change has taken place. Increases the decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param edit An object representing the unique change.
    */
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 
   /**
-   * Delegation for NotificationsApi.setNotifications(path, notifications) to report all validation
+   * Delegation for NotificationsChannelApi.kogitoNotifications_setNotifications(path, notifications) to report all validation
    * notifications to the Channel that will replace existing notification for the path. Increases the
    * decoupling of the ServerlessWorkflowEditor from the Channel.
    * @param path The path that references the Notification
@@ -140,7 +140,7 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
     (newContent: string, operation?: SwfTextEditorOperation) => {
       switch (operation) {
         case SwfTextEditorOperation.EDIT:
-          props.onNewEdit(new KogitoEdit(newContent));
+          props.onNewEdit(new WorkspaceEdit(newContent));
           break;
         case SwfTextEditorOperation.UNDO:
           if (!isVscode()) {

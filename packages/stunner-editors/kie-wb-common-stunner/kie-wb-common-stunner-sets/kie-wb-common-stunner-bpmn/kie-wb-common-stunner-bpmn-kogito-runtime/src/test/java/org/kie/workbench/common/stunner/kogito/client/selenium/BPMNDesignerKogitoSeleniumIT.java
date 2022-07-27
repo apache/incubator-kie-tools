@@ -68,7 +68,7 @@ public class BPMNDesignerKogitoSeleniumIT {
     private static final String DIAGRAM_EXPLORER = "docks-item-E-ProjectDiagramExplorerScreen";
     private static final String DIAGRAM_EXPLORER_EXPANDED = "expanded-docks-bar-E";
     private static final String DIAGRAM_PANEL = "qe-static-workbench-panel-view";
-    private static final String ACE_EDITOR = "//div[@class='ace_content']";
+    private static final String EDITOR_CONTENT_HAS_NOT_BEEN_SET_HEADING = "//h1[@data-i18n-key='Editor_content_has_not_been_set.']";
     private static final String ERROR_MODAL_DIALOG = "//div[@class='modal-dialog']";
     private static final String ERROR_MODAL_BODY = "//div[@class='modal-body']";
     private static final String PROCESS_NODE = "//div[@data-field='explorerPanelBody']//a[text()='%s']";
@@ -92,7 +92,7 @@ public class BPMNDesignerKogitoSeleniumIT {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().setup();
+        WebDriverManager.firefoxdriver().useMirror().setup();
     }
 
     @Before
@@ -141,10 +141,11 @@ public class BPMNDesignerKogitoSeleniumIT {
     public void testHandlingInvalidContent() {
         setContent("<!!!invalid!!!>");
 
-        // Verify ACE editor (default text editor) is in place and shown to user
-        final WebElement aceEditor = waitOperation().until(element(ACE_EDITOR));
-        assertThat(aceEditor)
-                .as("If invalid bpmn is loaded, ace editor needs to be shown")
+        // Verify Error page is in place and shown to user
+        final WebElement errorHeading = waitOperation()
+                .until(visibilityOfElementLocated(xpath(EDITOR_CONTENT_HAS_NOT_BEEN_SET_HEADING)));
+        assertThat(errorHeading)
+                .as("If invalid bpmn is loaded, error message needs to be shown")
                 .isNotNull();
     }
 

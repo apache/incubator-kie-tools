@@ -19,6 +19,7 @@ package quarkus
 import (
 	"fmt"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -175,16 +176,17 @@ func runBuildConfig(cmd *cobra.Command) (cfg BuildConfig, err error) {
 
 func runAddExtension(cfg BuildConfig) error {
 	var addExtension *exec.Cmd
+
+	osCommand := getMavenCommand()
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
-		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
+		addExtension = exec.Command(osCommand, "quarkus:add-extension",
 			"-Dextensions=container-image-jib")
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
-		addExtension = exec.Command("./mvnw", "quarkus:add-extension",
+		addExtension = exec.Command(osCommand, "quarkus:add-extension",
 			"-Dextensions=container-image-docker")
 	}
-
 	if err := common.RunCommand(
 		addExtension,
 		cfg.Verbose,
@@ -203,7 +205,8 @@ func runBuildImage(cfg BuildConfig) error {
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := exec.Command("./mvnw", "package",
+	osCommand := getMavenCommand()
+	build := exec.Command(osCommand, "package",
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
@@ -308,6 +311,13 @@ func getExecutableNameConfig(cfg BuildConfig) string {
 		executableName += "docker"
 	}
 	return executableName
+}
+
+func getMavenCommand() string {
+	if runtime.GOOS == "windows" {
+		return common.GetOsCommand("mvnw.cmd")
+	}
+	return common.GetOsCommand("mvnw")
 }
 
 func getAddExtensionFriendlyMessages() []string {

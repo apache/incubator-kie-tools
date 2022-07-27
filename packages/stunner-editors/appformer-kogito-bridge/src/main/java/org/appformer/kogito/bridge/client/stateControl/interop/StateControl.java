@@ -51,6 +51,6 @@ public class StateControl {
     @JsMethod
     public native void setRedoCommand(StateControlCommand command);
 
-    @JsProperty(name = "stateControl")
+    @JsProperty(name = "stateControlService")
     public native static StateControl get();
 }

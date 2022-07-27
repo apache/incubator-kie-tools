@@ -56,7 +56,9 @@ describe("yard editor - integration tests", () => {
       assert.isFalse(await yardTextEditor.isDirty());
       assert.equal("\n", await yardTextEditor.getText());
 
-      assert.isNotNull(await yardWebView.getTemporaryFutureUIElement());
+      const yardUITab = await yardWebView.getYardTabElements();
+      assert.isNotNull(yardUITab);
+      assert.equal(3, yardUITab.length);
     });
   });
 });

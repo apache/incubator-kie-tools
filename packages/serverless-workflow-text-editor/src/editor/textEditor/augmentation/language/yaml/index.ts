@@ -26,7 +26,7 @@ export function initYamlSchemaDiagnostics() {
     format: true,
     schemas: [
       {
-        uri: "workflow.json",
+        uri: "https://serverlessworkflow.io/schemas/0.8/workflow.json",
         fileMatch: ["*"],
         schema: SW_SPEC_WORKFLOW_SCHEMA as JSONSchema7,
       },
