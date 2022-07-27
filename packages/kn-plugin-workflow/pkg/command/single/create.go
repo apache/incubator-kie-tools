@@ -39,11 +39,11 @@ type CreateConfig struct {
 func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:        "create",
-		Short:      "Create a Kogito Serverless Workflow minimal project",
+		Short:      "Create a workflow project",
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name"),
+		PreRunE:    common.BindEnv("name", "extensions", "verbose"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
