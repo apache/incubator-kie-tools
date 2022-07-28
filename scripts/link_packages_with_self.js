@@ -20,8 +20,10 @@ const path = require("path");
 
 function main() {
   getPackagesSync().forEach((pkg) => {
-    const isScopedPackage = pkg.name.includes("@");
+    // always create node_modules. this fixes the case where we don't install dependencies for every package.
+    fs.mkdirSync(path.join(pkg.location, "node_modules"), { recursive: true });
 
+    const isScopedPackage = pkg.name.includes("@");
     if (isScopedPackage) {
       const [pkgScope, pkgSimpleName] = pkg.name.split("/");
       fs.mkdirSync(path.join(pkg.location, "node_modules", pkgScope), { recursive: true });
@@ -39,13 +41,13 @@ function main() {
 
 function selfLink(pkg, selfLinkPath) {
   const relTargetPath = path.relative(path.dirname(selfLinkPath), pkg.location);
+  console.info(
+    `[link-packages-with-self] Linking '${pkg.name}'. ${path.relative(pkg.location, selfLinkPath)} -> ${relTargetPath}`
+  );
   if (fs.existsSync(selfLinkPath)) {
     fs.unlinkSync(selfLinkPath);
   }
   fs.symlinkSync(relTargetPath, selfLinkPath);
-  console.info(
-    `[link-packages-with-self] Linking '${pkg.name}'. ${path.relative(pkg.location, selfLinkPath)} -> ${relTargetPath}`
-  );
 }
 
 main();

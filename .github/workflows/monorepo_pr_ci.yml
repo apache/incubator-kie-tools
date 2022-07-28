@@ -59,6 +59,8 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
+          sparse: true
+          base_sha: ${{ steps.merge_changes.outputs.base_sha }}
 
       - name: "Build dependencies"
         if: steps.check_diff_paths.outputs.should_run == 'true'
@@ -92,6 +94,11 @@ jobs:
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
+      - name: "Print storage usage (after build)"
+        shell: bash
+        run: |
+          du -sh .
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2

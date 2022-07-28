@@ -7,7 +7,7 @@ on:
     branches: "**"
 
 concurrency:
-  group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || 'monorepo-pr-ci-full-push-main' }}
+  group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || format('monorepo-ci-full-push-main-{0}', github.sha) }}
   cancel-in-progress: true
 
 jobs:
@@ -86,6 +86,11 @@ jobs:
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
+      - name: "Print storage usage (after build)"
+        shell: bash
+        run: |
+          du -sh .
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
