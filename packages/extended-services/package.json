@@ -12,6 +12,7 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
+    "install": "go mod tidy",
     "copy-jitexecutor": "run-script-os",
     "copy-jitexecutor:linux": "cp ./node_modules/@kie-tools/jitexecutor-native/dist/linux/jitexecutor jitexecutor && chmod +x jitexecutor",
     "copy-jitexecutor:darwin": "cp ./node_modules/@kie-tools/jitexecutor-native/dist/darwin/jitexecutor jitexecutor && chmod +x jitexecutor",
