@@ -43,7 +43,7 @@ func NewCreateCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name", "extensions", "verbose"),
+		PreRunE:    common.BindEnv("name", "verbose"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -70,10 +70,10 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error creating dir: %w", err)
 	}
 
-	workflowPath := fmt.Sprintf("./%s/workflow.sw.json", name)
+	workflowPath := fmt.Sprintf("./%s/%s", name, common.WORKFLOW_SW_JSON)
 	command.CreateWorkflow(workflowPath)
 
-	dockerfilePath := fmt.Sprintf("./%s/Dockerfile.workflow", name)
+	dockerfilePath := fmt.Sprintf("./%s/%s", name, common.WORKFLOW_DOCKERFILE)
 	GenerateDockerfile(dockerfilePath)
 
 	finish := time.Since(start)

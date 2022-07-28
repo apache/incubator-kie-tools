@@ -1,0 +1,14 @@
+{
+  "id": "hello",
+  "specVersion": "0.8.0",
+  "name": "Hello World",
+  "start": "HelloWorld",
+  "states": [
+    {
+      "name": "HelloWorld",
+      "type": "operation",
+      "actions": [],
+      "end": true
+    }
+  ]
+}

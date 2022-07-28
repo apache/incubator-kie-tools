@@ -42,4 +42,15 @@ const (
 	// Filenames
 	WORKFLOW_CONFIG_YML = "workflow.config.yml"
 	WORKFLOW_SW_JSON    = "workflow.sw.json"
+	WORKFLOW_DOCKERFILE = "Dockerfile.workflow"
+
+	// Docker
+	// build-arg
+	DOCKER_BUILD_ARG_WORKFLOW_FILE            = "workflow_file"
+	DOCKER_BUILD_ARG_EXTENSIONS               = "extensions"
+	DOCKER_BUILD_ARG_WORKFLOW_NAME            = "workflow_name"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY = "container_registry"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP    = "container_group"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME     = "container_name"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG      = "container_tag"
 )
