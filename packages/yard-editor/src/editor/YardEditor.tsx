@@ -25,8 +25,8 @@ import { ChannelType, EditorTheme, StateControlCommand } from "@kie-tools-core/e
 import { editor } from "monaco-editor";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { YardUIEditor } from "../uiEditor";
+import { YardFile } from "../types";
 import "./YardEditor.css";
-import { YardFile, YardFileType } from "../types";
 
 interface Props {
   /**
@@ -79,7 +79,6 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
             setFile({
               content: newContent,
               path: path,
-              type: YardFileType.JSON,
             });
             return Promise.resolve();
           } catch (e) {
@@ -168,8 +167,7 @@ const RefForwardingYardEditor: React.ForwardRefRenderFunction<YardEditorRef | un
       file && (
         <YardTextEditor
           channelType={props.channelType}
-          content={file.content}
-          fileName={file.path}
+          file={file}
           onContentChange={onContentChanged}
           setValidationErrors={setValidationErrors}
           ref={yardTextEditorRef}

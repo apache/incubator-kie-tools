@@ -14,20 +14,7 @@
  * limitations under the License.
  */
 
-export type YardData = {
-  expressionLang: string;
-  kind: string;
-  name: string;
-  specVersion: string;
-};
-
 export type YardFile = {
   content: string;
   path: string;
-  type: YardFileType;
 };
-
-export enum YardFileType {
-  JSON,
-  YAML,
-}
