@@ -200,7 +200,7 @@
     "@kie-tools-core/vscode-extension": "0.0.0",
     "@kie-tools/kie-bc-editors": "0.0.0",
     "@kie-tools/pmml-editor": "0.0.0",
-    "monaco-editor": "^0.23.0",
+    "monaco-editor": "^0.33.0",
     "@kie-tools-core/monaco-editor": "0.0.0",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "0.0.0",
     "minimatch": "^3.0.4"

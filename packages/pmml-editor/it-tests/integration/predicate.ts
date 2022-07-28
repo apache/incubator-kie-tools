@@ -140,6 +140,21 @@ describe("Predicate Test", () => {
         });
     });
 
+    it("Check monaco-editor autocompletion", () => {
+      cy.ouiaType("characteristic-item").contains("Char1").click();
+
+      cy.ouiaId("edit-characteristic").within(() => {
+        cy.ouiaId("add-attribute").click();
+      });
+
+      cy.ouiaId("edit-attribute").within(() => {
+        cy.ouiaId("predicate").find("div:first").should("have.text", "1True").type("{selectall}{del}Fal");
+        cy.get("div[class='monaco-list-rows']:contains('False')").should("be.visible").click();
+        cy.get("div[class='monaco-list-rows']").should("not.be.visible");
+        cy.ouiaId("predicate").find("div:first").contains("1False");
+      });
+    });
+
     it("Delete Predicate", () => {
       cy.ouiaType("characteristic-item").contains("Char1").click();
 
