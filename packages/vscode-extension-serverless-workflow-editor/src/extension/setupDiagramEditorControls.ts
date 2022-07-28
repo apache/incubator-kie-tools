@@ -40,6 +40,10 @@ import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-wo
 const swfJsonOffsets = new SwfJsonOffsets();
 const swfYamlOffsets = new SwfYamlOffsets();
 
+function isEventFiredFromUser(event: vscode.TextEditorSelectionChangeEvent) {
+  return event.kind !== vscode.TextEditorSelectionChangeKind.Command;
+}
+
 function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
 }
@@ -198,9 +202,8 @@ export async function setupDiagramEditorControls(args: {
   }
 
   vscode.window.onDidChangeTextEditorSelection((e) => {
-    /* TODO: setupDiagramEditorControls: I think we could include a new guard clause here to ignore this event if the file is not SWF. */
     // prevent kogitoSwfLanguageService__moveCursorToNode to fire this event
-    if (e.kind === vscode.TextEditorSelectionChangeKind.Command) {
+    if (!isEventFiredFromUser(e)) {
       return;
     }
 
