@@ -42,7 +42,7 @@ import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWorkflowTextEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
+    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
     private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi
   ) {}
 

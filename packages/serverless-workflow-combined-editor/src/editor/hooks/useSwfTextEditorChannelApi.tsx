@@ -18,13 +18,13 @@ import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/ch
 import { KogitoEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
-import { ServerlessWorkflowCombinedEditorChannelApi } from "../../api";
 import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
 
 export function useSwfTextEditorChannelApi(args: {
   locale: string;
-  channelApi?: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>;
+  channelApi?: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>;
   embeddedEditorFile?: EmbeddedEditorFile;
   onEditorReady: () => void;
 }) {
