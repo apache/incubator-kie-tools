@@ -26,7 +26,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRootCommand() *cobra.Command {
+type RootCmdConfig struct {
+	DependenciesVersion common.DependenciesVersion
+	PluginVersion       string
+}
+
+func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "kn-workflow",
 		Short: "Serverless Workflow",
@@ -41,9 +46,14 @@ func NewRootCommand() *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.AddCommand(command.NewCreateCommand())
-	cmd.AddCommand(command.NewBuildCommand())
+	cmd.Version = cfg.PluginVersion
+	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
+
+	cmd.AddCommand(command.NewBuildCommand(cfg.DependenciesVersion))
+	cmd.AddCommand(command.NewConfigCommand(cfg.DependenciesVersion))
+	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
 	cmd.AddCommand(command.NewDeployCommand())
+	cmd.AddCommand(command.NewVersionCommand(cfg.PluginVersion))
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

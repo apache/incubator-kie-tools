@@ -20,16 +20,22 @@ import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 export const en: YardEditorI18n = {
   ...en_common,
   decisionElementsTab: {
-    tabTitle: "Decision Elements",
-    emptyStateTitle: "No decision elements",
-    emptyStateBody: "Your yard file doesn't have any Decision element. Please add a new element",
     addDecisionElementsButton: "Add Element",
+    emptyStateBody: "Your yard file doesn't have any Decision element. Please add a new element",
+    emptyStateTitle: "No decision elements",
     removeDecisionElementButton: "Remove Element",
+    tabTitle: "Decision Elements",
   },
   decisionInputsTab: {
+    emptyStateBody: "Your yard file doesn't have any Decision input. Please add a new input",
+    emptyStateTitle: "No decision input",
     tabTitle: "Decision Inputs",
   },
   generalTab: {
+    expressionLang: "Expression language version",
+    kind: "Type",
+    name: "Name",
+    specVersion: "Specification version",
     tabTitle: "General",
   },
 };

@@ -90,15 +90,22 @@
       <input type="button" id="download_svg_btn" value="Download the diagram as SVG" onclick="downloadSvg()" disabled />
     </div>
 
-    <div style="display: inline; float: left; padding: 25px">
-      <label for="selectExample">Examples:&nbsp;</label>
-      <select id="selectExample"></select>
-      <input type="button" onclick="loadText()" value="Load JSON Content" style="display: block; margin-bottom: 5px" />
-      <textarea id="jsonRawContent" rows="50" cols="50" style="font-size: revert"></textarea>
-    </div>
+    <div style="display: flex">
+      <div style="display: inline; float: left; padding: 25px">
+        <label for="selectExample">Examples:&nbsp;</label>
+        <select id="selectExample"></select>
+        <input
+          type="button"
+          onclick="loadText()"
+          value="Load JSON Content"
+          style="display: block; margin-bottom: 5px"
+        />
+        <textarea id="jsonRawContent" rows="50" cols="50" style="font-size: revert"></textarea>
+      </div>
 
-    <div style="display: inline; float: left; width: 50%">
-      <iframe id="editorFrame" src="index.html" width="100%" height="880px" frameborder="0" scrolling="no"></iframe>
+      <div style="display: inline; float: left; width: 100%">
+        <iframe id="editorFrame" src="index.html" width="100%" height="880px" frameborder="0" scrolling="no"></iframe>
+      </div>
     </div>
 
     <script>
@@ -439,13 +446,13 @@
           states: [
             {
               name: "Create Initial Data",
-              type: "inject",
+              type: "sleep",
               end: false,
               transition: "Inject data",
             },
             {
               name: "Inject data",
-              type: "inject",
+              type: "foreach",
               end: false,
               compensatedBy: "Compensate",
               transition: "Wait for Events",
@@ -485,7 +492,6 @@
                   ],
                 },
               ],
-              // eventTimeout: "PT1H",
               transition: "Run Operations",
               end: false,
             },
@@ -532,27 +538,27 @@
             },
             {
               name: "Handle Error3",
-              type: "inject",
+              type: "callback",
               end: true,
             },
             {
               name: "Event1 State",
-              type: "inject",
+              type: "event",
               end: true,
             },
             {
               name: "Event2 State",
-              type: "inject",
+              type: "event",
               end: true,
             },
             {
               name: "Default State",
-              type: "inject",
+              type: "parallel",
               end: true,
             },
             {
               name: "Compensate",
-              type: "inject",
+              type: "callback",
               end: true,
             },
           ],

@@ -51,6 +51,7 @@ digraph G {
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-dev-sandbox-quarkus" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/guided-tour" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/keyboard-shortcuts" [ color = "purple", fontcolor = "purple", style = "rounded" ];
@@ -77,8 +78,10 @@ digraph G {
   "@kie-tools/pmml-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/openjdk11-mvn-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/openjdk11-mvn-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-sandbox" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-logic-sandbox-base-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-sandbox-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -169,6 +172,8 @@ digraph G {
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-quarkus" [ style = "solid", color = "black" ];
+  "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-quarkus" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
@@ -209,7 +214,7 @@ digraph G {
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "dashed", color = "black" ];
-  "@kie-tools/kn-plugin-workflow" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
+  "@kie-tools/kn-plugin-workflow" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
@@ -217,9 +222,12 @@ digraph G {
   "@kie-tools/online-editor" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/pmml-editor" [ style = "solid", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/unitables-dmn" [ style = "solid", color = "black" ];
+  "@kie-tools/online-editor" -> "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/extended-services" [ style = "dashed", color = "black" ];
   "@kie-tools/online-editor" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/openjdk11-mvn-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
+  "@kie-tools/openjdk11-mvn-image" -> "@kie-tools/openjdk11-mvn-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/openjdk11-mvn-image-env" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools-core/operating-system" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/patternfly-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools/pmml-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -233,8 +241,12 @@ digraph G {
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/kie-sandbox-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/openjdk11-mvn-image-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox" -> "@kie-tools/serverless-logic-sandbox-base-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools/serverless-logic-sandbox-base-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-base-image" -> "@kie-tools/serverless-logic-sandbox-deployment-webapp" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-logic-sandbox-base-image-env" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];

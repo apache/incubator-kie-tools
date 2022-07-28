@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { GwtAppFormerApi, GwtEditor } from "@kie-tools/kie-bc-editors/dist/common/GwtAppFormerApi";
+import {
+  GwtAppFormerConsumedInteropApi,
+  GwtEditor,
+} from "@kie-tools/kie-bc-editors/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { DummyEditor } from "./DummyEditor";
 import { Editor } from "@kie-tools-core/editor/dist/api";
 
@@ -32,7 +35,7 @@ class DummyGwtEditor {
 const dummyEditor = new DummyEditor();
 const dummyGwtEditor = new DummyGwtEditor(dummyEditor);
 const editorId = "dummy editor";
-const appFormerGwtApi = new GwtAppFormerApi();
+const appFormerGwtApi = new GwtAppFormerConsumedInteropApi();
 
 window.gwtEditorBeans = new Map<string, { get(): GwtEditor }>();
 window.gwtEditorBeans.set(editorId, dummyGwtEditor);

@@ -27,6 +27,9 @@ function main() {
     process.exit(1);
   }
 
+  const outputFilePath = path.join(targetDir, "graph.dot");
+  console.info(`[generate-packages-graph] Writing packages graph to '${outputFilePath}'...`);
+
   const packages = getPackagesSync();
   const packageMap = new Map(packages.map((p) => [p.name, p]));
   const packageNames = new Set(packages.map((p) => p.name));
@@ -126,7 +129,7 @@ function main() {
   if (!fs.existsSync(path.resolve(targetDir))) {
     fs.mkdirSync(path.resolve(targetDir));
   }
-  const outputFilePath = path.join(targetDir, "graph.dot");
+
   fs.writeFileSync(outputFilePath, g.to_dot());
 
   console.info(`[generate-packages-graph] Wrote packages graph to '${outputFilePath}'`);

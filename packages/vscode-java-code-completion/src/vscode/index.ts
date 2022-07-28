@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export * from "./VsCodeJavaCodeCompletionImpl";
+export * from "./VsCodeJavaCodeCompletionApiImpl";
 export * from "./JavaCodeCompletionConstants";

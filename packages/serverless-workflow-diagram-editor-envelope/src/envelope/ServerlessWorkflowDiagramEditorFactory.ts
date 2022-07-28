@@ -51,7 +51,7 @@ export class ServerlessWorkflowDiagramEditorFactory
       (self) =>
         new ServerlessWorkflowDiagramEditorImpl(
           languageData.editorId,
-          self.gwtAppFormerApi.getEditor(languageData.editorId),
+          self.gwtAppFormerConsumedInteropApi.getEditor(languageData.editorId),
           ctx.channelApi,
           self.textFormatter,
           self.gwtStateControlService,

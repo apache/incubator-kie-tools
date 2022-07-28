@@ -52,11 +52,6 @@ const jsResource: Resource = {
 
 const xmlFormatter = { format: (c: string) => c };
 
-const gwtAppFormerApi = {
-  onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
-  getEditor: jest.fn(),
-};
-
 function waitForNScriptsToLoad(remaining: number) {
   if (remaining <= 0) {
     return Promise.resolve();
@@ -87,7 +82,7 @@ describe("GwtEditorWrapperFactory", () => {
       (self) => {
         return new GwtEditorWrapper(
           testLanguageData.editorId,
-          self.gwtAppFormerApi.getEditor(testLanguageData.editorId),
+          self.gwtAppFormerConsumedInteropApi.getEditor(testLanguageData.editorId),
           channelApiMock,
           new XmlFormatter(),
           self.gwtStateControlService,
@@ -96,7 +91,10 @@ describe("GwtEditorWrapperFactory", () => {
       },
       { shouldLoadResourcesDynamically: true },
       xmlFormatter,
-      gwtAppFormerApi,
+      {
+        onFinishedLoading: (callback: () => Promise<any>) => (window.appFormerGwtFinishedLoading = callback),
+        getEditor: jest.fn(),
+      },
       new GwtStateControlService()
     );
 

@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"html/template"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -64,6 +65,41 @@ func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMes
 	return nil
 }
 
+// Maven doesn't upgrade the version in the pom.xml.
+// This function removes the existent version and updated one.
+func UpdateProjectExtensionsVersions(verbose bool, friendlyMessages []string, extensions ...string) error {
+	extensionsToRemove := ""
+	extensionsToAdd := ""
+	for i, extension := range extensions {
+		versionSeparatorIndex := strings.LastIndex(extension, ":")
+		extensionsToRemove += extension[:versionSeparatorIndex]
+		extensionsToAdd += extension
+		if i != len(extensions)-1 {
+			extensionsToRemove += ","
+			extensionsToAdd += ","
+		}
+	}
+
+	if err := RunExtensionCommand(verbose, "quarkus:remove-extension", friendlyMessages, extensionsToRemove); err != nil {
+		return err
+	}
+
+	if err := RunExtensionCommand(verbose, "quarkus:add-extension", friendlyMessages, extensionsToAdd); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func RunExtensionCommand(verbose bool, extensionCommand string, friendlyMessages []string, extensions string) error {
+	command := exec.Command("mvn", extensionCommand, fmt.Sprintf("-Dextensions=%s", extensions))
+	if err := RunCommand(command, verbose, extensionCommand, friendlyMessages); err != nil {
+		fmt.Println("ERROR: It wasn't possible to add Quarkus extension in your pom.xml.")
+		return err
+	}
+	return nil
+}
+
 func printBuildActivity(ctx context.Context, s *spinner.Spinner, friendlyMessages []string) {
 	i := 1
 	ticker := time.NewTicker(10 * time.Second)
@@ -99,4 +135,8 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
 		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
 	}
+}
+
+func GetVersionedExtension(extension string, version string) string {
+	return fmt.Sprintf("%s:%s", extension, version)
 }

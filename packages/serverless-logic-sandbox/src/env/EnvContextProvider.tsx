@@ -41,8 +41,8 @@ export function EnvContextProvider(props: Props) {
             throw new Error(`Failed to fetch ${ENV_FILE_PATH}: ${response.statusText}`);
           }
 
-          const envVars = await response.json();
-          setVars((previous) => ({ ...previous, ...envVars }));
+          const varsWithName = await response.json();
+          setVars((previous) => ({ ...previous, ...varsWithName }));
         })
         .catch((e) => {
           // env json file could not be fetched, so we keep the default values
