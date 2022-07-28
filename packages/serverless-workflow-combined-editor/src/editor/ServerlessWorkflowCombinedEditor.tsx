@@ -47,8 +47,8 @@ import {
   useState,
 } from "react";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
-import { useCustomSwfDiagramEditorChannelApi } from "./hooks/useCustomSwfDiagramEditorChannelApi";
-import { useCustomSwfTextEditorChannelApi } from "./hooks/useCustomSwfTextEditorChannelApi";
+import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
+import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 
 interface Props {
   locale: string;
@@ -267,7 +267,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   }, []);
 
   const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
-    useCustomSwfDiagramEditorChannelApi({
+    useSwfDiagramEditorChannelApi({
       channelApi: editorEnvelopeCtx.channelApi,
       textEditor,
       locale: props.locale,
@@ -275,7 +275,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       onEditorReady: onDiagramEditorReady,
     });
 
-  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useCustomSwfTextEditorChannelApi({
+  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useSwfTextEditorChannelApi({
     channelApi: editorEnvelopeCtx.channelApi,
     locale: props.locale,
     embeddedEditorFile: embeddedDiagramEditorFile,
