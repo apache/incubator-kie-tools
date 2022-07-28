@@ -140,3 +140,45 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 func GetVersionedExtension(extension string, version string) string {
 	return fmt.Sprintf("%s:%s", extension, version)
 }
+
+// Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
+func GetImageConfig(image string, registry string, repository string, imageName string, tag string) (string, string, string, string) {
+	imageTagArray := strings.Split(image, ":")
+	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
+
+	var resultantRegistry = DEFAULT_REGISTRY
+	if len(registry) > 0 {
+		resultantRegistry = registry
+	} else if len(imageArray) > 2 {
+		resultantRegistry = imageArray[0]
+	}
+
+	var resultantRepository = ""
+	if len(repository) > 0 {
+		resultantRepository = repository
+	} else if len(imageArray) == 2 {
+		resultantRepository = imageArray[0]
+	} else if len(imageArray) == 3 {
+		resultantRepository = imageArray[1]
+	}
+
+	var resultantName = ""
+	if len(imageName) > 0 {
+		resultantName = imageName
+	} else if len(imageArray) == 1 {
+		resultantName = imageArray[0]
+	} else if len(imageArray) == 2 {
+		resultantName = imageArray[1]
+	} else if len(imageArray) == 3 {
+		resultantName = imageArray[2]
+	}
+
+	var resultantTag = DEFAULT_TAG
+	if len(tag) > 0 {
+		resultantTag = tag
+	} else if len(imageTagArray) > 1 && len(imageTagArray[1]) > 0 {
+		resultantTag = imageTagArray[1]
+	}
+
+	return resultantRegistry, resultantRepository, resultantName, resultantTag
+}

@@ -21,7 +21,6 @@ import (
 	"os/exec"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
@@ -227,7 +226,7 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 }
 
 func runBuildImage(cfg BuildCmdConfig) error {
-	registry, repository, name, tag := getImageConfig(cfg)
+	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
 	if err := checkImageName(name); err != nil {
 		return err
 	}
@@ -284,48 +283,6 @@ Example of invalid names: "1-test", "test.1", "test/1"
 		err = fmt.Errorf("invalid image name")
 	}
 	return
-}
-
-// Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
-func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
-	imageTagArray := strings.Split(cfg.Image, ":")
-	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
-
-	var registry = common.DEFAULT_REGISTRY
-	if len(cfg.Registry) > 0 {
-		registry = cfg.Registry
-	} else if len(imageArray) > 2 {
-		registry = imageArray[0]
-	}
-
-	var repository = ""
-	if len(cfg.Repository) > 0 {
-		repository = cfg.Repository
-	} else if len(imageArray) == 2 {
-		repository = imageArray[0]
-	} else if len(imageArray) == 3 {
-		repository = imageArray[1]
-	}
-
-	var name = ""
-	if len(cfg.ImageName) > 0 {
-		name = cfg.ImageName
-	} else if len(imageArray) == 1 {
-		name = imageArray[0]
-	} else if len(imageArray) == 2 {
-		name = imageArray[1]
-	} else if len(imageArray) == 3 {
-		name = imageArray[2]
-	}
-
-	var tag = common.DEFAULT_TAG
-	if len(cfg.Tag) > 0 {
-		tag = cfg.Tag
-	} else if len(imageTagArray) > 1 && len(imageTagArray[1]) > 0 {
-		tag = imageTagArray[1]
-	}
-
-	return registry, repository, name, tag
 }
 
 func getImage(registry string, repository string, name string, tag string) string {

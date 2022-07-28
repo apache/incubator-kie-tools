@@ -17,9 +17,24 @@
 package single
 
 import (
+	"fmt"
+
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
+
+type BuildCmdConfig struct {
+	// Image options
+	Image      string // full image name
+	Registry   string // image registry (overrides image name)
+	Repository string // image repository (overrides image name)
+	ImageName  string // image name (overrides image name)
+	Tag        string // image tag (overrides image name)
+
+	// Plugin options
+	Verbose bool
+}
 
 func NewBuildCommand() *cobra.Command {
 	var cmd = &cobra.Command{
@@ -28,31 +43,36 @@ func NewBuildCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("verbose"),
+		PreRunE:    common.BindEnv("verbose", "image", "image-registry", "image-repository", "image-name", "image-tag"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runBuild(cmd, args)
 	}
 
+	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
+	cmd.Flags().String("image-registry", "", "Image registry, ex: quay.io, if the --image flag is in use this option overrides image [registry]")
+	cmd.Flags().String("image-repository", "", "Image repository, ex: registry-user or registry-project, if the --image flag is in use, this option overrides image [repository]")
+	cmd.Flags().String("image-name", "", "Image name, ex: new-project, if the --image flag is in use, this option overrides the image [name]")
+	cmd.Flags().String("image-tag", "", "Image tag, ex: 1.0, if the --image flag is in use, this option overrides the image [tag]")
+
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
 
-// `protobuf:"bytes,3,opt,name=Exporter,proto3" json:"Exporter,omitempty"`
-// `protobuf:"bytes,4,rep,name=ExporterAttrs,proto3" json:"ExporterAttrs,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-
 func runBuild(cmd *cobra.Command, args []string) error {
-	// outputs := []types.ImageBuildOutput{{
-	// 	Type:  "local",
-	// 	Attrs: map[string]string{"dest": "kubernetes"}},
+	// cfg, err := runBuildCmdConfig(cmd)
+	// if err != nil {
+	// 	return fmt.Errorf("initializing build config: %w", err)
 	// }
 
-	// docker / podman run buildkit
-	// generate image
-	// build ->
+	if err := common.CheckDocker(); err != nil {
+		return err
+	}
 
+	// build target -kubernetes
+	// build target -runner
 	// file := common.WORKFLOW_SW_JSON
 	// extensions := "quarkus-jsonp,quarkus-smallrye-openapi"
 	// projectName := "test"
@@ -101,4 +121,22 @@ func runBuild(cmd *cobra.Command, args []string) error {
 	// }
 
 	return nil
+}
+
+func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
+	cfg = BuildCmdConfig{
+		Image:      viper.GetString("image"),
+		Registry:   viper.GetString("registry"),
+		Repository: viper.GetString("repository"),
+		ImageName:  viper.GetString("name"),
+		Tag:        viper.GetString("tag"),
+
+		Verbose: viper.GetBool("verbose"),
+	}
+	if len(cfg.Image) == 0 && len(cfg.ImageName) == 0 {
+		fmt.Println("ERROR: either --image or --image-name should be used")
+		err = fmt.Errorf("missing flags")
+	}
+
+	return
 }
