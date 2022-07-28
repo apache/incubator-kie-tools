@@ -20,6 +20,8 @@
     "build-headless:linux": "make linux-headless",
     "build:linux": "make linux && pnpm build-headless:linux",
     "build:darwin": "make darwin",
+    "build:darwin:amd": "make darwin-amd64",
+    "build:darwin:arm": "make darwin-arm64",
     "build:win32": "make win32",
     "pack-app": "run-script-os",
     "pack-app:linux": "cd ./dist/linux && tar -pcvzf kie_sandbox_extended_services.tar.gz kie_sandbox_extended_services",
