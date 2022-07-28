@@ -28,7 +28,9 @@ interface YardEditorDictionary extends ReferenceDictionary {
   decisionInputsTab: {
     emptyStateTitle: string;
     emptyStateBody: string;
+    name: string;
     tabTitle: string;
+    type: string;
   };
   generalTab: {
     expressionLang: string;

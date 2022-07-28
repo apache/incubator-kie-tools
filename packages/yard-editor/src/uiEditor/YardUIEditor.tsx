@@ -18,6 +18,7 @@ import * as React from "react";
 import { useCallback, useState } from "react";
 import {
   Button,
+  Divider,
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -30,8 +31,8 @@ import {
 } from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons";
 import { useBoxedExpressionEditorI18n } from "../i18n";
-import { YardData, YardFile } from "../types";
-import * as yaml from "js-yaml";
+import { YardFile } from "../types";
+import { deserialize } from "../model/YardSerializer";
 import "./YardUIEditor.css";
 
 interface Props {
@@ -43,21 +44,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const handleTabClick = useCallback((_event, tabIndex) => setActiveTabIndex(tabIndex), []);
-  console.log("++++++++++++++++++++++++++++");
-  console.log(file);
-  console.log(file?.content);
-  console.log(file?.path);
-  console.log(file?.type.toString());
-
-  const parseYardContent = useCallback((file: YardFile) => {
-    if (file?.content) {
-      return yaml.load(file.content) as YardData;
-    }
-    return null;
-  }, []);
-
-  const yardData = file?.content ? parseYardContent(file) : null;
-  console.log(yardData);
+  const yardData = file?.content ? deserialize(file.content) : undefined;
 
   const EmptyStep = ({
     emptyStateBodyText,
@@ -94,7 +81,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
               isReadOnly={isReadOnly}
               value={yardData?.name ? yardData.name : ""}
             ></TextInput>
-            <div className={"divider"}></div>
+            <div className={"separator"}></div>
             <Title headingLevel="h6" size={TitleSizes.md}>
               {i18n.generalTab.kind}
             </Title>
@@ -103,7 +90,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
               isReadOnly={isReadOnly}
               value={yardData?.kind ? yardData.kind : ""}
             ></TextInput>
-            <div className={"divider"}></div>
+            <div className={"separator"}></div>
             <Title headingLevel="h6" size={TitleSizes.md}>
               {i18n.generalTab.expressionLang}
             </Title>
@@ -112,7 +99,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
               isReadOnly={isReadOnly}
               value={yardData?.expressionLang ? yardData.expressionLang : ""}
             ></TextInput>
-            <div className={"divider"}></div>
+            <div className={"separator"}></div>
             <Title headingLevel="h6" size={TitleSizes.md}>
               {i18n.generalTab.specVersion}
             </Title>
@@ -125,10 +112,37 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
         </Tab>
         <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}>
           <div className={"decision-input-body"}>
-            <EmptyStep
-              emptyStateTitleText={i18n.decisionInputsTab.emptyStateTitle}
-              emptyStateBodyText={i18n.decisionInputsTab.emptyStateBody}
-            />
+            {yardData?.inputs && yardData?.inputs.length > 0 ? (
+              yardData.inputs.map((input) => {
+                return (
+                  <>
+                    <Title headingLevel="h6" size={TitleSizes.md}>
+                      {i18n.decisionInputsTab.name}
+                    </Title>
+                    <TextInput
+                      id={"expression-lang-text-input"}
+                      isReadOnly={isReadOnly}
+                      value={input.name ? input.name : ""}
+                    ></TextInput>
+                    <div className={"separator"}></div>
+                    <Title headingLevel="h6" size={TitleSizes.md}>
+                      {i18n.decisionInputsTab.type}
+                    </Title>
+                    <TextInput
+                      id={"expression-lang-text-input"}
+                      isReadOnly={isReadOnly}
+                      value={input.type ? input.type : ""}
+                    ></TextInput>
+                    <Divider />
+                  </>
+                );
+              })
+            ) : (
+              <EmptyStep
+                emptyStateTitleText={i18n.decisionInputsTab.emptyStateTitle}
+                emptyStateBodyText={i18n.decisionInputsTab.emptyStateBody}
+              />
+            )}
           </div>
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
@@ -136,7 +150,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
             <Button onClick={onNewElementButtonClicked} variant="primary">
               {i18n.decisionElementsTab.addDecisionElementsButton}
             </Button>
-            <div className={"divider"} />
+            <div className={"separator"} />
             <Button isDisabled={true} variant="danger">
               {i18n.decisionElementsTab.removeDecisionElementButton}
             </Button>
