@@ -12,7 +12,6 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
-    "install": "go mod tidy",
     "build": "run-script-os",
     "build:all": "make build-all",
     "build:linux": "make build-linux",
