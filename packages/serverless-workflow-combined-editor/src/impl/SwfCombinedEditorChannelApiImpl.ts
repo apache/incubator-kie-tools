@@ -135,10 +135,6 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
   }
 
-  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }): void {
-    this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__highlightNode(args);
-  }
-
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return (
       this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {
@@ -165,5 +161,5 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
 
   public kogitoSwfDiagramEditor__onNodeSelected(): void {}
   public kogitoSwfTextEditor__moveCursorToNode(): void {}
-  public kogitoSwfTextEditor__onNodeSelected(): void {}
+  public kogitoSwfTextEditor__onSelectionChanged(): void {}
 }

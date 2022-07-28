@@ -123,7 +123,7 @@ export class ServerlessWorkflowDiagramEditorEnvelopeApiImpl
     return editor.centerNode(uuid);
   }
 
-  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string; documentUri?: string }) {
-    console.log("Received kogitoSwfLanguageService__highlightNode with args:", args);
+  public kogitoSwfDiagramEditor__highlightNode(args: { nodeName: string; documentUri?: string }) {
+    console.log("Received kogitoSwfDiagramEditor__highlightNode with args:", args);
   }
 }

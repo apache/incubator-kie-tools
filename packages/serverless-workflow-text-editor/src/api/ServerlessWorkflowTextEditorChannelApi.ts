@@ -23,4 +23,5 @@ export interface ServerlessWorkflowTextEditorChannelApi
     SwfServiceCatalogChannelApi,
     SwfLanguageServiceChannelApi {
   kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void;
+  kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void;
 }

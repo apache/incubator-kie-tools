@@ -24,9 +24,15 @@ import {
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  ServerlessWorkflowTextEditorChannelApi,
+  ServerlessWorkflowTextEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import {
   Drawer,
   DrawerContent,
@@ -269,17 +275,22 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
     useSwfDiagramEditorChannelApi({
       channelApi: editorEnvelopeCtx.channelApi,
-      textEditor,
       locale: props.locale,
       embeddedEditorFile: embeddedDiagramEditorFile,
       onEditorReady: onDiagramEditorReady,
+      getSwfTextEditorEnvelopeApi: () =>
+        textEditor?.getEnvelopeServer()
+          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>,
     });
 
   const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useSwfTextEditorChannelApi({
     channelApi: editorEnvelopeCtx.channelApi,
     locale: props.locale,
     embeddedEditorFile: embeddedDiagramEditorFile,
-    onEditorReady: onDiagramEditorReady,
+    onEditorReady: onTextEditorReady,
+    getSwfDiagramEditorEnvelopeApi: () =>
+      diagramEditor?.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>,
   });
 
   return (

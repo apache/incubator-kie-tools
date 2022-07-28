@@ -49,8 +49,8 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
 
   const fileLanguage = useMemo(() => getFileLanguage(fileName), [fileName]);
 
-  const onEditorSelectedNode = useCallback((nodeName: string) => {
-    editorEnvelopeCtx.channelApi.notifications.kogitoSwfLanguageService__highlightNode.send({ nodeName });
+  const onSelectionChanged = useCallback((nodeName: string) => {
+    editorEnvelopeCtx.channelApi.notifications.kogitoSwfTextEditor__onSelectionChanged.send({ nodeName });
   }, []);
 
   const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {
@@ -62,7 +62,7 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
         editorEnvelopeCtx.operatingSystem,
         isReadOnly,
         setValidationErrors,
-        onEditorSelectedNode
+        onSelectionChanged
       );
     }
     throw new Error(`Unsupported extension '${fileName}'`);
