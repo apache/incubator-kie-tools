@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, str2bool } = require("@kie-tools/build-env");
-const packageJson = require("@kie-tools/build-env/package.json");
+const { varsWithName, getOrDefault, str2bool } = require("../dist");
+const packageJson = require("../package.json");
 
 module.exports = {
   vars: varsWithName({
