@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  monorepo-pr-ci:
+  ci:
     if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -38,18 +38,28 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          # If there are no changed files in dirs that are not `packages` or `examples`,
-          # it means that all changed files are in either `packages` or `examples`, so we should run the normal CI.
+          export NON_SOURCE_PATHS=$(cat ./.github/supporting-files/ci/non-source-paths.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
+          echo "Non-source paths:"
+          echo $NON_SOURCE_PATHS
 
-          read -r -a DIFF_PATHS <<< $(git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- ':!packages' ':!examples')
-          echo $DIFF_PATHS
+          # Setting IFS to empty string will preserve new lines on CHANGED_SOURCE_PATHS
+          IFS=
+          export CHANGED_SOURCE_PATHS=$(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_PATHS")
+          echo "Changed source paths:"
+          echo $CHANGED_SOURCE_PATHS
 
-          if [ ${#DIFF_PATHS[@]} -eq 0 ]; then
-            echo '`CI` will run.'
-            echo "::set-output name=should_run::true"
-          else
-            echo '`CI :: Full` is already running, no need to run this one.'
+          if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
+            echo 'No source files changed; `CI :: Monorepo` will not run.'
             echo "::set-output name=should_run::false"
+          else
+            export CHANGED_SRC_PATHS_IN_ROOT=$(echo $CHANGED_SOURCE_PATHS | grep -v -e "^packages" -e "^examples" )
+            if [ ${#CHANGED_SRC_PATHS_IN_ROOT[@]} -eq 0 ]; then
+              echo 'No source files changed in root; `CI :: Monorepo` will run.'
+              echo "::set-output name=should_run::true"
+            else
+              echo 'Source files changed in root; `CI :: Monorepo` will not run.'
+              echo "::set-output name=should_run::false"
+            fi
           fi
 
           echo "Done"
