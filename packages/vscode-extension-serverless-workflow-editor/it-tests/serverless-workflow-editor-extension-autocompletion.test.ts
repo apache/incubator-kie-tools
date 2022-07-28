@@ -1,0 +1,116 @@
+/*
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import * as path from "path";
+import * as fs from "fs";
+import { expect } from "chai";
+import { Key, TextEditor } from "vscode-extension-tester";
+import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
+import SwfEditorTestHelper from "./helpers/swf/SwfEditorTestHelper";
+import SwfTextEditorTestHelper from "./helpers/swf/SwfTextEditorTestHelper";
+
+describe("Serverless workflow editor - autocompletion tests", () => {
+  const TEST_PROJECT_FOLDER: string = path.resolve("it-tests-tmp", "resources", "autocompletion");
+
+  let testHelper: VSCodeTestHelper;
+
+  before(async function () {
+    this.timeout(60000);
+    testHelper = new VSCodeTestHelper();
+    await testHelper.openFolder(TEST_PROJECT_FOLDER, "autocompletion");
+  });
+
+  beforeEach(async function () {
+    await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
+  });
+
+  afterEach(async function () {
+    this.timeout(15000);
+    await testHelper.closeAllEditors();
+    await testHelper.closeAllNotifications();
+  });
+
+  it("Completes serverless workflow with function and state autocompletion", async function () {
+    this.timeout(50000);
+
+    const editorWebviews = await testHelper.openFileFromSidebar("autocompletion.sw.json");
+    const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);
+    const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
+    const textEdior = await swfTextEditor.getSwfTextEditor();
+
+    await textEdior.moveCursor(7, 26);
+    await textEdior.typeText(Key.ENTER);
+
+    // check available content assist parameters
+    const content = await textEdior.toggleContentAssist(true);
+    const items = await content?.getItems();
+    const itemNames = await Promise.all(items?.map(async (i) => await i.getText()) ?? []);
+    expect(itemNames).to.have.all.members([
+      "auth",
+      "dataInputSchema",
+      "errors",
+      "events",
+      "functions",
+      "retries",
+      "start",
+      "states",
+      "timeouts",
+    ]);
+    await textEdior.toggleContentAssist(false);
+
+    // add function from specs directory
+    await selectFromContentAssist(textEdior, "functions");
+    await textEdior.typeText(": ");
+    await selectFromContentAssist(textEdior, "[]");
+    await selectFromContentAssist(textEdior, "specs»api.yaml#testFuncId");
+
+    // add test state
+    await textEdior.moveCursor(17, 38);
+    await textEdior.typeText(Key.ENTER);
+    await selectFromContentAssist(textEdior, "states");
+    await selectFromContentAssist(textEdior, "{}");
+    await textEdior.typeText(Key.ENTER);
+    await textEdior.typeText(
+      '"name": "testState",\n' + '"type": "operation",\n' + '"actions": [{"functionRef": }],\n' + '"end": true'
+    );
+
+    // complete the state with refName
+    await textEdior.moveCursor(21, 33);
+    await selectFromContentAssist(textEdior, "{}");
+    await textEdior.typeText(Key.ENTER);
+    await selectFromContentAssist(textEdior, "refName");
+    await selectFromContentAssist(textEdior, '"testFuncId"');
+
+    // check there are 3 states: start, testState, end
+    const states = await swfEditor.getAllStateNodes();
+    expect(states.length).equal(3);
+
+    // check the final editor content is the same as expected result
+    const editorContent = await textEdior.getText();
+    const expectedContent = fs.readFileSync(
+      path.resolve(TEST_PROJECT_FOLDER, "autocompletion.sw.json.result"),
+      "utf-8"
+    );
+    expect(editorContent).equal(expectedContent);
+  });
+
+  async function selectFromContentAssist(textEdior: TextEditor, value: string): Promise<void> {
+    const contentAssist = await textEdior.toggleContentAssist(true);
+    let item = await contentAssist?.getItem(value);
+    await item?.click();
+  }
+});
