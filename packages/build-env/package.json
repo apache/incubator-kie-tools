@@ -16,6 +16,7 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
+    "install": "pnpm build:dev",
     "lint": "pnpm pnpm eslint ./src --ext .ts,.tsx",
     "test": "pnpm jest --silent --verbose --passWithNoTests",
     "print": "node dist/bin.js --print-vars && node dist/bin.js --print-env",

@@ -16,6 +16,7 @@
     "@kie-tools-core/run-script-if": "0.0.0"
   },
   "scripts": {
+    "install": "mvn dependency:resolve",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "install:mvnw": "mvn wrapper:wrapper -f kogito-extended-services-quarkus",

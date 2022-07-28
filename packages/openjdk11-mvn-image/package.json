@@ -9,6 +9,7 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
+    "install": "mvn dependency:resolve",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "install:mvnw": "cd dist-dev/ && mvn wrapper:wrapper",
     "copy:pom": "cp pom.xml dist-dev/",
