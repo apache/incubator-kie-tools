@@ -31,7 +31,11 @@ import {
 import { SwfLanguageServiceChannelApi, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 
 const swfJsonOffsets = new SwfJsonOffsets();
 const swfYamlOffsets = new SwfYamlOffsets();
@@ -205,11 +209,6 @@ export async function setupDiagramEditorControls(args: {
 
     const swfOffsetsApi = initSwfOffsetsApi(e.textEditor.document);
 
-    /* TODO: setupDiagramEditorControls: always return a SwfOffsetsApi implementation, never undefined */
-    if (!swfOffsetsApi) {
-      return;
-    }
-
     const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
 
     if (!nodeName) {
@@ -217,7 +216,7 @@ export async function setupDiagramEditorControls(args: {
     }
 
     const envelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
-      SwfLanguageServiceChannelApi,
+      ServerlessWorkflowDiagramEditorChannelApi,
       ServerlessWorkflowDiagramEditorEnvelopeApi
     >;
 
@@ -225,7 +224,7 @@ export async function setupDiagramEditorControls(args: {
       return;
     }
 
-    envelopeServer.envelopeApi.notifications.kogitoSwfLanguageService__highlightNode.send({
+    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({
       nodeName,
       documentUri: uri.path,
     });

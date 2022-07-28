@@ -21,7 +21,7 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
@@ -38,7 +38,10 @@ import {
   ResourcesList,
   WorkspaceApi,
 } from "@kie-tools-core/workspace/dist/api";
-import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
   SwfServiceCatalogChannelApi,
@@ -63,7 +66,8 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     i18n: I18n<VsCodeI18n>,
     private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi,
-    private readonly swfTextEditorEnvelopeApiImpl: ServerlessWorkflowTextEditorEnvelopeApi
+    private readonly swfTextEditorEnvelopeApiImpl: ServerlessWorkflowTextEditorEnvelopeApi,
+    private readonly diagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
   ) {
     this.defaultApiImpl = new KogitoEditorChannelApiImpl(
       editor,
@@ -181,11 +185,8 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     });
   }
 
-  public kogitoSwfLanguageService__highlightNode(args: { nodeName: string }): void {
-    this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__highlightNode({
-      ...args,
-      documentUri: this.editor.document.document.uri.path,
-    });
+  public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void {
+    this.diagramEditorEnvelopeApi?.notifications.kogitoSwfDiagramEditor__highlightNode.send(args);
   }
 
   public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
