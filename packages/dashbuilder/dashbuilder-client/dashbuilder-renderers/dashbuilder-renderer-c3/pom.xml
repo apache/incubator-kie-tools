@@ -22,11 +22,6 @@
         <artifactId>c3</artifactId>
         <version>${version.org.webjars.bower.c3}</version>
       </dependency>
-      <dependency>
-        <groupId>org.webjars.npm</groupId>
-        <artifactId>d3-geo-projection</artifactId>
-        <version>${version.org.webjars.bower.d3geoprojection}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -34,20 +29,6 @@
     <dependency>
       <groupId>org.webjars.bowergithub.c3js</groupId>
       <artifactId>c3</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars.npm</groupId>
-      <artifactId>d3-geo-projection</artifactId>
-      <exclusions>
-        <exclusion> 
-          <groupId>org.webjars.npm</groupId>
-          <artifactId>d3-geo</artifactId>
-        </exclusion>
-        <exclusion> 
-          <groupId>org.webjars.npm</groupId>
-          <artifactId>d3-array</artifactId>
-        </exclusion>        
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
