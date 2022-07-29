@@ -19,7 +19,7 @@
     "@kie-tools-core/run-script-if": "0.0.0"
   },
   "scripts": {
-    "install": "mvn dependency:resolve",
+    "install": "mvn dependency:go-offline",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "build:prod:authoring:linux": "cd ./dashbuilder-authoring/ && mvn clean install -Dfull -DskipTests=$(build-env global.build.test --not)",
