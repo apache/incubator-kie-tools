@@ -52,7 +52,7 @@ jobs:
           echo $CHANGED_SOURCE_PATHS
           IFS=$IFS_BKP
 
-          export CHANGED_SOURCE_PATHS_IN_ROOT=($(echo $CHANGED_SOURCE_PATHS | grep -v -e "^packages" -e "^examples"))
+          export CHANGED_SOURCE_PATHS_IN_ROOT=($(echo "$CHANGED_SOURCE_PATHS" | grep -v -e "^packages" -e "^examples"))
           echo "Changed source paths in root:"
           echo ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
