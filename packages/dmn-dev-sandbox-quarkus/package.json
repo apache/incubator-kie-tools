@@ -14,8 +14,8 @@
   },
   "scripts": {
     "install": "run-script-os",
-    "install:darwin:linux": "mvn dependency:resolve -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
-    "install:win32": "mvn dependency:resolve `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "install:darwin:linux": "mvn dependency:go-offline -DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) -DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
+    "install:win32": "mvn dependency:go-offline `-DQUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) `-DKOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version)",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "quarkus:dev": "run-script-os",
