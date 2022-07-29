@@ -13,7 +13,7 @@
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
     "build:dev": "rimraf dist && webpack --env dev",
-    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_yard_editor_$npm_package_version.vsix",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_yard_editor_$npm_package_version.vsix",
     "compile": "webpack --env dev",
     "watch": "webpack --env dev",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
@@ -43,7 +43,11 @@
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
     "@kie-tools/build-env": "0.0.0",
-    "monaco-editor-webpack-plugin": "^7.0.1"
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "@types/vscode": "^1.66.0",
+    "@types/chai": "^4.2.17",
+    "chai": "^4.3.4",
+    "vsce": "^2.6.5"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",

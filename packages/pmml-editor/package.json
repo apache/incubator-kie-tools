@@ -71,7 +71,11 @@
     "@kie-tools-core/operating-system": "0.0.0",
     "@kie-tools-core/envelope-bus": "0.0.0",
     "@kie-tools-core/envelope": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0"
+    "@kie-tools-core/i18n": "0.0.0",
+    "cypress": "^9.5.1",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2"
   },
   "babel": {
     "presets": [

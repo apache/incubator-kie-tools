@@ -21,7 +21,7 @@
     "*"
   ],
   "scripts": {
-    "pack": "vsce package  --yarn -o ./dist/kie_tools_examples_todo_list_view_$npm_package_version.vsix",
+    "pack": "vsce package --yarn -o ./dist/kie_tools_examples_todo_list_view_$npm_package_version.vsix",
     "compile": "pnpm build --env dev",
     "watch": "pnpm build --env dev",
     "build": "rimraf dist && webpack",
@@ -62,6 +62,8 @@
     "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0"
+    "@kie-tools-core/patternfly-base": "0.0.0",
+    "@types/vscode": "^1.66.0",
+    "vsce": "^2.6.5"
   }
 }

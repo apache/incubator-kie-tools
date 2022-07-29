@@ -59,7 +59,11 @@
     "@types/minimatch": "^3.0.4",
     "@types/uuid": "^8.3.0",
     "@types/history": "^4.7.3",
-    "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "0.0.0"
+    "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "0.0.0",
+    "cypress": "^9.5.1",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",

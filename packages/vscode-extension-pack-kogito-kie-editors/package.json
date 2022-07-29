@@ -175,13 +175,13 @@
     ]
   },
   "scripts": {
-    "package:prod": "cross-var \"vsce package  --yarn -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix\"",
+    "package:prod": "vsce package --yarn -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix",
     "compile": "pnpm build:dev",
     "watch": "pnpm build:dev",
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
-    "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider  --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
+    "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
     "test:it:offline": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm test:it:clean:offline\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn --offline -c 1.66.2 -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
     "test:it:clean:offline": "rimraf ./dist-it-tests && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
@@ -210,6 +210,10 @@
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools/stunner-editors": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
-    "@types/minimatch": "^3.0.4"
+    "@types/minimatch": "^3.0.4",
+    "@types/vscode": "^1.66.0",
+    "@types/chai": "^4.2.17",
+    "chai": "^4.3.4",
+    "vsce": "^2.6.5"
   }
 }

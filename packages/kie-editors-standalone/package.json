@@ -31,7 +31,13 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "@types/react-router-dom": "^5.1.7",
-    "react-router-dom": "^5.2.1"
+    "react-router-dom": "^5.2.1",
+    "@types/underscore": "^1.11.2",
+    "underscore": "^1.13.1",
+    "cypress": "^9.5.1",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
