@@ -19,7 +19,6 @@ package quarkus
 import (
 	"fmt"
 	"os/exec"
-	"regexp"
 	"strconv"
 	"time"
 
@@ -227,7 +226,7 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 
 func runBuildImage(cfg BuildCmdConfig) error {
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
-	if err := checkImageName(name); err != nil {
+	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
 
@@ -269,20 +268,6 @@ func runBuildImage(cfg BuildCmdConfig) error {
 
 	fmt.Println("✅ Build success")
 	return nil
-}
-
-func checkImageName(name string) (err error) {
-	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
-	if !matched {
-		fmt.Println(`
-ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
-The name needs to start with a lower case letter and then it can be composed exclusvely of lower case letters, numbers or dashes ('-')
-Example of valid names: "test-0-0-1", "test", "t1"
-Example of invalid names: "1-test", "test.1", "test/1"
-		`)
-		err = fmt.Errorf("invalid image name")
-	}
-	return
 }
 
 func getImage(registry string, repository string, name string, tag string) string {

@@ -1,0 +1,20 @@
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: dev-knative-kafka-event-trigger-my-project
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: dev.knative.kafka.event
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: my-project
+---
+apiVersion: eventing.knative.dev/v1
+kind: Broker
+metadata:
+  name: default

@@ -30,7 +30,6 @@ import (
 type CreateConfig struct {
 	// Quarkus project options
 	ProjectName string // Project name
-	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
 
 	// Plugin options
 	Verbose bool

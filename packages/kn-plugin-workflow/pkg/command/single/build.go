@@ -18,6 +18,7 @@ package single
 
 import (
 	"fmt"
+	"os/exec"
 
 	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
@@ -25,6 +26,8 @@ import (
 )
 
 type BuildCmdConfig struct {
+	Extesions string // List of extensions separated by "," to be add on the Quarkus project
+
 	// Image options
 	Image      string // full image name
 	Registry   string // image registry (overrides image name)
@@ -43,13 +46,14 @@ func NewBuildCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("verbose", "image", "image-registry", "image-repository", "image-name", "image-tag"),
+		PreRunE:    common.BindEnv("verbose", "extension", "image", "image-registry", "image-repository", "image-name", "image-tag"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		return runBuild(cmd, args)
 	}
 
+	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
 	cmd.Flags().String("image-registry", "", "Image registry, ex: quay.io, if the --image flag is in use this option overrides image [registry]")
 	cmd.Flags().String("image-repository", "", "Image repository, ex: registry-user or registry-project, if the --image flag is in use, this option overrides image [repository]")
@@ -62,69 +66,25 @@ func NewBuildCommand() *cobra.Command {
 }
 
 func runBuild(cmd *cobra.Command, args []string) error {
-	// cfg, err := runBuildCmdConfig(cmd)
-	// if err != nil {
-	// 	return fmt.Errorf("initializing build config: %w", err)
-	// }
+	cfg, err := runBuildCmdConfig(cmd)
+	if err != nil {
+		return fmt.Errorf("initializing build config: %w", err)
+	}
 
 	if err := common.CheckDocker(); err != nil {
 		return err
 	}
 
-	// build target -kubernetes
-	// build target -runner
-	// file := common.WORKFLOW_SW_JSON
-	// extensions := "quarkus-jsonp,quarkus-smallrye-openapi"
-	// projectName := "test"
-	// registry := "quay.io"
-	// group := "lmotta"
-	// name := "runner"
-	// tag := "0.0.1"
-	// buildArgs := map[string]*string{
-	// 	common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &file,
-	// 	common.DOCKER_BUILD_ARG_EXTENSIONS:               &extensions,
-	// 	common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &projectName,
-	// 	common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
-	// 	common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &group,
-	// 	common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
-	// 	common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
-	// }
-
-	// opts := types.ImageBuildOptions{
-	// 	Version:    types.BuilderBuildKit,
-	// 	Target:     "kubernetes",
-	// 	Dockerfile: "Dockerfile.workflow",
-	// 	Tags:       []string{"lmotta" + "/runner"},
-	// 	Remove:     true,
-	// 	// Outputs:    outputs,
-	// 	BuildArgs: buildArgs,
-	// }
-
-	// cli, err := client.NewClientWithOpts(client.FromEnv)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// tar, err := archive.TarWithOptions("./", &archive.TarOptions{})
-	// if err != nil {
-	// 	return err
-	// }
-
-	// res, err := cli.ImageBuild(context.Background(), tar, opts)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// defer res.Body.Close()
-	// err = print(res.Body)
-	// if err != nil {
-	// 	return err
-	// }
+	if err := runBuildImage(cfg); err != nil {
+		return err
+	}
 
 	return nil
 }
 
 func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	cfg = BuildCmdConfig{
+		Extesions:  viper.GetString("extension"),
 		Image:      viper.GetString("image"),
 		Registry:   viper.GetString("registry"),
 		Repository: viper.GetString("repository"),
@@ -139,4 +99,62 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	}
 
 	return
+}
+
+func runBuildImage(cfg BuildCmdConfig) error {
+	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
+	if err := common.CheckImageName(name); err != nil {
+		return err
+	}
+
+	buildTargetKubernetes := exec.Command("docker", "build",
+		fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
+		fmt.Sprintf("--target=%s", "kubernetes"),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, registry),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, repository),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, name),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, tag),
+		"--output type=local,dest=kubernetes",
+		".",
+	)
+
+	if err := common.RunCommand(
+		buildTargetKubernetes,
+		cfg.Verbose,
+		"build",
+		common.GetFriendlyMessages("building"),
+	); err != nil {
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
+	}
+
+	buildTargetRunner := exec.Command("docker", "build",
+		fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
+		fmt.Sprintf("--target=%s", "runner"),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, registry),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, repository),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, name),
+		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, tag),
+		fmt.Sprintf("-t %s/%s/%s:%s", registry, repository, name, tag),
+		".",
+	)
+
+	if err := common.RunCommand(
+		buildTargetRunner,
+		cfg.Verbose,
+		"build",
+		common.GetFriendlyMessages("building"),
+	); err != nil {
+		fmt.Println("Check the full logs with the -v | --verbose option")
+		return err
+	}
+
+	fmt.Println("✅ Build success")
+	return nil
 }

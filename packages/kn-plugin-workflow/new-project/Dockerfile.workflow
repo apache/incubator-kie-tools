@@ -14,7 +14,7 @@
 # .
 
 # tag will change dynamically, each quarkus version will have a tag.
-FROM quay.io/lmotta/kn-workflow:0.0.1 as builder
+FROM quay.io/lmotta/kn-workflow:2.10.0.Final as builder
 
 WORKDIR /tmp/kn-plugin-workflow
 
@@ -46,7 +46,7 @@ RUN ./mvnw package \
 # KUBERNETES
 # ===============================================================
 
-# docker build -f Dockerfile.workflow --target=kubernetes \
+# DOCKER_BUILDKIT=1 docker build -f Dockerfile.workflow --target=kubernetes \
 # --build-arg workflow_file=workflow.sw.json \
 # --build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
 # --build-arg workflow_name=my-project \

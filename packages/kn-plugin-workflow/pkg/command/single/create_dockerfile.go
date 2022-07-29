@@ -76,7 +76,7 @@ RUN ./mvnw package \
 # KUBERNETES
 # ===============================================================
 
-# docker build -f Dockerfile.workflow --target=kubernetes \
+# DOCKER_BUILDKIT=1 docker build -f Dockerfile.workflow --target=kubernetes \
 # --build-arg workflow_file=workflow.sw.json \
 # --build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
 # --build-arg workflow_name=my-project \
