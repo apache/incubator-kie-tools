@@ -30,6 +30,7 @@ importers:
       "@typescript-eslint/parser": ^4.24.0
       copy-webpack-plugin: ^8.1.1
       copyfiles: ^2.4.1
+      cpr: ^3.0.1
       css-loader: ^5.2.6
       eslint: ^7.26.0
       eslint-config-prettier: ^8.3.0
@@ -89,6 +90,7 @@ importers:
       "@typescript-eslint/parser": 4.24.0_stosbglexicshybkfvpki6wrcm
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       copyfiles: 2.4.1
+      cpr: 3.0.1
       css-loader: 5.2.7_webpack@5.70.0
       eslint: 7.26.0
       eslint-config-prettier: 8.3.0_eslint@7.26.0
@@ -9637,6 +9639,17 @@ packages:
       parse-json: 5.0.0
       path-type: 4.0.0
       yaml: 1.10.2
+    dev: true
+
+  /cpr/3.0.1:
+    resolution:
+      { integrity: sha512-Xch4PXQ/KC8lJ+KfJ9JI6eG/nmppLrPPWg5Q+vh65Qr9EjuJEubxh/H/Le1TmCZ7+Xv7iJuNRqapyOFZB+wsxA== }
+    hasBin: true
+    dependencies:
+      graceful-fs: 4.2.10
+      minimist: 1.2.6
+      mkdirp: 0.5.5
+      rimraf: 2.7.1
     dev: true
 
   /crc-32/1.2.0:
