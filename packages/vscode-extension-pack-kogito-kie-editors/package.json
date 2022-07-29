@@ -6,7 +6,7 @@
   "description": "",
   "license": "Apache-2.0",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.66.0"
   },
   "repository": {
     "type": "git",
