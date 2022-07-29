@@ -1,0 +1,12 @@
+*.md
+*.icns
+*.ico
+*.gif
+*.jpg
+*.jpeg
+*.png
+*.svg
+docs
+gifs
+repo
+.github/CODEOWNERS

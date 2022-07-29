@@ -9,7 +9,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  monorepo-pr-ci:
+  ci:
     if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -38,17 +38,31 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          # If there are no changed files in dirs that are not `packages` or `examples`,
-          # it means that all changed files are in either `packages` or `examples`, so we should run the normal CI.
+          export NON_SOURCE_PATHS=$(cat ./.github/supporting-files/ci/non-source-paths.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
+          echo "Non-source paths:"
+          echo $NON_SOURCE_PATHS
 
-          read -r -a DIFF_PATHS <<< $(git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- ':!packages' ':!examples')
-          echo $DIFF_PATHS
+          # Setting IFS to empty string will preserve new lines on CHANGED_SOURCE_PATHS
+          IFS_BKP=$IFS
+          IFS=
+          export CHANGED_SOURCE_PATHS=$(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_PATHS")
+          echo "Changed source paths:"
+          echo $CHANGED_SOURCE_PATHS
+          IFS=$IFS_BKP
 
-          if [ ${#DIFF_PATHS[@]} -eq 0 ]; then
-            echo '`CI` will run.'
+          export CHANGED_SOURCE_PATHS_IN_ROOT=($(echo $CHANGED_SOURCE_PATHS | grep -v -e "^packages" -e "^examples"))
+          echo "Changed source paths in root:"
+          echo ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]}
+          printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
+
+          if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
+            echo 'No source files changed; `CI :: Monorepo` will not run.'
+            echo "::set-output name=should_run::false"
+          elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
+            echo 'No source files changed in root; `CI :: Monorepo` will run.'
             echo "::set-output name=should_run::true"
           else
-            echo '`CI :: Full` is already running, no need to run this one.'
+            echo 'Source files changed in root; `CI :: Monorepo` will not run.'
             echo "::set-output name=should_run::false"
           fi
 
@@ -59,6 +73,8 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
+          sparse: true
+          base_sha: ${{ steps.merge_changes.outputs.base_sha }}
 
       - name: "Build dependencies"
         if: steps.check_diff_paths.outputs.should_run == 'true'
@@ -92,6 +108,11 @@ jobs:
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
+      - name: "Print storage usage (after build)"
+        shell: bash
+        run: |
+          du -sh .
 
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2

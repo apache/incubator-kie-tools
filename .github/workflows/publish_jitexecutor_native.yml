@@ -22,7 +22,6 @@ jobs:
       - name: "Checkout kogito-apps"
         uses: actions/checkout@v2
         with:
-          fetch-depth: 0
           repository: kiegroup/kogito-apps
           ref: ${{ github.event.inputs.kogito_runtime_version }}
 
@@ -101,8 +100,6 @@ jobs:
     steps:
       - name: "Checkout kie-tools"
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: "Download Windows binary"
         uses: actions/download-artifact@v2
