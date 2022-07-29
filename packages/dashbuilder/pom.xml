@@ -82,7 +82,7 @@
     <!-- Plugins -->
     <version.source.plugin>3.1.0</version.source.plugin>
     <version.jar.plugin>3.1.2</version.jar.plugin>
-    <version.org.apache.maven.plugins.dependency>3.0.2</version.org.apache.maven.plugins.dependency>
+    <version.org.apache.maven.plugins.dependency>3.3.0</version.org.apache.maven.plugins.dependency>
     <version.surefire.plugin>2.22.2</version.surefire.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
