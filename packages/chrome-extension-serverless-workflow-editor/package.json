@@ -24,7 +24,8 @@
     "@kie-tools-core/webpack-base": "0.0.0",
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^4.0.0",
-    "zip-webpack-plugin": "^4.0.1"
+    "zip-webpack-plugin": "^4.0.1",
+    "start-server-and-test": "^1.12.1"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
@@ -34,7 +35,7 @@
     "start": "webpack serve --env dev",
     "test:it:start": "pnpm start",
     "test:it:run": "jest --runInBand -c ./jest.it.config.js",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test  test:it:start https-get://localhost:$(build-env swfChromeExtension.dev.port) test:it:run\""
+    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start https-get://localhost:$(build-env swfChromeExtension.dev.port) test:it:run\""
   },
   "babel": {
     "presets": [

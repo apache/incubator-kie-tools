@@ -32,7 +32,8 @@
     "@kie-tools-core/webpack-base": "0.0.0",
     "electron-packager": "^15.2.0",
     "electron-rebuild": "^2.3.5",
-    "cross-var": "^1.1.0"
+    "cross-var": "^1.1.0",
+    "spectron": "^14.0.0"
   },
   "scripts": {
     "start": "electron dist --disable-gpu",
