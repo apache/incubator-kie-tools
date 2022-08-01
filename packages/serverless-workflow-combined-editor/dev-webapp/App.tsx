@@ -29,37 +29,7 @@ export type ServerlessWorkflowType = "json" | "yml" | "yaml";
 
 export const App = () => {
   const { editor, editorRef } = useEditorRef();
-  const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>({
-    path: "new-document.sw.json",
-    getFileContents: async () => `{
-        "id":"helloworld",
-        "version":"1.0",
-        "specVersion":"0.8",
-        "name":"Hello World Workflow",
-        "start":"Hello State One",
-        "states": [
-            {
-                "name": "Hello State One",
-                "type": "inject",
-                "data": {
-                    "result": "Hello World!"
-                },
-                "end": true
-            },
-            {
-                "name": "Hello State Two",
-                "type": "inject",
-                "data": {
-                    "result": "Hello World!"
-                },
-                "end": true
-            }
-        ]
-    }`,
-    isReadOnly: false,
-    fileExtension: "sw.json",
-    fileName: "new-document.sw.json",
-  });
+  const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
   const editorEnvelopeLocator = useMemo(
     () =>
