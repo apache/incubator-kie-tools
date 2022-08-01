@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
-export interface ServerlessWorkflowTextEditorEnvelopeApi {
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+
+export interface ServerlessWorkflowTextEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
   kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void;
 }

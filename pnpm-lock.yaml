@@ -2158,6 +2158,7 @@ importers:
   packages/serverless-workflow-text-editor:
     specifiers:
       "@kie-tools-core/editor": 0.0.0
+      "@kie-tools-core/envelope": 0.0.0
       "@kie-tools-core/envelope-bus": 0.0.0
       "@kie-tools-core/guided-tour": 0.0.0
       "@kie-tools-core/notifications": 0.0.0
@@ -2182,6 +2183,7 @@ importers:
       vscode-languageserver-types: ^3.16.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/notifications": link:../notifications

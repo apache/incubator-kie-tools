@@ -105,6 +105,9 @@ const RefForwardingServerlessWorkflowTextEditor: React.ForwardRefRenderFunction<
         setTheme: (theme: EditorTheme): Promise<void> => {
           return swfTextEditorRef.current?.setTheme(theme) || Promise.resolve();
         },
+        moveCursorToNode: (nodeName: string) => {
+          swfTextEditorRef.current?.moveCursorToNode(nodeName);
+        },
       };
     },
     [props]

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { SwfLanguageServiceCommandIds, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
-import { OperatingSystem } from "@kie-tools-core/operating-system";
-import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 initJsonSchemaDiagnostics();
 initYamlSchemaDiagnostics();

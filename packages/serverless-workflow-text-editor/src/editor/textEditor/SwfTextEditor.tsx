@@ -106,13 +106,6 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     editorEnvelopeCtx.operatingSystem,
   ]);
 
-  useSubscription(
-    editorEnvelopeCtx.channelApi?.notifications.kogitoSwfTextEditor__moveCursorToNode,
-    ({ nodeName }: { nodeName: string }) => {
-      controller.moveCursorToNode(nodeName);
-    }
-  );
-
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 
   return <div style={{ height: "100%" }} ref={container} />;
