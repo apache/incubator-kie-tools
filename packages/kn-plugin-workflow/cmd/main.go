@@ -20,8 +20,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/root"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
 )
 
 var quarkusVersion, kogitoVersion, pluginVersion string
