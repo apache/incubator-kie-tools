@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Simple usage: /bin/sh scripts/push-local-registry.sh ${REGISTRY} ${SHORTENED_LATEST_VERSION} ${NS}
+# Simple usage: /bin/sh scripts/build-product-image.sh "build" ${IMAGE_NAME} ${BUILD_ENGINE}
 
 ver=$(cekit --version )
 ver=$((${ver//./} + 0))

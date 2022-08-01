@@ -20,6 +20,7 @@
 @rhpam-7/rhpam-kogito-runtime-jvm-rhel8
 @rhpam-7/rhpam-kogito-builder-rhel8
 @rhpam-7/rhpam-kogito-runtime-native-rhel8
+@openshift-serverless-1/logic-data-index-ephemeral-rhel8
 Feature: Common tests for Kogito images
 
   Scenario: Verify if Kogito user is correctly configured

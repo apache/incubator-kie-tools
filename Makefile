@@ -10,8 +10,10 @@ NATIVE := true
 clone-repos:
 # if the ignore_test env is not defined or false, proceed with the tests, as first step prepare the examples to be used
 ifneq ($(ignore_test),true)
-	cd tests/test-apps && sh clone-repo.sh $(NATIVE)
+ifneq ($(ignore_test_prepare),true)
+	cd tests/test-apps && sh clone-repo.sh $(NATIVE) $(image_name)
 	cd ../..
+endif
 endif
 
 .PHONY: list
@@ -29,7 +31,9 @@ _build:
 
 .PHONY: build-image
 image_name=
-build-image:
+build-image: clone-repos _build-image
+
+_build-image:
 ifneq ($(ignore_build),true)
 	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
 	${CEKIT_CMD} build --overrides-file ${image_name}-overrides.yaml ${BUILD_ENGINE}
@@ -52,7 +56,9 @@ build-prod:
 
 .PHONY: build-prod-image
 image_name=
-build-prod-image: clone-repos
+build-prod-image: clone-repos _build-prod-image
+
+_build-prod-image:
 ifneq ($(ignore_build),true)
 	scripts/build-kogito-apps-components.sh ${image_name} ${KOGITO_APPS_TARGET_BRANCH} ${KOGITO_APPS_TARGET_URI};
 	scripts/build-product-image.sh "build" $(image_name) ${BUILD_ENGINE}

@@ -1,0 +1,29 @@
+kind: ImageStreamList
+apiVersion: v1
+metadata:
+  name: openshift-serverless-kogito-image-streams
+  annotations:
+    description: ImageStream definitions for Red Hat OpenShift Serverless Logic images
+    openshift.io/provider-display-name: Kie Group
+items:
+  - kind: ImageStream
+    apiVersion: v1
+    metadata:
+      name: logic-data-index-ephemeral-rhel8
+      annotations:
+        openshift.io/display-name: Red Hat build of Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider
+        openshift.io/provider-display-name: Kie Group
+    spec:
+      tags:
+      - name: '1.24.0'
+        annotations:
+          description: Red Hat build of Kogito Data Index Service - ephemeral PostgreSQL
+          iconClass: icon-jbpm
+          tags: logic-data-index,kogito,data-index,data-index-ephemeral
+          supports: quarkus
+          version: '1.24.0'
+        referencePolicy:
+          type: Local
+        from:
+          kind: DockerImage
+          name: registry.redhat.io/openshift-serverless-1/logic-data-index-ephemeral-rhel8:1.24.0

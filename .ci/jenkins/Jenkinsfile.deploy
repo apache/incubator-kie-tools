@@ -387,7 +387,7 @@ void buildImage(String imageName) {
 }
 
 void testImage(String imageName) {
-    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true"
+    sh "make build-image ${getMakeBuildImageArgs()} image_name=${imageName} ignore_build=true ignore_test_prepare=true"
 }
 
 String getMakeBuildImageArgs() {

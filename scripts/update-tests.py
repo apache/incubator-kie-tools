@@ -11,16 +11,24 @@ import common
 import argparse
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Update Maven information in repo from the given artifact url and version.')
+    parser = argparse.ArgumentParser(description='Update Maven information in repo from the given artifact url and '
+                                                 'version.')
     parser.add_argument('--repo-url', dest='repo_url', help='Defines the url of the repository to setup into the tests')
-    parser.add_argument('--replace-jboss-repo', dest='replace_jboss_repo', default=False, action='store_true', help='Enable if repo-url should replace the main JBoss repository')
+    parser.add_argument('--replace-jboss-repo', dest='replace_jboss_repo', default=False, action='store_true',
+                        help='Enable if repo-url should replace the main JBoss repository')
     parser.add_argument('--examples-uri', dest='examples_uri', help='To update the examples uri for testing')
     parser.add_argument('--examples-ref', dest='examples_ref', help='To update the examples ref for testing')
-    parser.add_argument('--artifacts-version', dest='artifacts_version', help='To update the artifacts version for testing')
-    parser.add_argument('--ignore-self-signed-cert', dest='ignore_self_signed_cert', default=False, action='store_true', help='If set to true will relax the SSL for user-generated self-signed certificates')
-    parser.add_argument('--runtime-image-jvm', dest='runtime_image_jvm', help='To update the runtime jvm image name in behave tests\'s steps')
-    parser.add_argument('--runtime-image-native', dest='runtime_image_native', help='To update the runtime native image name in behave tests\'s steps')
-    parser.add_argument('--archetype-maven-mirror-url', dest='archetype_maven_mirror_url', help='Maven mirror URL to be used for archetype generation')
+    parser.add_argument('--artifacts-version', dest='artifacts_version',
+                        help='To update the artifacts version for testing')
+    parser.add_argument('--ignore-self-signed-cert', dest='ignore_self_signed_cert', default=False,
+                        action='store_true',
+                        help='If set to true will relax the SSL for user-generated self-signed certificates')
+    parser.add_argument('--runtime-image-jvm', dest='runtime_image_jvm',
+                        help='To update the runtime jvm image name in behave tests\'s steps')
+    parser.add_argument('--runtime-image-native', dest='runtime_image_native',
+                        help='To update the runtime native image name in behave tests\'s steps')
+    parser.add_argument('--archetype-maven-mirror-url', dest='archetype_maven_mirror_url',
+                        help='Maven mirror URL to be used for archetype generation')
     args = parser.parse_args()
 
     if args.repo_url:

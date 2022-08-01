@@ -116,10 +116,10 @@ def find_current_rc_version():
     """
     version = get_current_version()
     if '-rc' in version:
-        CURRENT_IMAGE_VERSION = version
+        current_image_version = version
     else:
-        CURRENT_IMAGE_VERSION = version + '-rc1'
-    return CURRENT_IMAGE_VERSION
+        current_image_version = version + '-rc1'
+    return current_image_version
 
 
 def get_next_rc_version(current_rc_version, override_tags):
@@ -127,6 +127,7 @@ def get_next_rc_version(current_rc_version, override_tags):
     After finding the current rc tag of the image, adds one to it
     e.g: 0.10.0-rc1 will returned as 0.10.0-rc2
     :param current_rc_version: takes the current rc version of the image as input
+    :param override_tags: override image tags
     :return: returns the next rc version of the image
     """
     return current_rc_version if override_tags else (

@@ -1,0 +1,16 @@
+schema_version: 1
+name: org.kie.kogito.dataindex.ephemeral
+version: "1.24.0"
+
+artifacts:
+  # openshift-serverless-logic-1.24.0.DR1-data-index-service-inmemory-image-build.zip
+- name: data-index-service-inmemory-image-build.zip
+  md5: 978b1be29f9b18d229aa09e6a3a4acb1
+
+execute:
+  - script: configure
+
+packages:
+  install:
+    - pam
+

@@ -69,3 +69,4 @@ items:
           from:
             kind: DockerImage
             name: registry.redhat.io/rhpam-7/rhpam-kogito-builder-rhel8:7.11.0
+

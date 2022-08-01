@@ -17,10 +17,6 @@ gitUri="${3:-https://github.com/kiegroup/kogito-apps.git}"
 contextDir=""
 shift $#
 
-echo ${imageName}
-echo ${gitBranch}
-echo ${gitUri}
-
 script_dir_path=$(cd `dirname "${BASH_SOURCE[0]}"`; pwd -P)
 
 MAVEN_OPTIONS="${MAVEN_OPTIONS} -Dquarkus.package.type=fast-jar -Dquarkus.build.image=false"
@@ -78,7 +74,7 @@ case ${imageName} in
         contextDir="jitexecutor/jitexecutor-runner"
         ;;
     *)
-        echo "${imageName} is not a supporting service image, exiting..."
+        echo "${imageName} is not a supporting service image or can't be built from sources, exiting..."
         exit 0
         ;;
 esac

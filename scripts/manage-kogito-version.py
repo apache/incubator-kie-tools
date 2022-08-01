@@ -12,16 +12,18 @@
 #  ruamel.yaml
 
 import sys
-sys.dont_write_bytecode = True
-
 import argparse
 import common
 import re
 
+sys.dont_write_bytecode = True
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Kogito Version Manager')
     parser.add_argument('--bump-to', dest='bump_to', help='bump everything to the next version')
-    parser.add_argument('--artifacts-version', dest='artifacts_version', help='update the artifacts version in modules/tests. Default is equal to bump-to')
+    parser.add_argument('--artifacts-version', dest='artifacts_version',
+                        help='update the artifacts version in modules/tests. Default is equal to bump-to')
     parser.add_argument('--examples-ref', dest='examples_ref',
                         help='Update Behave tests to use the desired branch for kogito-examples')
     parser.add_argument('--confirm', default=False, action='store_true', help='To confirm automatically the setup')
@@ -42,7 +44,7 @@ if __name__ == "__main__":
                 examples_ref = args.examples_ref
             if 'rc' in args.bump_to:
                 examples_ref = 'main'
-            
+
             artifacts_version = args.bump_to
             if args.artifacts_version:
                 artifacts_version = args.artifacts_version
