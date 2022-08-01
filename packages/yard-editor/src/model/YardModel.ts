@@ -28,12 +28,21 @@ export class YardModel {
 }
 
 export class Element {
+  logic: Logic;
   name: string;
-  type: string;
   requirements: string[];
+  type: string;
 }
 
 export class Input {
   name: string;
+  type: string;
+}
+
+export class Logic {
+  inputs?: string[];
+  expression?: string;
+  outputComponents?: string[];
+  rules?: string[][];
   type: string;
 }

@@ -34,6 +34,7 @@
     "@kie-tools-core/notifications": "0.0.0",
     "@kie-tools-core/operating-system": "0.0.0",
     "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools/boxed-expression-component": "0.0.0",
     "@kie-tools/i18n-common-dictionary": "0.0.0",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",

@@ -33,7 +33,9 @@ import { CubesIcon } from "@patternfly/react-icons";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import { YardFile } from "../types";
 import { deserialize } from "../model/YardSerializer";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/src";
 import "./YardUIEditor.css";
+import { generateDecisionTypes, dataTypes, generateDecisionExpressionDefinition } from "../decision";
 
 interface Props {
   file: YardFile | undefined;
@@ -45,6 +47,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
   const [activeTabIndex, setActiveTabIndex] = useState(0);
   const handleTabClick = useCallback((_event, tabIndex) => setActiveTabIndex(tabIndex), []);
   const yardData = file?.content ? deserialize(file.content) : undefined;
+  const types = yardData?.inputs ? generateDecisionTypes(yardData?.inputs) : dataTypes;
 
   const EmptyStep = ({
     emptyStateBodyText,
@@ -63,10 +66,6 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
       </EmptyState>
     );
   };
-
-  const onNewElementButtonClicked = useCallback(() => {
-    window.alert("Not yet implemented");
-  }, []);
 
   return (
     <div className={"yard-ui-editor"}>
@@ -146,20 +145,26 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
           </div>
         </Tab>
         <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
-          <div className={"decision-element-header"}>
-            <Button onClick={onNewElementButtonClicked} variant="primary">
-              {i18n.decisionElementsTab.addDecisionElementsButton}
-            </Button>
-            <div className={"separator"} />
-            <Button isDisabled={true} variant="danger">
-              {i18n.decisionElementsTab.removeDecisionElementButton}
-            </Button>
-          </div>
           <div className={"decision-element-body"}>
-            <EmptyStep
-              emptyStateTitleText={i18n.decisionElementsTab.emptyStateTitle}
-              emptyStateBodyText={i18n.decisionElementsTab.emptyStateBody}
-            />
+            {yardData?.elements && yardData?.elements.length > 0 ? (
+              yardData.elements.map((element) => {
+                return (
+                  <>
+                    <BoxedExpressionEditor
+                      decisionNodeId="_00000000-0000-0000-0000-000000000000"
+                      expressionDefinition={generateDecisionExpressionDefinition(element)}
+                      dataTypes={types}
+                    />
+                    <Divider />
+                  </>
+                );
+              })
+            ) : (
+              <EmptyStep
+                emptyStateTitleText={i18n.decisionElementsTab.emptyStateTitle}
+                emptyStateBodyText={i18n.decisionElementsTab.emptyStateBody}
+              />
+            )}
           </div>
         </Tab>
       </Tabs>
