@@ -17,7 +17,7 @@
 module.exports = {
   globals: {
     "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.dev.json",
+      tsconfig: "<rootDir>/tsconfig.tests.json",
     },
   },
   reporters: ["default"],
