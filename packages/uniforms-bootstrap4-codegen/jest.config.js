@@ -15,6 +15,11 @@
  */
 
 module.exports = {
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.dev.json",
+    },
+  },
   setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
   reporters: ["default"],
   moduleDirectories: ["node_modules", "src"],

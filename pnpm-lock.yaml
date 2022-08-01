@@ -166,7 +166,7 @@ importers:
       "@kie-tools-core/webpack-base": 0.0.0
       "@kie-tools-examples/base64png-editor": 0.0.0
       "@kie-tools/build-env": 0.0.0
-      "@types/chrome": ^0.0.143
+      "@types/chrome": ^0.0.193
       zip-webpack-plugin: ^4.0.1
     dependencies:
       "@kie-tools-core/chrome-extension": link:../../packages/chrome-extension
@@ -178,7 +178,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@kie-tools/build-env": link:../../packages/build-env
-      "@types/chrome": 0.0.143
+      "@types/chrome": 0.0.193
       zip-webpack-plugin: 4.0.1
 
   examples/base64png-editor-vscode-extension:
@@ -504,7 +504,7 @@ importers:
       "@kie-tools-core/workspace": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@octokit/rest": ^18.5.3
-      "@types/chrome": ^0.0.143
+      "@types/chrome": ^0.0.193
       "@types/minimatch": ^3.0.4
       minimatch: ^3.0.4
       react: ^17.0.2
@@ -515,13 +515,13 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
       "@octokit/rest": 18.5.3
-      "@types/chrome": 0.0.143
       minimatch: 3.0.5
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      "@types/chrome": 0.0.193
       "@types/minimatch": 3.0.4
 
   packages/chrome-extension-pack-kogito-kie-editors:
@@ -536,7 +536,7 @@ importers:
       "@kie-tools/kie-bc-editors": 0.0.0
       "@kie-tools/stunner-editors": 0.0.0
       "@types/chai": ^4.2.17
-      "@types/chrome": ^0.0.143
+      "@types/chrome": ^0.0.193
       "@types/selenium-webdriver": ^4.1.1
       chai: ^4.3.4
       selenium-webdriver: ^4.2.0
@@ -554,7 +554,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/chai": 4.2.18
-      "@types/chrome": 0.0.143
+      "@types/chrome": 0.0.193
       "@types/selenium-webdriver": 4.1.1
       chai: 4.3.4
       selenium-webdriver: 4.2.0
@@ -575,7 +575,7 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
       "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
       "@kie-tools/serverless-workflow-text-editor": 0.0.0
-      "@types/chrome": ^0.0.143
+      "@types/chrome": ^0.0.193
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -594,7 +594,7 @@ importers:
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
-      "@types/chrome": 0.0.143
+      "@types/chrome": 0.0.193
       monaco-editor: 0.33.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
@@ -6098,12 +6098,13 @@ packages:
       { integrity: sha512-rS27+EkB/RE1Iz3u0XtVL5q36MGDWbgYe7zWiodyKNUnthxY0rukK5V36eiUCtCisB7NN8zKYH6DO2M37qxFEQ== }
     dev: true
 
-  /@types/chrome/0.0.143:
+  /@types/chrome/0.0.193:
     resolution:
-      { integrity: sha512-tkPDutWjEl/9hPnfR48IJLpH2Xg1Zs/vxfODRp7duY5a4frkULOHvEED8moJsELTrFkiEciwCxAjxVk2XhKSsA== }
+      { integrity: sha512-R8C84oqvk8A8C8G1viBd8qLpDr86Y/jwD+KLgzUekbIT9RGds6a9GnlQyg8P7ltnGogTMHkiEQK0ZlcrvTeo3Q== }
     dependencies:
       "@types/filesystem": 0.0.32
       "@types/har-format": 1.2.8
+    dev: true
 
   /@types/component-emitter/1.2.11:
     resolution:
@@ -6192,10 +6193,12 @@ packages:
       { integrity: sha512-Yuf4jR5YYMR2DVgwuCiP11s0xuVRyPKmz8vo6HBY3CGdeMj8af93CFZX+T82+VD1+UqHOxTq31lO7MI7lepBtQ== }
     dependencies:
       "@types/filewriter": 0.0.29
+    dev: true
 
   /@types/filewriter/0.0.29:
     resolution:
       { integrity: sha512-BsPXH/irW0ht0Ji6iw/jJaK8Lj3FJemon2gvEqHKpCdDCeemHa+rI3WBGq5z7cDMZgoLjY40oninGxqk+8NzNQ== }
+    dev: true
 
   /@types/geojson/7946.0.8:
     resolution:
@@ -6222,6 +6225,7 @@ packages:
   /@types/har-format/1.2.8:
     resolution:
       { integrity: sha512-OP6L9VuZNdskgNN3zFQQ54ceYD8OLq5IbqO4VK91ORLfOm7WdT/CiT/pHEBSQEqCInJ2y3O6iCm/zGtPElpgJQ== }
+    dev: true
 
   /@types/heatmap.js/2.0.37:
     resolution:
@@ -12609,17 +12613,6 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: true
-
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -13539,7 +13532,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

@@ -22,10 +22,10 @@
     "@octokit/rest": "^18.5.3",
     "minimatch": "^3.0.4",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "@types/chrome": "^0.0.143"
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@types/chrome": "^0.0.193",
     "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0",
     "@types/minimatch": "^3.0.4"

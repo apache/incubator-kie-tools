@@ -26,7 +26,7 @@
     "selenium-webdriver": "^4.2.0",
     "@types/selenium-webdriver": "^4.1.1",
     "start-server-and-test": "^1.12.1",
-    "@types/chrome": "^0.0.143"
+    "@types/chrome": "^0.0.193"
   },
   "scripts": {
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
