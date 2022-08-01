@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import * as vscode from "vscode";
 import { COMMAND_IDS } from "./commandIds";
+
+export interface ServerlessWorkflowTextEditorEnvelopeApi {
+  kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void;
+}
 
 export class ServerlessWorkflowTextEditorEnvelopeApiImpl implements ServerlessWorkflowTextEditorEnvelopeApi {
   public kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri: string }): void {
