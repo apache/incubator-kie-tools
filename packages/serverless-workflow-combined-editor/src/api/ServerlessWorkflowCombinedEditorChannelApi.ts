@@ -24,7 +24,4 @@ import { SwfFeatureToggleChannelApi } from "./SwfFeatureToggleChannelApi";
 export interface ServerlessWorkflowCombinedEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfFeatureToggleChannelApi,
-    SwfLanguageServiceChannelApi,
-    ServerlessWorkflowTextEditorChannelApi,
-    ServerlessWorkflowMermaidViewerChannelApi,
-    ServerlessWorkflowDiagramEditorChannelApi {}
+    SwfLanguageServiceChannelApi {}

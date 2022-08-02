@@ -28,7 +28,10 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
-import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import {
   ServerlessWorkflowTextEditorChannelApi,
   ServerlessWorkflowTextEditorEnvelopeApi,
@@ -123,8 +126,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
         }
       : {
-          resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
-          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+          resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
         };
     return new EditorEnvelopeLocator(targetOrigin, [
       new EnvelopeMapping(
@@ -274,7 +277,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
 
   const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
     useSwfDiagramEditorChannelApi({
-      channelApi: editorEnvelopeCtx.channelApi,
+      channelApi:
+        editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorChannelApi>,
       locale: props.locale,
       embeddedEditorFile: embeddedDiagramEditorFile,
       onEditorReady: onDiagramEditorReady,
@@ -284,7 +288,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     });
 
   const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useSwfTextEditorChannelApi({
-    channelApi: editorEnvelopeCtx.channelApi,
+    channelApi: editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
     locale: props.locale,
     embeddedEditorFile: embeddedDiagramEditorFile,
     onEditorReady: onTextEditorReady,

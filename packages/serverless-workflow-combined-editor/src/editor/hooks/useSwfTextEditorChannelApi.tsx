@@ -19,6 +19,7 @@ import { KogitoEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
 import { SwfServiceCatalogChannelApiImpl } from "../..";
@@ -60,7 +61,7 @@ export function useSwfTextEditorChannelApi(args: {
       services &&
       serviceRegistriesSettings &&
       new SwfServiceCatalogChannelApiImpl(
-        args.channelApi as MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
+        args.channelApi as MessageBusClientApi<SwfServiceCatalogChannelApi>,
         services,
         serviceRegistriesSettings
       ),

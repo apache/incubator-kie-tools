@@ -158,8 +158,4 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
       }
     );
   }
-
-  public kogitoSwfDiagramEditor__onNodeSelected(): void {}
-  public kogitoSwfTextEditor__moveCursorToNode(): void {}
-  public kogitoSwfTextEditor__onSelectionChanged(): void {}
 }
