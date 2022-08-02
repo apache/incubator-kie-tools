@@ -15,15 +15,15 @@
  */
 
 import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common";
-import { CanvasApi } from "@kie-tools/kie-bc-editors/dist/jslienzo/CanvasApi";
+import { CanvasConsumedInteropApi } from "@kie-tools/kie-bc-editors/dist/canvas/CanvasConsumedInteropApi";
 
 interface CustomWindow extends Window {
-  canvas: CanvasApi;
+  canvas: CanvasConsumedInteropApi;
 }
 
 declare let window: CustomWindow;
 
-export interface ServerlessWorkflowDiagramEditor extends GwtEditorWrapper, CanvasApi {
+export interface ServerlessWorkflowDiagramEditor extends GwtEditorWrapper, CanvasConsumedInteropApi {
   myServerlessWorkflowDiagramMethod(): string;
 }
 

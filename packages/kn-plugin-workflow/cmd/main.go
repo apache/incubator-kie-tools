@@ -20,12 +20,22 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/root"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
 )
 
+var quarkusVersion, kogitoVersion, pluginVersion string
+
 func main() {
-	err := root.NewRootCommand().Execute()
-	if err != nil {
+	cfg := root.RootCmdConfig{
+		DependenciesVersion: common.DependenciesVersion{
+			QuarkusVersion: quarkusVersion,
+			KogitoVersion:  kogitoVersion,
+		},
+		PluginVersion: pluginVersion,
+	}
+
+	if err := root.NewRootCommand(cfg).Execute(); err != nil {
 		if err.Error() != "subcommand is required" {
 			fmt.Fprintln(os.Stderr, err)
 		}

@@ -37,11 +37,14 @@ import static org.mockito.Mockito.when;
 
 public class StateMarshallingTest extends BaseMarshallingTest {
 
+    private static final String WORKFLOW_ID = "workflow1";
+    private static final String WORKFLOW_NAME = "Workflow1";
+
     @Override
     protected Workflow createWorkflow() {
         return new Workflow()
-                .setId("workflow1")
-                .setName("Workflow1")
+                .setId(WORKFLOW_ID)
+                .setName(WORKFLOW_NAME)
                 .setStates(new State[]{
                         new State()
                                 .setName("State1")
@@ -75,8 +78,8 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         injectState.setUsedForCompensation(true);
 
         Workflow workflow = new Workflow()
-                .setId("workflow1")
-                .setName("Workflow1")
+                .setId(WORKFLOW_ID)
+                .setName(WORKFLOW_NAME)
                 .setStates(new State[]{
                         injectState
                 });
@@ -89,10 +92,10 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     @Test
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
-        assertDefinitionReferencedInNode(workflow, "Workflow1");
+        assertDefinitionReferencedInNode(workflow, WORKFLOW_ID);
         assertDefinitionReferencedInNode(workflow.states[0], "State1");
-        assertEquals(2, countChildren("Workflow1"));
-        assertParentOf("Workflow1", "State1");
+        assertEquals(2, countChildren(WORKFLOW_ID));
+        assertParentOf(WORKFLOW_ID, "State1");
         assertTrue(hasIncomingEdges("State1"));
         assertFalse(hasOutgoingEdges("State1"));
     }
@@ -101,7 +104,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
     public void testUnmarshallStartState() {
         workflow.setStart("State1");
         unmarshallWorkflow();
-        assertEquals(3, countChildren("Workflow1"));
+        assertEquals(3, countChildren(WORKFLOW_ID));
         assertTrue(hasIncomingEdgeFrom("State1", Marshaller.STATE_START));
     }
 

@@ -17,7 +17,7 @@
 import bpmnEnvelopeIndex from "!!raw-loader!../../dist/resources/bpmn/bpmnEnvelopeIndex.html";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { ChannelType, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { KogitoEditorChannelApiImpl } from "../envelope/KogitoEditorChannelApiImpl";
+import { StandaloneEditorsEditorChannelApiImpl } from "../envelope/StandaloneEditorsEditorChannelApiImpl";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import { createEditor, Editor, StandaloneEditorApi } from "../common/Editor";
@@ -74,7 +74,7 @@ export function open(args: {
 
   let receivedSetContentError = false;
 
-  const channelApiImpl = new KogitoEditorChannelApiImpl(
+  const channelApiImpl = new StandaloneEditorsEditorChannelApiImpl(
     stateControl,
     {
       fileName: "",

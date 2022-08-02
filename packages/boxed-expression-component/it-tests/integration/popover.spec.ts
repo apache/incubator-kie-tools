@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
+import { env } from "../../env";
+const buildEnv = env;
 
 describe("PopoverMenu Tests", () => {
   before(() => {

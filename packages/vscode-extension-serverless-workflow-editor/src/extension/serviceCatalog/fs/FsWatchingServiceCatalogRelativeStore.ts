@@ -61,7 +61,7 @@ export class FsWatchingServiceCatalogRelativeStore {
 
   private setupFsWatcher(args: { specsDirAbsolutePosixPath: string }): vscode.Disposable {
     const fsWatcher = vscode.workspace.createFileSystemWatcher(
-      `${vscode.Uri.parse(args.specsDirAbsolutePosixPath).path}/*.{json,yaml,yml}`,
+      new vscode.RelativePattern(vscode.Uri.parse(args.specsDirAbsolutePosixPath), "*.{json,yaml,yml}"),
       false,
       false,
       false

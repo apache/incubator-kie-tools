@@ -26,7 +26,7 @@ To start building the KIE Tools project, you're going to need:
 - pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.1`
 - Java `11`
-- Go `1.16`
+- Go `1.17`
 
 \*nix users will also need:
 

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import * as buildEnv from "@kie-tools/build-env";
+import { env } from "../../env";
+const buildEnv = env;
 
 describe("Literal Expression Tests", () => {
   beforeEach(() => {
@@ -51,5 +52,12 @@ describe("Literal Expression Tests", () => {
 
     // check boolean is now also in grid
     cy.get(".expression-data-type").contains("boolean").should("be.visible");
+  });
+
+  it("Check monaco-editor autocompletion", () => {
+    cy.get(".literal-expression-body").dblclick().type("abs");
+    cy.get("div[class='monaco-list-rows']:contains('abs(n)')").should("be.visible").click();
+    cy.get("div[class='monaco-list-rows']").should("not.be.visible");
+    cy.get(".editable-cell-value").should("have.text", "abs()");
   });
 });

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DefaultKogitoCommandRegistry } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
+import { DefaultStateControlCommandRegistry } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/common";
@@ -32,7 +32,7 @@ class Command {
 }
 
 let channelApiImpl: MessageBusClientApi<KogitoEditorChannelApi>;
-let registry: DefaultKogitoCommandRegistry<Command>;
+let registry: DefaultStateControlCommandRegistry<Command>;
 
 const COMMAND1 = new Command("1");
 const COMMAND2 = new Command("2");
@@ -42,7 +42,7 @@ const COMMAND4 = new Command("4");
 describe("DefaultKogitoCommandRegistry", () => {
   beforeEach(() => {
     channelApiImpl = messageBusClientApiMock<KogitoEditorChannelApi>();
-    registry = new DefaultKogitoCommandRegistry<Command>(channelApiImpl);
+    registry = new DefaultStateControlCommandRegistry<Command>(channelApiImpl);
   });
 
   test("test basic add/remove elements", () => {

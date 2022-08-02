@@ -13,10 +13,8 @@
     "install-dependencies": "pnpm install --strict-peer-dependencies=false",
     "link-packages-with-self": "node ./scripts/link_packages_with_self.js",
     "generate-packages-graph": "node ./scripts/generate_packages_graph.js ./repo",
-    "bootstrap": "pnpm install-dependencies && pnpm link-packages-with-self && pnpm generate-packages-graph",
-    "build-env": "node packages/build-env/cli.js",
-    "env:print": "pnpm build-env --print-env",
-    "env:vars": "pnpm build-env --print-vars",
+    "check-cli-tools": "node ./scripts/check_cli_tools.js",
+    "bootstrap": "pnpm install-dependencies && pnpm link-packages-with-self && pnpm generate-packages-graph && pnpm check-cli-tools",
     "update-version-to": "node ./scripts/update_version.js",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -150,9 +148,6 @@
     "@types/react": "^17.0.6"
   },
   "pnpm": {
-    "overrides": {
-      "react-monaco-editor@0.43.0>monaco-editor": "^0.23.0"
-    },
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {
         "peerDependencies": {

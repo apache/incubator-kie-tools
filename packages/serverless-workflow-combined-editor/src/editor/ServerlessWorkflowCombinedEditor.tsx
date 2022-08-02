@@ -27,7 +27,7 @@ import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import {
   ServerlessWorkflowDiagramEditorChannelApi,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
@@ -64,7 +64,7 @@ interface Props {
   isReadOnly: boolean;
   channelType: ChannelType;
   resourcesPathPrefix: string;
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
@@ -208,7 +208,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await textEditor.getContent();
-        props.onNewEdit(new KogitoEdit(content));
+        props.onNewEdit(new WorkspaceEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,
@@ -227,7 +227,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await diagramEditor.getContent();
-        props.onNewEdit(new KogitoEdit(content));
+        props.onNewEdit(new WorkspaceEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,

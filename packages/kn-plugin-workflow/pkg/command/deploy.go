@@ -22,12 +22,12 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
 
-type DeployConfig struct {
+type DeployCmdConfig struct {
 	// Deploy options
 	Path string // service name
 
@@ -74,7 +74,7 @@ func NewDeployCommand() *cobra.Command {
 func runDeploy(cmd *cobra.Command, args []string) error {
 	start := time.Now()
 
-	cfg, err := runDeployConfig(cmd)
+	cfg, err := runDeployCmdConfig(cmd)
 	if err != nil {
 		return fmt.Errorf("initializing deploy config: %w", err)
 	}
@@ -90,7 +90,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		createService,
 		cfg.Verbose,
 		"deploy",
-		getDeployFriendlyMessages(),
+		common.GetFriendlyMessages("deploying"),
 	); err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
@@ -104,7 +104,7 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			deploy,
 			cfg.Verbose,
 			"deploy",
-			getDeployFriendlyMessages(),
+			common.GetFriendlyMessages("deploying"),
 		); err != nil {
 			fmt.Println("Check the full logs with the -v | --verbose option")
 			return err
@@ -117,8 +117,8 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
-	cfg = DeployConfig{
+func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
+	cfg = DeployCmdConfig{
 		Path: viper.GetString("path"),
 
 		Verbose: viper.GetBool("verbose"),
@@ -126,22 +126,10 @@ func runDeployConfig(cmd *cobra.Command) (cfg DeployConfig, err error) {
 	return
 }
 
-func checkIfKogitoFileExists(cfg DeployConfig) (bool, error) {
+func checkIfKogitoFileExists(cfg DeployCmdConfig) (bool, error) {
 	if _, err := os.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
 		return true, nil
 	} else {
 		return false, err
-	}
-}
-
-func getDeployFriendlyMessages() []string {
-	return []string{
-		" Deploying...",
-		" Still deploying",
-		" Still deploying",
-		" Yes, still deploying",
-		" Don't give up on me",
-		" Still deploying",
-		" This is taking a while",
 	}
 }

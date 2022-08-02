@@ -15,7 +15,7 @@
     "build:prod": "rimraf dist && webpack --mode production"
   },
   "dependencies": {
-    "monaco-editor": "^0.23.0"
+    "monaco-editor": "^0.33.0"
   },
   "devDependencies": {
     "@kie-tools/build-env": "0.0.0",

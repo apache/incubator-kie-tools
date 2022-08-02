@@ -22,7 +22,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { AngleUpIcon } from "@patternfly/react-icons/dist/js/icons/angle-up-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { NotificationPanelTabContent } from "./NotificationsPanelTabContent";
-import { NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { useOnlineI18n } from "../../i18n";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
@@ -31,7 +31,7 @@ interface Props {
 }
 
 export interface NotificationsPanelRef {
-  getTab: (name: string) => NotificationsApi | undefined;
+  getTab: (name: string) => NotificationsChannelApi | undefined;
   setActiveTab: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -39,7 +39,7 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
   const { i18n } = useOnlineI18n();
   const [activeTab, setActiveTab] = useState<string | undefined>();
   const [tabsNotificationsCount, setTabsNotificationsCount] = useState<Map<string, number>>(new Map());
-  const tabs: Map<string, React.RefObject<NotificationsApi>> = useMemo(() => new Map(), []);
+  const tabs: Map<string, React.RefObject<NotificationsChannelApi>> = useMemo(() => new Map(), []);
 
   useImperativeHandle(
     forwardRef,
@@ -50,8 +50,8 @@ export const NotificationsPanel = React.forwardRef<NotificationsPanelRef, Props>
     [tabs]
   );
 
-  const tabsMap: Map<string, React.RefObject<NotificationsApi>> = useMemo(
-    () => new Map(props.tabNames.map((tabName) => [tabName, React.createRef<NotificationsApi>()])),
+  const tabsMap: Map<string, React.RefObject<NotificationsChannelApi>> = useMemo(
+    () => new Map(props.tabNames.map((tabName) => [tabName, React.createRef<NotificationsChannelApi>()])),
     [props.tabNames]
   );
 

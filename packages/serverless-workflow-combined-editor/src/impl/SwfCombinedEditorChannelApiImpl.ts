@@ -24,7 +24,7 @@ import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
-  KogitoEdit,
+  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
@@ -87,7 +87,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
+  public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 

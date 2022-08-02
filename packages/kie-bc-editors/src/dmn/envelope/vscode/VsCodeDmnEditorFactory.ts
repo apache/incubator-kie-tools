@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-import { DmnEditorChannelApi } from "../../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DmnEditor } from "../DmnEditor";
-import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { DmnEditorFactory } from "../DmnEditorFactory";
 import { VsCodeDmnEditorChannelApi } from "./VsCodeDmnEditorChannelApi";
+import {
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tools-core/vscode-java-code-completion/src/api";
+
+/**
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code.
+ */
+interface JavaCodeCompletionExposedInteropApi {
+  getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]>;
+  getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
+  isLanguageServerAvailable(): Promise<boolean>;
+}
 
 export interface CustomWindow extends Window {
   envelope: {
-    javaCodeCompletionService: JavaCodeCompletionApi;
+    javaCodeCompletionService: JavaCodeCompletionExposedInteropApi;
   };
 }
 
 declare let window: CustomWindow;
-
-class JavaCodeCompletionService implements JavaCodeCompletionApi {
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<VsCodeDmnEditorChannelApi>) {}
-  getAccessors(fqcn: string, query: string) {
-    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
-  }
-  getClasses(query: string) {
-    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getClasses(query);
-  }
-  isLanguageServerAvailable() {
-    return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__isLanguageServerAvailable();
-  }
-}
 
 export class VsCodeDmnEditorFactory implements EditorFactory<DmnEditor, VsCodeDmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
@@ -49,9 +49,23 @@ export class VsCodeDmnEditorFactory implements EditorFactory<DmnEditor, VsCodeDm
     ctx: KogitoEditorEnvelopeContextType<VsCodeDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<DmnEditor> {
+    const exposedInteropApi: CustomWindow["envelope"] = {
+      javaCodeCompletionService: {
+        getAccessors: (fqcn: string, query: string) => {
+          return ctx.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
+        },
+        getClasses: (query: string) => {
+          return ctx.channelApi.requests.kogitoJavaCodeCompletion__getClasses(query);
+        },
+        isLanguageServerAvailable: () => {
+          return ctx.channelApi.requests.kogitoJavaCodeCompletion__isLanguageServerAvailable();
+        },
+      },
+    };
+
     window.envelope = {
       ...(window.envelope ?? {}),
-      ...{ javaCodeCompletionService: new JavaCodeCompletionService(ctx) },
+      ...exposedInteropApi,
     };
 
     const factory = new DmnEditorFactory(this.gwtEditorEnvelopeConfig);

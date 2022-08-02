@@ -24,19 +24,19 @@ import {
 import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsApi } from "@kie-tools-core/notifications/dist/api";
+import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
-import { KogitoEditor } from "@kie-tools-core/vscode-extension/dist/KogitoEditor";
-import { KogitoEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/KogitoEditorChannelApiImpl";
+import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
-  KogitoEdit,
+  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceApi,
+  WorkspaceChannelApi,
 } from "@kie-tools-core/workspace/dist/api";
 import {
   ServerlessWorkflowDiagramEditorChannelApi,
@@ -56,11 +56,11 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
   private readonly defaultApiImpl: KogitoEditorChannelApi;
 
   constructor(
-    private readonly editor: KogitoEditor,
+    private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceApi,
+    workspaceApi: WorkspaceChannelApi,
     backendProxy: BackendProxy,
-    notificationsApi: NotificationsApi,
+    notificationsApi: NotificationsChannelApi,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
     i18n: I18n<VsCodeI18n>,
@@ -69,7 +69,7 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     private readonly swfTextEditorEnvelopeApiImpl: ServerlessWorkflowTextEditorEnvelopeApi,
     private readonly diagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
   ) {
-    this.defaultApiImpl = new KogitoEditorChannelApiImpl(
+    this.defaultApiImpl = new DefaultVsCodeKieEditorChannelApiImpl(
       editor,
       resourceContentService,
       workspaceApi,
@@ -131,7 +131,7 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
+  public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 
