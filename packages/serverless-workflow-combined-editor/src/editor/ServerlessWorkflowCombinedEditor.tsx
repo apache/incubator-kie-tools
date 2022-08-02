@@ -123,8 +123,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
         }
       : {
-          resourcesPathPrefix: props.resourcesPathPrefix + "/diagram",
-          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-diagram-editor-envelope.html",
+          resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
         };
     return new EditorEnvelopeLocator(targetOrigin, [
       new EnvelopeMapping(
