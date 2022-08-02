@@ -22,7 +22,6 @@ import java.util.List;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
 import org.kie.workbench.common.stunner.core.client.shape.Shape;
 import org.kie.workbench.common.stunner.core.client.shape.view.ShapeView;
-import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
 
 /**
  * Extension for a Node Shape that can contain child shapes.
@@ -31,16 +30,14 @@ import org.kie.workbench.common.stunner.core.definition.shape.ShapeViewDef;
  * @param <V> The view type.
  * @param <S> The shape's type that it can contain.
  */
-public class ContainerShape<W, D extends ShapeViewDef<W, V>, V extends ShapeView, S extends Shape>
-        extends NodeShapeImpl<W, D, V>
+public class ContainerShape<W, V extends ShapeView, S extends Shape>
+        extends NodeShapeImpl<W, V>
         implements HasChildren<S> {
 
     private final List<S> children = new LinkedList<S>();
 
-    public ContainerShape(final D shapeDef,
-                          final AbstractShape<V> shape) {
-        super(shapeDef,
-              shape);
+    public ContainerShape(final AbstractShape<V> shape) {
+        super(shape);
     }
 
     @Override

@@ -66,6 +66,8 @@ public class State {
      */
     public String type;
 
+    public Metadata metadata;
+
     /**
      * Next transition of the workflow.
      */
@@ -166,5 +168,13 @@ public class State {
 
     public String getCategory() {
         return category;
+    }
+
+    public Metadata getMetadata() {
+        return metadata;
+    }
+
+    public void setMetadata(Metadata metadata) {
+        this.metadata = metadata;
     }
 }

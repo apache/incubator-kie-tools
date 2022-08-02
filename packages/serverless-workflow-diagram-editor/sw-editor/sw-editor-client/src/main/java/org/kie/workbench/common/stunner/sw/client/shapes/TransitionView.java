@@ -20,12 +20,8 @@ import com.ait.lienzo.client.core.shape.AbstractDirectionalMultiPointShape;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.MultiPathDecorator;
 import com.ait.lienzo.client.core.shape.PolyLine;
-import com.ait.lienzo.shared.core.types.ColorName;
 import org.kie.workbench.common.stunner.client.lienzo.shape.view.wires.ext.WiresConnectorViewExt;
 import org.kie.workbench.common.stunner.core.client.shape.view.event.ShapeViewSupportedEvents;
-
-import static org.kie.workbench.common.stunner.sw.client.shapes.TransitionShapeDef.Direction.BOTH;
-import static org.kie.workbench.common.stunner.sw.client.shapes.TransitionShapeDef.Direction.ONE;
 
 public class TransitionView extends WiresConnectorViewExt<TransitionView> {
 
@@ -33,12 +29,16 @@ public class TransitionView extends WiresConnectorViewExt<TransitionView> {
     private static final double DECORATOR_WIDTH = 10;
     private static final double DECORATOR_HEIGHT = 15;
 
-    public TransitionView() {
-        this(0, 0, 100, 100);
+    private static final double STROKE_WIDTH = 1.5;
+
+    private static final double[] DEFAULT_POLYLINE_POINTS = {0, 0, 100, 100};
+
+    public TransitionView(String color) {
+        this(color, DEFAULT_POLYLINE_POINTS);
     }
 
-    public TransitionView(final double... points) {
-        this(createLine(new PolyLine(points), ONE));
+    public TransitionView(String color, final double... points) {
+        this(createLine(new PolyLine(points), color));
     }
 
     private TransitionView(final Object[] line) {
@@ -48,21 +48,19 @@ public class TransitionView extends WiresConnectorViewExt<TransitionView> {
               (MultiPathDecorator) line[2]);
     }
 
-    static Object[] createLine(AbstractDirectionalMultiPointShape<?> line,
-                               TransitionShapeDef.Direction direction) {
+    static Object[] createLine(AbstractDirectionalMultiPointShape<?> line, String color) {
 
         // The head decorator must be not visible, as connectors are unidirectional.
-        final MultiPath head = BOTH.equals(direction)
-                ? getArrowMultiPath()
-                : new MultiPath();
-        final MultiPath tail = BOTH.equals(direction) || ONE.equals(direction)
-                ? getArrowMultiPath()
-                : new MultiPath();
+        final MultiPath head = new MultiPath();
+        final MultiPath tail = getArrowMultiPath();
+        head.setStrokeColor(color);
+        tail.setStrokeColor(color);
 
         line.setDraggable(true);
         line.setSelectionStrokeOffset(SELECTION_OFFSET);
         line.setHeadOffset(head.getBoundingBox().getHeight());
         line.setTailOffset(tail.getBoundingBox().getHeight());
+        line.asShape().setFillColor(color).setStrokeColor(color).setStrokeWidth(STROKE_WIDTH);
 
         final MultiPathDecorator headDecorator = new MultiPathDecorator(head);
         final MultiPathDecorator tailDecorator = new MultiPathDecorator(tail);
@@ -78,8 +76,6 @@ public class TransitionView extends WiresConnectorViewExt<TransitionView> {
                    DECORATOR_HEIGHT)
                 .L(DECORATOR_WIDTH / 2,
                    0)
-                .Z()
-                .setFillColor(ColorName.BLACK)
-                .setFillAlpha(1);
+                .Z();
     }
 }
