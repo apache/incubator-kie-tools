@@ -24,11 +24,11 @@ import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelo
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
-  KogitoEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
+  WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
@@ -79,7 +79,7 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     this.defaultApiImpl.kogitoNotifications_setNotifications(path, notifications);
   }
 
-  public kogitoWorkspace_newEdit(edit: KogitoEdit): void {
+  public kogitoWorkspace_newEdit(edit: WorkspaceEdit): void {
     this.defaultApiImpl.kogitoWorkspace_newEdit(edit);
   }
 

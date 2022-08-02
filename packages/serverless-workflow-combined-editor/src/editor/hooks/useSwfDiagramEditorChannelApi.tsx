@@ -15,7 +15,7 @@
  */
 
 import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/channel";
-import { EmbeddedEditorRef, KogitoEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
+import { EmbeddedEditorChannelApiImpl, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
@@ -31,10 +31,10 @@ export function useSwfDiagramEditorChannelApi(args: {
 }) {
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
-  const kogitoEditorChannelApiImpl = useMemo(
+  const channelApiImpl = useMemo(
     () =>
       args.embeddedEditorFile &&
-      new KogitoEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
+      new EmbeddedEditorChannelApiImpl(stateControl, args.embeddedEditorFile, args.locale, {
         kogitoEditor_ready: () => {
           args.onEditorReady();
         },
@@ -50,10 +50,10 @@ export function useSwfDiagramEditorChannelApi(args: {
   const channelApi = useMemo(
     () =>
       args.channelApi &&
-      kogitoEditorChannelApiImpl &&
+      channelApiImpl &&
       swfTextEditorEnvelopeApi &&
-      new ServerlessWorkflowDiagramEditorChannelApiImpl(kogitoEditorChannelApiImpl, swfTextEditorEnvelopeApi),
-    [args.channelApi, kogitoEditorChannelApiImpl, swfTextEditorEnvelopeApi]
+      new ServerlessWorkflowDiagramEditorChannelApiImpl(channelApiImpl, swfTextEditorEnvelopeApi),
+    [args.channelApi, channelApiImpl, swfTextEditorEnvelopeApi]
   );
 
   return {

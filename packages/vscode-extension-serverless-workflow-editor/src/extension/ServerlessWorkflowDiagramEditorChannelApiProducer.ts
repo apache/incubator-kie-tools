@@ -15,7 +15,7 @@
  */
 
 import { VsCodeKieEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorChannelApiProducer";
-import { ServerlessWorkflowEditorChannelApiImpl } from "./ServerlessWorkflowEditorChannelApiImpl";
+import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "./ServerlessWorkflowDiagramEditorChannelApiImpl";
 import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
 import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
@@ -30,6 +30,7 @@ import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCata
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "./ServerlessWorkflowTextEditorEnvelopeApiImpl";
 
 export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCodeKieEditorChannelApiProducer {
   constructor(

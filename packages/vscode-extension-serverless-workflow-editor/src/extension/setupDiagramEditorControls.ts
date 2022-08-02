@@ -22,14 +22,14 @@ import {
 } from "./configuration";
 import { COMMAND_IDS } from "./commandIds";
 import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
-import { FileLanguage, getFileLanguage, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
 import {
   getFileLanguage,
   FileLanguage,
   getFileLanguageOrThrow,
+  SwfLanguageServiceChannelApi,
+  SwfOffsetsApi,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfLanguageServiceChannelApi, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import {
@@ -224,7 +224,7 @@ export async function setupDiagramEditorControls(args: {
       return;
     }
 
-    const envelopeServer = args.kieToolsEditorStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
+    const envelopeServer = args.kieEditorsStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
       ServerlessWorkflowDiagramEditorChannelApi,
       ServerlessWorkflowDiagramEditorEnvelopeApi
     >;
