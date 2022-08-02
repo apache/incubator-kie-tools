@@ -20,7 +20,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
