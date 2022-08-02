@@ -263,12 +263,12 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 		return
 	}
 
-	if cfg.Push {
-		fmt.Printf("Created and pushed an image to registry: %s\n", getImage(registry, repository, name, tag))
-	} else {
-		fmt.Printf("Created a local image: %s\n", getImage(registry, repository, name, tag))
-	}
 	out = getImage(registry, repository, name, tag)
+	if cfg.Push {
+		fmt.Printf("Created and pushed an image to registry: %s\n", out)
+	} else {
+		fmt.Printf("Created a local image: %s\n", out)
+	}
 
 	fmt.Println("✅ Build success")
 	return
@@ -293,18 +293,16 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 	imageTagArray := strings.Split(cfg.Image, ":")
 	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
 
-	var registry = common.DEFAULT_REGISTRY
+	var registry = ""
 	if len(cfg.Registry) > 0 {
 		registry = cfg.Registry
-	} else if len(imageArray) > 2 {
+	} else if len(imageArray) > 1 {
 		registry = imageArray[0]
 	}
 
 	var repository = ""
 	if len(cfg.Repository) > 0 {
 		repository = cfg.Repository
-	} else if len(imageArray) == 2 {
-		repository = imageArray[0]
 	} else if len(imageArray) == 3 {
 		repository = imageArray[1]
 	}
@@ -331,7 +329,9 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 }
 
 func getImage(registry string, repository string, name string, tag string) string {
-	if len(repository) == 0 {
+	if len(registry) == 0 && len(repository) == 0 {
+		return fmt.Sprintf("%s:%s", name, tag)
+	} else if len(registry) == 0 || len(repository) == 0 {
 		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
 	}
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)

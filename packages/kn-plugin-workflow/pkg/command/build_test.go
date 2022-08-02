@@ -26,7 +26,7 @@ import (
 )
 
 var imageName = []string{
-	"quay.io/test:latest",
+	"test:latest",
 	"docker.io/test:latest",
 	"docker.io/repo/test:latest",
 	"quay.io/repo/test:0.0.0",

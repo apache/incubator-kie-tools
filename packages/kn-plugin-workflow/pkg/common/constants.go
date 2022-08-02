@@ -36,8 +36,7 @@ const (
 	MAVEN_MINOR_VERSION = 8
 
 	// Default values
-	DEFAULT_REGISTRY = "quay.io"
-	DEFAULT_TAG      = "latest"
+	DEFAULT_TAG = "latest"
 
 	// Filenames
 	WORKFLOW_CONFIG_YML = "workflow.config.yml"
