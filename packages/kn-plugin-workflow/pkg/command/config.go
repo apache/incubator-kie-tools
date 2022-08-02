@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-	"os/exec"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
@@ -95,7 +94,7 @@ func runConfig(cmd *cobra.Command, args []string, dependenciesVersion common.Dep
 		return err
 	}
 
-	updateProjectVersion := exec.Command("mvn",
+	updateProjectVersion := common.ExecCommand("mvn",
 		"versions:set-property",
 		"-Dproperty=quarkus.platform.version",
 		fmt.Sprintf("-DnewVersion=%s", quarkusVersion))

@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-	"os/exec"
 	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -96,7 +95,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	create := exec.Command(
+	create := common.ExecCommand(
 		"mvn",
 		fmt.Sprintf("io.quarkus.platform:quarkus-maven-plugin:%s:create", cfg.QuarkusVersion),
 		"-DprojectGroupId=org.acme",

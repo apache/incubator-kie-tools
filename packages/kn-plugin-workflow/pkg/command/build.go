@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -93,7 +92,8 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runBuild(cmd, args, dependenciesVersion)
+		_, err := runBuild(cmd, args, dependenciesVersion)
+		return err
 	}
 
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
@@ -110,44 +110,45 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
+func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) (out string, err error) {
 	start := time.Now()
 
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("initializing build config: %w", err)
+		err = fmt.Errorf("initializing build config: %w", err)
+		return
 	}
 
-	if err := common.CheckJavaDependencies(); err != nil {
-		return err
+	if err = common.CheckJavaDependencies(); err != nil {
+		return
 	}
 
 	if cfg.JibPodman {
-		if err := common.CheckPodman(); err != nil {
-			return err
+		if err = common.CheckPodman(); err != nil {
+			return
 		}
 	} else if (cfg.Jib && !cfg.Push) || (!cfg.Jib) {
-		if err := common.CheckDocker(); err != nil {
-			return err
+		if err = common.CheckDocker(); err != nil {
+			return
 		}
 	}
 
 	quarkusVersion, _, err := ReadConfig(dependenciesVersion)
 	if err != nil {
-		return err
+		return
 	}
 
-	if err := runAddExtension(cfg, quarkusVersion); err != nil {
-		return err
+	if err = runAddExtension(cfg, quarkusVersion); err != nil {
+		return
 	}
 
-	if err := runBuildImage(cfg); err != nil {
-		return err
+	if out, err = runBuildImage(cfg); err != nil {
+		return
 	}
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Build took: %s \n", finish)
-	return nil
+	return
 }
 
 func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
@@ -226,16 +227,16 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	return nil
 }
 
-func runBuildImage(cfg BuildCmdConfig) error {
+func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 	registry, repository, name, tag := getImageConfig(cfg)
-	if err := checkImageName(name); err != nil {
-		return err
+	if err = checkImageName(name); err != nil {
+		return
 	}
 
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := exec.Command("mvn", "package",
+	build := common.ExecCommand("mvn", "package",
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
@@ -248,7 +249,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		executableName,
 	)
 
-	if err := common.RunCommand(
+	if err = common.RunCommand(
 		build,
 		cfg.Verbose,
 		"build",
@@ -259,7 +260,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 			fmt.Println("If you're using a private registry, check if you're authenticated")
 		}
 		fmt.Println("Check the full logs with the -v | --verbose option")
-		return err
+		return
 	}
 
 	if cfg.Push {
@@ -267,9 +268,10 @@ func runBuildImage(cfg BuildCmdConfig) error {
 	} else {
 		fmt.Printf("Created a local image: %s\n", getImage(registry, repository, name, tag))
 	}
+	out = getImage(registry, repository, name, tag)
 
 	fmt.Println("✅ Build success")
-	return nil
+	return
 }
 
 func checkImageName(name string) (err error) {
