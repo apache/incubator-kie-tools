@@ -23,8 +23,8 @@ public interface DiagramApi {
 
     /**
      * Move the cursor in the text editor to a specified node
-     * @param stateName the name of the target node
+     * @param nodeName the name of the target node
      */
-    void onNodeSelected(String stateName);
+    void onNodeSelected(String nodeName);
 
 }

@@ -37,13 +37,13 @@ public class ShapeEventsHandler {
         if (null != event.getCanvasHandler()) {
             if (event.getIdentifiers().size() == 1) {
                 final String uuid = event.getIdentifiers().iterator().next();
-                String stateName = obtainStateName(event.getCanvasHandler(), uuid);
-                diagramApi.onNodeSelected(stateName);
+                String nodeName = obtainNodeName(event.getCanvasHandler(), uuid);
+                diagramApi.onNodeSelected(nodeName);
             }
         }
     }
 
-    private String obtainStateName(CanvasHandler<?,?> handler, String uuid) {
+    private String obtainNodeName(CanvasHandler<?,?> handler, String uuid) {
         Node<?,?> node = handler.getDiagram().getGraph().getNode(uuid);
         Object content = node.getContent();
         if (content instanceof View) {

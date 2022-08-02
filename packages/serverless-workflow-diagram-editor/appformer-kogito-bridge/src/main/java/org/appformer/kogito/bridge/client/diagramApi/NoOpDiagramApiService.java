@@ -22,5 +22,5 @@ package org.appformer.kogito.bridge.client.diagramApi;
 public class NoOpDiagramApiService implements DiagramApi {
 
     @Override
-    public void onNodeSelected(String stateName) {}
+    public void onNodeSelected(String nodeName) {}
 }

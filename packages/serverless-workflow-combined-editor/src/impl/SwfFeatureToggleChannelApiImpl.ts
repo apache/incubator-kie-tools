@@ -22,7 +22,7 @@ export class SwfFeatureToggleChannelApiImpl implements SwfFeatureToggleChannelAp
 
   public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
     return {
-      defaultValue: this.featureToggle ?? { stunnerEnabled: true },
+      defaultValue: this.featureToggle ?? { stunnerEnabled: false },
     };
   }
 }

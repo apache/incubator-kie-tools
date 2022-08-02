@@ -36,7 +36,6 @@ import {
   ServerlessWorkflowDiagramEditorChannelApi,
   ServerlessWorkflowDiagramEditorEnvelopeApi,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 
 const swfJsonOffsets = new SwfJsonOffsets();
 const swfYamlOffsets = new SwfYamlOffsets();

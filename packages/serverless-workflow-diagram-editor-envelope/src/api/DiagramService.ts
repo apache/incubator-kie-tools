@@ -28,7 +28,7 @@ export class DiagramService implements DiagramApi {
 
   /**
    * Event fired when a node is selected
-   * @param stateName the name node
+   * @param nodeName the name node
    */
   public onNodeSelected(nodeName: string) {
     if (!nodeName) {
