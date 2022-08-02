@@ -45,23 +45,30 @@ jobs:
           echo $NON_SOURCE_PATHS
 
           # Setting IFS to empty string will preserve new lines on CHANGED_SOURCE_PATHS
+          IFS_BKP=$IFS
           IFS=
           export CHANGED_SOURCE_PATHS=$(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_PATHS")
           echo "Changed source paths:"
           echo $CHANGED_SOURCE_PATHS
+          IFS=$IFS_BKP
+
+          export CHANGED_SOURCE_PATHS_IN_ROOT=($(echo "$CHANGED_SOURCE_PATHS" | grep -v -e "^packages" -e "^examples"))
+          echo "Changed source paths in root:"
+          echo ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]}
+          printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
             echo 'No source files changed; `CI :: Monorepo (full)` will not run.'
             echo "::set-output name=should_run::false"
+          elif [ ! ${{ github.event.pull_request }} ]; then
+            echo 'Push to the `main` branch happened; `CI :: Monorepo (full)` will run.'
+            echo "::set-output name=should_run::true"
+          elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
+            echo 'No source files changed in root; `CI :: Monorepo (full)` will not run.'
+            echo "::set-output name=should_run::false"
           else
-            export CHANGED_SRC_PATHS_IN_ROOT=$(echo $CHANGED_SOURCE_PATHS | grep -v -e "^packages" -e "^examples" )
-            if [ ${#CHANGED_SRC_PATHS_IN_ROOT[@]} -eq 0 ]; then
-              echo 'No source files changed in root; `CI :: Monorepo (full)` will not run.'
-              echo "::set-output name=should_run::false"
-            else
-              echo 'Source files changed in root; `CI :: Monorepo (full)` will run.'
-              echo "::set-output name=should_run::true"
-            fi
+            echo 'Source files changed in root; `CI :: Monorepo (full)` will run.'
+            echo "::set-output name=should_run::true"
           fi
 
           echo "Done"

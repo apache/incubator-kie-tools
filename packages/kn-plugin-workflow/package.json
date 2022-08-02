@@ -16,8 +16,9 @@
     "build": "run-script-os",
     "build:all": "make build-all",
     "build:linux": "make build-linux",
-    "build:darwin": "make build-darwin-amd",
-    "build:darwin:arm": "make build-darwin-arm",
+    "build:darwin": "make build-darwin",
+    "build:darwin:amd": "make build-darwin-amd64",
+    "build:darwin:arm": "make build-darwin-arm64",
     "build:win32": "make build-win32",
     "build:dev": "rimraf dist && pnpm build",
     "build:prod": "rimraf dist && pnpm build:all"

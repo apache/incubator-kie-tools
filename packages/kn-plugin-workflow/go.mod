@@ -1,4 +1,4 @@
-module github.com/kiegroup/kie-tools/kn-plugin-workflow
+module github.com/kiegroup/kie-tools/packages/kn-plugin-workflow
 
 go 1.17
 
