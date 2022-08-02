@@ -33,6 +33,7 @@
     <quarkus.platform.version>${QUARKUS_PLATFORM_VERSION}</quarkus.platform.version>
     <version.org.kie.kogito>${KOGITO_RUNTIME_VERSION}</version.org.kie.kogito>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <dependency-plugin.version>3.3.0</dependency-plugin.version>
     <version.junit>4.13.1</version.junit>
   </properties>
 
@@ -137,6 +138,11 @@
         <configuration>
           <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>${dependency-plugin.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
