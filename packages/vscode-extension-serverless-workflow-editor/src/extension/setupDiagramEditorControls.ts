@@ -202,7 +202,6 @@ export async function setupDiagramEditorControls(args: {
   }
 
   vscode.window.onDidChangeTextEditorSelection((e) => {
-    // prevent kogitoSwfLanguageService__moveCursorToNode to fire this event
     if (!isEventFiredFromUser(e)) {
       return;
     }
