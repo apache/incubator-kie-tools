@@ -55,7 +55,7 @@
     "@types/chai": "^4.2.17",
     "chai": "^4.3.4",
     "vsce": "^2.6.5",
-    "vscode-extension-tester": "^4.3.0",
+    "vscode-extension-tester": "^4.4.0",
     "vscode-test": "^1.6.1",
     "@vscode/test-web": "^0.0.22",
     "selenium-webdriver": "^4.2.0",

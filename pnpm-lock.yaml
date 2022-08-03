@@ -2713,7 +2713,7 @@ importers:
       mocha-multi-reporters: ^1.5.1
       monaco-editor: ^0.33.0
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.3.0
+      vscode-extension-tester: ^4.4.0
       vscode-test: ^1.6.1
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2745,7 +2745,7 @@ importers:
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       vsce: 2.6.5
-      vscode-extension-tester: 4.3.0_mocha@9.2.0
+      vscode-extension-tester: 4.4.0_mocha@9.2.0
       vscode-test: 1.6.1
 
   packages/vscode-extension-pmml-editor:
@@ -2832,7 +2832,7 @@ importers:
       openapi-types: ^7.0.1
       selenium-webdriver: ^4.2.0
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.3.0
+      vscode-extension-tester: ^4.4.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -2877,7 +2877,7 @@ importers:
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       selenium-webdriver: 4.2.0
       vsce: 2.6.5
-      vscode-extension-tester: 4.3.0_mocha@9.2.0
+      vscode-extension-tester: 4.4.0_mocha@9.2.0
       vscode-test: 1.6.1
 
   packages/vscode-extension-yard-editor:
@@ -2911,7 +2911,7 @@ importers:
       openapi-types: ^7.0.1
       selenium-webdriver: ^4.2.0
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.3.0
+      vscode-extension-tester: ^4.4.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -2950,7 +2950,7 @@ importers:
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       selenium-webdriver: 4.2.0
       vsce: 2.6.5
-      vscode-extension-tester: 4.3.0_mocha@9.2.0
+      vscode-extension-tester: 4.4.0_mocha@9.2.0
       vscode-test: 1.6.1
 
   packages/vscode-java-code-completion:
@@ -21943,9 +21943,9 @@ packages:
       selenium-webdriver: 4.2.0
     dev: true
 
-  /vscode-extension-tester/4.3.0_mocha@9.2.0:
+  registry.npmjs.org/vscode-extension-tester/4.4.0_mocha@9.2.0:
     resolution:
-      { integrity: sha512-Ih12B4j64l/XQMQ4SdWI+UpltzaCmHlX1u9yv9iIIUi/y401jgjQLbIoFxCUNas0SzG767hVjkzKsKbmzFPMXw== }
+      { integrity: sha512-696rp3lC0qsSqHWyrOu7490Osj7u82s7X8k2QMlMCXPVpADW8rg9+wMesCRkv7BrbZ9JGEUda6vKkjsg8T1Q8w== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
