@@ -23,7 +23,7 @@
     "@kie-tools-core/run-script-if": "0.0.0"
   },
   "scripts": {
-    "install": "mvn dependency:go-offline",
+    "install": "mvn -X dependency:go-offline",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "lint": "echo 'Linting'",
     "install:mvnw": "mvn wrapper:wrapper -f ./",
