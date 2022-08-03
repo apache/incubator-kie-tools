@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
@@ -93,7 +92,8 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runBuild(cmd, args, dependenciesVersion)
+		_, err := runBuild(cmd, args, dependenciesVersion)
+		return err
 	}
 
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
@@ -110,44 +110,45 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
+func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) (out string, err error) {
 	start := time.Now()
 
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("initializing build config: %w", err)
+		err = fmt.Errorf("initializing build config: %w", err)
+		return
 	}
 
-	if err := common.CheckJavaDependencies(); err != nil {
-		return err
+	if err = common.CheckJavaDependencies(); err != nil {
+		return
 	}
 
 	if cfg.JibPodman {
-		if err := common.CheckPodman(); err != nil {
-			return err
+		if err = common.CheckPodman(); err != nil {
+			return
 		}
 	} else if (cfg.Jib && !cfg.Push) || (!cfg.Jib) {
-		if err := common.CheckDocker(); err != nil {
-			return err
+		if err = common.CheckDocker(); err != nil {
+			return
 		}
 	}
 
 	quarkusVersion, _, err := ReadConfig(dependenciesVersion)
 	if err != nil {
-		return err
+		return
 	}
 
-	if err := runAddExtension(cfg, quarkusVersion); err != nil {
-		return err
+	if err = runAddExtension(cfg, quarkusVersion); err != nil {
+		return
 	}
 
-	if err := runBuildImage(cfg); err != nil {
-		return err
+	if out, err = runBuildImage(cfg); err != nil {
+		return
 	}
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Build took: %s \n", finish)
-	return nil
+	return
 }
 
 func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
@@ -226,16 +227,16 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	return nil
 }
 
-func runBuildImage(cfg BuildCmdConfig) error {
+func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 	registry, repository, name, tag := getImageConfig(cfg)
-	if err := checkImageName(name); err != nil {
-		return err
+	if err = checkImageName(name); err != nil {
+		return
 	}
 
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := exec.Command("mvn", "package",
+	build := common.ExecCommand("mvn", "package",
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
@@ -248,7 +249,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		executableName,
 	)
 
-	if err := common.RunCommand(
+	if err = common.RunCommand(
 		build,
 		cfg.Verbose,
 		"build",
@@ -259,21 +260,22 @@ func runBuildImage(cfg BuildCmdConfig) error {
 			fmt.Println("If you're using a private registry, check if you're authenticated")
 		}
 		fmt.Println("Check the full logs with the -v | --verbose option")
-		return err
+		return
 	}
 
+	out = getImage(registry, repository, name, tag)
 	if cfg.Push {
-		fmt.Printf("Created and pushed an image to registry: %s\n", getImage(registry, repository, name, tag))
+		fmt.Printf("Created and pushed an image to registry: %s\n", out)
 	} else {
-		fmt.Printf("Created a local image: %s\n", getImage(registry, repository, name, tag))
+		fmt.Printf("Created a local image: %s\n", out)
 	}
 
 	fmt.Println("✅ Build success")
-	return nil
+	return
 }
 
 func checkImageName(name string) (err error) {
-	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
+	matched, err := regexp.MatchString("^[a-z]([-a-z0-9]*[a-z0-9])?$", name)
 	if !matched {
 		fmt.Println(`
 ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
@@ -291,18 +293,16 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 	imageTagArray := strings.Split(cfg.Image, ":")
 	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
 
-	var registry = common.DEFAULT_REGISTRY
+	var registry = ""
 	if len(cfg.Registry) > 0 {
 		registry = cfg.Registry
-	} else if len(imageArray) > 2 {
+	} else if len(imageArray) > 1 {
 		registry = imageArray[0]
 	}
 
 	var repository = ""
 	if len(cfg.Repository) > 0 {
 		repository = cfg.Repository
-	} else if len(imageArray) == 2 {
-		repository = imageArray[0]
 	} else if len(imageArray) == 3 {
 		repository = imageArray[1]
 	}
@@ -329,7 +329,11 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 }
 
 func getImage(registry string, repository string, name string, tag string) string {
-	if len(repository) == 0 {
+	if len(registry) == 0 && len(repository) == 0 {
+		return fmt.Sprintf("%s:%s", name, tag)
+	} else if len(registry) == 0 {
+		return fmt.Sprintf("%s/%s:%s", repository, name, tag)
+	} else if len(repository) == 0 {
 		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
 	}
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
