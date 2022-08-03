@@ -21,7 +21,7 @@
     "build:darwin:arm": "make build-darwin-arm64",
     "build:win32": "make build-win32",
     "build:dev": "rimraf dist && pnpm build",
-    "build:prod": "rimraf dist && pnpm test && pnpm build:all",
+    "build:prod": "rimraf dist && pnpm build:all && pnpm test",
     "test": "go test ./..."
   },
   "devDependencies": {
