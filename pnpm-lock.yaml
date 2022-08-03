@@ -21943,7 +21943,7 @@ packages:
       selenium-webdriver: 4.2.0
     dev: true
 
-  registry.npmjs.org/vscode-extension-tester/4.4.0_mocha@9.2.0:
+  /vscode-extension-tester/4.4.0_mocha@9.2.0:
     resolution:
       { integrity: sha512-696rp3lC0qsSqHWyrOu7490Osj7u82s7X8k2QMlMCXPVpADW8rg9+wMesCRkv7BrbZ9JGEUda6vKkjsg8T1Q8w== }
     hasBin: true
