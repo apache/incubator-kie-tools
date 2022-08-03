@@ -21,6 +21,7 @@ import { ServerlessWorkflowMermaidViewerChannelApi } from "@kie-tools/serverless
 import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { SwfFeatureToggleChannelApi } from "./SwfFeatureToggleChannelApi";
 
+/* TODO: ServerlessWorkflowCombinedEditorChannelApi: Please clean up unused imports. https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935931108  */
 export interface ServerlessWorkflowCombinedEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfFeatureToggleChannelApi,

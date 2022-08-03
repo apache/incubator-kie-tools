@@ -17,6 +17,7 @@
 import { JavaCodeCompletionAccessor } from "./JavaCodeCompletionAccessor";
 import { JavaCodeCompletionClass } from "./JavaCodeCompletionClass";
 
+/* TODO: JavaCodeCompletionApi: javaCodeCompletionService property is typed with an interface that's not an ExposedInteropApi. Can you please extract JavaCodeCompletionExposedInteropApi to its own file and import it there https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935817679 */
 export interface JavaCodeCompletionApi {
   /**
    * Return a list of accessors for a given class. If the class does not exist or if it can't find anything

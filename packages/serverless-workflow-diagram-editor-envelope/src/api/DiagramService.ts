@@ -26,6 +26,7 @@ export class DiagramService implements DiagramApi {
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowDiagramEditorChannelApi>
   ) {}
 
+  /* TODO: DiagramService: redundant comment https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935785094 */
   /**
    * Event fired when a node is selected
    * @param nodeName the name node

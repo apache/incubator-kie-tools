@@ -17,6 +17,7 @@
 /**
  * Api for diagram window interactions.
  */
+/* TODO: DiagramApi: to be renamed to DiagramExposedInteropApi, See any other ExposedInteropApis for reference. https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935817679 */
 export interface DiagramApi {
   /**
    * Event fired when a node is selected

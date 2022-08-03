@@ -275,6 +275,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     console.error("Error setting content on diagram editor");
   }, []);
 
+  /* TODO: ServerlessWorkflowCombinedEditor: memoize this https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935782888 */
   const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
     useSwfDiagramEditorChannelApi({
       channelApi:
@@ -287,6 +288,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>,
     });
 
+  /* TODO: ServerlessWorkflowCombinedEditor: memoize this https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935782888 */
   const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useSwfTextEditorChannelApi({
     channelApi: editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
     locale: props.locale,
