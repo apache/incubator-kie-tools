@@ -20,37 +20,46 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"testing"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 )
 
 type testBuildImage struct {
-	input string
-	cfg   BuildCmdConfig
+	expected string
+	cfg      BuildCmdConfig
 }
 
 var tests = []testBuildImage{
-	{input: "test:latest", cfg: BuildCmdConfig{Image: "test"}},
-	{input: "docker.io/test:latest", cfg: BuildCmdConfig{Image: "docker.io/test:latest"}},
-	{input: "docker.io/repo/test:latest", cfg: BuildCmdConfig{Image: "docker.io/repo/test:latest"}},
-	{input: "quay.io/repo/test:0.0.0", cfg: BuildCmdConfig{Image: "quay.io/repo/test:0.0.0"}},
+	{expected: "test:latest", cfg: BuildCmdConfig{Image: "test"}},
+	{expected: "docker.io/test:latest", cfg: BuildCmdConfig{Image: "docker.io/test:latest"}},
+	{expected: "docker.io/repo/test:latest", cfg: BuildCmdConfig{Image: "docker.io/repo/test:latest"}},
+	{expected: "quay.io/repo/test:0.0.0", cfg: BuildCmdConfig{Image: "quay.io/repo/test:0.0.0"}},
 }
 
-func fakeExecCommand(helperIndex int) func(command string, args ...string) *exec.Cmd {
+func fakeRunBuildImage(testIndex int) func(command string, args ...string) *exec.Cmd {
 	return func(command string, args ...string) *exec.Cmd {
-		cs := []string{"-test.run=TestHelperProcess", "--", command}
+		cs := []string{"-test.run=TestHelperRunBuildImage", "--", command}
 		cs = append(cs, args...)
 		cmd := exec.Command(os.Args[0], cs...)
-		cmd.Env = []string{fmt.Sprintf("GO_WANT_HELPER_PROCESS=%d", helperIndex)}
+		cmd.Env = []string{fmt.Sprintf("GO_TEST_HELPER_RUN_BUILDER_IMAGE=%d", testIndex)}
 		return cmd
 	}
+}
 
+func TestHelperRunBuildImage(t *testing.T) {
+	testIndex, err := strconv.Atoi(os.Getenv("GO_TEST_HELPER_RUN_BUILDER_IMAGE"))
+	if err != nil {
+		return
+	}
+	fmt.Fprintf(os.Stdout, tests[testIndex].expected)
+	os.Exit(0)
 }
 
 func TestRunBuildImage(t *testing.T) {
 	for testIndex, test := range tests {
-		common.ExecCommand = fakeExecCommand(testIndex)
+		common.ExecCommand = fakeRunBuildImage(testIndex)
 		defer func() { common.ExecCommand = exec.Command }()
 
 		out, err := runBuildImage(test.cfg)
@@ -58,26 +67,8 @@ func TestRunBuildImage(t *testing.T) {
 			t.Errorf("Expected nil error, got %#v", err)
 		}
 
-		if string(out) != test.input {
-			t.Errorf("Expected %q, got %q", test.input, out)
+		if string(out) != test.expected {
+			t.Errorf("Expected %q, got %q", test.expected, out)
 		}
-	}
-}
-
-func TestHelperProcess(t *testing.T) {
-	if os.Getenv("GO_WANT_HELPER_PROCESS") == "0" {
-		fmt.Fprintf(os.Stdout, tests[0].input)
-		os.Exit(0)
-	} else if os.Getenv("GO_WANT_HELPER_PROCESS") == "1" {
-		fmt.Fprintf(os.Stdout, tests[1].input)
-		os.Exit(0)
-	} else if os.Getenv("GO_WANT_HELPER_PROCESS") == "2" {
-		fmt.Fprintf(os.Stdout, tests[2].input)
-		os.Exit(0)
-	} else if os.Getenv("GO_WANT_HELPER_PROCESS") == "3" {
-		fmt.Fprintf(os.Stdout, tests[3].input)
-		os.Exit(0)
-	} else {
-		return
 	}
 }
