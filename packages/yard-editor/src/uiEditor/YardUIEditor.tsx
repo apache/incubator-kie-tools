@@ -112,9 +112,9 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
         <Tab eventKey={1} title={<TabTitleText>{i18n.decisionInputsTab.tabTitle}</TabTitleText>}>
           <div className={"decision-input-body"}>
             {yardData?.inputs && yardData?.inputs.length > 0 ? (
-              yardData.inputs.map((input) => {
+              yardData.inputs.map((input, index) => {
                 return (
-                  <>
+                  <div key={index}>
                     <Title headingLevel="h6" size={TitleSizes.md}>
                       {i18n.decisionInputsTab.name}
                     </Title>
@@ -133,7 +133,7 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
                       value={input.type ? input.type : ""}
                     ></TextInput>
                     <Divider />
-                  </>
+                  </div>
                 );
               })
             ) : (
@@ -147,16 +147,17 @@ export const YardUIEditor = ({ file, isReadOnly }: Props) => {
         <Tab eventKey={2} title={<TabTitleText>{i18n.decisionElementsTab.tabTitle}</TabTitleText>}>
           <div className={"decision-element-body"}>
             {yardData?.elements && yardData?.elements.length > 0 ? (
-              yardData.elements.map((element) => {
+              yardData.elements.map((element, index) => {
                 return (
-                  <>
+                  <div className={"boxed-expression"} key={index}>
                     <BoxedExpressionEditor
                       decisionNodeId="_00000000-0000-0000-0000-000000000000"
                       expressionDefinition={generateDecisionExpressionDefinition(element)}
                       dataTypes={types}
+                      clearSupportedOnRootExpression={false}
                     />
                     <Divider />
-                  </>
+                  </div>
                 );
               })
             ) : (

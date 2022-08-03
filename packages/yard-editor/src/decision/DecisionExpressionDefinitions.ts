@@ -68,8 +68,8 @@ function generateDecisionTableRule(rules: string[][], inputLength: number | unde
     decisionTableRules.push({
       annotationEntries: [""],
       id: index.toString(),
-      inputEntries: rule.slice(0, inputLength),
-      outputEntries: rule.slice(inputLength),
+      inputEntries: rule.slice(0, l),
+      outputEntries: rule.slice(l),
     });
     index++;
   });
