@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import * as jsonc from "jsonc-parser";
 import { SwfRef, swfRefValidationMap } from "./swfRefValidationMap";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { Diagnostic, TextDocument } from "vscode-json-languageservice";
@@ -25,7 +24,9 @@ export function doRefValidation(args: { textDocument: TextDocument; rootNode: Sw
     // here, we assume that all source nodes return terminal values.
     // i.e. a source node will never be an "object"
     const sourceNodeValues = new Set(
-      findNodesAtLocation(args.rootNode, src.path).flatMap((node) => jsonc.getNodeValue(node))
+      findNodesAtLocation(args.rootNode, src.path)
+        .filter((node) => node?.type === "string")
+        .flatMap((node) => node.value)
     );
 
     return refs.flatMap((ref) =>
@@ -66,7 +67,7 @@ export function doRefValidation(args: { textDocument: TextDocument; rootNode: Sw
   });
 }
 
-function areArraysOfMatchingType(args: { ref: SwfRef; refNode: jsonc.Node }) {
+function areArraysOfMatchingType(args: { ref: SwfRef; refNode: SwfLsNode }) {
   return (
     args.ref.isArray &&
     args.refNode.type === "array" &&
