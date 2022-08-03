@@ -16,7 +16,7 @@
     "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
     "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run -t insider --yarn -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
-    "pack:prod": "vsce package --githubBranch main  --yarn -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
     "compile": "webpack --env dev",
     "watch": "webpack --env dev",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
@@ -50,13 +50,26 @@
     "@kie-tools-core/webpack-base": "0.0.0",
     "@kie-tools/build-env": "0.0.0",
     "@kie-tools/serverless-workflow-diagram-editor": "0.0.0",
-    "monaco-editor-webpack-plugin": "^7.0.1"
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "@types/vscode": "^1.66.0",
+    "@types/chai": "^4.2.17",
+    "chai": "^4.3.4",
+    "vsce": "^2.6.5",
+    "vscode-extension-tester": "^4.3.0",
+    "vscode-test": "^1.6.1",
+    "@vscode/test-web": "^0.0.22",
+    "selenium-webdriver": "^4.2.0",
+    "@types/selenium-webdriver": "^4.1.1",
+    "mocha": "^9.2.0",
+    "mocha-jenkins-reporter": "^0.4.5",
+    "mocha-multi-reporters": "^1.5.1",
+    "@types/mocha": "^8.2.2"
   },
   "icon": "icon.png",
   "main": "./dist/extension/extension.js",
   "browser": "./dist/extension/extensionWeb.js",
   "engines": {
-    "vscode": "^1.46.0"
+    "vscode": "^1.66.0"
   },
   "categories": [
     "Other"

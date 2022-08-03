@@ -15,6 +15,11 @@
  */
 
 module.exports = {
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.tests.json",
+    },
+  },
   reporters: ["default"],
   moduleDirectories: ["node_modules"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],

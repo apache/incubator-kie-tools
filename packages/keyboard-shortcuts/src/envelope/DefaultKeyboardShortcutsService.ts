@@ -93,8 +93,8 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsService
   public registerKeyDownThenUp(
     combination: string,
     label: string,
-    onKeyDown: (target: EventTarget | null) => Thenable<void>,
-    onKeyUp: (target: EventTarget | null) => Thenable<void>,
+    onKeyDown: (target: EventTarget | null) => Promise<void>,
+    onKeyUp: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
     console.debug(`Registering shortcut (down/up) for ${combination} - ${label}: ${opts?.repeat}`);
@@ -141,7 +141,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsService
   public registerKeyPress(
     combination: string,
     label: string,
-    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
     console.debug(`Registering shortcut (press) for ${combination} - ${label}: ${opts?.repeat}`);
@@ -175,7 +175,7 @@ export class DefaultKeyboardShortcutsService implements KeyboardShortcutsService
 
   public registerKeyPressOnce(
     combination: string,
-    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ) {
     const id = this.registerKeyPress(
