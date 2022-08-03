@@ -19,6 +19,7 @@ package v1alpha1
 import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
 )
 
@@ -122,7 +123,7 @@ const (
 	RpcFunctionType        FunctionType = "rpc"
 	GraphQLFunctionType    FunctionType = "graphql"
 	ODataFunctionType      FunctionType = "odata"
-	ExpressionFunctionType FunctionType = "odata"
+	ExpressionFunctionType FunctionType = "expression"
 )
 
 type Function struct {
@@ -157,9 +158,54 @@ const (
 
 type ActionMode string
 
-//TODO: Define ActionMode values (Should actions be performed sequentially or in parallel?)
+const (
+	SequentialActionMode ActionMode = "sequential"
+	ParallelActionMode   ActionMode = "parallel"
+)
+
+type InvokeTye string
+
+const (
+	SyncInvokeType  InvokeTye = "sync"
+	AsyncInvokeType InvokeTye = "async"
+)
+
+type EventRef struct {
+	ProduceEventRef     string `json:"produceEventRef"`
+	ConsumeEventRef     string `json:"consumeEventRef,omitempty"`
+	ConsumeEventTimeout string `json:"consumeEventTimeout,omitempty"`
+	Data                string `json:"data,omitempty"`
+	//TODO Define a custom type for ContextAttribute
+	ContextAttributes map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
+	Invoke            InvokeTye                            `json:"invoke,omitempty"`
+}
+
+type ActionDataFilter struct {
+	FromStateData string `json:"fromStateData,omitempty"`
+	UseResults    bool   `json:"useResults,omitempty"`
+	Results       string `json:"results,omitempty"`
+	ToStateData   string `json:"toStateData,omitempty"`
+}
+
+// Sleep ...
+type Sleep struct {
+	// Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
+	Before string `json:"before,omitempty"`
+	// After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
+	After string `json:"after,omitempty"`
+}
 
 type Action struct {
+	Name               string           `json:"name"`
+	FunctionRef        string           `json:"functionRef,omitempty"`
+	EventRef           EventRef         `json:"eventRef,omitempty"`
+	SubFlowRef         string           `json:"subFlowRef,omitempty"`
+	RetryRef           string           `json:"retryRef,omitempty"`
+	NonRetryableErrors []string         `json:"nonRetryableErrors,omitempty"`
+	RetryableErrors    []string         `json:"retryableErrors,omitempty"`
+	ActionDataFilter   ActionDataFilter `json:"actionDataFilter,omitempty"`
+	Sleep              Sleep            `json:"sleep,omitempty"`
+	Condition          bool             `json:"condition,omitempty"`
 }
 
 type CompletionType string
@@ -195,6 +241,18 @@ type State struct {
 	BatchSize        int            `json:"batchSize,omitempty"`
 	Mode             IterationMode  `json:"mode,omitempty"`
 	EventRef         string         `json:"eventRef,omitempty"`
+	//TODO: Define a type for EventDataFilter object
+	EventDataFilter string `json:"eventDataFilter,omitempty"`
+	//TODO: Define a type for Timeouts object
+	Timeouts string `json:"timeouts,omitempty"`
+	//TODO: Define a type for Transition object
+	Transition string `json:"transition,omitempty"`
+	//TODO: Define a type for ErrorHandling object
+	OnErrors            []string `json:"onErrors,omitempty"`
+	End                 bool     `json:"end,omitempty"`
+	CompensatedBy       string   `json:"compensatedBy,omitempty"`
+	UsedForCompensation string   `json:"usedForCompensation,omitempty"`
+	Metadata            Metadata `json:"metadata,omitempty"`
 }
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
