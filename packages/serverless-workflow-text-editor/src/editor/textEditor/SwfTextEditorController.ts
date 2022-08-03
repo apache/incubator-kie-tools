@@ -178,13 +178,11 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
   public onMouseDown(event: editor.IEditorMouseEvent): void {
     const position = event.target.position;
-
     if (!position) {
       return;
     }
 
     const offset = this.editor?.getModel()?.getOffsetAt(position);
-
     if (!offset) {
       return;
     }
@@ -192,7 +190,6 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.swfOffsetsApi.parseContent(this.getContent());
 
     const nodeName = this.swfOffsetsApi.getStateNameFromOffset(offset);
-
     if (!nodeName) {
       return;
     }
