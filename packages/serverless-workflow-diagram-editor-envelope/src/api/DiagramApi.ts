@@ -20,7 +20,7 @@
 export interface DiagramApi {
   /**
    * Event fired when a node is selected
-   * @param nodeName the name node
+   * @param nodeName the name of the node
    */
   onNodeSelected: (nodeName: string) => void;
 }
