@@ -398,6 +398,86 @@ describe("test JSON refValidation method against source and target paths", () =>
       },
     ]);
   });
+
+  test("check results passing array of values to functions array", () => {
+    const { content } = trim(`
+{
+  "functions": [
+    {
+      "name": ["myFunc"],
+      "operation": "./specs/myService#myFunc",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        }
+      ]
+    },
+  ]
+}
+            `);
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+      {
+        message: "Missing 'myFunc' in 'functions'",
+        range: { end: { character: 30, line: 16 }, start: { character: 22, line: 16 } },
+      },
+    ]);
+  });
+
+  test("check results passing array of values to errors array", () => {
+    const { content } = trim(`
+{
+  "functions": [
+    {
+      "name": "MyFirstFunction",
+      "operation": "./specs/myService#MyFirstFunction",
+      "type": "rest"
+    },
+    {
+      "name": "MySecondFunction",
+      "operation": "./specs/myService#MySecondFunction",
+      "type": "rest"
+    }
+  ],
+  "errors": [
+    {
+      "name": ["SomeErrorOne"],
+      "code": "404",
+      "description": "Server has not found anything matching the provided service endpoint information"
+    }
+  ],
+  "retries": [
+    {
+      "name": "FirstRetryStrategy",
+      "delay": "PT1M",
+      "maxAttempts": 5
+    }
+  ],
+  "states": [{
+    "actions": [{
+      "functionRef": "MyFirstFunction",
+      "retryRef": "FirstRetryStrategy",
+      "retryableErrors": ["SomeErrorOne"]
+    }]
+  }],
+}
+        `);
+    expect(doRefValidation({ textDocument: textDoc(content), rootNode: jsonc.parseTree(content)! })).toEqual([
+      {
+        message: "Missing 'SomeErrorOne' in 'errors'",
+        range: { end: { character: 40, line: 31 }, start: { character: 26, line: 31 } },
+      },
+    ]);
+  });
 });
 
 describe("test YAML refValidation method against source and target paths", () => {
