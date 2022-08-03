@@ -275,7 +275,7 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 }
 
 func checkImageName(name string) (err error) {
-	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
+	matched, err := regexp.MatchString("^[a-z]([-a-z0-9]*[a-z0-9])?$", name)
 	if !matched {
 		fmt.Println(`
 ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
@@ -331,7 +331,9 @@ func getImageConfig(cfg BuildCmdConfig) (string, string, string, string) {
 func getImage(registry string, repository string, name string, tag string) string {
 	if len(registry) == 0 && len(repository) == 0 {
 		return fmt.Sprintf("%s:%s", name, tag)
-	} else if len(registry) == 0 || len(repository) == 0 {
+	} else if len(registry) == 0 {
+		return fmt.Sprintf("%s/%s:%s", repository, name, tag)
+	} else if len(repository) == 0 {
 		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
 	}
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)

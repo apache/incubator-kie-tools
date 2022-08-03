@@ -27,15 +27,30 @@ import (
 )
 
 type testBuildImage struct {
+	input    BuildCmdConfig
 	expected string
-	cfg      BuildCmdConfig
 }
 
-var tests = []testBuildImage{
-	{expected: "test:latest", cfg: BuildCmdConfig{Image: "test"}},
-	{expected: "docker.io/test:latest", cfg: BuildCmdConfig{Image: "docker.io/test:latest"}},
-	{expected: "docker.io/repo/test:latest", cfg: BuildCmdConfig{Image: "docker.io/repo/test:latest"}},
-	{expected: "quay.io/repo/test:0.0.0", cfg: BuildCmdConfig{Image: "quay.io/repo/test:0.0.0"}},
+var testsRunBuildImageSuccess = []testBuildImage{
+	{input: BuildCmdConfig{Image: "test"}, expected: "test:latest"},
+	{input: BuildCmdConfig{Image: "docker.io/test:latest"}, expected: "docker.io/test:latest"},
+	{input: BuildCmdConfig{Image: "docker.io/repo/test:latest"}, expected: "docker.io/repo/test:latest"},
+	{input: BuildCmdConfig{Image: "quay.io/repo/test:0.0.0"}, expected: "quay.io/repo/test:0.0.0"},
+
+	{input: BuildCmdConfig{Image: "test", ImageName: "abcd"}, expected: "abcd:latest"},
+	{input: BuildCmdConfig{Image: "docker.io/test", Registry: "quay.io"}, expected: "quay.io/test:latest"},
+	{input: BuildCmdConfig{Image: "test", Repository: "myuser"}, expected: "myuser/test:latest"},
+	{input: BuildCmdConfig{Image: "quay.io/test", Repository: "myuser"}, expected: "quay.io/myuser/test:latest"},
+	{input: BuildCmdConfig{Image: "test:0.0.0", Tag: "0.0.1"}, expected: "test:0.0.1"},
+}
+
+var testsRunBuildImageFail = []testBuildImage{
+	{input: BuildCmdConfig{Image: ""}, expected: ""},
+	{input: BuildCmdConfig{Image: "1"}, expected: ""},
+	{input: BuildCmdConfig{Image: "-test"}, expected: ""},
+	{input: BuildCmdConfig{Image: "test.abc"}, expected: ""},
+	{input: BuildCmdConfig{Image: "myuser/1"}, expected: ""},
+	{input: BuildCmdConfig{Image: "test", ImageName: "1"}, expected: ""},
 }
 
 func fakeRunBuildImage(testIndex int) func(command string, args ...string) *exec.Cmd {
@@ -53,22 +68,35 @@ func TestHelperRunBuildImage(t *testing.T) {
 	if err != nil {
 		return
 	}
-	fmt.Fprintf(os.Stdout, tests[testIndex].expected)
+	fmt.Fprintf(os.Stdout, testsRunBuildImageSuccess[testIndex].expected)
 	os.Exit(0)
 }
 
-func TestRunBuildImage(t *testing.T) {
-	for testIndex, test := range tests {
+func TestRunBuildImage_Success(t *testing.T) {
+	for testIndex, test := range testsRunBuildImageSuccess {
 		common.ExecCommand = fakeRunBuildImage(testIndex)
 		defer func() { common.ExecCommand = exec.Command }()
 
-		out, err := runBuildImage(test.cfg)
+		out, err := runBuildImage(test.input)
 		if err != nil {
 			t.Errorf("Expected nil error, got %#v", err)
 		}
 
 		if string(out) != test.expected {
 			t.Errorf("Expected %q, got %q", test.expected, out)
+		}
+	}
+}
+
+func TestRunBuildImage_Fail(t *testing.T) {
+	for testIndex, test := range testsRunBuildImageFail {
+		common.ExecCommand = fakeRunBuildImage(testIndex)
+		defer func() { common.ExecCommand = exec.Command }()
+
+		out, err := runBuildImage(test.input)
+		if err == nil {
+			t.Errorf("Expected error, got %#v", out)
+
 		}
 	}
 }
