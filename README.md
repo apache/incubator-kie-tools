@@ -1,4 +1,4 @@
-# kogito-serverless-operator
+# Kogito Serverless Workflow Operator
 Kogito Serverless Workflow CRD PoC
 
 ## Description
