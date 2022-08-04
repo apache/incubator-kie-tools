@@ -39,7 +39,7 @@ const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
   "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
 );
 
-const ORIGINAL_PACKAGE_JSON = require("../package.json");
+const ORIGINAL_ROOT_PACKAGE_JSON = require("../package.json");
 
 // MAIN
 
@@ -181,7 +181,7 @@ async function updateJavaAutocompletionPluginManifestFile(version) {
   console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
   const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
   const newManifestFile = manifestFile.replace(
-    `Bundle-Version: ${ORIGINAL_PACKAGE_JSON.version}`,
+    `Bundle-Version: ${ORIGINAL_ROOT_PACKAGE_JSON.version}`,
     `Bundle-Version: ${version}`
   );
   fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);
