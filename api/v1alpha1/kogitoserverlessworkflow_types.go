@@ -171,59 +171,42 @@ const (
 )
 
 type EventRef struct {
-	ProduceEventRef     string `json:"produceEventRef"`
-	ConsumeEventRef     string `json:"consumeEventRef,omitempty"`
-	ConsumeEventTimeout string `json:"consumeEventTimeout,omitempty"`
-	Data                string `json:"data,omitempty"`
+	// +kubebuilder:validation:Required
+	ProduceEventRef     string  `json:"produceEventRef"`
+	ConsumeEventRef     *string `json:"consumeEventRef,omitempty"`
+	ConsumeEventTimeout *string `json:"consumeEventTimeout,omitempty"`
+	Data                *string `json:"data,omitempty"`
 	//TODO Define a custom type for ContextAttribute
-	ContextAttributes map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
-	Invoke            InvokeTye                            `json:"invoke,omitempty"`
+	ContextAttributes *map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
+	Invoke            *InvokeTye                            `json:"invoke,omitempty"`
 }
 
 type ActionDataFilter struct {
-	// +optional
 	FromStateData *string `json:"fromStateData,omitempty"`
-	// +optional
-	UseResults *bool `json:"useResults,omitempty"`
-	// +optional
-	Results *string `json:"results,omitempty"`
-	// +optional
-	ToStateData *string `json:"toStateData,omitempty"`
+	UseResults    *bool   `json:"useResults,omitempty"`
+	Results       *string `json:"results,omitempty"`
+	ToStateData   *string `json:"toStateData,omitempty"`
 }
 
 // Sleep ...
 type Sleep struct {
 	// Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
-	// +optional
 	Before *string `json:"before,omitempty"`
 	// After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
-	// +optional
 	After *string `json:"after,omitempty"`
 }
 
 type Action struct {
-	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:Optional
-	// +optional
-	Name *string `json:"name"`
-	// +optional
-	FunctionRef *string `json:"functionRef,omitempty"`
-	// +optional
-	EventRef *EventRef `json:"eventRef,omitempty"`
-	// +optional
-	SubFlowRef *string `json:"subFlowRef,omitempty"`
-	// +optional
-	RetryRef *string `json:"retryRef,omitempty"`
-	// +optional
-	NonRetryableErrors *[]string `json:"nonRetryableErrors,omitempty"`
-	// +optional
-	RetryableErrors *[]string `json:"retryableErrors,omitempty"`
-	// +optional
-	ActionDataFilter *ActionDataFilter `json:"actionDataFilter,omitempty"`
-	// +optional
-	Sleep *Sleep `json:"sleep,omitempty"`
-	// +optional
-	Condition *bool `json:"condition,omitempty"`
+	Name               *string           `json:"name"`
+	FunctionRef        *string           `json:"functionRef,omitempty"`
+	EventRef           *EventRef         `json:"eventRef,omitempty"`
+	SubFlowRef         *string           `json:"subFlowRef,omitempty"`
+	RetryRef           *string           `json:"retryRef,omitempty"`
+	NonRetryableErrors *[]string         `json:"nonRetryableErrors,omitempty"`
+	RetryableErrors    *[]string         `json:"retryableErrors,omitempty"`
+	ActionDataFilter   *ActionDataFilter `json:"actionDataFilter,omitempty"`
+	Sleep              *Sleep            `json:"sleep,omitempty"`
+	Condition          *bool             `json:"condition,omitempty"`
 }
 
 type CompletionType struct{}
