@@ -23,7 +23,7 @@ const srcPackageNames = process.argv.slice(3);
 function main() {
   if (!targetDir || !srcPackageNames || srcPackageNames.length === 0) {
     console.error(
-      "[find-packages-dependencies] Usage 'node find_packages_dependencies.js [graph-json-dir-path] [src-pkg-name]'"
+      "[list-packages-dependencies] Usage 'node list_packages_dependencies.js [graph-json-dir-path] [src-pkg-name]'"
     );
     process.exit(1);
   }
@@ -33,7 +33,7 @@ function main() {
 
   const notFoundPackages = srcPackageNames.filter((p) => !packagesMap.has(p));
   if (notFoundPackages.length > 0) {
-    console.error("[find-packages-dependencies] Packages not found:");
+    console.error("[list-packages-dependencies] Packages not found:");
     console.error(notFoundPackages.join("\n"));
     process.exit(1);
   }
