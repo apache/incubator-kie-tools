@@ -1,0 +1,42 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+    operators.operatorframework.io/builder: operator-sdk-v1.22.2
+    operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+  name: kogito-serverless-operator.v0.0.1
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions: {}
+  description: Kogito Serverless Workflow Operator
+  displayName: kogito-serverlessworkflow-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: []
+    strategy: deployment
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - kogito
+  - serverless
+  - serverlessworkflow
+  links:
+  - name: Kogito Serverless Operator
+    url: https://kogito-serverless-operator.domain
+  maturity: alpha
+  provider:
+    name: kogito-serverlessworkflow-operator
+  version: 0.0.1
