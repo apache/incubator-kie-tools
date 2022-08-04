@@ -196,33 +196,65 @@ type Sleep struct {
 }
 
 type Action struct {
-	Name               string           `json:"name"`
-	FunctionRef        string           `json:"functionRef,omitempty"`
-	EventRef           EventRef         `json:"eventRef,omitempty"`
-	SubFlowRef         string           `json:"subFlowRef,omitempty"`
-	RetryRef           string           `json:"retryRef,omitempty"`
-	NonRetryableErrors []string         `json:"nonRetryableErrors,omitempty"`
-	RetryableErrors    []string         `json:"retryableErrors,omitempty"`
-	ActionDataFilter   ActionDataFilter `json:"actionDataFilter,omitempty"`
-	Sleep              Sleep            `json:"sleep,omitempty"`
-	Condition          bool             `json:"condition,omitempty"`
+	// +optional
+	Name *string `json:"name"`
+	// +optional
+	FunctionRef *string `json:"functionRef,omitempty"`
+	// +optional
+	EventRef *EventRef `json:"eventRef,omitempty"`
+	// +optional
+	SubFlowRef *string `json:"subFlowRef,omitempty"`
+	// +optional
+	RetryRef *string `json:"retryRef,omitempty"`
+	// +optional
+	NonRetryableErrors *[]string `json:"nonRetryableErrors,omitempty"`
+	// +optional
+	RetryableErrors *[]string `json:"retryableErrors,omitempty"`
+	// +optional
+	ActionDataFilter *ActionDataFilter `json:"actionDataFilter,omitempty"`
+	// +optional
+	Sleep *Sleep `json:"sleep,omitempty"`
+	// +optional
+	Condition *bool `json:"condition,omitempty"`
 }
 
-type CompletionType string
+type CompletionType struct{}
 
 //TODO: Define CompletionType values (Option types on how to complete branch execution. Default is "allOf")
 
-type IterationMode string
+type IterationMode struct{}
 
 //TODO: Define IterationMode values (Specifies how iterations are to be performed (sequentially or in parallel). Default is parallel)
 
+type EventDataFilter struct{}
+
+//TODO: Define EventDataFilter (Callback EventDataFilter definition)
+
+type Timeouts struct{}
+
+//TODO: Define Timeouts (State specific timeout settings)
+
+type StateDataFilter struct{}
+
+//TODO: Define StateDataFilter (State data filter definition)
+
+type Transition struct{}
+
+//TODO: Define Transition
+
 type State struct {
-	Name       string     `json:"name"`
-	Type       StateType  `json:"type"`
-	Exclusive  bool       `json:"exclusive,omitempty"`
-	ActionMode ActionMode `json:"actionMode,omitempty"`
-	Actions    []Action   `json:"actions,omitempty"`
-	Data       []byte     `json:"data,omitempty"`
+	// +kubebuilder:validation:Required
+	// +kubebuilder:validation:Optional
+	Name string `json:"name"`
+	// +kubebuilder:validation:Enum:=event;operation;switch;sleep;parallel;inject;foreach
+	Type StateType `json:"type"`
+	// +optional
+	Exclusive *bool `json:"exclusive,omitempty"`
+	// +optional
+	ActionMode *ActionMode `json:"actionMode,omitempty"`
+	// +optional
+	Actions *[]Action `json:"actions,omitempty"`
+	Data    []byte    `json:"data,omitempty"`
 	//TODO: Define a type for DataCondition objects
 	DataConditions []string `json:"dataConditions,omitempty"`
 	//TODO: Define a type for EventContitions objects
@@ -230,29 +262,40 @@ type State struct {
 	//TODO: Define a type for DefaultCondition object
 	DefaultCondition string `json:"defaultCondition,omitempty"`
 	//TODO: Double-check that we can use the Event type here
-	OnEvents         []Event        `json:"onEvents,omitempty"`
-	Duration         string         `json:"duration,omitempty"`
-	Branches         []string       `json:"branches,omitempty"`
-	CompletionType   CompletionType `json:"completionType,omitempty"`
-	NumCompleted     int            `json:"numCompleted,omitempty"`
-	InputCollection  string         `json:"inputCollection,omitempty"`
-	OutputCollection string         `json:"outputCollection,omitempty"`
-	IterationParam   string         `json:"iterationParam,omitempty"`
-	BatchSize        int            `json:"batchSize,omitempty"`
-	Mode             IterationMode  `json:"mode,omitempty"`
-	EventRef         string         `json:"eventRef,omitempty"`
-	//TODO: Define a type for EventDataFilter object
-	EventDataFilter string `json:"eventDataFilter,omitempty"`
-	//TODO: Define a type for Timeouts object
-	Timeouts string `json:"timeouts,omitempty"`
-	//TODO: Define a type for Transition object
-	Transition string `json:"transition,omitempty"`
-	//TODO: Define a type for ErrorHandling object
-	OnErrors            []string `json:"onErrors,omitempty"`
-	End                 bool     `json:"end,omitempty"`
-	CompensatedBy       string   `json:"compensatedBy,omitempty"`
-	UsedForCompensation string   `json:"usedForCompensation,omitempty"`
-	Metadata            Metadata `json:"metadata,omitempty"`
+	OnEvents []Event  `json:"onEvents,omitempty"`
+	Duration string   `json:"duration,omitempty"`
+	Branches []string `json:"branches,omitempty"`
+	// +optional
+	CompletionType CompletionType `json:"completionType,omitempty"`
+	// +optional
+	NumCompleted     *int   `json:"numCompleted,omitempty"`
+	InputCollection  string `json:"inputCollection,omitempty"`
+	OutputCollection string `json:"outputCollection,omitempty"`
+	// +optional
+	IterationParam *string `json:"iterationParam,omitempty"`
+	// +optional
+	BatchSize *int `json:"batchSize,omitempty"`
+	// +optional
+	Mode     IterationMode `json:"mode,omitempty"`
+	EventRef string        `json:"eventRef,omitempty"`
+	// +optional
+	EventDataFilter *EventDataFilter `json:"eventDataFilter,omitempty"`
+	// +optional
+	Timeouts *Timeouts `json:"timeouts,omitempty"`
+	// +optional
+	StateDataFilter *StateDataFilter `json:"stateDataFilter,omitempty"`
+	// +optional
+	Transition *Transition `json:"transition,omitempty"`
+	// +optional
+	OnErrors *[]string `json:"onErrors,omitempty"`
+	// +optional
+	End *bool `json:"end,omitempty"`
+	// +optional
+	CompensatedBy *string `json:"compensatedBy,omitempty"`
+	// +optional
+	UsedForCompensation *bool `json:"usedForCompensation,omitempty"`
+	// +optional
+	Metadata *Metadata `json:"metadata,omitempty"`
 }
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
@@ -292,10 +335,9 @@ type KogitoServerlessWorkflowStatus struct {
 	Address    duckv1.Addressable `json:"address,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:status
-
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
+//+kubebuilder:object:root=true
+//+kubebuilder:subresource:items
 type KogitoServerlessWorkflow struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -304,9 +346,8 @@ type KogitoServerlessWorkflow struct {
 	Status KogitoServerlessWorkflowStatus `json:"status,omitempty"`
 }
 
-//+kubebuilder:object:root=true
-
 // KogitoServerlessWorkflowList contains a list of KogitoServerlessWorkflow
+//+kubebuilder:object:root=true
 type KogitoServerlessWorkflowList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

@@ -42,7 +42,93 @@ spec:
                   name:
                     type: string
                   properties:
-                    description: 'TODO: AuthProperties to be defined'
+                    properties:
+                      basic:
+                        properties:
+                          metadata:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - key
+                              - value
+                              type: object
+                            type: array
+                          password:
+                            type: string
+                          username:
+                            type: string
+                        required:
+                        - password
+                        - username
+                        type: object
+                      bearer:
+                        properties:
+                          metadata:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - key
+                              - value
+                              type: object
+                            type: array
+                          token:
+                            type: string
+                        required:
+                        - token
+                        type: object
+                      oauth2:
+                        properties:
+                          audiences:
+                            items:
+                              type: string
+                            type: array
+                          basic:
+                            type: string
+                          clientId:
+                            type: string
+                          clientSecret:
+                            type: string
+                          grantType:
+                            type: string
+                          metadata:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - key
+                              - value
+                              type: object
+                            type: array
+                          password:
+                            type: string
+                          requestedIssuer:
+                            type: string
+                          requestedSubject:
+                            type: string
+                          scopes:
+                            items:
+                              type: string
+                            type: array
+                          subjectToken:
+                            type: string
+                          username:
+                            type: string
+                        required:
+                        - clientId
+                        - clientSecret
+                        - grantType
+                        type: object
                     type: object
                   scheme:
                     type: string
@@ -83,14 +169,20 @@ spec:
                 items:
                   properties:
                     correlation:
-                      description: 'TODO: EventCorrelationRule to be defined'
                       items:
+                        properties:
+                          contextAttributeName:
+                            type: string
+                          contextAttributeValue:
+                            type: string
+                        required:
+                        - contextAttributeName
+                        - contextAttributeValue
                         type: object
                       type: array
                     dataOnly:
                       type: boolean
                     kind:
-                      description: 'TODO: Kind should be an Enum'
                       type: string
                     metadata:
                       items:
@@ -222,309 +314,108 @@ spec:
               start:
                 type: string
               states:
-                properties:
-                  actionMode:
-                    type: string
-                  actions:
-                    items:
-                      type: object
-                    type: array
-                  batchSize:
-                    type: integer
-                  branches:
-                    items:
+                items:
+                  properties:
+                    actionMode:
                       type: string
-                    type: array
-                  completionType:
-                    type: string
-                  data:
-                    format: byte
-                    type: string
-                  dataConditions:
-                    description: 'TODO: Define a type for DataCondition objects'
-                    items:
-                      type: string
-                    type: array
-                  defaultCondition:
-                    description: 'TODO: Define a type for DefaultCondition object'
-                    type: string
-                  duration:
-                    type: string
-                  eventConditions:
-                    description: 'TODO: Define a type for EventContitions objects'
-                    items:
-                      type: string
-                    type: array
-                  eventRef:
-                    type: string
-                  exclusive:
-                    type: boolean
-                  inputCollection:
-                    type: string
-                  iterationParam:
-                    type: string
-                  mode:
-                    type: string
-                  name:
-                    type: string
-                  numCompleted:
-                    type: integer
-                  onEvents:
-                    description: 'TODO: Double-check that we can use the Event type
-                      here'
-                    items:
-                      properties:
-                        correlation:
-                          description: 'TODO: EventCorrelationRule to be defined'
-                          items:
-                            type: object
-                          type: array
-                        dataOnly:
-                          type: boolean
-                        kind:
-                          description: 'TODO: Kind should be an Enum'
-                          type: string
-                        metadata:
-                          items:
-                            properties:
-                              key:
-                                type: string
-                              value:
-                                type: string
-                            required:
-                            - key
-                            - value
-                            type: object
-                          type: array
-                        name:
-                          type: string
-                        source:
-                          type: string
-                        type:
-                          type: string
-                      required:
-                      - name
-                      - source
-                      - type
-                      type: object
-                    type: array
-                  outputCollection:
-                    type: string
-                  type:
-                    type: string
-                required:
-                - name
-                - type
-                type: object
-              test:
-                description: BaseWorkflow describes the partial Workflow definition
-                  that does not rely on generic interfaces to make it easy for custom
-                  unmarshalers implementations to unmarshal the common data structure.
-                properties:
-                  annotations:
-                    description: Annotations List of helpful terms describing the
-                      workflows intended purpose, subject areas, or other important
-                      qualities
-                    items:
-                      type: string
-                    type: array
-                  auth:
-                    description: Auth definitions can be used to define authentication
-                      information that should be applied to resources defined in the
-                      operation property of function definitions. It is not used as
-                      authentication information for the function invocation, but
-                      just to access the resource containing the function invocation
-                      information.
-                    properties:
-                      name:
-                        description: Name Unique auth definition name
+                    actions:
+                      items:
+                        type: object
+                      type: array
+                    batchSize:
+                      type: integer
+                    branches:
+                      items:
                         type: string
-                      properties:
-                        description: Properties ...
-                      scheme:
-                        description: Scheme Defines the auth type
-                        type: string
-                    required:
-                    - name
-                    - properties
-                    type: object
-                  autoRetries:
-                    description: AutoRetries If set to true, actions should automatically
-                      be retried on unchecked errors. Default is false
-                    type: boolean
-                  constants:
-                    additionalProperties:
-                      description: RawMessage is a raw encoded JSON value. It implements
-                        Marshaler and Unmarshaler and can be used to delay JSON decoding
-                        or precompute a JSON encoding.
+                      type: array
+                    completionType:
+                      type: string
+                    data:
                       format: byte
                       type: string
-                    description: Constants Workflow constants are used to define static,
-                      and immutable, data which is available to Workflow Expressions.
-                    type: object
-                  dataInputSchema:
-                    description: DataInputSchema URI of the JSON Schema used to validate
-                      the workflow data input
-                    properties:
-                      failOnValidationErrors:
-                        type: boolean
-                      schema:
+                    dataConditions:
+                      description: 'TODO: Define a type for DataCondition objects'
+                      items:
                         type: string
-                    required:
-                    - failOnValidationErrors
-                    - schema
-                    type: object
-                  description:
-                    description: Workflow description
-                    type: string
-                  errors:
-                    description: Errors declarations for this Workflow definition
-                    items:
-                      description: Error declaration for workflow definitions
-                      properties:
-                        code:
-                          description: Code OnError code. Can be used in addition
-                            to the name to help runtimes resolve to technical errors/exceptions.
-                            Should not be defined if error is set to '*'
-                          type: string
-                        description:
-                          description: OnError description
-                          type: string
-                        name:
-                          description: Name Domain-specific error name
-                          type: string
-                      required:
-                      - name
-                      type: object
-                    type: array
-                  expressionLang:
-                    description: Identifies the expression language used for workflow
-                      expressions. Default is 'jq'
-                    type: string
-                  id:
-                    description: Workflow unique identifier
-                    type: string
-                  keepActive:
-                    description: If 'true', workflow instances is not terminated when
-                      there are no active execution paths. Instance can be terminated
-                      via 'terminate end definition' or reaching defined 'execTimeout'
-                    type: boolean
-                  key:
-                    description: Key Domain-specific workflow identifier
-                    type: string
-                  metadata:
-                    description: Metadata custom information shared with the runtime
-                  name:
-                    description: Workflow name
-                    type: string
-                  secrets:
-                    description: Secrets allow you to access sensitive information,
-                      such as passwords, OAuth tokens, ssh keys, etc inside your Workflow
-                      Expressions.
-                    items:
+                      type: array
+                    defaultCondition:
+                      description: 'TODO: Define a type for DefaultCondition object'
                       type: string
-                    type: array
-                  specVersion:
-                    description: Serverless Workflow schema version
-                    type: string
-                  start:
-                    description: Start definition
-                    properties:
-                      schedule:
-                        description: Schedule ...
+                    duration:
+                      type: string
+                    eventConditions:
+                      description: 'TODO: Define a type for EventContitions objects'
+                      items:
+                        type: string
+                      type: array
+                    eventRef:
+                      type: string
+                    exclusive:
+                      type: boolean
+                    inputCollection:
+                      type: string
+                    iterationParam:
+                      type: string
+                    mode:
+                      type: string
+                    name:
+                      type: string
+                    numCompleted:
+                      type: integer
+                    onEvents:
+                      description: 'TODO: Double-check that we can use the Event type
+                        here'
+                      items:
                         properties:
-                          cron:
-                            description: Cron ...
-                            properties:
-                              expression:
-                                description: Repeating interval (cron expression)
-                                  describing when the workflow instance should be
-                                  created
-                                type: string
-                              validUntil:
-                                description: Specific date and time (ISO 8601 format)
-                                  when the cron expression invocation is no longer
-                                  valid
-                                type: string
-                            required:
-                            - expression
-                            type: object
-                          interval:
-                            description: Time interval (must be repeating interval)
-                              described with ISO 8601 format. Declares when workflow
-                              instances will be automatically created.
+                          correlation:
+                            items:
+                              properties:
+                                contextAttributeName:
+                                  type: string
+                                contextAttributeValue:
+                                  type: string
+                              required:
+                              - contextAttributeName
+                              - contextAttributeValue
+                              type: object
+                            type: array
+                          dataOnly:
+                            type: boolean
+                          kind:
                             type: string
-                          timezone:
-                            description: 'Timezone name used to evaluate the interval
-                              & cron-expression. (default: UTC)'
+                          metadata:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - key
+                              - value
+                              type: object
+                            type: array
+                          name:
                             type: string
-                        type: object
-                      stateName:
-                        type: string
-                    required:
-                    - stateName
-                    type: object
-                  timeouts:
-                    description: Timeouts definition for Workflow, State, Action,
-                      Branch, and Event consumption.
-                    properties:
-                      actionExecTimeout:
-                        description: ActionExecTimeout Single actions definition execution
-                          timeout duration (ISO 8601 duration format)
-                        type: string
-                      branchExecTimeout:
-                        description: BranchExecTimeout Single branch execution timeout
-                          duration (ISO 8601 duration format)
-                        type: string
-                      eventTimeout:
-                        description: EventTimeout Timeout duration to wait for consuming
-                          defined events (ISO 8601 duration format)
-                        type: string
-                      stateExecTimeout:
-                        description: StateExecTimeout Total state execution timeout
-                          (including retries) (ISO 8601 duration format)
-                        properties:
-                          single:
-                            description: Single state execution timeout, not including
-                              retries (ISO 8601 duration format)
+                          source:
                             type: string
-                          total:
-                            description: Total state execution timeout, including
-                              retries (ISO 8601 duration format)
+                          type:
                             type: string
                         required:
-                        - total
+                        - name
+                        - source
+                        - type
                         type: object
-                      workflowExecTimeout:
-                        description: WorkflowExecTimeout Workflow execution timeout
-                          duration (ISO 8601 duration format). If not specified should
-                          be 'unlimited'
-                        properties:
-                          duration:
-                            description: Duration Workflow execution timeout duration
-                              (ISO 8601 duration format). If not specified should
-                              be 'unlimited'
-                            type: string
-                          interrupt:
-                            description: If `false`, workflow instance is allowed
-                              to finish current execution. If `true`, current workflow
-                              execution is abrupted.
-                            type: boolean
-                          runBefore:
-                            description: Name of a workflow state to be executed before
-                              workflow instance is terminated
-                            type: string
-                        type: object
-                    type: object
-                  version:
-                    description: Workflow version
-                    type: string
-                required:
-                - id
-                - name
-                - start
-                - version
-                type: object
+                      type: array
+                    outputCollection:
+                      type: string
+                    type:
+                      type: string
+                  required:
+                  - name
+                  - type
+                  type: object
+                type: array
               timeouts:
                 items:
                   properties:
@@ -545,7 +436,6 @@ spec:
             - keepAlive
             - start
             - states
-            - test
             type: object
           status:
             description: KogitoServerlessWorkflowStatus defines the observed state
