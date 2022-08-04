@@ -316,6 +316,7 @@ type KogitoServerlessWorkflowStatus struct {
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:items
+//+k8s:openapi-gen=true
 type KogitoServerlessWorkflow struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -326,6 +327,7 @@ type KogitoServerlessWorkflow struct {
 
 // KogitoServerlessWorkflowList contains a list of KogitoServerlessWorkflow
 //+kubebuilder:object:root=true
+//+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type KogitoServerlessWorkflowList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
