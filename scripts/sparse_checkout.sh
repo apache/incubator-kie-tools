@@ -13,7 +13,7 @@ git checkout $GIT_REPO_BRANCH
 git sparse-checkout set $ALWAYS_INCLUDED_DIRS
 pnpm install-dependencies -F . --frozen-lockfile
 echo "Discovering which packages to fetch for $SRC_PKG_NAME..."
-PKG_DEPS=$(node scripts/list_packages_dependencies.js repo $SRC_PKG_NAME)
+PKG_DEPS=$(pnpm list-packages-dependencies repo $SRC_PKG_NAME)
 echo $PKG_DEPS
 eval "git sparse-checkout set $ALWAYS_INCLUDED_DIRS $PKG_DEPS"
 ls -la packages
