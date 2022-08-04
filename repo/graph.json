@@ -632,413 +632,113 @@
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 }
     ]
   },
-  "serializedPackages": [
-    [
-      "@kie-tools-examples/base64png-editor",
-      { "name": "@kie-tools-examples/base64png-editor", "location": "examples/base64png-editor" }
-    ],
-    [
-      "@kie-tools-examples/base64png-editor-chrome-extension",
-      {
-        "name": "@kie-tools-examples/base64png-editor-chrome-extension",
-        "location": "examples/base64png-editor-chrome-extension"
-      }
-    ],
-    [
-      "kie-tools-examples-base64png-editor-vscode-extension",
-      {
-        "name": "kie-tools-examples-base64png-editor-vscode-extension",
-        "location": "examples/base64png-editor-vscode-extension"
-      }
-    ],
-    [
-      "@kie-tools-examples/ping-pong-view",
-      { "name": "@kie-tools-examples/ping-pong-view", "location": "examples/ping-pong-view" }
-    ],
-    [
-      "@kie-tools-examples/ping-pong-view-angular",
-      { "name": "@kie-tools-examples/ping-pong-view-angular", "location": "examples/ping-pong-view-angular" }
-    ],
-    [
-      "@kie-tools-examples/ping-pong-view-react",
-      { "name": "@kie-tools-examples/ping-pong-view-react", "location": "examples/ping-pong-view-react" }
-    ],
-    [
-      "@kie-tools-examples/todo-list-view",
-      { "name": "@kie-tools-examples/todo-list-view", "location": "examples/todo-list-view" }
-    ],
-    [
-      "kie-tools-examples-todo-list-view-vscode-extension",
-      {
-        "name": "kie-tools-examples-todo-list-view-vscode-extension",
-        "location": "examples/todo-list-view-vscode-extension"
-      }
-    ],
-    ["@kie-tools-examples/webapp", { "name": "@kie-tools-examples/webapp", "location": "examples/webapp" }],
-    ["@kie-tools-core/backend", { "name": "@kie-tools-core/backend", "location": "packages/backend" }],
-    [
-      "@kie-tools/backend-extended-services",
-      { "name": "@kie-tools/backend-extended-services", "location": "packages/backend-extended-services" }
-    ],
-    [
-      "@kie-tools/boxed-expression-component",
-      { "name": "@kie-tools/boxed-expression-component", "location": "packages/boxed-expression-component" }
-    ],
-    ["@kie-tools/build-env", { "name": "@kie-tools/build-env", "location": "packages/build-env" }],
-    [
-      "@kie-tools-core/chrome-extension",
-      { "name": "@kie-tools-core/chrome-extension", "location": "packages/chrome-extension" }
-    ],
-    [
-      "chrome-extension-pack-kogito-kie-editors",
-      {
-        "name": "chrome-extension-pack-kogito-kie-editors",
-        "location": "packages/chrome-extension-pack-kogito-kie-editors"
-      }
-    ],
-    [
-      "chrome-extension-serverless-workflow-editor",
-      {
-        "name": "chrome-extension-serverless-workflow-editor",
-        "location": "packages/chrome-extension-serverless-workflow-editor"
-      }
-    ],
-    ["@kie-tools/cors-proxy-image", { "name": "@kie-tools/cors-proxy-image", "location": "packages/cors-proxy-image" }],
-    ["@kie-tools/dashbuilder", { "name": "@kie-tools/dashbuilder", "location": "packages/dashbuilder" }],
-    [
-      "@kie-tools/dashbuilder-client",
-      { "name": "@kie-tools/dashbuilder-client", "location": "packages/dashbuilder-client" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-api",
-      { "name": "@kie-tools/dashbuilder-component-api", "location": "packages/dashbuilder-component-api" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-assembler",
-      { "name": "@kie-tools/dashbuilder-component-assembler", "location": "packages/dashbuilder-component-assembler" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-dev",
-      { "name": "@kie-tools/dashbuilder-component-dev", "location": "packages/dashbuilder-component-dev" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-echarts",
-      { "name": "@kie-tools/dashbuilder-component-echarts", "location": "packages/dashbuilder-component-echarts" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-echarts-base",
-      {
-        "name": "@kie-tools/dashbuilder-component-echarts-base",
-        "location": "packages/dashbuilder-component-echarts-base"
-      }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-svg-heatmap",
-      {
-        "name": "@kie-tools/dashbuilder-component-svg-heatmap",
-        "location": "packages/dashbuilder-component-svg-heatmap"
-      }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-table",
-      { "name": "@kie-tools/dashbuilder-component-table", "location": "packages/dashbuilder-component-table" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-timeseries",
-      { "name": "@kie-tools/dashbuilder-component-timeseries", "location": "packages/dashbuilder-component-timeseries" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-uniforms",
-      { "name": "@kie-tools/dashbuilder-component-uniforms", "location": "packages/dashbuilder-component-uniforms" }
-    ],
-    [
-      "@kie-tools/dashbuilder-component-victory-charts",
-      {
-        "name": "@kie-tools/dashbuilder-component-victory-charts",
-        "location": "packages/dashbuilder-component-victory-charts"
-      }
-    ],
-    [
-      "@kie-tools/dashbuilder-editor",
-      { "name": "@kie-tools/dashbuilder-editor", "location": "packages/dashbuilder-editor" }
-    ],
-    [
-      "@kie-tools/dashbuilder-images",
-      { "name": "@kie-tools/dashbuilder-images", "location": "packages/dashbuilder-images" }
-    ],
-    [
-      "@kie-tools/dashbuilder-swf-monitoring-dashboard",
-      {
-        "name": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
-        "location": "packages/dashbuilder-swf-monitoring-dashboard"
-      }
-    ],
-    ["@kie-tools/desktop", { "name": "@kie-tools/desktop", "location": "packages/desktop" }],
-    [
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image",
-      {
-        "name": "@kie-tools/dmn-dev-sandbox-deployment-base-image",
-        "location": "packages/dmn-dev-sandbox-deployment-base-image"
-      }
-    ],
-    [
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env",
-      {
-        "name": "@kie-tools/dmn-dev-sandbox-deployment-base-image-env",
-        "location": "packages/dmn-dev-sandbox-deployment-base-image-env"
-      }
-    ],
-    [
-      "@kie-tools/dmn-dev-sandbox-form-webapp",
-      { "name": "@kie-tools/dmn-dev-sandbox-form-webapp", "location": "packages/dmn-dev-sandbox-form-webapp" }
-    ],
-    [
-      "@kie-tools/dmn-dev-sandbox-quarkus",
-      { "name": "@kie-tools/dmn-dev-sandbox-quarkus", "location": "packages/dmn-dev-sandbox-quarkus" }
-    ],
-    ["@kie-tools-core/editor", { "name": "@kie-tools-core/editor", "location": "packages/editor" }],
-    ["@kie-tools-core/envelope", { "name": "@kie-tools-core/envelope", "location": "packages/envelope" }],
-    ["@kie-tools-core/envelope-bus", { "name": "@kie-tools-core/envelope-bus", "location": "packages/envelope-bus" }],
-    [
-      "@kie-tools/extended-services",
-      { "name": "@kie-tools/extended-services", "location": "packages/extended-services" }
-    ],
-    [
-      "@kie-tools/feel-input-component",
-      { "name": "@kie-tools/feel-input-component", "location": "packages/feel-input-component" }
-    ],
-    ["@kie-tools/form", { "name": "@kie-tools/form", "location": "packages/form" }],
-    ["@kie-tools/form-dmn", { "name": "@kie-tools/form-dmn", "location": "packages/form-dmn" }],
-    [
-      "@kie-tools/form-generation-tool",
-      { "name": "@kie-tools/form-generation-tool", "location": "packages/form-generation-tool" }
-    ],
-    ["@kie-tools-core/guided-tour", { "name": "@kie-tools-core/guided-tour", "location": "packages/guided-tour" }],
-    ["@kie-tools-core/i18n", { "name": "@kie-tools-core/i18n", "location": "packages/i18n" }],
-    [
-      "@kie-tools/i18n-common-dictionary",
-      { "name": "@kie-tools/i18n-common-dictionary", "location": "packages/i18n-common-dictionary" }
-    ],
-    [
-      "@kie-tools/image-env-to-json",
-      { "name": "@kie-tools/image-env-to-json", "location": "packages/image-env-to-json" }
-    ],
-    [
-      "@kie-tools/import-java-classes-component",
-      { "name": "@kie-tools/import-java-classes-component", "location": "packages/import-java-classes-component" }
-    ],
-    [
-      "@kie-tools-core/keyboard-shortcuts",
-      { "name": "@kie-tools-core/keyboard-shortcuts", "location": "packages/keyboard-shortcuts" }
-    ],
-    ["@kie-tools/kie-bc-editors", { "name": "@kie-tools/kie-bc-editors", "location": "packages/kie-bc-editors" }],
-    [
-      "@kie-tools/kie-editors-standalone",
-      { "name": "@kie-tools/kie-editors-standalone", "location": "packages/kie-editors-standalone" }
-    ],
-    [
-      "@kie-tools/kie-sandbox-extended-services-image",
-      {
-        "name": "@kie-tools/kie-sandbox-extended-services-image",
-        "location": "packages/kie-sandbox-extended-services-image"
-      }
-    ],
-    ["@kie-tools/kie-sandbox-fs", { "name": "@kie-tools/kie-sandbox-fs", "location": "packages/kie-sandbox-fs" }],
-    [
-      "@kie-tools/kie-sandbox-image",
-      { "name": "@kie-tools/kie-sandbox-image", "location": "packages/kie-sandbox-image" }
-    ],
-    [
-      "@kie-tools/kn-plugin-workflow",
-      { "name": "@kie-tools/kn-plugin-workflow", "location": "packages/kn-plugin-workflow" }
-    ],
-    [
-      "@kie-tools-core/monaco-editor",
-      { "name": "@kie-tools-core/monaco-editor", "location": "packages/monaco-editor" }
-    ],
-    [
-      "@kie-tools-core/notifications",
-      { "name": "@kie-tools-core/notifications", "location": "packages/notifications" }
-    ],
-    ["@kie-tools/online-editor", { "name": "@kie-tools/online-editor", "location": "packages/online-editor" }],
-    [
-      "@kie-tools/openjdk11-mvn-image",
-      { "name": "@kie-tools/openjdk11-mvn-image", "location": "packages/openjdk11-mvn-image" }
-    ],
-    [
-      "@kie-tools/openjdk11-mvn-image-env",
-      { "name": "@kie-tools/openjdk11-mvn-image-env", "location": "packages/openjdk11-mvn-image-env" }
-    ],
-    [
-      "@kie-tools-core/operating-system",
-      { "name": "@kie-tools-core/operating-system", "location": "packages/operating-system" }
-    ],
-    [
-      "@kie-tools-core/patternfly-base",
-      { "name": "@kie-tools-core/patternfly-base", "location": "packages/patternfly-base" }
-    ],
-    ["@kie-tools/pmml-editor", { "name": "@kie-tools/pmml-editor", "location": "packages/pmml-editor" }],
-    [
-      "@kie-tools/pmml-editor-marshaller",
-      { "name": "@kie-tools/pmml-editor-marshaller", "location": "packages/pmml-editor-marshaller" }
-    ],
-    [
-      "@kie-tools-core/run-script-if",
-      { "name": "@kie-tools-core/run-script-if", "location": "packages/run-script-if" }
-    ],
-    [
-      "@kie-tools/serverless-logic-sandbox",
-      { "name": "@kie-tools/serverless-logic-sandbox", "location": "packages/serverless-logic-sandbox" }
-    ],
-    [
-      "@kie-tools/serverless-logic-sandbox-base-image",
-      {
-        "name": "@kie-tools/serverless-logic-sandbox-base-image",
-        "location": "packages/serverless-logic-sandbox-base-image"
-      }
-    ],
-    [
-      "@kie-tools/serverless-logic-sandbox-base-image-env",
-      {
-        "name": "@kie-tools/serverless-logic-sandbox-base-image-env",
-        "location": "packages/serverless-logic-sandbox-base-image-env"
-      }
-    ],
-    [
-      "@kie-tools/serverless-logic-sandbox-deployment-webapp",
-      {
-        "name": "@kie-tools/serverless-logic-sandbox-deployment-webapp",
-        "location": "packages/serverless-logic-sandbox-deployment-webapp"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-combined-editor",
-      {
-        "name": "@kie-tools/serverless-workflow-combined-editor",
-        "location": "packages/serverless-workflow-combined-editor"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-diagram-editor",
-      {
-        "name": "@kie-tools/serverless-workflow-diagram-editor",
-        "location": "packages/serverless-workflow-diagram-editor"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-diagram-editor-envelope",
-      {
-        "name": "@kie-tools/serverless-workflow-diagram-editor-envelope",
-        "location": "packages/serverless-workflow-diagram-editor-envelope"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-language-service",
-      {
-        "name": "@kie-tools/serverless-workflow-language-service",
-        "location": "packages/serverless-workflow-language-service"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-mermaid-viewer",
-      {
-        "name": "@kie-tools/serverless-workflow-mermaid-viewer",
-        "location": "packages/serverless-workflow-mermaid-viewer"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-service-catalog",
-      {
-        "name": "@kie-tools/serverless-workflow-service-catalog",
-        "location": "packages/serverless-workflow-service-catalog"
-      }
-    ],
-    [
-      "@kie-tools/serverless-workflow-text-editor",
-      { "name": "@kie-tools/serverless-workflow-text-editor", "location": "packages/serverless-workflow-text-editor" }
-    ],
-    ["@kie-tools/stunner-editors", { "name": "@kie-tools/stunner-editors", "location": "packages/stunner-editors" }],
-    [
-      "@kie-tools/stunner-editors-dmn-loader",
-      { "name": "@kie-tools/stunner-editors-dmn-loader", "location": "packages/stunner-editors-dmn-loader" }
-    ],
-    ["@kie-tools/text-editor", { "name": "@kie-tools/text-editor", "location": "packages/text-editor" }],
-    [
-      "@kie-tools/uniforms-bootstrap4-codegen",
-      { "name": "@kie-tools/uniforms-bootstrap4-codegen", "location": "packages/uniforms-bootstrap4-codegen" }
-    ],
-    [
-      "@kie-tools/uniforms-patternfly-codegen",
-      { "name": "@kie-tools/uniforms-patternfly-codegen", "location": "packages/uniforms-patternfly-codegen" }
-    ],
-    ["@kie-tools/unitables", { "name": "@kie-tools/unitables", "location": "packages/unitables" }],
-    ["@kie-tools/unitables-dmn", { "name": "@kie-tools/unitables-dmn", "location": "packages/unitables-dmn" }],
-    [
-      "@kie-tools-core/vscode-extension",
-      { "name": "@kie-tools-core/vscode-extension", "location": "packages/vscode-extension" }
-    ],
-    [
-      "vscode-extension-backend",
-      { "name": "vscode-extension-backend", "location": "packages/vscode-extension-backend" }
-    ],
-    [
-      "vscode-extension-bpmn-editor",
-      { "name": "vscode-extension-bpmn-editor", "location": "packages/vscode-extension-bpmn-editor" }
-    ],
-    [
-      "vscode-extension-dmn-editor",
-      { "name": "vscode-extension-dmn-editor", "location": "packages/vscode-extension-dmn-editor" }
-    ],
-    [
-      "vscode-extension-kie-ba-bundle",
-      { "name": "vscode-extension-kie-ba-bundle", "location": "packages/vscode-extension-kie-ba-bundle" }
-    ],
-    [
-      "vscode-extension-kogito-bundle",
-      { "name": "vscode-extension-kogito-bundle", "location": "packages/vscode-extension-kogito-bundle" }
-    ],
-    [
-      "vscode-extension-pack-kogito-kie-editors",
-      {
-        "name": "vscode-extension-pack-kogito-kie-editors",
-        "location": "packages/vscode-extension-pack-kogito-kie-editors"
-      }
-    ],
-    [
-      "vscode-extension-pmml-editor",
-      { "name": "vscode-extension-pmml-editor", "location": "packages/vscode-extension-pmml-editor" }
-    ],
+  "serializedPackagesLocationByName": [
+    ["@kie-tools-examples/base64png-editor", "examples/base64png-editor"],
+    ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
+    ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
+    ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
+    ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
+    ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
+    ["@kie-tools-examples/todo-list-view", "examples/todo-list-view"],
+    ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],
+    ["@kie-tools-examples/webapp", "examples/webapp"],
+    ["@kie-tools-core/backend", "packages/backend"],
+    ["@kie-tools/backend-extended-services", "packages/backend-extended-services"],
+    ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
+    ["@kie-tools/build-env", "packages/build-env"],
+    ["@kie-tools-core/chrome-extension", "packages/chrome-extension"],
+    ["chrome-extension-pack-kogito-kie-editors", "packages/chrome-extension-pack-kogito-kie-editors"],
+    ["chrome-extension-serverless-workflow-editor", "packages/chrome-extension-serverless-workflow-editor"],
+    ["@kie-tools/cors-proxy-image", "packages/cors-proxy-image"],
+    ["@kie-tools/dashbuilder", "packages/dashbuilder"],
+    ["@kie-tools/dashbuilder-client", "packages/dashbuilder-client"],
+    ["@kie-tools/dashbuilder-component-api", "packages/dashbuilder-component-api"],
+    ["@kie-tools/dashbuilder-component-assembler", "packages/dashbuilder-component-assembler"],
+    ["@kie-tools/dashbuilder-component-dev", "packages/dashbuilder-component-dev"],
+    ["@kie-tools/dashbuilder-component-echarts", "packages/dashbuilder-component-echarts"],
+    ["@kie-tools/dashbuilder-component-echarts-base", "packages/dashbuilder-component-echarts-base"],
+    ["@kie-tools/dashbuilder-component-svg-heatmap", "packages/dashbuilder-component-svg-heatmap"],
+    ["@kie-tools/dashbuilder-component-table", "packages/dashbuilder-component-table"],
+    ["@kie-tools/dashbuilder-component-timeseries", "packages/dashbuilder-component-timeseries"],
+    ["@kie-tools/dashbuilder-component-uniforms", "packages/dashbuilder-component-uniforms"],
+    ["@kie-tools/dashbuilder-component-victory-charts", "packages/dashbuilder-component-victory-charts"],
+    ["@kie-tools/dashbuilder-editor", "packages/dashbuilder-editor"],
+    ["@kie-tools/dashbuilder-images", "packages/dashbuilder-images"],
+    ["@kie-tools/dashbuilder-swf-monitoring-dashboard", "packages/dashbuilder-swf-monitoring-dashboard"],
+    ["@kie-tools/desktop", "packages/desktop"],
+    ["@kie-tools/dmn-dev-sandbox-deployment-base-image", "packages/dmn-dev-sandbox-deployment-base-image"],
+    ["@kie-tools/dmn-dev-sandbox-deployment-base-image-env", "packages/dmn-dev-sandbox-deployment-base-image-env"],
+    ["@kie-tools/dmn-dev-sandbox-form-webapp", "packages/dmn-dev-sandbox-form-webapp"],
+    ["@kie-tools/dmn-dev-sandbox-quarkus", "packages/dmn-dev-sandbox-quarkus"],
+    ["@kie-tools-core/editor", "packages/editor"],
+    ["@kie-tools-core/envelope", "packages/envelope"],
+    ["@kie-tools-core/envelope-bus", "packages/envelope-bus"],
+    ["@kie-tools/extended-services", "packages/extended-services"],
+    ["@kie-tools/feel-input-component", "packages/feel-input-component"],
+    ["@kie-tools/form", "packages/form"],
+    ["@kie-tools/form-dmn", "packages/form-dmn"],
+    ["@kie-tools/form-generation-tool", "packages/form-generation-tool"],
+    ["@kie-tools-core/guided-tour", "packages/guided-tour"],
+    ["@kie-tools-core/i18n", "packages/i18n"],
+    ["@kie-tools/i18n-common-dictionary", "packages/i18n-common-dictionary"],
+    ["@kie-tools/image-env-to-json", "packages/image-env-to-json"],
+    ["@kie-tools/import-java-classes-component", "packages/import-java-classes-component"],
+    ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
+    ["@kie-tools/kie-bc-editors", "packages/kie-bc-editors"],
+    ["@kie-tools/kie-editors-standalone", "packages/kie-editors-standalone"],
+    ["@kie-tools/kie-sandbox-extended-services-image", "packages/kie-sandbox-extended-services-image"],
+    ["@kie-tools/kie-sandbox-fs", "packages/kie-sandbox-fs"],
+    ["@kie-tools/kie-sandbox-image", "packages/kie-sandbox-image"],
+    ["@kie-tools/kn-plugin-workflow", "packages/kn-plugin-workflow"],
+    ["@kie-tools-core/monaco-editor", "packages/monaco-editor"],
+    ["@kie-tools-core/notifications", "packages/notifications"],
+    ["@kie-tools/online-editor", "packages/online-editor"],
+    ["@kie-tools/openjdk11-mvn-image", "packages/openjdk11-mvn-image"],
+    ["@kie-tools/openjdk11-mvn-image-env", "packages/openjdk11-mvn-image-env"],
+    ["@kie-tools-core/operating-system", "packages/operating-system"],
+    ["@kie-tools-core/patternfly-base", "packages/patternfly-base"],
+    ["@kie-tools/pmml-editor", "packages/pmml-editor"],
+    ["@kie-tools/pmml-editor-marshaller", "packages/pmml-editor-marshaller"],
+    ["@kie-tools-core/run-script-if", "packages/run-script-if"],
+    ["@kie-tools/serverless-logic-sandbox", "packages/serverless-logic-sandbox"],
+    ["@kie-tools/serverless-logic-sandbox-base-image", "packages/serverless-logic-sandbox-base-image"],
+    ["@kie-tools/serverless-logic-sandbox-base-image-env", "packages/serverless-logic-sandbox-base-image-env"],
+    ["@kie-tools/serverless-logic-sandbox-deployment-webapp", "packages/serverless-logic-sandbox-deployment-webapp"],
+    ["@kie-tools/serverless-workflow-combined-editor", "packages/serverless-workflow-combined-editor"],
+    ["@kie-tools/serverless-workflow-diagram-editor", "packages/serverless-workflow-diagram-editor"],
+    ["@kie-tools/serverless-workflow-diagram-editor-envelope", "packages/serverless-workflow-diagram-editor-envelope"],
+    ["@kie-tools/serverless-workflow-language-service", "packages/serverless-workflow-language-service"],
+    ["@kie-tools/serverless-workflow-mermaid-viewer", "packages/serverless-workflow-mermaid-viewer"],
+    ["@kie-tools/serverless-workflow-service-catalog", "packages/serverless-workflow-service-catalog"],
+    ["@kie-tools/serverless-workflow-text-editor", "packages/serverless-workflow-text-editor"],
+    ["@kie-tools/stunner-editors", "packages/stunner-editors"],
+    ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
+    ["@kie-tools/text-editor", "packages/text-editor"],
+    ["@kie-tools/uniforms-bootstrap4-codegen", "packages/uniforms-bootstrap4-codegen"],
+    ["@kie-tools/uniforms-patternfly-codegen", "packages/uniforms-patternfly-codegen"],
+    ["@kie-tools/unitables", "packages/unitables"],
+    ["@kie-tools/unitables-dmn", "packages/unitables-dmn"],
+    ["@kie-tools-core/vscode-extension", "packages/vscode-extension"],
+    ["vscode-extension-backend", "packages/vscode-extension-backend"],
+    ["vscode-extension-bpmn-editor", "packages/vscode-extension-bpmn-editor"],
+    ["vscode-extension-dmn-editor", "packages/vscode-extension-dmn-editor"],
+    ["vscode-extension-kie-ba-bundle", "packages/vscode-extension-kie-ba-bundle"],
+    ["vscode-extension-kogito-bundle", "packages/vscode-extension-kogito-bundle"],
+    ["vscode-extension-pack-kogito-kie-editors", "packages/vscode-extension-pack-kogito-kie-editors"],
+    ["vscode-extension-pmml-editor", "packages/vscode-extension-pmml-editor"],
     [
       "vscode-extension-red-hat-business-automation-bundle",
-      {
-        "name": "vscode-extension-red-hat-business-automation-bundle",
-        "location": "packages/vscode-extension-red-hat-business-automation-bundle"
-      }
+      "packages/vscode-extension-red-hat-business-automation-bundle"
     ],
-    [
-      "vscode-extension-serverless-workflow-editor",
-      {
-        "name": "vscode-extension-serverless-workflow-editor",
-        "location": "packages/vscode-extension-serverless-workflow-editor"
-      }
-    ],
-    [
-      "vscode-extension-yard-editor",
-      { "name": "vscode-extension-yard-editor", "location": "packages/vscode-extension-yard-editor" }
-    ],
-    [
-      "@kie-tools-core/vscode-java-code-completion",
-      { "name": "@kie-tools-core/vscode-java-code-completion", "location": "packages/vscode-java-code-completion" }
-    ],
+    ["vscode-extension-serverless-workflow-editor", "packages/vscode-extension-serverless-workflow-editor"],
+    ["vscode-extension-yard-editor", "packages/vscode-extension-yard-editor"],
+    ["@kie-tools-core/vscode-java-code-completion", "packages/vscode-java-code-completion"],
     [
       "@kie-tools/vscode-java-code-completion-extension-plugin",
-      {
-        "name": "@kie-tools/vscode-java-code-completion-extension-plugin",
-        "location": "packages/vscode-java-code-completion-extension-plugin"
-      }
+      "packages/vscode-java-code-completion-extension-plugin"
     ],
-    ["@kie-tools-core/webpack-base", { "name": "@kie-tools-core/webpack-base", "location": "packages/webpack-base" }],
-    ["@kie-tools-core/workspace", { "name": "@kie-tools-core/workspace", "location": "packages/workspace" }],
-    ["@kie-tools/yard-editor", { "name": "@kie-tools/yard-editor", "location": "packages/yard-editor" }]
+    ["@kie-tools-core/webpack-base", "packages/webpack-base"],
+    ["@kie-tools-core/workspace", "packages/workspace"],
+    ["@kie-tools/yard-editor", "packages/yard-editor"]
   ]
 }

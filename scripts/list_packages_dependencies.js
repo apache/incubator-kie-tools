@@ -29,9 +29,9 @@ function main() {
   }
 
   const graphJson = require(path.resolve(path.join(targetDir, "graph.json")));
-  const packagesMap = new Map(graphJson.serializedPackages);
+  const packagesLocationByName = new Map(graphJson.serializedPackagesLocationByName);
 
-  const notFoundPackages = srcPackageNames.filter((p) => !packagesMap.has(p));
+  const notFoundPackages = srcPackageNames.filter((p) => !packagesLocationByName.has(p));
   if (notFoundPackages.length > 0) {
     console.error("[list-packages-dependencies] Packages not found:");
     console.error(notFoundPackages.join("\n"));
@@ -42,7 +42,7 @@ function main() {
   datavisGraph.deserialize(graphJson.serializedDatavisGraph);
 
   const dependencies = datavisGraph.depthFirstSearch(srcPackageNames, true, true);
-  console.info(...dependencies.map((d) => packagesMap.get(d)?.location));
+  console.info(...dependencies.map((d) => packagesLocationByName.get(d)));
 
   process.exit(0);
 }

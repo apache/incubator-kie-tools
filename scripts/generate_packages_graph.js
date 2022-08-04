@@ -157,10 +157,10 @@ function main() {
   }
 
   const serializedDatavisGraph = datavisGraph.serialize();
-  const serializedPackages = Array.from(packageMap.entries()).map(([k, v]) => {
-    return [k, { name: k, location: relativize(v.location) }];
+  const serializedPackagesLocationByName = Array.from(packageMap.entries()).map(([k, v]) => {
+    return [k, relativize(v.location)];
   });
-  fs.writeFileSync(datavisGraphFilePath, JSON.stringify({ serializedDatavisGraph, serializedPackages }));
+  fs.writeFileSync(datavisGraphFilePath, JSON.stringify({ serializedDatavisGraph, serializedPackagesLocationByName }));
   console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
 
   console.info(`[generate-packages-graph] Done.`);
