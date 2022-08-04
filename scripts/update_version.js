@@ -86,9 +86,9 @@ Promise.resolve()
 
 async function updateNpmPackages(version) {
   console.info("[update-version] Updating root package...");
-  execSync(`pnpm version ${version} --git-tag-version=false`, execOpts);
+  execSync(`pnpm version ${version} --git-tag-version=false --allow-same-version=true`, execOpts);
   console.info("[update-version] Updating workspace packages...");
-  execSync(`pnpm -r exec pnpm version ${version}`, execOpts);
+  execSync(`pnpm -r exec pnpm version ${version} --allow-same-version=true`, execOpts);
   return version;
 }
 
