@@ -25,9 +25,9 @@
     "uniforms-bridge-simple-schema-2": "^3.5.5"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
     "@types/lodash": "^4.14.168",
     "@types/simpl-schema": "^1.12.0"
   },

@@ -19,11 +19,11 @@
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0"
+    "@kie-tools-core/i18n": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*"
   },
   "babel": {
     "presets": [

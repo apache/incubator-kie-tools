@@ -20,8 +20,8 @@
     "build:prod": "run-script-os"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/openjdk11-mvn-image-env": "0.0.0"
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/openjdk11-mvn-image-env": "workspace:*"
   }
 }

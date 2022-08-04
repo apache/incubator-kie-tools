@@ -25,8 +25,8 @@
     "dexie": "^3.0.3"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
     "karma": "^6.3.9",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",

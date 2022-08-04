@@ -39,7 +39,7 @@ const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
   "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
 );
 
-const ORIGINAL_LERNA_JSON = require("../lerna.json");
+const ORIGINAL_PACKAGE_JSON = require("../package.json");
 
 // MAIN
 
@@ -85,9 +85,10 @@ Promise.resolve()
 //
 
 async function updateNpmPackages(version) {
-  console.info("[update-version] Updating NPM packages...");
-
-  execSync(`lerna version ${version} --no-push --no-git-tag-version --exact --yes`, execOpts);
+  console.info("[update-version] Updating root package...");
+  execSync(`pnpm version ${version} --git-tag-version=false`, execOpts);
+  console.info("[update-version] Updating workspace packages...");
+  execSync(`pnpm -r exec pnpm version ${version}`, execOpts);
   return version;
 }
 
@@ -180,7 +181,7 @@ async function updateJavaAutocompletionPluginManifestFile(version) {
   console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
   const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
   const newManifestFile = manifestFile.replace(
-    `Bundle-Version: ${ORIGINAL_LERNA_JSON.version}`,
+    `Bundle-Version: ${ORIGINAL_PACKAGE_JSON.version}`,
     `Bundle-Version: ${version}`
   );
   fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);

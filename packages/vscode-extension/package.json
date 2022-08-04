@@ -24,21 +24,21 @@
     "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.prod.json && pnpm test"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "0.0.0",
-    "@kie-tools-core/envelope-bus": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/guided-tour": "0.0.0",
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/keyboard-shortcuts": "0.0.0",
-    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
+    "@kie-tools-core/vscode-java-code-completion": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
     "minimatch": "^3.0.4",
     "@types/vscode": "^1.66.0"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
     "@types/minimatch": "^3.0.4"
   }
 }

@@ -16,8 +16,8 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*"
   },
   "scripts": {
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",

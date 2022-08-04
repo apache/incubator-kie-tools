@@ -20,12 +20,12 @@
     "build:prod": "pnpm cleanup && run-script-os"
   },
   "dependencies": {
-    "@kie-tools/dmn-dev-sandbox-form-webapp": "0.0.0",
-    "@kie-tools/dmn-dev-sandbox-quarkus": "0.0.0"
+    "@kie-tools/dmn-dev-sandbox-form-webapp": "workspace:*",
+    "@kie-tools/dmn-dev-sandbox-quarkus": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "0.0.0"
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*"
   }
 }

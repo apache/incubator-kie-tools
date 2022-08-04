@@ -19,19 +19,19 @@
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/backend": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools-core/vscode-extension": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
-    "@kie-tools/pmml-editor": "0.0.0",
-    "@kie-tools-core/monaco-editor": "0.0.0"
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/pmml-editor": "workspace:*",
+    "@kie-tools-core/monaco-editor": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",
     "vsce": "^2.6.5",
     "@vscode/test-web": "^0.0.22"

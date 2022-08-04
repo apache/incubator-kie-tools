@@ -12,9 +12,9 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
     "axios": "^0.27.2",
     "fast-xml-parser": "^3.17.4",
     "portfinder": "^1.0.27",
@@ -22,8 +22,8 @@
     "semver": "^7.3.5"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@types/sinon": "^10.0.2",
     "@types/semver": "^7.3.6",

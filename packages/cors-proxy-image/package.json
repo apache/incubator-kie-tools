@@ -21,8 +21,8 @@
     "postinstall": "patch-package"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
     "@isomorphic-git/cors-proxy": "^2.7.1",
     "patch-package": "^6.4.7"
   }
