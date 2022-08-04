@@ -16,6 +16,7 @@
 
 const graphviz = require("graphviz");
 const DataVisTechGraph = require("graph-data-structure");
+const { getPackagesSync } = require("@lerna/project");
 const fs = require("fs");
 const path = require("path");
 
@@ -136,7 +137,9 @@ function main() {
 
   console.info(`[generate-packages-graph] Writing packages Datavis graph to '${datavisGraphFilePath}'...`);
   const relativize = (pkgLocation) => path.relative(path.resolve("."), pkgLocation);
+
   const datavisGraph = DataVisTechGraph();
+
   for (const pkgName in resMatrix) {
     const pkg = packageMap.get(pkgName);
     const pkgNode = pkg.name;
@@ -154,11 +157,10 @@ function main() {
   }
 
   const serializedDatavisGraph = datavisGraph.serialize();
-  const serializedPackages = Array.from(packageMap.entries()).map(([k, v]) => [
-    k,
-    { name: k, location: relativize(v.location) },
-  ]);
-  fs.writeFileSync(datavisGraphFilePath, JSON.stringify({ serializedDatavisGraph, serializedPackages }, undefined, 2));
+  const serializedPackages = Array.from(packageMap.entries()).map(([k, v]) => {
+    return [k, { name: k, location: relativize(v.location) }];
+  });
+  fs.writeFileSync(datavisGraphFilePath, JSON.stringify({ serializedDatavisGraph, serializedPackages }));
   console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
 
   console.info(`[generate-packages-graph] Done.`);
