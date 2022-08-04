@@ -92,7 +92,7 @@ func UpdateProjectExtensionsVersions(verbose bool, friendlyMessages []string, ex
 }
 
 func RunExtensionCommand(verbose bool, extensionCommand string, friendlyMessages []string, extensions string) error {
-	command := exec.Command("mvn", extensionCommand, fmt.Sprintf("-Dextensions=%s", extensions))
+	command := ExecCommand("mvn", extensionCommand, fmt.Sprintf("-Dextensions=%s", extensions))
 	if err := RunCommand(command, verbose, extensionCommand, friendlyMessages); err != nil {
 		fmt.Println("ERROR: It wasn't possible to add Quarkus extension in your pom.xml.")
 		return err
