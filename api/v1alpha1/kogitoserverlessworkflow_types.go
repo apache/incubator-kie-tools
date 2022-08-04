@@ -171,51 +171,42 @@ const (
 )
 
 type EventRef struct {
-	ProduceEventRef     string `json:"produceEventRef"`
-	ConsumeEventRef     string `json:"consumeEventRef,omitempty"`
-	ConsumeEventTimeout string `json:"consumeEventTimeout,omitempty"`
-	Data                string `json:"data,omitempty"`
+	// +kubebuilder:validation:Required
+	ProduceEventRef     string  `json:"produceEventRef"`
+	ConsumeEventRef     *string `json:"consumeEventRef,omitempty"`
+	ConsumeEventTimeout *string `json:"consumeEventTimeout,omitempty"`
+	Data                *string `json:"data,omitempty"`
 	//TODO Define a custom type for ContextAttribute
-	ContextAttributes map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
-	Invoke            InvokeTye                            `json:"invoke,omitempty"`
+	ContextAttributes *map[string]unstructured.Unstructured `json:"contextAttributes,omitempty"`
+	Invoke            *InvokeTye                            `json:"invoke,omitempty"`
 }
 
 type ActionDataFilter struct {
-	FromStateData string `json:"fromStateData,omitempty"`
-	UseResults    bool   `json:"useResults,omitempty"`
-	Results       string `json:"results,omitempty"`
-	ToStateData   string `json:"toStateData,omitempty"`
+	FromStateData *string `json:"fromStateData,omitempty"`
+	UseResults    *bool   `json:"useResults,omitempty"`
+	Results       *string `json:"results,omitempty"`
+	ToStateData   *string `json:"toStateData,omitempty"`
 }
 
 // Sleep ...
 type Sleep struct {
 	// Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
-	Before string `json:"before,omitempty"`
+	Before *string `json:"before,omitempty"`
 	// After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
-	After string `json:"after,omitempty"`
+	After *string `json:"after,omitempty"`
 }
 
 type Action struct {
-	// +optional
-	Name *string `json:"name"`
-	// +optional
-	FunctionRef *string `json:"functionRef,omitempty"`
-	// +optional
-	EventRef *EventRef `json:"eventRef,omitempty"`
-	// +optional
-	SubFlowRef *string `json:"subFlowRef,omitempty"`
-	// +optional
-	RetryRef *string `json:"retryRef,omitempty"`
-	// +optional
-	NonRetryableErrors *[]string `json:"nonRetryableErrors,omitempty"`
-	// +optional
-	RetryableErrors *[]string `json:"retryableErrors,omitempty"`
-	// +optional
-	ActionDataFilter *ActionDataFilter `json:"actionDataFilter,omitempty"`
-	// +optional
-	Sleep *Sleep `json:"sleep,omitempty"`
-	// +optional
-	Condition *bool `json:"condition,omitempty"`
+	Name               *string           `json:"name"`
+	FunctionRef        *string           `json:"functionRef,omitempty"`
+	EventRef           *EventRef         `json:"eventRef,omitempty"`
+	SubFlowRef         *string           `json:"subFlowRef,omitempty"`
+	RetryRef           *string           `json:"retryRef,omitempty"`
+	NonRetryableErrors *[]string         `json:"nonRetryableErrors,omitempty"`
+	RetryableErrors    *[]string         `json:"retryableErrors,omitempty"`
+	ActionDataFilter   *ActionDataFilter `json:"actionDataFilter,omitempty"`
+	Sleep              *Sleep            `json:"sleep,omitempty"`
+	Condition          *bool             `json:"condition,omitempty"`
 }
 
 type CompletionType struct{}
@@ -238,64 +229,51 @@ type StateDataFilter struct{}
 
 //TODO: Define StateDataFilter (State data filter definition)
 
-type Transition struct{}
+type ProduceEvents struct{}
 
-//TODO: Define Transition
+type Transition struct {
+	ProduceEvents *[]ProduceEvents `json:"produceEvents,omitempty"`
+	Compensate    *bool            `json:"compensate,omitempty"`
+	// +kubebuilder:validation:Required
+	NextState string `json:"nextState,omitempty"`
+}
 
 type State struct {
 	// +kubebuilder:validation:Required
-	// +kubebuilder:validation:Optional
 	Name string `json:"name"`
 	// +kubebuilder:validation:Enum:=event;operation;switch;sleep;parallel;inject;foreach
-	Type StateType `json:"type"`
-	// +optional
-	Exclusive *bool `json:"exclusive,omitempty"`
-	// +optional
+	Type       StateType   `json:"type"`
+	Exclusive  *bool       `json:"exclusive,omitempty"`
 	ActionMode *ActionMode `json:"actionMode,omitempty"`
-	// +optional
-	Actions *[]Action `json:"actions,omitempty"`
-	Data    []byte    `json:"data,omitempty"`
+	Actions    *[]Action   `json:"actions,omitempty"`
+	Data       *[]byte     `json:"data,omitempty"`
 	//TODO: Define a type for DataCondition objects
-	DataConditions []string `json:"dataConditions,omitempty"`
+	DataConditions *[]string `json:"dataConditions,omitempty"`
 	//TODO: Define a type for EventContitions objects
-	EventConditions []string `json:"eventConditions,omitempty"`
+	EventConditions *[]string `json:"eventConditions,omitempty"`
 	//TODO: Define a type for DefaultCondition object
-	DefaultCondition string `json:"defaultCondition,omitempty"`
+	DefaultCondition *string `json:"defaultCondition,omitempty"`
 	//TODO: Double-check that we can use the Event type here
-	OnEvents []Event  `json:"onEvents,omitempty"`
-	Duration string   `json:"duration,omitempty"`
-	Branches []string `json:"branches,omitempty"`
-	// +optional
-	CompletionType CompletionType `json:"completionType,omitempty"`
-	// +optional
-	NumCompleted     *int   `json:"numCompleted,omitempty"`
-	InputCollection  string `json:"inputCollection,omitempty"`
-	OutputCollection string `json:"outputCollection,omitempty"`
-	// +optional
-	IterationParam *string `json:"iterationParam,omitempty"`
-	// +optional
-	BatchSize *int `json:"batchSize,omitempty"`
-	// +optional
-	Mode     IterationMode `json:"mode,omitempty"`
-	EventRef string        `json:"eventRef,omitempty"`
-	// +optional
-	EventDataFilter *EventDataFilter `json:"eventDataFilter,omitempty"`
-	// +optional
-	Timeouts *Timeouts `json:"timeouts,omitempty"`
-	// +optional
-	StateDataFilter *StateDataFilter `json:"stateDataFilter,omitempty"`
-	// +optional
-	Transition *Transition `json:"transition,omitempty"`
-	// +optional
-	OnErrors *[]string `json:"onErrors,omitempty"`
-	// +optional
-	End *bool `json:"end,omitempty"`
-	// +optional
-	CompensatedBy *string `json:"compensatedBy,omitempty"`
-	// +optional
-	UsedForCompensation *bool `json:"usedForCompensation,omitempty"`
-	// +optional
-	Metadata *Metadata `json:"metadata,omitempty"`
+	OnEvents            *[]Event         `json:"onEvents,omitempty"`
+	Duration            *string          `json:"duration,omitempty"`
+	Branches            *[]string        `json:"branches,omitempty"`
+	CompletionType      *CompletionType  `json:"completionType,omitempty"`
+	NumCompleted        *int             `json:"numCompleted,omitempty"`
+	InputCollection     *string          `json:"inputCollection,omitempty"`
+	OutputCollection    *string          `json:"outputCollection,omitempty"`
+	IterationParam      *string          `json:"iterationParam,omitempty"`
+	BatchSize           *int             `json:"batchSize,omitempty"`
+	Mode                *IterationMode   `json:"mode,omitempty"`
+	EventRef            *EventRef        `json:"eventRef,omitempty"`
+	EventDataFilter     *EventDataFilter `json:"eventDataFilter,omitempty"`
+	Timeouts            *Timeouts        `json:"timeouts,omitempty"`
+	StateDataFilter     *StateDataFilter `json:"stateDataFilter,omitempty"`
+	Transition          *Transition      `json:"transition,omitempty"`
+	OnErrors            *[]string        `json:"onErrors,omitempty"`
+	End                 *bool            `json:"end,omitempty"`
+	CompensatedBy       *string          `json:"compensatedBy,omitempty"`
+	UsedForCompensation *bool            `json:"usedForCompensation,omitempty"`
+	Metadata            *Metadata        `json:"metadata,omitempty"`
 }
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
