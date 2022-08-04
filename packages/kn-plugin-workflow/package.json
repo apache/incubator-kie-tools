@@ -12,6 +12,7 @@
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "scripts": {
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "install": "go mod tidy",
     "build": "run-script-os",
     "build:all": "pnpm setup:env make build-all",
@@ -19,7 +20,7 @@
     "build:darwin": "pnpm setup:env make build-darwin",
     "build:darwin:amd": "pnpm setup:env make build-darwin-amd64",
     "build:darwin:arm": "pnpm setup:env make build-darwin-arm64",
-    "build:win32": "pnpm setup:env make build-win32",
+    "build:win32": "pnpm powershell pnpm setup:env make build-win32",
     "build:dev": "rimraf dist && pnpm build",
     "build:prod": "rimraf dist && pnpm build:all && pnpm test",
     "setup:env": "cross-env QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) KOGITO_VERSION=$(build-env knPluginWorkflow.kogitoVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)",
