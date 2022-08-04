@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "graphviz": "^0.0.9",
+    "graph-data-structure": "^2.0.0",
     "husky": "^6.0.0",
     "js-yaml": "^4.1.0",
     "postinstall-postinstall": "^2.1.0",

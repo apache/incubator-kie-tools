@@ -15,7 +15,7 @@
  */
 
 const graphviz = require("graphviz");
-const { getPackagesSync } = require("@lerna/project");
+const DataVisTechGraph = require("graph-data-structure");
 const fs = require("fs");
 const path = require("path");
 
@@ -23,12 +23,13 @@ const targetDir = process.argv[2];
 
 function main() {
   if (!targetDir) {
-    console.error("Please specify the path where the graph.dot file will be written to.");
+    console.error("Please specify the directory path where the graph files will be written to.");
     process.exit(1);
   }
 
-  const outputFilePath = path.join(targetDir, "graph.dot");
-  console.info(`[generate-packages-graph] Writing packages graph to '${outputFilePath}'...`);
+  const dotGraphFilePath = path.join(targetDir, "graph.dot");
+  const datavisGraphFilePath = path.join(targetDir, "graph.json");
+  console.info(`[generate-packages-graph] Writing packages DOT graph to '${dotGraphFilePath}'...`);
 
   const packages = getPackagesSync();
   const packageMap = new Map(packages.map((p) => [p.name, p]));
@@ -67,7 +68,7 @@ function main() {
 
   const resMatrix = trMatrix;
 
-  // print graph
+  // print DOT graph
   const g = graphviz.digraph("G");
 
   g.use = "dot";
@@ -130,9 +131,36 @@ function main() {
     fs.mkdirSync(path.resolve(targetDir));
   }
 
-  fs.writeFileSync(outputFilePath, g.to_dot());
+  fs.writeFileSync(datavisGraphFilePath, g.to_dot());
+  console.info(`[generate-packages-graph] Wrote packages DOT graph to '${dotGraphFilePath}'`);
 
-  console.info(`[generate-packages-graph] Wrote packages graph to '${outputFilePath}'`);
+  console.info(`[generate-packages-graph] Writing packages Datavis graph to '${datavisGraphFilePath}'...`);
+  const relativize = (pkgLocation) => path.relative(path.resolve("."), pkgLocation);
+  const datavisGraph = DataVisTechGraph();
+  for (const pkgName in resMatrix) {
+    const pkg = packageMap.get(pkgName);
+    const pkgNode = pkg.name;
+    datavisGraph.addNode(pkgNode);
+
+    for (const depName in resMatrix[pkgName]) {
+      if (resMatrix[pkgName][depName] === "transitive") {
+        continue;
+      }
+
+      const dep = packageMap.get(depName);
+      const depNode = dep.name;
+      datavisGraph.addEdge(pkgNode, depNode);
+    }
+  }
+
+  const serializedDatavisGraph = datavisGraph.serialize();
+  const serializedPackages = Array.from(packageMap.entries()).map(([k, v]) => [
+    k,
+    { name: k, location: relativize(v.location) },
+  ]);
+  fs.writeFileSync(datavisGraphFilePath, JSON.stringify({ serializedDatavisGraph, serializedPackages }, undefined, 2));
+  console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
+
   console.info(`[generate-packages-graph] Done.`);
   process.exit(0);
 }
