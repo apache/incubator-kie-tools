@@ -21,6 +21,7 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionArgumentType,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
@@ -38,7 +39,11 @@ const testRelativeFunction1: SwfServiceCatalogFunction = {
     type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
     serviceFileAbsolutePath: "/Users/tiago/Desktop/testRelativeService1.yml",
   },
-  arguments: {},
+  arguments: {
+    argString: SwfServiceCatalogFunctionArgumentType.string,
+    argNumber: SwfServiceCatalogFunctionArgumentType.number,
+    argBoolean: SwfServiceCatalogFunctionArgumentType.boolean,
+  },
 };
 
 const testRelativeService1: SwfServiceCatalogService = {
@@ -512,6 +517,64 @@ describe("SWF LS JSON", () => {
             character: cursorPosition.character + 1,
           },
         },
+      },
+      insertTextFormat: InsertTextFormat.Snippet,
+    } as CompletionItem);
+  });
+
+  test("functionRef arguments completion", async () => {
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [testRelativeService1] },
+      },
+      config: defaultConfig,
+    });
+
+    const { content, cursorPosition } = treat(`
+{
+  "functions": [
+    {
+      "name": "testRelativeFunction1",
+      "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"testRelativeFunction1",
+            "arguments":🎯
+          }
+        }
+      ]
+    },
+  ]
+}`);
+
+    const completionItems = await ls.getCompletionItems({
+      uri: "test.sw.json",
+      content,
+      cursorPosition,
+      cursorWordRange: { start: cursorPosition, end: cursorPosition },
+    });
+
+    expect(completionItems).toHaveLength(1);
+    expect(completionItems[0]).toStrictEqual({
+      kind: CompletionItemKind.Module,
+      label: `'testRelativeFunction1' arguments`,
+      detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+      sortText: "testRelativeFunction1 arguments",
+      textEdit: {
+        newText: `{\n  "argString": "\${1:}",\n  "argNumber": "\${2:}",\n  "argBoolean": "\${3:}"\n}`,
+        range: { start: cursorPosition, end: cursorPosition },
       },
       insertTextFormat: InsertTextFormat.Snippet,
     } as CompletionItem);
