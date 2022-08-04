@@ -571,16 +571,18 @@ const completions = new Map<
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
     ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices }) => {
-      if (currentNode.type !== "property") {
-        console.debug("Cannot autocomplete: functionRef should be a property.");
+      const startNode = currentNode.type === "string" ? currentNode.parent : currentNode;
+
+      if (!startNode || !startNode.parent || !startNode.parent.parent) {
         return Promise.resolve([]);
       }
 
-      if (!currentNode.parent) {
+      if (startNode.type !== "property" && startNode.type !== "object") {
+        console.debug("Cannot autocomplete: argument should be a property.");
         return Promise.resolve([]);
       }
 
-      const swfFunctionRefName: string = findNodeAtLocation(currentNode.parent, ["refName"])?.value;
+      const swfFunctionRefName: string = findNodeAtLocation(startNode.parent.parent, ["refName"])?.value;
       if (!swfFunctionRefName) {
         return Promise.resolve([]);
       }
@@ -614,7 +616,7 @@ const completions = new Map<
           sortText: `${swfFunctionRefName} arguments`,
           detail: swfFunction.operation,
           textEdit: {
-            newText: JSON.stringify(swfFunctionRefArgs, null, 2),
+            newText: JSON.stringify(swfFunctionRefArgs, null, 2).slice(1, -1),
             range: overwriteRange,
           },
           insertTextFormat: InsertTextFormat.Snippet,

@@ -108,7 +108,7 @@ describe("SWF LS JSON", () => {
       expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
-    describe("matching functions array with 1 function", () => {
+    describe("matching functions array", () => {
       test("with cursorOffset at the functions array", () => {
         const ls = new SwfJsonLanguageService({
           fs: {},
@@ -149,6 +149,31 @@ describe("SWF LS JSON", () => {
         expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
         expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
       });
+
+      test("with cursorOffset at the second function", () => {
+        const ls = new SwfJsonLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+        let { content, cursorOffset } = treat(`
+{
+  "functions": [
+  {
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  },
+  {🎯
+        "name": "function2",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`);
+        const root = ls.parseContent(content);
+        const node = findNodeAtOffset(root!, cursorOffset);
+
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      });
     });
 
     test("matching refName", () => {
@@ -168,18 +193,37 @@ describe("SWF LS JSON", () => {
   ],
   "states": [
     {
-      "name": "testState",
+      "name": "testState1",
       "type": "operation",
       "transition": "end",
       "actions": [
         {
           "name": "testStateAction",
           "functionRef": {
-            "refName":"🎯"
+            "refName":"myFunc"
           }
         }
       ]
     },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction1",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        },
+        {
+          "name": "testStateAction2",
+          "functionRef": {
+            "refName":"🎯"
+          }
+        }
+      ]
+    }
   ]
 }`);
       const root = ls.parseContent(content);
@@ -187,6 +231,67 @@ describe("SWF LS JSON", () => {
 
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
+      ).toBeTruthy();
+    });
+
+    test("matching arguments", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
+{
+  "functions": [
+    {
+      "name": "myFunc",
+      "operation": "./specs/myService#myFunc",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        }
+      ]
+    },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction1",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        },
+        {
+          "name": "testStateAction2",
+          "functionRef": {
+            "refName":"myfunc",
+            "arguments": {
+              🎯
+            }
+          }
+        }
+      ]
+    }
+  ]
+}`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      expect(
+        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
       ).toBeTruthy();
     });
   });
@@ -551,11 +656,13 @@ describe("SWF LS JSON", () => {
           "name": "testStateAction",
           "functionRef": {
             "refName":"testRelativeFunction1",
-            "arguments":🎯
+            "arguments": {
+                🎯
+            } 
           }
         }
       ]
-    },
+    }
   ]
 }`);
 
