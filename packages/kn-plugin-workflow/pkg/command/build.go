@@ -41,6 +41,8 @@ type BuildCmdConfig struct {
 	JibPodman bool // use Jib extension to build the image and save it in podman
 	Push      bool // choose to push an image to a remote registry or not (Docker only)
 
+	Test bool // choose to run the project tests
+
 	// Plugin options
 	Verbose bool
 }
@@ -88,7 +90,7 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	{{.Name}} build --jib-podman
 	`,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "jib-podman", "push"),
+		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "jib-podman", "push", "test"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -105,6 +107,8 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	cmd.Flags().Bool("jib", false, "Use Jib extension to generate the image (Docker is still required to save the generated image if push is not used)")
 	cmd.Flags().Bool("jib-podman", false, "Use Jib extension to generate the image and save it in podman (can't use --push)")
 	cmd.Flags().Bool("push", false, "Attempt to push the genereated image after being successfully built")
+
+	cmd.Flags().Bool("test", false, "Run the project tests")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 	return cmd
@@ -162,6 +166,8 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 		Jib:       viper.GetBool("jib"),
 		JibPodman: viper.GetBool("jib-podman"),
 		Push:      viper.GetBool("push"),
+
+		Test: viper.GetBool("test"),
 
 		Verbose: viper.GetBool("verbose"),
 	}
@@ -233,10 +239,12 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 		return
 	}
 
+	skipTestsConfig := getSkipTestsConfig(cfg)
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
 	build := common.ExecCommand("mvn", "package",
+		skipTestsConfig,
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
@@ -339,6 +347,16 @@ func getImage(registry string, repository string, name string, tag string) strin
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
 }
 
+func getSkipTestsConfig(cfg BuildCmdConfig) string {
+	skipTests := "-DskipTests="
+	if cfg.Test {
+		skipTests += "false"
+	} else {
+		skipTests += "true"
+	}
+	return skipTests
+}
+
 func getBuilderConfig(cfg BuildCmdConfig) string {
 	builder := "-Dquarkus.container-image.builder="
 	if cfg.Jib || cfg.JibPodman {
@@ -346,7 +364,6 @@ func getBuilderConfig(cfg BuildCmdConfig) string {
 	} else {
 		builder += "docker"
 	}
-
 	return builder
 }
 
