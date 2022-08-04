@@ -88,6 +88,10 @@ The KIE Tools project contains several applications. To develop each one of them
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Standalone Editors test page.
 3. From now on you can use the development version of the Standalone DMN Editor by accessing `https://localhost:9001/resources/dmn` and the Standalone BPMN Editor by accessing `https://localhost:9001/resources/bpmn`.
 
+#### Knative Workflow plugin
+
+[Read the documentation](./packages/kn-plugin-workflow/README.md)
+
 ## Libraries
 
 #### Stunner Editors
