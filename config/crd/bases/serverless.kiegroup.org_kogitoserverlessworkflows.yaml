@@ -320,6 +320,72 @@ spec:
                       type: string
                     actions:
                       items:
+                        properties:
+                          actionDataFilter:
+                            properties:
+                              fromStateData:
+                                type: string
+                              results:
+                                type: string
+                              toStateData:
+                                type: string
+                              useResults:
+                                type: boolean
+                            type: object
+                          condition:
+                            type: boolean
+                          eventRef:
+                            properties:
+                              consumeEventRef:
+                                type: string
+                              consumeEventTimeout:
+                                type: string
+                              contextAttributes:
+                                additionalProperties:
+                                  type: object
+                                description: TODO Define a custom type for ContextAttribute
+                                type: object
+                              data:
+                                type: string
+                              invoke:
+                                type: string
+                              produceEventRef:
+                                type: string
+                            required:
+                            - produceEventRef
+                            type: object
+                          functionRef:
+                            type: string
+                          name:
+                            type: string
+                          nonRetryableErrors:
+                            items:
+                              type: string
+                            type: array
+                          retryRef:
+                            type: string
+                          retryableErrors:
+                            items:
+                              type: string
+                            type: array
+                          sleep:
+                            description: Sleep ...
+                            properties:
+                              after:
+                                description: After Amount of time (ISO 8601 duration
+                                  format) to sleep after function/subflow invocation.
+                                  Does not apply if 'eventRef' is defined.
+                                type: string
+                              before:
+                                description: Before Amount of time (ISO 8601 duration
+                                  format) to sleep before function/subflow invocation.
+                                  Does not apply if 'eventRef' is defined.
+                                type: string
+                            type: object
+                          subFlowRef:
+                            type: string
+                        required:
+                        - name
                         type: object
                       type: array
                     batchSize:
@@ -328,8 +394,10 @@ spec:
                       items:
                         type: string
                       type: array
-                    completionType:
+                    compensatedBy:
                       type: string
+                    completionType:
+                      type: object
                     data:
                       format: byte
                       type: string
@@ -343,25 +411,61 @@ spec:
                       type: string
                     duration:
                       type: string
+                    end:
+                      type: boolean
                     eventConditions:
                       description: 'TODO: Define a type for EventContitions objects'
                       items:
                         type: string
                       type: array
+                    eventDataFilter:
+                      type: object
                     eventRef:
-                      type: string
+                      properties:
+                        consumeEventRef:
+                          type: string
+                        consumeEventTimeout:
+                          type: string
+                        contextAttributes:
+                          additionalProperties:
+                            type: object
+                          description: TODO Define a custom type for ContextAttribute
+                          type: object
+                        data:
+                          type: string
+                        invoke:
+                          type: string
+                        produceEventRef:
+                          type: string
+                      required:
+                      - produceEventRef
+                      type: object
                     exclusive:
                       type: boolean
                     inputCollection:
                       type: string
                     iterationParam:
                       type: string
+                    metadata:
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                      required:
+                      - key
+                      - value
+                      type: object
                     mode:
-                      type: string
+                      type: object
                     name:
                       type: string
                     numCompleted:
                       type: integer
+                    onErrors:
+                      items:
+                        type: string
+                      type: array
                     onEvents:
                       description: 'TODO: Double-check that we can use the Event type
                         here'
@@ -409,8 +513,33 @@ spec:
                       type: array
                     outputCollection:
                       type: string
+                    stateDataFilter:
+                      type: object
+                    timeouts:
+                      type: object
+                    transition:
+                      properties:
+                        compensate:
+                          type: boolean
+                        nextState:
+                          type: string
+                        produceEvents:
+                          items:
+                            type: object
+                          type: array
+                      type: object
                     type:
+                      enum:
+                      - event
+                      - operation
+                      - switch
+                      - sleep
+                      - parallel
+                      - inject
+                      - foreach
                       type: string
+                    usedForCompensation:
+                      type: boolean
                   required:
                   - name
                   - type
@@ -472,8 +601,6 @@ spec:
         type: object
     served: true
     storage: true
-    subresources:
-      status: {}
 status:
   acceptedNames:
     kind: ""
