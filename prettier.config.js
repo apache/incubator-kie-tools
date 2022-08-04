@@ -16,4 +16,11 @@
 
 module.exports = {
   printWidth: 120,
+  plugins: [require("@nice-move/prettier-plugin-package-json")],
+  overrides: [
+    {
+      files: "package.json",
+      options: { parser: "package-json" },
+    },
+  ],
 };
