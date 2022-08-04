@@ -6,13 +6,13 @@
 
 ## Build from source
 
-All the commands in this section should be performed in the monorepo root
+All the commands in this section should be performed in the monorepo root.
 
 ### Prerequisites
 
 - Node `>= 16.13.2` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
-- Go `1.17`
+- Go `1.17` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 ### Installing and linking dependencies
 
