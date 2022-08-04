@@ -156,11 +156,14 @@ function main() {
     }
   }
 
-  const serializedDatavisGraph = datavisGraph.serialize();
-  const serializedPackagesLocationByName = Array.from(packageMap.entries()).map(([k, v]) => {
-    return [k, relativize(v.location)];
-  });
-  fs.writeFileSync(datavisGraphFilePath, JSON.stringify({ serializedDatavisGraph, serializedPackagesLocationByName }));
+  fs.writeFileSync(
+    datavisGraphFilePath,
+    JSON.stringify({
+      serializedDatavisGraph: datavisGraph.serialize(),
+      serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.location)]),
+    })
+  );
+
   console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
 
   console.info(`[generate-packages-graph] Done.`);
