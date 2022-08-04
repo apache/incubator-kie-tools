@@ -1125,13 +1125,13 @@ importers:
       "@kie-tools-core/run-script-if": 0.0.0
       "@kie-tools/build-env": 0.0.0
       "@kie-tools/jitexecutor-native": 1.12.0-Final
-      cross-env: ^5.2.1
+      cross-env: ^7.0.3
     dependencies:
       "@kie-tools/jitexecutor-native": 1.12.0-Final
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
-      cross-env: 5.2.1
+      cross-env: 7.0.3
 
   packages/feel-input-component:
     specifiers:
