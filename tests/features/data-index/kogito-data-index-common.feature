@@ -2,6 +2,7 @@
 @quay.io/kiegroup/kogito-data-index-ephemeral
 @quay.io/kiegroup/kogito-data-index-mongodb
 @quay.io/kiegroup/kogito-data-index-postgresql
+@openshift-serverless-1/logic-data-index-ephemeral-rhel8
 Feature: Kogito-data-index common feature.
   Scenario:   Scenario: Verify if the debug is correctly enabled and test default http port
     When container is started with env
