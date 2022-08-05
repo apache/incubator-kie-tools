@@ -19,6 +19,7 @@ const DatavisTechGraph = require("graph-data-structure");
 const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const fs = require("fs");
 const path = require("path");
+const prettier = require("prettier");
 
 const targetDir = process.argv[2];
 
@@ -158,13 +159,11 @@ async function main() {
 
   fs.writeFileSync(
     datavisGraphFilePath,
-    JSON.stringify(
-      {
+    prettier.format(
+      JSON.stringify({
         serializedDatavisGraph: datavisGraph.serialize(),
         serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.dir)]),
-      },
-      undefined,
-      2
+      })
     )
   );
 
