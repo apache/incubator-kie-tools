@@ -44,7 +44,7 @@ const ORIGINAL_ROOT_PACKAGE_JSON = require("../package.json");
 // MAIN
 
 const newVersion = process.argv[2];
-const pnpmFilter = ""; // `-F ${process.argv.slice(3)}`;
+const pnpmFilter = ""; // TODO: `${process.argv.slice(3).join(" ")}`;
 
 if (!newVersion) {
   console.error("[update-version] Missing version argument.");
@@ -61,19 +61,19 @@ if (opts === "--silent") {
 
 Promise.resolve()
   .then(() => updateNpmPackages(newVersion))
-  // extract to each mvn package
+  // TODO: extract to each mvn package
   .then((version) => updateMvnPackages(version))
-  // extract to stunner-editors
+  // TODO: extract to stunner-editors
   .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
-  // extract to serverless-workflow-diagram-editor
+  // TODO: extract to serverless-workflow-diagram-editor
   .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
-  // extract to chrome-extension-pack-kogito-kie-editors
+  // TODO: extract to chrome-extension-pack-kogito-kie-editors
   .then((version) => updateChromeKieEditorsExtensionManifestFiles(version))
-  // extract to chrome-extension-serverless-workflow-editor
+  // TODO: extract to chrome-extension-serverless-workflow-editor
   .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
-  // extract to extended-services
+  // TODO: extract to extended-services
   .then((version) => updateExtendedServicesConfigFile(version))
-  // extract to vscode-java-code-completion-extension-plugin
+  // TODO: extract to vscode-java-code-completion-extension-plugin
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
   //
   .then((version) => runBootstrap(version))
