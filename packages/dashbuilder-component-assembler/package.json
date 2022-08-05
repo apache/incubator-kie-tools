@@ -25,7 +25,8 @@
     "@kie-tools/dashbuilder-component-svg-heatmap": "0.0.0",
     "@kie-tools/dashbuilder-component-table": "0.0.0",
     "@kie-tools/dashbuilder-component-timeseries": "0.0.0",
-    "@kie-tools/dashbuilder-component-uniforms": "0.0.0"
+    "@kie-tools/dashbuilder-component-uniforms": "0.0.0",
+    "@kie-tools/dashbuilder-component-victory-charts": "0.0.0"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "0.0.0",
