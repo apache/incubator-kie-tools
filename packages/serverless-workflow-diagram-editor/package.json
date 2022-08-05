@@ -20,10 +20,10 @@
   "scripts": {
     "build:dev": "run-script-os",
     "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs -Pno-showcase && pnpm dist",
-    "build:dev:win32": "yarn powershell mvn clean install `-DskipTests `-DskipITs `-Pno-showcase && pnpm dist",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs `-Pno-showcase && pnpm dist\"",
     "build:prod": "run-script-os",
     "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env global.build.test --not) -DskipITs -Pno-showcase && pnpm dist",
-    "build:prod:win32": "pnpm lint && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs `-Pno-showcase && pnpm dist",
+    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs `-Pno-showcase\" && pnpm dist",
     "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
     "dist:sw": "symlink-dir sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app ./dist/sw",
     "lint": "echo 'Linting'",
