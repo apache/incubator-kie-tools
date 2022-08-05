@@ -723,8 +723,7 @@ functions: [🎯]
         range: { start: cursorPosition, end: cursorPosition },
         newText: `name: '\${1:testRelativeFunction1}'
 operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
-type: rest
-`,
+type: rest`,
       },
       snippet: true,
       insertTextFormat: InsertTextFormat.Snippet,
@@ -790,8 +789,7 @@ states:
       filterText: `"myFunc"`,
       sortText: `"myFunc"`,
       textEdit: {
-        newText: `myFunc
-`,
+        newText: `myFunc`,
         range: {
           start: {
             ...cursorPosition,
@@ -852,8 +850,7 @@ states:
       textEdit: {
         newText: `argString: '\${1:}'
 argNumber: '$\{2:}'
-argBoolean: '\${3:}'
-`,
+argBoolean: '\${3:}'`,
         range: {
           start: {
             ...cursorPosition,

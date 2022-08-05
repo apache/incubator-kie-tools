@@ -76,7 +76,7 @@ export class SwfYamlLanguageService {
 }
 
 const completionTranslator = (completion: any): string => {
-  return dump(completion, {});
+  return dump(completion, {}).slice(0, -1);
 };
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
