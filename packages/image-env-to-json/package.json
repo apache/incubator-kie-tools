@@ -1,31 +1,35 @@
 {
+  "private": true,
   "name": "@kie-tools/image-env-to-json",
   "version": "0.0.0",
-  "private": true,
   "description": "",
   "license": "Apache-2.0",
-  "main": "dist/index.js",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "main": "dist/index.js",
+  "scripts": {
+    "build:dev": "rimraf -rf dist && webpack --env dev && pnpm build:standalone",
+    "build:prod": "pnpm lint && rimraf -rf dist && webpack && pnpm build:standalone",
+    "build:standalone": "run-script-os",
+    "build:standalone:darwin": "pkg dist/index.js -t node16-macos-x64 -o dist/macos/image-env-to-json-standalone",
+    "build:standalone:linux": "pkg dist/index.js -t node16-linux-x64 -o dist/linux/image-env-to-json-standalone",
+    "build:standalone:win32": "pkg dist/index.js -t node16-win-x64 -o dist/win/image-env-to-json-standalone",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts\""
   },
   "dependencies": {
     "commander": "^8.3.0"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
     "@kie-tools-core/run-script-if": "0.0.0",
     "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools/build-env": "0.0.0",
     "pkg": "^5.5.2"
-  },
-  "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts\"",
-    "build:standalone:win32": "pkg dist/index.js -t node16-win-x64 -o dist/win/image-env-to-json-standalone",
-    "build:standalone:darwin": "pkg dist/index.js -t node16-macos-x64 -o dist/macos/image-env-to-json-standalone",
-    "build:standalone:linux": "pkg dist/index.js -t node16-linux-x64 -o dist/linux/image-env-to-json-standalone",
-    "build:standalone": "run-script-os",
-    "build:dev": "rimraf -rf dist && webpack --env dev && pnpm build:standalone",
-    "build:prod": "pnpm lint && rimraf -rf dist && webpack && pnpm build:standalone"
   },
   "babel": {
     "presets": [
