@@ -158,10 +158,14 @@ async function main() {
 
   fs.writeFileSync(
     datavisGraphFilePath,
-    JSON.stringify({
-      serializedDatavisGraph: datavisGraph.serialize(),
-      serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.dir)]),
-    })
+    JSON.stringify(
+      {
+        serializedDatavisGraph: datavisGraph.serialize(),
+        serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.dir)]),
+      },
+      undefined,
+      2
+    )
   );
 
   console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
