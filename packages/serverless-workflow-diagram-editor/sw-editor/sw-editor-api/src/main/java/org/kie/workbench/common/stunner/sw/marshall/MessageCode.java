@@ -19,6 +19,6 @@ package org.kie.workbench.common.stunner.sw.marshall;
 // Message codes done in Interfaces instead of Enums for easier I18n later.
 public interface MessageCode {
 
-    String INVALID_TARGET_NAME = "Transition %s has invalid target.";
+    String INVALID_TARGET_NAME = "Transition from %s has invalid target.";
 
 }
