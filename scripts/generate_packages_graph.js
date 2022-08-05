@@ -163,7 +163,8 @@ async function main() {
       JSON.stringify({
         serializedDatavisGraph: datavisGraph.serialize(),
         serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.dir)]),
-      })
+      }),
+      { ...(await prettier.resolveConfig(".")), parser: "json" }
     )
   );
 
