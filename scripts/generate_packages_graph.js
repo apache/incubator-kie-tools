@@ -16,13 +16,13 @@
 
 const graphviz = require("graphviz");
 const DataVisTechGraph = require("graph-data-structure");
-const { getPackagesSync } = require("@lerna/project");
+const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const fs = require("fs");
 const path = require("path");
 
 const targetDir = process.argv[2];
 
-function main() {
+async function main() {
   if (!targetDir) {
     console.error("Please specify the directory path where the graph files will be written to.");
     process.exit(1);
@@ -32,23 +32,23 @@ function main() {
   const datavisGraphFilePath = path.join(targetDir, "graph.json");
   console.info(`[generate-packages-graph] Writing packages DOT graph to '${dotGraphFilePath}'...`);
 
-  const packages = getPackagesSync();
-  const packageMap = new Map(packages.map((p) => [p.name, p]));
-  const packageNames = new Set(packages.map((p) => p.name));
+  const packages = await findWorkspacePackages(".");
+  const packageMap = new Map(packages.map((p) => [p.manifest.name, p]));
+  const packageNames = new Set(packages.map((p) => p.manifest.name));
 
   const adjMatrix = {};
   for (const pkg of packages) {
-    adjMatrix[pkg.name] = adjMatrix[pkg.name] ?? {};
-    const dependencies = Object.keys(pkg.dependencies ?? {}).sort();
+    adjMatrix[pkg.manifest.name] = adjMatrix[pkg.manifest.name] ?? {};
+    const dependencies = Object.keys(pkg.manifest.dependencies ?? {}).sort();
     for (const depName of dependencies) {
       if (packageNames.has(depName)) {
-        adjMatrix[pkg.name][depName] = "dependency";
+        adjMatrix[pkg.manifest.name][depName] = "dependency";
       }
     }
-    const devDependencies = Object.keys(pkg.devDependencies ?? {}).sort();
+    const devDependencies = Object.keys(pkg.manifest.devDependencies ?? {}).sort();
     for (const depName of devDependencies) {
       if (packageNames.has(depName)) {
-        adjMatrix[pkg.name][depName] = "devDependency";
+        adjMatrix[pkg.manifest.name][depName] = "devDependency";
       }
     }
   }
@@ -142,7 +142,7 @@ function main() {
 
   for (const pkgName in resMatrix) {
     const pkg = packageMap.get(pkgName);
-    const pkgNode = pkg.name;
+    const pkgNode = pkg.manifest.name;
     datavisGraph.addNode(pkgNode);
 
     for (const depName in resMatrix[pkgName]) {
@@ -150,8 +150,8 @@ function main() {
         continue;
       }
 
-      const dep = packageMap.get(depName);
-      const depNode = dep.name;
+      const depPkg = packageMap.get(depName);
+      const depNode = depPkg.manifest.name;
       datavisGraph.addEdge(pkgNode, depNode);
     }
   }
@@ -160,7 +160,7 @@ function main() {
     datavisGraphFilePath,
     JSON.stringify({
       serializedDatavisGraph: datavisGraph.serialize(),
-      serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.location)]),
+      serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.dir)]),
     })
   );
 

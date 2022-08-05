@@ -17,7 +17,7 @@
 const fs = require("fs");
 const path = require("path");
 const execSync = require("child_process").execSync;
-const { getPackagesSync } = require("@lerna/project");
+const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const yaml = require("js-yaml");
 const { env } = require("../packages/build-env/env");
 const buildEnv = env;
@@ -95,8 +95,8 @@ async function updateNpmPackages(version) {
 async function updateMvnPackages(version) {
   console.info("[update-version] Updating Maven packages...");
 
-  const mvnPackages = getPackagesSync().filter((pkg) => fs.existsSync(path.resolve(pkg.location, "pom.xml")));
-  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.name}"`).join(" ");
+  const mvnPackages = findWorkspacePackages(".").filter((pkg) => fs.existsSync(path.resolve(pkg.dir, "pom.xml")));
+  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.manifest.name}"`).join(" ");
   execSync(
     `pnpm -r ${mvnPackagesPnpmFilters} --workspace-concurrency=1 exec 'bash' '-c' 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}'`,
     execOpts

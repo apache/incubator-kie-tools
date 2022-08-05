@@ -1,6 +1,7 @@
 {
   "serializedDatavisGraph": {
     "nodes": [
+      { "id": "kie-tools" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools-core/backend" },
@@ -633,6 +634,7 @@
     ]
   },
   "serializedPackagesLocationByName": [
+    ["kie-tools", ""],
     ["@kie-tools-examples/base64png-editor", "examples/base64png-editor"],
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
