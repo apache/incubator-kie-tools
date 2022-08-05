@@ -44,6 +44,8 @@ const ORIGINAL_ROOT_PACKAGE_JSON = require("../package.json");
 // MAIN
 
 const newVersion = process.argv[2];
+const pnpmFilter = ""; // `-F ${process.argv.slice(3)}`;
+
 if (!newVersion) {
   console.error("[update-version] Missing version argument.");
   return 1;
@@ -59,14 +61,22 @@ if (opts === "--silent") {
 
 Promise.resolve()
   .then(() => updateNpmPackages(newVersion))
+  // extract to each mvn package
   .then((version) => updateMvnPackages(version))
+  // extract to stunner-editors
   .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
+  // extract to serverless-workflow-diagram-editor
   .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
+  // extract to chrome-extension-pack-kogito-kie-editors
   .then((version) => updateChromeKieEditorsExtensionManifestFiles(version))
+  // extract to chrome-extension-serverless-workflow-editor
   .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
+  // extract to extended-services
   .then((version) => updateExtendedServicesConfigFile(version))
+  // extract to vscode-java-code-completion-extension-plugin
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
-  .then((version) => updateLockfile(version))
+  //
+  .then((version) => runBootstrap(version))
   .then(async (version) => {
     console.info(`[update-version] Formatting files...`);
     execSync(`pnpm pretty-quick`, execOpts);
@@ -87,8 +97,15 @@ Promise.resolve()
 async function updateNpmPackages(version) {
   console.info("[update-version] Updating root package...");
   execSync(`pnpm version ${version} --git-tag-version=false --allow-same-version=true`, execOpts);
+
   console.info("[update-version] Updating workspace packages...");
-  execSync(`pnpm -r exec pnpm version ${version} --git-tag-version=false --allow-same-version=true`, execOpts);
+  execSync(
+    `pnpm -r ${pnpmFilter} exec pnpm version ${version} --git-tag-version=false --allow-same-version=true`,
+    execOpts
+  );
+
+  console.info("[update-version] Running 'update-version-to' script on workspace packages...");
+  execSync(`pnpm -r ${pnpmFilter} update-version-to ${version}`, execOpts);
   return version;
 }
 
@@ -191,7 +208,8 @@ async function updateJavaAutocompletionPluginManifestFile(version) {
   return version;
 }
 
-async function updateLockfile(version) {
+async function runBootstrap(version) {
+  // TODO: use pnpmFilter
   execSync(`pnpm bootstrap`, execOpts);
   return version;
 }
