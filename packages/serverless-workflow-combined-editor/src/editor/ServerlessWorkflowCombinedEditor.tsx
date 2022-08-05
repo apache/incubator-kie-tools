@@ -99,12 +99,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const textEditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(targetOrigin, [
-        new EnvelopeMapping(
-          ENVELOPE_LOCATOR_TYPE,
-          "**/*.sw.+(json|yml|yaml)",
-          props.resourcesPathPrefix + "/text",
-          props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html"
-        ),
+        new EnvelopeMapping({
+          type: ENVELOPE_LOCATOR_TYPE,
+          filePathGlob: "**/*.sw.+(json|yml|yaml)",
+          resourcesPathPrefix: props.resourcesPathPrefix + "/text",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html",
+        }),
       ]),
     [props.resourcesPathPrefix, targetOrigin]
   );
@@ -120,18 +120,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
         };
     return new EditorEnvelopeLocator(targetOrigin, [
-      new EnvelopeMapping(
-        ENVELOPE_LOCATOR_TYPE,
-        "**/*.sw.json",
-        diagramEnvelopeMappingConfig.resourcesPathPrefix,
-        diagramEnvelopeMappingConfig.envelopePath
-      ),
-      new EnvelopeMapping(
-        ENVELOPE_LOCATOR_TYPE,
-        "**/*.sw.+(yml|yaml)",
-        props.resourcesPathPrefix + "/mermaid",
-        props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
-      ),
+      new EnvelopeMapping({
+        type: ENVELOPE_LOCATOR_TYPE,
+        filePathGlob: "**/*.sw.json",
+        resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
+        envelopePath: diagramEnvelopeMappingConfig.envelopePath,
+      }),
+      new EnvelopeMapping({
+        type: ENVELOPE_LOCATOR_TYPE,
+        filePathGlob: "**/*.sw.+(yml|yaml)",
+        resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+        envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+      }),
     ]);
   }, [featureToggle, props.resourcesPathPrefix, targetOrigin]);
 

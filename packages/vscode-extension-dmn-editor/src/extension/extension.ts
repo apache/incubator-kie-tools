@@ -36,13 +36,18 @@ export function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: "extension.kogito.getPreviewSvgDmn",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgDmn",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping("dmn", "**/*.dmn", "dist/webview/DmnEditorEnvelopeApp.js", "dist/webview/editors/dmn"),
-      new EnvelopeMapping(
-        "scesim",
-        "**/*.scesim",
-        "dist/webview/SceSimEditorEnvelopeApp.js",
-        "dist/webview/editors/scesim"
-      ),
+      new EnvelopeMapping({
+        type: "dmn",
+        filePathGlob: "**/*.dmn",
+        resourcesPathPrefix: "dist/webview/editors/dmn",
+        envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
+      }),
+      new EnvelopeMapping({
+        type: "scesim",
+        filePathGlob: "**/*.scesim",
+        resourcesPathPrefix: "dist/webview/editors/scesim",
+        envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy: backendProxy,
   });

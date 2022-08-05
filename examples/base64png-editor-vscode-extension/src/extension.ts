@@ -48,7 +48,12 @@ export function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping("base64png", "**/*.base64png", `dist/`, `dist/envelope/index.js`),
+      new EnvelopeMapping({
+        type: "base64png",
+        filePathGlob: "**/*.base64png",
+        resourcesPathPrefix: "dist/",
+        envelopePath: "dist/envelope/index.js",
+      }),
     ]),
     backendProxy: backendProxy,
   });
