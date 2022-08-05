@@ -1,44 +1,49 @@
 {
   "name": "@kie-tools-core/vscode-extension",
-  "displayName": "KIE :: Kogito Editors",
-  "description": "",
   "version": "0.0.0",
+  "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "publisher": "kie-group",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "publisher": "kie-group",
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
+    "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
+    "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.prod.json && pnpm test",
     "compile": "webpack",
-    "watch": "webpack",
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
-    "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.prod.json && pnpm test"
+    "watch": "webpack"
   },
   "dependencies": {
     "@kie-tools-core/backend": "workspace:*",
-    "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/notifications": "workspace:*",
-    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "minimatch": "^3.0.4",
-    "@types/vscode": "^1.66.0"
+    "@types/vscode": "^1.66.0",
+    "minimatch": "^3.0.4"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "workspace:*",
     "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "@types/minimatch": "^3.0.4"
-  }
+  },
+  "displayName": "KIE :: Kogito Editors"
 }

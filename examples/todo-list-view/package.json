@@ -1,20 +1,24 @@
 {
+  "private": true,
   "name": "@kie-tools-examples/todo-list-view",
   "version": "0.0.0",
   "license": "Apache-2.0",
-  "private": true,
-  "files": [
-    "dist"
-  ],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "build": "rimraf dist && pnpm copy:css && tsc",
     "build:dev": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
-    "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\""
+    "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/"
   },
   "dependencies": {
     "@kie-tools-core/envelope": "workspace:*",
@@ -23,8 +27,8 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "workspace:*",
     "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "@types/vscode": "^1.66.0"
   }
 }

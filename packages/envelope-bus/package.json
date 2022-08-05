@@ -3,29 +3,34 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "files": [
-    "dist",
-    "src",
-    "dist-tests"
-  ],
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "dist",
+    "dist-tests",
+    "src"
+  ],
   "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "build:tests": "rimraf dist-tests && tsc -p tsconfig.tests.json",
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json && pnpm build:tests",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm build:tests && pnpm test"
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm build:tests && pnpm test",
+    "build:tests": "rimraf dist-tests && tsc -p tsconfig.tests.json",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "workspace:*",
-    "@kie-tools-core/run-script-if": "workspace:*"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   },
   "babel": {
     "presets": [

@@ -1,31 +1,35 @@
 {
+  "private": true,
   "name": "@kie-tools/dashbuilder-component-assembler",
   "version": "0.0.0",
-  "private": true,
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@kie-tools-core/patternfly-base": "workspace:*",
-    "@kie-tools/dashbuilder-component-api": "workspace:*",
-    "@kie-tools/dashbuilder-component-uniforms": "workspace:*",
-    "@kie-tools/dashbuilder-component-table": "workspace:*",
-    "@kie-tools/dashbuilder-component-echarts": "workspace:*",
-    "@kie-tools/dashbuilder-component-svg-heatmap": "workspace:*",
-    "@kie-tools/dashbuilder-component-timeseries": "workspace:*"
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "devDependencies": {
-    "@kie-tools/build-env": "workspace:*",
-    "@kie-tools-core/webpack-base": "workspace:*"
-  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack",
     "build:prod": "pnpm build:dev"
+  },
+  "dependencies": {
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools/dashbuilder-component-api": "workspace:*",
+    "@kie-tools/dashbuilder-component-echarts": "workspace:*",
+    "@kie-tools/dashbuilder-component-svg-heatmap": "workspace:*",
+    "@kie-tools/dashbuilder-component-table": "workspace:*",
+    "@kie-tools/dashbuilder-component-timeseries": "workspace:*",
+    "@kie-tools/dashbuilder-component-uniforms": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   },
   "babel": {
     "presets": [

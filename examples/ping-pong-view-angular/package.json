@@ -1,24 +1,29 @@
 {
   "name": "@kie-tools-examples/ping-pong-view-angular",
   "version": "0.0.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
   "files": [
     "dist"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kiegroup/kie-tools.git"
-  },
   "scripts": {
     "build": "rimraf dist && pnpm build:wc && pnpm build:wc-lib && pnpm build:app",
+    "build:app": "ng build ping-pong-view-angular",
     "build:dev": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
     "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build --configuration production\"",
-    "build:app": "ng build ping-pong-view-angular",
     "build:wc": "ng build ping-pong-view-wc && pnpm build:wc:concat",
-    "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js",
-    "build:wc-lib": "tsc --project tsconfig.lib.json"
+    "build:wc-lib": "tsc --project tsconfig.lib.json",
+    "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js"
   },
   "dependencies": {
     "@angular/animations": "^13.1.1",
@@ -30,9 +35,9 @@
     "@angular/platform-browser": "^13.1.1",
     "@angular/platform-browser-dynamic": "^13.1.1",
     "@angular/router": "^13.1.1",
+    "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-examples/ping-pong-view": "workspace:*",
-    "@kie-tools-core/envelope": "workspace:*",
     "rxjs": "^7.4.0",
     "zone.js": "^0.11.4"
   },
@@ -40,7 +45,7 @@
     "@angular-devkit/build-angular": "^13.1.2",
     "@angular/cli": "^13.1.2",
     "@angular/compiler-cli": "^13.1.1",
-    "@kie-tools/build-env": "workspace:*",
-    "@kie-tools-core/run-script-if": "workspace:*"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   }
 }
