@@ -95,7 +95,9 @@ async function updateNpmPackages(version) {
 async function updateMvnPackages(version) {
   console.info("[update-version] Updating Maven packages...");
 
-  const mvnPackages = findWorkspacePackages(".").filter((pkg) => fs.existsSync(path.resolve(pkg.dir, "pom.xml")));
+  const mvnPackages = (await findWorkspacePackages(".")).filter((pkg) =>
+    fs.existsSync(path.resolve(pkg.dir, "pom.xml"))
+  );
   const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.manifest.name}"`).join(" ");
   execSync(
     `pnpm -r ${mvnPackagesPnpmFilters} --workspace-concurrency=1 exec 'bash' '-c' 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}'`,
