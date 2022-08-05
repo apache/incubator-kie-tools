@@ -15,6 +15,7 @@
  */
 
 import {
+  dump,
   Kind,
   load,
   YAMLAnchorReference,
@@ -58,7 +59,7 @@ export class SwfYamlLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content), completionTranslator });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
@@ -73,6 +74,10 @@ export class SwfYamlLanguageService {
     return this.ls.dispose();
   }
 }
+
+const completionTranslator = (completion: any): string => {
+  return dump(completion, {});
+};
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   const convertedNode: SwfLsNode = {
@@ -94,10 +99,17 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   } else if (node.kind === Kind.MAPPING) {
     const yamlMapping = node as YAMLMapping;
     convertedNode.value = yamlMapping.value;
-    convertedNode.children = [astConvert(yamlMapping.key, convertedNode), astConvert(yamlMapping.value, convertedNode)];
+    if (convertedNode.value) {
+      convertedNode.children = [
+        astConvert(yamlMapping.key, convertedNode),
+        astConvert(yamlMapping.value, convertedNode),
+      ];
+    }
     convertedNode.type = "property";
   } else if (node.kind === Kind.SEQ) {
-    convertedNode.children = (node as YAMLSequence).items.map((item) => astConvert(item, convertedNode));
+    convertedNode.children = (node as YAMLSequence).items
+      .filter((item) => item)
+      .map((item) => astConvert(item, convertedNode));
     convertedNode.type = "array";
   } else if (node.kind === Kind.ANCHOR_REF || node.kind === Kind.INCLUDE_REF) {
     convertedNode.value = (node as YAMLAnchorReference).value;

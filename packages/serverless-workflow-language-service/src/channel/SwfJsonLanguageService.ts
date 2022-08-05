@@ -42,7 +42,7 @@ export class SwfJsonLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content), completionTranslator });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
@@ -57,3 +57,11 @@ export class SwfJsonLanguageService {
     return this.ls.dispose();
   }
 }
+
+const completionTranslator = (completion: any, translateFullObject = false): string => {
+  if (completion instanceof Object && !translateFullObject) {
+    return JSON.stringify(completion, null, 2).slice(1, -1);
+  }
+
+  return JSON.stringify(completion, null, 2);
+};

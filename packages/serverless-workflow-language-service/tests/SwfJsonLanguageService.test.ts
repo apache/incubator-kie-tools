@@ -680,7 +680,7 @@ describe("SWF LS JSON", () => {
       detail: "specs/testRelativeService1.yml#testRelativeFunction1",
       sortText: "testRelativeFunction1 arguments",
       textEdit: {
-        newText: `{\n  "argString": "\${1:}",\n  "argNumber": "\${2:}",\n  "argBoolean": "\${3:}"\n}`,
+        newText: `\n  "argString": "\${1:}",\n  "argNumber": "\${2:}",\n  "argBoolean": "\${3:}"\n`,
         range: { start: cursorPosition, end: cursorPosition },
       },
       insertTextFormat: InsertTextFormat.Snippet,
