@@ -37,6 +37,7 @@ export function Base64PngPage() {
     fileExtension: "base64png",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    path: "new-file.base64png",
   });
 
   /**
@@ -45,7 +46,12 @@ export function Base64PngPage() {
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("base64png", "**/*.base64png", `envelope/`, `envelope/base64-editor.html`),
+        new EnvelopeMapping({
+          type: "base64png",
+          filePathGlob: "**/*.base64png",
+          resourcesPathPrefix: "envelope/",
+          envelopePath: "envelope/base64-editor.html",
+        }),
       ]),
     [file]
   );

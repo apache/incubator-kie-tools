@@ -25,9 +25,24 @@ export function EditorEnvelopeLocatorContextProvider(props: { children: React.Re
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("swf", GLOB_PATTERN.sw, ".", "serverless-workflow-combined-editor-envelope.html"),
-        new EnvelopeMapping("dash", GLOB_PATTERN.dash, "", "dashbuilder-editor-envelope.html"),
-        new EnvelopeMapping("text", GLOB_PATTERN.all, "", "text-editor-envelope.html"),
+        new EnvelopeMapping({
+          type: "swf",
+          filePathGlob: GLOB_PATTERN.sw,
+          resourcesPathPrefix: ".",
+          envelopePath: "serverless-workflow-combined-editor-envelope.html",
+        }),
+        new EnvelopeMapping({
+          type: "dash",
+          filePathGlob: GLOB_PATTERN.dash,
+          resourcesPathPrefix: "",
+          envelopePath: "dashbuilder-editor-envelope.html",
+        }),
+        new EnvelopeMapping({
+          type: "text",
+          filePathGlob: GLOB_PATTERN.all,
+          resourcesPathPrefix: "",
+          envelopePath: "text-editor-envelope.html",
+        }),
       ]),
     []
   );
