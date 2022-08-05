@@ -15,7 +15,7 @@
  */
 
 const graphviz = require("graphviz");
-const DataVisTechGraph = require("graph-data-structure");
+const DatavisTechGraph = require("graph-data-structure");
 const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const fs = require("fs");
 const path = require("path");
@@ -138,7 +138,7 @@ async function main() {
   console.info(`[generate-packages-graph] Writing packages Datavis graph to '${datavisGraphFilePath}'...`);
   const relativize = (pkgLocation) => path.relative(path.resolve("."), pkgLocation);
 
-  const datavisGraph = DataVisTechGraph();
+  const datavisGraph = DatavisTechGraph();
 
   for (const pkgName in resMatrix) {
     const pkg = packageMap.get(pkgName);

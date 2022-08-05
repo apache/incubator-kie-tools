@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const DataVisTechGraph = require("graph-data-structure");
+const DatavisTechGraph = require("graph-data-structure");
 const path = require("path");
 
 const targetDir = process.argv[2];
@@ -23,7 +23,7 @@ const srcPackageNames = process.argv.slice(3);
 function main() {
   if (!targetDir || !srcPackageNames || srcPackageNames.length === 0) {
     console.error(
-      "[list-packages-dependencies] Usage 'node list_packages_dependencies.js [graph-json-dir-path] [src-pkg-name]'"
+      "[list-packages-dependencies] Usage 'node list_packages_dependencies.js [graph-json-dir-path] [src-pkg-names...]'"
     );
     process.exit(1);
   }
@@ -38,7 +38,7 @@ function main() {
     process.exit(1);
   }
 
-  const datavisGraph = DataVisTechGraph();
+  const datavisGraph = DatavisTechGraph();
   datavisGraph.deserialize(graphJson.serializedDatavisGraph);
 
   const dependencies = datavisGraph.depthFirstSearch(srcPackageNames, true, true);
