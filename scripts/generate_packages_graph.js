@@ -137,8 +137,6 @@ async function main() {
   console.info(`[generate-packages-graph] Wrote packages DOT graph to '${dotGraphFilePath}'`);
 
   console.info(`[generate-packages-graph] Writing packages Datavis graph to '${datavisGraphFilePath}'...`);
-  const relativize = (pkgLocation) => path.relative(path.resolve("."), pkgLocation);
-
   const datavisGraph = DatavisTechGraph();
 
   for (const pkgName in resMatrix) {
@@ -162,7 +160,10 @@ async function main() {
     prettier.format(
       JSON.stringify({
         serializedDatavisGraph: datavisGraph.serialize(),
-        serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [k, relativize(v.dir)]),
+        serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [
+          k,
+          path.relative(path.resolve("."), v.dir).split(path.sep).join(path.posix.sep),
+        ]),
       }),
       { ...(await prettier.resolveConfig(".")), parser: "json" }
     )
