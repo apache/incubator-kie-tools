@@ -24,7 +24,7 @@ const targetDir = process.argv[2];
 
 async function main() {
   if (!targetDir) {
-    console.error("Please specify the directory path where the graph files will be written to.");
+    console.error("[generate-packages-graph] Usage 'node generate_packages_graph.js [dir-path]'");
     process.exit(1);
   }
 

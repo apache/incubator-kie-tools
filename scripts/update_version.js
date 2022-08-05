@@ -47,7 +47,7 @@ const newVersion = process.argv[2];
 const pnpmFilter = ""; // TODO: `${process.argv.slice(3).join(" ")}`;
 
 if (!newVersion) {
-  console.error("[update-version] Missing version argument.");
+  console.error("Usage 'node update_version.js [version]'");
   return 1;
 }
 
