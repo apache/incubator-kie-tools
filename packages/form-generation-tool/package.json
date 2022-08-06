@@ -28,17 +28,17 @@
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools/uniforms-bootstrap4-codegen": "0.0.0",
-    "@kie-tools/uniforms-patternfly-codegen": "0.0.0",
+    "@kie-tools/uniforms-bootstrap4-codegen": "workspace:*",
+    "@kie-tools/uniforms-patternfly-codegen": "workspace:*",
     "inquirer": "^8.1.1",
     "lodash": "^4.17.21",
     "uniforms": "^3.5.5",
     "uniforms-bridge-json-schema": "^3.5.5"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "@types/inquirer": "^7.3.2",
     "@types/lodash": "^4.14.168",
     "pkg": "^5.5.2"

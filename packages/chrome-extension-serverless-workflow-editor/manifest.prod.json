@@ -13,29 +13,12 @@
   ],
   "icons": { "16": "resources/icon_16.png", "48": "resources/icon_48.png", "128": "resources/icon_128.png" },
   "action": { "default_icon": "resources/icon_16.png" },
-  "web_accessible_resources": [
-    {
-      "resources": ["resources/*", "scripts/*"],
-      "matches": ["https://*/*", "http://*/*"]
-    }
-  ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "rulesset_1",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  },
+  "web_accessible_resources": [{ "resources": ["resources/*", "scripts/*"], "matches": ["https://*/*", "http://*/*"] }],
+  "declarative_net_request": { "rule_resources": [{ "id": "rulesset_1", "enabled": true, "path": "rules.json" }] },
   "permissions": ["declarativeNetRequest"],
   "host_permissions": ["https://*.github.com/*", "http://*.github.com/*"],
-  "sandbox": {
-    "pages": ["https://raw.githubusercontent.com"]
-  },
-  "content_security_policy": {
-    "sandbox": "sandbox allow-scripts; object-src 'self'"
-  },
+  "sandbox": { "pages": ["https://raw.githubusercontent.com"] },
+  "content_security_policy": { "sandbox": "sandbox allow-scripts; object-src 'self'" },
   "externally_connectable": {
     "matches": [
       "https://*.github.com/*",

@@ -48,12 +48,11 @@ runs:
       with:
         go-version: "1.17"
 
-    - name: "Setup Lerna"
+    - name: "Setup network timeout"
       shell: bash
       run: |
-        echo "STEP: Setup Lerna"
+        echo "STEP: Setup network timeout"
         cd ${{ inputs.path }}
-        npm install -g lerna@4.0.0
         pnpm config set network-timeout 1000000
 
     - name: "Setup default Maven args"

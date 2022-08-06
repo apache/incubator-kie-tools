@@ -26,8 +26,8 @@
   },
   "devDependencies": {
     "@isomorphic-git/cors-proxy": "^2.7.1",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "patch-package": "^6.4.7"
   }
 }
