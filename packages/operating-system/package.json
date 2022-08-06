@@ -25,8 +25,8 @@
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   },
   "babel": {
     "presets": [

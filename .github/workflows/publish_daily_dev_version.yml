@@ -69,7 +69,7 @@ jobs:
         id: version
         run: |
           cd kie-tools
-          echo ::set-output name=version::$(node -e "console.log(require('./lerna.json').version);")
+          echo ::set-output name=version::$(node -e "console.log(require('./package.json').version);")
         shell: bash
 
       - name: "Cache Maven packages"
