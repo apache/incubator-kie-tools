@@ -49,20 +49,30 @@ export async function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: "extension.kogito.getPreviewSvg",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvg",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping(
-        "bpmn",
-        "**/*.bpmn?(2)",
-        "dist/webview/BpmnEditorEnvelopeApp.js",
-        "dist/webview/editors/bpmn"
-      ),
-      new EnvelopeMapping("dmn", "**/*.dmn", "dist/webview/DmnEditorEnvelopeApp.js", "dist/webview/editors/dmn"),
-      new EnvelopeMapping(
-        "scesim",
-        "**/*.scesim",
-        "dist/webview/SceSimEditorEnvelopeApp.js",
-        "dist/webview/editors/scesim"
-      ),
-      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/PMMLEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "dist/webview/editors/bpmn",
+        envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
+      }),
+      new EnvelopeMapping({
+        type: "dmn",
+        filePathGlob: "**/*.dmn",
+        resourcesPathPrefix: "dist/webview/editors/dmn",
+        envelopePath: "dist/webview/DmnEditorEnvelopeApp.js",
+      }),
+      new EnvelopeMapping({
+        type: "scesim",
+        filePathGlob: "**/*.scesim",
+        resourcesPathPrefix: "dist/webview/editors/scesim",
+        envelopePath: "dist/webview/SceSimEditorEnvelopeApp.js",
+      }),
+      new EnvelopeMapping({
+        type: "pmml",
+        filePathGlob: "**/*.pmml",
+        resourcesPathPrefix: "dist/webview/editors/pmml",
+        envelopePath: "dist/webview/PMMLEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy: backendProxy,
   });

@@ -26,10 +26,10 @@
     "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env serverlessLogicSandboxBaseImage.buildTags) | xargs printf -- \"-t $(build-env serverlessLogicSandboxBaseImageEnv.registry)/$(build-env serverlessLogicSandboxBaseImageEnv.account)/$(build-env serverlessLogicSandboxBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env serverlessLogicSandboxBaseImage.quarkusVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools/dashbuilder-swf-monitoring-dashboard": "0.0.0",
-    "@kie-tools/serverless-logic-sandbox-base-image-env": "0.0.0",
-    "@kie-tools/serverless-logic-sandbox-deployment-webapp": "0.0.0"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/dashbuilder-swf-monitoring-dashboard": "workspace:*",
+    "@kie-tools/serverless-logic-sandbox-base-image-env": "workspace:*",
+    "@kie-tools/serverless-logic-sandbox-deployment-webapp": "workspace:*"
   }
 }

@@ -32,11 +32,11 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {
-    "@kie-tools/stunner-editors-dmn-loader": "0.0.0"
+    "@kie-tools/stunner-editors-dmn-loader": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "symlink-dir": "^5.0.1"
   }
 }

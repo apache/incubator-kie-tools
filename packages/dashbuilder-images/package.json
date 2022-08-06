@@ -24,10 +24,10 @@
     "podman:build:runtime": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dashbuilder.baseImage.buildTags) | xargs printf -- \"-t $(build-env dashbuilder.baseImage.registry)/$(build-env dashbuilder.baseImage.account)/$(build-env dashbuilder.baseImage.runtimeName):%s\n\" | xargs echo) -f ContainerFile.DashBuilderRuntime\" --else \"echo Podman not found, skipping image build.\""
   },
   "dependencies": {
-    "@kie-tools/dashbuilder": "0.0.0"
+    "@kie-tools/dashbuilder": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   }
 }

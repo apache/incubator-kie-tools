@@ -24,12 +24,12 @@
     "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevSandboxDeploymentBaseImage.buildTags) | xargs printf -- \"-t $(build-env dmnDevSandboxDeploymentBaseImageEnv.registry)/$(build-env dmnDevSandboxDeploymentBaseImageEnv.account)/$(build-env dmnDevSandboxDeploymentBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "dependencies": {
-    "@kie-tools/dmn-dev-sandbox-form-webapp": "0.0.0",
-    "@kie-tools/dmn-dev-sandbox-quarkus": "0.0.0"
+    "@kie-tools/dmn-dev-sandbox-form-webapp": "workspace:*",
+    "@kie-tools/dmn-dev-sandbox-quarkus": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "0.0.0"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*"
   }
 }
