@@ -17,10 +17,7 @@
 const fs = require("fs");
 const path = require("path");
 const execSync = require("child_process").execSync;
-const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const yaml = require("js-yaml");
-const { env } = require("../packages/build-env/env");
-const buildEnv = env;
 
 const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
@@ -61,12 +58,6 @@ if (opts === "--silent") {
 
 Promise.resolve()
   .then(() => updateNpmPackages(newVersion))
-  // TODO: extract to each mvn package
-  .then((version) => updateMvnPackages(version))
-  // TODO: extract to stunner-editors
-  .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
-  // TODO: extract to serverless-workflow-diagram-editor
-  .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
   // TODO: extract to chrome-extension-pack-kogito-kie-editors
   .then((version) => updateChromeKieEditorsExtensionManifestFiles(version))
   // TODO: extract to chrome-extension-serverless-workflow-editor
@@ -106,59 +97,6 @@ async function updateNpmPackages(version) {
 
   console.info("[update-version] Running 'update-version-to' script on workspace packages...");
   execSync(`pnpm -r ${pnpmFilter} update-version-to ${version}`, execOpts);
-  return version;
-}
-
-async function updateMvnPackages(version) {
-  console.info("[update-version] Updating Maven packages...");
-
-  const mvnPackages = (await findWorkspacePackages(".")).filter((pkg) =>
-    fs.existsSync(path.resolve(pkg.dir, "pom.xml"))
-  );
-  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.manifest.name}"`).join(" ");
-  execSync(
-    `pnpm -r ${mvnPackagesPnpmFilters} --workspace-concurrency=1 exec 'bash' '-c' 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}'`,
-    execOpts
-  );
-  return version;
-}
-
-async function updateSpecialInternalMvnPackagesOnStunnerEditors(version) {
-  console.info("[update-version] Updating special Maven packages on Stunner Editors...");
-
-  const modules = [
-    `packages/stunner-editors/errai-bom`,
-    `packages/stunner-editors/appformer-bom`,
-    `packages/stunner-editors/kie-wb-common-bom`,
-    `packages/stunner-editors/drools-wb-bom`,
-  ];
-
-  for (const module of modules) {
-    execSync(
-      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
-      execOpts
-    );
-  }
-
-  return version;
-}
-
-async function updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version) {
-  console.info("[update-version] Updating special Maven packages on Serverless Workflow Diagram Editor...");
-
-  const modules = [
-    `packages/serverless-workflow-diagram-editor/errai-bom`,
-    `packages/serverless-workflow-diagram-editor/appformer-bom`,
-    `packages/serverless-workflow-diagram-editor/kie-wb-common-bom`,
-  ];
-
-  for (const module of modules) {
-    execSync(
-      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
-      execOpts
-    );
-  }
-
   return version;
 }
 
