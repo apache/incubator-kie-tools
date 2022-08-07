@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie.kogito.stunner.editors</groupId>
     <artifactId>uberfire-wires-core</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>uberfire-wires-core-grids</artifactId>

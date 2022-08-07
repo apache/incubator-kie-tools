@@ -21,7 +21,7 @@
   <parent>
     <artifactId>kie-wb-common-stunner-commons</artifactId>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
