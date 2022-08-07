@@ -26,7 +26,7 @@
     "build:prod:win32": "pnpm lint && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs `-Pno-showcase && pnpm dist",
     "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
     "dist:sw": "symlink-dir sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app ./dist/sw",
-    "install": "mkdir -p .mvn && echo \"-Drevision=$(build-env swfDiagramEditor.version)\" > .mvn/maven.config",
+    "install": "mkdirp .mvn && echo \"-Drevision=$(build-env swfDiagramEditor.version)\" > .mvn/maven.config",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },

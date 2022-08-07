@@ -36,7 +36,7 @@
     "dist": "run-script-os",
     "dist:linux:darwin": "rimraf dist/ && mkdir dist && zip -j dist/dashbuilder_dist.zip ./dashbuilder-authoring/target/dashbuilder-authoring.war ./dashbuilder-authoring/target/dashbuilder-authoring-bootable.jar ./dashbuilder-runtime-parent/dashbuilder-runtime-app/target/dashbuilder-runtime-app-runner.jar",
     "dist:win32": "echo \"Not supported on Windows\"",
-    "install": "mkdir -p .mvn && echo \"-Drevision=$(build-env dashbuilder.version)\" > .mvn/maven.config",
+    "install": "mkdirp .mvn && echo \"-Drevision=$(build-env dashbuilder.version)\" > .mvn/maven.config",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },

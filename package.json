@@ -62,6 +62,7 @@
     "jest-webextension-mock": "^3.7.19",
     "jest-when": "^3.5.0",
     "js-yaml": "^4.1.0",
+    "mkdirp": "^1.0.4",
     "null-loader": "^4.0.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
