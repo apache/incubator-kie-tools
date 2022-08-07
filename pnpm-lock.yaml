@@ -417,11 +417,11 @@ importers:
 
   packages/backend-extended-services:
     specifiers:
-      "@kie-tools-core/maven-config-setup": workspace:*
+      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
     devDependencies:
-      "@kie-tools-core/maven-config-setup": link:../maven-config-setup
+      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
@@ -623,14 +623,14 @@ importers:
 
   packages/dashbuilder:
     specifiers:
-      "@kie-tools-core/maven-config-setup": workspace:*
+      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-assembler": workspace:*
     dependencies:
       "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
-      "@kie-tools-core/maven-config-setup": link:../maven-config-setup
+      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
@@ -1051,11 +1051,11 @@ importers:
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
-      "@kie-tools-core/maven-config-setup": workspace:*
+      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
     devDependencies:
-      "@kie-tools-core/maven-config-setup": link:../maven-config-setup
+      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
@@ -1564,7 +1564,7 @@ importers:
     devDependencies:
       "@kie-tools/build-env": link:../build-env
 
-  packages/maven-config-setup:
+  packages/maven-config-setup-helper:
     specifiers:
       "@kie-tools/build-env": workspace:*
     devDependencies:
@@ -2105,12 +2105,12 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     specifiers:
-      "@kie-tools-core/maven-config-setup": workspace:*
+      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       symlink-dir: ^5.0.1
     devDependencies:
-      "@kie-tools-core/maven-config-setup": link:../maven-config-setup
+      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       symlink-dir: 5.0.1
@@ -2312,7 +2312,7 @@ importers:
 
   packages/stunner-editors:
     specifiers:
-      "@kie-tools-core/maven-config-setup": workspace:*
+      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       "@kie-tools/stunner-editors-dmn-loader": workspace:*
@@ -2320,7 +2320,7 @@ importers:
     dependencies:
       "@kie-tools/stunner-editors-dmn-loader": link:../stunner-editors-dmn-loader
     devDependencies:
-      "@kie-tools-core/maven-config-setup": link:../maven-config-setup
+      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       symlink-dir: 5.0.1
@@ -2987,11 +2987,11 @@ importers:
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
-      "@kie-tools-core/maven-config-setup": workspace:*
+      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
     devDependencies:
-      "@kie-tools-core/maven-config-setup": link:../maven-config-setup
+      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 

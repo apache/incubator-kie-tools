@@ -15,7 +15,7 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools-core/maven-config-setup");
+const { setup } = require("@kie-tools-core/maven-config-setup-helper");
 
 setup(`
     -Drevision=${buildEnv.env.backendExtendedServices.version}

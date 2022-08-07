@@ -24,14 +24,20 @@ module.exports = {
   setup: (mavenConfigString) => {
     let originalMvnConfigString;
     if (fs.existsSync(MVN_CONFIG_ORIGINAL_FILE_PATH)) {
+      console.info(`[maven-config-setup-helper] Found '${MVN_CONFIG_ORIGINAL_FILE_PATH}'.`);
       originalMvnConfigString = fs.readFileSync(MVN_CONFIG_ORIGINAL_FILE_PATH);
     } else if (fs.existsSync(MVN_CONFIG_FILE_PATH)) {
+      console.info(`[maven-config-setup-helper] Found '${MVN_CONFIG_FILE_PATH}'.`);
       originalMvnConfigString = fs.readFileSync(MVN_CONFIG_FILE_PATH);
     } else {
+      console.info(`[maven-config-setup-helper] No previous config found.`);
       originalMvnConfigString = "";
     }
 
     fs.mkdirSync(".mvn", { recursive: true });
+
+    console.info(`[maven-config-setup-helper] Writing '${MVN_CONFIG_ORIGINAL_FILE_PATH}'...`);
+    console.info(`${originalMvnConfigString}` || "<empty>");
     fs.writeFileSync(MVN_CONFIG_ORIGINAL_FILE_PATH, originalMvnConfigString);
 
     const trimmedMavenConfigString = mavenConfigString
@@ -40,6 +46,11 @@ module.exports = {
       .map((l) => l.trim())
       .join("\n");
 
-    fs.writeFileSync(MVN_CONFIG_FILE_PATH, `${originalMvnConfigString} ${trimmedMavenConfigString}`.trim());
+    const newMavenConfigString = `${originalMvnConfigString} ${trimmedMavenConfigString}`.trim();
+    console.info(`[maven-config-setup-helper] Writing '${MVN_CONFIG_FILE_PATH}'...`);
+    console.info(newMavenConfigString);
+    fs.writeFileSync(MVN_CONFIG_FILE_PATH, newMavenConfigString);
+
+    console.info(`[maven-config-setup-helper] Done.`);
   },
 };

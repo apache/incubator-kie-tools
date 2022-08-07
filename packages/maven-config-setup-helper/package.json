@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools-core/maven-config-setup",
+  "name": "@kie-tools-core/maven-config-setup-helper",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -13,7 +13,7 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "bin": {
-    "maven-config-setup": "index.js"
+    "maven-config-setup-helper": "index.js"
   },
   "files": [
     "index.js"
