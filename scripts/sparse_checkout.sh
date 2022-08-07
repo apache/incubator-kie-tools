@@ -31,7 +31,6 @@ echo "[kie-tools-sparse-checkout] Installing root dependencies..."
 pnpm install-dependencies -F . --frozen-lockfile
 echo ""
 
-KIE_TOOLS_PACKAGE_NAMES_TO_BUILD=(@kie-tools-core/envelope @kie-tools/kn-plugin-workflow)
 echo "[kie-tools-sparse-checkout] Listing paths of packages to fetch for (${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]})..."
 KIE_TOOLS_PACKAGE_PATHS_TO_FETCH=$(pnpm run --silent list-packages-dependencies "${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]}")
 echo $KIE_TOOLS_PACKAGE_PATHS_TO_FETCH | xargs -n1
