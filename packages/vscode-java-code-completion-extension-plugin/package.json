@@ -23,6 +23,7 @@
     "build:prod": "pnpm lint && run-script-os",
     "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
     "build:prod:win32": "pnpm install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
+    "install": "mkdir -p .mvn && echo \"-Drevision=$(build-env vscodeJavaCodeCompletionExtensionPlugin.version)\" > .mvn/maven.config",
     "install:mvnw": "mvn wrapper:wrapper -f ./",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
