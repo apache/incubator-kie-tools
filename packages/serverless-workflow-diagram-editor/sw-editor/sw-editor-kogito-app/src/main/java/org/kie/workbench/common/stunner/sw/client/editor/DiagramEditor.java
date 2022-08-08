@@ -29,7 +29,6 @@ import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
 import com.ait.lienzo.client.widget.panel.util.PanelTransformUtils;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.IsWidget;
 import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
@@ -44,7 +43,6 @@ import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
-import org.kie.workbench.common.stunner.core.client.canvas.controls.CanvasRegistrationControl;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
 import org.kie.workbench.common.stunner.core.client.canvas.util.CanvasFileExport;
 import org.kie.workbench.common.stunner.core.client.command.CanvasCommandManager;
@@ -82,14 +80,12 @@ public class DiagramEditor {
     static String ID_SEARCH_PATTERN = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
             "?(?<value>true|false|[0-9a-zA-Z\\+\\-\\,\\.\\$]*)";
     static JsRegExp jsRegExp = new JsRegExp(ID_SEARCH_PATTERN, "i"); //case insensitive
-    static int UPDATE_DIAGRAM_TIMER_INTERVAL = 25; //milliseconds
 
     private final Promises promises;
     private final StunnerEditor stunnerEditor;
     private final ClientDiagramService diagramService;
     private final IncrementalMarshaller incrementalMarshaller;
     private final CanvasFileExport canvasFileExport;
-    private final UpdateDiagramTimer updateDiagramTimer;
 
     JsCanvas jsCanvas;
 
@@ -104,7 +100,6 @@ public class DiagramEditor {
         this.diagramService = diagramService;
         this.incrementalMarshaller = incrementalMarshaller;
         this.canvasFileExport = canvasFileExport;
-        this.updateDiagramTimer = new UpdateDiagramTimer();
         this.jsCanvas = null;
     }
 
@@ -197,9 +192,9 @@ public class DiagramEditor {
     }
 
     Diagram renderDiagram;
+
     public Promise<Void> updateContent(final String path, final String value) {
         return promises.create((success, failure) -> {
-            updateDiagramTimer.cancel();
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
@@ -208,7 +203,7 @@ public class DiagramEditor {
                                          @Override
                                          public void onSuccess(final ParseResult parseResult) {
                                              renderDiagram = parseResult.getDiagram();
-                                             updateDiagramTimer.schedule(UPDATE_DIAGRAM_TIMER_INTERVAL, parseResult.getDiagram());
+                                             updateDiagram(parseResult.getDiagram());
                                              if (parseResult.getMessages().length > 0) {
                                                  for (Message m : parseResult.getMessages()) {
                                                      stunnerEditor.addError(m.toString());
@@ -239,7 +234,6 @@ public class DiagramEditor {
     }
 
     void close() {
-        updateDiagramTimer.cancel();
         stunnerEditor.close();
         jsCanvas.close();
     }
@@ -263,7 +257,6 @@ public class DiagramEditor {
 
         currentDiagram = null;
         selectedItems = null;
-        ((CanvasRegistrationControl) session.getSelectionControl()).clear();
 
         // Clearing the graph & canvas
         commandManager.execute(canvasHandler, new ClearAllCommand());
@@ -282,7 +275,7 @@ public class DiagramEditor {
         while (iterator.hasNext()) {
             final Node<View<?>, Edge> node = (Node<View<?>, Edge>) iterator.next();
             if (selection.contains(node.getUUID())) {
-                session.getSelectionControl().select(node.getUUID());
+                session.getSelectionControl().addSelection(node.getUUID());
             }
         }
 
@@ -371,36 +364,5 @@ public class DiagramEditor {
             PanelTransformUtils.scaleToFitPanel(lienzoPanel);
             lienzoPanel.setPostResizeCallback(null);
         }));
-    }
-
-    private class UpdateDiagramTimer {
-
-        private Diagram diagram;
-        private Timer timer;
-
-        public UpdateDiagramTimer() {
-            this.timer = new Timer() {
-                @Override
-                public void run() {
-                    update();
-                }
-            };
-        }
-
-        public void schedule(int delayMillis, Diagram diagram) {
-            this.diagram = diagram;
-            timer.schedule(delayMillis);
-        }
-
-        public void cancel() {
-            timer.cancel();
-            diagram = null;
-        }
-
-        private void update() {
-            if (diagram != null) {
-                updateDiagram(diagram);
-            }
-        }
     }
 }
