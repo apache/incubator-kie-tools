@@ -20,10 +20,6 @@ BIN_DARWIN_ARM64 ?= $(BIN)-darwin-arm64
 BIN_LINUX        ?= $(BIN)-linux-amd64
 BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 
-QUARKUS_VERSION  := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
-KOGITO_VERSION   := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
-PLUGIN_VERSION   := $(shell pnpm build-env knPluginWorkflow.version)
-
 SET_QUARKUS_VERSION := main.quarkusVersion=$(QUARKUS_VERSION)
 SET_KOGITO_VERSION  := main.kogitoVersion=$(KOGITO_VERSION)
 SET_VERSION         := main.pluginVersion=$(PLUGIN_VERSION)
