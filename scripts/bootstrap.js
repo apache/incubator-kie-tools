@@ -20,16 +20,16 @@ const pnpmFilter = process.argv.slice(2).join(" ");
 
 const execOpts = { stdio: "inherit" };
 
-console.info("[sparse-bootstrap] Installing dependencies...");
+console.info("[bootstrap] Installing dependencies...");
 execSync(`pnpm install-dependencies ${pnpmFilter}`, execOpts);
 
-console.info("[sparse-bootstrap] Linking packages with self...");
+console.info("[bootstrap] Linking packages with self...");
 execSync(`pnpm link-packages-with-self`, execOpts);
 
-console.info("[sparse-bootstrap] Generating packages graph...");
+console.info("[bootstrap] Generating packages graph...");
 execSync(`pnpm generate-packages-graph`, execOpts);
 
-console.info("[sparse-bootstrap] Checking CLI tools...");
+console.info("[bootstrap] Checking CLI tools...");
 execSync(`pnpm check-cli-tools`, execOpts);
 
-console.info("[sparse-bootstrap] Done.");
+console.info("[bootstrap] Done.");

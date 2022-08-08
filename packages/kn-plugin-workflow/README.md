@@ -19,7 +19,7 @@ All the commands in this section should be performed in the monorepo root.
 The following command will install the `kn-plugin-workflow` dependencies and link it with any other monorepo
 package that is listed in the `package.json`:
 
-- `pnpm install-dependencies -F "@kie-tools/kn-plugin-workflow..." -F . && pnpm link-packages-with-self`
+- `pnpm bootstrap -F "@kie-tools/kn-plugin-workflow..." -F .`
 
 ### Building
 

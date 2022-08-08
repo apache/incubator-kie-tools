@@ -79,7 +79,7 @@ runs:
       run: |
         echo "STEP: Bootstrap (sparse)"
         cd ${{ inputs.path }}
-        pnpm install-dependencies -F "...[${{ inputs.base_sha }}]..." -F . && pnpm link-packages-with-self && pnpm generate-packages-graph && pnpm check-cli-tools
+        pnpm bootstrap -F "...[${{ inputs.base_sha }}]..." -F .
 
     - name: "Check dependencies mismatches"
       shell: bash
