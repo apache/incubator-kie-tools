@@ -12,9 +12,6 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "bin": {
-    "maven-config-setup-helper": "index.js"
-  },
   "files": [
     "index.js"
   ],
