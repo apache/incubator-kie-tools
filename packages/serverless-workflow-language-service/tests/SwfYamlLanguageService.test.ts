@@ -18,6 +18,7 @@ import {
   SwfYamlLanguageService,
   findNodeAtOffset,
   matchNodeWithLocation,
+  nodeUpUntilType,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
@@ -482,6 +483,29 @@ states:
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
       ).toBeTruthy();
+    });
+  });
+
+  describe("nodeUpUntilType", () => {
+    test("up to functionRef value", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`---
+name: testStateAction2
+functionRef:
+  refName: 🎯a
+`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      const receivedNode = nodeUpUntilType(node!, "object");
+
+      expect(receivedNode).not.toBeUndefined();
+      expect(receivedNode!.type).toBe("object");
+      expect(receivedNode!.offset).toBe(42);
     });
   });
 

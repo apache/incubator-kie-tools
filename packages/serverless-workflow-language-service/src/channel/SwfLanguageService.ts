@@ -726,8 +726,7 @@ export function findNodesAtLocation(root: SwfLsNode | undefined, path: SwfJsonPa
  * @param nodeType the node type where to stop
  * @returns the parent node if found, undefined otherwise
  */
-function nodeUpUntilType(node: SwfLsNode | undefined, nodeType: SwfLsNodeType): SwfLsNode | undefined {
-  /* TODO: SwfLanguageService: write some test */
+export function nodeUpUntilType(node: SwfLsNode | undefined, nodeType: SwfLsNodeType): SwfLsNode | undefined {
   if (!node) {
     return;
   }

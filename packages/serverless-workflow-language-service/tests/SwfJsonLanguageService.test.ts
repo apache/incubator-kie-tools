@@ -18,6 +18,9 @@ import {
   SwfJsonLanguageService,
   findNodeAtOffset,
   matchNodeWithLocation,
+  SwfLanguageServiceConfig,
+  nodeUpUntilType,
+  SwfLsNode,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
@@ -29,7 +32,6 @@ import {
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
-import { SwfLanguageServiceConfig } from "../src/channel";
 import { trim, treat } from "./testUtils";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
@@ -293,6 +295,30 @@ describe("SWF LS JSON", () => {
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
       ).toBeTruthy();
+    });
+  });
+
+  describe("nodeUpUntilType", () => {
+    test("up to functionRef value", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`{
+          "name": "testStateAction2",
+          "functionRef": {
+            "refName":"🎯",
+          }
+        }`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      const receivedNode = nodeUpUntilType(node!, "object");
+
+      expect(receivedNode).not.toBeUndefined();
+      expect(receivedNode!.type).toBe("object");
+      expect(receivedNode!.offset).toBe(65);
     });
   });
 
