@@ -1560,9 +1560,11 @@ importers:
 
   packages/kn-plugin-workflow:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": workspace:*
+      cross-env: ^7.0.3
     devDependencies:
       "@kie-tools/build-env": link:../build-env
+      cross-env: 7.0.3
 
   packages/monaco-editor:
     specifiers:
