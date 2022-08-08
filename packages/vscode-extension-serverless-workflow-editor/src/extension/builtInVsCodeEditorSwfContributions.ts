@@ -24,12 +24,26 @@ import {
   SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import * as vscode from "vscode";
+import { TextDocument } from "vscode";
 import * as ls from "vscode-languageserver-types";
 import { debounce } from "../debounce";
 import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
+
+const SWF_YAML_LANGUAGE_ID = "serverless-workflow-yaml";
+const SWF_JSON_LANGUAGE_ID = "serverless-workflow-json";
+
+function isSwf(doc: TextDocument | undefined) {
+  return (
+    doc?.languageId === SWF_JSON_LANGUAGE_ID ||
+    doc?.uri.path.match(/\.(sw.json)$/i) ||
+    doc?.languageId === SWF_YAML_LANGUAGE_ID ||
+    doc?.uri.path.match(/\.(sw.yaml)$/i) ||
+    doc?.uri.path.match(/\.(sw.yml)$/i)
+  );
+}
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
@@ -70,34 +84,49 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
     },
   };
 
-  const swfJsonDiagnosticsCollection = vscode.languages.createDiagnosticCollection("SWF-JSON-DIAGNOSTICS-COLLECTION");
+  const swfDiagnosticsCollection = vscode.languages.createDiagnosticCollection("SWF-DIAGNOSTICS-COLLECTION");
 
   args.context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument(async (doc: vscode.TextDocument) => {
-      if (!doc.uri.path.match(/\.(sw.json)$/i) || doc.languageId !== "serverless-workflow-json") {
-        swfJsonDiagnosticsCollection.clear();
+    vscode.workspace.onDidOpenTextDocument(async (document) => {
+      if (!isSwf(document)) {
+        // Ignore non SWF files
         return;
       }
-      setSwfJsonDiagnostics(
-        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(doc.uri.path)),
-        doc.uri,
-        swfJsonDiagnosticsCollection
+      return setSwfDiagnostics(
+        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(document.uri.path)),
+        document,
+        swfDiagnosticsCollection
       );
     })
   );
 
-  const doValidationOnChange = debounce(setSwfJsonDiagnostics, 1000);
+  args.context.subscriptions.push(
+    vscode.window.onDidChangeActiveTextEditor(async (editor) => {
+      if (!(editor?.document && isSwf(editor?.document))) {
+        // We only want to show diagnostics when the SWF file is selected.
+        swfDiagnosticsCollection.clear();
+        return;
+      }
+      return setSwfDiagnostics(
+        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(editor.document.uri.path)),
+        editor.document,
+        swfDiagnosticsCollection
+      );
+    })
+  );
+
+  const setSwfDiagnosticsDebounced = debounce(setSwfDiagnostics, 1000);
 
   args.context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument(async (event: vscode.TextDocumentChangeEvent) => {
-      if (!event.document.uri.path.match(/\.(sw.json)$/i) || event.document.languageId !== "serverless-workflow-json") {
-        swfJsonDiagnosticsCollection.clear();
+      if (!isSwf(event.document)) {
+        // Ignore non SWF files
         return;
       }
-      doValidationOnChange(
+      setSwfDiagnosticsDebounced(
         args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(event.document.uri.path)),
-        event.document.uri,
-        swfJsonDiagnosticsCollection
+        event.document,
+        swfDiagnosticsCollection
       );
     })
   );
@@ -224,26 +253,28 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   );
 }
 
-async function setSwfJsonDiagnostics(
+async function setSwfDiagnostics(
   swfLanguageService: SwfJsonLanguageService | SwfYamlLanguageService,
-  uri: vscode.Uri,
+  document: vscode.TextDocument,
   diagnosticsCollection: vscode.DiagnosticCollection
 ) {
-  const content = vscode.window.activeTextEditor?.document.getText();
-
-  if (content === undefined) {
-    return;
-  }
-
   const lsDiagnostics = await swfLanguageService.getDiagnostics({
-    content,
-    uriPath: uri.path,
+    content: document.getText(),
+    uriPath: document.uri.path,
   });
 
-  const diagnostics = lsDiagnostics.map((lsDiagnostic: any) => {
-    return new vscode.Diagnostic(lsDiagnostic.range, lsDiagnostic.message, vscode.DiagnosticSeverity.Warning);
-  });
+  const vscodeDiagnostics = lsDiagnostics.map(
+    (lsDiagnostic) =>
+      new vscode.Diagnostic(
+        new vscode.Range(
+          new vscode.Position(lsDiagnostic.range.start.line, lsDiagnostic.range.start.character),
+          new vscode.Position(lsDiagnostic.range.end.line, lsDiagnostic.range.end.character)
+        ),
+        lsDiagnostic.message,
+        vscode.DiagnosticSeverity.Warning
+      )
+  );
 
   diagnosticsCollection.clear();
-  diagnosticsCollection.set(uri, diagnostics);
+  diagnosticsCollection.set(document.uri, vscodeDiagnostics);
 }
