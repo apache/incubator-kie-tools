@@ -1,39 +1,38 @@
 {
   "name": "vscode-extension-kie-ba-bundle",
-  "publisher": "kie-group",
-  "displayName": "KIE Business Automation Bundle",
-  "description": "Edit BPMN, DMN and Test Scenario files",
   "version": "0.0.0",
+  "description": "Edit BPMN, DMN and Test Scenario files",
   "license": "Apache-2.0",
+  "publisher": "kie-group",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "main": "dist/extension/extension.js",
   "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "build:dev": "rimraf dist && webpack --env dev",
-    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_kie_ba_bundle_$npm_package_version.vsix",
+    "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "compile": "webpack",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "pack:prod": "vsce package --githubBranch main --yarn -o ./dist/vscode_extension_kie_ba_bundle_$npm_package_version.vsix",
     "watch": "webpack"
   },
-  "capabilities": {
-    "untrustedWorkspaces": {
-      "supported": false
-    }
-  },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "@types/vscode": "^1.66.0",
     "vsce": "^2.6.5"
   },
-  "icon": "icon.png",
-  "main": "./dist/extension/extension.js",
   "engines": {
     "vscode": "^1.66.0"
   },
+  "displayName": "KIE Business Automation Bundle",
   "categories": [
     "Other"
   ],
@@ -41,5 +40,11 @@
   "extensionDependencies": [
     "redhat.vscode-extension-bpmn-editor",
     "redhat.vscode-extension-dmn-editor"
-  ]
+  ],
+  "icon": "icon.png",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false
+    }
+  }
 }

@@ -1,27 +1,33 @@
 {
+  "private": true,
   "name": "@kie-tools/build-env",
   "version": "0.0.0",
-  "private": true,
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "files": [
-    "dist",
-    "src",
-    "./bin.js"
-  ],
-  "bin": "./bin.js",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "bin": {
+    "build-env": "bin.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "bin.js",
+    "dist",
+    "src"
+  ],
   "scripts": {
-    "lint": "pnpm pnpm eslint ./src --ext .ts,.tsx",
-    "test": "pnpm jest --silent --verbose --passWithNoTests",
-    "print": "node dist/bin.js --print-vars && node dist/bin.js --print-env",
     "build-env": "node dist/bin.js",
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json && pnpm print",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test && pnpm print"
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test && pnpm print",
+    "lint": "pnpm pnpm eslint ./src --ext .ts,.tsx",
+    "print": "node dist/bin.js --print-vars && node dist/bin.js --print-env",
+    "test": "pnpm jest --silent --verbose --passWithNoTests"
   },
   "dependencies": {}
 }

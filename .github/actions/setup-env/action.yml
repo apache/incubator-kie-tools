@@ -48,12 +48,12 @@ runs:
       with:
         go-version: "1.17"
 
-    - name: "Setup Yarn and Lerna"
+    - name: "Setup Yarn"
       shell: bash
       run: |
-        echo "STEP: Setup Yarn and Lerna"
+        echo "STEP: Setup Yarn"
         cd ${{ inputs.path }}
-        npm install -g lerna@4.0.0 yarn@1.22.10
+        npm install -g yarn@1.22.10
         pnpm config set network-timeout 1000000
 
     - name: "Setup default Maven args"

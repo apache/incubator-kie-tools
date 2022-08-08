@@ -3,29 +3,33 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "main": "index.js",
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
   "types": "index.d.ts",
+  "main": "index.js",
   "files": [
-    "index.js",
-    "index.d.ts",
-    "**/target/*.jar"
+    "**/target/*.jar",
+    "index.d.ts"
   ],
+  "scripts": {
+    "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
+    "build:prod": "pnpm lint && run-script-os",
+    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
+    "build:prod:win32": "pnpm install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
+    "install:mvnw": "mvn wrapper:wrapper -f ./",
+    "lint": "echo 'Linting'",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
+  },
   "dependencies": {},
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
-  },
-  "scripts": {
-    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "lint": "echo 'Linting'",
-    "install:mvnw": "mvn wrapper:wrapper -f ./",
-    "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
-    "build:prod:win32": "pnpm install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
-    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
-    "build:prod": "pnpm lint && run-script-os"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   }
 }

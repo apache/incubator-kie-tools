@@ -15,38 +15,41 @@
  */
 
 const graphviz = require("graphviz");
-const { getPackagesSync } = require("@lerna/project");
+const DatavisTechGraph = require("graph-data-structure");
+const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const fs = require("fs");
 const path = require("path");
+const prettier = require("prettier");
 
 const targetDir = process.argv[2];
 
-function main() {
+async function main() {
   if (!targetDir) {
-    console.error("Please specify the path where the graph.dot file will be written to.");
+    console.error("[generate-packages-graph] Usage 'node generate_packages_graph.js [dir-path]'");
     process.exit(1);
   }
 
-  const outputFilePath = path.join(targetDir, "graph.dot");
-  console.info(`[generate-packages-graph] Writing packages graph to '${outputFilePath}'...`);
+  const dotGraphFilePath = path.join(targetDir, "graph.dot");
+  const datavisGraphFilePath = path.join(targetDir, "graph.json");
+  console.info(`[generate-packages-graph] Writing packages DOT graph to '${dotGraphFilePath}'...`);
 
-  const packages = getPackagesSync();
-  const packageMap = new Map(packages.map((p) => [p.name, p]));
-  const packageNames = new Set(packages.map((p) => p.name));
+  const packages = await findWorkspacePackages(".");
+  const packageMap = new Map(packages.map((p) => [p.manifest.name, p]));
+  const packageNames = new Set(packages.map((p) => p.manifest.name));
 
   const adjMatrix = {};
   for (const pkg of packages) {
-    adjMatrix[pkg.name] = adjMatrix[pkg.name] ?? {};
-    const dependencies = Object.keys(pkg.dependencies ?? {}).sort();
+    adjMatrix[pkg.manifest.name] = adjMatrix[pkg.manifest.name] ?? {};
+    const dependencies = Object.keys(pkg.manifest.dependencies ?? {}).sort();
     for (const depName of dependencies) {
       if (packageNames.has(depName)) {
-        adjMatrix[pkg.name][depName] = "dependency";
+        adjMatrix[pkg.manifest.name][depName] = "dependency";
       }
     }
-    const devDependencies = Object.keys(pkg.devDependencies ?? {}).sort();
+    const devDependencies = Object.keys(pkg.manifest.devDependencies ?? {}).sort();
     for (const depName of devDependencies) {
       if (packageNames.has(depName)) {
-        adjMatrix[pkg.name][depName] = "devDependency";
+        adjMatrix[pkg.manifest.name][depName] = "devDependency";
       }
     }
   }
@@ -67,7 +70,7 @@ function main() {
 
   const resMatrix = trMatrix;
 
-  // print graph
+  // print DOT graph
   const g = graphviz.digraph("G");
 
   g.use = "dot";
@@ -130,9 +133,44 @@ function main() {
     fs.mkdirSync(path.resolve(targetDir));
   }
 
-  fs.writeFileSync(outputFilePath, g.to_dot());
+  fs.writeFileSync(datavisGraphFilePath, g.to_dot());
+  console.info(`[generate-packages-graph] Wrote packages DOT graph to '${dotGraphFilePath}'`);
 
-  console.info(`[generate-packages-graph] Wrote packages graph to '${outputFilePath}'`);
+  console.info(`[generate-packages-graph] Writing packages Datavis graph to '${datavisGraphFilePath}'...`);
+  const datavisGraph = DatavisTechGraph();
+
+  for (const pkgName in resMatrix) {
+    const pkg = packageMap.get(pkgName);
+    const pkgNode = pkg.manifest.name;
+    datavisGraph.addNode(pkgNode);
+
+    for (const depName in resMatrix[pkgName]) {
+      if (resMatrix[pkgName][depName] === "transitive") {
+        continue;
+      }
+
+      const depPkg = packageMap.get(depName);
+      const depNode = depPkg.manifest.name;
+      datavisGraph.addEdge(pkgNode, depNode);
+    }
+  }
+
+  fs.writeFileSync(
+    datavisGraphFilePath,
+    prettier.format(
+      JSON.stringify({
+        serializedDatavisGraph: datavisGraph.serialize(),
+        serializedPackagesLocationByName: Array.from(packageMap.entries()).map(([k, v]) => [
+          k,
+          path.relative(path.resolve("."), v.dir).split(path.sep).join(path.posix.sep),
+        ]),
+      }),
+      { ...(await prettier.resolveConfig(".")), parser: "json" }
+    )
+  );
+
+  console.info(`[generate-packages-graph] Wrote packages Datavis graph to '${datavisGraphFilePath}'`);
+
   console.info(`[generate-packages-graph] Done.`);
   process.exit(0);
 }

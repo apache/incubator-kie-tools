@@ -68,8 +68,18 @@ export function App() {
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("bpmn", "**/*.bpmn?(2)", "../gwt-editors/bpmn", "envelope/bpmn-envelope.html"),
-        new EnvelopeMapping("dmn", "**/*.dmn", "../gwt-editors/dmn", "envelope/dmn-envelope.html"),
+        new EnvelopeMapping({
+          type: "bpmn",
+          filePathGlob: "**/*.bpmn?(2)",
+          resourcesPathPrefix: "../gwt-editors/bpmn",
+          envelopePath: "envelope/bpmn-envelope.html",
+        }),
+        new EnvelopeMapping({
+          type: "dmn",
+          filePathGlob: "**/*.dmn",
+          resourcesPathPrefix: "../gwt-editors/dmn",
+          envelopePath: "envelope/dmn-envelope.html",
+        }),
       ]),
     []
   );
