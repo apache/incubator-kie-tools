@@ -2,7 +2,7 @@ digraph G {
   graph [ ranksep =2, splines = "polyline", rankdir =TB, ordering = "out" ];
   node [ shape =box ];
   edge [ headport = "n", tailport = "s", arrowhead =dot, arrowsize =0.5 ];
-  "kiegroup/kie-tools" [ shape =folder ];
+  "kie-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/base64png-editor" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -21,6 +21,7 @@ digraph G {
   "@kie-tools-core/backend" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/notifications" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/backend-extended-services" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-core/maven-config-setup-helper" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/boxed-expression-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/feel-input-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -124,9 +125,10 @@ digraph G {
   "@kie-tools-examples/webapp" -> "@kie-tools-examples/todo-list-view" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/webapp" -> "@kie-tools/kie-editors-standalone" [ style = "solid", color = "orange" ];
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
+  "@kie-tools/backend-extended-services" -> "@kie-tools-core/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
-  "@kie-tools/build-env" -> "kiegroup/kie-tools";
+  "@kie-tools/build-env" -> "kie-tools";
   "@kie-tools-core/chrome-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
@@ -135,6 +137,7 @@ digraph G {
   "chrome-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/cors-proxy-image" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder" -> "@kie-tools/dashbuilder-component-assembler" [ style = "solid", color = "black" ];
+  "@kie-tools/dashbuilder" -> "@kie-tools-core/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-client" -> "@kie-tools/dashbuilder" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-api" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/dashbuilder-component-assembler" -> "@kie-tools/dashbuilder-component-echarts" [ style = "solid", color = "black" ];
@@ -176,6 +179,7 @@ digraph G {
   "@kie-tools/dmn-dev-sandbox-deployment-base-image-env" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-form-webapp" -> "@kie-tools/form-dmn" [ style = "solid", color = "black" ];
+  "@kie-tools/dmn-dev-sandbox-quarkus" -> "@kie-tools-core/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-quarkus" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/backend" [ style = "solid", color = "purple" ];
   "@kie-tools-core/editor" -> "@kie-tools-core/envelope" [ style = "solid", color = "purple" ];
@@ -215,6 +219,7 @@ digraph G {
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "dashed", color = "black" ];
   "@kie-tools/kn-plugin-workflow" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
+  "@kie-tools-core/maven-config-setup-helper" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/workspace" [ style = "solid", color = "purple" ];
@@ -254,6 +259,7 @@ digraph G {
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-text-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools-core/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
@@ -264,6 +270,7 @@ digraph G {
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-text-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "solid", color = "black" ];
+  "@kie-tools/stunner-editors" -> "@kie-tools-core/maven-config-setup-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools-core/keyboard-shortcuts" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
@@ -305,6 +312,7 @@ digraph G {
   "vscode-extension-yard-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-yard-editor" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
+  "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools-core/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
   "@kie-tools/vscode-java-code-completion-extension-plugin" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/webpack-base" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools-core/workspace" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
