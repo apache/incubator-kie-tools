@@ -18,6 +18,9 @@
 export declare type SwfJsonPath = (string | number)[];
 export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 
+/**
+ * The AST node used in the LanguageServices
+ */
 export type SwfLsNode = {
   type: SwfLsNodeType;
   value?: any;
@@ -27,3 +30,18 @@ export type SwfLsNode = {
   parent?: SwfLsNode;
   children?: SwfLsNode[];
 };
+
+/**
+ * type for the completionTranslator function used in the LanguageServices
+ */
+export type CompletionTranslatorType = (
+  /**
+   * what to translate
+   */
+  completion: any,
+
+  /**
+   * true to put the syntax of the full object, like {}, in the result
+   */
+  translateFullObject?: boolean
+) => string;

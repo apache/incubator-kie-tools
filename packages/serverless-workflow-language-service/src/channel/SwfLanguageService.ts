@@ -39,7 +39,7 @@ import { doRefValidation } from "./refValidation";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfJsonPath, SwfLsNode } from "./types";
+import { SwfJsonPath, SwfLsNode, CompletionTranslatorType } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -82,7 +82,7 @@ export class SwfLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
     rootNode: SwfLsNode | undefined;
-    completionTranslator: (completion: any) => string;
+    completionTranslator: CompletionTranslatorType;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
       return [];
@@ -404,7 +404,7 @@ const completions = new Map<
     currentNodePosition: { start: Position; end: Position };
     rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
-    completionTranslator: (completion: any, translateFullObject?: boolean) => string;
+    completionTranslator: CompletionTranslatorType;
   }) => Promise<CompletionItem[]>
 >([
   [

@@ -27,7 +27,7 @@ import {
 } from "yaml-language-server-parser";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode } from "./types";
+import { SwfLsNode, CompletionTranslatorType } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfYamlLanguageService {
@@ -76,7 +76,7 @@ export class SwfYamlLanguageService {
   }
 }
 
-const completionTranslator = (completion: any): string => {
+const completionTranslator: CompletionTranslatorType = (completion: any): string => {
   return dump(completion, {}).slice(0, -1);
 };
 
