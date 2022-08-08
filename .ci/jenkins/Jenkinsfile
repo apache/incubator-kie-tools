@@ -59,12 +59,11 @@ pipeline {
                 script {
                     if (isSonarCloudEnabled()) {
                         getMavenCommand('kie-tools/packages/stunner-editors')
-                                .withOptions(['-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
+                                .withOptions(['-Drevision=0.0.0', '-e', '-nsu', "-pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'"])
                                 .withProperty('sonar.projectKey', 'org.kie.kogito:kogito-tooling')
                                 .withProperty('sonar.organization', 'kiegroup')
                                 .withProperty('sonar.host.url', 'https://sonarcloud.io')
                                 .withProperty('sonar.login', env['SONARCLOUD_TOKEN'])
-                                .withProperty('revision', '0.0.0')
                                 .run('validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar')
                     }
                 }
