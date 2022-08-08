@@ -118,9 +118,9 @@ export function KieSandboxExtendedServicesSettingsTab() {
                 </TextContent>
                 <TextContent>
                   <Text component={TextVariants.small}>
-                    Data you provide here is necessary for proxying Sandbox requests to OpenShift, thus making it
-                    possible to deploy models. All information is locally stored in your browser and never shared with
-                    anyone.
+                    Data you provide here is necessary for proxying Serverless Logic Web Tools requests to OpenShift,
+                    thus making it possible to deploy models. All information is locally stored in your browser and
+                    never shared with anyone.
                   </Text>
                 </TextContent>
                 <FormGroup
