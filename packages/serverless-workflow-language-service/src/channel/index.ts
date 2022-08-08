@@ -21,3 +21,4 @@ export * from "./matchNodeWithLocation";
 export * from "./findNodesAtLocation";
 export * from "./refValidation";
 export * from "./nodeUpUntilType";
+export * from "./types";
