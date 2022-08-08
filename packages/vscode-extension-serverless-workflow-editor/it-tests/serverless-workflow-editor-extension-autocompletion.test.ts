@@ -50,13 +50,13 @@ describe("Serverless workflow editor - autocompletion tests", () => {
     const editorWebviews = await testHelper.openFileFromSidebar("autocompletion.sw.json");
     const swfEditor = new SwfEditorTestHelper(editorWebviews[1]);
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
-    const textEdior = await swfTextEditor.getSwfTextEditor();
+    const textEditor = await swfTextEditor.getSwfTextEditor();
 
-    await textEdior.moveCursor(7, 26);
-    await textEdior.typeText(Key.ENTER);
+    await textEditor.moveCursor(7, 26);
+    await textEditor.typeText(Key.ENTER);
 
     // check available content assist parameters
-    const content = await textEdior.toggleContentAssist(true);
+    const content = await textEditor.toggleContentAssist(true);
     const items = await content?.getItems();
     const itemNames = await Promise.all(items?.map(async (i) => await i.getText()) ?? []);
     expect(itemNames).to.have.all.members([
@@ -70,37 +70,37 @@ describe("Serverless workflow editor - autocompletion tests", () => {
       "states",
       "timeouts",
     ]);
-    await textEdior.toggleContentAssist(false);
+    await textEditor.toggleContentAssist(false);
 
     // add function from specs directory
-    await selectFromContentAssist(textEdior, "functions");
-    await textEdior.typeText(": ");
-    await selectFromContentAssist(textEdior, "[]");
-    await selectFromContentAssist(textEdior, "specs»api.yaml#testFuncId");
+    await selectFromContentAssist(textEditor, "functions");
+    await textEditor.typeText(": ");
+    await selectFromContentAssist(textEditor, "[]");
+    await selectFromContentAssist(textEditor, "specs»api.yaml#testFuncId");
 
     // add test state
-    await textEdior.moveCursor(17, 38);
-    await textEdior.typeText(Key.ENTER);
-    await selectFromContentAssist(textEdior, "states");
-    await selectFromContentAssist(textEdior, "{}");
-    await textEdior.typeText(Key.ENTER);
-    await textEdior.typeText(
+    await textEditor.moveCursor(17, 38);
+    await textEditor.typeText(Key.ENTER);
+    await selectFromContentAssist(textEditor, "states");
+    await selectFromContentAssist(textEditor, "{}");
+    await textEditor.typeText(Key.ENTER);
+    await textEditor.typeText(
       '"name": "testState",\n' + '"type": "operation",\n' + '"actions": [{"functionRef": }],\n' + '"end": true'
     );
 
     // complete the state with refName
-    await textEdior.moveCursor(21, 33);
-    await selectFromContentAssist(textEdior, "{}");
-    await textEdior.typeText(Key.ENTER);
-    await selectFromContentAssist(textEdior, "refName");
-    await selectFromContentAssist(textEdior, '"testFuncId"');
+    await textEditor.moveCursor(21, 33);
+    await selectFromContentAssist(textEditor, "{}");
+    await textEditor.typeText(Key.ENTER);
+    await selectFromContentAssist(textEditor, "refName");
+    await selectFromContentAssist(textEditor, '"testFuncId"');
 
     // check there are 3 states: start, testState, end
     const states = await swfEditor.getAllStateNodes();
     expect(states.length).equal(3);
 
     // check the final editor content is the same as expected result
-    const editorContent = await textEdior.getText();
+    const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(
       path.resolve(TEST_PROJECT_FOLDER, "autocompletion.sw.json.result"),
       "utf-8"
@@ -108,8 +108,8 @@ describe("Serverless workflow editor - autocompletion tests", () => {
     expect(editorContent).equal(expectedContent);
   });
 
-  async function selectFromContentAssist(textEdior: TextEditor, value: string): Promise<void> {
-    const contentAssist = await textEdior.toggleContentAssist(true);
+  async function selectFromContentAssist(textEditor: TextEditor, value: string): Promise<void> {
+    const contentAssist = await textEditor.toggleContentAssist(true);
     let item = await contentAssist?.getItem(value);
     await item?.click();
   }
