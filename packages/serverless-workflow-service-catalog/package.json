@@ -23,15 +23,15 @@
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools-core/envelope-bus": "0.0.0",
+    "@kie-tools-core/envelope-bus": "workspace:*",
     "@types/js-yaml": "^4.0.5",
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "openapi-types": "^7.0.1"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "@types/lodash": "^4.14.168"
   },
   "babel": {

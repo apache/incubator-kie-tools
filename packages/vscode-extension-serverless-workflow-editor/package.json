@@ -28,21 +28,21 @@
     "watch": "webpack --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "0.0.0",
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/envelope-bus": "0.0.0",
-    "@kie-tools-core/guided-tour": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/keyboard-shortcuts": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools-core/vscode-extension": "0.0.0",
-    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
-    "@kie-tools/serverless-workflow-diagram-editor-envelope": "0.0.0",
-    "@kie-tools/serverless-workflow-language-service": "0.0.0",
-    "@kie-tools/serverless-workflow-mermaid-viewer": "0.0.0",
-    "@kie-tools/serverless-workflow-service-catalog": "0.0.0",
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-core/vscode-java-code-completion": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-envelope": "workspace:*",
+    "@kie-tools/serverless-workflow-language-service": "workspace:*",
+    "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",
+    "@kie-tools/serverless-workflow-service-catalog": "workspace:*",
     "@rhoas/registry-instance-sdk": "^0.34.1",
     "monaco-editor": "^0.33.0",
     "monaco-yaml": "^4.0.0",
@@ -52,10 +52,10 @@
     "yaml": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools/serverless-workflow-diagram-editor": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/mocha": "^8.2.2",
     "@types/selenium-webdriver": "^4.1.1",
@@ -253,12 +253,6 @@
         "language": "serverless-workflow-yaml",
         "path": "./syntaxes/YAML.tmLanguage.json",
         "scopeName": "source.yaml"
-      }
-    ],
-    "jsonValidation": [
-      {
-        "fileMatch": "**/*.sw.json",
-        "url": "https://serverlessworkflow.io/schemas/0.8/workflow.json"
       }
     ],
     "keybindings": [

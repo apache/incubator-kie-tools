@@ -23,18 +23,18 @@
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/guided-tour": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*"
   }
 }

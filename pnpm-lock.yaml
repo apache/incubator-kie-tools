@@ -12,8 +12,9 @@ importers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
       "@babel/preset-react": ^7.16.0
-      "@lerna/project": ^4.0.0
       "@nice-move/prettier-plugin-package-json": ^0.6.1
+      "@pnpm/find-workspace-packages": ^4.0.26
+      "@pnpm/logger": ^4.0.0
       "@testing-library/jest-dom": ^5.16.1
       "@testing-library/react": ^11.2.6
       "@testing-library/react-hooks": ^5.1.2
@@ -38,6 +39,7 @@ importers:
       eslint-plugin-react: ^7.23.2
       eslint-plugin-react-hooks: ^4.2.0
       file-loader: ^6.2.0
+      graph-data-structure: ^2.0.0
       graphviz: ^0.0.9
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
@@ -74,8 +76,9 @@ importers:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
-      "@lerna/project": 4.0.0
       "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
+      "@pnpm/find-workspace-packages": 4.0.26_@pnpm+logger@4.0.0
+      "@pnpm/logger": 4.0.0
       "@testing-library/jest-dom": 5.16.1
       "@testing-library/react": 11.2.7
       "@testing-library/react-hooks": 5.1.3
@@ -100,6 +103,7 @@ importers:
       eslint-plugin-react: 7.23.2_eslint@7.26.0
       eslint-plugin-react-hooks: 4.2.0_eslint@7.26.0
       file-loader: 6.2.0_webpack@5.70.0
+      graph-data-structure: 2.0.0
       graphviz: 0.0.9
       html-replace-webpack-plugin: 2.6.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
@@ -135,13 +139,13 @@ importers:
 
   examples/base64png-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       react: ^17.0.2
@@ -162,14 +166,14 @@ importers:
 
   examples/base64png-editor-chrome-extension:
     specifiers:
-      "@kie-tools-core/chrome-extension": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/base64png-editor": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/chrome-extension": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-examples/base64png-editor": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/chrome": ^0.0.193
       zip-webpack-plugin: ^4.0.1
     dependencies:
@@ -187,15 +191,15 @@ importers:
 
   examples/base64png-editor-vscode-extension:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/base64png-editor": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-examples/base64png-editor": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     dependencies:
@@ -214,10 +218,10 @@ importers:
 
   examples/ping-pong-view:
     specifiers:
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -243,11 +247,11 @@ importers:
       "@angular/platform-browser": ^13.1.1
       "@angular/platform-browser-dynamic": ^13.1.1
       "@angular/router": ^13.1.1
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-examples/ping-pong-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-examples/ping-pong-view": workspace:*
+      "@kie-tools/build-env": workspace:*
       rxjs: ^7.4.0
       zone.js: ^0.11.4
     dependencies:
@@ -274,11 +278,11 @@ importers:
 
   examples/ping-pong-view-react:
     specifiers:
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-examples/ping-pong-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-examples/ping-pong-view": workspace:*
+      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -293,10 +297,10 @@ importers:
 
   examples/todo-list-view:
     specifiers:
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -312,13 +316,13 @@ importers:
 
   examples/todo-list-view-vscode-extension:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/todo-list-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-examples/todo-list-view": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     dependencies:
@@ -335,21 +339,21 @@ importers:
 
   examples/webapp:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-examples/base64png-editor": 0.0.0
-      "@kie-tools-examples/ping-pong-view": 0.0.0
-      "@kie-tools-examples/ping-pong-view-angular": 0.0.0
-      "@kie-tools-examples/ping-pong-view-react": 0.0.0
-      "@kie-tools-examples/todo-list-view": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/kie-editors-standalone": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-examples/base64png-editor": workspace:*
+      "@kie-tools-examples/ping-pong-view": workspace:*
+      "@kie-tools-examples/ping-pong-view-angular": workspace:*
+      "@kie-tools-examples/ping-pong-view-react": workspace:*
+      "@kie-tools-examples/todo-list-view": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/kie-editors-standalone": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@types/react-router-dom": ^5.1.7
       monaco-editor: ^0.33.0
@@ -382,11 +386,11 @@ importers:
 
   packages/backend:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/semver": ^7.3.6
       "@types/sinon": ^10.0.2
       "@types/vscode": ^1.66.0
@@ -415,22 +419,22 @@ importers:
 
   packages/backend-extended-services:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/boxed-expression-component:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/feel-input-component": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/feel-input-component": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@patternfly/react-styles": ^4.18.8
@@ -501,12 +505,12 @@ importers:
 
   packages/chrome-extension:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@octokit/rest": ^18.5.3
       "@types/chrome": ^0.0.193
       "@types/minimatch": ^3.0.4
@@ -530,15 +534,15 @@ importers:
 
   packages/chrome-extension-pack-kogito-kie-editors:
     specifiers:
-      "@kie-tools-core/chrome-extension": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/chrome-extension": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
       "@types/chai": ^4.2.17
       "@types/chrome": ^0.0.193
       "@types/selenium-webdriver": ^4.1.1
@@ -567,18 +571,18 @@ importers:
 
   packages/chrome-extension-serverless-workflow-editor:
     specifiers:
-      "@kie-tools-core/chrome-extension": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-text-editor": 0.0.0
+      "@kie-tools-core/chrome-extension": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/serverless-workflow-combined-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      "@kie-tools/serverless-workflow-text-editor": workspace:*
       "@types/chrome": ^0.0.193
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -608,8 +612,8 @@ importers:
   packages/cors-proxy-image:
     specifiers:
       "@isomorphic-git/cors-proxy": ^2.7.1
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       patch-package: ^6.4.7
     devDependencies:
       "@isomorphic-git/cors-proxy": 2.7.1
@@ -619,9 +623,9 @@ importers:
 
   packages/dashbuilder:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-assembler": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-assembler": workspace:*
     dependencies:
       "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
@@ -630,9 +634,9 @@ importers:
 
   packages/dashbuilder-client:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -640,8 +644,8 @@ importers:
 
   packages/dashbuilder-component-api:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -653,16 +657,16 @@ importers:
 
   packages/dashbuilder-component-assembler:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-echarts": 0.0.0
-      "@kie-tools/dashbuilder-component-svg-heatmap": 0.0.0
-      "@kie-tools/dashbuilder-component-table": 0.0.0
-      "@kie-tools/dashbuilder-component-timeseries": 0.0.0
-      "@kie-tools/dashbuilder-component-uniforms": 0.0.0
-      "@kie-tools/dashbuilder-component-victory-charts": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-echarts": workspace:*
+      "@kie-tools/dashbuilder-component-svg-heatmap": workspace:*
+      "@kie-tools/dashbuilder-component-table": workspace:*
+      "@kie-tools/dashbuilder-component-timeseries": workspace:*
+      "@kie-tools/dashbuilder-component-uniforms": workspace:*
+      "@kie-tools/dashbuilder-component-victory-charts": workspace:*
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -678,9 +682,9 @@ importers:
 
   packages/dashbuilder-component-dev:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -693,13 +697,13 @@ importers:
 
   packages/dashbuilder-component-echarts:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
-      "@kie-tools/dashbuilder-component-echarts-base": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
+      "@kie-tools/dashbuilder-component-echarts-base": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -716,8 +720,8 @@ importers:
 
   packages/dashbuilder-component-echarts-base:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/echarts": ^4.9.15
       echarts: ^5.3.2
       react: ^17.0.2
@@ -733,12 +737,12 @@ importers:
 
   packages/dashbuilder-component-svg-heatmap:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
       "@types/heatmap.js": ^2.0.36
       heatmap.js: ^2.0.5
       react: ^17.0.2
@@ -758,12 +762,12 @@ importers:
 
   packages/dashbuilder-component-table:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       react: ^17.0.2
@@ -783,13 +787,13 @@ importers:
 
   packages/dashbuilder-component-timeseries:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
-      "@kie-tools/dashbuilder-component-echarts-base": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
+      "@kie-tools/dashbuilder-component-echarts-base": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -806,12 +810,12 @@ importers:
 
   packages/dashbuilder-component-uniforms:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       ajv: ^6.12.6
@@ -841,12 +845,12 @@ importers:
 
   packages/dashbuilder-component-victory-charts:
     specifiers:
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-component-api": 0.0.0
-      "@kie-tools/dashbuilder-component-dev": 0.0.0
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-component-api": workspace:*
+      "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-charts": ^6.15.23
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
@@ -874,16 +878,16 @@ importers:
 
   packages/dashbuilder-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-client": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       cypress: ^9.5.1
@@ -925,9 +929,9 @@ importers:
 
   packages/dashbuilder-images:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder": workspace:*
     dependencies:
       "@kie-tools/dashbuilder": link:../dashbuilder
     devDependencies:
@@ -936,9 +940,9 @@ importers:
 
   packages/dashbuilder-swf-monitoring-dashboard:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-client": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -946,16 +950,16 @@ importers:
 
   packages/desktop:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       cross-var: ^1.1.0
@@ -993,11 +997,11 @@ importers:
 
   packages/dmn-dev-sandbox-deployment-base-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": 0.0.0
-      "@kie-tools/dmn-dev-sandbox-form-webapp": 0.0.0
-      "@kie-tools/dmn-dev-sandbox-quarkus": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
+      "@kie-tools/dmn-dev-sandbox-form-webapp": workspace:*
+      "@kie-tools/dmn-dev-sandbox-quarkus": workspace:*
     dependencies:
       "@kie-tools/dmn-dev-sandbox-form-webapp": link:../dmn-dev-sandbox-form-webapp
       "@kie-tools/dmn-dev-sandbox-quarkus": link:../dmn-dev-sandbox-quarkus
@@ -1008,19 +1012,19 @@ importers:
 
   packages/dmn-dev-sandbox-deployment-base-image-env:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools/build-env": link:../build-env
 
   packages/dmn-dev-sandbox-form-webapp:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/form-dmn": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/form-dmn": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
@@ -1049,26 +1053,26 @@ importers:
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/minimatch": ^3.0.4
@@ -1100,9 +1104,9 @@ importers:
 
   packages/envelope:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       csstype: ^3.0.11
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1117,8 +1121,8 @@ importers:
 
   packages/envelope-bus:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1130,26 +1134,26 @@ importers:
 
   packages/extended-services:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@kie-tools/jitexecutor-native": 1.12.0-Final
-      cross-env: ^5.2.1
+      cross-env: ^7.0.3
     dependencies:
       "@kie-tools/jitexecutor-native": 1.12.0-Final
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
-      cross-env: 5.2.1
+      cross-env: 7.0.3
 
   packages/feel-input-component:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       monaco-editor: ^0.33.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1168,12 +1172,12 @@ importers:
 
   packages/form:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -1209,13 +1213,13 @@ importers:
 
   packages/form-dmn:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/form": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -1252,11 +1256,11 @@ importers:
 
   packages/form-generation-tool:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/uniforms-bootstrap4-codegen": 0.0.0
-      "@kie-tools/uniforms-patternfly-codegen": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/uniforms-bootstrap4-codegen": workspace:*
+      "@kie-tools/uniforms-patternfly-codegen": workspace:*
       "@types/inquirer": ^7.3.2
       "@types/lodash": ^4.14.168
       inquirer: ^8.1.1
@@ -1281,11 +1285,11 @@ importers:
 
   packages/guided-tour:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       react: ^17.0.2
@@ -1304,8 +1308,8 @@ importers:
 
   packages/i18n:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1317,9 +1321,9 @@ importers:
 
   packages/i18n-common-dictionary:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
     devDependencies:
@@ -1328,9 +1332,9 @@ importers:
 
   packages/image-env-to-json:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
       commander: ^8.3.0
       pkg: ^5.5.2
     dependencies:
@@ -1343,12 +1347,12 @@ importers:
 
   packages/import-java-classes-component:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@patternfly/react-table": ^4.27.15
@@ -1380,10 +1384,10 @@ importers:
 
   packages/keyboard-shortcuts:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1397,18 +1401,18 @@ importers:
 
   packages/kie-bc-editors:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/pmml-editor-marshaller": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/pmml-editor-marshaller": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1430,19 +1434,19 @@ importers:
 
   packages/kie-editors-standalone:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
       "@types/minimatch": ^3.0.4
       "@types/react-router-dom": ^5.1.7
       "@types/underscore": ^1.11.2
@@ -1488,9 +1492,9 @@ importers:
 
   packages/kie-sandbox-extended-services-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/extended-services": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/extended-services": workspace:*
     dependencies:
       "@kie-tools/extended-services": link:../extended-services
     devDependencies:
@@ -1500,8 +1504,8 @@ importers:
   packages/kie-sandbox-fs:
     specifiers:
       "@isomorphic-git/idb-keyval": ^3.3.2
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       dexie: ^3.0.3
       isomorphic-textencoder: ^1.0.1
       just-debounce-it: ^3.0.1
@@ -1544,10 +1548,10 @@ importers:
 
   packages/kie-sandbox-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/image-env-to-json": 0.0.0
-      "@kie-tools/online-editor": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/image-env-to-json": workspace:*
+      "@kie-tools/online-editor": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -1556,14 +1560,16 @@ importers:
 
   packages/kn-plugin-workflow:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": workspace:*
+      cross-env: ^7.0.3
     devDependencies:
       "@kie-tools/build-env": link:../build-env
+      cross-env: 7.0.3
 
   packages/monaco-editor:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       monaco-editor: ^0.33.0
     dependencies:
       monaco-editor: 0.33.0
@@ -1573,10 +1579,10 @@ importers:
 
   packages/notifications:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
@@ -1588,30 +1594,30 @@ importers:
 
   packages/online-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": 0.0.0
-      "@kie-tools/extended-services": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/form-dmn": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/kie-sandbox-fs": 0.0.0
-      "@kie-tools/pmml-editor": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/unitables": 0.0.0
-      "@kie-tools/unitables-dmn": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/boxed-expression-component": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
+      "@kie-tools/extended-services": workspace:*
+      "@kie-tools/form": workspace:*
+      "@kie-tools/form-dmn": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/kie-sandbox-fs": workspace:*
+      "@kie-tools/pmml-editor": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
+      "@kie-tools/unitables": workspace:*
+      "@kie-tools/unitables-dmn": workspace:*
       "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
       "@patternfly/react-core": ^4.157.3
@@ -1697,9 +1703,9 @@ importers:
 
   packages/openjdk11-mvn-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/openjdk11-mvn-image-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/openjdk11-mvn-image-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -1707,43 +1713,43 @@ importers:
 
   packages/openjdk11-mvn-image-env:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools/build-env": link:../build-env
 
   packages/operating-system:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/patternfly-base:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/pmml-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/pmml-editor-marshaller": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/pmml-editor-marshaller": workspace:*
       "@patternfly/react-charts": ^6.15.23
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -1824,8 +1830,8 @@ importers:
 
   packages/pmml-editor-marshaller:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       jsonata: ^1.8.3
       xml-js: ^1.6.11
     dependencies:
@@ -1837,7 +1843,7 @@ importers:
 
   packages/run-script-if:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": workspace:*
       yargs: ^17.0.1
     dependencies:
       yargs: 17.3.1
@@ -1846,32 +1852,32 @@ importers:
 
   packages/serverless-logic-sandbox:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-client": 0.0.0
-      "@kie-tools/dashbuilder-editor": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/kie-sandbox-fs": 0.0.0
-      "@kie-tools/openjdk11-mvn-image-env": 0.0.0
-      "@kie-tools/serverless-logic-sandbox-base-image-env": 0.0.0
-      "@kie-tools/serverless-workflow-combined-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      "@kie-tools/serverless-workflow-text-editor": 0.0.0
-      "@kie-tools/text-editor": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/dashbuilder-editor": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/kie-sandbox-fs": workspace:*
+      "@kie-tools/openjdk11-mvn-image-env": workspace:*
+      "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
+      "@kie-tools/serverless-workflow-combined-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
+      "@kie-tools/serverless-workflow-language-service": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
+      "@kie-tools/serverless-workflow-text-editor": workspace:*
+      "@kie-tools/text-editor": workspace:*
       "@octokit/plugin-rest-endpoint-methods": ^5.0.1
       "@octokit/rest": ^18.5.3
       "@patternfly/react-core": ^4.157.3
@@ -1971,11 +1977,11 @@ importers:
 
   packages/serverless-logic-sandbox-base-image:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/dashbuilder-swf-monitoring-dashboard": 0.0.0
-      "@kie-tools/serverless-logic-sandbox-base-image-env": 0.0.0
-      "@kie-tools/serverless-logic-sandbox-deployment-webapp": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/dashbuilder-swf-monitoring-dashboard": workspace:*
+      "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
+      "@kie-tools/serverless-logic-sandbox-deployment-webapp": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
@@ -1985,18 +1991,18 @@ importers:
 
   packages/serverless-logic-sandbox-base-image-env:
     specifiers:
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools/build-env": link:../build-env
 
   packages/serverless-logic-sandbox-deployment-webapp:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
@@ -2024,23 +2030,23 @@ importers:
 
   packages/serverless-workflow-combined-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
-      "@kie-tools/serverless-workflow-text-editor": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
+      "@kie-tools/serverless-workflow-language-service": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
+      "@kie-tools/serverless-workflow-text-editor": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
@@ -2095,8 +2101,8 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       symlink-dir: ^5.0.1
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
@@ -2105,18 +2111,18 @@ importers:
 
   packages/serverless-workflow-diagram-editor-envelope:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope": link:../envelope
@@ -2134,9 +2140,9 @@ importers:
 
   packages/serverless-workflow-language-service:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@severlessworkflow/sdk-typescript": ^3.0.3
       "@types/json-to-ast": ^2.1.2
       json-to-ast: ^2.1.0
@@ -2163,17 +2169,17 @@ importers:
 
   packages/serverless-workflow-mermaid-viewer:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@severlessworkflow/sdk-typescript": ^3.0.3
@@ -2218,9 +2224,9 @@ importers:
 
   packages/serverless-workflow-service-catalog:
     specifiers:
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/js-yaml": ^4.0.5
       "@types/lodash": ^4.14.168
       js-yaml: ^4.1.0
@@ -2239,18 +2245,18 @@ importers:
 
   packages/serverless-workflow-text-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/serverless-workflow-language-service": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
@@ -2300,9 +2306,9 @@ importers:
 
   packages/stunner-editors:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/stunner-editors-dmn-loader": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/stunner-editors-dmn-loader": workspace:*
       symlink-dir: ^5.0.1
     dependencies:
       "@kie-tools/stunner-editors-dmn-loader": link:../stunner-editors-dmn-loader
@@ -2313,14 +2319,14 @@ importers:
 
   packages/stunner-editors-dmn-loader:
     specifiers:
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/import-java-classes-component": 0.0.0
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/boxed-expression-component": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/import-java-classes-component": workspace:*
       "@types/lodash": ^4.14.168
       lodash: ^4.17.21
       monaco-editor: ^0.33.0
@@ -2344,15 +2350,15 @@ importers:
 
   packages/text-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       cypress: ^9.5.1
       cypress-file-upload: ^5.0.8
@@ -2387,9 +2393,9 @@ importers:
 
   packages/uniforms-bootstrap4-codegen:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
       "@types/underscore": ^1.11.2
@@ -2418,9 +2424,9 @@ importers:
 
   packages/uniforms-patternfly-codegen:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
       lodash: ^4.17.21
@@ -2445,13 +2451,13 @@ importers:
 
   packages/unitables:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/boxed-expression-component": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/form": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -2494,15 +2500,15 @@ importers:
 
   packages/unitables-dmn:
     specifiers:
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/boxed-expression-component": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/form": 0.0.0
-      "@kie-tools/form-dmn": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
-      "@kie-tools/unitables": 0.0.0
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/boxed-expression-component": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/form": workspace:*
+      "@kie-tools/form-dmn": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
+      "@kie-tools/unitables": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/lodash": ^4.14.168
@@ -2545,17 +2551,17 @@ importers:
 
   packages/vscode-extension:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/minimatch": ^3.0.4
       "@types/vscode": ^1.66.0
       minimatch: ^3.0.4
@@ -2578,12 +2584,12 @@ importers:
 
   packages/vscode-extension-backend:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/backend-extended-services": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/backend-extended-services": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     dependencies:
@@ -2599,17 +2605,17 @@ importers:
 
   packages/vscode-extension-bpmn-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
+      "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
       vsce: ^2.6.5
@@ -2691,17 +2697,17 @@ importers:
 
   packages/vscode-extension-dmn-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
+      "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
       vsce: ^2.6.5
@@ -2724,9 +2730,9 @@ importers:
 
   packages/vscode-extension-kie-ba-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     devDependencies:
@@ -2738,9 +2744,9 @@ importers:
 
   packages/vscode-extension-kogito-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     devDependencies:
@@ -2752,22 +2758,22 @@ importers:
 
   packages/vscode-extension-pack-kogito-kie-editors:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/kie-bc-editors": 0.0.0
-      "@kie-tools/pmml-editor": 0.0.0
-      "@kie-tools/stunner-editors": 0.0.0
-      "@kie-tools/vscode-java-code-completion-extension-plugin": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/kie-bc-editors": workspace:*
+      "@kie-tools/pmml-editor": workspace:*
+      "@kie-tools/stunner-editors": workspace:*
+      "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/chai": ^4.2.17
       "@types/minimatch": ^3.0.4
       "@types/mocha": ^8.2.2
@@ -2817,17 +2823,17 @@ importers:
 
   packages/vscode-extension-pmml-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/monaco-editor": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/pmml-editor": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/monaco-editor": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/pmml-editor": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
       vsce: ^2.6.5
@@ -2850,9 +2856,9 @@ importers:
 
   packages/vscode-extension-red-hat-business-automation-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     devDependencies:
@@ -2864,25 +2870,25 @@ importers:
 
   packages/vscode-extension-serverless-workflow-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/keyboard-shortcuts": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor": 0.0.0
-      "@kie-tools/serverless-workflow-diagram-editor-envelope": 0.0.0
-      "@kie-tools/serverless-workflow-language-service": 0.0.0
-      "@kie-tools/serverless-workflow-mermaid-viewer": 0.0.0
-      "@kie-tools/serverless-workflow-service-catalog": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/keyboard-shortcuts": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
+      "@kie-tools/serverless-workflow-language-service": workspace:*
+      "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
+      "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@rhoas/registry-instance-sdk": ^0.34.1
       "@types/chai": ^4.2.17
       "@types/mocha": ^8.2.2
@@ -2949,20 +2955,20 @@ importers:
 
   packages/vscode-extension-yard-editor:
     specifiers:
-      "@kie-tools-core/backend": 0.0.0
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/vscode-extension": 0.0.0
-      "@kie-tools-core/vscode-java-code-completion": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/yard-editor": 0.0.0
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/vscode-java-code-completion": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/yard-editor": workspace:*
       "@types/chai": ^4.2.17
       "@types/mocha": ^8.2.2
       "@types/selenium-webdriver": ^4.1.1
@@ -3022,8 +3028,8 @@ importers:
 
   packages/vscode-java-code-completion:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
@@ -3032,25 +3038,25 @@ importers:
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/webpack-base:
     specifiers:
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
 
   packages/workspace:
     specifiers:
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools/build-env": 0.0.0
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
     dependencies:
       "@kie-tools-core/operating-system": link:../operating-system
@@ -3061,18 +3067,18 @@ importers:
 
   packages/yard-editor:
     specifiers:
-      "@kie-tools-core/editor": 0.0.0
-      "@kie-tools-core/envelope-bus": 0.0.0
-      "@kie-tools-core/guided-tour": 0.0.0
-      "@kie-tools-core/i18n": 0.0.0
-      "@kie-tools-core/notifications": 0.0.0
-      "@kie-tools-core/operating-system": 0.0.0
-      "@kie-tools-core/patternfly-base": 0.0.0
-      "@kie-tools-core/run-script-if": 0.0.0
-      "@kie-tools-core/webpack-base": 0.0.0
-      "@kie-tools-core/workspace": 0.0.0
-      "@kie-tools/build-env": 0.0.0
-      "@kie-tools/i18n-common-dictionary": 0.0.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/build-env": workspace:*
+      "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/json-schema": ^7.0.11
@@ -5372,43 +5378,6 @@ packages:
       - supports-color
     dev: true
 
-  /@lerna/package/4.0.0:
-    resolution:
-      { integrity: sha512-l0M/izok6FlyyitxiQKr+gZLVFnvxRQdNhzmQ6nRnN9dvBJWn+IxxpM+cLqGACatTnyo9LDzNTOj2Db3+s0s8Q== }
-    engines: { node: ">= 10.18.0" }
-    dependencies:
-      load-json-file: 6.2.0
-      npm-package-arg: 8.1.5
-      write-pkg: 4.0.0
-    dev: true
-
-  /@lerna/project/4.0.0:
-    resolution:
-      { integrity: sha512-o0MlVbDkD5qRPkFKlBZsXZjoNTWPyuL58564nSfZJ6JYNmgAptnWPB2dQlAc7HWRZkmnC2fCkEdoU+jioPavbg== }
-    engines: { node: ">= 10.18.0" }
-    dependencies:
-      "@lerna/package": 4.0.0
-      "@lerna/validation-error": 4.0.0
-      cosmiconfig: 7.0.0
-      dedent: 0.7.0
-      dot-prop: 6.0.1
-      glob-parent: 5.1.2
-      globby: 11.0.4
-      load-json-file: 6.2.0
-      npmlog: 4.1.2
-      p-map: 4.0.0
-      resolve-from: 5.0.0
-      write-json-file: 4.3.0
-    dev: true
-
-  /@lerna/validation-error/4.0.0:
-    resolution:
-      { integrity: sha512-1rBOM5/koiVWlRi3V6dB863E1YzJS8v41UtsHgMr6gB2ncJ2LsQtMKlJpi3voqcgh41H8UsPXR58RrrpPpufyw== }
-    engines: { node: ">= 10.18.0" }
-    dependencies:
-      npmlog: 4.1.2
-    dev: true
-
   /@malept/cross-spawn-promise/1.1.1:
     resolution:
       { integrity: sha512-RTBGWL5FWQcg9orDOCcp4LvItNzUPcyEU9bwaeJX0rJ1IQxzucC48Y0/sQLp/g6t99IQgAlGIaesJS+gTn7tVQ== }
@@ -5782,6 +5751,311 @@ packages:
     resolution:
       { integrity: sha512-n06+BYDviOEuoo+qE9f0Jm1DkMDpwtXWyaJFHsvi8w8uddQEsBGGoP7lpkwZj15u6jc+F9IDgk/j+EkTScrvUA== }
     dev: false
+
+  /@pnpm/cli-meta/3.0.6:
+    resolution:
+      { integrity: sha512-YD+RMDczTT5+u6oIUlm3JWKSCsLqoqoyk3qU8OkM+b7GPGAMnTpCrLyEjPwaz1hnhbuBvv3A+jnuQcGQOXeIEg== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/types": 8.5.0
+      load-json-file: 6.2.0
+    dev: true
+
+  /@pnpm/cli-utils/0.7.26_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-wuf/xBIw53uq1VIqalvrPs1nBD2l7MRL4vOd/lnujKU4aSH6qQIFT9sVhuoil3RdrPfyhWtj4RDJPpSdD6T0aA== }
+    engines: { node: ">=14.6" }
+    peerDependencies:
+      "@pnpm/logger": ^4.0.0
+    dependencies:
+      "@pnpm/cli-meta": 3.0.6
+      "@pnpm/config": 15.9.0_@pnpm+logger@4.0.0
+      "@pnpm/default-reporter": 9.1.15_@pnpm+logger@4.0.0
+      "@pnpm/error": 3.0.1
+      "@pnpm/logger": 4.0.0
+      "@pnpm/manifest-utils": 3.1.2_@pnpm+logger@4.0.0
+      "@pnpm/package-is-installable": 6.0.8_@pnpm+logger@4.0.0
+      "@pnpm/read-project-manifest": 3.0.9
+      "@pnpm/types": 8.5.0
+      chalk: 4.1.2
+      load-json-file: 6.2.0
+    dev: true
+
+  /@pnpm/config/15.9.0_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-vCMoGvXZG1OUmxGYQTm/LMlSoJUy/1/SEr/yIm+ju5l/hDRUAbH6QEcs8FBv9vbwHD7S47h3R+wulpkNVubvVA== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/constants": 6.1.0
+      "@pnpm/error": 3.0.1
+      "@pnpm/git-utils": 0.1.0
+      "@pnpm/matcher": 3.0.0
+      "@pnpm/npm-conf": 2.0.0
+      "@pnpm/pnpmfile": 2.1.0_@pnpm+logger@4.0.0
+      "@pnpm/read-project-manifest": 3.0.9
+      "@pnpm/types": 8.5.0
+      camelcase: 6.3.0
+      can-write-to-dir: 1.1.1
+      is-subdir: 1.2.0
+      normalize-registry-url: 2.0.0
+      path-name: 1.0.0
+      ramda: /@pnpm/ramda/0.28.1
+      realpath-missing: 1.1.0
+      which: 2.0.2
+    transitivePeerDependencies:
+      - "@pnpm/logger"
+    dev: true
+
+  /@pnpm/constants/6.1.0:
+    resolution:
+      { integrity: sha512-L6AiU3OXv9kjKGTJN9j8n1TeJGDcLX9atQlZvAkthlvbXjvKc5SKNWESc/eXhr5nEfuMWhQhiKHDJCpYejmeCQ== }
+    engines: { node: ">=14.19" }
+    dev: true
+
+  /@pnpm/core-loggers/7.0.6_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-68r3T7gPi+Je/tMA7m8TAOjv/TTSCjjGI0nGUwsuK+aXIGn7eqCyknX1jk/kTrCWo+vsPMX26Pw0P5A0d1iYBA== }
+    engines: { node: ">=14.6" }
+    peerDependencies:
+      "@pnpm/logger": ^4.0.0
+    dependencies:
+      "@pnpm/logger": 4.0.0
+      "@pnpm/types": 8.5.0
+    dev: true
+
+  /@pnpm/default-reporter/9.1.15_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-wcdicIEqSQdlW+zeWXT9VjdV2uO17H01/jnaqJhD4Zu6GMhmbBVyCFFCOhVEZ3koEhDO0h3HQR8zlMwRebfykg== }
+    engines: { node: ">=14.6" }
+    peerDependencies:
+      "@pnpm/logger": ^4.0.0
+    dependencies:
+      "@pnpm/config": 15.9.0_@pnpm+logger@4.0.0
+      "@pnpm/core-loggers": 7.0.6_@pnpm+logger@4.0.0
+      "@pnpm/error": 3.0.1
+      "@pnpm/logger": 4.0.0
+      "@pnpm/render-peer-issues": 2.1.0
+      "@pnpm/types": 8.5.0
+      ansi-diff: 1.1.1
+      boxen: 5.1.2
+      chalk: 4.1.2
+      normalize-path: 3.0.0
+      pretty-bytes: 5.6.0
+      pretty-ms: 7.0.1
+      ramda: /@pnpm/ramda/0.28.1
+      right-pad: 1.0.1
+      rxjs: 7.5.6
+      semver: 7.3.7
+      stacktracey: 2.1.8
+      string-length: 4.0.2
+      strip-ansi: 6.0.1
+    dev: true
+
+  /@pnpm/error/3.0.1:
+    resolution:
+      { integrity: sha512-hMlbWbFcfcfolNfSjKjpeaZFow71kNg438LZ8rAd01swiVIYRUf/sRv8gGySru6AijYfz5UqslpIJRDbYBkgQA== }
+    engines: { node: ">=14.19" }
+    dependencies:
+      "@pnpm/constants": 6.1.0
+    dev: true
+
+  /@pnpm/fetcher-base/13.0.2:
+    resolution:
+      { integrity: sha512-CSTyRirmbsvkiamOxvi50QbFrJ8/CS/rAeVQIvUDeZQQmniO1oa/lAsQ3bzmBRhEl5VuReyzFHOqDMT2o/q7Cg== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/resolver-base": 9.0.6
+      "@pnpm/types": 8.5.0
+      "@types/ssri": 7.1.1
+    dev: true
+
+  /@pnpm/find-workspace-packages/4.0.26_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-opGfLHeIoFjgSgMbzLA24ioIm/3cOBOkHrWPIsotTJE7+RKAhom46G2hN9prN4pmmwcZifle63o5WwISHOpDyw== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/cli-utils": 0.7.26_@pnpm+logger@4.0.0
+      "@pnpm/constants": 6.1.0
+      "@pnpm/types": 8.5.0
+      find-packages: 9.0.9
+      read-yaml-file: 2.1.0
+    transitivePeerDependencies:
+      - "@pnpm/logger"
+    dev: true
+
+  /@pnpm/git-utils/0.1.0:
+    resolution:
+      { integrity: sha512-W3zsG9585cKL+FqgcT+IfTgZX5C+CbNkFjOnJN+qbysT1N30+BbvEByCcDMsTy7QDrAk6oS7WU1Rym3U2xlh2Q== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      execa: /safe-execa/0.1.2
+    dev: true
+
+  /@pnpm/graceful-fs/2.0.0:
+    resolution:
+      { integrity: sha512-ogUZCGf0/UILZt6d8PsO4gA4pXh7f0BumXeFkcCe4AQ65PXPKfAkHC0C30Lheh2EgFOpLZm3twDP1Eiww18gew== }
+    engines: { node: ">=14.19" }
+    dependencies:
+      graceful-fs: 4.2.10
+    dev: true
+
+  /@pnpm/lockfile-types/4.3.1:
+    resolution:
+      { integrity: sha512-xoorF+CuuUvpjfi8Uw/xkf8LI9VDzs9W1gjSxkKS8UwK60zU5fu4agILJfVVGlHO1tnjJeGRuspBjp7UZ8ufMA== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/types": 8.5.0
+    dev: true
+
+  /@pnpm/logger/4.0.0:
+    resolution:
+      { integrity: sha512-SIShw+k556e7S7tLZFVSIHjCdiVog1qWzcKW2RbLEHPItdisAFVNIe34kYd9fMSswTlSRLS/qRjw3ZblzWmJ9Q== }
+    engines: { node: ">=12.17" }
+    dependencies:
+      bole: 4.0.0
+      ndjson: 2.0.0
+    dev: true
+
+  /@pnpm/manifest-utils/3.1.2_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-ituyeV8krdIUQIhfqjBaUs0WnBR1/QP+o8mknNumQAFKur2nta4EzxR3TUIFS5SGCQtUfQNfF7v6WpsI89r2xQ== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/core-loggers": 7.0.6_@pnpm+logger@4.0.0
+      "@pnpm/error": 3.0.1
+      "@pnpm/types": 8.5.0
+    transitivePeerDependencies:
+      - "@pnpm/logger"
+    dev: true
+
+  /@pnpm/matcher/3.0.0:
+    resolution:
+      { integrity: sha512-EXbwjVoiX6PPYkMTJu/1V4wlqR3cY7Z4UpIdpoCEBurZgiD4MfxChLiKzcbiSC/DTMewjcwVhNT0BL+EAEj3yA== }
+    engines: { node: ">=14.19" }
+    dependencies:
+      escape-string-regexp: 4.0.0
+    dev: true
+
+  /@pnpm/network.ca-file/1.0.1:
+    resolution:
+      { integrity: sha512-gkINruT2KUhZLTaiHxwCOh1O4NVnFT0wLjWFBHmTz9vpKag/C/noIMJXBxFe4F0mYpUVX2puLwAieLYFg2NvoA== }
+    engines: { node: ">=12.22.0" }
+    dependencies:
+      graceful-fs: 4.2.10
+    dev: true
+
+  /@pnpm/npm-conf/2.0.0:
+    resolution:
+      { integrity: sha512-Ot3xJvdbRQ3fwtDeRYMik/97BbCKij9ZupSgY1tJLCzPPgYRTIIjwdOBHQX2qGbwqNeKd6EneMyKAAsUMO09Bw== }
+    engines: { node: ">=12" }
+    dependencies:
+      "@pnpm/network.ca-file": 1.0.1
+      config-chain: 1.1.12
+    dev: true
+
+  /@pnpm/package-is-installable/6.0.8_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-ITUkR8ceZmZhBwQn+GbV/Bt5Csr2GW5fDkN/czGNW1j2fWdPKExSn5iUr6h5EnOF5wGDIel3aFwgRBO2i2Lk4A== }
+    engines: { node: ">=14.6" }
+    peerDependencies:
+      "@pnpm/logger": ^4.0.0
+    dependencies:
+      "@pnpm/core-loggers": 7.0.6_@pnpm+logger@4.0.0
+      "@pnpm/error": 3.0.1
+      "@pnpm/logger": 4.0.0
+      "@pnpm/types": 8.5.0
+      detect-libc: 2.0.1
+      execa: /safe-execa/0.1.2
+      mem: 8.1.1
+      semver: 7.3.7
+    dev: true
+
+  /@pnpm/pnpmfile/2.1.0_@pnpm+logger@4.0.0:
+    resolution:
+      { integrity: sha512-nwbSyKDFZ0qD73EZQNpvmFOLnWlNkG3C5JGoBoo+P4J8CydiNVkh1F9M9wJl0aK+oHOu6Ex+nrFbplHQr0Q8wg== }
+    engines: { node: ">=14.6" }
+    peerDependencies:
+      "@pnpm/logger": ^4.0.0
+    dependencies:
+      "@pnpm/core-loggers": 7.0.6_@pnpm+logger@4.0.0
+      "@pnpm/error": 3.0.1
+      "@pnpm/lockfile-types": 4.3.1
+      "@pnpm/logger": 4.0.0
+      "@pnpm/store-controller-types": 14.1.0
+      "@pnpm/types": 8.5.0
+      chalk: 4.1.2
+      path-absolute: 1.0.1
+    dev: true
+
+  /@pnpm/ramda/0.28.1:
+    resolution:
+      { integrity: sha512-zcAG+lvU0fMziNeGXpPyCyCJYp5ZVrPElEE4t14jAmViaihohocZ+dDkcRIyAomox8pQsuZnv1EyHR+pOhmUWw== }
+    dev: true
+
+  /@pnpm/read-project-manifest/3.0.9:
+    resolution:
+      { integrity: sha512-27j40C48hA/tqsCiqk9ApJxp2g6WGrrj2RSs0NKhsSHynxAuA1tIvwatNISQbAiMjZiu1lfhzhq8m1QdblyNmA== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/error": 3.0.1
+      "@pnpm/graceful-fs": 2.0.0
+      "@pnpm/types": 8.5.0
+      "@pnpm/write-project-manifest": 3.0.7
+      detect-indent: 6.1.0
+      fast-deep-equal: 3.1.3
+      is-windows: 1.0.2
+      json5: 2.2.1
+      parse-json: 5.2.0
+      read-yaml-file: 2.1.0
+      sort-keys: 4.2.0
+      strip-bom: 4.0.0
+    dev: true
+
+  /@pnpm/render-peer-issues/2.1.0:
+    resolution:
+      { integrity: sha512-hY/pdOJN9bocwwj5KjzRpb7YBmbQ+W8TwaCSszIrTzCIVqw229aIbu5R5Y0mrLoDoPm4vbCoMbAplPBgQOr52w== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/types": 8.5.0
+      archy: 1.0.0
+      chalk: 4.1.2
+      cli-columns: 4.0.0
+    dev: true
+
+  /@pnpm/resolver-base/9.0.6:
+    resolution:
+      { integrity: sha512-CF9LdRdgK9pXjoC79Z0tw40pf6TYP6MiYGLA6/ZredPywU8zJ90Jp9Td3Z8ovN/qDjFyn0Tq4qJFjPMFPviV8w== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/types": 8.5.0
+    dev: true
+
+  /@pnpm/store-controller-types/14.1.0:
+    resolution:
+      { integrity: sha512-PW/Ehx6mZD8rvhMRY4GXUSAl4I4pf3ByIagIlCf4+YW6cLDXyN2OKZLTyCtqlB76rgWG17HKNYF1o/+ydnZ0lA== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/fetcher-base": 13.0.2
+      "@pnpm/resolver-base": 9.0.6
+      "@pnpm/types": 8.5.0
+    dev: true
+
+  /@pnpm/types/8.5.0:
+    resolution:
+      { integrity: sha512-PSKnhkwgiZtp9dcWZR9mPz2W9UopmADr9o8FTqazo5kjUSh2xQmDUSJOJ/ZWcfNziO64Ix/VbcxKIZeplhog1Q== }
+    engines: { node: ">=14.6" }
+    dev: true
+
+  /@pnpm/write-project-manifest/3.0.7:
+    resolution:
+      { integrity: sha512-rMgIWR52asESg1D7Cp/vBi3dBsv18iUWPvvtYNynrcOjRdE3NsH5CAdfZP/XN6HJF6CSY8rS9W4YC5Q3JGtxiw== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/types": 8.5.0
+      json5: 2.2.1
+      write-file-atomic: 3.0.3
+      write-yaml-file: 4.2.0
+    dev: true
 
   /@rhoas/registry-instance-sdk/0.34.1:
     resolution:
@@ -6714,6 +6988,13 @@ packages:
       "@types/node": 17.0.12
     dev: true
 
+  /@types/ssri/7.1.1:
+    resolution:
+      { integrity: sha512-DPP/jkDaqGiyU75MyMURxLWyYLwKSjnAuGe9ZCsLp9QZOpXmDfuevk769F0BS86TmRuD5krnp06qw9nSoNO+0g== }
+    dependencies:
+      "@types/node": 17.0.12
+    dev: true
+
   /@types/stack-utils/2.0.0:
     resolution:
       { integrity: sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw== }
@@ -7178,6 +7459,15 @@ packages:
     engines: { node: ">=12.10" }
     dev: true
 
+  /@zkochan/which/2.0.3:
+    resolution:
+      { integrity: sha512-C1ReN7vt2/2O0fyTsx5xnbQuxBrmG5NMSbcIkPKCCfCTJgpZBsuRYzFXHj3nVq8vTfK7vxHUmzfCpSHgO7j4rg== }
+    engines: { node: ">= 8" }
+    hasBin: true
+    dependencies:
+      isexe: 2.0.0
+    dev: true
+
   /abab/2.0.5:
     resolution:
       { integrity: sha512-9IK9EadsbHo6jLWIpxpR6pL0sazTXV6+SQv25ZB+F7Bj9mJNaOc4nCRabwd5M/JwmUa8idz6Eci6eKfJryPs6Q== }
@@ -7363,10 +7653,24 @@ packages:
       require-from-string: 2.0.2
       uri-js: 4.4.1
 
+  /ansi-align/3.0.1:
+    resolution:
+      { integrity: sha512-IOfwwBF5iczOjp/WeY4YxyjqAFMQoZufdQWDd19SEExbVLNXqvpzSJ/M7Za4/sCPmQ0+GRquoA7bGcINcxew6w== }
+    dependencies:
+      string-width: 4.2.3
+    dev: true
+
   /ansi-colors/4.1.1:
     resolution:
       { integrity: sha512-JoX0apGbHaUJBNl6yF+p6JAFYZ666/hhCGKN5t9QFjbJQKUU/g8MNbFDbvfrgKXvI1QpZplPOnwIo99lX/AAmA== }
     engines: { node: ">=6" }
+    dev: true
+
+  /ansi-diff/1.1.1:
+    resolution:
+      { integrity: sha512-XnTdFDQzbEewrDx8epWXdw7oqHMvv315vEtfqDiEhhWghIf4++h26c3/FMz7iTLhNrnj56DNIXpbxHZq+3s6qw== }
+    dependencies:
+      ansi-split: 1.0.1
     dev: true
 
   /ansi-escapes/4.3.2:
@@ -7387,6 +7691,12 @@ packages:
     resolution: { integrity: sha1-w7M6te42DYbg5ijwRorn7yfWVN8= }
     engines: { node: ">=0.10.0" }
 
+  /ansi-regex/3.0.1:
+    resolution:
+      { integrity: sha512-+O9Jct8wf++lXxxFc4hc8LsjaSq0HFzzL7cVsw8pRDIPdjKD2mT4ytDZlLuSBZ4cLKZFXIrMGO7DbQCtMJJMKw== }
+    engines: { node: ">=4" }
+    dev: true
+
   /ansi-regex/5.0.1:
     resolution:
       { integrity: sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ== }
@@ -7396,6 +7706,13 @@ packages:
     resolution:
       { integrity: sha512-n5M855fKb2SsfMIiFFoVrABHJC8QtHwVx+mHWP3QcEqBHYienj5dHSgjbxtC0WEZXYt4wcD6zrQElDPhFuZgfA== }
     engines: { node: ">=12" }
+    dev: true
+
+  /ansi-split/1.0.1:
+    resolution:
+      { integrity: sha512-RRxQym4DFtDNmHIkW6aeFVvrXURb11lGAEPXNiryjCe8bK8RsANjzJ0M2aGOkvBYwP4Bl/xZ8ijtr6D3j1x/eg== }
+    dependencies:
+      ansi-regex: 3.0.1
     dev: true
 
   /ansi-styles/2.2.1:
@@ -7486,6 +7803,11 @@ packages:
       readdir-glob: 1.1.1
       tar-stream: 2.2.0
       zip-stream: 4.1.0
+    dev: true
+
+  /archy/1.0.0:
+    resolution:
+      { integrity: sha512-Xg+9RwCg/0p32teKdGMPTPnVXKD0w3DfHnFTficozsAgsvq2XenPJq/MYpzzQ/v8zrOyJn6Ds39VA4JIDwFfqw== }
     dev: true
 
   /are-we-there-yet/1.1.5:
@@ -7623,6 +7945,13 @@ packages:
     resolution:
       { integrity: sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug== }
     engines: { node: ">=8" }
+    dev: true
+
+  /as-table/1.0.55:
+    resolution:
+      { integrity: sha512-xvsWESUJn0JN421Xb9MQw6AsMHRCUknCe0Wjlxvjud80mU4E6hQf1A6NzQKcYNmYw62MfzEtXc+badstZP3JpQ== }
+    dependencies:
+      printable-characters: 1.0.42
     dev: true
 
   /asap/2.0.6:
@@ -8821,6 +9150,14 @@ packages:
       - supports-color
     dev: true
 
+  /bole/4.0.0:
+    resolution:
+      { integrity: sha512-Bk/2qoyOSlwU1dnDFk/oPM2FCNKAlYlBHfpAgwGX+K9HUtxSvmIAQCmMWMOvE6BlHHRCwsH1MxJe/r1ieodxqQ== }
+    dependencies:
+      fast-safe-stringify: 2.1.1
+      individual: 3.0.0
+    dev: true
+
   /bonjour/3.5.0:
     resolution: { integrity: sha1-jokKGD2O6aI5OzhExpGkK897yfU= }
     dependencies:
@@ -8841,6 +9178,21 @@ packages:
     resolution:
       { integrity: sha512-5pyOr+w2LNN72F2mAq6J0ckHUfJYSgRKma7e/wlcMMhgOLV9OI0ERhERYXxUqo+dPyVxcbXKy9n+wg13+LpNnA== }
     optional: true
+
+  /boxen/5.1.2:
+    resolution:
+      { integrity: sha512-9gYgQKXx+1nP8mP7CzFyaUARhg7D3n1dF/FnErWmu9l6JvGpNUN278h0aSb+QjoiKSWG+iZ3uHrcqk0qrY9RQQ== }
+    engines: { node: ">=10" }
+    dependencies:
+      ansi-align: 3.0.1
+      camelcase: 6.3.0
+      chalk: 4.1.2
+      cli-boxes: 2.2.1
+      string-width: 4.2.3
+      type-fest: 0.20.2
+      widest-line: 3.1.0
+      wrap-ansi: 7.0.0
+    dev: true
 
   /brace-expansion/1.1.11:
     resolution:
@@ -9138,6 +9490,20 @@ packages:
     engines: { node: ">=10" }
     dev: true
 
+  /camelcase/6.3.0:
+    resolution:
+      { integrity: sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA== }
+    engines: { node: ">=10" }
+    dev: true
+
+  /can-write-to-dir/1.1.1:
+    resolution:
+      { integrity: sha512-eOgiEWqjppB+3DN/5E82EQ8dTINus8d9GXMCbEsUnp2hcUIcXmBvzWmD3tXMk3CuBK0v+ddK9qw0EAF+JVRMjQ== }
+    engines: { node: ">=10.13" }
+    dependencies:
+      path-temp: 2.0.0
+    dev: true
+
   /caniuse-lite/1.0.30001332:
     resolution:
       { integrity: sha512-10T30NYOEQtN6C11YGg411yebhvpnC6Z102+B95eAsN0oB6KUs01ivE8u+G6FMIRtIrVlYXhL+LUwQ3/hXwDWw== }
@@ -9386,6 +9752,21 @@ packages:
     resolution:
       { integrity: sha512-4diC9HaTE+KRAMWhDhrGOECgWZxoevMc5TlkObMqNSsVU62PYzXZ/SMTjzyGAFF1YusgxGcSWTEXBhp0CPwQ1A== }
     engines: { node: ">=6" }
+    dev: true
+
+  /cli-boxes/2.2.1:
+    resolution:
+      { integrity: sha512-y4coMcylgSCdVinjiDBuR8PCC2bLjyGTwEmPb9NHR/QaNU6EUOXcTY/s6VjGMD6ENSEaeQYHCY0GNGS5jfMwPw== }
+    engines: { node: ">=6" }
+    dev: true
+
+  /cli-columns/4.0.0:
+    resolution:
+      { integrity: sha512-XW2Vg+w+L9on9wtwKpyzluIPCWXjaBahI7mTcYjx+BVIYD9c3yqcv/yKC7CmdCZat4rq2yiE1UMSJC5ivKfMtQ== }
+    engines: { node: ">= 10" }
+    dependencies:
+      string-width: 4.2.3
+      strip-ansi: 6.0.1
     dev: true
 
   /cli-cursor/3.1.0:
@@ -9683,7 +10064,6 @@ packages:
     dependencies:
       ini: 1.3.8
       proto-list: 1.2.4
-    optional: true
 
   /connect-history-api-fallback/1.6.0:
     resolution:
@@ -9924,6 +10304,15 @@ packages:
       cross-spawn: 6.0.5
     dev: true
 
+  /cross-env/7.0.3:
+    resolution:
+      { integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw== }
+    engines: { node: ">=10.14", npm: ">=6", yarn: ">=1" }
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
+    dev: true
+
   /cross-fetch/3.1.5:
     resolution:
       { integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw== }
@@ -9975,6 +10364,12 @@ packages:
       exit: 0.1.2
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /crypto-random-string/2.0.0:
+    resolution:
+      { integrity: sha512-v1plID3y9r/lPhviJ1wrXpLeyUIGAZ2SHNYTEapm7/8A9nLPoyvVp3RK/EPFqn5kEznyWgYZNsRtYYIWbuG8KA== }
+    engines: { node: ">=8" }
     dev: true
 
   /css-blank-pseudo/3.0.3_postcss@8.4.5:
@@ -10816,6 +11211,11 @@ packages:
       assert-plus: 1.0.0
     dev: true
 
+  /data-uri-to-buffer/2.0.2:
+    resolution:
+      { integrity: sha512-ND9qDTLc6diwj+Xe5cdAgVTbLVdXbtxTJRXRhli8Mowuaan+0EJOtdqJ0QCHNSSPyoXGx9HX2/VMnKeC34AChA== }
+    dev: true
+
   /data-urls/2.0.0:
     resolution:
       { integrity: sha512-X5eWTSXO/BJmpdIKCRuKUgSCgAN0OwliVK3yPKbwIWU1Tdw5BRajxlzMidvh+gwko9AfQ9zIj52pzF91Q3YAvQ== }
@@ -11024,10 +11424,6 @@ packages:
       strip-dirs: 2.1.0
     dev: true
 
-  /dedent/0.7.0:
-    resolution: { integrity: sha1-JJXduvbrh0q7Dhvp3yLS5aVEMmw= }
-    dev: true
-
   /deep-eql/3.0.1:
     resolution:
       { integrity: sha512-+QeIQyN5ZuO+3Uk5DYh6/1eKO0m0YmJFGNmFHGACpf1ClL1nmlV/p4gNgbl2pJGxgXb4faqo6UE+M5ACEMyVcw== }
@@ -11214,14 +11610,9 @@ packages:
       repeating: 2.0.1
     dev: true
 
-  /detect-indent/5.0.0:
-    resolution: { integrity: sha1-OHHMCmoALow+Wzz38zYmRnXwa50= }
-    engines: { node: ">=4" }
-    dev: true
-
-  /detect-indent/6.0.0:
+  /detect-indent/6.1.0:
     resolution:
-      { integrity: sha512-oSyFlqaTHCItVRGK5RmrmjB+CmaMOW7IaNA/kdxqhoa6d17j/5ce9O9eWXmV/KEdRwqpQA+Vqe8a8Bsybu4YnA== }
+      { integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA== }
     engines: { node: ">=8" }
     dev: true
 
@@ -11230,6 +11621,12 @@ packages:
       { integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg== }
     engines: { node: ">=0.10" }
     hasBin: true
+    dev: true
+
+  /detect-libc/2.0.1:
+    resolution:
+      { integrity: sha512-463v3ZeIrcWtdgIg6vI6XUncguvr2TnGl4SzDXinkt9mSLpBJKXT3mW6xT3VQdDN11+WVs29pgvivTc4Lp8v+w== }
+    engines: { node: ">=8" }
     dev: true
 
   /detect-newline/3.1.0:
@@ -11430,14 +11827,6 @@ packages:
     dependencies:
       no-case: 3.0.4
       tslib: 2.3.1
-    dev: true
-
-  /dot-prop/6.0.1:
-    resolution:
-      { integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA== }
-    engines: { node: ">=10" }
-    dependencies:
-      is-obj: 2.0.0
     dev: true
 
   /duplexer/0.1.2:
@@ -12331,6 +12720,22 @@ packages:
       strip-final-newline: 2.0.0
     dev: true
 
+  /execa/5.1.1:
+    resolution:
+      { integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg== }
+    engines: { node: ">=10" }
+    dependencies:
+      cross-spawn: 7.0.3
+      get-stream: 6.0.1
+      human-signals: 2.1.0
+      is-stream: 2.0.0
+      merge-stream: 2.0.0
+      npm-run-path: 4.0.1
+      onetime: 5.1.2
+      signal-exit: 3.0.3
+      strip-final-newline: 2.0.0
+    dev: true
+
   /executable/4.1.1:
     resolution:
       { integrity: sha512-8iA79xD3uAch729dUG8xaaBBFGaEa0wdD2VkYLFHwlqosEj/jT66AzcreRDSgV7ehnNLBW2WR5jIXwGKjVdTLg== }
@@ -12542,6 +12947,18 @@ packages:
       micromatch: 4.0.4
     dev: true
 
+  /fast-glob/3.2.11:
+    resolution:
+      { integrity: sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew== }
+    engines: { node: ">=8.6.0" }
+    dependencies:
+      "@nodelib/fs.stat": 2.0.3
+      "@nodelib/fs.walk": 1.2.4
+      glob-parent: 5.1.2
+      merge2: 1.4.1
+      micromatch: 4.0.4
+    dev: true
+
   /fast-glob/3.2.5:
     resolution:
       { integrity: sha512-2DtFcgT68wiTTiwZ2hNdJfcHNke9XOfnwmBRWXhmeKM8rF0TGwmC/Qto3S7RoZKp5cilZbxzO5iTNTQsJ+EeDg== }
@@ -12561,6 +12978,11 @@ packages:
 
   /fast-levenshtein/2.0.6:
     resolution: { integrity: sha1-PYpcZog6FqMMqGQ+hR8Zuqd5eRc= }
+    dev: true
+
+  /fast-safe-stringify/2.1.1:
+    resolution:
+      { integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA== }
     dev: true
 
   /fast-text-encoding/1.0.3:
@@ -12752,6 +13174,17 @@ packages:
       commondir: 1.0.1
       make-dir: 3.1.0
       pkg-dir: 4.2.0
+    dev: true
+
+  /find-packages/9.0.9:
+    resolution:
+      { integrity: sha512-XkzVZSz5YTBYdDvUEQrTTRa5PSrYde7AU/ax0ic/USy+IEoHI6RqQQQxZxq6KFfsJngbDfIf5MM2gyrQ9Ztzjg== }
+    engines: { node: ">=14.6" }
+    dependencies:
+      "@pnpm/read-project-manifest": 3.0.9
+      "@pnpm/types": 8.5.0
+      fast-glob: 3.2.11
+      p-filter: 2.1.0
     dev: true
 
   /find-up/2.1.0:
@@ -13109,6 +13542,14 @@ packages:
     engines: { node: ">=8" }
     dev: true
 
+  /get-source/2.0.12:
+    resolution:
+      { integrity: sha512-X5+4+iD+HoSeEED+uwrQ07BOQr0kEDFMVqqpBuI+RaZBpBpHCuXxo70bjar6f0b0u/DQJsJ7ssurpP0V60Az+w== }
+    dependencies:
+      data-uri-to-buffer: 2.0.2
+      source-map: 0.6.1
+    dev: true
+
   /get-stdin/5.0.1:
     resolution: { integrity: sha1-Ei4WFZHiH/TFJTAwVpPyDmOTo5g= }
     engines: { node: ">=0.12.0" }
@@ -13363,6 +13804,11 @@ packages:
   /graceful-fs/4.2.10:
     resolution:
       { integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA== }
+
+  /graph-data-structure/2.0.0:
+    resolution:
+      { integrity: sha512-ravWDe9LaV0u27ZDme/8w5xHyyTqIWQsetpzDvBNJsGy4nZQB5IVw/u+7ngdEMZWsHYim+PAHatV4cGQX1XKpQ== }
+    dev: true
 
   /grapheme-splitter/1.0.4:
     resolution:
@@ -13971,6 +14417,11 @@ packages:
     engines: { node: ">=8" }
     dev: true
 
+  /individual/3.0.0:
+    resolution:
+      { integrity: sha512-rUY5vtT748NMRbEMrTNiFfy29BgGZwGXUi2NFUVMWQrogSLzlJvQV9eeMWi+g1aVaQ53tpyLAQtd5x/JH0Nh1g== }
+    dev: true
+
   /infer-owner/1.0.4:
     resolution:
       { integrity: sha512-IClj+Xz94+d7irH5qRyfJonOdfTzuDaifE6ZPWfx0N0+/ATZCbuTPq2prFl526urkQd90WyUKIh1DfBQ2hMz9A== }
@@ -13983,7 +14434,8 @@ packages:
       wrappy: 1.0.2
 
   /inherits/2.0.3:
-    resolution: { integrity: sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4= }
+    resolution:
+      { integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw== }
     dev: true
 
   /inherits/2.0.4:
@@ -14308,12 +14760,6 @@ packages:
     engines: { node: ">=0.12.0" }
     dev: true
 
-  /is-obj/2.0.0:
-    resolution:
-      { integrity: sha512-drqDG3cbczxxEJRoOXcOjtdp1J/lyp1mNn0xaznRs8+muBhgQcrnbspox5X5fOw0HnMnbfDzvnEMEtqDEJEo8w== }
-    engines: { node: ">=8" }
-    dev: true
-
   /is-path-cwd/2.2.0:
     resolution:
       { integrity: sha512-w942bTcih8fdJPJmQHFzkS76NEP8Kzzvmw92cXsazb8intwLqPibPPdXf4ANdKV3rYMuuQYGIWtvz9JilB3NFQ== }
@@ -14324,11 +14770,6 @@ packages:
     resolution:
       { integrity: sha512-/2UGPSgmtqwo1ktx8NDHjuPwZWmHhO+gj0f93EkhLB5RgW9RZevWYYlIkS6zePc6U2WpOdQYIwHe9YC4DWEBVg== }
     engines: { node: ">=8" }
-    dev: true
-
-  /is-plain-obj/1.1.0:
-    resolution: { integrity: sha1-caUMhCnfync8kqOQpKA7OfzVHT4= }
-    engines: { node: ">=0.10.0" }
     dev: true
 
   /is-plain-obj/2.1.0:
@@ -14391,6 +14832,14 @@ packages:
     engines: { node: ">= 0.4" }
     dev: true
 
+  /is-subdir/1.2.0:
+    resolution:
+      { integrity: sha512-2AT6j+gXe/1ueqbW6fLZJiIw3F8iXGJtt0yDrZaBhAZEG1raiTxKWU+IPqMCzQAXOUCKdA4UDMgacKH25XG2Cw== }
+    engines: { node: ">=4" }
+    dependencies:
+      better-path-resolve: 1.0.0
+    dev: true
+
   /is-symbol/1.0.4:
     resolution:
       { integrity: sha512-C/CPBqKWnvdcxqIARxyOh4v1UUEOCHpgDa0WYgpKDFMszcrPcffg5uhwSgPCLD2WWxmq6isisz87tzT01tuGhg== }
@@ -14448,7 +14897,8 @@ packages:
     dev: true
 
   /isexe/2.0.0:
-    resolution: { integrity: sha1-6PvzdNxVb/iUehDcsFctYz8s+hA= }
+    resolution:
+      { integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw== }
 
   /isobject/2.1.0:
     resolution: { integrity: sha1-8GVWEJaj8dou9GJy+BXIQNh+DIk= }
@@ -15223,7 +15673,8 @@ packages:
     dev: true
 
   /json-stringify-safe/5.0.1:
-    resolution: { integrity: sha1-Epai1Y/UXxmg9s4B1lcB4sc1tus= }
+    resolution:
+      { integrity: sha512-ZClg6AaYvamvYEE82d3Iyd3vSSIjQ+odgjaTzRuO3s7toCdFKczob2i0zCh7JE8kWn17yvAWhUVxvqGwUalsRA== }
 
   /json-to-ast/2.1.0:
     resolution:
@@ -15255,6 +15706,13 @@ packages:
     hasBin: true
     dependencies:
       minimist: 1.2.6
+    dev: true
+
+  /json5/2.2.1:
+    resolution:
+      { integrity: sha512-1hqLFMSrGHRHxav9q9gNjJ5EXznIxGVO09xQRrwplcS8qs28pZ8s8hupZAmqDwZUmVZ2Qb2jnyPOWcDH8m8dlA== }
+    engines: { node: ">=6" }
+    hasBin: true
     dev: true
 
   /jsonata/1.8.3:
@@ -16123,6 +16581,7 @@ packages:
       pify: 4.0.1
       semver: 5.7.1
     dev: true
+    optional: true
 
   /make-dir/3.1.0:
     resolution:
@@ -16167,6 +16626,14 @@ packages:
     resolution: { integrity: sha1-4BpckQnyr3lmDk6LlYd5AYT1qWw= }
     dependencies:
       tmpl: 1.0.5
+    dev: true
+
+  /map-age-cleaner/0.1.3:
+    resolution:
+      { integrity: sha512-bJzx6nMoP6PDLPBFmg7+xRKeFZvFboMrGlxmNj9ClvX53KrmvM5bXFXEWjbz4cz1AFn+jWJ9z/DJSz7hrs0w3w== }
+    engines: { node: ">=6" }
+    dependencies:
+      p-defer: 1.0.0
     dev: true
 
   /map-cache/0.2.2:
@@ -16223,6 +16690,15 @@ packages:
   /media-typer/0.3.0:
     resolution: { integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g= }
     engines: { node: ">= 0.6" }
+    dev: true
+
+  /mem/8.1.1:
+    resolution:
+      { integrity: sha512-qFCFUDs7U3b8mBDPyz5EToEKoAkgCzqquIgi9nkkR9bixxOVOre+09lbuH7+9Kn2NFpm56M3GUWVbU2hQgdACA== }
+    engines: { node: ">=10" }
+    dependencies:
+      map-age-cleaner: 0.1.3
+      mimic-fn: 3.1.0
     dev: true
 
   /memfs/3.4.1:
@@ -16358,6 +16834,12 @@ packages:
     resolution:
       { integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg== }
     engines: { node: ">=6" }
+
+  /mimic-fn/3.1.0:
+    resolution:
+      { integrity: sha512-Ysbi9uYW9hFyfrThdDEQuykN4Ey6BuwPD2kpI5ES/nFTDn/98yxYNLZJcgUAKPT/mcrLLKaGzJR9YVxJrIdASQ== }
+    engines: { node: ">=8" }
+    dev: true
 
   /mimic-response/1.0.1:
     resolution:
@@ -16799,6 +17281,19 @@ packages:
     resolution: { integrity: sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc= }
     dev: true
 
+  /ndjson/2.0.0:
+    resolution:
+      { integrity: sha512-nGl7LRGrzugTtaFcJMhLbpzJM6XdivmbkdlaGcrk/LXg2KL/YBC6z1g70xh0/al+oFuVFP8N8kiWRucmeEH/qQ== }
+    engines: { node: ">=10" }
+    hasBin: true
+    dependencies:
+      json-stringify-safe: 5.0.1
+      minimist: 1.2.6
+      readable-stream: 3.6.0
+      split2: 3.2.2
+      through2: 4.0.2
+    dev: true
+
   /needle/2.9.1:
     resolution:
       { integrity: sha512-6R9fqJ5Zcmf+uYaFgdIHmLwNldn5HbK8L5ybn7Uz+ylX/rnOsSp1AHcvQSrCaFN+qNM1wpymHqD7mVasEOlHGQ== }
@@ -17038,6 +17533,11 @@ packages:
   /normalize-range/0.1.2:
     resolution: { integrity: sha1-LRDAa9/TEuqXd2laTShDlFa3WUI= }
     engines: { node: ">=0.10.0" }
+    dev: true
+
+  /normalize-registry-url/2.0.0:
+    resolution:
+      { integrity: sha512-3e9FwDyRAhbxXw4slm4Tjv40u78yPwMc/WZkACpqNQOs5sM7wic853AeTLkMFEVhivZkclGYlse8iYsklz0Yvg== }
     dev: true
 
   /normalize-url/4.5.1:
@@ -17430,10 +17930,24 @@ packages:
     engines: { node: ">=8" }
     dev: true
 
+  /p-defer/1.0.0:
+    resolution:
+      { integrity: sha512-wB3wfAxZpk2AzOfUMJNL+d36xothRSyj8EXOa4f6GMqYDN9BJaaSISbsk+wS9abmnebVw95C2Kb5t85UmpCxuw== }
+    engines: { node: ">=4" }
+    dev: true
+
   /p-each-series/2.1.0:
     resolution:
       { integrity: sha512-ZuRs1miPT4HrjFa+9fRfOFXxGJfORgelKV9f9nNOWw2gl6gVsRaVDOQP0+MI0G0wGKns1Yacsu0GjOFbTK0JFQ== }
     engines: { node: ">=8" }
+    dev: true
+
+  /p-filter/2.1.0:
+    resolution:
+      { integrity: sha512-ZBxxZ5sL2HghephhpGAQdoskxplTwr7ICaehZwLIlfL6acuVgZPm8yBNuRAFBGEqtD/hmUeq9eqLg2ys9Xr/yw== }
+    engines: { node: ">=8" }
+    dependencies:
+      p-map: 2.1.0
     dev: true
 
   /p-finally/1.0.0:
@@ -17504,6 +18018,12 @@ packages:
     engines: { node: ">=10" }
     dependencies:
       p-limit: 3.1.0
+    dev: true
+
+  /p-map/2.1.0:
+    resolution:
+      { integrity: sha512-y3b8Kpd8OAN444hxfBbFfj1FY/RjtTd8tzYwhUqNYXx0fXx2iX4maP4Qr6qhIKbQXI02wTLAda4fYUbDagTUFw== }
+    engines: { node: ">=6" }
     dev: true
 
   /p-map/4.0.0:
@@ -17616,6 +18136,23 @@ packages:
       lines-and-columns: 1.1.6
     dev: true
 
+  /parse-json/5.2.0:
+    resolution:
+      { integrity: sha512-ayCKvm/phCGxOkYRSCM82iDwct8/EonSEgCSxWxD7ve6jHggsFl4fZVQBPRNgQoKiuV/odhFrGzQXZwbifC8Rg== }
+    engines: { node: ">=8" }
+    dependencies:
+      "@babel/code-frame": 7.16.7
+      error-ex: 1.3.2
+      json-parse-even-better-errors: 2.3.1
+      lines-and-columns: 1.1.6
+    dev: true
+
+  /parse-ms/2.1.0:
+    resolution:
+      { integrity: sha512-kHt7kzLoS9VBZfUsiKjv43mr91ea+U05EyKkEtqp7vNbHxmaVuEqN7XxeEVnGrMtYOAxGrDElSi96K7EgO1zCA== }
+    engines: { node: ">=6" }
+    dev: true
+
   /parse-node-version/1.0.1:
     resolution:
       { integrity: sha512-3YHlOa/JgH6Mnpr05jP9eDG254US9ek25LyIxZlDItp2iJtwyaXQb57lBYLdT3MowkUFYEV2XXNAYIPlESvJlA== }
@@ -17696,6 +18233,12 @@ packages:
       tmp: 0.0.33
     dev: true
 
+  /path-absolute/1.0.1:
+    resolution:
+      { integrity: sha512-gds5iRhSeOcDtj8gfWkRHLtZKTPsFVuh7utbjYtvnclw4XM+ffRzJrwqMhOD1PVqef7nBLmgsu1vIujjvAJrAw== }
+    engines: { node: ">=4" }
+    dev: true
+
   /path-browserify/1.0.1:
     resolution:
       { integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g== }
@@ -17724,9 +18267,22 @@ packages:
     engines: { node: ">=8" }
     dev: true
 
+  /path-name/1.0.0:
+    resolution:
+      { integrity: sha512-/dcAb5vMXH0f51yvMuSUqFpxUcA8JelbRmE5mW/p4CUJxrNgK24IkstnV7ENtg2IDGBOu6izKTG6eilbnbNKWQ== }
+    dev: true
+
   /path-parse/1.0.7:
     resolution:
       { integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw== }
+    dev: true
+
+  /path-temp/2.0.0:
+    resolution:
+      { integrity: sha512-92olbatybjsHTGB2CUnAM7s0mU/27gcMfLNA7t09UftndUdxywlQKur3fzXEPpfLrgZD3I2Bt8+UmiL7YDEgXQ== }
+    engines: { node: ">=8.15" }
+    dependencies:
+      unique-string: 2.0.0
     dev: true
 
   /path-to-regexp/0.1.7:
@@ -18497,6 +19053,14 @@ packages:
       react-is: 17.0.2
     dev: true
 
+  /pretty-ms/7.0.1:
+    resolution:
+      { integrity: sha512-973driJZvxiGOQ5ONsFhOF/DtzPMOMtgC11kCpUrPGMTgqp2q/1gwzCquocrN33is0VZ5GFHXZYMM9l6h67v2Q== }
+    engines: { node: ">=10" }
+    dependencies:
+      parse-ms: 2.1.0
+    dev: true
+
   /pretty-quick/3.1.0_prettier@2.3.0:
     resolution:
       { integrity: sha512-DtxIxksaUWCgPFN7E1ZZk4+Aav3CCuRdhrDSFZENb404sYMtuo9Zka823F+Mgeyt8Zt3bUiCjFzzWYE9LYqkmQ== }
@@ -18512,6 +19076,11 @@ packages:
       mri: 1.1.6
       multimatch: 4.0.0
       prettier: 2.3.0
+    dev: true
+
+  /printable-characters/1.0.42:
+    resolution:
+      { integrity: sha512-dKp+C4iXWK4vVYZmYSd0KBH5F/h1HoZRsbJ82AVKRO3PEo8L4lBS/vLwhVtpwwuYcoIsVY+1JYKR268yn480uQ== }
     dev: true
 
   /printj/1.1.2:
@@ -18595,8 +19164,8 @@ packages:
     dev: true
 
   /proto-list/1.2.4:
-    resolution: { integrity: sha1-IS1b/hMYMGpCD2QCuOJv85ZHqEk= }
-    optional: true
+    resolution:
+      { integrity: sha512-vtK/94akxsTMhe0/cbfpR+syPuszcuwhqVjJq26CuNDgFGj682oRBXOP5MJpv2r7JtE8MsiepGIqvvOTBwn2vA== }
 
   /proxy-addr/2.0.6:
     resolution:
@@ -19139,6 +19708,15 @@ packages:
       type-fest: 0.6.0
     dev: true
 
+  /read-yaml-file/2.1.0:
+    resolution:
+      { integrity: sha512-UkRNRIwnhG+y7hpqnycCL/xbTk7+ia9VuVTC0S+zVbwd65DI9eUpRMfsWIGrCWxTU/mi+JW8cHQCrv+zfCbEPQ== }
+    engines: { node: ">=10.13" }
+    dependencies:
+      js-yaml: 4.1.0
+      strip-bom: 4.0.0
+    dev: true
+
   /read/1.0.7:
     resolution:
       { integrity: sha512-rSOKNYUmaxy0om1BNjMN4ezNT6VKK+2xF4GBhc81mkH7L60i6dp8qPYrkndNLT3QPphoII3maL9PVC9XmhHwVQ== }
@@ -19148,7 +19726,8 @@ packages:
     dev: true
 
   /readable-stream/1.0.34:
-    resolution: { integrity: sha1-Elgg40vIQtLyqq+v5MKRbuMsFXw= }
+    resolution:
+      { integrity: sha512-ok1qVCJuRkNmvebYikljxJA/UEsKwLl2nI1OmaqAu4/UE+h0wKCHok4XkL/gvi39OacXvw59RJUOFUkDib2rHg== }
     dependencies:
       core-util-is: 1.0.2
       inherits: 2.0.4
@@ -19190,6 +19769,12 @@ packages:
     engines: { node: ">=8.10.0" }
     dependencies:
       picomatch: 2.3.1
+    dev: true
+
+  /realpath-missing/1.1.0:
+    resolution:
+      { integrity: sha512-wnWtnywepjg/eHIgWR97R7UuM5i+qHLA195qdN9UPKvcMqfn60+67S8sPPW3vDlSEfYHoFkKU8IvpCNty3zQvQ== }
+    engines: { node: ">=10" }
     dev: true
 
   /rechoir/0.7.0:
@@ -19602,6 +20187,12 @@ packages:
       { integrity: sha512-clEe0m1xv+Tva1B/TOepuIcvLAxP0U+sCDfgt1SX1HmI2Ahr5/Cd/nzJM1e78NKVtWdoo0s33YehpFA8UfIShQ== }
     dev: true
 
+  /right-pad/1.0.1:
+    resolution:
+      { integrity: sha512-bYBjgxmkvTAfgIYy328fmkwhp39v8lwVgWhhrzxPV3yHtcSqyYKe9/XOhvW48UFjATg3VuJbpsp5822ACNvkmw== }
+    engines: { node: ">= 0.10" }
+    dev: true
+
   /rimraf/2.5.4:
     resolution: { integrity: sha1-loAAk8vxoMhr2VtGJUZ1NcKd+gQ= }
     hasBin: true
@@ -19683,6 +20274,13 @@ packages:
     dependencies:
       tslib: 2.3.1
 
+  /rxjs/7.5.6:
+    resolution:
+      { integrity: sha512-dnyv2/YsXhnm461G+R/Pe5bWP41Nm6LBXEYWI6eiFP4fiwx6WRI/CD0zbdVAudd9xwLEF2IDcKXLHit0FYjUzw== }
+    dependencies:
+      tslib: 2.3.1
+    dev: true
+
   /safe-buffer/5.1.2:
     resolution:
       { integrity: sha512-Gd2UZBJDkXlY7GbJxfsE8/nvKkUEU1G38c1siN6QP6a9PT9MmHB8GnpscSmMJSoF8LOIrt8ud/wPtojys4G6+g== }
@@ -19690,6 +20288,16 @@ packages:
   /safe-buffer/5.2.1:
     resolution:
       { integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ== }
+
+  /safe-execa/0.1.2:
+    resolution:
+      { integrity: sha512-vdTshSQ2JsRCgT8eKZWNJIL26C6bVqy1SOmuCMlKHegVeo8KYRobRrefOdUq9OozSPUUiSxrylteeRmLOMFfWg== }
+    engines: { node: ">=12" }
+    dependencies:
+      "@zkochan/which": 2.0.3
+      execa: 5.1.1
+      path-name: 1.0.0
+    dev: true
 
   /safe-regex/1.1.0:
     resolution: { integrity: sha1-QKNmnzsHfR6UPURinhV91IAjvy4= }
@@ -19871,6 +20479,15 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+
+  /semver/7.3.7:
+    resolution:
+      { integrity: sha512-QlYTucUYOews+WeEujDoEGziz4K6c47V/Bd+LjSSYcA94p+DmINdf7ncaUinThfvZyu13lN9OY1XDxt8C0Tw0g== }
+    engines: { node: ">=10" }
+    hasBin: true
+    dependencies:
+      lru-cache: 6.0.0
+    dev: true
 
   /send/0.17.1:
     resolution:
@@ -20251,13 +20868,6 @@ packages:
       smart-buffer: 4.1.0
     dev: true
 
-  /sort-keys/2.0.0:
-    resolution: { integrity: sha1-ZYU1WEhh7JfXMNbPQYIuH1ZoQSg= }
-    engines: { node: ">=4" }
-    dependencies:
-      is-plain-obj: 1.1.0
-    dev: true
-
   /sort-keys/4.2.0:
     resolution:
       { integrity: sha512-aUYIEU/UviqPgc8mHR6IW1EGxkAXpeRETYcrzg8cLAvUPZcpAlleSXHV2mY7G12GphSH6Gzv+4MMVSSkbdteHg== }
@@ -20462,6 +21072,13 @@ packages:
       through: 2.3.8
     dev: true
 
+  /split2/3.2.2:
+    resolution:
+      { integrity: sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg== }
+    dependencies:
+      readable-stream: 3.6.0
+    dev: true
+
   /sprintf-js/1.0.3:
     resolution: { integrity: sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw= }
     dev: true
@@ -20513,6 +21130,14 @@ packages:
     dependencies:
       escape-string-regexp: 2.0.0
       source-map-support: 0.5.21
+    dev: true
+
+  /stacktracey/2.1.8:
+    resolution:
+      { integrity: sha512-Kpij9riA+UNg7TnphqjH7/CzctQ/owJGNbFkfEeve4Z4uxT5+JapVLFXcsurIfN34gnTWZNJ/f7NMG0E8JDzTw== }
+    dependencies:
+      as-table: 1.0.55
+      get-source: 2.0.12
     dev: true
 
   /start-server-and-test/1.12.1:
@@ -20639,7 +21264,8 @@ packages:
     dev: true
 
   /string_decoder/0.10.31:
-    resolution: { integrity: sha1-YuIDvEF2bGwoyfyEMB2rHFMQ+pQ= }
+    resolution:
+      { integrity: sha512-ev2QzSzWPYmy9GuqfIVildA4OdcGLeFZQrq5ys6RtiuF+RQQiZWr8TZNyAcuVXyQRYfEO+MsoB/1BuQVhOJuoQ== }
     dev: true
 
   /string_decoder/1.1.1:
@@ -21117,6 +21743,13 @@ packages:
       xtend: 4.0.2
     dev: true
 
+  /through2/4.0.2:
+    resolution:
+      { integrity: sha512-iOqSav00cVxEEICeD7TjLB1sueEL+81Wpzp2bY17uZjZN0pWZPuo4suZ/61VujxmqSGFfgOcNuTZ85QJwNZQpw== }
+    dependencies:
+      readable-stream: 3.6.0
+    dev: true
+
   /thunky/1.1.0:
     resolution:
       { integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA== }
@@ -21414,12 +22047,6 @@ packages:
       { integrity: sha512-t0rzBq87m3fVcduHDUFhKmyyX+9eo6WQjZvf51Ea/M0Q7+T374Jp1aUiyUl0GKxp8M/OETVHSDvmkyPgvX+X2w== }
     engines: { node: ">=10" }
 
-  /type-fest/0.4.1:
-    resolution:
-      { integrity: sha512-IwzA/LSfD2vC1/YDYMv/zHP4rDF1usCwllsDpbolT3D4fUepIO7f9K70jjmUewU/LmGUKJcwcVtDCpnKk4BPMw== }
-    engines: { node: ">=6" }
-    dev: true
-
   /type-fest/0.6.0:
     resolution:
       { integrity: sha512-q+MB8nYR1KDLrgr4G5yemftpMC7/QLqVndBmEEdqzmNj5dcFOO4Oo8qlwZE3ULT3+Zim1F8Kq4cBnikNhlCMlg== }
@@ -21654,6 +22281,14 @@ packages:
       imurmurhash: 0.1.4
     dev: true
 
+  /unique-string/2.0.0:
+    resolution:
+      { integrity: sha512-uNaeirEPvpZWSgzwsPGtU2zVSTrn/8L5q/IexZmH0eH6SA73CmAA5U4GwORTxQAZs95TAXLNqeLoPPNO5gZfWg== }
+    engines: { node: ">=8" }
+    dependencies:
+      crypto-random-string: 2.0.0
+    dev: true
+
   /universal-user-agent/6.0.0:
     resolution:
       { integrity: sha512-isyNax3wXoKaulPDZWHQqbmIx1k2tb9fb3GGDBRxCscfYV2Ch7WxPArBsFEG8s/safwXTT7H4QGhaIkTp9447w== }
@@ -21801,7 +22436,8 @@ packages:
     dev: true
 
   /util-deprecate/1.0.2:
-    resolution: { integrity: sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8= }
+    resolution:
+      { integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw== }
 
   /utila/0.4.0:
     resolution: { integrity: sha1-ihagXURWV6Oupe7MWxKk+lN5dyw= }
@@ -22760,6 +23396,14 @@ packages:
       string-width: 4.2.3
     dev: true
 
+  /widest-line/3.1.0:
+    resolution:
+      { integrity: sha512-NsmoXalsWVDMGupxZ5R08ka9flZjjiLvHVAWYOKtiKM8ujtZWr9cRffak+uSE48+Ob8ObalXpwyeUiyDD6QFgg== }
+    engines: { node: ">=8" }
+    dependencies:
+      string-width: 4.2.3
+    dev: true
+
   /wildcard/2.0.0:
     resolution:
       { integrity: sha512-JcKqAHLPxcdb9KM49dufGXn2x3ssnfjbcaQdLlfZsL9rH9wgDQjUtDxbo8NE0F6SFvydeu1VhZe7hZuHsB2/pw== }
@@ -22798,15 +23442,6 @@ packages:
   /wrappy/1.0.2:
     resolution: { integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8= }
 
-  /write-file-atomic/2.4.3:
-    resolution:
-      { integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ== }
-    dependencies:
-      graceful-fs: 4.2.10
-      imurmurhash: 0.1.4
-      signal-exit: 3.0.3
-    dev: true
-
   /write-file-atomic/3.0.3:
     resolution:
       { integrity: sha512-AvHcyZ5JnSfq3ioSyjrBkH9yW4m7Ayk8/9My/DD9onKeu/94fwrMocemO2QAJFAlnnDN+ZDS+ZjAR5ua1/PV/Q== }
@@ -22817,40 +23452,13 @@ packages:
       typedarray-to-buffer: 3.1.5
     dev: true
 
-  /write-json-file/3.2.0:
+  /write-yaml-file/4.2.0:
     resolution:
-      { integrity: sha512-3xZqT7Byc2uORAatYiP3DHUUAVEkNOswEWNs9H5KXiicRTvzYzYqKjYc4G7p+8pltvAw641lVByKVtMpf+4sYQ== }
-    engines: { node: ">=6" }
+      { integrity: sha512-LwyucHy0uhWqbrOkh9cBluZBeNVxzHjDaE9mwepZG3n3ZlbM4v3ndrFw51zW/NXYFFqP+QWZ72ihtLWTh05e4Q== }
+    engines: { node: ">=10.13" }
     dependencies:
-      detect-indent: 5.0.0
-      graceful-fs: 4.2.10
-      make-dir: 2.1.0
-      pify: 4.0.1
-      sort-keys: 2.0.0
-      write-file-atomic: 2.4.3
-    dev: true
-
-  /write-json-file/4.3.0:
-    resolution:
-      { integrity: sha512-PxiShnxf0IlnQuMYOPPhPkhExoCQuTUNPOa/2JWCYTmBquU9njyyDuwRKN26IZBlp4yn1nt+Agh2HOOBl+55HQ== }
-    engines: { node: ">=8.3" }
-    dependencies:
-      detect-indent: 6.0.0
-      graceful-fs: 4.2.10
-      is-plain-obj: 2.1.0
-      make-dir: 3.1.0
-      sort-keys: 4.2.0
+      js-yaml: 4.1.0
       write-file-atomic: 3.0.3
-    dev: true
-
-  /write-pkg/4.0.0:
-    resolution:
-      { integrity: sha512-v2UQ+50TNf2rNHJ8NyWttfm/EJUBWMJcx6ZTYZr6Qp52uuegWw/lBkCtCbnYZEmPRNL61m+u67dAmGxo+HTULA== }
-    engines: { node: ">=8" }
-    dependencies:
-      sort-keys: 2.0.0
-      type-fest: 0.4.1
-      write-json-file: 3.2.0
     dev: true
 
   /ws/6.2.2:

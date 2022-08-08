@@ -23,15 +23,15 @@
     "watch": "pnpm build --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/envelope-bus": "0.0.0",
-    "@kie-tools-core/vscode-extension": "0.0.0",
-    "@kie-tools-examples/todo-list-view": "0.0.0"
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-examples/todo-list-view": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
-    "@kie-tools/build-env": "0.0.0",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "@types/vscode": "^1.66.0",
     "vsce": "^2.6.5"
   },
