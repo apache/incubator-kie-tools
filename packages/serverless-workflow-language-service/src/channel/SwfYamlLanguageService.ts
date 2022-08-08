@@ -26,7 +26,8 @@ import {
   YAMLSequence,
 } from "yaml-language-server-parser";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs, SwfLsNode } from "./SwfLanguageService";
+import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { SwfLsNode } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfYamlLanguageService {
@@ -67,7 +68,7 @@ export class SwfYamlLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics(args);
+    return this.ls.getDiagnostics({ ...args, rootNode: this.parseContent(args.content) });
   }
 
   public dispose() {

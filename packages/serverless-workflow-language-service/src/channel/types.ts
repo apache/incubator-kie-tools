@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonLanguageService";
-export * from "./SwfLanguageService";
-export * from "./SwfYamlLanguageService";
-export * from "./matchNodeWithLocation";
-export * from "./findNodesAtLocation";
-export * from "./refValidation";
-export * from "./nodeUpUntilType";
+// types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
+export declare type SwfJsonPath = (string | number)[];
+export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
+
+export type SwfLsNode = {
+  type: SwfLsNodeType;
+  value?: any;
+  offset: number;
+  length: number;
+  colonOffset?: number;
+  parent?: SwfLsNode;
+  children?: SwfLsNode[];
+};

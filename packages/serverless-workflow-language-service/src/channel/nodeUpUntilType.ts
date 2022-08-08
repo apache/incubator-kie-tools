@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonLanguageService";
-export * from "./SwfLanguageService";
-export * from "./SwfYamlLanguageService";
-export * from "./matchNodeWithLocation";
-export * from "./findNodesAtLocation";
-export * from "./refValidation";
-export * from "./nodeUpUntilType";
+import { SwfLsNode, SwfLsNodeType } from "./types";
+
+/**
+ * From a node goes up to levels until a certain node type.
+ *
+ * @param node the node where to start
+ * @param nodeType the node type where to stop
+ * @returns the parent node if found, undefined otherwise
+ */
+export function nodeUpUntilType(node: SwfLsNode | undefined, nodeType: SwfLsNodeType): SwfLsNode | undefined {
+  if (!node) {
+    return;
+  }
+
+  if (node.type !== nodeType) {
+    return nodeUpUntilType(node.parent, nodeType);
+  } else {
+    return node;
+  }
+}

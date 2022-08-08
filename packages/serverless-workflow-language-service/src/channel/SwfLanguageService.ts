@@ -35,19 +35,11 @@ import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-
-// types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
-export declare type SwfJsonPath = (string | number)[];
-export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
-export type SwfLsNode = {
-  type: SwfLsNodeType;
-  value?: any;
-  offset: number;
-  length: number;
-  colonOffset?: number;
-  parent?: SwfLsNode;
-  children?: SwfLsNode[];
-};
+import { doRefValidation } from "./refValidation";
+import { matchNodeWithLocation } from "./matchNodeWithLocation";
+import { nodeUpUntilType } from "./nodeUpUntilType";
+import { findNodesAtLocation } from "./findNodesAtLocation";
+import { SwfJsonPath, SwfLsNode } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -149,7 +141,11 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }) {
+  public async getDiagnostics(args: { content: string; uriPath: string; rootNode: SwfLsNode | undefined }) {
+    if (!args.rootNode) {
+      return [];
+    }
+
     const textDocument = TextDocument.create(
       args.uriPath,
       `serverless-workflow-${this.args.lang.fileLanguage}`,
@@ -157,25 +153,32 @@ export class SwfLanguageService {
       args.content
     );
 
-    const schemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
+    const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
 
-    const jsonLanguageService = getLanguageService({
-      schemaRequestService: (uri) => {
-        if (uri === schemaUri) {
-          return Promise.resolve(JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA));
+    if (this.args.lang.fileLanguage === FileLanguage.YAML) {
+      //TODO: Include JSON Schema validation for YAML as well. Probably use what the YAML extension uses?
+      return refValidationResults;
+    }
+
+    const jsonLs = getLanguageService({
+      schemaRequestService: async (uri) => {
+        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
+          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
+        } else {
+          throw new Error(`Unable to load schema from '${uri}'`);
         }
-        return Promise.reject(`Unabled to load schema at ${uri}`);
       },
     });
 
-    jsonLanguageService.configure({
+    jsonLs.configure({
       allowComments: false,
-      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: schemaUri }],
+      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
     });
 
-    const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
+    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
+    const schemaValidationResults = await jsonLs.doValidation(textDocument, jsonDocument);
 
-    return await jsonLanguageService.doValidation(textDocument, jsonDocument);
+    return [...schemaValidationResults, ...refValidationResults];
   }
 
   public async getCodeLenses(args: {
@@ -641,100 +644,6 @@ function toCompletionItemLabelPrefix(
       );
     default:
       return "";
-  }
-}
-
-/**
- * Check if a Node is in Location.
- *
- * @param root root node
- * @param node the Node to check
- * @param path the location to verify
- * @returns true if the node is in the location, false otherwise
- */
-export function matchNodeWithLocation(
-  root: SwfLsNode | undefined,
-  node: SwfLsNode | undefined,
-  path: SwfJsonPath
-): boolean {
-  if (!root || !node || !path || !path.length) {
-    return false;
-  }
-
-  const nodesAtLocation = findNodesAtLocation(root, path);
-
-  if (nodesAtLocation.some((currentNode) => currentNode === node)) {
-    return true;
-  }
-  if (path[path.length - 1] === "*" && node.type == "array" && node.children) {
-    return matchNodeWithLocation(root, node, path.slice(0, -1));
-  }
-
-  return false;
-}
-
-// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
-// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-export function findNodesAtLocation(root: SwfLsNode | undefined, path: SwfJsonPath): SwfLsNode[] {
-  if (!root) {
-    return [];
-  }
-
-  let nodes: SwfLsNode[] = [root];
-
-  for (const segment of path) {
-    if (segment === "*") {
-      nodes = nodes.flatMap((s) => s.children ?? []);
-      continue;
-    }
-
-    if (typeof segment === "number") {
-      const index = segment as number;
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
-          return [];
-        }
-
-        return [n.children[index]];
-      });
-    }
-
-    if (typeof segment === "string") {
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "object" || !Array.isArray(n.children)) {
-          return [];
-        }
-
-        for (const prop of n.children) {
-          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
-            return [prop.children[1]];
-          }
-        }
-
-        return [];
-      });
-    }
-  }
-
-  return nodes;
-}
-
-/**
- * From a node goes up to levels until a certain node type.
- *
- * @param node the node where to start
- * @param nodeType the node type where to stop
- * @returns the parent node if found, undefined otherwise
- */
-export function nodeUpUntilType(node: SwfLsNode | undefined, nodeType: SwfLsNodeType): SwfLsNode | undefined {
-  if (!node) {
-    return;
-  }
-
-  if (node.type !== nodeType) {
-    return nodeUpUntilType(node.parent, nodeType);
-  } else {
-    return node;
   }
 }
 
