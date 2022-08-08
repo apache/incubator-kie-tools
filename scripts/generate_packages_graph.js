@@ -86,16 +86,13 @@ async function main() {
   g.setEdgeAttribut("arrowhead", "dot");
   g.setEdgeAttribut("arrowsize", "0.5");
 
-  const root = g.addNode("kiegroup/kie-tools");
-  root.set("shape", "folder");
-
   for (const pkgName in resMatrix) {
     const displayPkgName = pkgName;
 
     const pkgProperties = (() => {
       if (pkgName.startsWith("@kie-tools-examples") || pkgName.startsWith("kie-tools-examples-")) {
         return { color: "orange", nodeStyle: "dashed, rounded" };
-      } else if (packageMap.get(pkgName)?.private) {
+      } else if (packageMap.get(pkgName)?.manifest.private) {
         return { color: "black", nodeStyle: "dashed, rounded" };
       } else if (pkgName.startsWith("@kie-tools-core")) {
         return { color: "purple", nodeStyle: "rounded" };
@@ -109,8 +106,8 @@ async function main() {
     node.set("fontcolor", pkgProperties.color);
     node.set("style", pkgProperties.nodeStyle);
 
-    if (Object.keys(resMatrix[pkgName]).length === 0) {
-      g.addEdge(displayPkgName, root, {});
+    if (Object.keys(resMatrix[pkgName]).length === 0 && pkgName !== "kie-tools") {
+      g.addEdge(displayPkgName, "kie-tools", {});
     }
 
     for (const depName in resMatrix[pkgName]) {
@@ -130,10 +127,10 @@ async function main() {
   }
 
   if (!fs.existsSync(path.resolve(targetDir))) {
-    fs.mkdirSync(path.resolve(targetDir));
+    fs.mkdirSync(path.resolve(targetDir), { recursive: true });
   }
 
-  fs.writeFileSync(datavisGraphFilePath, g.to_dot());
+  fs.writeFileSync(dotGraphFilePath, g.to_dot());
   console.info(`[generate-packages-graph] Wrote packages DOT graph to '${dotGraphFilePath}'`);
 
   console.info(`[generate-packages-graph] Writing packages Datavis graph to '${datavisGraphFilePath}'...`);

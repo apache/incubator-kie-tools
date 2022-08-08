@@ -16,7 +16,26 @@
 
 const buildEnv = require("./env");
 const { setup } = require("@kie-tools-core/maven-config-setup-helper");
+const fs = require("fs");
+const path = require("path");
+
+const MANIFEST_FILE = path.resolve("vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF");
+
+console.info("[vscode-java-code-completion-extension-plugin-install] Updating '.mvn/maven.config'...");
+const version = buildEnv.env.vscodeJavaCodeCompletionExtensionPlugin.version;
 
 setup(`
-    -Drevision=${buildEnv.env.vscodeJavaCodeCompletionExtensionPlugin.version}
+    -Drevision=${version}
 `);
+
+console.info("[vscode-java-code-completion-extension-plugin-install] Updating manifest file...");
+const manifestFile = fs.readFileSync(MANIFEST_FILE, "utf-8");
+
+fs.writeFileSync(
+  MANIFEST_FILE,
+  manifestFile
+    .split("\n")
+    .map((line) => (line.startsWith(`Bundle-Version: `) ? `Bundle-Version: ${version}` : line))
+    .join("\n")
+);
+console.info("[vscode-java-code-completion-extension-plugin-install] Done.");
