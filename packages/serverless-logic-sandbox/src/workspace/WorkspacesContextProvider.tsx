@@ -181,7 +181,7 @@ export function WorkspacesContextProvider(props: Props) {
         fs: args.fs,
         dir: workspaceRootDirPath,
         targetBranch: descriptor.origin.branch,
-        message: "Changes from KIE Sandbox",
+        message: "Changes from Serverless Logic Web Tools",
         author: {
           name: args.gitConfig?.name ?? "Unknown",
           email: args.gitConfig?.email ?? "unknown@email.com",
@@ -242,7 +242,7 @@ export function WorkspacesContextProvider(props: Props) {
           await gitService.commit({
             fs: fs,
             dir: workspaceRootDirPath,
-            message: "Initial commit from KIE Sandbox",
+            message: "Initial commit from Serverless Logic Web Tools",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
               name: settings.github.user?.name ?? "Unknown",
