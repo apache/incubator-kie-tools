@@ -88,6 +88,7 @@ export function Sidebar(props: Props) {
       fileExtension: props.fileExtension,
       fileName: "new-file",
       getFileContents: () => Promise.resolve(""),
+      path: `new-file.${props.fileExtension}`,
     });
   }, []);
 
@@ -98,6 +99,7 @@ export function Sidebar(props: Props) {
       fileExtension: props.fileExtension,
       fileName: "sample",
       getFileContents: () => fetch(`examples/sample.${props.fileExtension}`).then((response) => response.text()),
+      path: `sample.${props.fileExtension}`,
     });
   }, []);
 
@@ -117,6 +119,7 @@ export function Sidebar(props: Props) {
       isReadOnly: false,
       fileExtension: extractFileExtension(currentFile.name)!,
       fileName: removeFileExtension(currentFile.name),
+      path: currentFile.name,
       getFileContents: () =>
         new Promise<string | undefined>((resolve) => {
           const reader = new FileReader();

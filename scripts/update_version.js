@@ -17,9 +17,10 @@
 const fs = require("fs");
 const path = require("path");
 const execSync = require("child_process").execSync;
-const { getPackagesSync } = require("@lerna/project");
+const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const yaml = require("js-yaml");
-const buildEnv = require("../packages/build-env");
+const { env } = require("../packages/build-env/env");
+const buildEnv = env;
 
 const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON = path.resolve(
   "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
@@ -38,13 +39,15 @@ const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
   "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
 );
 
-const ORIGINAL_LERNA_JSON = require("../lerna.json");
+const ORIGINAL_ROOT_PACKAGE_JSON = require("../package.json");
 
 // MAIN
 
 const newVersion = process.argv[2];
+const pnpmFilter = ""; // TODO: `${process.argv.slice(3).join(" ")}`;
+
 if (!newVersion) {
-  console.error("[update-version] Missing version argument.");
+  console.error("Usage 'node update_version.js [version]'");
   return 1;
 }
 
@@ -58,14 +61,22 @@ if (opts === "--silent") {
 
 Promise.resolve()
   .then(() => updateNpmPackages(newVersion))
+  // TODO: extract to each mvn package
   .then((version) => updateMvnPackages(version))
+  // TODO: extract to stunner-editors
   .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
+  // TODO: extract to serverless-workflow-diagram-editor
   .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
+  // TODO: extract to chrome-extension-pack-kogito-kie-editors
   .then((version) => updateChromeKieEditorsExtensionManifestFiles(version))
+  // TODO: extract to chrome-extension-serverless-workflow-editor
   .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
+  // TODO: extract to extended-services
   .then((version) => updateExtendedServicesConfigFile(version))
+  // TODO: extract to vscode-java-code-completion-extension-plugin
   .then((version) => updateJavaAutocompletionPluginManifestFile(version))
-  .then((version) => updateLockfile(version))
+  //
+  .then((version) => runBootstrap(version))
   .then(async (version) => {
     console.info(`[update-version] Formatting files...`);
     execSync(`pnpm pretty-quick`, execOpts);
@@ -73,6 +84,7 @@ Promise.resolve()
   })
   .then((version) => {
     console.info(`[update-version] Updated to '${version}'.`);
+    console.info(`[update-version] Done.`);
   })
   .catch((error) => {
     console.error(error);
@@ -83,17 +95,27 @@ Promise.resolve()
 //
 
 async function updateNpmPackages(version) {
-  console.info("[update-version] Updating NPM packages...");
+  console.info("[update-version] Updating root package...");
+  execSync(`pnpm version ${version} --git-tag-version=false --allow-same-version=true`, execOpts);
 
-  execSync(`lerna version ${version} --no-push --no-git-tag-version --exact --yes`, execOpts);
+  console.info("[update-version] Updating workspace packages...");
+  execSync(
+    `pnpm -r ${pnpmFilter} exec pnpm version ${version} --git-tag-version=false --allow-same-version=true`,
+    execOpts
+  );
+
+  console.info("[update-version] Running 'update-version-to' script on workspace packages...");
+  execSync(`pnpm -r ${pnpmFilter} update-version-to ${version}`, execOpts);
   return version;
 }
 
 async function updateMvnPackages(version) {
   console.info("[update-version] Updating Maven packages...");
 
-  const mvnPackages = getPackagesSync().filter((pkg) => fs.existsSync(path.resolve(pkg.location, "pom.xml")));
-  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.name}"`).join(" ");
+  const mvnPackages = (await findWorkspacePackages(".")).filter((pkg) =>
+    fs.existsSync(path.resolve(pkg.dir, "pom.xml"))
+  );
+  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.manifest.name}"`).join(" ");
   execSync(
     `pnpm -r ${mvnPackagesPnpmFilters} --workspace-concurrency=1 exec 'bash' '-c' 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}'`,
     execOpts
@@ -178,7 +200,7 @@ async function updateJavaAutocompletionPluginManifestFile(version) {
   console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
   const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
   const newManifestFile = manifestFile.replace(
-    `Bundle-Version: ${ORIGINAL_LERNA_JSON.version}`,
+    `Bundle-Version: ${ORIGINAL_ROOT_PACKAGE_JSON.version}`,
     `Bundle-Version: ${version}`
   );
   fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);
@@ -186,7 +208,8 @@ async function updateJavaAutocompletionPluginManifestFile(version) {
   return version;
 }
 
-async function updateLockfile(version) {
+async function runBootstrap(version) {
+  // TODO: use pnpmFilter
   execSync(`pnpm bootstrap`, execOpts);
   return version;
 }

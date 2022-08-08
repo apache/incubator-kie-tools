@@ -454,7 +454,7 @@ jobs:
         run: |
           echo "Reset deployment dir"
           shopt -s extglob
-          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|".nojekyll"|"CNAME")
+          rm -rf -- !("dev"|"editors"|"standalone"|"chrome-extension"|"swf-chrome-extension"|".nojekyll"|"CNAME")
 
           echo "Copy Editor resources"
           rm -rf $EDITORS_DIR
@@ -480,10 +480,11 @@ jobs:
     env:
       CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       CHROME_EXTENSION__routerRelativePath: "kogito-online/chrome-extension/${{ inputs.tag }}"
-      CHROME_EXTENSION__SW_routerTargetOrigin: "https://kiegroup.github.io"
-      CHROME_EXTENSION__SW_routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
-      CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
       CHROME_EXTENSION__manifestFile: "manifest.prod.json"
+      CHROME_EXTENSION__onlineEditorUrl: "https://kiegroup.github.io/kogito-online"
+      SWF_CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
+      SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
+      SWF_CHROME_EXTENSION__manifestFile: "manifest.prod.json"
 
     if: ${{ always() && needs.extract_runners.outputs.chrome_extensions == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
@@ -907,7 +908,7 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
           export FILTER=$(pnpm -r exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json) PKG_IS_PVT=$(jq -r ".private" package.json); if [ "$PKG_IS_PVT" != "true" ]; then echo "-F $PKG_NAME"; fi')
           echo $FILTER
-          pnpm $FILTER exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json); NPM_PKG_INFO=$(npm view $PKG_NAME@${{ inputs.tag }} name || echo ""); if [ -z $NPM_PKG_INFO ]; then npm publish --access public; fi'
+          pnpm $FILTER exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json); NPM_PKG_INFO=$(npm view $PKG_NAME@${{ inputs.tag }} name || echo ""); if [ -z $NPM_PKG_INFO ]; then pnpm publish --access public; fi'
 
   standalone_editors_cdn:
     if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.chrome_extensions.result == 'success' || needs.chrome_extensions.result == 'skipped') }}
@@ -1133,20 +1134,10 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
   kn_plugin_workflow:
-    env:
-      KN_PLUGIN_WORKFLOW__quarkusVersion: "2.9.2.Final"
-
     if: ${{ needs.extract_runners.outputs.kn_plugin_workflow == 'true' }}
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     needs: [extract_runners]
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - name: "Support longpaths (Windows only)"
-        if: matrix.os == 'windows-latest'
-        run: git config --system core.longpaths true
-
       - name: "Checkout"
         uses: actions/checkout@v2
         with:
@@ -1162,14 +1153,14 @@ jobs:
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
-          os: ${{ matrix.os }}
+          os: ubuntu-latest
 
       - name: "Build"
         shell: bash
         run: |
           pnpm -F @kie-tools/kn-plugin-workflow... build:prod
-      - name: "Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+      - name: "Upload Knative CLI Workflow Plugin for Linux"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1179,8 +1170,8 @@ jobs:
           asset_name: kn-workflow-linux-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "Upload Knative CLI Workflow Plugin for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+      - name: "Upload Knative CLI Workflow Plugin for macOS"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1190,8 +1181,19 @@ jobs:
           asset_name: kn-workflow-darwin-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "Upload Knative CLI Workflow Plugin for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+      - name: "Upload Knative CLI Workflow Plugin for macOS M1"
+        if: ${{ !inputs.dry_run }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.gh_token }}
+        with:
+          upload_url: ${{ inputs.upload_asset_url }}
+          asset_path: ./packages/kn-plugin-workflow/dist/kn-workflow-darwin-arm64
+          asset_name: kn-workflow-darwin-arm64-${{ inputs.tag }}
+          asset_content_type: application/octet-stream
+
+      - name: "Upload Knative CLI Workflow Plugin for Windows"
+        if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}

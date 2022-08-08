@@ -39,6 +39,6 @@ public class KeyboardShortcutsApiInteropWrapper {
 
     public native void deregister(final int id);
 
-    @JsProperty(name = "keyboardShortcuts")
+    @JsProperty(name = "keyboardShortcutsService")
     public static native KeyboardShortcutsApiInteropWrapper get();
 }

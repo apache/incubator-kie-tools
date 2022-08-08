@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import * as buildEnv from "@kie-tools/build-env";
+import { env } from "../../env";
+const buildEnv = env;
 
 describe("Predicate Test", () => {
   beforeEach(() => {
@@ -137,6 +138,21 @@ describe("Predicate Test", () => {
             expect($label[1]).to.have.text("Partial score:\u00A0-5");
           });
         });
+    });
+
+    it("Check monaco-editor autocompletion", () => {
+      cy.ouiaType("characteristic-item").contains("Char1").click();
+
+      cy.ouiaId("edit-characteristic").within(() => {
+        cy.ouiaId("add-attribute").click();
+      });
+
+      cy.ouiaId("edit-attribute").within(() => {
+        cy.ouiaId("predicate").find("div:first").should("have.text", "1True").type("{selectall}{del}Fal");
+        cy.get("div[class='monaco-list-rows']:contains('False')").should("be.visible").click();
+        cy.get("div[class='monaco-list-rows']").should("not.be.visible");
+        cy.ouiaId("predicate").find("div:first").contains("1False");
+      });
     });
 
     it("Delete Predicate", () => {

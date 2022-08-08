@@ -37,18 +37,18 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const configuration = new YardVsCodeExtensionConfiguration();
 
-  const kieToolsEditorStore = await KieToolsVsCodeExtensions.startExtension({
+  const kieEditorsStore = await KieToolsVsCodeExtensions.startExtension({
     editorDocumentType: "text",
     extensionName: "kie-group.vscode-extension-yard-editor",
     context: context,
     viewType: WEBVIEW_EDITOR_VIEW_TYPE,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping(
-        "yard",
-        "**/*.yard.+(json|yml|yaml)",
-        "dist/webview/YardEditorEnvelopeApp.js",
-        "dist/webview/editors/yard"
-      ),
+      new EnvelopeMapping({
+        type: "yard",
+        filePathGlob: "**/*.yard.+(json|yml|yaml)",
+        resourcesPathPrefix: "dist/webview/editors/yard",
+        envelopePath: "dist/webview/YardEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy,
   });
@@ -56,7 +56,7 @@ export async function activate(context: vscode.ExtensionContext) {
   await setupDiagramEditorControls({
     context,
     configuration,
-    kieToolsEditorStore,
+    kieEditorsStore,
   });
 
   console.info("Extension is successfully setup.");

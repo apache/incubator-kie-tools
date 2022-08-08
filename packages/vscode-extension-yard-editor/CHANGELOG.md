@@ -7,3 +7,4 @@
 - [KOGITO-7491](https://issues.redhat.com/browse/KOGITO-7491) - Setting SVG commands ID as optional at Editor creation
 - [KOGITO-7519](https://issues.redhat.com/browse/KOGITO-7519) - Bump `monaco-yaml` version to fix API incompatibility
 - [KOGITO-7526](https://issues.redhat.com/browse/KOGITO-7526) - [yard Editor] First draft of yard UI editor
+- [KOGITO-7576](https://issues.redhat.com/browse/KOGITO-7576) - [yard Editor] First draft of General and Decision Inputs tabs

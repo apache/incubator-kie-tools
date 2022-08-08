@@ -21,25 +21,26 @@ const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { EnvironmentPlugin } = require("webpack");
-const buildEnv = require("@kie-tools/build-env");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const { env } = require("./env");
+const buildEnv = env;
 
 function getRouterArgs() {
-  const targetOrigin = buildEnv.chromeExtension.routerSWTargetOrigin;
-  const relativePath = buildEnv.chromeExtension.routerSWRelativePath;
+  const targetOrigin = buildEnv.swfChromeExtension.routerTargetOrigin;
+  const relativePath = buildEnv.swfChromeExtension.routerRelativePath;
 
-  console.info(`Chrome Extension :: Router target origin: ${targetOrigin}`);
-  console.info(`Chrome Extension :: Router relative path: ${relativePath}`);
+  console.info(`SWF Chrome Extension :: Router target origin: ${targetOrigin}`);
+  console.info(`SWF Chrome Extension :: Router relative path: ${relativePath}`);
 
   return [targetOrigin, relativePath];
 }
 
 function getManifestFile() {
-  const manifestFile = buildEnv.chromeExtension.manifestFile;
+  const manifestFile = buildEnv.swfChromeExtension.manifestFile;
 
-  console.info(`Chrome Extension :: Manifest file: ${manifestFile}`);
+  console.info(`SWF Chrome Extension :: Manifest file: ${manifestFile}`);
 
   return manifestFile;
 }
@@ -61,7 +62,7 @@ module.exports = async (env) => {
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
       https: true,
-      port: buildEnv.chromeExtension.dev.port,
+      port: buildEnv.swfChromeExtension.dev.port,
     },
     plugins: [
       new EnvironmentPlugin({

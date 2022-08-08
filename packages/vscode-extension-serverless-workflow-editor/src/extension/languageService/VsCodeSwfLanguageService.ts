@@ -18,7 +18,7 @@ import { TextDocument } from "vscode-languageserver-textdocument";
 import * as vscode from "vscode";
 import { SwfVsCodeExtensionConfiguration } from "../configuration";
 import { SwfServiceCatalogStore } from "../serviceCatalog/SwfServiceCatalogStore";
-import { posix as posixPath } from "path";
+import * as path from "path";
 import {
   SwfJsonLanguageService,
   SwfLanguageServiceArgs,
@@ -27,6 +27,7 @@ import {
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
+import { definitelyPosixPath } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
 
 export class VsCodeSwfLanguageService {
   private readonly jsonLs: SwfJsonLanguageService;
@@ -59,7 +60,7 @@ export class VsCodeSwfLanguageService {
         },
         relative: {
           getServices: async (textDocument) => {
-            const specsDirAbsolutePosixPath = this.getSpecsDirPosixPaths(textDocument).specsDirAbsolutePosixPath;
+            const { specsDirAbsolutePosixPath } = this.getSpecsDirPosixPaths(textDocument);
             let swfServiceCatalogRelativeStore = this.fsWatchingSwfServiceCatalogStore.get(specsDirAbsolutePosixPath);
             if (swfServiceCatalogRelativeStore) {
               return swfServiceCatalogRelativeStore.getServices();
@@ -107,13 +108,14 @@ export class VsCodeSwfLanguageService {
   private getSpecsDirPosixPaths(document: TextDocument) {
     const baseFileAbsolutePosixPath = vscode.Uri.parse(document.uri).path;
 
-    const specsDirAbsolutePosixPath = this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath({
-      baseFileAbsolutePosixPath,
-    });
+    const specsDirAbsolutePosixPath = definitelyPosixPath(
+      this.args.configuration.getInterpolatedSpecsDirAbsolutePosixPath({
+        baseFileAbsolutePosixPath,
+      })
+    );
 
-    const specsDirRelativePosixPath = posixPath.relative(
-      posixPath.dirname(baseFileAbsolutePosixPath),
-      specsDirAbsolutePosixPath
+    const specsDirRelativePosixPath = definitelyPosixPath(
+      path.relative(path.dirname(baseFileAbsolutePosixPath), specsDirAbsolutePosixPath)
     );
 
     return { specsDirRelativePosixPath, specsDirAbsolutePosixPath };

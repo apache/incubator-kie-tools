@@ -28,7 +28,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class JsCanvasDriver extends JsCanvasExecutor {
 
-    private static final String INDEX_HTML = "target/lienzo-webapp-7.53.0-SNAPSHOT/LienzoShowcase.html";
+    private static final String INDEX_HTML = "target/lienzo-webapp-0.0.0/LienzoShowcase.html";
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
     private static final boolean HEADLESS = false;
 
@@ -37,7 +37,7 @@ public class JsCanvasDriver extends JsCanvasExecutor {
     private long loadTimeMillis = 1000;
 
     public static void init() {
-        WebDriverManager.firefoxdriver().setup();
+        WebDriverManager.firefoxdriver().useMirror().setup();
     }
 
     public static JsCanvasDriver devMode() {

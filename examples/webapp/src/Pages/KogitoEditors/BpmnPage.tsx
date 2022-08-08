@@ -41,6 +41,7 @@ export function BpmnPage() {
     fileExtension: "bpmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    path: "new-file.bpmn",
   });
 
   /**
@@ -49,18 +50,12 @@ export function BpmnPage() {
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
     return new EditorEnvelopeLocator(window.location.origin, [
-      new EnvelopeMapping(
-        "bpmn",
-        "**/*.bpmn",
-        "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-        "https://kiegroup.github.io/kogito-online/bpmn-envelope.html"
-      ),
-      new EnvelopeMapping(
-        "bpmn",
-        "**/*.bpmn2",
-        "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
-        "https://kiegroup.github.io/kogito-online/bpmn-envelope.html"
-      ),
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "https://kiegroup.github.io/kogito-online/editors/latest/bpmn",
+        envelopePath: "https://kiegroup.github.io/kogito-online/bpmn-envelope.html",
+      }),
     ]);
   }, []);
 

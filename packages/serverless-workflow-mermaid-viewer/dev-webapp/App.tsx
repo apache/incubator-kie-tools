@@ -34,7 +34,12 @@ export const App = () => {
   const editorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("swf", "**/*.sw.+(json|yml|yaml)", "", "serverless-workflow-mermaid-viewer-envelope.html"),
+        new EnvelopeMapping({
+          type: "swf",
+          filePathGlob: "**/*.sw.+(json|yml|yaml)",
+          resourcesPathPrefix: "",
+          envelopePath: "serverless-workflow-mermaid-viewer-envelope.html",
+        }),
       ]),
     []
   );

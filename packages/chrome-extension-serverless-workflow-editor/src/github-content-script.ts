@@ -24,11 +24,11 @@ startExtension({
   extensionIconUrl: chrome.runtime.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-kie-editors",
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
-    new EnvelopeMapping(
-      "swf",
-      "**/*.sw.+(json|yml|yaml)",
-      `${resourcesPathPrefix}`,
-      `${resourcesPathPrefix}/serverless-workflow-combined-editor-envelope.html`
-    ),
+    new EnvelopeMapping({
+      type: "swf",
+      filePathGlob: "**/*.sw.+(json|yml|yaml)",
+      resourcesPathPrefix: `${resourcesPathPrefix}`,
+      envelopePath: `${resourcesPathPrefix}/serverless-workflow-combined-editor-envelope.html`,
+    }),
   ]),
 });

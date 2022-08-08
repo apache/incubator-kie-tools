@@ -39,7 +39,12 @@ export function activate(context: vscode.ExtensionContext) {
     context: context,
     viewType: "kieKogitoWebviewEditorsPmml",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping("pmml", "**/*.pmml", "dist/webview/PmmlEditorEnvelopeApp.js", "dist/webview/editors/pmml"),
+      new EnvelopeMapping({
+        type: "pmml",
+        filePathGlob: "**/*.pmml",
+        resourcesPathPrefix: "dist/webview/editors/pmml",
+        envelopePath: "dist/webview/PmmlEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy: backendProxy,
   });

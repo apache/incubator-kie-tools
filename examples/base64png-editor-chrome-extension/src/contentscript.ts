@@ -33,11 +33,11 @@ startExtension({
   extensionIconUrl: chrome.extension.getURL("/resources/kie_icon_rgb_fullcolor_default.svg"),
   githubAuthTokenCookieName: "github-oauth-token-base64-editors",
   editorEnvelopeLocator: new EditorEnvelopeLocator(window.location.origin, [
-    new EnvelopeMapping(
-      "base64png",
-      "**/*.base64png",
-      `${resourcesPathPrefix}/dist/`,
-      `${resourcesPathPrefix}/dist/envelope/index.html`
-    ),
+    new EnvelopeMapping({
+      type: "base64png",
+      filePathGlob: "**/*.base64png",
+      resourcesPathPrefix: `${resourcesPathPrefix}/dist/`,
+      envelopePath: `${resourcesPathPrefix}/dist/envelope/index.html`,
+    }),
   ]),
 });

@@ -21,9 +21,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type bindFunc func(*cobra.Command, []string) error
+type bindWorkflow func(*cobra.Command, []string) error
 
-func BindEnv(flags ...string) bindFunc {
+func BindEnv(flags ...string) bindWorkflow {
 	return func(cmd *cobra.Command, args []string) (err error) {
 		for _, flag := range flags {
 			if err = viper.BindPFlag(flag, cmd.Flags().Lookup(flag)); err != nil {

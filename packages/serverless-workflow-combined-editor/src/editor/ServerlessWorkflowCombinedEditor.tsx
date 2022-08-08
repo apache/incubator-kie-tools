@@ -26,7 +26,7 @@ import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-
 import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import {
   Drawer,
   DrawerContent,
@@ -54,7 +54,7 @@ interface Props {
   isReadOnly: boolean;
   channelType: ChannelType;
   resourcesPathPrefix: string;
-  onNewEdit: (edit: KogitoEdit) => void;
+  onNewEdit: (edit: WorkspaceEdit) => void;
 }
 
 export type ServerlessWorkflowCombinedEditorRef = {
@@ -99,12 +99,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const textEditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(targetOrigin, [
-        new EnvelopeMapping(
-          ENVELOPE_LOCATOR_TYPE,
-          "**/*.sw.+(json|yml|yaml)",
-          props.resourcesPathPrefix + "/text",
-          props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html"
-        ),
+        new EnvelopeMapping({
+          type: ENVELOPE_LOCATOR_TYPE,
+          filePathGlob: "**/*.sw.+(json|yml|yaml)",
+          resourcesPathPrefix: props.resourcesPathPrefix + "/text",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html",
+        }),
       ]),
     [props.resourcesPathPrefix, targetOrigin]
   );
@@ -120,18 +120,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
         };
     return new EditorEnvelopeLocator(targetOrigin, [
-      new EnvelopeMapping(
-        ENVELOPE_LOCATOR_TYPE,
-        "**/*.sw.json",
-        diagramEnvelopeMappingConfig.resourcesPathPrefix,
-        diagramEnvelopeMappingConfig.envelopePath
-      ),
-      new EnvelopeMapping(
-        ENVELOPE_LOCATOR_TYPE,
-        "**/*.sw.+(yml|yaml)",
-        props.resourcesPathPrefix + "/mermaid",
-        props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
-      ),
+      new EnvelopeMapping({
+        type: ENVELOPE_LOCATOR_TYPE,
+        filePathGlob: "**/*.sw.json",
+        resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
+        envelopePath: diagramEnvelopeMappingConfig.envelopePath,
+      }),
+      new EnvelopeMapping({
+        type: ENVELOPE_LOCATOR_TYPE,
+        filePathGlob: "**/*.sw.+(yml|yaml)",
+        resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+        envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+      }),
     ]);
   }, [featureToggle, props.resourcesPathPrefix, targetOrigin]);
 
@@ -198,7 +198,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await textEditor.getContent();
-        props.onNewEdit(new KogitoEdit(content));
+        props.onNewEdit(new WorkspaceEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,
@@ -217,7 +217,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
         }
 
         const content = await diagramEditor.getContent();
-        props.onNewEdit(new KogitoEdit(content));
+        props.onNewEdit(new WorkspaceEdit(content));
         setFile((prevState) => ({
           ...prevState!,
           content,

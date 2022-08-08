@@ -3,51 +3,61 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/editor/index.js",
-  "types": "./dist/editor/index.d.ts",
-  "files": [
-    "dist/editor"
-  ],
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kogito-tooling",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kogito-tooling.git"
   },
-  "dependencies": {
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/guided-tour": "0.0.0",
-    "@kie-tools-core/operating-system": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@patternfly/react-core": "^4.157.3",
-    "@patternfly/react-icons": "^4.11.17",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "@kie-tools/dashbuilder-client": "0.0.0",
-    "monaco-editor": "^0.33.0",
-    "monaco-yaml": "^4.0.0"
+  "bugs": {
+    "url": "https://github.com/kiegroup/kogito-tooling/issues"
   },
+  "types": "./dist/editor/index.d.ts",
+  "main": "dist/editor/index.js",
+  "files": [
+    "dist/editor"
+  ],
   "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "copy:images": "cpr ./static/images ./dist/images",
-    "copy:dashbuilder": "copyfiles -u 3 \"../dashbuilder-client/dist/**/*\" ./dist/dashbuilder-client && copyfiles -u 1 src/setup.js ./dist/dashbuilder-client/",
     "build:dev": "rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.prod.json && pnpm test",
-    "test:clearCache": "jest --clearCache",
-    "test:watch": "jest --watch",
-    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "deploy": "gh-pages -d dist",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "copy:dashbuilder": "copyfiles -u 3 \"../dashbuilder-client/dist/**/*\" ./dist/dashbuilder-client && copyfiles -u 1 src/setup.js ./dist/dashbuilder-client/",
+    "copy:images": "cpr ./static/images ./dist/images",
     "cy:open": "pnpm cypress open --project it-tests",
     "cy:run": "pnpm cypress run -b chrome --project it-tests",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env dashbuilderEditor.dev.port) cy:run\""
+    "deploy": "gh-pages -d dist",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:clearCache": "jest --clearCache",
+    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env dashbuilderEditor.dev.port) cy:run\"",
+    "test:watch": "jest --watch"
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/operating-system": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/dashbuilder-client": "workspace:*",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "monaco-editor": "^0.33.0",
+    "monaco-yaml": "^4.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "cypress": "^9.5.1",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2",
     "monaco-editor-webpack-plugin": "^7.0.1",
+    "start-server-and-test": "^1.12.1",
     "vscode-json-languageservice": "^4.2.1"
   },
   "babel": {

@@ -35,6 +35,15 @@ export const configurationTokenKeys: Record<
   "${fileBasenameNoExtension}": "${fileBasenameNoExtension}",
 };
 
+export const definitelyPosixPath = (filePath: string) => {
+  let result = filePath;
+  // Prepend / to Windows drive letters, from C:\foo to /C:\foo, resulting in /C:/foo.
+  if (/^(\w:\\)/.test(filePath)) {
+    result = `/${filePath}`;
+  }
+  return result.split(path.sep).join(path.posix.sep);
+};
+
 export function doInterpolation(tokens: Record<string, string>, value: string) {
   return Object.entries(tokens).reduce(
     (result, [tokenName, tokenValue]) => result.replaceAll(tokenName, tokenValue),
@@ -43,10 +52,10 @@ export function doInterpolation(tokens: Record<string, string>, value: string) {
 }
 
 export function getInterpolatedConfigurationValue(args: { currentFileAbsolutePosixPath: string; value: string }) {
-  const parsedPath = path.parse(args.currentFileAbsolutePosixPath);
+  const parsedPath = path.posix.parse(args.currentFileAbsolutePosixPath);
   const workspace = vscode.workspace.workspaceFolders?.length
     ? vscode.workspace.workspaceFolders.find((workspace) => {
-        const relative = path.relative(workspace.uri.path, args.currentFileAbsolutePosixPath);
+        const relative = path.posix.relative(workspace.uri.path, args.currentFileAbsolutePosixPath);
         return relative && !relative.startsWith("..") && !path.isAbsolute(relative);
       })
     : undefined;

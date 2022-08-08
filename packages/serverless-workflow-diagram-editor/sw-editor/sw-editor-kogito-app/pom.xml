@@ -49,8 +49,6 @@
   <properties>
     <skipITs>false</skipITs>
     <org.kie.sw.editor.browser.headless>true</org.kie.sw.editor.browser.headless>
-    <!-- We do not want to run selenium tests in default profile -->
-    <sw.editor.it.tests.excludes>**/*IT.java</sw.editor.it.tests.excludes>
   </properties>
 
   <dependencies>
@@ -519,9 +517,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>${sw.editor.it.tests.excludes}</exclude>
-          </excludes>
           <systemPropertyVariables>
             <org.kie.sw.editor.browser.headless>${org.kie.sw.editor.browser.headless}</org.kie.sw.editor.browser.headless>
             <org.kie.sw.editor.screenshots.dir>${project.build.directory}/screenshots</org.kie.sw.editor.screenshots.dir>
@@ -586,19 +581,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>sw-editor-it-tests</id>
-      <activation>
-        <property>
-          <name>integration-tests</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <properties>
-        <!-- We want to run selenium tests in sw-editor-it-tests profile -->
-        <sw.editor.it.tests.excludes></sw.editor.it.tests.excludes>
-      </properties>
     </profile>
   </profiles>
 

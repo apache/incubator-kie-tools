@@ -15,7 +15,7 @@
  */
 
 import { ChannelType, EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
-import { KogitoEdit } from "@kie-tools-core/workspace/dist/api";
+import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
@@ -32,7 +32,12 @@ describe("EmbeddedEditor::ONLINE", () => {
   };
 
   const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [
-    new EnvelopeMapping("dmn", "**/*.dmn", "envelope", "envelope/envelope.html"),
+    new EnvelopeMapping({
+      type: "dmn",
+      filePathGlob: "**/*.dmn",
+      resourcesPathPrefix: "envelope",
+      envelopePath: "envelope/envelope.html",
+    }),
   ]);
 
   const channelType = ChannelType.ONLINE;
@@ -244,7 +249,7 @@ describe("EmbeddedEditor::ONLINE", () => {
       targetEnvelopeServerId: editorRef.current!.getEnvelopeServer().id,
       purpose: EnvelopeBusMessagePurpose.NOTIFICATION,
       type: "kogitoWorkspace_newEdit",
-      data: [new KogitoEdit("1")],
+      data: [new WorkspaceEdit("1")],
     });
 
     expect(editorRef.current?.getStateControl().getCommandStack()).toEqual([{ id: "1" }]);

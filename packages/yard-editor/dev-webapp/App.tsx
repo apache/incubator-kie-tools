@@ -34,7 +34,12 @@ export const App = () => {
   const editorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(window.location.origin, [
-        new EnvelopeMapping("yard", "**/*.yard.+(yml|yaml|json)", "", "yard-editor-envelope.html"),
+        new EnvelopeMapping({
+          type: "yard",
+          filePathGlob: "**/*.yard.+(yml|yaml|json)",
+          resourcesPathPrefix: "",
+          envelopePath: "yard-editor-envelope.html",
+        }),
       ]),
     []
   );

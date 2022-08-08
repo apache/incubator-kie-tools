@@ -15,20 +15,19 @@
  */
 
 import * as React from "react";
-import * as ReactDOM from "react-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import * as ReactDOM from "react-dom";
 import { FeelService } from "./FeelService";
 import "./index.css";
 import { FeelInput } from "../src";
 
-const REACT_APP_FEEL_SERVER = process.env.REACT_APP_FEEL_SERVER;
-
-if (!REACT_APP_FEEL_SERVER) {
+const feelServerUrl = process.env.WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl;
+if (!feelServerUrl) {
   console.info(
     "" +
       "--------------------------------------------------------------------------------------------\n" +
       "The FEEL server is not enabled. You may enable it by starting your development web app with:\n" +
-      "`REACT_APP_FEEL_SERVER=http://your-feel-server-url pnpm start`.\n" +
+      "`FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl=http://your-feel-server-url pnpm start`.\n" +
       "--------------------------------------------------------------------------------------------"
   );
 }
@@ -47,12 +46,12 @@ const FeelEditor = () => {
       setFeelResult(clientResult);
     }
 
-    if (REACT_APP_FEEL_SERVER) {
+    if (feelServerUrl) {
       window.clearTimeout(window.__KIE__FEEL__THROTTLING___);
       window.__KIE__FEEL__THROTTLING___ = window.setTimeout(() => {
         (async () => {
           const resp = await fetch(
-            REACT_APP_FEEL_SERVER +
+            feelServerUrl +
               "?" +
               new URLSearchParams({
                 feel: feelExpression,

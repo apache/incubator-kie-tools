@@ -70,6 +70,6 @@ export class YardVsCodeExtensionConfiguration {
 
     await vscode.workspace
       .getConfiguration()
-      .update(CONFIGURATION_SECTIONS.automaticallyOpenDiagramEditorAlongsideTextEditor, picked);
+      .update(CONFIGURATION_SECTIONS.automaticallyOpenDiagramEditorAlongsideTextEditor, picked, true);
   }
 }

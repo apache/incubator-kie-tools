@@ -19,14 +19,14 @@ const CopyPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const buildEnv = require("@kie-tools/build-env");
+const { env } = require("./env");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const { EnvironmentPlugin } = require("webpack");
+const buildEnv = env;
 
 module.exports = async (env, argv) => {
   const gtmResource = getGtmResource(argv);
-  const onlineEditorUrl = buildEnv.dmnDevSandbox.onlineEditorUrl;
 
   return merge(common(env), {
     entry: {
@@ -56,9 +56,6 @@ module.exports = async (env, argv) => {
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
       }),
-      new EnvironmentPlugin({
-        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: onlineEditorUrl,
-      }),
     ],
 
     module: {
@@ -68,13 +65,13 @@ module.exports = async (env, argv) => {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
       compress: true,
-      port: buildEnv.dmnFormWebApp.dev.port,
+      port: buildEnv.dmnDevSandboxFormWebapp.dev.port,
     },
   });
 };
 
 function getGtmResource() {
-  const gtmId = buildEnv.dmnDevSandbox.gtmId;
+  const gtmId = buildEnv.dmnDevSandboxFormWebapp.gtmId;
   console.info(`Google Tag Manager :: ID: ${gtmId}`);
 
   if (!gtmId) {
