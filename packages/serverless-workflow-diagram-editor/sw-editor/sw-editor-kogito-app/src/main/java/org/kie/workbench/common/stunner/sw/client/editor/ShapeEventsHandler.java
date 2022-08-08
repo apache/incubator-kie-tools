@@ -58,4 +58,8 @@ public class ShapeEventsHandler {
         }
         return null;
     }
+
+    public void setDiagramApi(DiagramApi diagramApi) {
+        this.diagramApi = diagramApi;
+    }
 }
