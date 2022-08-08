@@ -49,6 +49,7 @@ export type SwfLanguageServiceConfig = {
   ) => Promise<{ specsDirRelativePosixPath: string; specsDirAbsolutePosixPath: string }>;
   shouldDisplayServiceRegistriesIntegration: () => Promise<boolean>;
   shouldReferenceServiceRegistryFunctionsWithUrls: () => Promise<boolean>;
+  shouldIncludeJsonSchemaDiagnostics: () => Promise<boolean>;
 };
 
 export type SwfLanguageServiceArgs = {
@@ -159,6 +160,14 @@ export class SwfLanguageService {
       return refValidationResults;
     }
 
+    const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
+      ? await this.getJsonSchemaDiagnostics(textDocument)
+      : [];
+
+    return [...schemaValidationResults, ...refValidationResults];
+  }
+
+  private async getJsonSchemaDiagnostics(textDocument: TextDocument) {
     const jsonLs = getLanguageService({
       schemaRequestService: async (uri) => {
         if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
@@ -175,9 +184,7 @@ export class SwfLanguageService {
     });
 
     const jsonDocument = jsonLs.parseJSONDocument(textDocument);
-    const schemaValidationResults = await jsonLs.doValidation(textDocument, jsonDocument);
-
-    return [...schemaValidationResults, ...refValidationResults];
+    return jsonLs.doValidation(textDocument, jsonDocument);
   }
 
   public async getCodeLenses(args: {

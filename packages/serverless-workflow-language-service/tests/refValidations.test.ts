@@ -488,6 +488,7 @@ describe("test YAML refValidation method against source and target paths", () =>
     getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
     shouldDisplayServiceRegistriesIntegration: async () => true,
     shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
+    shouldIncludeJsonSchemaDiagnostics: async () => true,
   };
 
   const defaultServiceCatalogConfig = {
