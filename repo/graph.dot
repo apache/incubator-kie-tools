@@ -2,7 +2,7 @@ digraph G {
   graph [ ranksep =2, splines = "polyline", rankdir =TB, ordering = "out" ];
   node [ shape =box ];
   edge [ headport = "n", tailport = "s", arrowhead =dot, arrowsize =0.5 ];
-  "kiegroup/kie-tools" [ shape =folder ];
+  "kie-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/base64png-editor" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -126,7 +126,7 @@ digraph G {
   "@kie-tools-core/backend" -> "@kie-tools-core/notifications" [ style = "solid", color = "purple" ];
   "@kie-tools/backend-extended-services" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/boxed-expression-component" -> "@kie-tools/feel-input-component" [ style = "solid", color = "blue" ];
-  "@kie-tools/build-env" -> "kiegroup/kie-tools";
+  "@kie-tools/build-env" -> "kie-tools";
   "@kie-tools-core/chrome-extension" -> "@kie-tools-core/editor" [ style = "solid", color = "purple" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "black" ];
   "chrome-extension-pack-kogito-kie-editors" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
