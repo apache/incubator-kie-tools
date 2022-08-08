@@ -63,6 +63,7 @@ pipeline {
                                 .withProperty('sonar.organization', 'kiegroup')
                                 .withProperty('sonar.host.url', 'https://sonarcloud.io')
                                 .withProperty('sonar.login', env['SONARCLOUD_TOKEN'])
+                                .withProperty('revision', '0.0.0')
                                 .run('validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar')
                     }
                 }
