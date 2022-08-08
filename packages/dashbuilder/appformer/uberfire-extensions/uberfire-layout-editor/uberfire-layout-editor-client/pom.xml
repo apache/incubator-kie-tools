@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-layout-editor</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>uberfire-layout-editor-client</artifactId>

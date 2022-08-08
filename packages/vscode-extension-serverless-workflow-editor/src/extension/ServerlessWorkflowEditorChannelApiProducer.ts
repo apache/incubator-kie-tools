@@ -29,7 +29,6 @@ import { SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
-import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 
 export class ServerlessWorkflowEditorChannelApiProducer implements VsCodeKieEditorChannelApiProducer {
   constructor(
@@ -49,9 +48,6 @@ export class ServerlessWorkflowEditorChannelApiProducer implements VsCodeKieEdit
     viewType: string,
     i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
-    const fileLanguage = getFileLanguageOrThrow(editor.document.document.uri.path);
-    const ls = this.args.vsCodeSwfLanguageService.getLs(fileLanguage);
-
     return new ServerlessWorkflowEditorChannelApiImpl(
       editor,
       resourceContentService,
@@ -66,7 +62,9 @@ export class ServerlessWorkflowEditorChannelApiProducer implements VsCodeKieEdit
         configuration: this.args.configuration,
         swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
-      new SwfLanguageServiceChannelApiImpl({ ls })
+      new SwfLanguageServiceChannelApiImpl({
+        ls: this.args.vsCodeSwfLanguageService.getLsForDiagramEditor(editor.document.document),
+      })
     );
   }
 }

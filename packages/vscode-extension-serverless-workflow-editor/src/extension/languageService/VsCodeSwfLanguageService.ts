@@ -28,10 +28,17 @@ import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/di
 import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
 import { definitelyPosixPath } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
+import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/src/api";
+import { KogitoEditorDocument } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+
+export const SWF_YAML_LANGUAGE_ID = "serverless-workflow-yaml";
+export const SWF_JSON_LANGUAGE_ID = "serverless-workflow-json";
 
 export class VsCodeSwfLanguageService {
   private readonly jsonLs: SwfJsonLanguageService;
   private readonly yamlLs: SwfYamlLanguageService;
+  private readonly swfJsonLs: SwfJsonLanguageService;
+  private readonly swfYamlLs: SwfYamlLanguageService;
   private readonly fsWatchingSwfServiceCatalogStore: Map<string, FsWatchingServiceCatalogRelativeStore> = new Map();
 
   constructor(
@@ -40,16 +47,41 @@ export class VsCodeSwfLanguageService {
       swfServiceCatalogGlobalStore: SwfServiceCatalogStore;
     }
   ) {
-    const lsArgs = this.getLsArgs();
-    this.jsonLs = new SwfJsonLanguageService(lsArgs);
-    this.yamlLs = new SwfYamlLanguageService(lsArgs);
+    const defaultLsArgs = this.getDefaultLsArgs({ shouldIncludeJsonSchemaDiagnostics: async () => false });
+    this.jsonLs = new SwfJsonLanguageService(defaultLsArgs);
+    this.yamlLs = new SwfYamlLanguageService(defaultLsArgs);
+    const swfLanguageLsArgs = this.getDefaultLsArgs({});
+    this.swfJsonLs = new SwfJsonLanguageService(swfLanguageLsArgs);
+    this.swfYamlLs = new SwfYamlLanguageService(swfLanguageLsArgs);
   }
 
-  public getLs(fileLanguage: FileLanguage): SwfJsonLanguageService | SwfYamlLanguageService {
-    return fileLanguage === FileLanguage.YAML ? this.yamlLs : this.jsonLs;
+  public getLs(document: vscode.TextDocument): SwfJsonLanguageService | SwfYamlLanguageService {
+    const fileLanguage = getFileLanguageOrThrow(document.fileName);
+    if (fileLanguage === FileLanguage.YAML) {
+      return document.languageId === SWF_YAML_LANGUAGE_ID ? this.swfYamlLs : this.yamlLs;
+    } else if (fileLanguage === FileLanguage.JSON) {
+      return document.languageId === SWF_JSON_LANGUAGE_ID ? this.swfJsonLs : this.jsonLs;
+    } else {
+      throw new Error(`Could not determine LS for ${document.fileName}`);
+    }
   }
 
-  private getLsArgs(): Omit<SwfLanguageServiceArgs, "lang"> {
+  public getLsForDiagramEditor(
+    document: KogitoEditorDocument["document"]
+  ): SwfJsonLanguageService | SwfYamlLanguageService {
+    const fileLanguage = getFileLanguageOrThrow(document.uri.path);
+    if (fileLanguage === FileLanguage.YAML) {
+      return this.yamlLs;
+    } else if (fileLanguage === FileLanguage.JSON) {
+      return this.jsonLs;
+    } else {
+      throw new Error(`Could not determine LS for Diagram Editor for ${document.uri.path}`);
+    }
+  }
+
+  private getDefaultLsArgs(
+    configOverrides: Partial<SwfLanguageServiceArgs["config"]>
+  ): Omit<SwfLanguageServiceArgs, "lang"> {
     return {
       fs: {},
       serviceCatalog: {
@@ -101,6 +133,10 @@ export class VsCodeSwfLanguageService {
         canRefreshServices: () => {
           return this.args.swfServiceCatalogGlobalStore.canRefreshServices;
         },
+        shouldIncludeJsonSchemaDiagnostics: async () => {
+          return true;
+        },
+        ...configOverrides,
       },
     };
   }

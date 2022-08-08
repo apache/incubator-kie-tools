@@ -66,6 +66,7 @@ const defaultConfig: SwfLanguageServiceConfig = {
   getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
   shouldDisplayServiceRegistriesIntegration: async () => true,
   shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
+  shouldIncludeJsonSchemaDiagnostics: async () => true,
 };
 
 describe("SWF LS YAML", () => {

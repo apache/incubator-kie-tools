@@ -255,6 +255,12 @@
         "scopeName": "source.yaml"
       }
     ],
+    "jsonValidation": [
+      {
+        "fileMatch": "**/*.sw.json",
+        "url": "https://serverlessworkflow.io/schemas/0.8/workflow.json"
+      }
+    ],
     "keybindings": [
       {
         "command": "extension.kogito.swf.openAsDiagram",
