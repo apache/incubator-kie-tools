@@ -15,65 +15,19 @@
  */
 
 import {
-  SwfYamlLanguageService,
   findNodeAtOffset,
   matchNodeWithLocation,
   nodeUpUntilType,
+  SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionArgumentType,
-  SwfServiceCatalogFunctionSourceType,
-  SwfServiceCatalogFunctionType,
-  SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
-  SwfServiceCatalogServiceType,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
-import { SwfLanguageServiceConfig } from "../src/channel";
-import { trim, treat } from "./testUtils";
-
-const testRelativeFunction1: SwfServiceCatalogFunction = {
-  name: "testRelativeFunction1",
-  type: SwfServiceCatalogFunctionType.rest,
-  source: {
-    type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
-    serviceFileAbsolutePath: "/Users/tiago/Desktop/testRelativeService1.yml",
-  },
-  arguments: {
-    argString: SwfServiceCatalogFunctionArgumentType.string,
-    argNumber: SwfServiceCatalogFunctionArgumentType.number,
-    argBoolean: SwfServiceCatalogFunctionArgumentType.boolean,
-  },
-};
-
-const testRelativeService1: SwfServiceCatalogService = {
-  name: "testRelativeService1",
-  source: {
-    type: SwfServiceCatalogServiceSourceType.LOCAL_FS,
-    absoluteFilePath: "/Users/tiago/Desktop/testRelativeService1.yml",
-  },
-  type: SwfServiceCatalogServiceType.rest,
-  rawContent: "",
-  functions: [testRelativeFunction1],
-};
-
-const defaultServiceCatalogConfig = {
-  relative: { getServices: async () => [] },
-  global: { getServices: async () => [] },
-  getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName: string, serviceId: string) =>
-    `${serviceId}.yaml`,
-};
-
-const defaultConfig: SwfLanguageServiceConfig = {
-  shouldConfigureServiceRegistries: () => false,
-  shouldServiceRegistriesLogIn: () => false,
-  canRefreshServices: () => false,
-  getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
-  shouldDisplayServiceRegistriesIntegration: async () => true,
-  shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
-  shouldIncludeJsonSchemaDiagnostics: async () => true,
-};
+import {
+  defaultConfig,
+  defaultServiceCatalogConfig,
+  testRelativeFunction1,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
+import { treat, trim } from "./testUtils";
 
 describe("SWF LS YAML", () => {
   describe("parsing content", () => {
@@ -338,175 +292,6 @@ states:
           },
         ],
       });
-    });
-  });
-
-  describe("matchNodeWithLocation", () => {
-    test("matching root node with empty content", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`---🎯 `);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-
-      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
-      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
-    });
-
-    test("matching empty function array", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`
-
----
-functions: [🎯]`);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-
-      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
-      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
-    });
-
-    describe("matching functions array", () => {
-      test("with cursorOffset at the first function", () => {
-        const ls = new SwfYamlLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`
----
-functions:
-- name: function1🎯
-  operation: openapi.yml#getGreeting`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      });
-
-      test("with cursorOffset at the second function", () => {
-        const ls = new SwfYamlLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`---
-functions:
-- name: function1
-  operation: openapi.yml#getGreeting
-- name: function2🎯
-  operation: openapi.yml#getGreeting
-`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      });
-    });
-
-    test("matching refName", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`
----
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: "🎯"
-`);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-
-      expect(
-        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
-      ).toBeTruthy();
-    });
-
-    test("matching arguments", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`---
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
-states:
-- name: testState1
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction
-    functionRef:
-      refName: myFunc
-- name: testState2
-  type: operation
-  transition: end
-  actions:
-  - name: testStateAction1
-    functionRef:
-      refName: myFunc
-  - name: testStateAction2
-    functionRef:
-      refName: myfunc
-      arguments: 
-        🎯arg
-  end: true
-`);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-      const ff = findNodeAtOffset;
-
-      expect(
-        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
-      ).toBeTruthy();
-    });
-  });
-
-  describe("nodeUpUntilType", () => {
-    test("up to functionRef value", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`---
-name: testStateAction2
-functionRef:
-  refName: 🎯a
-`);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-
-      const receivedNode = nodeUpUntilType(node!, "object");
-
-      expect(receivedNode).not.toBeUndefined();
-      expect(receivedNode!.type).toBe("object");
-      expect(receivedNode!.offset).toBe(42);
     });
   });
 
