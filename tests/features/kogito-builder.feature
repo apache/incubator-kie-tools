@@ -49,6 +49,7 @@ Feature: kogito-builder image tests
       | KOGITO_VERSION | 2.0.0-SNAPSHOT |
     Then file /home/kogito/bin/quarkus-run.jar should exist
     And s2i build log should contain Generating quarkus project structure for project...
+    And s2i build log should contain Using Quarkus io.quarkus:quarkus-maven-plugin:
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |

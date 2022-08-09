@@ -33,6 +33,7 @@ Feature: rhpam-kogito-builder-rhel8 feature.
       | KOGITO_VERSION | 1.5.0.redhat-00001 |
     Then file /home/kogito/bin/quarkus-run.jar should exist
     And s2i build log should contain Generating quarkus project structure for project...
+    And s2i build log should contain Using Quarkus com.redhat.quarkus.platform:quarkus-maven-plugin
     And check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |

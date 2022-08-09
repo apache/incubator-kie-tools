@@ -124,7 +124,7 @@ function build_kogito_app() {
                 fi
             done
 
-            log_info "----> Using Quarkus version ${quarkus_version} to bootstrap the application."
+            log_info "----> Using Quarkus ${quarkus_plugin}:${quarkus_version} to bootstrap the application."
 
             $MAVEN_HOME/bin/mvn -U -B ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
                 "${quarkus_plugin}":"${quarkus_version}":create  \
