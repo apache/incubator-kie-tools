@@ -1,0 +1,124 @@
+/*
+ * Copyright © 2022 Treblereel
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.kie.workbench.common.stunner.client.json.mapper.apt.definition;
+
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.TypeMirror;
+
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.google.auto.common.MoreTypes;
+import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.collection.BoxedTypeCollectionJsonSerializer;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.collection.CollectionJsonSerializer;
+
+public class CollectionsFieldDefinition extends FieldDefinition {
+
+  protected CollectionsFieldDefinition(TypeMirror property, GenerationContext context) {
+    super(property, context);
+  }
+
+  @Override
+  public Statement getFieldDeserializer(PropertyDefinition field, CompilationUnit cu) {
+    TypeElement deserializer =
+        context
+            .getTypeRegistry()
+            .getDeserializer(context.getProcessingEnv().getTypeUtils().erasure(property));
+
+    cu.addImport(deserializer.getQualifiedName().toString());
+    TypeMirror typeMirror = MoreTypes.asDeclared(field.getType()).getTypeArguments().get(0);
+
+    String deser;
+    if (context.getTypeRegistry().has(typeMirror)) {
+      deser = context.getTypeRegistry().getDeserializer(typeMirror).getQualifiedName().toString();
+    } else {
+      deser =
+          context
+              .getTypeUtils()
+              .getJsonDeserializerImplQualifiedName(MoreTypes.asTypeElement(typeMirror));
+    }
+
+    ClassOrInterfaceType type = new ClassOrInterfaceType();
+    type.setName(deserializer.getSimpleName().toString());
+    type.setTypeArguments(new ClassOrInterfaceType().setName(typeMirror.toString()));
+    ObjectCreationExpr deserializerCreationExpr = new ObjectCreationExpr();
+    deserializerCreationExpr.setType(type);
+
+    return new ExpressionStmt(
+        new MethodCallExpr(new NameExpr("bean"), field.getSetter().getSimpleName().toString())
+            .addArgument(
+                new MethodCallExpr(
+                        deserializerCreationExpr.addArgument(
+                            new ObjectCreationExpr().setType(deser)),
+                        "deserialize")
+                    .addArgument(
+                        new MethodCallExpr(new NameExpr("jsonObject"), "getJsonArray")
+                            .addArgument(new StringLiteralExpr(field.getName())))
+                    .addArgument(new NameExpr("ctx"))));
+  }
+
+  @Override
+  public Statement getFieldSerializer(PropertyDefinition field, CompilationUnit cu) {
+    cu.addImport(CollectionJsonSerializer.class);
+
+    ObjectCreationExpr serializerCreationExpr = new ObjectCreationExpr();
+    ClassOrInterfaceType type = new ClassOrInterfaceType();
+    TypeMirror typeMirror = MoreTypes.asDeclared(field.getType()).getTypeArguments().get(0);
+    boolean isBoxedTypeOrString = context.getTypeUtils().isBoxedTypeOrString(typeMirror);
+
+    String ser;
+    if (context.getTypeRegistry().has(typeMirror)) {
+      ser = context.getTypeRegistry().getSerializer(typeMirror).getQualifiedName().toString();
+    } else {
+      ser =
+          context
+              .getTypeUtils()
+              .getJsonSerializerImplQualifiedName(MoreTypes.asTypeElement(typeMirror));
+    }
+
+    if (isBoxedTypeOrString) {
+      cu.addImport(BoxedTypeCollectionJsonSerializer.class);
+      type.setName(BoxedTypeCollectionJsonSerializer.class.getSimpleName());
+    } else {
+      type.setName(CollectionJsonSerializer.class.getSimpleName());
+    }
+
+    type.setTypeArguments(new ClassOrInterfaceType().setName(typeMirror.toString()));
+    ObjectCreationExpr deserializerCreationExpr = new ObjectCreationExpr();
+    deserializerCreationExpr.setType(type);
+    type.setTypeArguments(new ClassOrInterfaceType().setName(typeMirror.toString()));
+    serializerCreationExpr.setType(type);
+
+    return new ExpressionStmt(
+        new MethodCallExpr(
+                serializerCreationExpr.addArgument(
+                    new ObjectCreationExpr().setType(new ClassOrInterfaceType().setName(ser))),
+                "serialize")
+            .addArgument(
+                new MethodCallExpr(
+                    new NameExpr("bean"), field.getGetter().getSimpleName().toString()))
+            .addArgument(new StringLiteralExpr(field.getName()))
+            .addArgument(new NameExpr("generator"))
+            .addArgument(new NameExpr("ctx")));
+  }
+}
