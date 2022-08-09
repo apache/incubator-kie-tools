@@ -18,9 +18,13 @@ import {
   SwfJsonLanguageService,
   findNodeAtOffset,
   matchNodeWithLocation,
+  SwfLanguageServiceConfig,
+  nodeUpUntilType,
+  SwfLsNode,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import {
   SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionArgumentType,
   SwfServiceCatalogFunctionSourceType,
   SwfServiceCatalogFunctionType,
   SwfServiceCatalogService,
@@ -28,7 +32,6 @@ import {
   SwfServiceCatalogServiceType,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
-import { SwfLanguageServiceConfig } from "../src/channel";
 import { trim, treat } from "./testUtils";
 
 const testRelativeFunction1: SwfServiceCatalogFunction = {
@@ -38,7 +41,11 @@ const testRelativeFunction1: SwfServiceCatalogFunction = {
     type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
     serviceFileAbsolutePath: "/Users/tiago/Desktop/testRelativeService1.yml",
   },
-  arguments: {},
+  arguments: {
+    argString: SwfServiceCatalogFunctionArgumentType.string,
+    argNumber: SwfServiceCatalogFunctionArgumentType.number,
+    argBoolean: SwfServiceCatalogFunctionArgumentType.boolean,
+  },
 };
 
 const testRelativeService1: SwfServiceCatalogService = {
@@ -104,7 +111,7 @@ describe("SWF LS JSON", () => {
       expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
-    describe("matching functions array with 1 function", () => {
+    describe("matching functions array", () => {
       test("with cursorOffset at the functions array", () => {
         const ls = new SwfJsonLanguageService({
           fs: {},
@@ -145,6 +152,31 @@ describe("SWF LS JSON", () => {
         expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
         expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
       });
+
+      test("with cursorOffset at the second function", () => {
+        const ls = new SwfJsonLanguageService({
+          fs: {},
+          serviceCatalog: defaultServiceCatalogConfig,
+          config: defaultConfig,
+        });
+        let { content, cursorOffset } = treat(`
+{
+  "functions": [
+  {
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  },
+  {🎯
+        "name": "function2",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`);
+        const root = ls.parseContent(content);
+        const node = findNodeAtOffset(root!, cursorOffset);
+
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      });
     });
 
     test("matching refName", () => {
@@ -164,18 +196,37 @@ describe("SWF LS JSON", () => {
   ],
   "states": [
     {
-      "name": "testState",
+      "name": "testState1",
       "type": "operation",
       "transition": "end",
       "actions": [
         {
           "name": "testStateAction",
           "functionRef": {
-            "refName":"🎯"
+            "refName":"myFunc"
           }
         }
       ]
     },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction1",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        },
+        {
+          "name": "testStateAction2",
+          "functionRef": {
+            "refName":"🎯"
+          }
+        }
+      ]
+    }
   ]
 }`);
       const root = ls.parseContent(content);
@@ -184,6 +235,91 @@ describe("SWF LS JSON", () => {
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
       ).toBeTruthy();
+    });
+
+    test("matching arguments", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
+{
+  "functions": [
+    {
+      "name": "myFunc",
+      "operation": "./specs/myService#myFunc",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        }
+      ]
+    },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction1",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        },
+        {
+          "name": "testStateAction2",
+          "functionRef": {
+            "refName":"myfunc",
+            "arguments": {
+              🎯
+            }
+          }
+        }
+      ]
+    }
+  ]
+}`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      expect(
+        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
+      ).toBeTruthy();
+    });
+  });
+
+  describe("nodeUpUntilType", () => {
+    test("up to functionRef value", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`{
+          "name": "testStateAction2",
+          "functionRef": {
+            "refName":"🎯",
+          }
+        }`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset);
+
+      const receivedNode = nodeUpUntilType(node!, "object");
+
+      expect(receivedNode).not.toBeUndefined();
+      expect(receivedNode!.type).toBe("object");
+      expect(receivedNode!.offset).toBe(65);
     });
   });
 
@@ -513,6 +649,70 @@ describe("SWF LS JSON", () => {
             character: cursorPosition.character + 1,
           },
         },
+      },
+      insertTextFormat: InsertTextFormat.Snippet,
+    } as CompletionItem);
+  });
+
+  test("functionRef arguments completion", async () => {
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [testRelativeService1] },
+      },
+      config: defaultConfig,
+    });
+
+    const { content, cursorPosition } = treat(`
+{
+  "functions": [
+    {
+      "name": "testRelativeFunction1",
+      "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"testRelativeFunction1",
+            "arguments": {
+                🎯
+            } 
+          }
+        }
+      ]
+    }
+  ]
+}`);
+
+    const completionItems = await ls.getCompletionItems({
+      uri: "test.sw.json",
+      content,
+      cursorPosition,
+      cursorWordRange: { start: cursorPosition, end: cursorPosition },
+    });
+
+    expect(completionItems).toHaveLength(1);
+    expect(completionItems[0]).toStrictEqual({
+      kind: CompletionItemKind.Module,
+      label: `'testRelativeFunction1' arguments`,
+      detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+      sortText: "testRelativeFunction1 arguments",
+      textEdit: {
+        newText: `
+  "argString": "\${1:}",
+  "argNumber": "\${2:}",
+  "argBoolean": "\${3:}"
+`,
+        range: { start: cursorPosition, end: cursorPosition },
       },
       insertTextFormat: InsertTextFormat.Snippet,
     } as CompletionItem);
