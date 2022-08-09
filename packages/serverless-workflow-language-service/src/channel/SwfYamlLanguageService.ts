@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import {
   dump,
   Kind,
@@ -25,10 +26,9 @@ import {
   YAMLScalar,
   YAMLSequence,
 } from "yaml-language-server-parser";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode, CompletionTranslatorType } from "./types";
 import { FileLanguage } from "../api";
+import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { CompletionTranslatorArgs, SwfLsNode } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -76,7 +76,7 @@ export class SwfYamlLanguageService {
   }
 }
 
-const completionTranslator: CompletionTranslatorType = (completion: any): string => {
+const completionTranslator = ({ completion }: CompletionTranslatorArgs): string => {
   return dump(completion, {}).slice(0, -1);
 };
 

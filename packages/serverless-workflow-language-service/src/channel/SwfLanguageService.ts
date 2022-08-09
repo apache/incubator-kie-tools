@@ -39,7 +39,7 @@ import { doRefValidation } from "./refValidation";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfJsonPath, SwfLsNode, CompletionTranslatorType } from "./types";
+import { SwfJsonPath, SwfLsNode, CompletionTranslatorArgs } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -82,7 +82,7 @@ export class SwfLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
     rootNode: SwfLsNode | undefined;
-    completionTranslator: CompletionTranslatorType;
+    completionTranslator: (args: CompletionTranslatorArgs) => string;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
       return [];
@@ -404,7 +404,7 @@ const completions = new Map<
     currentNodePosition: { start: Position; end: Position };
     rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
-    completionTranslator: CompletionTranslatorType;
+    completionTranslator: (args: CompletionTranslatorArgs) => string;
   }) => Promise<CompletionItem[]>
 >([
   [
@@ -441,18 +441,20 @@ const completions = new Map<
               },
             };
 
+            const kind =
+              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+                ? CompletionItemKind.Interface
+                : CompletionItemKind.Reference;
+
             return {
-              kind:
-                swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-                  ? CompletionItemKind.Interface
-                  : CompletionItemKind.Reference,
+              kind,
               label: toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
               detail:
                 swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
                   ? swfServiceCatalogService.source.url
                   : swfServiceCatalogFunc.operation,
               textEdit: {
-                newText: completionTranslator(swfFunction, true) + separator,
+                newText: completionTranslator({ completion: swfFunction, kind }) + separator,
                 range: overwriteRange,
               },
               snippet: true,
@@ -487,16 +489,18 @@ const completions = new Map<
         .flatMap((s) => s.functions)
         .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
         .map((swfServiceCatalogFunc) => {
+          const kind =
+            swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+              ? CompletionItemKind.Function
+              : CompletionItemKind.Folder;
+
           return {
-            kind:
-              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-                ? CompletionItemKind.Function
-                : CompletionItemKind.Folder,
+            kind,
             label: `"${swfServiceCatalogFunc.operation}"`,
             detail: `"${swfServiceCatalogFunc.operation}"`,
             filterText: `"${swfServiceCatalogFunc.operation}"`,
             textEdit: {
-              newText: completionTranslator(`${swfServiceCatalogFunc.operation}`),
+              newText: completionTranslator({ completion: `${swfServiceCatalogFunc.operation}`, kind }),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -540,7 +544,7 @@ const completions = new Map<
             sortText: `${swfFunctionRef.refName}`,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
-              newText: completionTranslator(swfFunctionRef),
+              newText: completionTranslator({ completion: swfFunctionRef, kind: CompletionItemKind.Module }),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -563,7 +567,7 @@ const completions = new Map<
             detail: `"${swfFunction.name}"`,
             filterText: `"${swfFunction.name}"`,
             textEdit: {
-              newText: completionTranslator(`${swfFunction.name}`),
+              newText: completionTranslator({ completion: `${swfFunction.name}`, kind: CompletionItemKind.Value }),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -616,7 +620,7 @@ const completions = new Map<
           sortText: `${swfFunctionRefName} arguments`,
           detail: swfFunction.operation,
           textEdit: {
-            newText: completionTranslator(swfFunctionRefArgs),
+            newText: completionTranslator({ completion: swfFunctionRefArgs, kind: CompletionItemKind.Module }),
             range: overwriteRange,
           },
           insertTextFormat: InsertTextFormat.Snippet,

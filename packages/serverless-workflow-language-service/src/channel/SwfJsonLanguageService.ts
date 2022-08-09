@@ -15,9 +15,9 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode, CompletionTranslatorType } from "./types";
+import { SwfLsNode, CompletionTranslatorArgs } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfJsonLanguageService {
@@ -59,8 +59,8 @@ export class SwfJsonLanguageService {
   }
 }
 
-const completionTranslator: CompletionTranslatorType = (completion: any, translateFullObject = false): string => {
-  if (completion instanceof Object && !translateFullObject) {
+const completionTranslator = ({ completion, kind }: CompletionTranslatorArgs): string => {
+  if (kind === CompletionItemKind.Module) {
     return JSON.stringify(completion, null, 2).slice(1, -1);
   }
 
