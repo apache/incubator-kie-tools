@@ -562,7 +562,7 @@ jobs:
           password: "${{ secrets.quay_registry_password }}"
 
       - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux"
-        if: ${{ !inputs.dry_run }}
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -573,7 +573,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS"
-        if: ${{ !inputs.dry_run }}
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -584,7 +584,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS M1"
-        if: ${{ !inputs.dry_run }}
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -595,7 +595,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: "STAGING: Knative CLI Workflow Plugin for Windows"
-        if: ${{ !inputs.dry_run }}
+        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
