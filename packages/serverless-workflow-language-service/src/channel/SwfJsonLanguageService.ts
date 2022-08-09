@@ -15,9 +15,9 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode } from "./types";
+import { SwfLsNode, CompletionTranslatorArgs } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfJsonLanguageService {
@@ -43,7 +43,7 @@ export class SwfJsonLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content), completionTranslator });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
@@ -58,3 +58,11 @@ export class SwfJsonLanguageService {
     return this.ls.dispose();
   }
 }
+
+const completionTranslator = ({ completion, kind }: CompletionTranslatorArgs): string => {
+  if (kind === CompletionItemKind.Module) {
+    return JSON.stringify(completion, null, 2).slice(1, -1);
+  }
+
+  return JSON.stringify(completion, null, 2);
+};

@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+import { CompletionItemKind } from "vscode-languageserver-types";
+
 // types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
 export declare type SwfJsonPath = (string | number)[];
 export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
 
+/**
+ * The AST node used in the LanguageServices
+ */
 export type SwfLsNode = {
   type: SwfLsNodeType;
   value?: any;
@@ -26,4 +31,19 @@ export type SwfLsNode = {
   colonOffset?: number;
   parent?: SwfLsNode;
   children?: SwfLsNode[];
+};
+
+/**
+ * type for the completionTranslator function used in the LanguageServices
+ */
+export type CompletionTranslatorArgs = {
+  /**
+   * what to translate
+   */
+  completion: object | string;
+
+  /**
+   * The kind of a completion entry.
+   */
+  kind: CompletionItemKind;
 };
