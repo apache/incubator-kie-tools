@@ -21,14 +21,181 @@ import {
 import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
 
-describe.skip("findNodesAtLocation", () => {
-  test("selecting empty value", () => {
-    const ls = new SwfJsonLanguageService({
-      fs: {},
-      serviceCatalog: defaultServiceCatalogConfig,
-      config: defaultConfig,
+describe("findNodesAtLocation", () => {
+  describe("JSON", () => {
+    test("undefined JSON", () => {
+      const nodesAtLocation = findNodesAtLocation(undefined, ["functions", "*"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(0);
     });
-    const { content, cursorOffset } = treat(`
+
+    test("selecting a node not in JSON", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `
+{
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end"
+    }
+  ]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["functions", "*"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(0);
+    });
+
+    test("selecting a state name", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `
+{
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end"
+    }
+  ]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "name"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation[0]).not.toBeUndefined();
+      expect(nodesAtLocation[0].value).toBe("testState1");
+    });
+
+    test("selecting the 2nd state name", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `
+{
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end"
+    },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end"
+    }
+  ]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", 1, "name"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation[0]).not.toBeUndefined();
+      expect(nodesAtLocation[0].value).toBe("testState2");
+    });
+
+    test("selecting all the state names", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `
+{
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end"
+    },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end"
+    }
+  ]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "name"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation[0]).not.toBeUndefined();
+      expect(nodesAtLocation[0].value).toBe("testState1");
+      expect(nodesAtLocation[1].value).toBe("testState2");
+    });
+
+    test("selecting all the functionRef using 2 *", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `
+{
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "testState1_action1",
+          "functionRef": {
+            "refName": "testState1_functionRef1"
+            "arguments": {}
+          }
+        },
+        {
+          "name": "testState1_action2",
+          "functionRef": {
+            "refName": "testState1_functionRef2"
+            "arguments": {}
+          }
+        },
+      ],
+    },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "testState2_action1",
+          "functionRef": {
+            "refName": "testState2_functionRef1"
+            "arguments": {}
+          }
+        }
+    }
+  ]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef", "refName"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(3);
+      expect(nodesAtLocation[0].value).toBe("testState1_functionRef1");
+      expect(nodesAtLocation[1].value).toBe("testState1_functionRef2");
+      expect(nodesAtLocation[2].value).toBe("testState2_functionRef1");
+    });
+
+    test("selecting empty value", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`
 {
   "functions": [
     {
@@ -56,13 +223,15 @@ describe.skip("findNodesAtLocation", () => {
     }
   ]
 }`);
-    const root = ls.parseContent(content);
-    const nodeAtOffset = findNodeAtOffset(root!, cursorOffset);
-    const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef"]);
-    debugger;
+      const root = ls.parseContent(content);
+      const nodeAtOffset = findNodeAtOffset(root!, cursorOffset);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef"]);
+      debugger;
 
-    expect(nodesAtLocation[0]).not.toBeUndefined();
-    expect(nodesAtLocation[0].offset).toBe(nodeAtOffset?.offset);
-    expect(nodesAtLocation).toBe(nodeAtOffset);
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation[0]).not.toBeUndefined();
+      expect(nodesAtLocation[0].offset).toBe(nodeAtOffset?.offset);
+      expect(nodesAtLocation[0].length).toBe(nodeAtOffset?.length);
+    });
   });
 });
