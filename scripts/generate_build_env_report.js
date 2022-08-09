@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+const path = require("path");
 const execSync = require("child_process").execSync;
 
 const pnpmFilter = process.argv.slice(2).join(" ");
@@ -23,18 +24,35 @@ if (pnpmFilter.length === 0) {
   console.info(`[generate-build-env-report] Generating build-env report of packages filtered by '${pnpmFilter}'...`);
 }
 
-const envPaths = execSync(
-  `pnpm -r ${pnpmFilter} --workspace-concurrency=1 exec bash -c 'test -d env && echo $(pwd)/$(find env -type f) || true'`,
-  { stdio: "pipe" }
-);
+async function main() {
+  const pkgs = findPathsOfPackagesWithEnvDir().map((pkgPath) => ({
+    env: require(path.join(pkgPath, "env", "index.js")),
+    manifest: require(path.join(pkgPath, "package.json")),
+    dir: pkgPath,
+  }));
 
-for (const envPath of envPaths.toString().trim().split("\n")) {
-  console.info(envPath);
-  console.info(JSON.stringify(require(envPath).self, undefined, 2));
+  for (const pkg of pkgs) {
+    console.info(`${pkg.manifest.name} (at ${pkg.dir})`);
+    console.info(JSON.stringify(pkg.env.self, undefined, 2));
+  }
 }
 
-// console.info(`[generate-build-env-report] Printing envs...`);
-// execSync(`pnpm -r ${pnpmFilter} --workspace-concurrency=1 exec bash -c 'test -d env && pnpm build-env --print-env:self && echo ',' || echo '{},''`, execOpts)
-//
-// console.info(`[generate-build-env-report] Printing vars...`);
-// execSync(`pnpm -r ${pnpmFilter} --workspace-concurrency=1 exec bash -c 'test -d env && pnpm build-env --print-vars:self && echo ',' || echo '{},''`, execOpts)
+// TODO: Detect duplicate vars
+// TODO: Detect duplicate env root properties
+
+function findPathsOfPackagesWithEnvDir() {
+  try {
+    const pnpmExecOutput = execSync(
+      `pnpm -r ${pnpmFilter} --workspace-concurrency=1 exec 'bash' '-c' 'test -d env && pwd || true'`,
+      {
+        stdio: "pipe",
+      }
+    );
+    return pnpmExecOutput.toString().trim().split("\n");
+  } catch (e) {
+    console.info(e.stdout.toString());
+    process.exit(1);
+  }
+}
+
+main();
