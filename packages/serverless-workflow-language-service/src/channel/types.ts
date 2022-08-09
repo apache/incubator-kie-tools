@@ -40,7 +40,7 @@ export type CompletionTranslatorArgs = {
   /**
    * what to translate
    */
-  completion: any;
+  completion: object | string;
 
   /**
    * The kind of a completion entry.
