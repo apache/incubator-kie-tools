@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export type EnvAndVarsWithName<T> = { vars: { [K in keyof T]: VarWithName }; env: object };
+export type EnvAndVarsWithName<T> = { vars: { [K in keyof T]: VarWithName }; env: object; self: EnvAndVarsWithName<T> };
 
 export type Var = {
   default: string | undefined;
@@ -45,9 +45,10 @@ export function varsWithName<T>(obj: { [K in keyof T]: Var }) {
   return obj as { [K in keyof T]: VarWithName };
 }
 
-export function composeEnv<T>(deps: EnvAndVarsWithName<any>[], obj: EnvAndVarsWithName<T>) {
+export function composeEnv<T>(deps: EnvAndVarsWithName<any>[], self: EnvAndVarsWithName<T>) {
   return {
-    vars: { ...obj.vars, ...deps.reduce((acc, d) => ({ ...acc, ...d.vars }), {}) },
-    env: { ...obj.env, ...deps.reduce((acc, d) => ({ ...acc, ...d.env }), {}) },
+    vars: { ...self.vars, ...deps.reduce((acc, d) => ({ ...acc, ...d.vars }), {}) },
+    env: { ...self.env, ...deps.reduce((acc, d) => ({ ...acc, ...d.env }), {}) },
+    self,
   };
 }

@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+const { varsWithName, composeEnv } = require("@kie-tools/build-env");
 const path = require("path");
 const fs = require("fs");
 const { env } = require("./env");
 const buildEnv = env;
 
-module.exports = {
+module.exports = composeEnv([], {
+  vars: varsWithName({}),
   quarkusRunnerPath: () => {
     const jarPath = path.resolve(
       __dirname,
@@ -30,4 +32,4 @@ module.exports = {
     }
     return jarPath;
   },
-};
+});

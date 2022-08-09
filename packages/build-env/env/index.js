@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, str2bool } = require("../dist");
+const { varsWithName, getOrDefault, str2bool, composeEnv } = require("../dist");
 const packageJson = require("../package.json");
 
-module.exports = {
+module.exports = composeEnv([], {
   vars: varsWithName({
     KIE_TOOLS_BUILD_lint: {
       default: `${true}`,
@@ -68,4 +68,4 @@ module.exports = {
       },
     };
   },
-};
+});
