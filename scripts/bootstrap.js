@@ -17,6 +17,11 @@
 const execSync = require("child_process").execSync;
 
 const pnpmFilter = process.argv.slice(2).join(" ");
+if (pnpmFilter.length === 0) {
+  console.info("[bootstrap] Bootstrapping all packages...");
+} else {
+  console.info(`[bootstrap] Bootstrapping packages filtered by '${pnpmFilter}'...`);
+}
 
 const execOpts = { stdio: "inherit" };
 

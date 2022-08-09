@@ -17,18 +17,22 @@
 const execSync = require("child_process").execSync;
 
 const newVersion = process.argv[2];
-
 if (!newVersion) {
-  console.error("Usage 'node update_version.js [version]'");
+  console.error("Usage 'node update_version.js [version] [pnpm-filter...]'");
   return 1;
 }
 
 const pnpmFilter = process.argv.slice(3).join(" ");
+if (pnpmFilter.length === 0) {
+  console.info("[update-version] Updating versions of all packages...");
+} else {
+  console.info(`[update-version] Updating versions of packages filtered by '${pnpmFilter}'...`);
+}
 
 const execOpts = { stdio: "inherit" };
-try {
-  const pnpmVersionArgs = `--git-tag-version=false --allow-same-version=true`;
+const pnpmVersionArgs = `--git-tag-version=false --allow-same-version=true`;
 
+try {
   console.info("[update-version] Updating root package...");
   execSync(`pnpm version ${newVersion} ${pnpmVersionArgs}`, execOpts);
 
