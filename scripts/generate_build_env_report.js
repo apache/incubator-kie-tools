@@ -21,7 +21,7 @@ const pnpmFilter = process.argv.slice(2).join(" ");
 if (pnpmFilter.length === 0) {
   console.info("[generate-build-env-report] Generating build-env report of all packages...");
 } else {
-  console.info(`[generate-build-env-report] Generating build-env report of packages filtered by '${pnpmFilter}'...`);
+  console.info(`[generate-build-env-report] Generating build-env report of packages filtered by '${pnpmFilter}'`);
 }
 
 async function main() {
@@ -31,14 +31,27 @@ async function main() {
     dir: pkgPath,
   }));
 
-  for (const pkg of pkgs) {
-    console.info(`${pkg.manifest.name} (at ${pkg.dir})`);
-    console.info(JSON.stringify(pkg.env.self, undefined, 2));
+  const varsReport = buildVarsReport(pkgs);
+  const varsWithMultipleOwners = Array.from(Object.values(varsReport)).filter((varLine) => varLine.owner.size > 1);
+  if (varsWithMultipleOwners.length > 0) {
+    console.info("[generate-build-env-report] ERROR: Found env vars with multiple owners.");
+    console.info(varsWithMultipleOwners);
+    console.info("[generate-build-env-report] Done.");
+    process.exit(1);
   }
-}
 
-// TODO: Detect duplicate vars
-// TODO: Detect duplicate env root properties
+  const envsReport = buildEnvsReport(pkgs);
+  const envsWithConflictingRootObjectNames = [];
+  if (envsWithConflictingRootObjectNames.length > 0) {
+    console.info("[generate-build-env-report] ERROR: Found envs with conflicting root object names.");
+    console.info(envsWithConflictingRootObjectNames);
+    console.info("[generate-build-env-report] Done.");
+    process.exit(1);
+  }
+
+  console.info(varsReport);
+  console.info("[generate-build-env-report] Done.");
+}
 
 function findPathsOfPackagesWithEnvDir() {
   try {
@@ -53,6 +66,38 @@ function findPathsOfPackagesWithEnvDir() {
     console.info(e.stdout.toString());
     process.exit(1);
   }
+}
+
+function buildEnvsReport(pkgs) {
+  // TODO: tiago implement
+}
+
+function buildVarsReport(pkgs) {
+  return pkgs
+    .flatMap((pkg) => [
+      ...Array.from(Object.keys(pkg.env.self.vars)).map((name) => ({
+        ...pkg.env.self.vars[name],
+        owner: [pkg.manifest.name],
+        accessibleBy: [pkg.manifest.name],
+      })),
+      ...Array.from(Object.keys(pkg.env.vars)).map((name) => ({
+        ...pkg.env.vars[name],
+        owner: [],
+        accessibleBy: [pkg.manifest.name],
+      })),
+    ])
+    .reduce(
+      (acc, next) => ({
+        ...acc,
+        [next.name]: {
+          name: next.name,
+          description: next.description,
+          owner: new Set([...(acc[next.name]?.owner ?? []), ...(next.owner ?? [])]),
+          accessibleBy: new Set([...(acc[next.name]?.accessibleBy ?? []), ...(next.accessibleBy ?? [])]),
+        },
+      }),
+      {} // <-- start value for reduce
+    );
 }
 
 main();
