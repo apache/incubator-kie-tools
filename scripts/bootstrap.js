@@ -16,17 +16,20 @@
 
 const execSync = require("child_process").execSync;
 
-const pnpmFilterString = process.argv.slice(2).join(" ");
+let pnpmFilterString = process.argv.slice(2).join(" ");
+let pnpmFilterStringForInstalling;
 if (pnpmFilterString.length === 0) {
   console.info("[bootstrap] Bootstrapping all packages...");
+  pnpmFilterStringForInstalling = "";
 } else {
   console.info(`[bootstrap] Bootstrapping packages filtered by '${pnpmFilterString}'`);
+  pnpmFilterStringForInstalling = `${pnpmFilterString} -F .`;
 }
 
 const execOpts = { stdio: "inherit" };
 
 console.info("\n\n[bootstrap] Installing dependencies...");
-execSync(`pnpm install-dependencies ${pnpmFilterString} -F .`, execOpts); // Always install root dependencies
+execSync(`pnpm install-dependencies ${pnpmFilterStringForInstalling}`, execOpts); // Always install root dependencies
 
 console.info("\n\n[bootstrap] Linking packages with self...");
 execSync(`pnpm link-packages-with-self`, execOpts);
