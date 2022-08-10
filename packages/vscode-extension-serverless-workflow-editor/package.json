@@ -199,7 +199,7 @@
           "type": "string"
         },
         "kogito.swf.svgFilenameTemplate": {
-          "default": "$${fileBasenameNoExtension}-svg.svg",
+          "default": "${fileBasenameNoExtension}-svg.svg",
           "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
           "type": "string"
         }
