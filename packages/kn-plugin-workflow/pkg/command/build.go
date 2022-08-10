@@ -158,10 +158,10 @@ func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.Depe
 func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	cfg = BuildCmdConfig{
 		Image:      viper.GetString("image"),
-		Registry:   viper.GetString("registry"),
-		Repository: viper.GetString("repository"),
-		ImageName:  viper.GetString("name"),
-		Tag:        viper.GetString("tag"),
+		Registry:   viper.GetString("image-registry"),
+		Repository: viper.GetString("image-repository"),
+		ImageName:  viper.GetString("image-name"),
+		Tag:        viper.GetString("image-tag"),
 
 		Jib:       viper.GetBool("jib"),
 		JibPodman: viper.GetBool("jib-podman"),
