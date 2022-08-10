@@ -1,4 +1,4 @@
-@openshift-serverless-1/logic-data-index-ephemeral-rhel8
+@openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8
 Feature: logic-data-index-ephemeral-rhel8 feature.
 
   Scenario: verify if all labels are correctly set on logic-data-index-ephemeral-rhel8 image

@@ -1,6 +1,6 @@
 schema_version: 1
 
-name: "openshift-serverless-1/logic-data-index-ephemeral-rhel8"
+name: "openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8"
 version: "1.24.0"
 description: "Red Hat build of Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider"
 

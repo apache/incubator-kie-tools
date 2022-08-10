@@ -15,7 +15,7 @@
 @quay.io/kiegroup/kogito-trusty-redis
 @quay.io/kiegroup/kogito-trusty-postgresql
 @rhpam-7/rhpam-kogito-runtime-jvm-rhel8
-@openshift-serverless-1/logic-data-index-ephemeral-rhel8
+@openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8
 Feature: Common tests for Custom TrustStore configuration
   Scenario: Verify if a custom certificate is correctly handled
     When container is started with command /home/kogito/kogito-app-launch.sh

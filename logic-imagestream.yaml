@@ -26,4 +26,4 @@ items:
           type: Local
         from:
           kind: DockerImage
-          name: registry.redhat.io/openshift-serverless-1/logic-data-index-ephemeral-rhel8:1.24.0
+          name: registry.redhat.io/openshift-serverless-1-tech-preview/logic-data-index-ephemeral-rhel8:1.24.0
