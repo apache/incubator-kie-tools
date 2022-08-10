@@ -20,10 +20,10 @@ BIN_DARWIN_ARM64 ?= $(BIN)-darwin-arm64
 BIN_LINUX        ?= $(BIN)-linux-amd64
 BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 
-SET_QUARKUS_VERSION := main.quarkusVersion=$(QUARKUS_VERSION)
-SET_KOGITO_VERSION  := main.kogitoVersion=$(KOGITO_VERSION)
-SET_VERSION         := main.pluginVersion=$(PLUGIN_VERSION)
-LDFLAGS             := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_VERSION)"
+SET_QUARKUS_PLATFORM_GROUP := main.quarkusPlatformGroup=$(QUARKUS_PLATFORM_GROUP)
+SET_QUARKUS_VERSION        := main.quarkusVersion=$(QUARKUS_VERSION)
+SET_VERSION                := main.pluginVersion=$(PLUGIN_VERSION)
+LDFLAGS                    := "-X $(SET_QUARKUS_PLATFORM_GROUP) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION)"
 
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)
