@@ -572,7 +572,7 @@ jobs:
           asset_name: STAGING__kn-workflow-linux-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS"
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -583,7 +583,7 @@ jobs:
           asset_name: STAGING__kn-workflow-darwin-amd64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS M1"
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for macOS M1 (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
@@ -594,7 +594,7 @@ jobs:
           asset_name: STAGING__kn-workflow-darwin-arm64-${{ inputs.tag }}
           asset_content_type: application/octet-stream
 
-      - name: "STAGING: Knative CLI Workflow Plugin for Windows"
+      - name: "STAGING: Knative CLI Workflow Plugin for Windows (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
