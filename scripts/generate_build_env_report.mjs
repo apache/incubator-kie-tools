@@ -15,6 +15,7 @@
  */
 
 import * as path from "path";
+import * as url from "url";
 import * as fs from "fs";
 import { markdownTable } from "markdown-table";
 import { treatVarToPrint } from "../packages/build-env/dist/index.js";
@@ -52,7 +53,7 @@ async function main() {
 
   const pkgs = await Promise.all(
     pkgPathsWithEnvDir.map(async (pkgPath) => ({
-      env: (await import(path.resolve(path.join(pkgPath, "env", "index.js")))).default,
+      env: (await import(url.pathToFileURL(path.resolve(path.join(pkgPath, "env", "index.js"))))).default,
       manifest: JSON.parse(fs.readFileSync(path.resolve(pkgPath, "package.json"), "utf-8")),
       dir: pkgPath,
     }))
