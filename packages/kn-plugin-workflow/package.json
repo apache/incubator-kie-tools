@@ -36,5 +36,11 @@
   "devDependencies": {
     "@kie-tools/build-env": "workspace:*",
     "cross-env": "^7.0.3"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "go",
+      "make"
+    ]
   }
 }

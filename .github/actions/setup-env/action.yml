@@ -79,7 +79,7 @@ runs:
       run: |
         echo "STEP: Bootstrap (partial)"
         cd ${{ inputs.path }}
-        pnpm bootstrap -F "...[${{ inputs.base_sha }}]..." -F .
+        pnpm bootstrap -F "...[${{ inputs.base_sha }}]..."
 
     - name: "Check dependencies mismatches"
       shell: bash

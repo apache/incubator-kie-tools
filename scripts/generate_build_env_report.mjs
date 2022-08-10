@@ -16,36 +16,43 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { execSync } from "child_process";
 import { markdownTable } from "markdown-table";
 import { treatVarToPrint } from "../packages/build-env/dist/index.js";
+import { pnpmFilter } from "./pnpm_filter.js";
 
-let pnpmFilter;
+let pnpmFilterString;
 let outputFilePath;
 let complete = false;
 if (process.argv[2] === "--write-to") {
   outputFilePath = process.argv[3];
-  pnpmFilter = process.argv.slice(4).join(" ");
+  pnpmFilterString = process.argv.slice(4).join(" ");
 } else if (process.argv[2] === "--complete") {
   complete = true;
-  pnpmFilter = process.argv.slice(3).join(" ");
+  pnpmFilterString = process.argv.slice(3).join(" ");
   outputFilePath = undefined;
 } else {
   complete = false;
-  pnpmFilter = process.argv.slice(2).join(" ");
+  pnpmFilterString = process.argv.slice(2).join(" ");
   outputFilePath = undefined;
 }
 
-if (pnpmFilter.length === 0) {
-  console.info("[generate-build-env-report] Generating build-env report of all packages...");
-} else {
-  console.info(`[generate-build-env-report] Generating build-env report of packages filtered by '${pnpmFilter}'`);
-}
-
 async function main() {
+  if (pnpmFilterString.length === 0) {
+    console.info("[generate-build-env-report] Generating build-env report of all packages...");
+  } else {
+    console.info(
+      `[generate-build-env-report] Generating build-env report of packages filtered by '${pnpmFilterString}'`
+    );
+  }
+
+  // NOTE: This is not recursive as build-env
+  const pkgPathsWithEnvDir = Object.keys(await pnpmFilter(pnpmFilterString, { alwaysIncludeRoot: false })).filter(
+    (pkgPath) => fs.existsSync(path.resolve(pkgPath, "env"))
+  );
+
   const pkgs = await Promise.all(
-    findPathsOfPackagesWithEnvDir().map(async (pkgPath) => ({
-      env: (await import(path.join(pkgPath, "env", "index.js"))).default,
+    pkgPathsWithEnvDir.map(async (pkgPath) => ({
+      env: (await import(path.resolve(path.join(pkgPath, "env", "index.js")))).default,
       manifest: JSON.parse(fs.readFileSync(path.resolve(pkgPath, "package.json"), "utf-8")),
       dir: pkgPath,
     }))
@@ -82,22 +89,6 @@ async function main() {
   console.info("[generate-build-env-report] Done.");
 }
 
-function findPathsOfPackagesWithEnvDir() {
-  try {
-    // NOTE: This is not recursive as build-env
-    const pnpmExecOutput = execSync(
-      `pnpm -r ${pnpmFilter} --workspace-concurrency=1 exec 'bash' '-c' 'test -d env && pwd || true'`,
-      {
-        stdio: "pipe",
-      }
-    );
-    return pnpmExecOutput.toString().trim().split("\n");
-  } catch (e) {
-    console.info(e.stdout.toString());
-    process.exit(1);
-  }
-}
-
 function buildVarsReport(pkgs) {
   return pkgs
     .flatMap((pkg) => [
@@ -127,7 +118,7 @@ function buildVarsReport(pkgs) {
 }
 
 function concatArraysWithoutDuplicates(a, b) {
-  return [...new Set([...(a ?? []), ...(b ?? [])])];
+  return new Set([...(a ?? []), ...(b ?? [])]);
 }
 
 await main();
