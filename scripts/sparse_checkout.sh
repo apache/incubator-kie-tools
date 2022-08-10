@@ -41,7 +41,7 @@ eval "git sparse-checkout set $KIE_TOOLS_PATHS_INCLUDED_BY_DEFAULT $KIE_TOOLS_PA
 echo ""
 
 echo "[kie-tools-sparse-checkout] Installing packages dependencies..."
-eval "pnpm install-dependencies $KIE_TOOLS_PACKAGES_PNPM_FILTER_STRING -F . --frozen-lockfile && pnpm link-packages-with-self"
+eval "pnpm bootstrap $KIE_TOOLS_PACKAGES_PNPM_FILTER_STRING -F . --frozen-lockfile"
 echo ""
 
 echo "[kie-tools-sparse-checkout] Building packages with 'build:dev'..."
