@@ -23,12 +23,12 @@ import { TextDocument } from "vscode-languageserver-textdocument";
  * @param lineFrom if you want to get the next line set to 1
  * @returns only the line
  */
-export const getLineFromOffset = (fullText: string, offset: number | undefined, lineFrom = 0): string => {
+export function getLineFromOffset(fullText: string, offset: number | undefined, lineFrom = 0): string {
   const partialText = fullText.substring(offset!);
   return partialText.substring(0).split("\n")[lineFrom];
-};
+}
 
-type ContentWithCursor = `${string}🎯${string}`;
+export type ContentWithCursor = `${string}🎯${string}`;
 
 export function treat(content: ContentWithCursor) {
   const trimmedContent = content.trim();

@@ -15,8 +15,9 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { SwfLanguageService, SwfLanguageServiceArgs, SwfLsNode } from "./SwfLanguageService";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
+import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { SwfLsNode, CompletionTranslatorArgs } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfJsonLanguageService {
@@ -42,7 +43,7 @@ export class SwfJsonLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content), completionTranslator });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
@@ -50,10 +51,18 @@ export class SwfJsonLanguageService {
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
-    return this.ls.getDiagnostics(args);
+    return this.ls.getDiagnostics({ ...args, rootNode: this.parseContent(args.content) });
   }
 
   public dispose() {
     return this.ls.dispose();
   }
 }
+
+const completionTranslator = ({ completion, kind }: CompletionTranslatorArgs): string => {
+  if (kind === CompletionItemKind.Module) {
+    return JSON.stringify(completion, null, 2).slice(1, -1);
+  }
+
+  return JSON.stringify(completion, null, 2);
+};

@@ -35,19 +35,11 @@ import * as swfModelQueries from "./modelQueries";
 import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-
-// types SwfJSONPath, SwfLSNode, SwfLSNodeType need to be compatible with jsonc types
-export declare type SwfJsonPath = (string | number)[];
-export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
-export type SwfLsNode = {
-  type: SwfLsNodeType;
-  value?: any;
-  offset: number;
-  length: number;
-  colonOffset?: number;
-  parent?: SwfLsNode;
-  children?: SwfLsNode[];
-};
+import { doRefValidation } from "./refValidation";
+import { matchNodeWithLocation } from "./matchNodeWithLocation";
+import { nodeUpUntilType } from "./nodeUpUntilType";
+import { findNodesAtLocation } from "./findNodesAtLocation";
+import { SwfJsonPath, SwfLsNode, CompletionTranslatorArgs } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -58,6 +50,7 @@ export type SwfLanguageServiceConfig = {
   ) => Promise<{ specsDirRelativePosixPath: string; specsDirAbsolutePosixPath: string }>;
   shouldDisplayServiceRegistriesIntegration: () => Promise<boolean>;
   shouldReferenceServiceRegistryFunctionsWithUrls: () => Promise<boolean>;
+  shouldIncludeJsonSchemaDiagnostics: () => Promise<boolean>;
 };
 
 export type SwfLanguageServiceArgs = {
@@ -90,6 +83,7 @@ export class SwfLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
     rootNode: SwfLsNode | undefined;
+    completionTranslator: (args: CompletionTranslatorArgs) => string;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
       return [];
@@ -127,11 +121,9 @@ export class SwfLanguageService {
       }))
     );
 
-    const nodeAtOffset = findNodeAtOffset(args.rootNode, cursorOffset);
-
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => matchNodeWithLocation(args.rootNode, nodeAtOffset, path))
+        .filter(([path, _]) => matchNodeWithLocation(args.rootNode, currentNode, path))
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
@@ -142,6 +134,7 @@ export class SwfLanguageService {
             overwriteRange,
             swfCompletionItemServiceCatalogServices,
             langServiceConfig: this.args.config,
+            completionTranslator: args.completionTranslator,
           });
         })
     );
@@ -149,7 +142,11 @@ export class SwfLanguageService {
     return Promise.resolve(result.flat());
   }
 
-  public async getDiagnostics(args: { content: string; uriPath: string }) {
+  public async getDiagnostics(args: { content: string; uriPath: string; rootNode: SwfLsNode | undefined }) {
+    if (!args.rootNode) {
+      return [];
+    }
+
     const textDocument = TextDocument.create(
       args.uriPath,
       `serverless-workflow-${this.args.lang.fileLanguage}`,
@@ -157,25 +154,38 @@ export class SwfLanguageService {
       args.content
     );
 
-    const schemaUri = "https://serverlessworkflow.io/schemas/0.8/workflow.json";
+    const refValidationResults = doRefValidation({ textDocument, rootNode: args.rootNode });
 
-    const jsonLanguageService = getLanguageService({
-      schemaRequestService: (uri) => {
-        if (uri === schemaUri) {
-          return Promise.resolve(JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA));
+    if (this.args.lang.fileLanguage === FileLanguage.YAML) {
+      //TODO: Include JSON Schema validation for YAML as well. Probably use what the YAML extension uses?
+      return refValidationResults;
+    }
+
+    const schemaValidationResults = (await this.args.config.shouldIncludeJsonSchemaDiagnostics())
+      ? await this.getJsonSchemaDiagnostics(textDocument)
+      : [];
+
+    return [...schemaValidationResults, ...refValidationResults];
+  }
+
+  private async getJsonSchemaDiagnostics(textDocument: TextDocument) {
+    const jsonLs = getLanguageService({
+      schemaRequestService: async (uri) => {
+        if (uri === SW_SPEC_WORKFLOW_SCHEMA.$id) {
+          return JSON.stringify(SW_SPEC_WORKFLOW_SCHEMA);
+        } else {
+          throw new Error(`Unable to load schema from '${uri}'`);
         }
-        return Promise.reject(`Unabled to load schema at ${uri}`);
       },
     });
 
-    jsonLanguageService.configure({
+    jsonLs.configure({
       allowComments: false,
-      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: schemaUri }],
+      schemas: [{ fileMatch: this.args.lang.fileMatch, uri: SW_SPEC_WORKFLOW_SCHEMA.$id }],
     });
 
-    const jsonDocument = jsonLanguageService.parseJSONDocument(textDocument);
-
-    return await jsonLanguageService.doValidation(textDocument, jsonDocument);
+    const jsonDocument = jsonLs.parseJSONDocument(textDocument);
+    return jsonLs.doValidation(textDocument, jsonDocument);
   }
 
   public async getCodeLenses(args: {
@@ -401,6 +411,7 @@ const completions = new Map<
     currentNodePosition: { start: Position; end: Position };
     rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
+    completionTranslator: (args: CompletionTranslatorArgs) => string;
   }) => Promise<CompletionItem[]>
 >([
   [
@@ -412,6 +423,7 @@ const completions = new Map<
       swfCompletionItemServiceCatalogServices,
       document,
       langServiceConfig,
+      completionTranslator,
     }) => {
       const separator = currentNode.type === "object" ? "," : "";
       const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
@@ -436,18 +448,20 @@ const completions = new Map<
               },
             };
 
+            const kind =
+              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+                ? CompletionItemKind.Interface
+                : CompletionItemKind.Reference;
+
             return {
-              kind:
-                swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-                  ? CompletionItemKind.Interface
-                  : CompletionItemKind.Reference,
+              kind,
               label: toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
               detail:
                 swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
                   ? swfServiceCatalogService.source.url
                   : swfServiceCatalogFunc.operation,
               textEdit: {
-                newText: JSON.stringify(swfFunction, null, 2) + separator,
+                newText: completionTranslator({ completion: swfFunction, kind }) + separator,
                 range: overwriteRange,
               },
               snippet: true,
@@ -465,7 +479,7 @@ const completions = new Map<
   ],
   [
     ["functions", "*", "operation"],
-    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices }) => {
+    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
       if (!currentNode.parent?.parent) {
         return Promise.resolve([]);
       }
@@ -482,16 +496,18 @@ const completions = new Map<
         .flatMap((s) => s.functions)
         .filter((swfServiceCatalogFunc) => !existingFunctionOperations.includes(swfServiceCatalogFunc.operation))
         .map((swfServiceCatalogFunc) => {
+          const kind =
+            swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
+              ? CompletionItemKind.Function
+              : CompletionItemKind.Folder;
+
           return {
-            kind:
-              swfServiceCatalogFunc.source.type === SwfServiceCatalogFunctionSourceType.SERVICE_REGISTRY
-                ? CompletionItemKind.Function
-                : CompletionItemKind.Folder,
+            kind,
             label: `"${swfServiceCatalogFunc.operation}"`,
             detail: `"${swfServiceCatalogFunc.operation}"`,
             filterText: `"${swfServiceCatalogFunc.operation}"`,
             textEdit: {
-              newText: `"${swfServiceCatalogFunc.operation}"`,
+              newText: completionTranslator({ completion: `${swfServiceCatalogFunc.operation}`, kind }),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -502,7 +518,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices }) => {
+    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
       if (currentNode.type !== "property") {
         console.debug("Cannot autocomplete: functionRef should be a property.");
         return Promise.resolve([]);
@@ -535,7 +551,7 @@ const completions = new Map<
             sortText: `${swfFunctionRef.refName}`,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
-              newText: JSON.stringify(swfFunctionRef, null, 2),
+              newText: completionTranslator({ completion: swfFunctionRef, kind: CompletionItemKind.Module }),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -548,7 +564,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "refName"],
-    ({ overwriteRange, rootNode }) => {
+    ({ overwriteRange, rootNode, completionTranslator }) => {
       const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
         return [
           {
@@ -558,7 +574,7 @@ const completions = new Map<
             detail: `"${swfFunction.name}"`,
             filterText: `"${swfFunction.name}"`,
             textEdit: {
-              newText: `"${swfFunction.name}"`,
+              newText: completionTranslator({ completion: `${swfFunction.name}`, kind: CompletionItemKind.Value }),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -570,17 +586,14 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices }) => {
-      if (currentNode.type !== "property") {
-        console.debug("Cannot autocomplete: functionRef should be a property.");
+    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
+      const startNode = nodeUpUntilType(currentNode.type !== "object" ? currentNode : currentNode.parent, "object");
+
+      if (!startNode) {
         return Promise.resolve([]);
       }
 
-      if (!currentNode.parent) {
-        return Promise.resolve([]);
-      }
-
-      const swfFunctionRefName: string = findNodeAtLocation(currentNode.parent, ["refName"])?.value;
+      const swfFunctionRefName: string = findNodeAtLocation(startNode, ["refName"])?.value;
       if (!swfFunctionRefName) {
         return Promise.resolve([]);
       }
@@ -614,7 +627,7 @@ const completions = new Map<
           sortText: `${swfFunctionRefName} arguments`,
           detail: swfFunction.operation,
           textEdit: {
-            newText: JSON.stringify(swfFunctionRefArgs, null, 2),
+            newText: completionTranslator({ completion: swfFunctionRefArgs, kind: CompletionItemKind.Module }),
             range: overwriteRange,
           },
           insertTextFormat: InsertTextFormat.Snippet,
@@ -643,81 +656,6 @@ function toCompletionItemLabelPrefix(
     default:
       return "";
   }
-}
-
-/**
- * Check if a Node is in Location.
- *
- * @param root root node
- * @param node the Node to check
- * @param path the location to verify
- * @returns true if the node is in the location, false otherwise
- */
-export function matchNodeWithLocation(
-  root: SwfLsNode | undefined,
-  node: SwfLsNode | undefined,
-  path: SwfJsonPath
-): boolean {
-  if (!root || !node || !path || !path.length) {
-    return false;
-  }
-
-  const nodesAtLocation = findNodesAtLocation(root, path);
-
-  if (nodesAtLocation.some((currentNode) => currentNode === node)) {
-    return true;
-  }
-  if (path[path.length - 1] === "*" && node.type == "array" && node.children) {
-    return matchNodeWithLocation(root, node, path.slice(0, -1));
-  }
-
-  return false;
-}
-
-// This is very similar to `jsonc.findNodeAtLocation`, but it allows the use of '*' as a wildcard selector.
-// This means that unlike `jsonc.findNodeAtLocation`, this method always returns a list of nodes, which can be empty if no matches are found.
-export function findNodesAtLocation(root: SwfLsNode | undefined, path: SwfJsonPath): SwfLsNode[] {
-  if (!root) {
-    return [];
-  }
-
-  let nodes: SwfLsNode[] = [root];
-
-  for (const segment of path) {
-    if (segment === "*") {
-      nodes = nodes.flatMap((s) => s.children ?? []);
-      continue;
-    }
-
-    if (typeof segment === "number") {
-      const index = segment as number;
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "array" || index < 0 || !Array.isArray(n.children) || index >= n.children.length) {
-          return [];
-        }
-
-        return [n.children[index]];
-      });
-    }
-
-    if (typeof segment === "string") {
-      nodes = nodes.flatMap((n) => {
-        if (n.type !== "object" || !Array.isArray(n.children)) {
-          return [];
-        }
-
-        for (const prop of n.children) {
-          if (Array.isArray(prop.children) && prop.children[0].value === segment && prop.children.length === 2) {
-            return [prop.children[1]];
-          }
-        }
-
-        return [];
-      });
-    }
-  }
-
-  return nodes;
 }
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {

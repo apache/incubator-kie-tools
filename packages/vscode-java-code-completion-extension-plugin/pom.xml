@@ -19,7 +19,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.github.kiegroup.kie.tools</groupId>
   <artifactId>vscode-java-code-completion-extension-plugin</artifactId>
-  <version>0.0.0</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
   <name>vscode-java-code-completion-extension-plugin :: parent</name>
   <description>vscode-java-code-completion-extension-plugin parent</description>
@@ -93,6 +93,31 @@
           <compilerArgument>-err:-forbidden</compilerArgument>
           <useProjectSettings>false</useProjectSettings>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.2.7</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten-revision</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten-revision-clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <pluginManagement>

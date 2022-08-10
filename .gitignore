@@ -196,3 +196,6 @@ packages/kie-sandbox-fs/*-0.0.0-development.tgz
 
 #angular
 **/.angular
+
+#maven
+.flattened-pom.xml

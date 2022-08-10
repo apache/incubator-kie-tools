@@ -68,12 +68,12 @@ jobs:
 
           echo "Done"
 
-      - name: "Setup environment"
+      - name: "Setup environment (partial)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
-          sparse: true
+          partial: true
           base_sha: ${{ steps.merge_changes.outputs.base_sha }}
 
       - name: "Build dependencies"

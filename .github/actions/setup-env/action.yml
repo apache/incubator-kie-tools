@@ -9,12 +9,12 @@ inputs:
     description: "kie-tools path"
     required: false
     default: "."
-  sparse:
+  partial:
     description: "If true, only installs dependencies for affected packages."
     required: false
     default: "false"
   base_sha:
-    description: "If `sparse` is true, `base_sha` is used to determine the affected packages."
+    description: "If `partial` is true, `base_sha` is used to determine the affected packages."
     required: false
     default: ""
 
@@ -43,10 +43,10 @@ runs:
       with:
         java-version: 11
 
-    - name: "Set up GOLANG 1.17"
-      uses: actions/setup-go@v2
+    - name: "Set up GOLANG 1.19"
+      uses: actions/setup-go@v3
       with:
-        go-version: "1.17"
+        go-version: "1.19"
 
     - name: "Setup network timeout"
       shell: bash
@@ -65,20 +65,20 @@ runs:
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
     - name: "Bootstrap (full)"
-      if: inputs.sparse == 'false'
+      if: inputs.partial == 'false'
       shell: bash
       run: |
         echo "STEP: Bootstrap (full)"
         cd ${{ inputs.path }}
         pnpm bootstrap
 
-    - name: "Bootstrap (sparse)"
-      if: inputs.sparse == 'true'
+    - name: "Bootstrap (partial)"
+      if: inputs.partial == 'true'
       shell: bash
       run: |
-        echo "STEP: Bootstrap (sparse)"
+        echo "STEP: Bootstrap (partial)"
         cd ${{ inputs.path }}
-        pnpm install-dependencies -F "...[${{ inputs.base_sha }}]..." -F . && pnpm link-packages-with-self && pnpm generate-packages-graph && pnpm check-cli-tools
+        pnpm bootstrap -F "...[${{ inputs.base_sha }}]..." -F .
 
     - name: "Check dependencies mismatches"
       shell: bash

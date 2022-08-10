@@ -219,6 +219,10 @@ public class AutoLayout {
 
             @Override
             public void startEdgeTraversal(Edge<View<?>, Node> edge) {
+                if (edge.getSourceNode() == null || edge.getTargetNode() == null) {
+                    return;
+                }
+
                 final ELKEdge elkEdge = new ELKEdge(edge.getUUID(),
                                                     edge.getSourceNode().getUUID(),
                                                     edge.getTargetNode().getUUID());

@@ -17,18 +17,24 @@
   ],
   "scripts": {
     "build": "run-script-os",
-    "build:all": "make build-all",
-    "build:darwin": "make build-darwin",
-    "build:darwin:amd": "make build-darwin-amd64",
-    "build:darwin:arm": "make build-darwin-arm64",
+    "build:darwin": "pnpm setup:env make build-darwin",
+    "build:darwin:amd": "pnpm setup:env make build-darwin-amd64",
+    "build:darwin:arm": "pnpm setup:env make build-darwin-arm64",
     "build:dev": "rimraf dist && pnpm build",
-    "build:linux": "make build-linux",
-    "build:prod": "rimraf dist && pnpm build:all && pnpm test",
-    "build:win32": "make build-win32",
+    "build:linux": "pnpm setup:env make build-linux",
+    "build:prod": "rimraf dist && run-script-os && pnpm test",
+    "build:prod:darwin": "rimraf dist && pnpm setup:env make build-all",
+    "build:prod:linux": "rimraf dist && pnpm setup:env make build-all",
+    "build:prod:win32": "rimraf dist && pnpm setup:env:win32 make build-all",
+    "build:win32": "pnpm setup:env:win32 make build-win32",
     "install": "go mod tidy",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "setup:env": "cross-env QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) KOGITO_VERSION=$(build-env knPluginWorkflow.kogitoVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)",
+    "setup:env:win32": "pnpm powershell \"cross-env QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) KOGITO_VERSION=$(build-env knPluginWorkflow.kogitoVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)\"",
     "test": "go test ./..."
   },
   "devDependencies": {
-    "@kie-tools/build-env": "workspace:*"
+    "@kie-tools/build-env": "workspace:*",
+    "cross-env": "^7.0.3"
   }
 }

@@ -441,7 +441,7 @@ export function EditorToolbar(props: Props) {
         files: {
           "README.md": {
             content: `
-This Gist was created from KIE Sandbox.
+This Gist was created from Serverless Logic Web Tools.
 
 This file is temporary and you should not be seeing it.
 If you are, it means that creating this Gist failed and it can safely be deleted.
