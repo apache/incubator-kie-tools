@@ -17,8 +17,8 @@
 package common
 
 type DependenciesVersion struct {
-	QuarkusPlatformGroup string
-	QuarkusVersion       string
+	QuarkusPlatformGroupId string
+	QuarkusVersion         string
 }
 
 const (
@@ -38,7 +38,5 @@ const (
 	// Default values
 	DEFAULT_TAG = "latest"
 
-	// Filenames
-	WORKFLOW_CONFIG_YML = "workflow.config.yml"
-	WORKFLOW_SW_JSON    = "workflow.sw.json"
+	WORKFLOW_SW_JSON = "workflow.sw.json"
 )

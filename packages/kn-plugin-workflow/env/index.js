@@ -24,8 +24,8 @@ module.exports = composeEnv([require("@kie-tools/build-env/env")], {
       default: packageJson.version,
       description: "Knative Workflow plugin version",
     },
-    KN_PLUGIN_WORKFLOW__quarkusPlatformGroup: {
-      name: "KN_PLUGIN_WORKFLOW__quarkusPlatformGroup",
+    KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId: {
+      name: "KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId",
       default: "io.quarkus.platform",
       description: "Quarkus group to be used when creating the Kogito Serverless Workflow project",
     },
@@ -39,7 +39,7 @@ module.exports = composeEnv([require("@kie-tools/build-env/env")], {
     return {
       knPluginWorkflow: {
         version: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__version),
-        quarkusPlatformGroup: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroup),
+        quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
         quarkusVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusVersion),
       },
     };

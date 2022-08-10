@@ -61,7 +61,7 @@ func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 	{{.Name}} create --extensions kogito-addons-quarkus-persistence-postgresql,quarkus-core
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name", "extension", "quarkus-platform-group", "quarkus-version"),
+		PreRunE:    common.BindEnv("name", "extension", "quarkus-platform-group-id", "quarkus-version"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -70,8 +70,8 @@ func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
-	cmd.Flags().String("quarkus-platform-group", dependenciesVersion.QuarkusPlatformGroup, "Quarkus group to be set in the config file.")
-	cmd.Flags().String("quarkus-version", dependenciesVersion.QuarkusVersion, "Quarkus version to be set in the config file.")
+	cmd.Flags().StringP("quarkus-platform-group-id", "G", dependenciesVersion.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
+	cmd.Flags().StringP("quarkus-version", "V", dependenciesVersion.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -94,9 +94,11 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	fmt.Printf("-DplatformVersion=%s", cfg.DependenciesVersion.QuarkusVersion)
+
 	create := common.ExecCommand(
 		"mvn",
-		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroup, common.QUARKUS_MAVEN_PLUGIN, cfg.DependenciesVersion.QuarkusVersion),
+		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroupId, common.QUARKUS_MAVEN_PLUGIN, cfg.DependenciesVersion.QuarkusVersion),
 		"-DprojectGroupId=org.acme",
 		"-DnoCode",
 		fmt.Sprintf("-DplatformVersion=%s", cfg.DependenciesVersion.QuarkusVersion),
@@ -125,7 +127,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 
 // runCreateCmdConfig returns the configs from the current execution context
 func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
-	quarkusPlatformGroup := viper.GetString("quarkus-platform-group")
+	quarkusPlatformGroupId := viper.GetString("quarkus-platform-group-id")
 	quarkusVersion := viper.GetString("quarkus-version")
 
 	cfg = CreateCmdConfig{
@@ -139,8 +141,8 @@ func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 		),
 
 		DependenciesVersion: common.DependenciesVersion{
-			QuarkusPlatformGroup: quarkusPlatformGroup,
-			QuarkusVersion:       quarkusVersion,
+			QuarkusPlatformGroupId: quarkusPlatformGroupId,
+			QuarkusVersion:         quarkusVersion,
 		},
 
 		Verbose: viper.GetBool("verbose"),
