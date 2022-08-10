@@ -25,16 +25,19 @@ if (pnpmFilter.length === 0) {
 
 const execOpts = { stdio: "inherit" };
 
-console.info("[bootstrap] Installing dependencies...");
+console.info("\n\n[bootstrap] Installing dependencies...");
 execSync(`pnpm install-dependencies ${pnpmFilter}`, execOpts);
 
-console.info("[bootstrap] Linking packages with self...");
+console.info("\n\n[bootstrap] Linking packages with self...");
 execSync(`pnpm link-packages-with-self`, execOpts);
 
-console.info("[bootstrap] Generating packages graph...");
+console.info("\n\n[bootstrap] Generating packages graph...");
 execSync(`pnpm generate-packages-graph`, execOpts);
 
-console.info("[bootstrap] Checking CLI tools...");
+console.info("\n\n[bootstrap] Generating build-env report...");
+execSync(`pnpm generate-build-env-report ${pnpmFilter}`, execOpts);
+
+console.info("\n\n[bootstrap] Checking CLI tools...");
 execSync(`pnpm check-cli-tools`, execOpts);
 
-console.info("[bootstrap] Done.");
+console.info("\n\n[bootstrap] Done.");

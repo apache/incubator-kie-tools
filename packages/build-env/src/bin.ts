@@ -17,7 +17,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { EnvAndVarsWithName, getOrDefault, VarWithName } from "./index";
+import { EnvAndVarsWithName, treatVarToPrint, VarWithName } from "./index";
 
 const BUILD_ENV_RECURSION_STOP_FILE_NAME = ".build-env-root";
 
@@ -85,16 +85,8 @@ async function findEnv(startDir: string, curDir: string): Promise<EnvAndVarsWith
 
 function parseVars<T>(vars: { [K in keyof T]: VarWithName }) {
   const result: Record<string, string | undefined> = {};
-
   for (const v in vars) {
-    result[v] = getOrDefault(vars[v]);
-    if (vars[v].default === undefined && result[v]) {
-      result[v] += " <- CHANGED 👀️ ";
-    } else if (result[v] === undefined) {
-      result[v] = "[unset] Default value may vary ⚠️ ";
-    } else if (result[v] !== vars[v].default) {
-      result[v] += " <- CHANGED 👀️ ";
-    }
+    result[v] = treatVarToPrint(vars[v]);
   }
   return result;
 }
