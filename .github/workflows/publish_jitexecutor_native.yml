@@ -24,7 +24,7 @@ jobs:
         with:
           repository: kiegroup/kogito-apps
           ref: ${{ github.event.inputs.kogito_runtime_version }}
-          
+
       - name: "Set up Maven"
         uses: stCarolas/setup-maven@v4.4
         with:
