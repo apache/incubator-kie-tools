@@ -561,7 +561,7 @@ jobs:
           username: "${{ env.DASHBUILDER__baseImageAccount }}"
           password: "${{ secrets.quay_registry_password }}"
 
-      - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux"
+      - name: "STAGING: Upload Knative CLI Workflow Plugin for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
