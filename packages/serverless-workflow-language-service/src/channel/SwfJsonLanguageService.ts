@@ -59,10 +59,6 @@ export class SwfJsonLanguageService {
   }
 }
 
-const completionTranslator = ({ completion, kind }: CompletionTranslatorArgs): string => {
-  if (kind === CompletionItemKind.Module) {
-    return JSON.stringify(completion, null, 2).slice(1, -1);
-  }
-
+const completionTranslator = ({ completion }: CompletionTranslatorArgs): string => {
   return JSON.stringify(completion, null, 2);
 };

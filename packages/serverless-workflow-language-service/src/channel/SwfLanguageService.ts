@@ -587,7 +587,12 @@ const completions = new Map<
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
     ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
-      const startNode = nodeUpUntilType(currentNode.type !== "object" ? currentNode : currentNode.parent, "object");
+      if (currentNode.type !== "property" && currentNode.type !== "string") {
+        console.debug("Cannot autocomplete: arguments should be a property.");
+        return Promise.resolve([]);
+      }
+
+      const startNode = nodeUpUntilType(currentNode, "object");
 
       if (!startNode) {
         return Promise.resolve([]);

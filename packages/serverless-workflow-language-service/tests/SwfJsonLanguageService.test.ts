@@ -389,9 +389,7 @@ describe("SWF LS JSON", () => {
           "name": "testStateAction",
           "functionRef": {
             "refName":"testRelativeFunction1",
-            "arguments": {
-                🎯
-            } 
+            "arguments": 🎯 
           }
         }
       ]
@@ -413,11 +411,11 @@ describe("SWF LS JSON", () => {
       detail: "specs/testRelativeService1.yml#testRelativeFunction1",
       sortText: "testRelativeFunction1 arguments",
       textEdit: {
-        newText: `
+        newText: `{
   "argString": "\${1:}",
   "argNumber": "\${2:}",
   "argBoolean": "\${3:}"
-`,
+}`,
         range: { start: cursorPosition, end: cursorPosition },
       },
       insertTextFormat: InsertTextFormat.Snippet,

@@ -316,7 +316,6 @@ states:
 `);
 
       const rootNode = ls.parseContent(content);
-      debugger;
 
       expect(rootNode).not.toBeUndefined();
       expect(
