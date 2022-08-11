@@ -145,6 +145,12 @@ jobs:
           os: ${{ matrix.os }}
           path: kie-tools
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./kie-tools/.github/actions/bootstrap
+        with:
+          path: kie-tools
+
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         env:

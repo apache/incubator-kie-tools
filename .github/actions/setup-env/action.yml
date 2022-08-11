@@ -9,14 +9,6 @@ inputs:
     description: "kie-tools path"
     required: false
     default: "."
-  partial:
-    description: "If true, only installs dependencies for affected packages."
-    required: false
-    default: "false"
-  base_sha:
-    description: "If `partial` is true, `base_sha` is used to determine the affected packages."
-    required: false
-    default: ""
 
 runs:
   using: "composite"
@@ -63,36 +55,6 @@ runs:
         pnpm -r exec 'bash' '-c' 'mkdir .mvn'
         pnpm -r exec 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
-
-    - name: "Bootstrap (full)"
-      if: inputs.partial == 'false'
-      shell: bash
-      run: |
-        echo "STEP: Bootstrap (full)"
-        cd ${{ inputs.path }}
-        pnpm bootstrap
-
-    - name: "Bootstrap (partial)"
-      if: inputs.partial == 'true'
-      shell: bash
-      run: |
-        echo "STEP: Bootstrap (partial)"
-        cd ${{ inputs.path }}
-        pnpm bootstrap -F "...[${{ inputs.base_sha }}]..."
-
-    - name: "Check dependencies mismatches"
-      shell: bash
-      run: |
-        echo "STEP: Check dependencies mismatches"
-        cd ${{ inputs.path }}
-        npx --yes syncpack@6.2.0 list-mismatches
-
-    - name: "Check format"
-      shell: bash
-      run: |
-        echo "STEP: Check format"
-        cd ${{ inputs.path }}
-        pnpm format:check
 
     - name: "Start Xvfb (Ubuntu only)"
       shell: bash
