@@ -32,11 +32,12 @@ import org.kie.workbench.common.stunner.core.definition.adapter.binding.Bindable
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
-import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.sw.Definitions;
 import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
 import org.kie.workbench.common.stunner.sw.marshall.Context;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller;
+import org.kie.workbench.common.stunner.sw.marshall.Message;
+import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
 import org.uberfire.client.promise.Promises;
 
 @ApplicationScoped
@@ -70,22 +71,22 @@ public class ClientDiagramService {
     }
 
     public void transform(final String xml,
-                          final ServiceCallback<Diagram> callback) {
+                          final ServiceCallback<ParseResult> callback) {
         doTransform("default", xml, callback);
     }
 
     public void transform(final String fileName,
                           final String xml,
-                          final ServiceCallback<Diagram> callback) {
+                          final ServiceCallback<ParseResult> callback) {
         doTransform(fileName, xml, callback);
     }
 
     private void doTransform(final String fileName,
                              final String xml,
-                             final ServiceCallback<Diagram> callback) {
+                             final ServiceCallback<ParseResult> callback) {
         if (Objects.isNull(xml) || xml.isEmpty()) {
             Diagram newDiagram = createNewDiagram(fileName);
-            callback.onSuccess(newDiagram);
+            callback.onSuccess(new ParseResult(newDiagram, new Message[0]));
         } else {
             parse(fileName, xml, callback);
         }
@@ -118,20 +119,20 @@ public class ClientDiagramService {
     @SuppressWarnings("all")
     private void parse(final String fileName,
                        final String raw,
-                       ServiceCallback<Diagram> serviceCallback) {
+                       ServiceCallback<ParseResult> serviceCallback) {
         final Metadata metadata = createMetadata();
-        final Promise<Graph> promise = unmarshall(metadata, raw);
-        promise.then(new IThenable.ThenOnFulfilledCallbackFn<Graph, Object>() {
+        final Promise<ParseResult> promise = unmarshall(metadata, raw);
+        promise.then(new IThenable.ThenOnFulfilledCallbackFn<ParseResult, Object>() {
             @Override
-            public IThenable<Object> onInvoke(Graph graph) {
+            public IThenable<Object> onInvoke(ParseResult parseResult) {
                 final String title = "SW Test Diagram";
                 metadata.setTitle(title);
                 final Diagram diagram = diagramFactory.build(title,
                                                              metadata,
-                                                             graph);
+                                                             parseResult.getDiagram().getGraph());
                 updateClientMetadata(diagram);
 
-                serviceCallback.onSuccess(diagram);
+                serviceCallback.onSuccess(new ParseResult(diagram, parseResult.getMessages()));
                 return null;
             }
         }, new IThenable.ThenOnRejectedCallbackFn<Object>() {
@@ -149,8 +150,8 @@ public class ClientDiagramService {
         });
     }
 
-    private Promise<Graph> unmarshall(final Metadata metadata,
-                                      final String raw) {
+    private Promise<ParseResult> unmarshall(final Metadata metadata,
+                                            final String raw) {
         return marshaller.unmarshallGraph(raw);
     }
 

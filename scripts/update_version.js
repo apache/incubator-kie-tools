@@ -14,202 +14,41 @@
  * limitations under the License.
  */
 
-const fs = require("fs");
-const path = require("path");
 const execSync = require("child_process").execSync;
-const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
-const yaml = require("js-yaml");
-const { env } = require("../packages/build-env/env");
-const buildEnv = env;
-
-const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON = path.resolve(
-  "./packages/chrome-extension-pack-kogito-kie-editors/manifest.dev.json"
-);
-const CHROME_EXTENSION_KIE_EDITORS_MANIFEST_PROD_JSON = path.resolve(
-  "./packages/chrome-extension-pack-kogito-kie-editors/manifest.prod.json"
-);
-const CHROME_EXTENSION_SW_EDITOR_MANIFEST_DEV_JSON = path.resolve(
-  "./packages/chrome-extension-serverless-workflow-editor/manifest.dev.json"
-);
-const CHROME_EXTENSION_SW_EDITOR_MANIFEST_PROD_JSON = path.resolve(
-  "./packages/chrome-extension-serverless-workflow-editor/manifest.prod.json"
-);
-const EXTENDED_SERVICES_CONFIG_FILE = path.resolve("./packages/extended-services/pkg/config/config.yaml");
-const JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE = path.resolve(
-  "./packages/vscode-java-code-completion-extension-plugin/vscode-java-code-completion-extension-plugin-core/META-INF/MANIFEST.MF"
-);
-
-const ORIGINAL_ROOT_PACKAGE_JSON = require("../package.json");
-
-// MAIN
 
 const newVersion = process.argv[2];
-const pnpmFilter = ""; // TODO: `${process.argv.slice(3).join(" ")}`;
-
 if (!newVersion) {
-  console.error("Usage 'node update_version.js [version]'");
+  console.error("Usage 'node update_version.js [version] [pnpm-filter...]'");
   return 1;
 }
 
-let execOpts = {};
-const opts = process.argv[3];
-if (opts === "--silent") {
-  execOpts = { stdio: "pipe" };
+const pnpmFilterString = process.argv.slice(3).join(" ");
+if (pnpmFilterString.length === 0) {
+  console.info("[update-version] Updating versions of all packages...");
 } else {
-  execOpts = { stdio: "inherit" };
+  console.info(`[update-version] Updating versions of packages filtered by '${pnpmFilterString}'`);
 }
 
-Promise.resolve()
-  .then(() => updateNpmPackages(newVersion))
-  // TODO: extract to each mvn package
-  .then((version) => updateMvnPackages(version))
-  // TODO: extract to stunner-editors
-  .then((version) => updateSpecialInternalMvnPackagesOnStunnerEditors(version))
-  // TODO: extract to serverless-workflow-diagram-editor
-  .then((version) => updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version))
-  // TODO: extract to chrome-extension-pack-kogito-kie-editors
-  .then((version) => updateChromeKieEditorsExtensionManifestFiles(version))
-  // TODO: extract to chrome-extension-serverless-workflow-editor
-  .then((version) => updateChromeSwEditorsExtensionManifestFiles(version))
-  // TODO: extract to extended-services
-  .then((version) => updateExtendedServicesConfigFile(version))
-  // TODO: extract to vscode-java-code-completion-extension-plugin
-  .then((version) => updateJavaAutocompletionPluginManifestFile(version))
-  //
-  .then((version) => runBootstrap(version))
-  .then(async (version) => {
-    console.info(`[update-version] Formatting files...`);
-    execSync(`pnpm pretty-quick`, execOpts);
-    return version;
-  })
-  .then((version) => {
-    console.info(`[update-version] Updated to '${version}'.`);
-    console.info(`[update-version] Done.`);
-  })
-  .catch((error) => {
-    console.error(error);
-    console.error("");
-    console.error(`[update-version] Error updating versions. There might be undesired unstaged changes.`);
-  });
+const execOpts = { stdio: "inherit" };
+const pnpmVersionArgs = `--git-tag-version=false --allow-same-version=true`;
 
-//
-
-async function updateNpmPackages(version) {
+try {
   console.info("[update-version] Updating root package...");
-  execSync(`pnpm version ${version} --git-tag-version=false --allow-same-version=true`, execOpts);
+  execSync(`pnpm version ${newVersion} ${pnpmVersionArgs}`, execOpts);
 
   console.info("[update-version] Updating workspace packages...");
-  execSync(
-    `pnpm -r ${pnpmFilter} exec pnpm version ${version} --git-tag-version=false --allow-same-version=true`,
-    execOpts
-  );
+  execSync(`pnpm -r ${pnpmFilterString} exec pnpm version ${newVersion} ${pnpmVersionArgs}`, execOpts);
 
-  console.info("[update-version] Running 'update-version-to' script on workspace packages...");
-  execSync(`pnpm -r ${pnpmFilter} update-version-to ${version}`, execOpts);
-  return version;
-}
+  console.info(`[update-version] Bootstrapping with updated version...`);
+  execSync(`pnpm bootstrap ${pnpmFilterString}`, execOpts);
 
-async function updateMvnPackages(version) {
-  console.info("[update-version] Updating Maven packages...");
+  console.info(`[update-version] Formatting files...`);
+  execSync(`pnpm pretty-quick`, execOpts);
 
-  const mvnPackages = (await findWorkspacePackages(".")).filter((pkg) =>
-    fs.existsSync(path.resolve(pkg.dir, "pom.xml"))
-  );
-  const mvnPackagesPnpmFilters = mvnPackages.map((pkg) => `-F="${pkg.manifest.name}"`).join(" ");
-  execSync(
-    `pnpm -r ${mvnPackagesPnpmFilters} --workspace-concurrency=1 exec 'bash' '-c' 'mvn versions:set versions:commit -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}'`,
-    execOpts
-  );
-  return version;
-}
-
-async function updateSpecialInternalMvnPackagesOnStunnerEditors(version) {
-  console.info("[update-version] Updating special Maven packages on Stunner Editors...");
-
-  const modules = [
-    `packages/stunner-editors/errai-bom`,
-    `packages/stunner-editors/appformer-bom`,
-    `packages/stunner-editors/kie-wb-common-bom`,
-    `packages/stunner-editors/drools-wb-bom`,
-  ];
-
-  for (const module of modules) {
-    execSync(
-      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
-      execOpts
-    );
-  }
-
-  return version;
-}
-
-async function updateSpecialInternalMvnPackagesOnSwfDiagramEditor(version) {
-  console.info("[update-version] Updating special Maven packages on Serverless Workflow Diagram Editor...");
-
-  const modules = [
-    `packages/serverless-workflow-diagram-editor/errai-bom`,
-    `packages/serverless-workflow-diagram-editor/appformer-bom`,
-    `packages/serverless-workflow-diagram-editor/kie-wb-common-bom`,
-  ];
-
-  for (const module of modules) {
-    execSync(
-      `mvn versions:set versions:commit -f ${module} -DnewVersion=${version} -DKOGITO_RUNTIME_VERSION=${buildEnv.kogitoRuntime.version} -DQUARKUS_PLATFORM_VERSION=${buildEnv.quarkusPlatform.version}`,
-      execOpts
-    );
-  }
-
-  return version;
-}
-
-async function updateChromeKieEditorsExtensionManifestFiles(version) {
-  console.info("[update-version] Updating Chrome Extension for kie editors manifest files...");
-
-  await updateChromeExtensionManifest(version, CHROME_EXTENSION_KIE_EDITORS_MANIFEST_DEV_JSON);
-  await updateChromeExtensionManifest(version, CHROME_EXTENSION_KIE_EDITORS_MANIFEST_PROD_JSON);
-
-  return version;
-}
-
-async function updateChromeSwEditorsExtensionManifestFiles(version) {
-  console.info("[update-version] Updating Chrome Extension for sw editor manifest files...");
-
-  await updateChromeExtensionManifest(version, CHROME_EXTENSION_SW_EDITOR_MANIFEST_DEV_JSON);
-  await updateChromeExtensionManifest(version, CHROME_EXTENSION_SW_EDITOR_MANIFEST_PROD_JSON);
-
-  return version;
-}
-
-async function updateChromeExtensionManifest(version, manifestPath) {
-  const manifest = { ...require(manifestPath), version };
-  manifest.version = version;
-
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest));
-}
-
-async function updateExtendedServicesConfigFile(version) {
-  console.info("[update-version] Updating Extended Services config file...");
-  const config = yaml.load(fs.readFileSync(EXTENDED_SERVICES_CONFIG_FILE, "utf-8"));
-  config.app.version = version;
-  fs.writeFileSync(EXTENDED_SERVICES_CONFIG_FILE, yaml.dump(config));
-
-  return version;
-}
-
-async function updateJavaAutocompletionPluginManifestFile(version) {
-  console.info("[update-version] Updating Java Autocompletion Plugin Manifest file...");
-  const manifestFile = fs.readFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, "utf-8");
-  const newManifestFile = manifestFile.replace(
-    `Bundle-Version: ${ORIGINAL_ROOT_PACKAGE_JSON.version}`,
-    `Bundle-Version: ${version}`
-  );
-  fs.writeFileSync(JAVA_AUTOCOMPLETION_PLUGIN_MANIFEST_FILE, newManifestFile);
-
-  return version;
-}
-
-async function runBootstrap(version) {
-  // TODO: use pnpmFilter
-  execSync(`pnpm bootstrap`, execOpts);
-  return version;
+  console.info(`[update-version] Updated to '${newVersion}'.`);
+  console.info(`[update-version] Done.`);
+} catch (error) {
+  console.error(error);
+  console.error("");
+  console.error(`[update-version] Error updating versions. There might be undesired unstaged changes.`);
 }

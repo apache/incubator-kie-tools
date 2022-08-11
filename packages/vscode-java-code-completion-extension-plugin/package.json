@@ -22,14 +22,22 @@
     "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
     "build:prod": "pnpm lint && run-script-os",
     "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
-    "build:prod:win32": "pnpm install:mvnw && yarn powershell mvn clean install `-DskipTests=$(build-env global.build.test --not)",
+    "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env global.build.test --not)\"",
+    "install": "node install.js",
     "install:mvnw": "mvn wrapper:wrapper -f ./",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {},
   "devDependencies": {
+    "@kie-tools-core/maven-config-setup-helper": "workspace:*",
     "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools/build-env": "workspace:*"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
   }
 }

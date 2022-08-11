@@ -145,7 +145,11 @@ export function ServiceRegistrySettingsTab() {
               <FormGroup
                 label={"Name"}
                 labelIcon={
-                  <Popover bodyContent={"Name to identify your Service Registry instance across the Sandbox."}>
+                  <Popover
+                    bodyContent={
+                      "Name to identify your Service Registry instance across the Serverless Logic Web Tools."
+                    }
+                  >
                     <button
                       type="button"
                       aria-label="More info for name field"

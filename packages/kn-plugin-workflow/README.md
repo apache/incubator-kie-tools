@@ -12,14 +12,14 @@ All the commands in this section should be performed in the monorepo root.
 
 - Node `>= 16.13.2` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
-- Go `1.17` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.19` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 ### Installing and linking dependencies
 
 The following command will install the `kn-plugin-workflow` dependencies and link it with any other monorepo
 package that is listed in the `package.json`:
 
-- `pnpm install-dependencies -F "@kie-tools/kn-plugin-workflow..." -F . && pnpm link-packages-with-self`
+- `pnpm bootstrap -F "@kie-tools/kn-plugin-workflow..."`
 
 ### Building
 

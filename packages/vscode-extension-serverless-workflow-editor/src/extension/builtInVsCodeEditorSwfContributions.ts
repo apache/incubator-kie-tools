@@ -15,7 +15,6 @@
  */
 
 import {
-  getFileLanguageOrThrow,
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
@@ -30,10 +29,11 @@ import { debounce } from "../debounce";
 import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
-
-const SWF_YAML_LANGUAGE_ID = "serverless-workflow-yaml";
-const SWF_JSON_LANGUAGE_ID = "serverless-workflow-json";
+import {
+  SWF_JSON_LANGUAGE_ID,
+  SWF_YAML_LANGUAGE_ID,
+  VsCodeSwfLanguageService,
+} from "./languageService/VsCodeSwfLanguageService";
 
 function isSwf(doc: TextDocument | undefined) {
   return (
@@ -92,11 +92,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         // Ignore non SWF files
         return;
       }
-      return setSwfDiagnostics(
-        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(document.uri.path)),
-        document,
-        swfDiagnosticsCollection
-      );
+      return setSwfDiagnostics(args.vsCodeSwfLanguageService.getLs(document), document, swfDiagnosticsCollection);
     })
   );
 
@@ -108,7 +104,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         return;
       }
       return setSwfDiagnostics(
-        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(editor.document.uri.path)),
+        args.vsCodeSwfLanguageService.getLs(editor.document),
         editor.document,
         swfDiagnosticsCollection
       );
@@ -124,7 +120,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         return;
       }
       setSwfDiagnosticsDebounced(
-        args.vsCodeSwfLanguageService.getLs(getFileLanguageOrThrow(event.document.uri.path)),
+        args.vsCodeSwfLanguageService.getLs(event.document),
         event.document,
         swfDiagnosticsCollection
       );
@@ -144,12 +140,10 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       { scheme: "file", pattern: "**/*.sw.json" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
-          const lsCodeLenses = await args.vsCodeSwfLanguageService
-            .getLs(getFileLanguageOrThrow(document.uri.path))
-            .getCodeLenses({
-              uri: document.uri.toString(),
-              content: document.getText(),
-            });
+          const lsCodeLenses = await args.vsCodeSwfLanguageService.getLs(document).getCodeLenses({
+            uri: document.uri.toString(),
+            content: document.getText(),
+          });
 
           const vscodeCodeLenses: vscode.CodeLens[] = lsCodeLenses.map((lsCodeLens) => {
             return new vscode.CodeLens(
@@ -185,17 +179,15 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
         ) => {
           const cursorWordRange = document.getWordRangeAtPosition(position);
 
-          const lsCompletionItems = await args.vsCodeSwfLanguageService
-            .getLs(getFileLanguageOrThrow(document.uri.path))
-            .getCompletionItems({
-              uri: document.uri.toString(),
-              content: document.getText(),
-              cursorPosition: position,
-              cursorWordRange: {
-                start: cursorWordRange?.start ?? position,
-                end: cursorWordRange?.end ?? position,
-              },
-            });
+          const lsCompletionItems = await args.vsCodeSwfLanguageService.getLs(document).getCompletionItems({
+            uri: document.uri.toString(),
+            content: document.getText(),
+            cursorPosition: position,
+            cursorWordRange: {
+              start: cursorWordRange?.start ?? position,
+              end: cursorWordRange?.end ?? position,
+            },
+          });
 
           const vscodeCompletionItems: vscode.CompletionItem[] = lsCompletionItems.map((lsCompletionItem) => {
             const rangeStart = (lsCompletionItem.textEdit as ls.TextEdit).range.start;

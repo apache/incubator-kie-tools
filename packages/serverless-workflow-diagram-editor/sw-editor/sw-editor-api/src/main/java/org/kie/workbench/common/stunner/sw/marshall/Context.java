@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -33,6 +35,7 @@ public class Context {
     // TODO: Need to keep a ref to the whole graph?
     final Index<?, ?> graphIndex;
     private Node workflowRootNode;
+    private final List<Message> messages = new ArrayList<>();
 
     public Context(Index<?, ?> graphIndex) {
         this.graphIndex = graphIndex;
@@ -92,5 +95,17 @@ public class Context {
 
     static String generateUUID() {
         return UUID.uuid();
+    }
+
+    public Message[] getMessages() {
+        return messages.toArray(new Message[0]);
+    }
+
+    public void addMessage(Message message) {
+        messages.add(message);
+    }
+
+    public void clearMessages() {
+        messages.clear();
     }
 }

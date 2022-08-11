@@ -65,6 +65,8 @@ import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
+import org.kie.workbench.common.stunner.sw.marshall.Message;
+import org.kie.workbench.common.stunner.sw.marshall.ParseResult;
 import org.uberfire.backend.vfs.Path;
 import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
@@ -139,16 +141,21 @@ public class DiagramEditor {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
-                                     new ServiceCallback<Diagram>() {
+                                     new ServiceCallback<ParseResult>() {
                                          @Override
-                                         public void onSuccess(final Diagram diagram) {
+                                         public void onSuccess(final ParseResult parseResult) {
                                              stunnerEditor
                                                      .close()
-                                                     .open(diagram, new SessionPresenter.SessionPresenterCallback() {
+                                                     .open(parseResult.getDiagram(), new SessionPresenter.SessionPresenterCallback() {
                                                          @Override
                                                          public void onSuccess() {
                                                              onDiagramOpenSuccess();
                                                              scaleToFitWorkflow(stunnerEditor);
+                                                             if (parseResult.getMessages().length > 0) {
+                                                                 for (Message m : parseResult.getMessages()) {
+                                                                     stunnerEditor.addError(m.toString());
+                                                                 }
+                                                             }
                                                              success.onInvoke((Void) null);
                                                          }
 
@@ -196,12 +203,17 @@ public class DiagramEditor {
             stunnerEditor.clearAlerts();
             diagramService.transform(path,
                                      value,
-                                     new ServiceCallback<Diagram>() {
+                                     new ServiceCallback<ParseResult>() {
 
                                          @Override
-                                         public void onSuccess(final Diagram diagram) {
-                                             renderDiagram = diagram;
-                                             updateDiagramTimer.schedule(UPDATE_DIAGRAM_TIMER_INTERVAL, diagram);
+                                         public void onSuccess(final ParseResult parseResult) {
+                                             renderDiagram = parseResult.getDiagram();
+                                             updateDiagramTimer.schedule(UPDATE_DIAGRAM_TIMER_INTERVAL, parseResult.getDiagram());
+                                             if (parseResult.getMessages().length > 0) {
+                                                 for (Message m : parseResult.getMessages()) {
+                                                     stunnerEditor.addError(m.toString());
+                                                 }
+                                             }
                                              success.onInvoke((Void) null);
                                          }
 

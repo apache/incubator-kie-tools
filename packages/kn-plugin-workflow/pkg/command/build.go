@@ -47,7 +47,7 @@ type BuildCmdConfig struct {
 	Verbose bool
 }
 
-func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
+func NewBuildCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
 		Short: "Build a Kogito Serverless Workflow project and generate a container image",
@@ -94,7 +94,7 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		_, err := runBuild(cmd, args, dependenciesVersion)
+		_, err := runBuild(cmd, args)
 		return err
 	}
 
@@ -114,7 +114,7 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) (out string, err error) {
+func runBuild(cmd *cobra.Command, args []string) (out string, err error) {
 	start := time.Now()
 
 	cfg, err := runBuildCmdConfig(cmd)
@@ -137,12 +137,11 @@ func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.Depe
 		}
 	}
 
-	quarkusVersion, _, err := ReadConfig(dependenciesVersion)
 	if err != nil {
 		return
 	}
 
-	if err = runAddExtension(cfg, quarkusVersion); err != nil {
+	if err = runAddExtension(cfg); err != nil {
 		return
 	}
 
@@ -158,10 +157,10 @@ func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.Depe
 func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	cfg = BuildCmdConfig{
 		Image:      viper.GetString("image"),
-		Registry:   viper.GetString("registry"),
-		Repository: viper.GetString("repository"),
-		ImageName:  viper.GetString("name"),
-		Tag:        viper.GetString("tag"),
+		Registry:   viper.GetString("image-registry"),
+		Repository: viper.GetString("image-repository"),
+		ImageName:  viper.GetString("image-name"),
+		Tag:        viper.GetString("image-tag"),
 
 		Jib:       viper.GetBool("jib"),
 		JibPodman: viper.GetBool("jib-podman"),
@@ -192,7 +191,7 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 // This function removes the extension that is not going to be used (if present)
 // and updates the chosen one. The entire operation is handled as an extension addition.
 // Therefore the removal is hidden from the user
-func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
+func runAddExtension(cfg BuildCmdConfig) error {
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		if err := common.RunExtensionCommand(
@@ -203,10 +202,11 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		); err != nil {
 			return err
 		}
-		if err := common.UpdateProjectExtensionsVersions(
+		if err := common.RunExtensionCommand(
 			cfg.Verbose,
+			"quarkus:add-extension",
 			common.GetFriendlyMessages("adding Quarkus extension"),
-			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion),
+			common.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
 		}
@@ -220,10 +220,11 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		); err != nil {
 			return err
 		}
-		if err := common.UpdateProjectExtensionsVersions(
+		if err := common.RunExtensionCommand(
 			cfg.Verbose,
+			"quarkus:add-extension",
 			common.GetFriendlyMessages("adding Quarkus extension"),
-			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion),
+			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
 		}
