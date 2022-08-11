@@ -94,8 +94,6 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("-DplatformVersion=%s", cfg.DependenciesVersion.QuarkusVersion)
-
 	create := common.ExecCommand(
 		"mvn",
 		fmt.Sprintf("%s:%s:%s:create", cfg.DependenciesVersion.QuarkusPlatformGroupId, common.QUARKUS_MAVEN_PLUGIN, cfg.DependenciesVersion.QuarkusVersion),
