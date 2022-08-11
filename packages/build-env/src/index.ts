@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export type EnvAndVarsWithName<T> = { vars: { [K in keyof T]: VarWithName }; env: object };
+export type EnvAndVarsWithName<T> = { vars: { [K in keyof T]: VarWithName }; env: object; self: EnvAndVarsWithName<T> };
 
 export type Var = {
   default: string | undefined;
@@ -45,9 +45,50 @@ export function varsWithName<T>(obj: { [K in keyof T]: Var }) {
   return obj as { [K in keyof T]: VarWithName };
 }
 
-export function composeEnv<T>(deps: EnvAndVarsWithName<any>[], obj: EnvAndVarsWithName<T>) {
+export function treatVarToPrint<T>(varr: VarWithName) {
+  let value = getOrDefault(varr);
+  if (varr.default === undefined && value) {
+    value += " <- CHANGED 👀️ ";
+  } else if (value === undefined) {
+    value = "[unset] Default value may vary ⚠️ ";
+  } else if (value !== varr.default) {
+    value += " <- CHANGED 👀️ ";
+  }
+  return value;
+}
+
+function detectConflictingProps<T>(acc: object, d: object | EnvAndVarsWithName<T>) {
+  const accProps = new Set(Object.keys(acc));
+  return Object.keys(d).filter((a) => accProps.has(a));
+}
+
+export function composeEnv<T>(deps: EnvAndVarsWithName<any>[], self: EnvAndVarsWithName<T>) {
+  // this avoids transitive dependencies coming from env deps
+  // and respects the order of "import"
+  const selfEnvs = [...deps.map((s) => s.self), self];
+
   return {
-    vars: { ...obj.vars, ...deps.reduce((acc, d) => ({ ...acc, ...d.vars }), {}) },
-    env: { ...obj.env, ...deps.reduce((acc, d) => ({ ...acc, ...d.env }), {}) },
+    vars: selfEnvs.reduce((acc, d) => {
+      const conflictingProps = detectConflictingProps(acc, d.vars);
+      if (conflictingProps.length > 0) {
+        console.error("[build-env] ERROR: Found conflicting vars.");
+        console.error(conflictingProps);
+        console.error("[build-env] Done.");
+        process.exit(1);
+      }
+      return { ...acc, ...d.vars };
+    }, {}),
+    env: selfEnvs.reduce((acc, d) => {
+      const conflictingProps = detectConflictingProps(acc, d.env);
+      if (conflictingProps.length > 0) {
+        console.error("[build-env] ERROR: Found conflicting root properties.");
+        console.error(conflictingProps);
+        console.error("[build-env] Done.");
+        process.exit(1);
+      }
+
+      return { ...acc, ...d.env };
+    }, {}),
+    self,
   };
 }

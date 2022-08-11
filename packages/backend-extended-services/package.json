@@ -30,5 +30,11 @@
     "@kie-tools-core/maven-config-setup-helper": "workspace:*",
     "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools/build-env": "workspace:*"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "java",
+      "mvn"
+    ]
   }
 }

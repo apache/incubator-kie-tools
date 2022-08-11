@@ -22,7 +22,7 @@
     "copy:extended-services": "run-script-os",
     "copy:extended-services:darwin:win32": "echo \"Copy extended-services not supported\"",
     "copy:extended-services:linux": "cp -R ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless",
-    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServices.image.buildTags) | xargs printf -- \"-t $(build-env extendedServices.image.registry)/$(build-env extendedServices.image.account)/$(build-env extendedServices.image.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServicesImage.buildTags) | xargs printf -- \"-t $(build-env extendedServicesImage.registry)/$(build-env extendedServicesImage.account)/$(build-env extendedServicesImage.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "dependencies": {
     "@kie-tools/extended-services": "workspace:*"

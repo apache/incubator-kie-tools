@@ -15,6 +15,7 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
+    "install": "node install.js",
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve --env dev",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
