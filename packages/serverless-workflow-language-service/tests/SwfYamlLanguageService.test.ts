@@ -293,6 +293,37 @@ states:
         ],
       });
     });
+
+    test("parsing content with an incomplete functionRef", async () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+
+      const { content } = trim(`
+---
+states:
+- name: testState1
+  transition: end
+  actions:
+  - name: testStateAction1
+    functionRef: 
+      a
+  - name: testStateAction2
+    functionRef:
+      refName: myFunc
+`);
+
+      const rootNode = ls.parseContent(content);
+      debugger;
+
+      expect(rootNode).not.toBeUndefined();
+      expect(
+        rootNode?.children?.[0].children?.[1].children?.[0].children?.[2].children?.[1].children?.[0].children?.[1]
+          .children?.[1].value
+      ).toBe("a");
+    });
   });
 
   test("basic", async () => {
