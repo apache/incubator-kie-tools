@@ -16,11 +16,9 @@
 
 import {
   findNodeAtOffset,
-  nodeUpUntilType,
+  matchNodeWithLocation,
   SwfJsonLanguageService,
   SwfYamlLanguageService,
-  SwfLsNode,
-  matchNodeWithLocation,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
 import { treat } from "./testUtils";
@@ -35,7 +33,7 @@ describe("matchNodeWithLocation", () => {
       });
       const { content, cursorOffset } = treat(`🎯{}`);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
       expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
@@ -53,79 +51,65 @@ describe("matchNodeWithLocation", () => {
   "functions": [🎯]
 }`);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
       expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
       expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
     });
 
-    describe("matching functions array", () => {
-      test("with cursorOffset at the functions array", () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`
-{
-  "functions": [🎯
-  {
-        "name": "function1",
-        "operation": "openapi.yml#getGreeting"
-  }]
-}`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+    test("matching functionRef", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
       });
-
-      test("with cursorOffset at the first function", () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`
-{
-  "functions": [{🎯
-        "name": "function1",
-        "operation": "openapi.yml#getGreeting"
-  }]
-}`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      });
-
-      test("with cursorOffset at the second function", () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`
+      const { content, cursorOffset } = treat(`
 {
   "functions": [
-  {
-        "name": "function1",
-        "operation": "openapi.yml#getGreeting"
-  },
-  {🎯
-        "name": "function2",
-        "operation": "openapi.yml#getGreeting"
-  }]
+    {
+      "name": "myFunc",
+      "operation": "./specs/myService#myFunc",
+      "type": "rest"
+    }
+  ],
+  "states": [
+    {
+      "name": "testState1",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        }
+      ]
+    },
+    {
+      "name": "testState2",
+      "type": "operation",
+      "transition": "end",
+      "actions": [
+        {
+          "name": "testStateAction1",
+          "functionRef": {
+            "refName":"myFunc"
+          }
+        },
+        {
+          "name": "testStateAction2",
+          "functionRef": 🎯
+        }
+      ]
+    }
+  ]
 }`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      });
+      expect(matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef"])).toBeTruthy();
     });
 
     test("matching refName", () => {
@@ -179,7 +163,7 @@ describe("matchNodeWithLocation", () => {
   ]
 }`);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
@@ -240,11 +224,45 @@ describe("matchNodeWithLocation", () => {
   ]
 }`);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
       ).toBeTruthy();
+    });
+
+    describe("matching functions array", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      let { content, cursorOffset } = treat(`
+{
+  "functions": [🎯 {
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
+
+      test("should not match functions with states", () => {
+        expect(matchNodeWithLocation(root!, node!, ["states", "*"])).toBeFalsy();
+        expect(matchNodeWithLocation(root!, node!, ["states"])).toBeFalsy();
+      });
+
+      test("with cursorOffset at the functions array", () => {
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
+      });
+
+      test("with cursorOffset at the first function", () => {
+        const node = findNodeAtOffset(root!, cursorOffset + 1, true);
+
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      });
     });
   });
 
@@ -257,7 +275,7 @@ describe("matchNodeWithLocation", () => {
       });
       const { content, cursorOffset } = treat(`---🎯 `);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
       expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
@@ -275,51 +293,11 @@ describe("matchNodeWithLocation", () => {
 ---
 functions: [🎯]`);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
       expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
       expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
-    });
-
-    describe("matching functions array", () => {
-      test("with cursorOffset at the first function", () => {
-        const ls = new SwfYamlLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`
----
-functions:
-- name: function1🎯
-  operation: openapi.yml#getGreeting`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      });
-
-      test("with cursorOffset at the second function", () => {
-        const ls = new SwfYamlLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`---
-functions:
-- name: function1
-  operation: openapi.yml#getGreeting
-- name: function2🎯
-  operation: openapi.yml#getGreeting
-`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      });
     });
 
     test("matching refName", () => {
@@ -381,16 +359,43 @@ states:
     functionRef:
       refName: myfunc
       arguments: 
-        🎯arg
+        a🎯
   end: true
 `);
       const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-      const ff = findNodeAtOffset;
+      const node = findNodeAtOffset(root!, cursorOffset, true);
 
       expect(
         matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "arguments"])
       ).toBeTruthy();
+    });
+
+    describe("matching functions array", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      let { content, cursorOffset } = treat(`
+---
+functions:
+- 🎯name: function1
+  operation: openapi.yml#getGreeting
+- name: function2
+  operation: openapi.yml#getGreeting
+`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
+
+      test("should not match functions with states", () => {
+        expect(matchNodeWithLocation(root!, node!, ["states", "*"])).toBeFalsy();
+        expect(matchNodeWithLocation(root!, node!, ["states"])).toBeFalsy();
+      });
+
+      test("with cursorOffset at the first function", () => {
+        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
+      });
     });
   });
 });
