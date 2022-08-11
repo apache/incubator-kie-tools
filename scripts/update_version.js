@@ -22,11 +22,11 @@ if (!newVersion) {
   return 1;
 }
 
-const pnpmFilter = process.argv.slice(3).join(" ");
-if (pnpmFilter.length === 0) {
+const pnpmFilterString = process.argv.slice(3).join(" ");
+if (pnpmFilterString.length === 0) {
   console.info("[update-version] Updating versions of all packages...");
 } else {
-  console.info(`[update-version] Updating versions of packages filtered by '${pnpmFilter}'...`);
+  console.info(`[update-version] Updating versions of packages filtered by '${pnpmFilterString}'`);
 }
 
 const execOpts = { stdio: "inherit" };
@@ -37,10 +37,10 @@ try {
   execSync(`pnpm version ${newVersion} ${pnpmVersionArgs}`, execOpts);
 
   console.info("[update-version] Updating workspace packages...");
-  execSync(`pnpm -r ${pnpmFilter} exec pnpm version ${newVersion} ${pnpmVersionArgs}`, execOpts);
+  execSync(`pnpm -r ${pnpmFilterString} exec pnpm version ${newVersion} ${pnpmVersionArgs}`, execOpts);
 
   console.info(`[update-version] Bootstrapping with updated version...`);
-  execSync(`pnpm bootstrap ${pnpmFilter}`, execOpts);
+  execSync(`pnpm bootstrap ${pnpmFilterString}`, execOpts);
 
   console.info(`[update-version] Formatting files...`);
   execSync(`pnpm pretty-quick`, execOpts);

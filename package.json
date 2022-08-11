@@ -5,9 +5,10 @@
   "license": "Apache-2.0",
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
-    "check-cli-tools": "node ./scripts/check_cli_tools.js",
+    "check-required-preinstalled-cli-commands": "node ./scripts/check_required_preinstalled_cli_commands.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "generate-build-env-report": "node ./scripts/generate_build_env_report.mjs",
     "generate-packages-graph": "node ./scripts/generate_packages_graph.js ./repo",
     "install-dependencies": "pnpm install --strict-peer-dependencies=false",
     "link-packages-with-self": "node ./scripts/link_packages_with_self.js",
@@ -15,18 +16,13 @@
     "prepare": "husky install",
     "update-version-to": "node ./scripts/update_version.js"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "examples/*"
-    ]
-  },
   "devDependencies": {
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
-    "@pnpm/find-workspace-packages": "^4.0.26",
+    "@pnpm/filter-workspace-packages": "^5.0.27",
+    "@pnpm/find-workspace-packages": "^4.0.27",
     "@pnpm/logger": "^4.0.0",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
@@ -62,6 +58,7 @@
     "jest-webextension-mock": "^3.7.19",
     "jest-when": "^3.5.0",
     "js-yaml": "^4.1.0",
+    "markdown-table": "^3.0.2",
     "null-loader": "^4.0.1",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
@@ -97,5 +94,12 @@
         }
       }
     }
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "pnpm",
+      "node",
+      "npm"
+    ]
   }
 }

@@ -16,25 +16,31 @@
 
 const execSync = require("child_process").execSync;
 
-const pnpmFilter = process.argv.slice(2).join(" ");
-if (pnpmFilter.length === 0) {
+let pnpmFilterString = process.argv.slice(2).join(" ");
+let pnpmFilterStringForInstalling;
+if (pnpmFilterString.length === 0) {
   console.info("[bootstrap] Bootstrapping all packages...");
+  pnpmFilterStringForInstalling = "";
 } else {
-  console.info(`[bootstrap] Bootstrapping packages filtered by '${pnpmFilter}'...`);
+  console.info(`[bootstrap] Bootstrapping packages filtered by '${pnpmFilterString}'`);
+  pnpmFilterStringForInstalling = `${pnpmFilterString} -F .`;
 }
 
 const execOpts = { stdio: "inherit" };
 
-console.info("[bootstrap] Installing dependencies...");
-execSync(`pnpm install-dependencies ${pnpmFilter}`, execOpts);
+console.info("\n\n[bootstrap] Installing dependencies...");
+execSync(`pnpm install-dependencies ${pnpmFilterStringForInstalling}`, execOpts); // Always install root dependencies
 
-console.info("[bootstrap] Linking packages with self...");
+console.info("\n\n[bootstrap] Linking packages with self...");
 execSync(`pnpm link-packages-with-self`, execOpts);
 
-console.info("[bootstrap] Generating packages graph...");
+console.info("\n\n[bootstrap] Generating packages graph...");
 execSync(`pnpm generate-packages-graph`, execOpts);
 
-console.info("[bootstrap] Checking CLI tools...");
-execSync(`pnpm check-cli-tools`, execOpts);
+console.info("\n\n[bootstrap] Generating build-env report...");
+execSync(`pnpm generate-build-env-report ${pnpmFilterString}`, execOpts);
 
-console.info("[bootstrap] Done.");
+console.info("\n\n[bootstrap] Checking required preinstalled CLI commands...");
+execSync(`pnpm check-required-preinstalled-cli-commands ${pnpmFilterString}`, execOpts);
+
+console.info("\n\n[bootstrap] Done.");
