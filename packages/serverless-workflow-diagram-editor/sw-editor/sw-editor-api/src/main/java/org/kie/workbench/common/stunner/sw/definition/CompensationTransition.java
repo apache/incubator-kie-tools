@@ -20,8 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionTransitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
 
 /**
  * Compensation deals with undoing or reversing the work of one or more states which have already successfully completed.
@@ -44,17 +46,14 @@ import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
 @EdgeOccurrences(role = Start.LABEL_START, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.OUTGOING, max = 0)
 @EdgeOccurrences(role = End.LABEL_END, type = EdgeOccurrences.EdgeType.INCOMING, max = 0)
-@JsType
 public class CompensationTransition {
 
     public static final String LABEL_TRANSITION_COMPENSATION = "transition_compensation";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.TRANSITIONS;
 
     @Labels
-    @JsIgnore
     private final Set<String> labels = Stream.of(Transition.LABEL_TRANSITION,
                                                  LABEL_TRANSITION_COMPENSATION).collect(Collectors.toSet());
 
@@ -62,13 +61,13 @@ public class CompensationTransition {
      * Unique name of the
      */
     @Property
-    @JsIgnore
     public String name;
 
     /**
      * Transition target.
      */
-    @JsIgnore
+    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
     public Object transition;
 
     public CompensationTransition() {

@@ -20,8 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionTransitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
 
 /**
  * This class defines workflow states define building blocks of the workflow execution instructions.
@@ -41,17 +43,14 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
 @Definition
 @CanDock(roles = {Timeout.LABEL_TIMEOUT})
 @MorphBase(defaultType = InjectState.class)
-@JsType
 public class State {
 
     public static final String LABEL_STATE = "state";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.STATES;
 
     @Labels
-    @JsIgnore
     public static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                        LABEL_STATE).collect(Collectors.toSet());
 
@@ -72,12 +71,16 @@ public class State {
      * Next transition of the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
+    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
     public Object transition;
 
     /**
      * Whether this State is a last state in the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
+    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
     public Object end;
 
     /**

@@ -20,15 +20,18 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import jsinterop.annotations.JsIgnore;
-import jsinterop.annotations.JsType;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionStartJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
 
 /**
  * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
@@ -38,7 +41,7 @@ import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 @Bindable
 @Definition
 @CanContain(roles = {Workflow.LABEL_ROOT_NODE})
-@JsType
+@JSONMapper
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
 public class Workflow {
 
@@ -46,11 +49,9 @@ public class Workflow {
     public static final String LABEL_ROOT_NODE = "rootNode";
 
     @Category
-    @JsIgnore
     public static final transient String category = Categories.STATES;
 
     @Labels
-    @JsIgnore
     public static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
 
     /**
@@ -74,6 +75,8 @@ public class Workflow {
     /**
      * Workflow start definition.
      */
+    @JsonbTypeSerializer(DataConditionTransitionStartJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
     public Object start;
 
     /**

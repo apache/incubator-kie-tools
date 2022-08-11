@@ -70,7 +70,7 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                boolean end = getEnd(state.end);
+                boolean end = getEnd(state.getEnd());
                 if (end) {
                     final Transition tend = new Transition();
                     tend.setTo(STATE_END);

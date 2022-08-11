@@ -46,9 +46,9 @@ public class ModelUtils {
 
     private static void cleanEvent(Event event) {
         if (event != null) {
-            event.name = (String) Js.undefined();
-            event.source = (String) Js.undefined();
-            event.type = (String) Js.undefined();
+            event.setName((String) Js.undefined());
+            event.setSource((String) Js.undefined());
+            event.setType((String) Js.undefined());
         }
     }
 

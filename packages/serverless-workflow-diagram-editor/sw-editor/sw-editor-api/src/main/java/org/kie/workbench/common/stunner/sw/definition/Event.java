@@ -16,26 +16,47 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jsinterop.annotations.JsType;
-
 /**
  * Used to define events and their correlations.
  */
-@JsType
 public class Event {
 
     /**
      * Unique event name.
      */
-    public String name;
+    private String name;
 
     /**
      * {@link CloudEvent } source
      */
-    public String source;
+    private String source;
 
     /**
      * @link CloudEvent type
      */
-    public String type;
+    private String type;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }
