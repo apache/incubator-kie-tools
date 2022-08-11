@@ -1,0 +1,127 @@
+{
+  "id": "jobmonitoring",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Job Monitoring",
+  "description": "Monitor finished execution of a submitted job",
+  "start": "SubmitJob",
+  "functions": [
+    {
+      "name": "submitJob",
+      "operation": "http://myapis.org/monitorapi.json#doSubmit"
+    },
+    {
+      "name": "checkJobStatus",
+      "operation": "http://myapis.org/monitorapi.json#checkStatus"
+    },
+    {
+      "name": "reportJobSuceeded",
+      "operation": "http://myapis.org/monitorapi.json#reportSucceeded"
+    },
+    {
+      "name": "reportJobFailed",
+      "operation": "http://myapis.org/monitorapi.json#reportFailure"
+    }
+  ],
+  "states": [
+    {
+      "name": "SubmitJob",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "submitJob",
+            "arguments": {
+              "name": "${ .job.name }"
+            }
+          },
+          "actionDataFilter": {
+            "results": "${ .jobuid }"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ .jobuid }"
+      },
+      "transition": "WaitForCompletion"
+    },
+    {
+      "name": "WaitForCompletion",
+      "type": "sleep",
+      "duration": "PT5S",
+      "transition": "GetJobStatus"
+    },
+    {
+      "name": "GetJobStatus",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "checkJobStatus",
+            "arguments": {
+              "name": "${ .jobuid }"
+            }
+          },
+          "actionDataFilter": {
+            "results": "${ .jobstatus }"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ .jobstatus }"
+      },
+      "transition": "DetermineCompletion"
+    },
+    {
+      "name": "DetermineCompletion",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": "${ .jobStatus == \"SUCCEEDED\" }",
+          "transition": "JobSucceeded"
+        },
+        {
+          "condition": "${ .jobStatus == \"FAILED\" }",
+          "transition": "JobFailed"
+        }
+      ],
+      "defaultCondition": {
+        "transition": "WaitForCompletion"
+      }
+    },
+    {
+      "name": "JobSucceeded",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "reportJobSuceeded",
+            "arguments": {
+              "name": "${ .jobuid }"
+            }
+          }
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "JobFailed",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "reportJobFailed",
+            "arguments": {
+              "name": "${ .jobuid }"
+            }
+          }
+        }
+      ],
+      "end": true
+    }
+  ]
+}

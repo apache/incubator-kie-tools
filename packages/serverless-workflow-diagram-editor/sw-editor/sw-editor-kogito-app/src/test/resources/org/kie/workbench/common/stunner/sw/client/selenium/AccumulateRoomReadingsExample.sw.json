@@ -1,0 +1,85 @@
+{
+  "id": "roomreadings",
+  "name": "Room Temp and Humidity Workflow",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "start": "ConsumeReading",
+  "timeouts": {
+    "workflowExecTimeout": {
+      "duration": "PT1H",
+      "runBefore": "GenerateReport"
+    }
+  },
+  "keepActive": true,
+  "states": [
+    {
+      "name": "ConsumeReading",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["TemperatureEvent", "HumidityEvent"],
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "LogReading"
+              }
+            }
+          ],
+          "eventDataFilter": {
+            "toStateData": "${ .readings }"
+          }
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "GenerateReport",
+      "type": "operation",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "ProduceReport",
+            "arguments": {
+              "data": "${ .readings }"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": true
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "TemperatureEvent",
+      "type": "my.home.sensors",
+      "source": "/home/rooms/+",
+      "correlation": [
+        {
+          "contextAttributeName": "roomId"
+        }
+      ]
+    },
+    {
+      "name": "HumidityEvent",
+      "type": "my.home.sensors",
+      "source": "/home/rooms/+",
+      "correlation": [
+        {
+          "contextAttributeName": "roomId"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "LogReading",
+      "operation": "http.myorg.io/ordersservices.json#logreading"
+    },
+    {
+      "name": "ProduceReport",
+      "operation": "http.myorg.io/ordersservices.json#produceReport"
+    }
+  ]
+}
