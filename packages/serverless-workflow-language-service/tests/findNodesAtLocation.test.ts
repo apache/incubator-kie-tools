@@ -16,6 +16,7 @@
 import {
   findNodeAtOffset,
   findNodesAtLocation,
+  SwfYamlLanguageService,
   SwfJsonLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { defaultConfig, defaultServiceCatalogConfig } from "./SwfLanguageServiceConfigs";
@@ -41,8 +42,7 @@ describe("findNodesAtLocation", () => {
   "states": [
     {
       "name": "testState1",
-      "type": "operation",
-      "transition": "end"
+      "type": "operation"
     }
   ]
 }`.trim();
@@ -64,8 +64,7 @@ describe("findNodesAtLocation", () => {
   "states": [
     {
       "name": "testState1",
-      "type": "operation",
-      "transition": "end"
+      "type": "operation"
     }
   ]
 }`.trim();
@@ -88,13 +87,11 @@ describe("findNodesAtLocation", () => {
   "states": [
     {
       "name": "testState1",
-      "type": "operation",
-      "transition": "end"
+      "type": "operation"
     },
     {
       "name": "testState2",
-      "type": "operation",
-      "transition": "end"
+      "type": "operation"
     }
   ]
 }`.trim();
@@ -117,13 +114,11 @@ describe("findNodesAtLocation", () => {
   "states": [
     {
       "name": "testState1",
-      "type": "operation",
-      "transition": "end"
+      "type": "operation"
     },
     {
       "name": "testState2",
-      "type": "operation",
-      "transition": "end"
+      "type": "operation"
     }
   ]
 }`.trim();
@@ -152,18 +147,18 @@ describe("findNodesAtLocation", () => {
         {
           "name": "testState1_action1",
           "functionRef": {
-            "refName": "testState1_functionRef1"
+            "refName": "testState1_functionRef1",
             "arguments": {}
           }
         },
         {
           "name": "testState1_action2",
           "functionRef": {
-            "refName": "testState1_functionRef2"
+            "refName": "testState1_functionRef2",
             "arguments": {}
           }
-        },
-      ],
+        }
+      ]
     },
     {
       "name": "testState2",
@@ -172,10 +167,11 @@ describe("findNodesAtLocation", () => {
         {
           "name": "testState2_action1",
           "functionRef": {
-            "refName": "testState2_functionRef1"
+            "refName": "testState2_functionRef1",
             "arguments": {}
           }
         }
+      ]
     }
   ]
 }`.trim();
@@ -189,13 +185,13 @@ describe("findNodesAtLocation", () => {
       expect(nodesAtLocation[2].value).toBe("testState2_functionRef1");
     });
 
-    test("selecting empty value", () => {
+    test("selecting empty value for functionRef", () => {
       const ls = new SwfJsonLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
       });
-      const { content, cursorOffset } = treat(`
+      const content = `
 {
   "functions": [
     {
@@ -208,30 +204,197 @@ describe("findNodesAtLocation", () => {
     {
       "name": "testState1",
       "type": "operation",
-      "transition": "end"
-    },
-    {
-      "name": "testState2",
-      "type": "operation",
-      "transition": "end",
       "actions": [
         {
+          "name": "testStateAction1",
+          "functionRef": {
+            "refName": "testState1_functionRef1"
+            "arguments": {}
+          }
+        },
+        {
           "name": "testStateAction2",
-          "functionRef": 🎯
+          "functionRef": 
         }
       ]
     }
   ]
-}`);
+}`.trim();
       const root = ls.parseContent(content);
-      const nodeAtOffset = findNodeAtOffset(root!, cursorOffset);
       const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef"]);
-      debugger;
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation[1]).not.toBeUndefined();
+      expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length)).toBe(`{
+            "refName": "testState1_functionRef1"
+            "arguments": {}
+          }`);
+      expect(content.slice(nodesAtLocation[1].offset, nodesAtLocation[1].offset + nodesAtLocation[1].length))
+        .toBe(`"functionRef": 
+        }`);
+    });
+
+    test("selecting the function object", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `{
+  "functions": [{
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  },{
+        "name": "function2",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["functions"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length)).toBe(`[{
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  },{
+        "name": "function2",
+        "operation": "openapi.yml#getGreeting"
+  }]`);
+    });
+
+    test("selecting all the functions", () => {
+      const ls = new SwfJsonLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `{
+  "functions": [{
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  },{
+        "name": "function2",
+        "operation": "openapi.yml#getGreeting"
+  }]
+}`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["functions", "*"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length)).toBe(`{
+        "name": "function1",
+        "operation": "openapi.yml#getGreeting"
+  }`);
+    });
+  });
+
+  describe("YAML", () => {
+    test("undefined YAML", () => {
+      const nodesAtLocation = findNodesAtLocation(undefined, ["functions", "*"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(0);
+    });
+
+    test("selecting a node not in YAML", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `---
+states:
+- name: testState1
+  type: operation
+`.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["functions", "*"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(0);
+    });
+
+    test("selecting empty value for functionRef", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `---
+functions:
+- name: myFunc
+  operation: "./specs/myService#myFunc"
+  type: rest
+states:
+- name: testState1
+  type: operation
+  actions:
+  - name: testStateAction1
+    functionRef: 
+      a
+  - name: testStateAction2
+    functionRef:
+      refName: testState1_functionRef1
+      arguments:
+        firstArg: test
+`;
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef"]);
 
       expect(nodesAtLocation).not.toBeUndefined();
       expect(nodesAtLocation[0]).not.toBeUndefined();
-      expect(nodesAtLocation[0].offset).toBe(nodeAtOffset?.offset);
-      expect(nodesAtLocation[0].length).toBe(nodeAtOffset?.length);
+      expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length)).toBe("a");
+      expect(content.slice(nodesAtLocation[1].offset, nodesAtLocation[1].offset + nodesAtLocation[1].length))
+        .toBe(`refName: testState1_functionRef1
+      arguments:
+        firstArg: test`);
+    });
+
+    test("selecting the function object", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `---
+      functions:
+      - name: function1
+        operation: openapi.yml#getGreeting
+      - name: function2
+        operation: openapi.yml#getGreeting
+      `.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["functions"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length))
+        .toBe(`- name: function1
+        operation: openapi.yml#getGreeting
+      - name: function2
+        operation: openapi.yml#getGreeting`);
+    });
+
+    test("selecting all the functions", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const content = `---
+      functions:
+      - name: function1
+        operation: openapi.yml#getGreeting
+      - name: function2
+        operation: openapi.yml#getGreeting
+      `.trim();
+      const root = ls.parseContent(content);
+      const nodesAtLocation = findNodesAtLocation(root, ["functions", "*"]);
+      const parentNode = findNodesAtLocation(root, ["functions"]);
+
+      expect(nodesAtLocation).not.toBeUndefined();
+      expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length))
+        .toBe(`name: function1
+        operation: openapi.yml#getGreeting`);
     });
   });
 });
