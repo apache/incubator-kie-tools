@@ -21,7 +21,6 @@ import (
 	"fmt"
 	"html/template"
 	"os/exec"
-	"strings"
 	"time"
 
 	"github.com/briandowns/spinner"
@@ -61,32 +60,6 @@ func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMes
 	go func() {
 		cancel()
 	}()
-
-	return nil
-}
-
-// Maven doesn't upgrade the version in the pom.xml.
-// This function removes the existent version and updated one.
-func UpdateProjectExtensionsVersions(verbose bool, friendlyMessages []string, extensions ...string) error {
-	extensionsToRemove := ""
-	extensionsToAdd := ""
-	for i, extension := range extensions {
-		versionSeparatorIndex := strings.LastIndex(extension, ":")
-		extensionsToRemove += extension[:versionSeparatorIndex]
-		extensionsToAdd += extension
-		if i != len(extensions)-1 {
-			extensionsToRemove += ","
-			extensionsToAdd += ","
-		}
-	}
-
-	if err := RunExtensionCommand(verbose, "quarkus:remove-extension", friendlyMessages, extensionsToRemove); err != nil {
-		return err
-	}
-
-	if err := RunExtensionCommand(verbose, "quarkus:add-extension", friendlyMessages, extensionsToAdd); err != nil {
-		return err
-	}
 
 	return nil
 }
@@ -135,8 +108,4 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	if err := tpl.Execute(cmd.OutOrStdout(), data); err != nil {
 		fmt.Fprintf(cmd.ErrOrStderr(), "unable to display help text: %v", err)
 	}
-}
-
-func GetVersionedExtension(extension string, version string) string {
-	return fmt.Sprintf("%s:%s", extension, version)
 }

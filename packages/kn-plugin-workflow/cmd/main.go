@@ -24,13 +24,13 @@ import (
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
 )
 
-var quarkusVersion, kogitoVersion, pluginVersion string
+var quarkusPlatformGroupId, quarkusVersion, pluginVersion string
 
 func main() {
 	cfg := root.RootCmdConfig{
 		DependenciesVersion: common.DependenciesVersion{
-			QuarkusVersion: quarkusVersion,
-			KogitoVersion:  kogitoVersion,
+			QuarkusPlatformGroupId: quarkusPlatformGroupId,
+			QuarkusVersion:         quarkusVersion,
 		},
 		PluginVersion: pluginVersion,
 	}
