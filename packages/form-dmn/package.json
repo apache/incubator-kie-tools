@@ -21,7 +21,7 @@
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
     "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest  --verbose --passWithNoTests\""
   },
   "dependencies": {

@@ -19,7 +19,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm package:prod && pnpm test:it",
     "compile": "pnpm build:dev",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
     "package:prod": "vsce package --no-dependencies -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
     "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
