@@ -20,6 +20,7 @@ module.exports = {
       tsconfig: "<rootDir>/tsconfig.json",
     },
   },
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-it-tests/junit-report.xml" }]],
   transform: {
     "^.+\\.(ts)$": "ts-jest",
   },

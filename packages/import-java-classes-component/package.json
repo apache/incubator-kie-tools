@@ -34,6 +34,7 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
-    "identity-obj-proxy": "^3.0.0"
+    "identity-obj-proxy": "^3.0.0",
+    "jest-junit": "^14.0.0"
   }
 }

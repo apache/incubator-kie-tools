@@ -1,8 +1,11 @@
 {
-  "reporterEnabled": "mocha-jenkins-reporter",
+  "reporterEnabled": "mocha-jenkins-reporter, mocha-junit-reporter",
   "mochaJenkinsReporterReporterOptions": {
     "junit_report_name": "@kie-tools/vscode-extension-serverless-workflow-editor",
     "junit_report_path": "./dist-it-tests/junit-vscode-sl-tooling-it-tests.xml",
     "junit_report_stack": 0
+  },
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "./dist-it-tests/junit-report-[hash].xml"
   }
 }

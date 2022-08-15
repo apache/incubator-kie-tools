@@ -41,6 +41,7 @@
     "@kie-tools/build-env": "workspace:*",
     "@types/inquirer": "^7.3.2",
     "@types/lodash": "^4.14.168",
+    "jest-junit": "^14.0.0",
     "pkg": "^5.5.2"
   }
 }

@@ -15,6 +15,8 @@ Options:
                    be true.                           [boolean] [default: false]
   --silent         Hide info logs from output. Logs from commands will still
                    show.                              [boolean] [default: false]
+  --ignore-errors  Ignore non-zero exit values when running command(s).
+                                                      [boolean] [default: false]
   --force          Makes condition be true. Runs command(s) supplied to --then.
                                                       [boolean] [default: false]
   --catch          Command(s) to execute at the end of execution if one of the

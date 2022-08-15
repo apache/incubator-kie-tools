@@ -6,5 +6,9 @@
   "supportFile": "support/index.ts",
   "chromeWebSecurity": false,
   "video": true,
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 10000,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "../dist-it-tests/junit-report-[hash].xml"
+  }
 }

@@ -59,6 +59,7 @@
     "chai": "^4.3.4",
     "mocha": "^9.2.0",
     "mocha-jenkins-reporter": "^0.4.5",
+    "mocha-junit-reporter": "^2.0.2",
     "mocha-multi-reporters": "^1.5.1",
     "vsce": "^2.6.5",
     "vscode-extension-tester": "^4.3.0",

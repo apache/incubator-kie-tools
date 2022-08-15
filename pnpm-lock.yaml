@@ -398,6 +398,7 @@ importers:
       "@types/vscode": ^1.66.0
       axios: ^0.27.2
       fast-xml-parser: ^3.17.4
+      jest-junit: ^14.0.0
       portfinder: ^1.0.27
       semver: ^7.3.5
       sinon: ^11.1.1
@@ -417,6 +418,7 @@ importers:
       "@types/semver": 7.3.6
       "@types/sinon": 10.0.2
       "@types/vscode": 1.66.0
+      jest-junit: 14.0.0
       stream: 0.0.2
 
   packages/backend-extended-services:
@@ -456,6 +458,7 @@ importers:
       cypress-log-to-output: ^1.1.2
       cypress-real-events: ^1.7.0
       gh-pages: ^3.2.3
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       papaparse: ^5.3.2
       react: ^17.0.2
@@ -501,6 +504,7 @@ importers:
       cypress-log-to-output: 1.1.2
       cypress-real-events: 1.7.0_cypress@9.5.1
       gh-pages: 3.2.3
+      jest-junit: 14.0.0
       react-json-view: 1.21.3_sfoxds7t5ydpegc3knd667wn6m
       start-server-and-test: 1.12.1
 
@@ -518,6 +522,7 @@ importers:
       "@octokit/rest": ^18.5.3
       "@types/chrome": ^0.0.193
       "@types/minimatch": ^3.0.4
+      jest-junit: ^14.0.0
       minimatch: ^3.0.4
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -535,6 +540,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@types/chrome": 0.0.193
       "@types/minimatch": 3.0.4
+      jest-junit: 14.0.0
 
   packages/chrome-extension-pack-kogito-kie-editors:
     specifiers:
@@ -551,6 +557,7 @@ importers:
       "@types/chrome": ^0.0.193
       "@types/selenium-webdriver": ^4.1.1
       chai: ^4.3.4
+      jest-junit: ^14.0.0
       selenium-webdriver: ^4.2.0
       start-server-and-test: ^1.12.1
       zip-webpack-plugin: ^4.0.1
@@ -569,6 +576,7 @@ importers:
       "@types/chrome": 0.0.193
       "@types/selenium-webdriver": 4.1.1
       chai: 4.3.4
+      jest-junit: 14.0.0
       selenium-webdriver: 4.2.0
       start-server-and-test: 1.12.1
       zip-webpack-plugin: 4.0.1
@@ -652,6 +660,7 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -660,6 +669,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-assembler:
     specifiers:
@@ -691,6 +701,7 @@ importers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -700,6 +711,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-echarts:
     specifiers:
@@ -710,6 +722,7 @@ importers:
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -723,6 +736,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-echarts-base:
     specifiers:
@@ -730,6 +744,7 @@ importers:
       "@kie-tools/build-env": workspace:*
       "@types/echarts": ^4.9.15
       echarts: ^5.3.2
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -740,6 +755,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/echarts": 4.9.15
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-svg-heatmap:
     specifiers:
@@ -751,6 +767,7 @@ importers:
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@types/heatmap.js": ^2.0.36
       heatmap.js: ^2.0.5
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -765,6 +782,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       "@types/heatmap.js": 2.0.37
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-table:
     specifiers:
@@ -776,6 +794,7 @@ importers:
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -790,6 +809,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-timeseries:
     specifiers:
@@ -800,6 +820,7 @@ importers:
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -813,6 +834,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-uniforms:
     specifiers:
@@ -825,6 +847,7 @@ importers:
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       ajv: ^6.12.6
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -848,6 +871,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
+      jest-junit: 14.0.0
 
   packages/dashbuilder-component-victory-charts:
     specifiers:
@@ -861,6 +885,7 @@ importers:
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       "@types/numeral": ^2.0.2
+      jest-junit: ^14.0.0
       numeral: ^2.0.6
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -881,6 +906,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       "@types/numeral": 2.0.2
+      jest-junit: 14.0.0
 
   packages/dashbuilder-editor:
     specifiers:
@@ -900,6 +926,7 @@ importers:
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      jest-junit: ^14.0.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -929,6 +956,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      jest-junit: 14.0.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
       vscode-json-languageservice: 4.2.1
@@ -1035,6 +1063,7 @@ importers:
       "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
@@ -1056,6 +1085,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
@@ -1085,6 +1115,7 @@ importers:
       "@patternfly/react-icons": ^4.11.17
       "@types/minimatch": ^3.0.4
       csstype: ^3.0.11
+      jest-junit: ^14.0.0
       minimatch: ^3.0.4
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1109,6 +1140,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/minimatch": 3.0.4
+      jest-junit: 14.0.0
 
   packages/envelope:
     specifiers:
@@ -1116,6 +1148,7 @@ importers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       csstype: ^3.0.11
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1126,11 +1159,13 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/envelope-bus:
     specifiers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1139,6 +1174,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/extended-services:
     specifiers:
@@ -1162,6 +1198,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
+      jest-junit: ^14.0.0
       monaco-editor: ^0.33.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1177,6 +1214,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/form:
     specifiers:
@@ -1192,6 +1230,7 @@ importers:
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1218,6 +1257,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
+      jest-junit: 14.0.0
 
   packages/form-dmn:
     specifiers:
@@ -1234,6 +1274,7 @@ importers:
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1261,6 +1302,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
+      jest-junit: 14.0.0
 
   packages/form-generation-tool:
     specifiers:
@@ -1272,6 +1314,7 @@ importers:
       "@types/inquirer": ^7.3.2
       "@types/lodash": ^4.14.168
       inquirer: ^8.1.1
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       pkg: ^5.5.2
       uniforms: ^3.5.5
@@ -1289,6 +1332,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@types/inquirer": 7.3.3
       "@types/lodash": 4.14.169
+      jest-junit: 14.0.0
       pkg: 5.5.2
 
   packages/guided-tour:
@@ -1300,6 +1344,7 @@ importers:
       "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1313,11 +1358,13 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/i18n:
     specifiers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1326,6 +1373,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/i18n-common-dictionary:
     specifiers:
@@ -1369,6 +1417,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       identity-obj-proxy: ^3.0.0
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1389,6 +1438,7 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       identity-obj-proxy: 3.0.0
+      jest-junit: 14.0.0
 
   packages/keyboard-shortcuts:
     specifiers:
@@ -1396,6 +1446,7 @@ importers:
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1406,6 +1457,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/kie-bc-editors:
     specifiers:
@@ -1421,6 +1473,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/build-env": workspace:*
       "@kie-tools/pmml-editor-marshaller": workspace:*
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1439,6 +1492,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/kie-editors-standalone:
     specifiers:
@@ -2742,6 +2796,7 @@ importers:
       minimatch: ^3.0.4
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
+      mocha-junit-reporter: ^2.0.2
       mocha-multi-reporters: ^1.5.1
       monaco-editor: ^0.33.0
       vsce: ^2.6.5
@@ -2775,6 +2830,7 @@ importers:
       chai: 4.3.4
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
+      mocha-junit-reporter: 2.0.2_mocha@9.2.0
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       vsce: 2.6.5
       vscode-extension-tester: 4.3.0_mocha@9.2.0
@@ -2857,6 +2913,7 @@ importers:
       chai: ^4.3.4
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
+      mocha-junit-reporter: ^2.0.2
       mocha-multi-reporters: ^1.5.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -2905,6 +2962,7 @@ importers:
       chai: 4.3.4
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
+      mocha-junit-reporter: 2.0.2_mocha@9.2.0
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       selenium-webdriver: 4.2.0
@@ -2936,6 +2994,7 @@ importers:
       chai: ^4.3.4
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
+      mocha-junit-reporter: ^2.0.2
       mocha-multi-reporters: ^1.5.1
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -2978,6 +3037,7 @@ importers:
       chai: 4.3.4
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
+      mocha-junit-reporter: 2.0.2_mocha@9.2.0
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       selenium-webdriver: 4.2.0
@@ -3214,7 +3274,6 @@ packages:
     transitivePeerDependencies:
       - "@swc/core"
       - "@types/express"
-      - bluebird
       - bufferutil
       - chokidar
       - debug
@@ -3331,7 +3390,6 @@ packages:
       symbol-observable: 4.0.0
       uuid: 8.3.2
     transitivePeerDependencies:
-      - bluebird
       - chokidar
       - supports-color
     dev: true
@@ -5006,14 +5064,12 @@ packages:
       uuid: 8.3.2
     dev: true
 
-  /@cypress/xvfb/1.2.4_supports-color@8.1.1:
+  /@cypress/xvfb/1.2.4:
     resolution:
       { integrity: sha512-skbBzPggOVYCbnGgV+0dmBdW/s77ZkAOXIC1knS8NagwDjBrNC1LuXtQJeiN6l+m7lzmHtaoUw/ctJKdqkG57Q== }
     dependencies:
-      debug: 3.2.7_supports-color@8.1.1
+      debug: 3.2.7
       lodash.once: 4.1.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /@discoveryjs/json-ext/0.5.6:
@@ -5433,8 +5489,6 @@ packages:
       promise-retry: 2.0.1
       semver: 7.3.5
       which: 2.0.2
-    transitivePeerDependencies:
-      - bluebird
     dev: true
 
   /@npmcli/installed-package-contents/1.0.7:
@@ -5477,7 +5531,6 @@ packages:
       node-gyp: 8.4.1
       read-package-json-fast: 2.0.2
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -5751,7 +5804,6 @@ packages:
       ramda: /@pnpm/ramda/0.28.1
       run-groups: 3.0.1
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -5819,7 +5871,6 @@ packages:
       load-json-file: 6.2.0
     transitivePeerDependencies:
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -5848,7 +5899,6 @@ packages:
     transitivePeerDependencies:
       - "@pnpm/logger"
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -5931,7 +5981,6 @@ packages:
       version-selector-type: 3.0.0
     transitivePeerDependencies:
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -5972,7 +6021,6 @@ packages:
       strip-ansi: 6.0.1
     transitivePeerDependencies:
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -6054,7 +6102,6 @@ packages:
     transitivePeerDependencies:
       - "@pnpm/logger"
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -6072,7 +6119,6 @@ packages:
     transitivePeerDependencies:
       - "@pnpm/logger"
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -6157,7 +6203,6 @@ packages:
       ramda: /@pnpm/ramda/0.28.1
       realpath-missing: 1.1.0
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -6198,7 +6243,6 @@ packages:
       path-exists: 4.0.0
       run-groups: 3.0.1
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -6413,7 +6457,6 @@ packages:
       umask: 1.1.0
       which: 2.0.2
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -6568,7 +6611,6 @@ packages:
       path-absolute: 1.0.1
     transitivePeerDependencies:
       - "@yarnpkg/core"
-      - bluebird
       - domexception
       - supports-color
     dev: true
@@ -8710,8 +8752,6 @@ packages:
     dependencies:
       micromatch: 3.1.10
       normalize-path: 2.1.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /anymatch/3.1.2:
@@ -9105,8 +9145,6 @@ packages:
       private: 0.1.8
       slash: 1.0.0
       source-map: 0.5.7
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-generator/6.26.1:
@@ -9130,8 +9168,6 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-builder-binary-assignment-operator-visitor/6.24.1:
@@ -9141,8 +9177,6 @@ packages:
       babel-helper-explode-assignable-expression: 6.24.1
       babel-runtime: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-call-delegate/6.24.1:
@@ -9153,8 +9187,6 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-define-map/6.26.0:
@@ -9165,8 +9197,6 @@ packages:
       babel-runtime: 6.26.0
       babel-types: 6.26.0
       lodash: 4.17.21
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-explode-assignable-expression/6.24.1:
@@ -9176,8 +9206,6 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-explode-class/6.24.1:
@@ -9188,8 +9216,6 @@ packages:
       babel-runtime: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-function-name/6.24.1:
@@ -9201,8 +9227,6 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-get-function-arity/6.24.1:
@@ -9247,8 +9271,6 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helper-replace-supers/6.24.1:
@@ -9261,8 +9283,6 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-helpers/6.24.1:
@@ -9271,8 +9291,6 @@ packages:
     dependencies:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-jest/26.6.3_@babel+core@7.16.12:
@@ -9463,8 +9481,6 @@ packages:
       babel-helper-remap-async-to-generator: 6.24.1
       babel-plugin-syntax-async-generators: 6.13.0
       babel-runtime: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-async-to-generator/6.24.1:
@@ -9474,8 +9490,6 @@ packages:
       babel-helper-remap-async-to-generator: 6.24.1
       babel-plugin-syntax-async-functions: 6.13.0
       babel-runtime: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-class-constructor-call/6.24.1:
@@ -9485,8 +9499,6 @@ packages:
       babel-plugin-syntax-class-constructor-call: 6.18.0
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-class-properties/6.24.1:
@@ -9497,8 +9509,6 @@ packages:
       babel-plugin-syntax-class-properties: 6.13.0
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-decorators/6.24.1:
@@ -9510,8 +9520,6 @@ packages:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-do-expressions/6.22.0:
@@ -9545,8 +9553,6 @@ packages:
       babel-traverse: 6.26.0
       babel-types: 6.26.0
       lodash: 4.17.21
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-classes/6.24.1:
@@ -9562,8 +9568,6 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-computed-properties/6.24.1:
@@ -9572,8 +9576,6 @@ packages:
     dependencies:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-destructuring/6.23.0:
@@ -9605,8 +9607,6 @@ packages:
       babel-helper-function-name: 6.24.1
       babel-runtime: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-literals/6.22.0:
@@ -9623,8 +9623,6 @@ packages:
       babel-plugin-transform-es2015-modules-commonjs: 6.26.2
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-commonjs/6.26.2:
@@ -9635,8 +9633,6 @@ packages:
       babel-runtime: 6.26.0
       babel-template: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-systemjs/6.24.1:
@@ -9646,8 +9642,6 @@ packages:
       babel-helper-hoist-variables: 6.24.1
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-modules-umd/6.24.1:
@@ -9657,8 +9651,6 @@ packages:
       babel-plugin-transform-es2015-modules-amd: 6.24.1
       babel-runtime: 6.26.0
       babel-template: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-object-super/6.24.1:
@@ -9667,8 +9659,6 @@ packages:
     dependencies:
       babel-helper-replace-supers: 6.24.1
       babel-runtime: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-parameters/6.24.1:
@@ -9681,8 +9671,6 @@ packages:
       babel-template: 6.26.0
       babel-traverse: 6.26.0
       babel-types: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-es2015-shorthand-properties/6.24.1:
@@ -9739,8 +9727,6 @@ packages:
       babel-helper-builder-binary-assignment-operator-visitor: 6.24.1
       babel-plugin-syntax-exponentiation-operator: 6.13.0
       babel-runtime: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-plugin-transform-export-extensions/6.22.0:
@@ -9832,8 +9818,6 @@ packages:
       babel-plugin-transform-es2015-typeof-symbol: 6.23.0
       babel-plugin-transform-es2015-unicode-regex: 6.24.1
       babel-plugin-transform-regenerator: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-preset-jest/26.6.2_@babel+core@7.16.12:
@@ -9855,8 +9839,6 @@ packages:
       babel-plugin-transform-do-expressions: 6.22.0
       babel-plugin-transform-function-bind: 6.22.0
       babel-preset-stage-1: 6.24.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-preset-stage-1/6.24.1:
@@ -9866,8 +9848,6 @@ packages:
       babel-plugin-transform-class-constructor-call: 6.24.1
       babel-plugin-transform-export-extensions: 6.22.0
       babel-preset-stage-2: 6.24.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-preset-stage-2/6.24.1:
@@ -9878,8 +9858,6 @@ packages:
       babel-plugin-transform-class-properties: 6.24.1
       babel-plugin-transform-decorators: 6.24.1
       babel-preset-stage-3: 6.24.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-preset-stage-3/6.24.1:
@@ -9891,8 +9869,6 @@ packages:
       babel-plugin-transform-async-to-generator: 6.24.1
       babel-plugin-transform-exponentiation-operator: 6.24.1
       babel-plugin-transform-object-rest-spread: 6.26.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-register/6.26.0:
@@ -9906,8 +9882,6 @@ packages:
       lodash: 4.17.21
       mkdirp: 0.5.5
       source-map-support: 0.4.18
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-runtime/6.26.0:
@@ -9927,8 +9901,6 @@ packages:
       babel-types: 6.26.0
       babylon: 6.18.0
       lodash: 4.17.21
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-traverse/6.26.0:
@@ -9944,8 +9916,6 @@ packages:
       globals: 9.18.0
       invariant: 2.2.4
       lodash: 4.17.21
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /babel-types/6.26.0:
@@ -10111,8 +10081,6 @@ packages:
       qs: 6.7.0
       raw-body: 2.4.0
       type-is: 1.6.18
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /body-parser/1.19.1:
@@ -10130,8 +10098,6 @@ packages:
       qs: 6.9.6
       raw-body: 2.4.2
       type-is: 1.6.18
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /bole/4.0.0:
@@ -10200,8 +10166,6 @@ packages:
       snapdragon-node: 2.1.1
       split-string: 3.1.0
       to-regex: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /braces/3.0.2:
@@ -10259,8 +10223,6 @@ packages:
       { integrity: sha512-AO+mECXsW4QcqC9bxwM29O7qWa7bJT94uBFzeb5brylIQwawuEziwq20dPYbins95GlWzOawgyDNdjYAo32EKg== }
     dependencies:
       https-proxy-agent: 2.2.4
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /bs-logger/0.2.6:
@@ -10398,8 +10360,6 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
       unique-filename: 1.1.1
-    transitivePeerDependencies:
-      - bluebird
     dev: true
 
   /cache-base/1.0.1:
@@ -10602,6 +10562,11 @@ packages:
     resolution:
       { integrity: sha512-mT8iDcrh03qDGRRmoA2hmBJnxpllMR+0/0qlzjqZES6NdiWDcZkCNAk4rPFZ9Q85r27unkiNNg8ZOiwZXBHwcA== }
 
+  /charenc/0.0.2:
+    resolution:
+      { integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA== }
+    dev: true
+
   /check-error/1.0.2:
     resolution:
       { integrity: sha512-BrgHpW9NURQgzoNyjfq0Wu6VFO6D7IZEmJNdtgNqpzGG8RuNFHt2jQxWlAs4HMe119chBnv+34syEZtc6IhLtA== }
@@ -10684,8 +10649,6 @@ packages:
       lighthouse-logger: 1.2.0
       mkdirp: 0.5.5
       rimraf: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /chrome-remote-interface/0.27.2:
@@ -10695,9 +10658,6 @@ packages:
     dependencies:
       commander: 2.11.0
       ws: 6.2.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
     dev: true
 
   /chrome-trace-event/1.0.2:
@@ -11085,8 +11045,6 @@ packages:
       on-headers: 1.0.2
       safe-buffer: 5.1.2
       vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /comver-to-semver/1.0.0:
@@ -11142,8 +11100,6 @@ packages:
       finalhandler: 1.1.2
       parseurl: 1.3.3
       utils-merge: 1.0.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /console-control-strings/1.1.0:
@@ -11424,8 +11380,11 @@ packages:
       babel-register: 6.26.0
       cross-spawn: 5.1.0
       exit: 0.1.2
-    transitivePeerDependencies:
-      - supports-color
+    dev: true
+
+  /crypt/0.0.2:
+    resolution:
+      { integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow== }
     dev: true
 
   /crypto-random-string/2.0.0:
@@ -11648,9 +11607,6 @@ packages:
     dependencies:
       chalk: 2.4.2
       chrome-remote-interface: 0.27.2
-    transitivePeerDependencies:
-      - bufferutil
-      - utf-8-validate
     dev: true
 
   /cypress-real-events/1.7.0_cypress@9.5.1:
@@ -11670,7 +11626,7 @@ packages:
     requiresBuild: true
     dependencies:
       "@cypress/request": 2.88.10
-      "@cypress/xvfb": 1.2.4_supports-color@8.1.1
+      "@cypress/xvfb": 1.2.4
       "@types/node": 14.17.0
       "@types/sinonjs__fake-timers": 8.1.1
       "@types/sizzle": 2.3.2
@@ -12320,37 +12276,14 @@ packages:
   /debug/2.6.9:
     resolution:
       { integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA== }
-    peerDependencies:
-      supports-color: "*"
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
     dependencies:
       ms: 2.0.0
 
   /debug/3.2.7:
     resolution:
       { integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ== }
-    peerDependencies:
-      supports-color: "*"
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
     dependencies:
       ms: 2.1.3
-
-  /debug/3.2.7_supports-color@8.1.1:
-    resolution:
-      { integrity: sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ== }
-    peerDependencies:
-      supports-color: "*"
-    peerDependenciesMeta:
-      supports-color:
-        optional: true
-    dependencies:
-      ms: 2.1.3
-      supports-color: 8.1.1
-    dev: true
 
   /debug/4.3.1:
     resolution:
@@ -12564,7 +12497,7 @@ packages:
       { integrity: sha512-fwSOJsbbNzZ/CUFpqFBqYfYNLj1NbMPm8MMCIzHjC83iSJRBEGmDUxU+WP661BaBQImeC2yHwXtz+P/O9o+XEg== }
     engines: { node: ">= 10" }
     dependencies:
-      execa: 5.0.0
+      execa: 5.1.1
     dev: true
 
   /defaults/1.0.3:
@@ -13027,8 +12960,6 @@ packages:
       isbinaryfile: 3.0.3
       minimist: 1.2.6
       plist: 3.0.5
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /electron-packager/15.2.0:
@@ -13896,8 +13827,6 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /expand-template/2.0.3:
@@ -13954,8 +13883,6 @@ packages:
       type-is: 1.6.18
       utils-merge: 1.0.1
       vary: 1.1.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /extend-shallow/2.0.1:
@@ -14000,8 +13927,6 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /extract-zip/1.7.0:
@@ -14013,8 +13938,6 @@ packages:
       debug: 2.6.9
       mkdirp: 0.5.5
       yauzl: 2.10.0
-    transitivePeerDependencies:
-      - supports-color
     dev: false
 
   /extract-zip/2.0.1:
@@ -14304,8 +14227,6 @@ packages:
       parseurl: 1.3.3
       statuses: 1.5.0
       unpipe: 1.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /find-cache-dir/3.3.1:
@@ -14680,8 +14601,6 @@ packages:
       debug: 2.6.9
       lodash.get: 4.4.2
       read-pkg-up: 2.0.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /get-port/5.1.1:
@@ -15408,8 +15327,6 @@ packages:
     dependencies:
       agent-base: 4.3.0
       debug: 3.2.7
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /https-proxy-agent/4.0.0:
@@ -16012,7 +15929,8 @@ packages:
     dev: true
 
   /is-stream/1.1.0:
-    resolution: { integrity: sha1-EtSj3U5o4Lec6428hBc66A2RykQ= }
+    resolution:
+      { integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ== }
     engines: { node: ">=0.10.0" }
 
   /is-stream/2.0.0:
@@ -16379,8 +16297,6 @@ packages:
       walker: 1.0.7
     optionalDependencies:
       fsevents: 2.3.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /jest-image-snapshot/4.2.0:
@@ -16429,6 +16345,17 @@ packages:
       - supports-color
       - ts-node
       - utf-8-validate
+    dev: true
+
+  /jest-junit/14.0.0:
+    resolution:
+      { integrity: sha512-kALvBDegstTROfDGXH71UGD7k5g7593Y1wuX1wpWT+QTYcBbmtuGOA8UlAt56zo/B2eMIOcaOVEON3j0VXVa4g== }
+    engines: { node: ">=10.12.0" }
+    dependencies:
+      mkdirp: 1.0.4
+      strip-ansi: 6.0.1
+      uuid: 8.3.2
+      xml: 1.0.1
     dev: true
 
   /jest-leak-detector/26.6.2:
@@ -16507,8 +16434,6 @@ packages:
       "@jest/types": 26.6.2
       jest-regex-util: 26.0.0
       jest-snapshot: 26.6.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /jest-resolve/26.6.2:
@@ -16630,8 +16555,6 @@ packages:
       natural-compare: 1.4.0
       pretty-format: 26.6.2
       semver: 7.3.5
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /jest-util/26.6.2:
@@ -17278,8 +17201,6 @@ packages:
       { integrity: sha512-JOUdCNlc21G50afBXfErUrr1RKymbgzlrO5KURY+wmDG1Uvd2jmxUJcHgylb/mYXy2SjiNZyYim/ptUBGsIi3A== }
     dependencies:
       morgan: 1.10.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /koa-mount/4.0.0:
@@ -17392,8 +17313,6 @@ packages:
       mime: 1.6.0
       needle: 2.9.1
       source-map: 0.6.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /leven/3.1.0:
@@ -17446,8 +17365,6 @@ packages:
     dependencies:
       debug: 2.6.9
       marky: 1.2.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /lines-and-columns/1.1.6:
@@ -17772,8 +17689,6 @@ packages:
       node-pre-gyp: 0.11.0
       readable-stream: 2.3.7
       rimraf: 2.7.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /magic-string/0.25.7:
@@ -17836,7 +17751,6 @@ packages:
       socks-proxy-agent: 6.1.1
       ssri: 8.0.1
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -17899,6 +17813,15 @@ packages:
     dependencies:
       escape-string-regexp: 4.0.0
     optional: true
+
+  /md5/2.3.0:
+    resolution:
+      { integrity: sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g== }
+    dependencies:
+      charenc: 0.0.2
+      crypt: 0.0.2
+      is-buffer: 1.1.6
+    dev: true
 
   /mdn-data/2.0.14:
     resolution:
@@ -18023,8 +17946,6 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /micromatch/4.0.4:
@@ -18288,6 +18209,20 @@ packages:
       xml: 1.0.1
     dev: true
 
+  /mocha-junit-reporter/2.0.2_mocha@9.2.0:
+    resolution:
+      { integrity: sha512-vYwWq5hh3v1lG0gdQCBxwNipBfvDiAM1PHroQRNp96+2l72e9wEUTw+mzoK+O0SudgfQ7WvTQZ9Nh3qkAYAjfg== }
+    peerDependencies:
+      mocha: ">=2.2.5"
+    dependencies:
+      debug: 2.6.9
+      md5: 2.3.0
+      mkdirp: 0.5.5
+      mocha: 9.2.0
+      strip-ansi: 6.0.1
+      xml: 1.0.1
+    dev: true
+
   /mocha-multi-reporters/1.5.1_mocha@9.2.0:
     resolution:
       { integrity: sha512-Yb4QJOaGLIcmB0VY7Wif5AjvLMUFAdV57D2TWEva1Y0kU/3LjKpeRVmlMIfuO1SVbauve459kgtIizADqxMWPg== }
@@ -18426,8 +18361,6 @@ packages:
       depd: 2.0.0
       on-finished: 2.3.0
       on-headers: 1.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /mri/1.1.6:
@@ -18437,7 +18370,8 @@ packages:
     dev: true
 
   /ms/2.0.0:
-    resolution: { integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g= }
+    resolution:
+      { integrity: sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A== }
 
   /ms/2.1.1:
     resolution:
@@ -18519,8 +18453,6 @@ packages:
       regex-not: 1.0.2
       snapdragon: 0.8.2
       to-regex: 3.0.2
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /napi-build-utils/1.0.2:
@@ -18554,8 +18486,6 @@ packages:
       debug: 3.2.7
       iconv-lite: 0.4.24
       sax: 1.2.4
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /negotiator/0.6.2:
@@ -18692,7 +18622,6 @@ packages:
       tar: 6.1.11
       which: 2.0.2
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -18735,8 +18664,6 @@ packages:
       rimraf: 2.7.1
       semver: 5.7.1
       tar: 4.4.19
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /node-releases/2.0.3:
@@ -18909,12 +18836,12 @@ packages:
       minizlib: 2.1.2
       npm-package-arg: 8.1.5
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
   /npm-run-path/2.0.2:
-    resolution: { integrity: sha1-NakjLfo11wZ7TLLd8jV7GHFTbF8= }
+    resolution:
+      { integrity: sha512-lJxZYlT4DW/bRUtFh1MQIWqmLwQfAxnqWG4HhEdjMlkrJYnJn0Jrr2u3mgxqaWsdiBc76TYkTG/mhrnYTuzfHw== }
     engines: { node: ">=4" }
     dependencies:
       path-key: 2.0.1
@@ -19424,7 +19351,6 @@ packages:
       ssri: 8.0.1
       tar: 6.1.11
     transitivePeerDependencies:
-      - bluebird
       - supports-color
     dev: true
 
@@ -19920,8 +19846,6 @@ packages:
       async: 2.6.4
       debug: 3.2.7
       mkdirp: 0.5.5
-    transitivePeerDependencies:
-      - supports-color
 
   /posix-character-classes/0.1.1:
     resolution: { integrity: sha1-AerA/jta9xoqbAL+q7jB/vfgDqs= }
@@ -20496,11 +20420,6 @@ packages:
 
   /promise-inflight/1.0.1:
     resolution: { integrity: sha1-mEcocL8igTL8vdhoEputEsPAKeM= }
-    peerDependencies:
-      bluebird: "*"
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
     dev: true
 
   /promise-retry/2.0.1:
@@ -21802,8 +21721,6 @@ packages:
       micromatch: 3.1.10
       minimist: 1.2.6
       walker: 1.0.7
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /sanitize-filename/1.6.3:
@@ -21998,8 +21915,6 @@ packages:
       on-finished: 2.3.0
       range-parser: 1.2.1
       statuses: 1.5.0
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /serialize-error/7.0.1:
@@ -22043,8 +21958,6 @@ packages:
       http-errors: 1.6.3
       mime-types: 2.1.34
       parseurl: 1.3.3
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /serve-static/1.14.1:
@@ -22056,8 +21969,6 @@ packages:
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 0.17.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /set-blocking/2.0.0:
@@ -22296,8 +22207,6 @@ packages:
       source-map: 0.5.7
       source-map-resolve: 0.5.3
       use: 3.1.1
-    transitivePeerDependencies:
-      - supports-color
     dev: true
 
   /socket.io-adapter/2.3.3:
@@ -25004,14 +24913,6 @@ packages:
   /ws/6.2.2:
     resolution:
       { integrity: sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw== }
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: ^5.0.2
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
     dependencies:
       async-limiter: 1.0.1
     dev: true

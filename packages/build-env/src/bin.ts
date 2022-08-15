@@ -34,11 +34,11 @@ const logs = {
   envRecursionStopped: (startDir: string, curDir: string, envRecursionStopPath: string) => {
     return `[build-env] Couldn't load env from '${startDir}' to '${curDir}'. Stopped at '${envRecursionStopPath}'`;
   },
-  cantNegateNonBoolean(envPropertyValue: string | boolean) {
+  cantNegateNonBoolean(envPropertyValue: string | boolean | number) {
     return `[build-env] Cannot negate non-boolean value '${envPropertyValue}'`;
   },
   cantReturnNonString(propertyPath: string, propertyType: string) {
-    return `[build-env] Env property '${propertyPath}' is not of type "string" or "boolean". Found "${propertyType}":`;
+    return `[build-env] Env property '${propertyPath}' is not of type "string", "number", or "boolean". Found "${propertyType}":`;
   },
   pleaseProvideEnvPropertyPath() {
     return `[build-env] Please provide an env property path.`;
@@ -137,7 +137,11 @@ async function main() {
     }
   }
 
-  if (typeof envPropertyValue !== "string" && typeof envPropertyValue !== "boolean") {
+  if (
+    typeof envPropertyValue !== "string" &&
+    typeof envPropertyValue !== "boolean" &&
+    typeof envPropertyValue !== "number"
+  ) {
     console.error(logs.cantReturnNonString(propertyPath, typeof envPropertyValue));
     console.error(envPropertyValue);
     process.exit(1);

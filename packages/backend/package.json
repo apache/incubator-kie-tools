@@ -38,6 +38,7 @@
     "@types/semver": "^7.3.6",
     "@types/sinon": "^10.0.2",
     "@types/vscode": "^1.66.0",
+    "jest-junit": "^14.0.0",
     "stream": "^0.0.2"
   },
   "babel": {

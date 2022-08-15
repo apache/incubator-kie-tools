@@ -55,6 +55,7 @@
     "cypress-log-to-output": "^1.1.2",
     "cypress-real-events": "^1.7.0",
     "gh-pages": "^3.2.3",
+    "jest-junit": "^14.0.0",
     "react-json-view": "^1.21.3",
     "start-server-and-test": "^1.12.1"
   },

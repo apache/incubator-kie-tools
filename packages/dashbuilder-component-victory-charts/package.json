@@ -38,7 +38,8 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/build-env": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
-    "@types/numeral": "^2.0.2"
+    "@types/numeral": "^2.0.2",
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

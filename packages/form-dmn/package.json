@@ -45,6 +45,7 @@
     "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/build-env": "workspace:*",
-    "@types/lodash": "^4.14.168"
+    "@types/lodash": "^4.14.168",
+    "jest-junit": "^14.0.0"
   }
 }

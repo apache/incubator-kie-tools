@@ -32,7 +32,8 @@
   },
   "devDependencies": {
     "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*"
+    "@kie-tools/build-env": "workspace:*",
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [
