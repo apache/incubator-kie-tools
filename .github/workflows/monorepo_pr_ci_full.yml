@@ -80,6 +80,7 @@ jobs:
           os: ${{ matrix.os }}
 
       - name: "Bootstrap"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
         id: bootstrap
         uses: ./.github/actions/bootstrap
 
