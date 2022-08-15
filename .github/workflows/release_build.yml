@@ -161,14 +161,21 @@ jobs:
           restore-keys: ${{ runner.os }}-dmn-dev-sandbox-deployment-base-image-m2
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/dmn-dev-sandbox-deployment-base-image...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/dmn-dev-sandbox-deployment-base-image... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Push dmn-dev-sandbox-deployment-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -219,14 +226,21 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/kie-sandbox-image...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/kie-sandbox-image... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Push kie-sandbox-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -288,14 +302,21 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/kie-sandbox-extended-services-image...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/kie-sandbox-extended-services-image... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Push kie-sandbox-extended-services-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -349,14 +370,21 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/cors-proxy-image...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/cors-proxy-image... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Push cors-proxy-image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -435,15 +463,23 @@ jobs:
           restore-keys: ${{ runner.os }}-release-m2
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
           path: kie-tools
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./kie-tools/.github/actions/bootstrap
+        with:
+          path: kie-tools
+          pnpm_filter_string: -F @kie-tools/online-editor...
+
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          pnpm -F @kie-tools/online-editor... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Deploy to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
@@ -485,10 +521,9 @@ jobs:
       SWF_CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"
       SWF_CHROME_EXTENSION__routerRelativePath: "kogito-online/swf-chrome-extension/${{ inputs.tag }}"
       SWF_CHROME_EXTENSION__manifestFile: "manifest.prod.json"
-
-    if: ${{ always() && needs.extract_runners.outputs.chrome_extensions == 'true' && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.chrome_extensions == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_sandbox_image.result == 'success' || needs.dmn_dev_sandbox_image.result == 'skipped') && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, online_editor]
+    needs: [extract_runners, dmn_dev_sandbox_image, extended_services, online_editor]
     steps:
       - name: "Checkout kie-tools"
         uses: actions/checkout@v2
@@ -516,15 +551,23 @@ jobs:
           ref: gh-pages
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
           path: kie-tools
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./kie-tools/.github/actions/bootstrap
+        with:
+          path: kie-tools
+          pnpm_filter_string: -F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...
+
       - name: "Build Chrome Extensions"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          pnpm -F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Chrome Extension for Kogito KIE Editors"
         if: ${{ !inputs.dry_run }}
@@ -660,13 +703,20 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F vscode-extension-pack-kogito-kie-editors... -F vscode-extension-backend...
+
       - name: "Build"
         run: |
-          pnpm -F vscode-extension-pack-kogito-kie-editors... -F vscode-extension-backend... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload VS Code Extension (dev) (Ubuntu only)"
         if: ${{ !inputs.dry_run }}
@@ -708,21 +758,27 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: >-
+            -F vscode-extension-bpmn-editor...
+            -F vscode-extension-dmn-editor...
+            -F vscode-extension-pmml-editor...
+            -F vscode-extension-kogito-bundle...
+            -F vscode-extension-red-hat-business-automation-bundle...
+            -F vscode-extension-serverless-workflow-editor...
+            -F vscode-extension-kie-ba-bundle...
+
       - name: "Build"
         run: |
-          pnpm \
-            -F vscode-extension-bpmn-editor... \
-            -F vscode-extension-dmn-editor... \
-            -F vscode-extension-pmml-editor... \
-            -F vscode-extension-kogito-bundle... \
-            -F vscode-extension-red-hat-business-automation-bundle... \
-            -F vscode-extension-serverless-workflow-editor... \
-            -F vscode-extension-kie-ba-bundle... \
-            build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload VS Code Extension - BPMN Editor (prod)"
         if: ${{ !inputs.dry_run }}
@@ -826,14 +882,21 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/desktop...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/desktop... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Desktop App for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -890,15 +953,27 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Create pnpm filter for building"
+        id: create_pnpm_filter_string_for_building
+        run: |
+          export PNPM_FILTER_STRING_FOR_BUILDING=$(pnpm -r exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json) PKG_IS_PVT=$(jq -r ".private" package.json); if [ "$PKG_IS_PVT" != "true" ]; then echo "-F $PKG_NAME..."; fi')
+          echo $PNPM_FILTER_STRING_FOR_BUILDING
+          echo ::set-output name=filter::$PNPM_FILTER_STRING_FOR_BUILDING
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: ${{ steps.create_pnpm_filter_string_for_building.outputs.filter }}
+
       - name: "Build"
         run: |
-          export FILTER=$(pnpm -r exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json) PKG_IS_PVT=$(jq -r ".private" package.json); if [ "$PKG_IS_PVT" != "true" ]; then echo "-F $PKG_NAME..."; fi')
-          echo $FILTER
-          pnpm $FILTER build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Publish packages to the NPM registry"
         if: ${{ !inputs.dry_run }}
@@ -906,14 +981,14 @@ jobs:
           NPM_TOKEN: ${{ secrets.kiegroup_npm_token }}
         run: |
           echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          export FILTER=$(pnpm -r exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json) PKG_IS_PVT=$(jq -r ".private" package.json); if [ "$PKG_IS_PVT" != "true" ]; then echo "-F $PKG_NAME"; fi')
-          echo $FILTER
-          pnpm $FILTER exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json); NPM_PKG_INFO=$(npm view $PKG_NAME@${{ inputs.tag }} name || echo ""); if [ -z $NPM_PKG_INFO ]; then pnpm publish --access public; fi'
+          export PNPM_FILTER_STRING_FOR_PUBLISHING=$(pnpm -r exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json) PKG_IS_PVT=$(jq -r ".private" package.json); if [ "$PKG_IS_PVT" != "true" ]; then echo "-F $PKG_NAME"; fi')
+          echo $PNPM_FILTER_STRING_FOR_PUBLISHING
+          pnpm $PNPM_FILTER_STRING_FOR_PUBLISHING exec 'bash' '-c' 'PKG_NAME=$(jq -r ".name" package.json); NPM_PKG_INFO=$(npm view $PKG_NAME@${{ inputs.tag }} name || echo ""); if [ -z $NPM_PKG_INFO ]; then pnpm publish --access public; fi'
 
   standalone_editors_cdn:
-    if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.chrome_extensions.result == 'success' || needs.chrome_extensions.result == 'skipped') }}
+    if: ${{ always() && needs.extract_runners.outputs.standalone_editors_cdn == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.dmn_dev_sandbox_image.result == 'success' || needs.dmn_dev_sandbox_image.result == 'skipped') && (needs.online_editor.result == 'success' || needs.online_editor.result == 'skipped') && (needs.chrome_extensions.result == 'success' || needs.chrome_extensions.result == 'skipped') }}
     runs-on: ubuntu-latest
-    needs: [extract_runners, chrome_extensions]
+    needs: [extract_runners, dmn_dev_sandbox_image, extended_services, online_editor, chrome_extensions]
     steps:
       - name: "Checkout kie-tools"
         uses: actions/checkout@v2
@@ -941,15 +1016,23 @@ jobs:
           ref: gh-pages
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
           path: kie-tools
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./kie-tools/.github/actions/bootstrap
+        with:
+          path: kie-tools
+          pnpm_filter_string: -F @kie-tools/kie-editors-standalone...
+
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          pnpm -F @kie-tools/kie-editors-standalone... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Deploy to GitHub Pages (kogito-online)"
         if: ${{ !inputs.dry_run }}
@@ -994,14 +1077,21 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/extended-services...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/extended-services... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Extended Services for Linux (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -1054,14 +1144,21 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/dashbuilder...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/dashbuilder... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload DashBuilder Assets"
         if: ${{ !inputs.dry_run }}
@@ -1103,15 +1200,23 @@ jobs:
           path: kie-tools
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
           path: kie-tools
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./kie-tools/.github/actions/bootstrap
+        with:
+          path: kie-tools
+          pnpm_filter_string: -F @kie-tools/dashbuilder-images...
+
       - name: "Build Dashbuilder Images"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          pnpm -F @kie-tools/dashbuilder-images... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Push dashbuilder-authoring image to quay.io"
         if: ${{ !inputs.dry_run }}
@@ -1151,14 +1256,22 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/kn-plugin-workflow...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/kn-plugin-workflow... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
       - name: "Upload Knative CLI Workflow Plugin for Linux"
         if: ${{ !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
@@ -1234,14 +1347,21 @@ jobs:
           restore-keys: ${{ runner.os }}-serverless-logic-sandbox-base-image-m2
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/serverless-logic-sandbox-base-image...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/serverless-logic-sandbox-base-image... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
       - name: "Push serverless-logic-sandbox-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -1276,14 +1396,22 @@ jobs:
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./.github/actions/setup-env
         with:
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/openjdk11-mvn-image...
+
       - name: "Build"
         shell: bash
         run: |
-          pnpm -F @kie-tools/openjdk11-mvn-image... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
       - name: "Push openjdk11-mvn-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -1348,15 +1476,24 @@ jobs:
           restore-keys: ${{ runner.os }}-serverless-logic-sandbox-m2
 
       - name: "Setup environment"
+        id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
           path: kie-tools
           os: ubuntu-latest
 
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./kie-tools/.github/actions/bootstrap
+        with:
+          path: kie-tools
+          pnpm_filter_string: -F @kie-tools/serverless-logic-sandbox...
+
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools
         run: |
-          pnpm -F @kie-tools/serverless-logic-sandbox... build:prod
+          pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
+
       - name: "Deploy to GitHub Pages (serverless-logic-sandbox-deployment)"
         if: ${{ !inputs.dry_run }}
         working-directory: ${{ github.workspace }}/serverless-logic-sandbox-deployment

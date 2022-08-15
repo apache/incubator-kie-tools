@@ -1,15 +1,15 @@
-name: "CI :: Monorepo"
+name: "CI :: Build"
 
 on:
   pull_request:
     branches: "**"
 
 concurrency:
-  group: monorepo-pr-ci-${{ github.event.pull_request.number }}
+  group: ci-build-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  ci:
+  run:
     if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -68,13 +68,18 @@ jobs:
 
           echo "Done"
 
-      - name: "Setup environment (partial)"
+      - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
-          partial: true
-          base_sha: ${{ steps.merge_changes.outputs.base_sha }}
+
+      - name: "Bootstrap"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F "...[${{ steps.merge_changes.outputs.base_sha }}]..."
 
       - name: "Build dependencies"
         if: steps.check_diff_paths.outputs.should_run == 'true'

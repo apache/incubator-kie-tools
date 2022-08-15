@@ -1,4 +1,4 @@
-name: "CI :: Monorepo (full)"
+name: "CI :: Build (full)"
 
 on:
   push:
@@ -7,11 +7,11 @@ on:
     branches: "**"
 
 concurrency:
-  group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || format('monorepo-ci-full-push-main-{0}', github.sha) }}
+  group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-main-{0}', github.sha) }}
   cancel-in-progress: true
 
 jobs:
-  ci-full:
+  run:
     if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -78,6 +78,10 @@ jobs:
         uses: ./.github/actions/setup-env
         with:
           os: ${{ matrix.os }}
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
 
       - name: "Build"
         if: steps.check_diff_paths.outputs.should_run == 'true'
