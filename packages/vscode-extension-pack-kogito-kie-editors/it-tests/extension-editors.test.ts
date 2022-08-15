@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { By, EditorView, InputBox, SideBarView, TextEditor, WebView } from "vscode-extension-tester";
+import { By, InputBox, SideBarView, TextEditor, WebView } from "vscode-extension-tester";
 import * as path from "path";
-import { h5ComponentWithText, labeledAnyElementInPropertiesPanel } from "./helpers/CommonLocators";
+import { h5ComponentWithText } from "./helpers/CommonLocators";
 import { EditorTabs } from "./helpers/dmn/EditorTabs";
 import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/bpmn/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
 import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
-import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
 import { assert } from "chai";
 import {
   palletteItemAnchor,
@@ -32,22 +31,16 @@ import {
 } from "./helpers/bpmn/BpmnLocators";
 import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
-import { TextEdit } from "vscode";
 import Correlation from "./helpers/bpmn/Correlation";
-import ProcessVariablesWidgetHelper from "./helpers/bpmn/ProcessVariablesWidgetHelper";
 import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
 
-describe("Editors are loading properly", () => {
+describe("KIE Editors Integration Test Suite", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
-  const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";
   const DEMO_DMN_SCESIM: string = "demo-dmn.scesim";
   const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";
-  const DEMO_SCESIM: string = "demo.scesim";
-  const DEMO_PMML: string = "demo.pmml";
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
-
   const REUSABLE_DMN: string = "reusable-model.dmn";
   const WID_BPMN: string = "process-wid.bpmn";
 
@@ -70,37 +63,6 @@ describe("Editors are loading properly", () => {
     this.timeout(15000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
-    await webview.switchBack();
-  });
-
-  it("Opens demo.bpmn file in BPMN Editor and loads correct diagram", async function () {
-    this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_BPMN);
-    await testHelper.switchWebviewToFrame(webview);
-    const bpmnEditorTester = new BpmnEditorTestHelper(webview);
-
-    const palette = await bpmnEditorTester.getPalette();
-    await assertWebElementIsDisplayedEnabled(palette);
-
-    await bpmnEditorTester.openDiagramProperties();
-
-    const explorer = await bpmnEditorTester.openDiagramExplorer();
-    await explorer.assertDiagramNodeIsPresent("Start");
-    await explorer.assertDiagramNodeIsPresent("End");
-
-    await webview.switchBack();
-  });
-
-  it("Opens demo.dmn file in DMN Editor", async function () {
-    this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await testHelper.switchWebviewToFrame(webview);
-    const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    await dmnEditorTester.openDiagramProperties();
-    await dmnEditorTester.openDiagramExplorer();
-    await dmnEditorTester.openDecisionNavigator();
-
     await webview.switchBack();
   });
 
@@ -177,24 +139,9 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens demo.scesim file in SCESIM Editor", async function () {
-    this.timeout(20000);
-
-    webview = await testHelper.openFileFromSidebar(DEMO_SCESIM);
-    await testHelper.switchWebviewToFrame(webview);
-    const scesimEditorTester = new ScesimEditorTestHelper(webview);
-
-    await scesimEditorTester.openScenarioCheatsheet();
-    await scesimEditorTester.openSettings();
-    await scesimEditorTester.openTestTools();
-
-    await webview.switchBack();
-  });
-
   /**
    * As the opened sceism file is empty, a prompt to specify file under test should be shown
    */
-
   it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
@@ -218,24 +165,6 @@ describe("Editors are loading properly", () => {
     const plainText = new TextEditor();
     assert.equal(await plainText.getTextAtLine(1), xmlProlog, "First line should be an <?xml?> prolog");
     assert.notEqual(await plainText.getTextAtLine(2), xmlProlog, "<?xml?> prolog should be there just once");
-  });
-
-  it("Opens demo.pmml file in PMML Editor", async function () {
-    this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_PMML);
-    await testHelper.switchWebviewToFrame(webview);
-    const pmmlEditorTester = new PmmlEditorTestHelper(webview);
-
-    const dataDictionaryModel = await pmmlEditorTester.openDataDictionary();
-    dataDictionaryModel.close();
-
-    const miningSchemaModel = await pmmlEditorTester.openMiningSchema();
-    miningSchemaModel.close();
-
-    const outputsModal = await pmmlEditorTester.openOutputs();
-    outputsModal.close();
-
-    await webview.switchBack();
   });
 
   it("Opens process with work item definition properly", async function () {
@@ -412,7 +341,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it.skip("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
+  it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
     await testHelper.switchWebviewToFrame(webview);
