@@ -5,9 +5,12 @@ on:
       - main
     paths:
       - "packages/stunner-editors/**"
+      - ".github/workflows/sonar_analysis_stunner_editors.yml"
+  pull_request:
+    branches: "**"
 
 jobs:
-  build:
+  check:
     name: Build for Sonar
     runs-on: ubuntu-latest
     steps:
