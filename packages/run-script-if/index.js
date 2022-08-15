@@ -104,7 +104,7 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
     })
     .check((argv, options) => {
       if (argv.bool && argv.env) {
-        throw new Error("Conditions must either be --bool or --env");
+        throw new Error("Conditions must be either --bool or --env");
       }
 
       evalBoolStringArg(argv.bool);
