@@ -17,19 +17,23 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Merge Changes"
-        if: ${{ github.event.pull_request }}
-        shell: bash
-        run: |
-          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
-          git remote add $user https://github.com/$user/kie-tools.git
-          git fetch $user
-          git merge --squash $user/${{ github.head_ref }}
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        id: merge_changes
+        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
         with:
           os: ${{ runner.os }}
+
+      - name: "Bootstrap"
+        id: bootstrap
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/stunner-editors...
 
       - name: "Cache SonarCloud packages"
         uses: actions/cache@v1
@@ -40,7 +44,7 @@ jobs:
 
       - name: "Build with Maven to measure code coverage"
         run: |
-          pnpm -r -F @kie-tools/stunner-editors^... build:dev
+          pnpm -F @kie-tools/stunner-editors^... build:dev
           cd packages/stunner-editors
           mvn clean install --fail-at-end -Prun-code-coverage -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'
 
