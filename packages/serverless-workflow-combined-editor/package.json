@@ -20,8 +20,8 @@
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
-    "cy:open": "pnpm cypress open --project it-tests",
-    "cy:run": "pnpm cypress run -b chrome --project it-tests",
+    "cy:open": "cypress open --project it-tests",
+    "cy:run": "cypress run -b chrome --project it-tests",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",

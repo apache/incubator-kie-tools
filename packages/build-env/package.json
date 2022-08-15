@@ -29,7 +29,7 @@
     "install": "pnpm build:install",
     "lint": "eslint ./src --ext .ts,.tsx",
     "print": "node dist/bin.js --print-vars && node dist/bin.js --print-env",
-    "test": "pnpm jest --silent --verbose --passWithNoTests"
+    "test": "jest --silent --verbose --passWithNoTests"
   },
   "dependencies": {}
 }

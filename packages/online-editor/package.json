@@ -17,8 +17,8 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
-    "cy:open": "pnpm cypress open --project it-tests --config baseUrl=$(build-env onlineEditor.dev.cypressUrl)",
-    "cy:run": "pnpm cypress run --headed -b chrome --project it-tests --config baseUrl=$(build-env onlineEditor.dev.cypressUrl)",
+    "cy:open": "cypress open --project it-tests --config baseUrl=$(build-env onlineEditor.dev.cypressUrl)",
+    "cy:run": "cypress run --headed -b chrome --project it-tests --config baseUrl=$(build-env onlineEditor.dev.cypressUrl)",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
     "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
