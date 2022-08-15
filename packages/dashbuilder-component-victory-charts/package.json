@@ -15,10 +15,9 @@
   "types": "./dist/index.d.ts",
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "echo \"skipped\"",
-    "build:dev-skipped": "rimraf dist && webpack --env dev",
-    "build:prod": "echo \"skipped\"",
-    "build:prod-skipped": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "build:dev": "rimraf dist && pnpm copy:css && webpack --env dev",
+    "build:prod": "pnpm lint && pnpm test && rimraf dist && pnpm copy:css && webpack",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
@@ -31,7 +30,8 @@
     "@patternfly/react-table": "^4.27.15",
     "numeral": "^2.0.6",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "victory-zoom-container": "^35.11.4"
   },
   "devDependencies": {
     "@kie-tools-core/run-script-if": "workspace:*",

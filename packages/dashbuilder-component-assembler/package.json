@@ -25,7 +25,8 @@
     "@kie-tools/dashbuilder-component-svg-heatmap": "workspace:*",
     "@kie-tools/dashbuilder-component-table": "workspace:*",
     "@kie-tools/dashbuilder-component-timeseries": "workspace:*",
-    "@kie-tools/dashbuilder-component-uniforms": "workspace:*"
+    "@kie-tools/dashbuilder-component-uniforms": "workspace:*",
+    "@kie-tools/dashbuilder-component-victory-charts": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",

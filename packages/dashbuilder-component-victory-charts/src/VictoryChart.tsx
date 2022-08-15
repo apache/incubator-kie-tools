@@ -21,7 +21,14 @@ import { LineChart } from "./charts/LineChart";
 import { DonutChart } from "./charts/DonutChart";
 import { PieChart } from "./charts/PieChart";
 import { StackChart } from "./charts/StackChart";
-import { ThemeColorType, ChartType, LegendPosition, ThemeVariantType, ChartProps } from "./charts/BaseChart";
+import {
+  ThemeColorType,
+  ChartType,
+  LegendPosition,
+  ThemeVariantType,
+  ChartProps,
+  LegendOrientation,
+} from "./charts/BaseChart";
 import { validateDataSetForChart } from "./charts/PropsValidation";
 import { UtilizationDonut } from "./charts/UtilizationDonut";
 import { DataSet } from "@kie-tools/dashbuilder-component-api";
@@ -36,6 +43,7 @@ export interface VictoryChartProps {
   themeColor: ThemeColorType;
   themeVariant: ThemeVariantType;
   legendPosition?: LegendPosition;
+  legendOrientation?: LegendOrientation;
 
   animate?: boolean;
   animationDuration?: number;
@@ -90,6 +98,7 @@ export const VictoryChart = (props: VictoryChartProps) => {
         themeVariant: props.themeVariant,
         dataSet: props.dataSet || EMPTY_DATASET,
         legendPosition: props.legendPosition || "bottom",
+        legendOrientation: props.legendOrientation,
         animation: {
           easing: props.animationEasing,
           duration: props.animationDuration,
@@ -111,6 +120,7 @@ export const VictoryChart = (props: VictoryChartProps) => {
         donutTitle: props.donutTitle,
         donutSubTitle: props.donutSubTitle,
         horizontalBars: props.horizontalBars,
+        zoom: props.zoom,
       };
       switch (type) {
         case "area":

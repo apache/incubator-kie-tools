@@ -53,11 +53,11 @@
       { "id": "@kie-tools/dashbuilder-component-table" },
       { "id": "@kie-tools/dashbuilder-component-timeseries" },
       { "id": "@kie-tools/dashbuilder-component-uniforms" },
+      { "id": "@kie-tools/dashbuilder-component-victory-charts" },
       { "id": "@kie-tools/dashbuilder-client" },
       { "id": "@kie-tools/dashbuilder-component-api" },
       { "id": "@kie-tools/dashbuilder-component-echarts-base" },
       { "id": "@kie-tools/dashbuilder-component-dev" },
-      { "id": "@kie-tools/dashbuilder-component-victory-charts" },
       { "id": "@kie-tools/dashbuilder-editor" },
       { "id": "@kie-tools/dashbuilder-images" },
       { "id": "@kie-tools/dashbuilder-swf-monitoring-dashboard" },
@@ -331,6 +331,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/dashbuilder-component-assembler",
+        "target": "@kie-tools/dashbuilder-component-victory-charts",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/dashbuilder-component-echarts",
         "target": "@kie-tools/dashbuilder-component-echarts-base",
         "weight": 1
@@ -399,18 +404,6 @@
         "target": "@kie-tools/dashbuilder-component-dev",
         "weight": 1
       },
-      { "source": "@kie-tools/dashbuilder-client", "target": "@kie-tools/dashbuilder", "weight": 1 },
-      { "source": "@kie-tools/dashbuilder-component-api", "target": "@kie-tools-core/run-script-if", "weight": 1 },
-      {
-        "source": "@kie-tools/dashbuilder-component-echarts-base",
-        "target": "@kie-tools-core/run-script-if",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dashbuilder-component-dev",
-        "target": "@kie-tools/dashbuilder-component-api",
-        "weight": 1
-      },
       {
         "source": "@kie-tools/dashbuilder-component-victory-charts",
         "target": "@kie-tools-core/patternfly-base",
@@ -424,6 +417,18 @@
       {
         "source": "@kie-tools/dashbuilder-component-victory-charts",
         "target": "@kie-tools/dashbuilder-component-dev",
+        "weight": 1
+      },
+      { "source": "@kie-tools/dashbuilder-client", "target": "@kie-tools/dashbuilder", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-api", "target": "@kie-tools-core/run-script-if", "weight": 1 },
+      {
+        "source": "@kie-tools/dashbuilder-component-echarts-base",
+        "target": "@kie-tools-core/run-script-if",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dashbuilder-component-dev",
+        "target": "@kie-tools/dashbuilder-component-api",
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-editor", "target": "@kie-tools-core/editor", "weight": 1 },
