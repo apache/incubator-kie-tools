@@ -523,6 +523,10 @@ describe("receive", () => {
     expect(subscription2).toHaveBeenCalledTimes(1);
   });
 
+  test("fail on purpose", () => {
+    expect(1).toEqual(2);
+  });
+
   test("owned shared value update", () => {
     const subscription1 = manager.shared.fooValue.subscribe(jest.fn());
 

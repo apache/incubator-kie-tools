@@ -67,19 +67,19 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
         description: "Command(s) to execute if the condition is false.",
       },
       "true-if-empty": {
-        default: false,
-        type: "boolean",
+        default: "false",
+        type: "string",
         description: "If the environment variable is not set, makes the condition be true.",
+      },
+      "ignore-errors": {
+        default: "false",
+        type: "string",
+        description: "Ignore non-zero exit values when running command(s).",
       },
       silent: {
         default: false,
         type: "boolean",
         description: "Hide info logs from output. Logs from commands will still show.",
-      },
-      ["ignore-errors"]: {
-        default: false,
-        type: "boolean",
-        description: "Ignore non-zero exit values when running command(s).",
       },
       force: {
         default: false,
@@ -107,14 +107,11 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
         throw new Error("Conditions must either be --bool or --env");
       }
 
-      const boolCondition = evaluateBoolCondition(argv);
-      if (boolCondition && boolCondition !== "true" && boolCondition !== "false") {
-        throw new Error(
-          `Boolean condition provided, but value is '${boolCondition}'. Boolean condition values must be either 'true' or 'false'.`
-        );
-      }
+      evalBoolStringArg(argv.bool);
+      evalBoolStringArg(argv["ignore-errors"]);
+      evalBoolStringArg(argv["true-if-empty"]);
 
-      if (argv.bool && argv["true-if-empty"]) {
+      if (argv.bool && evalBoolStringArg(argv["true-if-empty"]) === "true") {
         throw new Error("Conditions with --bool cannot be used with --true-if-empty");
       }
 
@@ -133,13 +130,13 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
 
   const envVarName = argv.env;
   const envVarValue = process.env[envVarName];
-  const shouldRunIfEmpty = argv["true-if-empty"];
-  const ignoreErrors = argv["ignore-errors"];
-  const boolCondition = evaluateBoolCondition(argv);
+  const shouldRunIfEmpty = evalBoolStringArg(argv["true-if-empty"]) === "true";
+  const ignoreErrors = evalBoolStringArg(argv["ignore-errors"]) === "true";
+  const boolStringCondition = evalBoolStringArg(argv.bool);
 
   const condition =
     // --bool conditions are true if equals to --eq
-    boolCondition === argv.eq ||
+    boolStringCondition === argv.eq ||
     // env var value is logically empty and --true-if-empty is enabled
     ((envVarValue === undefined || envVarValue === "") && shouldRunIfEmpty) ||
     // env var value is equal to the --eq argument
@@ -152,8 +149,8 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
   if (envVarName) log(console.info, LOGS.envVarSummary(envVarName, envVarValue));
   if (argv.bool) log(console.info, LOGS.boolSummary());
   if (shouldRunIfEmpty) log(console.info, LOGS.trueIfEmptyEnabled());
-  if (argv.force) log(console.info, LOGS.forceEnabled());
   if (ignoreErrors) log(console.info, LOGS.ignoreErrorsEnabled());
+  if (argv.force) log(console.info, LOGS.forceEnabled());
   log(console.info, LOGS.conditionSummary(condition));
 
   await runCommandStrings(log, { ignoreErrors }, commandStringsToRun)
@@ -183,13 +180,22 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
     });
 }
 
-function evaluateBoolCondition(argv) {
-  if (process.platform === "win32" && argv.bool && argv.bool.startsWith("$")) {
-    const output = spawnSync(argv.bool, [], { stdio: "pipe", ...shell() });
-    return String(output.stdout).trim();
+function evalBoolStringArg(boolArg) {
+  let ret;
+  if (process.platform === "win32" && boolArg && boolArg.startsWith("$")) {
+    const output = spawnSync(boolArg, [], { stdio: "pipe", ...shell() });
+    ret = String(output.stdout).trim();
   } else {
-    return argv.bool;
+    ret = boolArg;
   }
+
+  if (ret && ret !== "true" && ret !== "false") {
+    throw new Error(
+      `Boolean argument provided, but value is '${ret}'. Boolean arguments values must be either 'true' or 'false'.`
+    );
+  }
+
+  return ret;
 }
 
 async function runCommandStrings(log, { ignoreErrors }, commandStringsToRun) {

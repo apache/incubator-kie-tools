@@ -96,15 +96,16 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm -r --workspace-concurrency=1 build:prod
+          pnpm -r --workspace-concurrency=1 -F @kie-tools-core/envelope... build:prod
 
       - name: "Generate tests report (`main` only)"
         if: steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
-        uses: dorny/test-reporter@v1.5.0
+        uses: mikepenz/action-junit-report@v3
         with:
-          name: "KIE Tools :: `main` :: tests report"
-          path: "**/junit-report*.xml"
-          reporter: jest-junit
+          check_name: "tests ${{ matrix.os }}"
+          annotate_only: true
+          fail_on_failure: true
+          report_paths: "**/dist-*/junit-report*.xml"
 
       - name: "Check generated resources (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'

@@ -12,11 +12,11 @@ Options:
   --else           Command(s) to execute if the condition is false.
                                                            [array] [default: []]
   --true-if-empty  If the environment variable is not set, makes the condition
-                   be true.                           [boolean] [default: false]
+                   be true.                          [string] [default: "false"]
+  --ignore-errors  Ignore non-zero exit values when running command(s).
+                                                     [string] [default: "false"]
   --silent         Hide info logs from output. Logs from commands will still
                    show.                              [boolean] [default: false]
-  --ignore-errors  Ignore non-zero exit values when running command(s).
-                                                      [boolean] [default: false]
   --force          Makes condition be true. Runs command(s) supplied to --then.
                                                       [boolean] [default: false]
   --catch          Command(s) to execute at the end of execution if one of the
