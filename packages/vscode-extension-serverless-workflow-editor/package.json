@@ -68,7 +68,7 @@
     "monaco-editor-webpack-plugin": "^7.0.1",
     "selenium-webdriver": "^4.2.0",
     "vsce": "^2.6.5",
-    "vscode-extension-tester": "^4.3.0",
+    "vscode-extension-tester": "^4.4.0",
     "vscode-test": "^1.6.1"
   },
   "engines": {

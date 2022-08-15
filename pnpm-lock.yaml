@@ -2745,7 +2745,7 @@ importers:
       mocha-multi-reporters: ^1.5.1
       monaco-editor: ^0.33.0
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.3.0
+      vscode-extension-tester: ^4.4.0
       vscode-test: ^1.6.1
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2777,7 +2777,7 @@ importers:
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
       mocha-multi-reporters: 1.5.1_mocha@9.2.0
       vsce: 2.6.5
-      vscode-extension-tester: 4.3.0_mocha@9.2.0
+      vscode-extension-tester: 4.4.1_mocha@9.2.0
       vscode-test: 1.6.1
 
   packages/vscode-extension-pmml-editor:
@@ -2864,7 +2864,7 @@ importers:
       openapi-types: ^7.0.1
       selenium-webdriver: ^4.2.0
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.3.0
+      vscode-extension-tester: ^4.4.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -2909,7 +2909,7 @@ importers:
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       selenium-webdriver: 4.2.0
       vsce: 2.6.5
-      vscode-extension-tester: 4.3.0_mocha@9.2.0
+      vscode-extension-tester: 4.4.1_mocha@9.2.0
       vscode-test: 1.6.1
 
   packages/vscode-extension-yard-editor:
@@ -2943,7 +2943,7 @@ importers:
       openapi-types: ^7.0.1
       selenium-webdriver: ^4.2.0
       vsce: ^2.6.5
-      vscode-extension-tester: ^4.3.0
+      vscode-extension-tester: ^4.4.0
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
       vscode-test: ^1.6.1
@@ -2982,7 +2982,7 @@ importers:
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       selenium-webdriver: 4.2.0
       vsce: 2.6.5
-      vscode-extension-tester: 4.3.0_mocha@9.2.0
+      vscode-extension-tester: 4.4.1_mocha@9.2.0
       vscode-test: 1.6.1
 
   packages/vscode-java-code-completion:
@@ -10874,7 +10874,8 @@ packages:
     dev: true
 
   /clone-response/1.0.2:
-    resolution: { integrity: sha1-0dyXOSAxTfZ/vrlCI7TuNQI56Ws= }
+    resolution:
+      { integrity: sha512-yjLXh88P599UOyPTFX0POsd7WxnbsVsGohcwzHOLspIhhpalPw1BcqED8NblyZLKcGrL8dTgMlcaZxV2jAD41Q== }
     dependencies:
       mimic-response: 1.0.1
 
@@ -14569,7 +14570,8 @@ packages:
     dev: true
 
   /fs.realpath/1.0.0:
-    resolution: { integrity: sha1-FQStJSMVjKpA20onh8sBQRmU6k8= }
+    resolution:
+      { integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw== }
 
   /fsevents/2.3.2:
     resolution:
@@ -15589,7 +15591,8 @@ packages:
     dev: true
 
   /inflight/1.0.6:
-    resolution: { integrity: sha1-Sb1jMdfQLQwJvJEKEHW6gWW1bfk= }
+    resolution:
+      { integrity: sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA== }
     dependencies:
       once: 1.4.0
       wrappy: 1.0.2
@@ -16012,7 +16015,8 @@ packages:
     dev: true
 
   /is-stream/1.1.0:
-    resolution: { integrity: sha1-EtSj3U5o4Lec6428hBc66A2RykQ= }
+    resolution:
+      { integrity: sha512-uQPm8kcs47jx38atAcWTVxyltQYoPT68y9aWYdV6yWXSyW8mzSat0TL6CiWdZeCdF3KrAvpVtnHbTv4RN+rqdQ== }
     engines: { node: ">=0.10.0" }
 
   /is-stream/2.0.0:
@@ -16108,7 +16112,8 @@ packages:
     dev: true
 
   /isobject/3.0.1:
-    resolution: { integrity: sha1-TkMekrEalzFjaqH5yNHMvP2reN8= }
+    resolution:
+      { integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg== }
     engines: { node: ">=0.10.0" }
     dev: true
 
@@ -16629,7 +16634,7 @@ packages:
       jest-resolve: 26.6.2
       natural-compare: 1.4.0
       pretty-format: 26.6.2
-      semver: 7.3.5
+      semver: 7.3.7
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -18369,9 +18374,9 @@ packages:
     dependencies:
       monaco-editor: 0.33.0
 
-  /monaco-page-objects/2.0.0_selenium-webdriver@4.2.0:
+  /monaco-page-objects/2.0.1_selenium-webdriver@4.2.0:
     resolution:
-      { integrity: sha512-+nMHbbQIsxpBqn0semRpAaa24L+RORi+RKD3yoTIzZQLCBqhsgjksqX+c3mIFpvIQDLGUxS5MKZoo1xRpkKd2g== }
+      { integrity: sha512-OL2vzqA0YkKozdEEwj3fBYyJsv2jWZrG8nlKfho5epe//FQ7sY7QzaJ8OtfBD5mYGT7mwV1O649A/E33D5H6kA== }
     peerDependencies:
       selenium-webdriver: ^4.2.0
     dependencies:
@@ -19100,7 +19105,8 @@ packages:
     dev: true
 
   /once/1.4.0:
-    resolution: { integrity: sha1-WDsap3WWHUsROsF9nFC6753Xa9E= }
+    resolution:
+      { integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w== }
     dependencies:
       wrappy: 1.0.2
 
@@ -19254,7 +19260,8 @@ packages:
     dev: true
 
   /p-finally/1.0.0:
-    resolution: { integrity: sha1-P7z7FbiZpEEjs0ttzBi3JDNqLK4= }
+    resolution:
+      { integrity: sha512-LICb2p9CB7FS+0eR1oqWnHhp0FljGLZCWBE9aix0Uye9W8LTQPwMTYVGWQWIw9RdQiDg4+epXQODwIYJtSJaow== }
     engines: { node: ">=4" }
 
   /p-finally/2.0.1:
@@ -19615,7 +19622,8 @@ packages:
     engines: { node: ">=0.10.0" }
 
   /path-key/2.0.1:
-    resolution: { integrity: sha1-QRyttXTFoUDTpLGRDUDYDMn0C0A= }
+    resolution:
+      { integrity: sha512-fEHGKCSmUSDPv4uoj8AlD+joPlq3peND+HRYyxFz4KPw4z926S/b8rIuFs2FYJg3BwsxJf6A9/3eIdLaYC+9Dw== }
     engines: { node: ">=4" }
 
   /path-key/3.1.1:
@@ -22120,7 +22128,8 @@ packages:
     dev: true
 
   /shebang-command/1.2.0:
-    resolution: { integrity: sha1-RKrGW2lbAzmJaMOfNj/uXer98eo= }
+    resolution:
+      { integrity: sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg== }
     engines: { node: ">=0.10.0" }
     dependencies:
       shebang-regex: 1.0.0
@@ -22134,7 +22143,8 @@ packages:
     dev: true
 
   /shebang-regex/1.0.0:
-    resolution: { integrity: sha1-2kL0l0DAtC2yypcoVxyxkMmO/qM= }
+    resolution:
+      { integrity: sha512-wpoSFAxys6b2a2wHZ1XpDSgD7N9iVjg29Ph9uV/uaP9Ex/KXlkTZTeddxDPSYQpgvzKLGJke2UU0AzoGCjNIvQ== }
     engines: { node: ">=0.10.0" }
 
   /shebang-regex/3.0.0:
@@ -22844,7 +22854,8 @@ packages:
     dev: true
 
   /strip-eof/1.0.0:
-    resolution: { integrity: sha1-u0P/VZim6wXYm1n80SnJgzE2Br8= }
+    resolution:
+      { integrity: sha512-7FCwGGmx8mD5xQd3RPUvnSpUXHM3BWuzjtpD4TXsfcZ9EL4azvVVUscFYwD9nx8Kh+uCBC00XBtAykoMHwTh8Q== }
     engines: { node: ">=0.10.0" }
 
   /strip-final-newline/2.0.0:
@@ -24374,20 +24385,20 @@ packages:
       yazl: 2.5.1
     dev: true
 
-  /vscode-extension-tester-locators/2.0.0_q7aqd6epe36dorcswu5mv7hqau:
+  /vscode-extension-tester-locators/2.0.0_c7mgiu2dpachgxdixrrvzoaz2i:
     resolution:
       { integrity: sha512-ljmevi7R1K5uCiMpstKydh/sCA9TEiohxLmzX30ZZU5qE/ZNWz/5oLrxTdqN3EcSVW9ZXhExvrQFvHoYZxy9Ng== }
     peerDependencies:
       monaco-page-objects: ^2.0.0
       selenium-webdriver: ^4.2.0
     dependencies:
-      monaco-page-objects: 2.0.0_selenium-webdriver@4.2.0
+      monaco-page-objects: 2.0.1_selenium-webdriver@4.2.0
       selenium-webdriver: 4.2.0
     dev: true
 
-  /vscode-extension-tester/4.3.0_mocha@9.2.0:
+  /vscode-extension-tester/4.4.1_mocha@9.2.0:
     resolution:
-      { integrity: sha512-Ih12B4j64l/XQMQ4SdWI+UpltzaCmHlX1u9yv9iIIUi/y401jgjQLbIoFxCUNas0SzG767hVjkzKsKbmzFPMXw== }
+      { integrity: sha512-CaxWk41sX1Q9rycFCN6GRmNzjY3DJl5dxVknbLxVbjeR9g0Qam+dIajVQIeHsdUVEKJdfPCA8xbpJOyl/bUFnA== }
     hasBin: true
     peerDependencies:
       mocha: ">=5.2.0"
@@ -24401,13 +24412,13 @@ packages:
       hpagent: 0.1.2
       js-yaml: 4.1.0
       mocha: 9.2.0
-      monaco-page-objects: 2.0.0_selenium-webdriver@4.2.0
+      monaco-page-objects: 2.0.1_selenium-webdriver@4.2.0
       sanitize-filename: 1.6.3
       selenium-webdriver: 4.2.0
       targz: 1.0.1
       unzip-stream: 0.3.1
       vsce: 2.6.5
-      vscode-extension-tester-locators: 2.0.0_q7aqd6epe36dorcswu5mv7hqau
+      vscode-extension-tester-locators: 2.0.0_c7mgiu2dpachgxdixrrvzoaz2i
     transitivePeerDependencies:
       - bufferutil
       - typescript
@@ -24624,7 +24635,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:
@@ -24980,7 +24991,8 @@ packages:
       strip-ansi: 6.0.1
 
   /wrappy/1.0.2:
-    resolution: { integrity: sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8= }
+    resolution:
+      { integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ== }
 
   /write-file-atomic/3.0.3:
     resolution:

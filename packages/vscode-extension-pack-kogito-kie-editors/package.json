@@ -61,7 +61,7 @@
     "mocha-jenkins-reporter": "^0.4.5",
     "mocha-multi-reporters": "^1.5.1",
     "vsce": "^2.6.5",
-    "vscode-extension-tester": "^4.3.0",
+    "vscode-extension-tester": "^4.4.0",
     "vscode-test": "^1.6.1"
   },
   "engines": {
