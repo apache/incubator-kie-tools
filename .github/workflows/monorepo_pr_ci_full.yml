@@ -86,11 +86,11 @@ jobs:
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
-          KIE_TOOLS_BUILD_lint: "true"
-          KIE_TOOLS_BUILD_test: "true"
-          KIE_TOOLS_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
-          KIE_TOOLS_BUILD_docker: "true"
-          KIE_TOOLS_BUILD_examples: "true"
+          KIE_TOOLS_BUILD_runLinters: "true"
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: ${{ matrix.os == 'ubuntu-latest' }}
+          KIE_TOOLS_BUILD_buildContainerImages: "true"
+          KIE_TOOLS_BUILD_buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |

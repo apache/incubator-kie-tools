@@ -20,9 +20,9 @@
     "build:prod:linux:darwin": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm test:it && pnpm package:prod",
     "build:prod:windows": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm package:prod",
     "compile": "webpack",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "package:prod": "vsce package --no-dependencies -o ./dist/vscode-extension-backend_$npm_package_version.vsix",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:it": "echo 'No tests to run.'",
     "watch": "webpack"
   },

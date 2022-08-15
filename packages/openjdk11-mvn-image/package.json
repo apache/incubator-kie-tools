@@ -15,13 +15,13 @@
   "scripts": {
     "build:dev": "echo Nothing to do",
     "build:prod": "run-script-os",
-    "build:prod:darwin:linux": "pnpm cleanup && pnpm copy:assets && pnpm install:mvnw && pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm podman:build\"",
+    "build:prod:darwin:linux": "pnpm cleanup && pnpm copy:assets && pnpm install:mvnw && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm podman:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:pom",
     "copy:pom": "cp pom.xml dist-dev/",
     "install:mvnw": "cd dist-dev/ && mvn wrapper:wrapper",
-    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env openJdk11MvnImage.buildTags) | xargs printf -- \"-t $(build-env openJdk11MvnImageEnv.registry)/$(build-env openJdk11MvnImageEnv.account)/$(build-env openJdk11MvnImageEnv.name):%s\n\" | xargs echo) --build-arg OKD_VERSION=$(build-env openJdk11MvnImage.okdVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build --ulimit nofile=5000:5000 $(echo $(build-env openJdk11MvnImage.buildTags) | xargs printf -- \"-t $(build-env openJdk11MvnImageEnv.registry)/$(build-env openJdk11MvnImageEnv.account)/$(build-env openJdk11MvnImageEnv.name):%s\n\" | xargs echo) --build-arg OKD_VERSION=$(build-env openJdk11MvnImage.okdVersion) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "devDependencies": {
     "@kie-tools-core/run-script-if": "workspace:*",

@@ -86,6 +86,10 @@
     "@types/react": "^17.0.6",
     "react-dropzone": "^11.4.2"
   },
+  "engines": {
+    "node": ">=16",
+    "pnpm": "7.0.0"
+  },
   "pnpm": {
     "packageExtensions": {
       "monaco-editor-webpack-plugin": {

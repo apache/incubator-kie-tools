@@ -23,7 +23,7 @@
     "build:watch": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json --watch",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "lint": "echo 'Linting....'",
-    "test": "run-script-if --env KIE_TOOLS_BUILD_test -c 'jest --silent --verbose'"
+    "test": "run-script-if --env KIE_TOOLS_BUILD__runTests -c 'jest --silent --verbose'"
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",

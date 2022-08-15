@@ -19,8 +19,8 @@
   "scripts": {
     "build:dev": "pnpm install:mvnw && mvn clean install -DskipTests",
     "build:prod": "pnpm lint && run-script-os",
-    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env global.build.test --not)",
-    "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env global.build.test --not)\"",
+    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not)",
+    "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not)\"",
     "install": "node install.js",
     "install:mvnw": "mvn wrapper:wrapper -f kogito-extended-services-quarkus",
     "lint": "echo 'Linting'",

@@ -40,7 +40,7 @@
     "build:dev": "rimraf dist && pnpm copy:src",
     "build:prod": "rimraf dist && pnpm copy:src && pnpm test",
     "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"karma start --single-run --watch\""
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"karma start --single-run --watch\""
   },
   "dependencies": {
     "@isomorphic-git/idb-keyval": "^3.3.2",

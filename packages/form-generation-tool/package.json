@@ -24,8 +24,8 @@
     "build:prod:darwin": "pkg dist/index.js --output dist/form-generation-cli-macos --target node16-macos-x64",
     "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node16-linux-x64",
     "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node16-win-x64",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools/uniforms-bootstrap4-codegen": "workspace:*",

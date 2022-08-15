@@ -15,50 +15,68 @@
  */
 
 const { varsWithName, getOrDefault, str2bool, composeEnv } = require("../dist");
-const packageJson = require("../package.json");
+const rootPackageJson = require("../../../package.json");
 
 module.exports = composeEnv([], {
   vars: varsWithName({
-    KIE_TOOLS_BUILD_lint: {
+    KIE_TOOLS_BUILD_runLinters: {
       default: `${true}`,
-      description: "",
+      description: "Enables/disables running linters during the build.",
     },
-    KIE_TOOLS_BUILD_test: {
+    KIE_TOOLS_BUILD__runTests: {
       default: `${true}`,
-      description: "",
+      description: "Enables/disables running tests during the build.",
     },
-    KIE_TOOLS_BUILD_testIT: {
+    KIE_TOOLS_BUILD__ignoreTestFailures: {
       default: `${false}`,
-      description: "",
+      description: "Ignores failures on tests and continues with the build until the end.",
     },
-    KIE_TOOLS_BUILD_docker: {
+    KIE_TOOLS_BUILD__runIntegrationTests: {
       default: `${false}`,
-      description: "",
+      description: "Enables/disables running integration tests during the build.",
     },
-    KIE_TOOLS_BUILD_examples: {
+    KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: {
       default: `${false}`,
-      description: "",
+      description: "Ignores failures on integration tests and continues with the build until the end.",
+    },
+    KIE_TOOLS_BUILD_buildContainerImages: {
+      default: `${false}`,
+      description: "Enables/disables building container images during the build.",
+    },
+    KIE_TOOLS_BUILD_buildExamples: {
+      default: `${false}`,
+      description: "Enables/disables building example packages during the build.",
     },
     QUARKUS_PLATFORM_version: {
       default: "2.4.0.Final",
-      description: "",
+      description: "Quarkus version to be used on dependency declaration.",
     },
     KOGITO_RUNTIME_version: {
       default: "1.12.0.Final",
-      description: "",
+      description: "Kogito version to be used on dependency declaration.",
     },
   }),
   get env() {
     return {
-      global: {
-        version: packageJson.version,
-        build: {
-          lint: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_lint)),
-          test: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_test)),
-          testIT: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_testIT)),
-          docker: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_docker)),
-          examples: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_examples)),
-        },
+      root: {
+        version: rootPackageJson.version,
+      },
+      tests: {
+        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runTests)),
+        ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreTestFailures)),
+      },
+      integrationTests: {
+        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runIntegrationTests)),
+        ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreIntegrationTestFailures)),
+      },
+      linters: {
+        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_runLinters)),
+      },
+      containerImages: {
+        build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_buildContainerImages)),
+      },
+      examples: {
+        build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_buildExamples)),
       },
       kogitoRuntime: {
         version: getOrDefault(this.vars.KOGITO_RUNTIME_version),

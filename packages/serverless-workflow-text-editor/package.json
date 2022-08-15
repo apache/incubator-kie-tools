@@ -22,11 +22,11 @@
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
     "cy:open": "pnpm cypress open --project it-tests",
     "cy:run": "pnpm cypress run -b chrome --project it-tests",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:clearCache": "jest --clearCache",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowTextEditor.dev.port) cy:run\"",
+    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowTextEditor.dev.port) cy:run\"",
     "test:watch": "jest --watch"
   },
   "dependencies": {

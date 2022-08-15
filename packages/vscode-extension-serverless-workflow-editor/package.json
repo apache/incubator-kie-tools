@@ -19,10 +19,10 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "rimraf dist && webpack && pnpm pack:prod && pnpm test:it",
     "compile": "webpack --env dev",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_serverless_workflow_editor_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
+    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js\"",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
     "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o ./it-tests/settings.json out/*.test.js",
     "watch": "webpack --env dev"

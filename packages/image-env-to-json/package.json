@@ -20,7 +20,7 @@
     "build:standalone:darwin": "pkg dist/index.js -t node16-macos-x64 -o dist/macos/image-env-to-json-standalone",
     "build:standalone:linux": "pkg dist/index.js -t node16-linux-x64 -o dist/linux/image-env-to-json-standalone",
     "build:standalone:win32": "pkg dist/index.js -t node16-win-x64 -o dist/win/image-env-to-json-standalone",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts\""
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts\""
   },
   "dependencies": {
     "commander": "^8.3.0"

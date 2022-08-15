@@ -14,10 +14,10 @@
     "cy:open": "pnpm cypress open --project it-tests",
     "cy:run": "pnpm cypress run -b chrome --project it-tests --config watchForFileChanges=false",
     "deploy": "gh-pages -d dist-dev",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env boxedExpressionComponent.dev.port) cy:run\""
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env boxedExpressionComponent.dev.port) cy:run\""
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",

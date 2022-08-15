@@ -34,8 +34,11 @@ const logs = {
   envRecursionStopped: (startDir: string, curDir: string, envRecursionStopPath: string) => {
     return `[build-env] Couldn't load env from '${startDir}' to '${curDir}'. Stopped at '${envRecursionStopPath}'`;
   },
-  cantNegateNonBoolean(envPropertyValue: string) {
+  cantNegateNonBoolean(envPropertyValue: string | boolean) {
     return `[build-env] Cannot negate non-boolean value '${envPropertyValue}'`;
+  },
+  cantReturnNonString(propertyPath: string, propertyType: string) {
+    return `[build-env] Env property '${propertyPath}' is not of type "string" or "boolean". Found "${propertyType}":`;
   },
   pleaseProvideEnvPropertyPath() {
     return `[build-env] Please provide an env property path.`;
@@ -127,11 +130,17 @@ async function main() {
   let envPropertyValue: any = env;
   for (const p of propertyPath.split(".")) {
     envPropertyValue = envPropertyValue[p];
-    if (envPropertyValue === undefined || typeof envPropertyValue === "function") {
+    if (envPropertyValue === undefined) {
       console.error(logs.propertyNotFound(propertyPath));
       console.error(logs.seeAllEnvProperties());
       process.exit(1);
     }
+  }
+
+  if (typeof envPropertyValue !== "string" && typeof envPropertyValue !== "boolean") {
+    console.error(logs.cantReturnNonString(propertyPath, typeof envPropertyValue));
+    console.error(envPropertyValue);
+    process.exit(1);
   }
 
   if (flags === "--not") {
@@ -141,7 +150,7 @@ async function main() {
       process.exit(0);
     } else {
       console.error(logs.cantNegateNonBoolean(envPropertyValue));
-      process.exit(0);
+      process.exit(1);
     }
   }
 

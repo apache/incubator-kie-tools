@@ -11,7 +11,7 @@ This package contains the `Containerfile` and scripts to build a container image
 Enable the image to be built:
 
 ```bash
-$ export KIE_TOOLS_BUILD_docker=true
+$ export KIE_TOOLS_BUILD_buildContainerImages=true
 ```
 
 The image name and tags can be customized by setting the following environment variables:

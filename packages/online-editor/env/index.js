@@ -17,70 +17,74 @@
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
 
 const buildEnv = require("@kie-tools/build-env/env");
+const extendedServicesEnv = require("@kie-tools/extended-services/env");
 
-module.exports = composeEnv([buildEnv, require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env")], {
-  vars: varsWithName({
-    ONLINE_EDITOR__buildInfo: {
-      default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
-      description: "",
-    },
-    ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
-      default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_linux_${buildEnv.env.global.version}.tar.gz`,
-      description: "",
-    },
-    ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
-      default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_macos_${buildEnv.env.global.version}.dmg`,
-      description: "",
-    },
-    ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
-      default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.global.version}/kie_sandbox_extended_services_windows_${buildEnv.env.global.version}.exe`,
-      description: "",
-    },
-    ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
-      default: buildEnv.env.global.version,
-      description: "",
-    },
-    ONLINE_EDITOR__gtmId: {
-      default: undefined,
-      description: "",
-    },
-    ONLINE_EDITOR__cypressUrl: {
-      default: "https://localhost:9001/",
-      description: "",
-    },
-    DMN_DEV_SANDBOX__baseImageTag: {
-      default: "latest",
-      description: "",
-    },
-    DMN_DEV_SANDBOX__onlineEditorUrl: {
-      default: `https://0.0.0.0:9001`,
-      description: "",
-    },
-  }),
-  get env() {
-    return {
-      onlineEditor: {
-        dev: {
-          cypressUrl: getOrDefault(this.vars.ONLINE_EDITOR__cypressUrl),
-          port: 9001,
-        },
-        gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
-        buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
-        kieSandboxExtendedServices: {
-          compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion),
-          downloadUrl: {
-            linux: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux),
-            macOs: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs),
-            windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
+module.exports = composeEnv(
+  [buildEnv, require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env"), extendedServicesEnv],
+  {
+    vars: varsWithName({
+      ONLINE_EDITOR__buildInfo: {
+        default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+        description: "",
+      },
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux: {
+        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_linux_${extendedServicesEnv.env.extendedServices.version}.tar.gz`,
+        description: "",
+      },
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs: {
+        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_macos_${extendedServicesEnv.env.extendedServices.version}.dmg`,
+        description: "",
+      },
+      ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: {
+        default: `https://github.com/kiegroup/kie-tools/releases/download/${buildEnv.env.root.version}/kie_sandbox_extended_services_windows_${extendedServicesEnv.env.extendedServices.version}.exe`,
+        description: "",
+      },
+      ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: {
+        default: extendedServicesEnv.env.extendedServices.version,
+        description: "",
+      },
+      ONLINE_EDITOR__gtmId: {
+        default: undefined,
+        description: "",
+      },
+      ONLINE_EDITOR__cypressUrl: {
+        default: "https://localhost:9001/",
+        description: "",
+      },
+      DMN_DEV_SANDBOX__baseImageTag: {
+        default: "latest",
+        description: "",
+      },
+      DMN_DEV_SANDBOX__onlineEditorUrl: {
+        default: `https://0.0.0.0:9001`,
+        description: "",
+      },
+    }),
+    get env() {
+      return {
+        onlineEditor: {
+          dev: {
+            cypressUrl: getOrDefault(this.vars.ONLINE_EDITOR__cypressUrl),
+            port: 9001,
+          },
+          gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
+          buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
+          kieSandboxExtendedServices: {
+            compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion),
+            downloadUrl: {
+              linux: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlLinux),
+              macOs: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlMacOs),
+              windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
+            },
           },
         },
-      },
-      dmnDevSandbox: {
-        onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),
-        baseImage: {
-          tag: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageTag),
+        dmnDevSandbox: {
+          onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),
+          baseImage: {
+            tag: getOrDefault(this.vars.DMN_DEV_SANDBOX__baseImageTag),
+          },
         },
-      },
-    };
-  },
-});
+      };
+    },
+  }
+);

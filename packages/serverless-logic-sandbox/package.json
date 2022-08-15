@@ -17,10 +17,10 @@
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve --host 0.0.0.0 --env dev",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then  \"echo Nothing to do\""
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then  \"echo Nothing to do\""
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
