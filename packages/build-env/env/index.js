@@ -19,7 +19,7 @@ const rootPackageJson = require("../../../package.json");
 
 module.exports = composeEnv([], {
   vars: varsWithName({
-    KIE_TOOLS_BUILD_runLinters: {
+    KIE_TOOLS_BUILD__runLinters: {
       default: `${true}`,
       description: "Enables/disables running linters during the build.",
     },
@@ -39,11 +39,11 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Ignores failures on integration tests and continues with the build until the end.",
     },
-    KIE_TOOLS_BUILD_buildContainerImages: {
+    KIE_TOOLS_BUILD__buildContainerImages: {
       default: `${false}`,
       description: "Enables/disables building container images during the build.",
     },
-    KIE_TOOLS_BUILD_buildExamples: {
+    KIE_TOOLS_BUILD__buildExamples: {
       default: `${false}`,
       description: "Enables/disables building example packages during the build.",
     },
@@ -70,13 +70,13 @@ module.exports = composeEnv([], {
         ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreIntegrationTestFailures)),
       },
       linters: {
-        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_runLinters)),
+        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runLinters)),
       },
       containerImages: {
-        build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_buildContainerImages)),
+        build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__buildContainerImages)),
       },
       examples: {
-        build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD_buildExamples)),
+        build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__buildExamples)),
       },
       kogitoRuntime: {
         version: getOrDefault(this.vars.KOGITO_RUNTIME_version),

@@ -82,7 +82,7 @@ jobs:
         if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         env:
-          KIE_TOOLS_BUILD_buildExamples: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
           export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
           export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
@@ -94,11 +94,11 @@ jobs:
         if: steps.check_diff_paths.outputs.should_run == 'true'
         env:
           WEBPACK__minimize: "false"
-          KIE_TOOLS_BUILD_runLinters: "true"
+          KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runIntegrationTests: ${{ matrix.os == 'ubuntu-latest' }}
-          KIE_TOOLS_BUILD_buildContainerImages: "true"
-          KIE_TOOLS_BUILD_buildExamples: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |

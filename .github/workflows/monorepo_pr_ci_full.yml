@@ -86,15 +86,25 @@ jobs:
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
-          KIE_TOOLS_BUILD_runLinters: "true"
+          KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runIntegrationTests: ${{ matrix.os == 'ubuntu-latest' }}
-          KIE_TOOLS_BUILD_buildContainerImages: "true"
-          KIE_TOOLS_BUILD_buildExamples: "true"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
+          KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
+          KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
+
+      - name: "Generate tests report (`main` only)"
+        if: steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        uses: dorny/test-reporter@v1.5.0
+        with:
+          name: "KIE Tools :: `main` :: tests report"
+          path: "**/junit-report*.xml"
+          reporter: jest-junit
 
       - name: "Check generated resources (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'

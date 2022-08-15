@@ -15,7 +15,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     env:
       KIE_SANDBOX_EXTENDED_SERVICES_VERSION: "0.0.0"
-      KIE_TOOLS_BUILD_buildContainerImages: "true"
+      KIE_TOOLS_BUILD__buildContainerImages: "true"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"

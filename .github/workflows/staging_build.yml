@@ -156,8 +156,8 @@ jobs:
         env:
           KIE_TOOLS_BUILD__runIntegrationTests: "false"
           KIE_TOOLS_BUILD__runTests: "false"
-          KIE_TOOLS_BUILD_runLinters: "false"
-          KIE_TOOLS_BUILD_buildContainerImages: "true"
+          KIE_TOOLS_BUILD__runLinters: "false"
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
           WEBPACK__minimize: "true"
           WEBPACK__tsLoaderTranspileOnly: "false"
           CHROME_EXTENSION__routerTargetOrigin: "https://kiegroup.github.io"

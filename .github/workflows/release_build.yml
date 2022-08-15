@@ -50,10 +50,10 @@ on:
         required: false
 
 env:
-  KIE_TOOLS_BUILD_runLinters: "false"
+  KIE_TOOLS_BUILD__runLinters: "false"
   KIE_TOOLS_BUILD__runTests: "false"
   KIE_TOOLS_BUILD__runIntegrationTests: "false"
-  KIE_TOOLS_BUILD_buildContainerImages: "true"
+  KIE_TOOLS_BUILD__buildContainerImages: "true"
   OPENSHIFT_NAMESPACE: "kie-sandbox"
   OPENSHIFT_PART_OF: "kie-sandbox-app"
 
