@@ -18,12 +18,16 @@ import { SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
-import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/bpmn/BpmnEditorTestHelper";
+import BpmnEditorTestHelper from "./helpers/bpmn/BpmnEditorTestHelper";
 import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
 import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
 import PmmlEditorTestHelper from "./helpers/PmmlEditorTestHelper";
 
-describe("KIE Editors - Integration Smoke Test Suite", () => {
+/**
+ * Smoke tests, ensuring editors can open files.
+ * Anything above this level should go to respectives editors test suite.
+ */
+describe("KIE Editors Integration Test Suite - Smoke tests", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
   const DEMO_BPMN: string = "demo.bpmn";
   const DEMO_DMN: string = "demo.dmn";

@@ -14,34 +14,35 @@
  * limitations under the License.
  */
 
-import { By, InputBox, SideBarView, TextEditor, WebView } from "vscode-extension-tester";
+require("./extension-editors-smoke.test");
+
+import { By, SideBarView, WebView } from "vscode-extension-tester";
 import * as path from "path";
 import { h5ComponentWithText } from "./helpers/CommonLocators";
-import { EditorTabs } from "./helpers/dmn/EditorTabs";
 import { assertWebElementIsDisplayedEnabled } from "./helpers/CommonAsserts";
 import VSCodeTestHelper from "./helpers/VSCodeTestHelper";
 import BpmnEditorTestHelper, { PaletteCategories } from "./helpers/bpmn/BpmnEditorTestHelper";
-import ScesimEditorTestHelper from "./helpers/ScesimEditorTestHelper";
-import DmnEditorTestHelper from "./helpers/dmn/DmnEditorTestHelper";
 import { assert } from "chai";
 import {
   palletteItemAnchor,
   processVariableDataTypeInput,
   processVariableNameInput,
 } from "./helpers/bpmn/BpmnLocators";
-import DecisionNavigatorHelper from "./helpers/dmn/DecisionNavigatorHelper";
 import { PropertiesPanelSection } from "./helpers/bpmn/PropertiesPanelHelper";
 import Correlation from "./helpers/bpmn/Correlation";
 import ImplementationExecutionHelper from "./helpers/bpmn/ImplementationExecutionHelper";
 
-describe("KIE Editors Integration Test Suite", () => {
+/**
+ * BPMN editor vscode integration test suite, add any acceptance tests,
+ * freature verificaition, bug reproducers here.
+ *
+ * For scenarios with other editor consider adding it to a specific
+ * file for the integration e.g. "extensions-editors-bpmn-dmn.test.ts"
+ */
+describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
   const RESOURCES: string = path.resolve("it-tests-tmp", "resources");
-  const DEMO_DMN: string = "demo.dmn";
-  const DEMO_DMN_SCESIM: string = "demo-dmn.scesim";
-  const DEMO_EXPRESSION_DMN: string = "demo-expression.dmn";
   const MULTIPLE_INSTANCE_BPMN: string = "MultipleInstanceSubprocess.bpmn";
   const USER_TASK_BPMN: string = "UserTask.bpmn";
-  const REUSABLE_DMN: string = "reusable-model.dmn";
   const WID_BPMN: string = "process-wid.bpmn";
 
   let testHelper: VSCodeTestHelper;
@@ -64,107 +65,6 @@ describe("KIE Editors Integration Test Suite", () => {
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
     await webview.switchBack();
-  });
-
-  it("Include reusable-model in DMN Editor", async function () {
-    this.timeout(20000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await testHelper.switchWebviewToFrame(webview);
-    const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    await dmnEditorTester.switchEditorTab(EditorTabs.IncludedModels);
-    await dmnEditorTester.includeModel(REUSABLE_DMN, "reusable-model");
-
-    // Blocked by https://issues.redhat.com/browse/KOGITO-4261
-    // await dmnEditorTester.inspectIncludedModel("reusable-model", 2)
-
-    await dmnEditorTester.switchEditorTab(EditorTabs.Editor);
-
-    await webview.switchBack();
-  });
-
-  it("Undo command in DMN Editor", async function () {
-    this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN);
-    await testHelper.switchWebviewToFrame(webview);
-    const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
-    await decisionNavigator.selectDiagramNode("?DemoDecision1");
-
-    const diagramProperties = await dmnEditorTester.openDiagramProperties();
-    await diagramProperties.changeProperty("Name", "Updated Name 1");
-
-    const navigatorPanel: DecisionNavigatorHelper = await dmnEditorTester.openDecisionNavigator();
-    await navigatorPanel.assertDiagramNodeIsPresent("Updated Name 1");
-    await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
-
-    await webview.switchBack();
-
-    // changeProperty() is implemented as clear() and sendKeys(), that is why we need two undo operations
-    await testHelper.executeCommandFromPrompt("Undo");
-    await testHelper.executeCommandFromPrompt("Undo");
-
-    await testHelper.switchWebviewToFrame(webview);
-
-    await navigatorPanel.assertDiagramNodeIsPresent("?DemoDecision1");
-    await navigatorPanel.assertDiagramNodeIsPresent("?DecisionFinal1");
-
-    await webview.switchBack();
-  });
-
-  it("Check new DMN Expression Editor", async function () {
-    this.timeout(40000);
-    webview = await testHelper.openFileFromSidebar(DEMO_EXPRESSION_DMN);
-    await testHelper.switchWebviewToFrame(webview);
-    const dmnEditorTester = new DmnEditorTestHelper(webview);
-
-    const decisionNavigator = await dmnEditorTester.openDecisionNavigator();
-
-    await decisionNavigator.selectNodeExpression("context demo", "Context");
-    const contextEditor = await dmnEditorTester.getExpressionEditor();
-    await contextEditor.activateBetaVersion();
-    await contextEditor.assertExpressionDetails("context demo", "string");
-
-    await decisionNavigator.selectNodeExpression("function demo", "Function");
-    const functionEditor = await dmnEditorTester.getExpressionEditor();
-    await functionEditor.activateBetaVersion();
-    await functionEditor.assertExpressionDetails("function demo", "string");
-
-    await decisionNavigator.selectNodeExpression("decision table demo", "Decision Table");
-    const decisionTableEditor = await dmnEditorTester.getExpressionEditor();
-    await decisionTableEditor.activateBetaVersion();
-    await decisionTableEditor.assertExpressionDetails("decision table demo", "string");
-
-    await webview.switchBack();
-  });
-
-  /**
-   * As the opened sceism file is empty, a prompt to specify file under test should be shown
-   */
-  it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
-    this.timeout(20000);
-
-    webview = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
-    await testHelper.switchWebviewToFrame(webview);
-    const scesimEditorTester = new ScesimEditorTestHelper(webview);
-
-    await scesimEditorTester.specifyDmnOnLandingPage(DEMO_DMN);
-
-    await webview.switchBack();
-
-    // save file so we can check the plain text source
-    await testHelper.executeCommandFromPrompt("File: Save");
-
-    // check plain text source starts with <?xml?> prolog
-    await testHelper.executeCommandFromPrompt("View: Reopen Editor With...");
-    const input = await InputBox.create();
-    await input.selectQuickPick("Text Editor");
-
-    const xmlProlog = '<?xml version="1.0" encoding="UTF-8"?>';
-    const plainText = new TextEditor();
-    assert.equal(await plainText.getTextAtLine(1), xmlProlog, "First line should be an <?xml?> prolog");
-    assert.notEqual(await plainText.getTextAtLine(2), xmlProlog, "<?xml?> prolog should be there just once");
   });
 
   it("Opens process with work item definition properly", async function () {
