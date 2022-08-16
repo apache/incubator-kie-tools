@@ -19,11 +19,11 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
-    "build:prod": "pnpm build:dev",
+    "build:prod": "rimraf dist && pnpm lint && pnpm copy:css && tsc -p tsconfig.dev.json && pnpm test",
     "build:watch": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json --watch",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "lint": "echo 'Linting....'",
-    "test": "run-script-if --env KIE_TOOLS_BUILD__runTests -c 'jest --silent --verbose'"
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
