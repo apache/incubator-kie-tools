@@ -1,9 +1,12 @@
 schema_version: 1
 name: org.kie.kogito.rhpam.prod.profile
-version: '7.11.0'
-description: Holds custom configurations for productized Kogito images. Add as first module to be installed.
+version: '7.13.0'
+description: Holds custom configurations for productized Kogito images. Add as the last module as it can depend on other modules.
 
 envs:
   - name: "ENABLE_RH_MAVEN_REPO"
     value: "true"
     description: "If set, will enable the usage of the Red Hat Maven repositories to resolve Java dependencies. Enabled by default on productized images."
+
+execute:
+- script: configure

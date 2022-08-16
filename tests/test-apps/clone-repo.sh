@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 #
 # Clone the kogito-examples and edit the rules-quarkus-helloworld and dmn-quarkus-example for testing purposes
-
 # if image name is supporting services, don't build it
 IMAGE_NAME="$2"
 prod=""
