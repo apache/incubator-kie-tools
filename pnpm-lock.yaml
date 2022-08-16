@@ -1626,9 +1626,11 @@ importers:
 
   packages/kn-plugin-workflow:
     specifiers:
+      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       cross-env: ^7.0.3
     devDependencies:
+      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       cross-env: 7.0.3
 

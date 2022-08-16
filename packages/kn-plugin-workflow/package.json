@@ -31,9 +31,10 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "setup:env": "cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)",
     "setup:env:win32": "pnpm powershell \"cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)\"",
-    "test": "go test ./..."
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"go test ./...\""
   },
   "devDependencies": {
+    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools/build-env": "workspace:*",
     "cross-env": "^7.0.3"
   },
