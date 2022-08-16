@@ -36,10 +36,9 @@ import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { getLanguageService, TextDocument } from "vscode-json-languageservice";
 import { doRefValidation } from "./refValidation";
-import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfJsonPath, SwfLsNode, CompletionTranslatorArgs } from "./types";
+import { SwfJsonPath, SwfLsNode, CodeCompletionStrategy } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -83,7 +82,7 @@ export class SwfLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
     rootNode: SwfLsNode | undefined;
-    completionTranslator: (args: CompletionTranslatorArgs) => string;
+    codeCompletionStrategy: CodeCompletionStrategy;
   }): Promise<CompletionItem[]> {
     if (!args.rootNode) {
       return [];
@@ -92,7 +91,7 @@ export class SwfLanguageService {
     const doc = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
     const cursorOffset = doc.offsetAt(args.cursorPosition);
 
-    const currentNode = findNodeAtOffset(args.rootNode, cursorOffset);
+    const currentNode = findNodeAtOffset(args.rootNode, cursorOffset, true);
     if (!currentNode) {
       return [];
     }
@@ -123,7 +122,15 @@ export class SwfLanguageService {
 
     const result = await Promise.all(
       Array.from(completions.entries())
-        .filter(([path, _]) => matchNodeWithLocation(args.rootNode, currentNode, path))
+        .filter(([path, _]) =>
+          args.codeCompletionStrategy.shouldComplete({
+            root: args.rootNode,
+            node: currentNode,
+            path: path,
+            content: args.content,
+            cursorOffset: cursorOffset,
+          })
+        )
         .map(([_, completionItemsDelegate]) => {
           return completionItemsDelegate({
             document: doc,
@@ -134,7 +141,7 @@ export class SwfLanguageService {
             overwriteRange,
             swfCompletionItemServiceCatalogServices,
             langServiceConfig: this.args.config,
-            completionTranslator: args.completionTranslator,
+            codeCompletionStrategy: args.codeCompletionStrategy,
           });
         })
     );
@@ -411,7 +418,7 @@ const completions = new Map<
     currentNodePosition: { start: Position; end: Position };
     rootNode: SwfLsNode;
     langServiceConfig: SwfLanguageServiceConfig;
-    completionTranslator: (args: CompletionTranslatorArgs) => string;
+    codeCompletionStrategy: CodeCompletionStrategy;
   }) => Promise<CompletionItem[]>
 >([
   [
@@ -423,7 +430,7 @@ const completions = new Map<
       swfCompletionItemServiceCatalogServices,
       document,
       langServiceConfig,
-      completionTranslator,
+      codeCompletionStrategy,
     }) => {
       const separator = currentNode.type === "object" ? "," : "";
       const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
@@ -461,7 +468,7 @@ const completions = new Map<
                   ? swfServiceCatalogService.source.url
                   : swfServiceCatalogFunc.operation,
               textEdit: {
-                newText: completionTranslator({ completion: swfFunction, kind }) + separator,
+                newText: codeCompletionStrategy.translate(swfFunction) + separator,
                 range: overwriteRange,
               },
               snippet: true,
@@ -479,7 +486,7 @@ const completions = new Map<
   ],
   [
     ["functions", "*", "operation"],
-    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
+    ({ currentNode, rootNode, overwriteRange, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
       if (!currentNode.parent?.parent) {
         return Promise.resolve([]);
       }
@@ -507,7 +514,7 @@ const completions = new Map<
             detail: `"${swfServiceCatalogFunc.operation}"`,
             filterText: `"${swfServiceCatalogFunc.operation}"`,
             textEdit: {
-              newText: completionTranslator({ completion: `${swfServiceCatalogFunc.operation}`, kind }),
+              newText: codeCompletionStrategy.translate(`${swfServiceCatalogFunc.operation}`),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -518,7 +525,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
+    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
       if (currentNode.type !== "property") {
         console.debug("Cannot autocomplete: functionRef should be a property.");
         return Promise.resolve([]);
@@ -551,7 +558,7 @@ const completions = new Map<
             sortText: `${swfFunctionRef.refName}`,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
-              newText: completionTranslator({ completion: swfFunctionRef, kind: CompletionItemKind.Module }),
+              newText: codeCompletionStrategy.translate(swfFunctionRef),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -564,7 +571,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "refName"],
-    ({ overwriteRange, rootNode, completionTranslator }) => {
+    ({ overwriteRange, rootNode, codeCompletionStrategy }) => {
       const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
         return [
           {
@@ -574,7 +581,7 @@ const completions = new Map<
             detail: `"${swfFunction.name}"`,
             filterText: `"${swfFunction.name}"`,
             textEdit: {
-              newText: completionTranslator({ completion: `${swfFunction.name}`, kind: CompletionItemKind.Value }),
+              newText: codeCompletionStrategy.translate(`${swfFunction.name}`),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -586,7 +593,7 @@ const completions = new Map<
   ],
   [
     ["states", "*", "actions", "*", "functionRef", "arguments"],
-    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, completionTranslator }) => {
+    ({ overwriteRange, currentNode, rootNode, swfCompletionItemServiceCatalogServices, codeCompletionStrategy }) => {
       if (currentNode.type !== "property" && currentNode.type !== "string") {
         console.debug("Cannot autocomplete: arguments should be a property.");
         return Promise.resolve([]);
@@ -632,7 +639,7 @@ const completions = new Map<
           sortText: `${swfFunctionRefName} arguments`,
           detail: swfFunction.operation,
           textEdit: {
-            newText: completionTranslator({ completion: swfFunctionRefArgs, kind: CompletionItemKind.Module }),
+            newText: codeCompletionStrategy.translate(swfFunctionRefArgs),
             range: overwriteRange,
           },
           insertTextFormat: InsertTextFormat.Snippet,
