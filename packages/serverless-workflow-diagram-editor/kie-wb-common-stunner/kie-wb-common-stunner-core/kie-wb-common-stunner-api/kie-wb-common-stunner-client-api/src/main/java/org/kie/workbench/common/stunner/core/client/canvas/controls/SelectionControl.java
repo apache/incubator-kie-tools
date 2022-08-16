@@ -32,6 +32,8 @@ public interface SelectionControl<C extends CanvasHandler, E extends Element>
 
     SelectionControl<C, E> select(String itemId);
 
+    SelectionControl<C, E> addSelection(String itemId);
+
     SelectionControl<C, E> deselect(String itemId);
 
     boolean isSelected(E item);

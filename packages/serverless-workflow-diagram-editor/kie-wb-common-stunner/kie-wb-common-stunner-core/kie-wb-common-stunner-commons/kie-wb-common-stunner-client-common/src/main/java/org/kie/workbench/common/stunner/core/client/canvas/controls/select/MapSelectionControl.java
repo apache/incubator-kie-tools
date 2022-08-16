@@ -122,6 +122,11 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     @Override
+    public SelectionControl<H, Element> addSelection(String uuid) {
+        return addSelection(Collections.singletonList(uuid));
+    }
+
+    @Override
     public SelectionControl<H, Element> deselect(final String uuid) {
         return deselect(Collections.singletonList(uuid));
     }
@@ -189,11 +194,16 @@ public final class MapSelectionControl<H extends AbstractCanvasHandler>
     }
 
     public SelectionControl<H, Element> select(final Collection<String> uuids) {
+        addSelection(uuids);
+        fireSelectedItemsEvent();
+        return this;
+    }
+
+    public SelectionControl<H, Element> addSelection(final Collection<String> uuids) {
         uuids.stream()
                 .filter(itemsRegistered())
                 .forEach(uuid -> items.put(uuid, true));
         updateViewShapesState(getSelectedItems());
-        fireSelectedItemsEvent();
         return this;
     }
 

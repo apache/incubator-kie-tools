@@ -344,10 +344,10 @@ public class DiagramEditorTest {
         tested.updateDiagram(newDiagram);
 
         // Clean up
-        verify(selectionControl, times(1)).clear();
+        verify(selectionControl, never()).clear();
         verify(commandManager, times(1)).execute(eq(canvasHandler2), any(ClearAllCommand.class));
         // Keep selection
-        verify(selectionControl, times(1)).select("uuid");
+        verify(selectionControl, times(1)).addSelection("uuid");
         // Center selected node
         verify(jsCanvas, times(1)).centerNode("uuid");
     }
