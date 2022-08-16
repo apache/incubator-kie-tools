@@ -1000,6 +1000,7 @@ importers:
       electron: ^12.0.11
       electron-packager: ^15.2.0
       electron-rebuild: ^2.3.5
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
@@ -1027,6 +1028,7 @@ importers:
       cross-var: 1.1.0
       electron-packager: 15.2.0
       electron-rebuild: 2.3.5
+      jest-junit: 14.0.0
       spectron: 14.0.0_electron@12.2.3
 
   packages/dmn-dev-sandbox-deployment-base-image:
@@ -1516,6 +1518,7 @@ importers:
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      jest-junit: ^14.0.0
       junit-report-merger: ^2.2.2
       minimatch: ^3.0.4
       react: ^17.0.2
@@ -1544,6 +1547,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      jest-junit: 14.0.0
       junit-report-merger: 2.2.2
       minimatch: 3.0.5
       react: 17.0.2
@@ -1652,6 +1656,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
+      jest-junit: ^14.0.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/workspace": link:../workspace
@@ -1659,6 +1664,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/vscode": 1.66.0
+      jest-junit: 14.0.0
 
   packages/online-editor:
     specifiers:
@@ -1704,6 +1710,7 @@ importers:
       cypress-real-events: ^1.7.0
       history: ^4.9.0
       isomorphic-git: ^1.11.1
+      jest-junit: ^14.0.0
       jszip: ^3.7.1
       minimatch: ^3.0.4
       moment: ^2.29.4
@@ -1767,6 +1774,7 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       cypress-real-events: 1.7.0_cypress@9.5.1
+      jest-junit: 14.0.0
       start-server-and-test: 1.12.1
 
   packages/openjdk11-mvn-image:
@@ -1789,9 +1797,11 @@ importers:
     specifiers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
+      jest-junit: ^14.0.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/patternfly-base:
     specifiers:
@@ -1834,6 +1844,7 @@ importers:
       cypress-log-to-output: ^1.1.2
       gh-pages: ^3.2.3
       immer: ^9.0.6
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       monaco-editor: ^0.33.0
       react: ^17.0.2
@@ -1894,12 +1905,14 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       gh-pages: 3.2.3
+      jest-junit: 14.0.0
       start-server-and-test: 1.12.1
 
   packages/pmml-editor-marshaller:
     specifiers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
+      jest-junit: ^14.0.0
       jsonata: ^1.8.3
       xml-js: ^1.6.11
     dependencies:
@@ -1908,6 +1921,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/run-script-if:
     specifiers:
@@ -1963,6 +1977,7 @@ importers:
       buffer: ^6.0.3
       history: ^4.9.0
       isomorphic-git: ^1.11.1
+      jest-junit: ^14.0.0
       js-yaml: ^4.1.0
       jszip: ^3.7.1
       minimatch: ^3.0.4
@@ -2041,6 +2056,7 @@ importers:
       "@types/react-router": 5.1.14
       "@types/react-router-dom": 5.1.7
       "@types/uuid": 8.3.0
+      jest-junit: 14.0.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/serverless-logic-sandbox-base-image:
@@ -2075,6 +2091,7 @@ importers:
       "@patternfly/react-icons": ^4.11.17
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
+      jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
@@ -2095,6 +2112,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/serverless-workflow-combined-editor:
     specifiers:
@@ -2122,6 +2140,7 @@ importers:
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      jest-junit: ^14.0.0
       json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -2163,6 +2182,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      jest-junit: 14.0.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
       vscode-json-languageservice: 4.2.1
@@ -2193,6 +2213,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
+      jest-junit: ^14.0.0
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope": link:../envelope
@@ -2207,6 +2228,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/serverless-workflow-language-service:
     specifiers:
@@ -2215,6 +2237,7 @@ importers:
       "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@severlessworkflow/sdk-typescript": ^3.0.3
       "@types/json-to-ast": ^2.1.2
+      jest-junit: ^14.0.0
       json-to-ast: ^2.1.0
       jsonata: ^1.8.3
       jsonc-parser: ^3.0.0
@@ -2236,6 +2259,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/json-to-ast": 2.1.2
+      jest-junit: 14.0.0
 
   packages/serverless-workflow-mermaid-viewer:
     specifiers:
@@ -2259,6 +2283,7 @@ importers:
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      jest-junit: ^14.0.0
       mermaid: ^9.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -2290,6 +2315,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      jest-junit: 14.0.0
       start-server-and-test: 1.12.1
 
   packages/serverless-workflow-service-catalog:
@@ -2299,6 +2325,7 @@ importers:
       "@kie-tools/build-env": workspace:*
       "@types/js-yaml": ^4.0.5
       "@types/lodash": ^4.14.168
+      jest-junit: ^14.0.0
       js-yaml: ^4.1.0
       lodash: ^4.17.21
       openapi-types: ^7.0.1
@@ -2312,6 +2339,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
+      jest-junit: 14.0.0
 
   packages/serverless-workflow-text-editor:
     specifiers:
@@ -2334,6 +2362,7 @@ importers:
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      jest-junit: ^14.0.0
       json-schema: ^0.4.0
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
@@ -2370,6 +2399,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      jest-junit: 14.0.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
       vscode-json-languageservice: 4.2.1
@@ -2436,6 +2466,7 @@ importers:
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
+      jest-junit: ^14.0.0
       monaco-editor: ^0.33.0
       monaco-yaml: ^4.0.0
       react: ^17.0.2
@@ -2461,6 +2492,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      jest-junit: 14.0.0
       start-server-and-test: 1.12.1
 
   packages/uniforms-bootstrap4-codegen:
@@ -2471,6 +2503,7 @@ importers:
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
       "@types/underscore": ^1.11.2
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       prettier: ^2.2.1
       react: ^17.0.2
@@ -2493,6 +2526,7 @@ importers:
       "@types/lodash": 4.14.169
       "@types/simpl-schema": 1.12.0
       "@types/underscore": 1.11.2
+      jest-junit: 14.0.0
 
   packages/uniforms-patternfly-codegen:
     specifiers:
@@ -2501,6 +2535,7 @@ importers:
       "@kie-tools/build-env": workspace:*
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       prettier: ^2.2.1
       react: ^17.0.2
@@ -2520,6 +2555,7 @@ importers:
       "@kie-tools/build-env": link:../build-env
       "@types/lodash": 4.14.169
       "@types/simpl-schema": 1.12.0
+      jest-junit: 14.0.0
 
   packages/unitables:
     specifiers:
@@ -2537,6 +2573,7 @@ importers:
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -2569,6 +2606,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/unitables-dmn:
     specifiers:
@@ -2587,6 +2625,7 @@ importers:
       "@types/react-table": ^7.0.25
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
+      jest-junit: ^14.0.0
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -2620,6 +2659,7 @@ importers:
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
+      jest-junit: 14.0.0
 
   packages/vscode-extension:
     specifiers:
@@ -2636,6 +2676,7 @@ importers:
       "@kie-tools/build-env": workspace:*
       "@types/minimatch": ^3.0.4
       "@types/vscode": ^1.66.0
+      jest-junit: ^14.0.0
       minimatch: ^3.0.4
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2653,6 +2694,7 @@ importers:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/minimatch": 3.0.4
+      jest-junit: 14.0.0
 
   packages/vscode-extension-backend:
     specifiers:
@@ -2663,6 +2705,7 @@ importers:
       "@kie-tools/backend-extended-services": workspace:*
       "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
+      jest-junit: ^14.0.0
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2673,6 +2716,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/build-env": link:../build-env
       "@types/vscode": 1.66.0
+      jest-junit: 14.0.0
       vsce: 2.6.5
 
   packages/vscode-extension-bpmn-editor:
@@ -2793,6 +2837,7 @@ importers:
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
       chai: ^4.3.4
+      jest-junit: ^14.0.0
       minimatch: ^3.0.4
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
@@ -2828,6 +2873,7 @@ importers:
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
       chai: 4.3.4
+      jest-junit: 14.0.0
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
       mocha-junit-reporter: 2.0.2_mocha@9.2.0
@@ -3050,10 +3096,12 @@ importers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
+      jest-junit: ^14.0.0
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/vscode": 1.66.0
+      jest-junit: 14.0.0
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
@@ -3079,12 +3127,14 @@ importers:
       "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
+      jest-junit: ^14.0.0
     dependencies:
       "@kie-tools-core/operating-system": link:../operating-system
     devDependencies:
       "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools/build-env": link:../build-env
       "@types/vscode": 1.66.0
+      jest-junit: 14.0.0
 
   packages/yard-editor:
     specifiers:

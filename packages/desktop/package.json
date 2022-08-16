@@ -62,6 +62,7 @@
     "cross-var": "^1.1.0",
     "electron-packager": "^15.2.0",
     "electron-rebuild": "^2.3.5",
+    "jest-junit": "^14.0.0",
     "spectron": "^14.0.0"
   },
   "babel": {

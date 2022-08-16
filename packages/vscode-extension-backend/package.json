@@ -36,6 +36,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/build-env": "workspace:*",
     "@types/vscode": "^1.66.0",
+    "jest-junit": "^14.0.0",
     "vsce": "^2.6.5"
   },
   "engines": {

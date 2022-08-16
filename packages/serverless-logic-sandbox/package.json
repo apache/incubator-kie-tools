@@ -84,6 +84,7 @@
     "@types/react-router": "^5.1.14",
     "@types/react-router-dom": "^5.1.7",
     "@types/uuid": "^8.3.0",
+    "jest-junit": "^14.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1"
   },
   "babel": {
