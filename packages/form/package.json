@@ -21,7 +21,7 @@
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",

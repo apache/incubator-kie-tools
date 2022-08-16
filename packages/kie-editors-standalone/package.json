@@ -33,8 +33,8 @@
     "postreport": "jrm ./it-tests/results/junit-transformed.xml \"./it-tests/results/junit-*.xml\"",
     "start": "webpack serve --host 0.0.0.0 --config webpack.package-resources.config.js",
     "start:it": "webpack serve --host 0.0.0.0 --config ./it-tests/webpack.config.js",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
   },
   "devDependencies": {
     "@kie-tools-core/backend": "workspace:*",

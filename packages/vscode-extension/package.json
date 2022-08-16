@@ -24,7 +24,7 @@
     "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.prod.json && pnpm test",
     "compile": "webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "watch": "webpack"
   },
   "dependencies": {

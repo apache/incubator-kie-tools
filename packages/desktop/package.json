@@ -34,9 +34,9 @@
     "package:prod:win32": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\\\"/node_modules\\\" --ignore=\\\"/out\\\" --ignore=\\\"/src\\\" --ignore=\\\"/static\\\" --ignore=\\\"/README\\\" --ignore=\\\"/LICENSE\\\" --ignore=\\\"/tsconfig.json\\\" --ignore=\\\"/webpack.config.js\\\" --ignore=\\\"/yarn-error.log\\\" && copy README \\\"out\\Business Modeler Preview-win32-x64/\\\"\"",
     "rebuild": "electron-rebuild -f -w sqlite3",
     "start": "electron dist --disable-gpu",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
     "test:it": "run-script-os",
-    "test:it:linux:darwin": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
+    "test:it:linux:darwin": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
     "test:it:win32": "echo \"Not supported\""
   },
   "dependencies": {

@@ -22,12 +22,12 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
     "package:prod": "vsce package --no-dependencies -o ./dist/vscode_extension_kogito_kie_editors_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
     "test:it:clean": "rimraf ./dist-it-tests && rimraf ./test-resources && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
     "test:it:clean:offline": "rimraf ./dist-it-tests && rimraf ./out && rimraf ./it-tests-tmp && rimraf test-resou && rimraf *.vsix",
     "test:it:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o it-tests/settings.json out/*.test.js",
-    "test:it:offline": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean:offline\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
+    "test:it:offline": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm test:it:clean:offline\" \"cpr it-tests/resources it-tests-tmp/resources\" \"tsc --project tsconfig.it-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c 1.66.2 -u -e ./test-resources -o it-tests/settings.json out/*.test.js\"",
     "watch": "pnpm build:dev"
   },
   "dependencies": {

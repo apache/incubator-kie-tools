@@ -25,7 +25,7 @@
     "build:prod:linux": "pkg dist/index.js --output dist/form-generation-cli-linux --target node16-linux-x64",
     "build:prod:win32": "pkg dist/index.js --output dist/form-generation-cli-win.exe --target node16-win-x64",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools/uniforms-bootstrap4-codegen": "workspace:*",

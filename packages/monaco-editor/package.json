@@ -15,7 +15,7 @@
     "build:dev": "rimraf dist && webpack --mode development",
     "build:prod": "rimraf dist && webpack --mode production",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "monaco-editor": "^0.33.0"

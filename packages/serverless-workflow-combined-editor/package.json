@@ -24,9 +24,9 @@
     "cy:run": "cypress run -b chrome --project it-tests",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:clearCache": "jest --clearCache",
-    "test:it": "run-script-if --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowCombinedEditor.dev.port) cy:run\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env serverlessWorkflowCombinedEditor.dev.port) cy:run\"",
     "test:watch": "jest --watch"
   },
   "dependencies": {

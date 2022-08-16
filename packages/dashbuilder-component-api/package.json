@@ -23,7 +23,7 @@
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
-    "test": "run-script-if --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "react": "^17.0.2",
