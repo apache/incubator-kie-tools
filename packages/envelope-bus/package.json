@@ -21,7 +21,7 @@
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json && pnpm build:tests",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm build:tests && pnpm test",
     "build:tests": "rimraf dist-tests && tsc -p tsconfig.tests.json",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "test": "run-script-if --ignore-errors=\"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {

@@ -27,7 +27,7 @@
     "clean:prod": "rimraf out && mkdir out",
     "compile:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "init": "pnpm -f",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "package:prod": "run-script-os",
     "package:prod:darwin": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-darwin-x64/ && (cd out && zip -qry \\\"Business Modeler Preview-darwin-x64.zip\\\" \\\"Business Modeler Preview-darwin-x64\\\")\"",
     "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-linux-x64/ && (cd out && tar -pcvzf Business\\ Modeler\\ Preview-linux-x64.tar.gz Business\\ Modeler\\ Preview-linux-x64/)\"",

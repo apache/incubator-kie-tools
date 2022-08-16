@@ -12,7 +12,7 @@
     "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "deploy": "gh-pages -d dist-dev",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
