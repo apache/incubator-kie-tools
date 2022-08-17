@@ -29,7 +29,7 @@ runs:
 
           echo "Merge changes from $user/${{ github.head_ref }}"
           git remote add $user https://github.com/$user/kie-tools.git
-          git fetch $user
+          git fetch $user ${{ github.head_ref }} 
 
           echo "Before merging..."
           git log -n 1

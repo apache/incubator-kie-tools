@@ -65,7 +65,6 @@ public interface TransitionMarshalling {
                             if (sourceState.end instanceof Boolean) {
                                 sourceState.end = true;
                             } // else is Object
-
                         } else {
                             sourceState.transition = getStateNodeName(targetNode);
                             sourceState.end = false;
@@ -221,7 +220,6 @@ public interface TransitionMarshalling {
                 return edge;
             };
 
-
     EdgeMarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_MARSHALLER =
             (context, edge) -> {
                 Node sourceNode = edge.getSourceNode();
@@ -269,5 +267,4 @@ public interface TransitionMarshalling {
                 // TODO: Update StartTransition.transition ?
                 return edge;
             };
-
 }

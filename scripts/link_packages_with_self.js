@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-const { getPackagesSync } = require("@lerna/project");
+const findWorkspacePackages = require("@pnpm/find-workspace-packages").default;
 const fs = require("fs");
 const path = require("path");
 
-function main() {
-  getPackagesSync().forEach((pkg) => {
-    const isScopedPackage = pkg.name.includes("@");
+async function main() {
+  (await findWorkspacePackages(".")).forEach((pkg) => {
+    // always create node_modules. this fixes the case where we don't install dependencies for every package.
+    fs.mkdirSync(path.join(pkg.dir, "node_modules"), { recursive: true });
 
+    const isScopedPackage = pkg.manifest.name.includes("@");
     if (isScopedPackage) {
-      const [pkgScope, pkgSimpleName] = pkg.name.split("/");
-      fs.mkdirSync(path.join(pkg.location, "node_modules", pkgScope), { recursive: true });
-      const selfLinkPath = path.join(pkg.location, "node_modules", pkgScope, pkgSimpleName);
+      const [pkgScope, pkgSimpleName] = pkg.manifest.name.split("/");
+      fs.mkdirSync(path.join(pkg.dir, "node_modules", pkgScope), { recursive: true });
+      const selfLinkPath = path.join(pkg.dir, "node_modules", pkgScope, pkgSimpleName);
       selfLink(pkg, selfLinkPath);
       return;
     }
 
-    const selfLinkPath = path.join(pkg.location, "node_modules", pkg.name);
+    const selfLinkPath = path.join(pkg.dir, "node_modules", pkg.manifest.name);
     selfLink(pkg, selfLinkPath);
   });
   console.info(`[link-packages-with-self] Done.`);
@@ -38,14 +40,17 @@ function main() {
 }
 
 function selfLink(pkg, selfLinkPath) {
-  const relTargetPath = path.relative(path.dirname(selfLinkPath), pkg.location);
+  const relTargetPath = path.relative(path.dirname(selfLinkPath), pkg.dir);
+  console.info(
+    `[link-packages-with-self] Linking '${pkg.manifest.name}'. ${path.relative(
+      pkg.dir,
+      selfLinkPath
+    )} -> ${relTargetPath}`
+  );
   if (fs.existsSync(selfLinkPath)) {
     fs.unlinkSync(selfLinkPath);
   }
   fs.symlinkSync(relTargetPath, selfLinkPath);
-  console.info(
-    `[link-packages-with-self] Linking '${pkg.name}'. ${path.relative(pkg.location, selfLinkPath)} -> ${relTargetPath}`
-  );
 }
 
 main();

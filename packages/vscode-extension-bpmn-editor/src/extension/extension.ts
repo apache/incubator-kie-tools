@@ -36,12 +36,12 @@ export function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: "extension.kogito.getPreviewSvgBpmn",
     silentlyGenerateSvgCommandId: "extension.kogito.silentlyGenerateSvgBpmn",
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping(
-        "bpmn",
-        "**/*.bpmn?(2)",
-        "dist/webview/BpmnEditorEnvelopeApp.js",
-        "dist/webview/editors/bpmn"
-      ),
+      new EnvelopeMapping({
+        type: "bpmn",
+        filePathGlob: "**/*.bpmn?(2)",
+        resourcesPathPrefix: "dist/webview/editors/bpmn",
+        envelopePath: "dist/webview/BpmnEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy: backendProxy,
   });

@@ -43,16 +43,23 @@ public class ShapeEventsHandler {
         }
     }
 
-    private String obtainStateName(CanvasHandler<?,?> handler, String uuid) {
-        Node<?,?> node = handler.getDiagram().getGraph().getNode(uuid);
+    private String obtainStateName(CanvasHandler<?, ?> handler, String uuid) {
+        Node<?, ?> node = handler.getDiagram().getGraph().getNode(uuid);
+        if (node == null) {
+            return null;
+        }
+
         Object content = node.getContent();
         if (content instanceof View) {
             Object bean = ((View) content).getDefinition();
             if (bean instanceof State) {
-                return ((State)bean).name;
+                return ((State) bean).name;
             }
         }
         return null;
     }
 
+    public void setDiagramApi(DiagramApi diagramApi) {
+        this.diagramApi = diagramApi;
+    }
 }

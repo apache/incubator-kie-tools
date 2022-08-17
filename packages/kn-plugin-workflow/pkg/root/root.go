@@ -20,10 +20,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command"
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/quarkus"
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/command/single"
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/single"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )

@@ -66,34 +66,8 @@ func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMes
 	return nil
 }
 
-// Maven doesn't upgrade the version in the pom.xml.
-// This function removes the existent version and updated one.
-func UpdateProjectExtensionsVersions(verbose bool, friendlyMessages []string, extensions ...string) error {
-	extensionsToRemove := ""
-	extensionsToAdd := ""
-	for i, extension := range extensions {
-		versionSeparatorIndex := strings.LastIndex(extension, ":")
-		extensionsToRemove += extension[:versionSeparatorIndex]
-		extensionsToAdd += extension
-		if i != len(extensions)-1 {
-			extensionsToRemove += ","
-			extensionsToAdd += ","
-		}
-	}
-
-	if err := RunExtensionCommand(verbose, "quarkus:remove-extension", friendlyMessages, extensionsToRemove); err != nil {
-		return err
-	}
-
-	if err := RunExtensionCommand(verbose, "quarkus:add-extension", friendlyMessages, extensionsToAdd); err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func RunExtensionCommand(verbose bool, extensionCommand string, friendlyMessages []string, extensions string) error {
-	command := exec.Command("mvn", extensionCommand, fmt.Sprintf("-Dextensions=%s", extensions))
+	command := ExecCommand("mvn", extensionCommand, fmt.Sprintf("-Dextensions=%s", extensions))
 	if err := RunCommand(command, verbose, extensionCommand, friendlyMessages); err != nil {
 		fmt.Println("ERROR: It wasn't possible to add Quarkus extension in your pom.xml.")
 		return err
@@ -138,8 +112,18 @@ func DefaultTemplatedHelp(cmd *cobra.Command, args []string) {
 	}
 }
 
-func GetVersionedExtension(extension string, version string) string {
-	return fmt.Sprintf("%s:%s", extension, version)
+func CheckImageName(name string) (err error) {
+	matched, err := regexp.MatchString("^[a-z]([-a-z0-9]*[a-z0-9])?$", name)
+	if !matched {
+		fmt.Println(`
+ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
+The name needs to start with a lower case letter and then it can be composed exclusvely of lower case letters, numbers or dashes ('-')
+Example of valid names: "test-0-0-1", "test", "t1"
+Example of invalid names: "1-test", "test.1", "test/1"
+		`)
+		err = fmt.Errorf("invalid image name")
+	}
+	return
 }
 
 // Use the --image-registry, --image-repository, --image-name, --image-tag to override the --image flag
@@ -147,18 +131,16 @@ func GetImageConfig(image string, registry string, repository string, imageName 
 	imageTagArray := strings.Split(image, ":")
 	imageArray := strings.SplitN(imageTagArray[0], "/", 3)
 
-	var resultantRegistry = DEFAULT_REGISTRY
+	var resultantRegistry = ""
 	if len(registry) > 0 {
 		resultantRegistry = registry
-	} else if len(imageArray) > 2 {
+	} else if len(imageArray) > 1 {
 		resultantRegistry = imageArray[0]
 	}
 
 	var resultantRepository = ""
 	if len(repository) > 0 {
 		resultantRepository = repository
-	} else if len(imageArray) == 2 {
-		resultantRepository = imageArray[0]
 	} else if len(imageArray) == 3 {
 		resultantRepository = imageArray[1]
 	}
@@ -182,18 +164,4 @@ func GetImageConfig(image string, registry string, repository string, imageName 
 	}
 
 	return resultantRegistry, resultantRepository, resultantName, resultantTag
-}
-
-func CheckImageName(name string) (err error) {
-	matched, err := regexp.MatchString("[a-z]([-a-z0-9]*[a-z0-9])?", name)
-	if !matched {
-		fmt.Println(`
-ERROR: Image name should match [a-z]([-a-z0-9]*[a-z0-9])?
-The name needs to start with a lower case letter and then it can be composed exclusvely of lower case letters, numbers or dashes ('-')
-Example of valid names: "test-0-0-1", "test", "t1"
-Example of invalid names: "1-test", "test.1", "test/1"
-		`)
-		err = fmt.Errorf("invalid image name")
-	}
-	return
 }

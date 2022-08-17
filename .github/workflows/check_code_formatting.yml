@@ -1,0 +1,38 @@
+name: "CI :: Code formatting"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: "**"
+
+concurrency:
+  group: ${{ github.event.pull_request && format('check-code-formatting-pr-{0}', github.event.pull_request.number) || format('check-code-formatting-push-main-{0}', github.sha) }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.base_ref }}
+
+      - name: "Setup kie-tools-bot"
+        uses: ./.github/actions/setup-kie-tools-bot
+
+      - name: "Merge PR changes"
+        uses: ./.github/actions/merge-pr-changes
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+        with:
+          os: ubuntu-latest
+
+      - name: "Check code formatting"
+        shell: bash
+        run: |
+          pnpm install-dependencies -F .
+          pnpm format:check

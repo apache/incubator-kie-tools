@@ -3,31 +3,37 @@
   "version": "0.0.0",
   "description": "This component import Java classes as DMN data types",
   "license": "Apache-2.0",
-  "main": "dist/index.js",
+  "keywords": [],
   "types": "dist/index.d.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
     "build:prod": "rimraf dist && pnpm copy:css && pnpm lint && tsc -p tsconfig.prod.json && pnpm test",
-    "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
     "build:showcase": "rimraf ./dist-dev && webpack -c ./showcase/webpack.config.js --env prod",
-    "deploy": "gh-pages -d dist-dev"
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "deploy": "gh-pages -d dist-dev",
+    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "start": "webpack serve -c ./showcase/webpack.config.js --host 0.0.0.0 --env dev",
+    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/vscode-java-code-completion": "0.0.0",
-    "@kie-tools/i18n-common-dictionary": "0.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/vscode-java-code-completion": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
-    "@patternfly/react-table": "^4.27.15"
+    "@patternfly/react-table": "^4.27.15",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "cypress": "^9.5.1",
+    "cypress-file-upload": "^5.0.8",
+    "cypress-iframe": "^1.0.1",
+    "cypress-log-to-output": "^1.1.2",
+    "identity-obj-proxy": "^3.0.0"
   }
 }

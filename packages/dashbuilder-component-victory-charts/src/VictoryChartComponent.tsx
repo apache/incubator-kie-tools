@@ -42,6 +42,8 @@ export function VictoryChartComponent(props: Props) {
       setVictoryChartProps((props: VictoryChartProps) => {
         return {
           ...props,
+          width: +(params.get("width") || 600),
+          height: +(params.get("height") || 400),
           type: (params.get("chartType") as ChartType) || "bar",
           themeColor: (params.get("themeColor") as ThemeColorType) || "multi",
           themeVariant: (params.get("themeVariant") as ThemeVariantType) || "light",
@@ -53,11 +55,12 @@ export function VictoryChartComponent(props: Props) {
           description: params.get("description"),
 
           legendPosition: params.get("legendPosition") || "bottom",
+          legendOrientation: params.get("legendOrientation") || "horizontal",
 
-          paddingBottom: +params.get("paddingBottom") || 50,
-          paddingRight: +params.get("paddingRight") || 0,
-          paddingLeft: +params.get("paddingLeft") || 90,
-          paddingTop: +params.get("paddingTop") || 0,
+          paddingBottom: +(params.get("paddingBottom") || 50),
+          paddingRight: +(params.get("paddingRight") || 0),
+          paddingLeft: +(params.get("paddingLeft") || 90),
+          paddingTop: +(params.get("paddingTop") || 0),
 
           zoom: params.get("zoom") === "true",
           gridX: params.get("gridx") === "true",
@@ -65,7 +68,7 @@ export function VictoryChartComponent(props: Props) {
           fixLabelsOverlap: params.get("fixLabelsOverlap") === "true",
 
           animate: params.get("animate") === "true",
-          animationDuration: +params.get("animationDuration") || 200,
+          animationDuration: +(params.get("animationDuration") || 200),
           animationEasing: params.get("animationEasing") || "linear",
 
           donutTitle: (params.get("donutTitle") as string) || "",

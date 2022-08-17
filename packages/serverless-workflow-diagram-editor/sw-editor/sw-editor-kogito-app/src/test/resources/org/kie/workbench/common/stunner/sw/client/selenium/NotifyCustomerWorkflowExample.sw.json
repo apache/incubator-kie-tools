@@ -1,0 +1,68 @@
+{
+  "id": "notifycustomerworkflow",
+  "name": "Notify Customer",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "start": "WaitForCustomerEvent",
+  "states": [
+    {
+      "name": "WaitForCustomerEvent",
+      "type": "event",
+      "onEvents": [
+        {
+          "eventRefs": ["CustomerEvent"],
+          "eventDataFilter": {
+            "data": "${ .customerId }",
+            "toStateData": "${ .eventCustomerId }"
+          },
+          "actions": [
+            {
+              "functionRef": {
+                "refName": "NotifyCustomerFunction",
+                "arguments": {
+                  "customerId": "${ .eventCustomerId }"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ .count = .count + 1 }"
+      },
+      "transition": "CheckEventQuota"
+    },
+    {
+      "name": "CheckEventQuota",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "condition": "${ try(.customerCount) != null and .customerCount > .quota.maxConsumedEvents }",
+          "end": {
+            "continueAs": {
+              "workflowId": "notifycustomerworkflow",
+              "version": "1.0",
+              "data": "${ del(.customerCount) }"
+            }
+          }
+        }
+      ],
+      "defaultCondition": {
+        "transition": "WaitForCustomerEvent"
+      }
+    }
+  ],
+  "events": [
+    {
+      "name": "CustomerEvent",
+      "type": "org.events.customerEvent",
+      "source": "customerSource"
+    }
+  ],
+  "functions": [
+    {
+      "name": "NotifyCustomerFunction",
+      "operation": "http://myapis.org/customerapis.json#notifyCustomer"
+    }
+  ]
+}

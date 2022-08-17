@@ -1,0 +1,41 @@
+name: "Bootstrap KIE Tools"
+description: ""
+
+inputs:
+  path:
+    description: "kie-tools path"
+    required: false
+    default: "."
+  pnpm_filter_string:
+    description: "pnpm filter string to choose what to bootstrap"
+    required: false
+    default: ""
+
+outputs:
+  pnpm_filter_string:
+    description: "Same as the input"
+    value: ${{ inputs.pnpm_filter_string }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Print storage usage (before bootstrap)"
+      shell: bash
+      run: |
+        echo "STEP: Print storage usage (before bootstrap)"
+        cd ${{ inputs.path }}
+        du -sh .
+
+    - name: "Bootstrap"
+      shell: bash
+      run: |
+        echo "STEP: Bootstrap"
+        cd ${{ inputs.path }}
+        pnpm bootstrap ${{ inputs.pnpm_filter_string }}
+
+    - name: "Print storage usage (after bootstrap)"
+      shell: bash
+      run: |
+        echo "STEP: Print storage usage (after bootstrap)"
+        cd ${{ inputs.path }}
+        du -sh .

@@ -103,6 +103,12 @@ public abstract class AbstractSelectionControl<H extends AbstractCanvasHandler>
         return this;
     }
 
+    @Override
+    public SelectionControl<H, Element> addSelection(final String uuid) {
+        selectionControl.addSelection(uuid);
+        return this;
+    }
+
     protected void onSelect(final Collection<String> uuids) {
     }
 

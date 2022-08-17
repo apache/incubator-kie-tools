@@ -239,6 +239,24 @@ public class MapSelectionControlTest {
     }
 
     @Test
+    public void testAddSelection() {
+        tested.init(canvasHandler);
+        tested.register(element);
+        tested.addSelection(element.getUUID());
+        assertEquals(1, tested.getSelectedItems().size());
+        assertEquals(ELEMENT_UUID, tested.getSelectedItems().iterator().next());
+        verify(shape, times(1)).applyState(ShapeState.SELECTED);
+        verify(shape, never()).applyState(ShapeState.NONE);
+        verify(shape, never()).applyState(ShapeState.INVALID);
+        verify(shape, never()).applyState(ShapeState.HIGHLIGHT);
+        verify(canvas, times(1)).focus();
+        final ArgumentCaptor<CanvasSelectionEvent> elementSelectedEventArgumentCaptor =
+                ArgumentCaptor.forClass(CanvasSelectionEvent.class);
+        verify(elementSelectedEvent,
+               never()).fire(elementSelectedEventArgumentCaptor.capture()); //must not fire event
+    }
+
+    @Test
     public void testSelectOnlyOnce() {
         tested.init(canvasHandler);
         tested.register(element);

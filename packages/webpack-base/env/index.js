@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-const { varsWithName, get, str2bool } = require("@kie-tools/build-env");
+const { varsWithName, get, str2bool, composeEnv } = require("@kie-tools/build-env");
 
-module.exports = {
+module.exports = composeEnv([], {
   vars: varsWithName({
     WEBPACK__minimize: {
       default: undefined,
@@ -53,4 +53,4 @@ module.exports = {
       },
     };
   },
-};
+});

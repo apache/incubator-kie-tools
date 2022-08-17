@@ -118,12 +118,12 @@ export class VsCodeKieEditorControllerFactory {
       this.editorEnvelopeLocator.targetOrigin,
       [...this.editorEnvelopeLocator.envelopeMappings].reduce((envelopeMappings, mapping) => {
         envelopeMappings.push(
-          new EnvelopeMapping(
-            mapping.type,
-            mapping.filePathGlob,
-            this.getWebviewPath(webview, mapping.envelopePath),
-            this.getWebviewPath(webview, mapping.resourcesPathPrefix)
-          )
+          new EnvelopeMapping({
+            type: mapping.type,
+            filePathGlob: mapping.filePathGlob,
+            resourcesPathPrefix: this.getWebviewPath(webview, mapping.resourcesPathPrefix),
+            envelopePath: this.getWebviewPath(webview, mapping.envelopePath),
+          })
         );
         return envelopeMappings;
       }, [] as EnvelopeMapping[])

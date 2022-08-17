@@ -20,25 +20,31 @@ BIN_DARWIN_ARM64 ?= $(BIN)-darwin-arm64
 BIN_LINUX        ?= $(BIN)-linux-amd64
 BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 
-QUARKUS_VERSION := $(shell pnpm build-env knPluginWorkflow.quarkusVersion)
-KOGITO_VERSION := $(shell pnpm build-env knPluginWorkflow.kogitoVersion)
-PLUGIN_VERSION := $(shell pnpm build-env knPluginWorkflow.version)
+SET_QUARKUS_PLATFORM_GROUP_ID := main.quarkusPlatformGroupId=$(QUARKUS_PLATFORM_GROUP_ID)
+SET_QUARKUS_VERSION           := main.quarkusVersion=$(QUARKUS_VERSION)
+SET_VERSION                   := main.pluginVersion=$(PLUGIN_VERSION)
+LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION)"
 
-SET_QUARKUS_VERSION := main.quarkusVersion=$(QUARKUS_VERSION)
-SET_KOGITO_VERSION := main.kogitoVersion=$(KOGITO_VERSION)
-SET_VERSION := main.pluginVersion=$(PLUGIN_VERSION)
-LDFLAGS := "-X $(SET_QUARKUS_VERSION) -X $(SET_KOGITO_VERSION) -X $(SET_VERSION)"
+ARCH := $(shell uname -m)
+ifeq ($(ARCH),arm64)
+	GOARCH = arm64
+else
+	GOARCH = amd64
+endif
 
-build-all: build-linux build-darwin-amd build-darwin-arm build-win32
+build-all: build-linux build-darwin-amd64 build-darwin-arm64 build-win32
+
+build-darwin:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
+
+build-darwin-amd64:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
+
+build-darwin-arm64:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_ARM64) cmd/main.go
 
 build-linux:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_LINUX) cmd/main.go
-
-build-darwin-amd:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
-
-build-darwin-arm:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_ARM64) cmd/main.go
 
 build-win32:
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_WINDOWS) cmd/main.go

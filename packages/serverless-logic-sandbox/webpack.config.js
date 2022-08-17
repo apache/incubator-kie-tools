@@ -182,10 +182,10 @@ function getServerlessLogicSandboxBaseImageArgs() {
   const baseImageName = buildEnv.serverlessLogicSandboxBaseImageEnv.name;
   const baseImageTag = buildEnv.serverlessLogicSandbox.baseImage.tag;
 
-  console.info("Serverless Logic Sandbox :: Base Image Registry: " + baseImageRegistry);
-  console.info("Serverless Logic Sandbox :: Base Image Account: " + baseImageAccount);
-  console.info("Serverless Logic Sandbox :: Base Image Name: " + baseImageName);
-  console.info("Serverless Logic Sandbox :: Base Image Tag: " + baseImageTag);
+  console.info("Serverless Logic Web Tools :: Base Image Registry: " + baseImageRegistry);
+  console.info("Serverless Logic Web Tools :: Base Image Account: " + baseImageAccount);
+  console.info("Serverless Logic Web Tools :: Base Image Name: " + baseImageName);
+  console.info("Serverless Logic Web Tools :: Base Image Tag: " + baseImageTag);
 
   return [baseImageRegistry, baseImageAccount, baseImageName, baseImageTag];
 }
@@ -196,10 +196,10 @@ function getServerlessLogicSandboxOpenJdk11MvnImageArgs() {
   const openJdk11MvnImageName = buildEnv.openJdk11MvnImageEnv.name;
   const openJdk11MvnImageTag = buildEnv.serverlessLogicSandbox.openJdk11MvnImage.tag;
 
-  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Registry: " + openJdk11MvnImageRegistry);
-  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Account: " + openJdk11MvnImageAccount);
-  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Name: " + openJdk11MvnImageName);
-  console.info("Serverless Logic Sandbox :: OpenJDK 11 + Maven Image Tag: " + openJdk11MvnImageTag);
+  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Registry: " + openJdk11MvnImageRegistry);
+  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Account: " + openJdk11MvnImageAccount);
+  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Name: " + openJdk11MvnImageName);
+  console.info("Serverless Logic Web Tools :: OpenJDK 11 + Maven Image Tag: " + openJdk11MvnImageTag);
 
   return [openJdk11MvnImageRegistry, openJdk11MvnImageAccount, openJdk11MvnImageName, openJdk11MvnImageTag];
 }

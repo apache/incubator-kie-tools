@@ -19,7 +19,6 @@ package common
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -36,7 +35,7 @@ func CheckJavaDependencies() error {
 }
 
 func checkJava() error {
-	javaCheck := exec.Command("java", "-version")
+	javaCheck := ExecCommand("java", "-version")
 	version, err := javaCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Java not found")
@@ -59,7 +58,7 @@ func checkJava() error {
 }
 
 func checkMaven() error {
-	mavenCheck := exec.Command("mvn", "--version")
+	mavenCheck := ExecCommand("mvn", "--version")
 	version, err := mavenCheck.CombinedOutput()
 	if err != nil {
 		fmt.Println("ERROR: Maven not found")
@@ -84,7 +83,7 @@ func checkMaven() error {
 
 func CheckDocker() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	dockerCheck := exec.Command("docker", "stats", "--no-stream")
+	dockerCheck := ExecCommand("docker", "stats", "--no-stream")
 	if err := dockerCheck.Run(); err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")
@@ -98,7 +97,7 @@ func CheckDocker() error {
 
 func CheckPodman() error {
 	fmt.Println("✅ Checking if Docker is available...")
-	dockerCheck := exec.Command("podman", "stats", "--no-stream")
+	dockerCheck := ExecCommand("podman", "stats", "--no-stream")
 	if err := dockerCheck.Run(); err != nil {
 		fmt.Println("ERROR: Podman not found.")
 		fmt.Println("Download from https://docs.podman.io/en/latest/")

@@ -2,7 +2,7 @@
   "init": [
     {
       "key": "chartType",
-      "value": "bar"
+      "value": "area"
     },
     {
       "key": "themeColor",
@@ -28,7 +28,6 @@
       "key": "legendPosition",
       "value": "bottom"
     },
-
     {
       "key": "title",
       "value": "Countries evolution"

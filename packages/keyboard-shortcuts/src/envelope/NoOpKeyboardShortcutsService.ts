@@ -22,8 +22,8 @@ export class NoOpKeyboardShortcutsService implements KeyboardShortcutsService {
   public registerKeyDownThenUp(
     combination: string,
     label: string,
-    onKeyDown: (target: EventTarget | null) => Thenable<void>,
-    onKeyUp: (target: EventTarget | null) => Thenable<void>,
+    onKeyDown: (target: EventTarget | null) => Promise<void>,
+    onKeyUp: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ): number {
     return 0;
@@ -32,7 +32,7 @@ export class NoOpKeyboardShortcutsService implements KeyboardShortcutsService {
   public registerKeyPress(
     combination: string,
     label: string,
-    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ): number {
     return 0;
@@ -40,7 +40,7 @@ export class NoOpKeyboardShortcutsService implements KeyboardShortcutsService {
 
   public registerKeyPressOnce(
     combination: string,
-    onKeyPress: (target: EventTarget | null) => Thenable<void>,
+    onKeyPress: (target: EventTarget | null) => Promise<void>,
     opts?: KeyboardShortcutRegisterOpts
   ): number {
     return 0;

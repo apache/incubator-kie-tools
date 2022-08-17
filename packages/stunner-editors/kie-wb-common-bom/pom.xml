@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>kie-wb-common-bom</artifactId>
-  <version>0.0.0</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <name>Kie-wb-common BOM</name>

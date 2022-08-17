@@ -17,7 +17,7 @@
 package single
 
 import (
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/spf13/cobra"
 )
 

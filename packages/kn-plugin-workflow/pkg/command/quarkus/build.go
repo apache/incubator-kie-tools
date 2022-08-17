@@ -18,11 +18,10 @@ package quarkus
 
 import (
 	"fmt"
-	"os/exec"
 	"strconv"
 	"time"
 
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -40,11 +39,13 @@ type BuildCmdConfig struct {
 	JibPodman bool // use Jib extension to build the image and save it in podman
 	Push      bool // choose to push an image to a remote registry or not (Docker only)
 
+	Test bool // choose to run the project tests
+
 	// Plugin options
 	Verbose bool
 }
 
-func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
+func NewBuildCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "build",
 		Short: "Build a Kogito Serverless Workflow project and generate a container image",
@@ -87,11 +88,12 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	{{.Name}} build --jib-podman
 	`,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "jib-podman", "push"),
+		PreRunE:    common.BindEnv("image", "image-registry", "image-repository", "image-name", "image-tag", "jib", "jib-podman", "push", "test"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return runBuild(cmd, args, dependenciesVersion)
+		_, err := runBuild(cmd, args)
+		return err
 	}
 
 	cmd.Flags().StringP("image", "i", "", "Full image name in the form of [registry]/[repository]/[name]:[tag]")
@@ -104,61 +106,65 @@ func NewBuildCommand(dependenciesVersion common.DependenciesVersion) *cobra.Comm
 	cmd.Flags().Bool("jib-podman", false, "Use Jib extension to generate the image and save it in podman (can't use --push)")
 	cmd.Flags().Bool("push", false, "Attempt to push the genereated image after being successfully built")
 
+	cmd.Flags().Bool("test", false, "Run the project tests")
+
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 	return cmd
 }
 
-func runBuild(cmd *cobra.Command, args []string, dependenciesVersion common.DependenciesVersion) error {
+func runBuild(cmd *cobra.Command, args []string) (out string, err error) {
 	start := time.Now()
 
 	cfg, err := runBuildCmdConfig(cmd)
 	if err != nil {
-		return fmt.Errorf("initializing build config: %w", err)
+		err = fmt.Errorf("initializing build config: %w", err)
+		return
 	}
 
-	if err := common.CheckJavaDependencies(); err != nil {
-		return err
+	if err = common.CheckJavaDependencies(); err != nil {
+		return
 	}
 
 	if cfg.JibPodman {
-		if err := common.CheckPodman(); err != nil {
-			return err
+		if err = common.CheckPodman(); err != nil {
+			return
 		}
 	} else if (cfg.Jib && !cfg.Push) || (!cfg.Jib) {
-		if err := common.CheckDocker(); err != nil {
-			return err
+		if err = common.CheckDocker(); err != nil {
+			return
 		}
 	}
 
-	quarkusVersion, _, err := ReadConfig(dependenciesVersion)
 	if err != nil {
-		return err
+		return
 	}
 
-	if err := runAddExtension(cfg, quarkusVersion); err != nil {
-		return err
+	if err = runAddExtension(cfg); err != nil {
+		return
 	}
 
-	if err := runBuildImage(cfg); err != nil {
-		return err
+	if out, err = runBuildImage(cfg); err != nil {
+		return
 	}
 
 	finish := time.Since(start)
 	fmt.Printf("🚀 Build took: %s \n", finish)
-	return nil
+	return
 }
 
 func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	cfg = BuildCmdConfig{
 		Image:      viper.GetString("image"),
-		Registry:   viper.GetString("registry"),
-		Repository: viper.GetString("repository"),
-		ImageName:  viper.GetString("name"),
-		Tag:        viper.GetString("tag"),
+		Registry:   viper.GetString("image-registry"),
+		Repository: viper.GetString("image-repository"),
+		ImageName:  viper.GetString("image-name"),
+		Tag:        viper.GetString("image-tag"),
 
 		Jib:       viper.GetBool("jib"),
 		JibPodman: viper.GetBool("jib-podman"),
 		Push:      viper.GetBool("push"),
+
+		Test: viper.GetBool("test"),
 
 		Verbose: viper.GetBool("verbose"),
 	}
@@ -183,7 +189,7 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 // This function removes the extension that is not going to be used (if present)
 // and updates the chosen one. The entire operation is handled as an extension addition.
 // Therefore the removal is hidden from the user
-func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
+func runAddExtension(cfg BuildCmdConfig) error {
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		if err := common.RunExtensionCommand(
@@ -194,10 +200,11 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		); err != nil {
 			return err
 		}
-		if err := common.UpdateProjectExtensionsVersions(
+		if err := common.RunExtensionCommand(
 			cfg.Verbose,
+			"quarkus:add-extension",
 			common.GetFriendlyMessages("adding Quarkus extension"),
-			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_JIB, quarkusVersion),
+			common.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
 		}
@@ -211,10 +218,11 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 		); err != nil {
 			return err
 		}
-		if err := common.UpdateProjectExtensionsVersions(
+		if err := common.RunExtensionCommand(
 			cfg.Verbose,
+			"quarkus:add-extension",
 			common.GetFriendlyMessages("adding Quarkus extension"),
-			common.GetVersionedExtension(common.QUARKUS_CONTAINER_IMAGE_DOCKER, quarkusVersion),
+			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
 		}
@@ -224,16 +232,18 @@ func runAddExtension(cfg BuildCmdConfig, quarkusVersion string) error {
 	return nil
 }
 
-func runBuildImage(cfg BuildCmdConfig) error {
+func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
-	if err := common.CheckImageName(name); err != nil {
-		return err
+	if err = common.CheckImageName(name); err != nil {
+		return
 	}
 
+	skipTestsConfig := getSkipTestsConfig(cfg)
 	builderConfig := getBuilderConfig(cfg)
 	executableName := getExecutableNameConfig(cfg)
 
-	build := exec.Command("mvn", "package",
+	build := common.ExecCommand("mvn", "package",
+		skipTestsConfig,
 		"-Dquarkus.kubernetes.deployment-target=knative",
 		fmt.Sprintf("-Dquarkus.knative.name=%s", name),
 		"-Dquarkus.container-image.build=true",
@@ -246,7 +256,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		executableName,
 	)
 
-	if err := common.RunCommand(
+	if err = common.RunCommand(
 		build,
 		cfg.Verbose,
 		"build",
@@ -257,24 +267,39 @@ func runBuildImage(cfg BuildCmdConfig) error {
 			fmt.Println("If you're using a private registry, check if you're authenticated")
 		}
 		fmt.Println("Check the full logs with the -v | --verbose option")
-		return err
+		return
 	}
 
+	out = getImage(registry, repository, name, tag)
 	if cfg.Push {
-		fmt.Printf("Created and pushed an image to registry: %s\n", getImage(registry, repository, name, tag))
+		fmt.Printf("Created and pushed an image to registry: %s\n", out)
 	} else {
-		fmt.Printf("Created a local image: %s\n", getImage(registry, repository, name, tag))
+		fmt.Printf("Created a local image: %s\n", out)
 	}
 
 	fmt.Println("✅ Build success")
-	return nil
+	return
 }
 
 func getImage(registry string, repository string, name string, tag string) string {
-	if len(repository) == 0 {
+	if len(registry) == 0 && len(repository) == 0 {
+		return fmt.Sprintf("%s:%s", name, tag)
+	} else if len(registry) == 0 {
+		return fmt.Sprintf("%s/%s:%s", repository, name, tag)
+	} else if len(repository) == 0 {
 		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
 	}
 	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
+}
+
+func getSkipTestsConfig(cfg BuildCmdConfig) string {
+	skipTests := "-DskipTests="
+	if cfg.Test {
+		skipTests += "false"
+	} else {
+		skipTests += "true"
+	}
+	return skipTests
 }
 
 func getBuilderConfig(cfg BuildCmdConfig) string {
@@ -284,7 +309,6 @@ func getBuilderConfig(cfg BuildCmdConfig) string {
 	} else {
 		builder += "docker"
 	}
-
 	return builder
 }
 

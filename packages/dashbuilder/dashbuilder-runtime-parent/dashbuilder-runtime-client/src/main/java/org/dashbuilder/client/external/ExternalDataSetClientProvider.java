@@ -187,11 +187,13 @@ public class ExternalDataSetClientProvider {
         });
         if (def != null && def.isCacheEnabled()) {
             var refreshTimeAmount = def.getRefreshTimeAmount();
-            var id = DomGlobal.setTimeout(params -> {
-                clientDataSetManager.removeDataSet(uuid);
-                scheduledTimeouts.remove(uuid);
-            }, refreshTimeAmount.toMillis());
-            scheduledTimeouts.put(uuid, id);
+            if (refreshTimeAmount != null) {
+                var id = DomGlobal.setTimeout(params -> {
+                    clientDataSetManager.removeDataSet(uuid);
+                    scheduledTimeouts.remove(uuid);
+                }, refreshTimeAmount.toMillis());
+                scheduledTimeouts.put(uuid, id);
+            }
         } else {
             clientDataSetManager.removeDataSet(uuid);
         }

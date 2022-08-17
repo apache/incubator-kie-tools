@@ -21,7 +21,7 @@ module.exports = composeEnv(
   {
     vars: varsWithName({
       SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {
-        default: "2.10.1.Final",
+        default: "2.11.1.Final",
         description: "",
       },
       SERVERLESS_LOGIC_SANDBOX__baseImageBuildTags: {

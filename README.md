@@ -26,7 +26,7 @@ To start building the KIE Tools project, you're going to need:
 - pnpm `7.0.0` _(To install, follow these instructions: https://pnpm.io/installation)_
 - Maven `3.8.1`
 - Java `11`
-- Go `1.17`
+- Go `1.19` _(To install, follow these instructions: https://go.dev/doc/install)_
 
 \*nix users will also need:
 
@@ -87,6 +87,10 @@ The KIE Tools project contains several applications. To develop each one of them
 1. After you've successfully built the project following the instructions above, go to `packages/kie-editors-standalone`.
 2. Open a terminal and run `pnpm start`. This will start a `webpack serve` instance with the Standalone Editors test page.
 3. From now on you can use the development version of the Standalone DMN Editor by accessing `https://localhost:9001/resources/dmn` and the Standalone BPMN Editor by accessing `https://localhost:9001/resources/bpmn`.
+
+#### Knative Workflow plugin
+
+[Read the documentation](./packages/kn-plugin-workflow/README.md)
 
 ## Libraries
 

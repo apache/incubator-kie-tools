@@ -1,28 +1,46 @@
 {
+  "private": true,
   "name": "@kie-tools/kn-plugin-workflow",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "private": true,
-  "files": [
-    "dist"
-  ],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "install": "go mod tidy",
     "build": "run-script-os",
-    "build:all": "make build-all",
-    "build:linux": "make build-linux",
-    "build:darwin": "make build-darwin-amd",
-    "build:darwin:arm": "make build-darwin-arm",
-    "build:win32": "make build-win32",
+    "build:darwin": "pnpm setup:env make build-darwin",
+    "build:darwin:amd": "pnpm setup:env make build-darwin-amd64",
+    "build:darwin:arm": "pnpm setup:env make build-darwin-arm64",
     "build:dev": "rimraf dist && pnpm build",
-    "build:prod": "rimraf dist && pnpm build:all"
+    "build:linux": "pnpm setup:env make build-linux",
+    "build:prod": "rimraf dist && run-script-os && pnpm test",
+    "build:prod:darwin": "rimraf dist && pnpm setup:env make build-all",
+    "build:prod:linux": "rimraf dist && pnpm setup:env make build-all",
+    "build:prod:win32": "rimraf dist && pnpm setup:env:win32 make build-all",
+    "build:win32": "pnpm setup:env:win32 make build-win32",
+    "install": "go mod tidy",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "setup:env": "cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)",
+    "setup:env:win32": "pnpm powershell \"cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env knPluginWorkflow.quarkusVersion) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)\"",
+    "test": "go test ./..."
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0"
+    "@kie-tools/build-env": "workspace:*",
+    "cross-env": "^7.0.3"
+  },
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "go",
+      "make"
+    ]
   }
 }

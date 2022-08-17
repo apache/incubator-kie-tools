@@ -15,7 +15,7 @@
   <parent>
     <groupId>org.kie.soup</groupId>
     <artifactId>kie-soup-dataset</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>kie-soup-dataset-sql-tests</artifactId>

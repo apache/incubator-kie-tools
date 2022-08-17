@@ -412,7 +412,7 @@ describe("Editors are loading properly", () => {
     await webview.switchBack();
   });
 
-  it("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
+  it.skip("Opens UserTask.bpmn file in BPMN Editor and test On Entry and On Exit actions", async function () {
     this.timeout(20000);
     webview = await testHelper.openFileFromSidebar(USER_TASK_BPMN);
     await testHelper.switchWebviewToFrame(webview);

@@ -40,6 +40,7 @@ export function Base64PngGallery(props: { setFile: React.Dispatch<EmbeddedEditor
       fileExtension: "base64png",
       fileName: fileName,
       getFileContents: () => fetch(filePath).then((response) => response.text()),
+      path: filePath,
     });
   }, []);
 

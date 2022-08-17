@@ -17,7 +17,7 @@
 package quarkus
 
 import (
-	"github.com/kiegroup/kie-tools/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/spf13/cobra"
 )
 
@@ -41,8 +41,7 @@ func NewQuarkusCommand(dependenciesVersion common.DependenciesVersion) *cobra.Co
 		return nil
 	}
 
-	cmd.AddCommand(NewBuildCommand(dependenciesVersion))
-	cmd.AddCommand(NewConfigCommand(dependenciesVersion))
+	cmd.AddCommand(NewBuildCommand())
 	cmd.AddCommand(NewCreateCommand(dependenciesVersion))
 	cmd.AddCommand(NewDeployCommand())
 

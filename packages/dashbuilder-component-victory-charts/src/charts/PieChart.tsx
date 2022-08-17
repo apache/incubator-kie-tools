@@ -16,7 +16,6 @@
 import * as React from "react";
 
 import { ChartPie } from "@patternfly/react-charts";
-import "@patternfly/patternfly/patternfly-charts.css"; // Required for mix-blend-mode CSS property
 import { PieBaseChart } from "./PieBaseChart";
 
 export class PieChart extends PieBaseChart {
