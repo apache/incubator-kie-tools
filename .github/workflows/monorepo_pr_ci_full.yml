@@ -55,16 +55,16 @@ jobs:
           printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
-            echo 'No source files changed; `CI :: Monorepo (full)` will not run.'
+            echo 'No source files changed; `CI :: Build (full)` will not run.'
             echo "::set-output name=should_run::false"
           elif [ ! ${{ github.event.pull_request }} ]; then
-            echo 'Push to the `main` branch happened; `CI :: Monorepo (full)` will run.'
+            echo 'Push to the `main` branch happened; `CI :: Build (full)` will run.'
             echo "::set-output name=should_run::true"
           elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
-            echo 'No source files changed in root; `CI :: Monorepo (full)` will not run.'
+            echo 'No source files changed in root; `CI :: Build (full)` will not run.'
             echo "::set-output name=should_run::false"
           else
-            echo 'Source files changed in root; `CI :: Monorepo (full)` will run.'
+            echo 'Source files changed in root; `CI :: Build (full)` will run.'
             echo "::set-output name=should_run::true"
           fi
 

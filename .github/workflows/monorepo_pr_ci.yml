@@ -53,13 +53,13 @@ jobs:
           printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
-            echo 'No source files changed; `CI :: Monorepo` will not run.'
+            echo 'No source files changed; `CI :: Build` will not run.'
             echo "::set-output name=should_run::false"
           elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
-            echo 'No source files changed in root; `CI :: Monorepo` will run.'
+            echo 'No source files changed in root; `CI :: Build` will run.'
             echo "::set-output name=should_run::true"
           else
-            echo 'Source files changed in root; `CI :: Monorepo` will not run.'
+            echo 'Source files changed in root; `CI :: Build` will not run.'
             echo "::set-output name=should_run::false"
           fi
 
