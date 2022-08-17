@@ -25,7 +25,7 @@
     "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env global.build.test --not) -DskipITs -Pno-showcase && pnpm dist",
     "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs `-Pno-showcase\" && pnpm dist",
     "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
-    "dist:sw": "mkdir dist/sw && cpr ./sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
+    "dist:sw": "mkdir \"dist/sw\" && cpr ./sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
