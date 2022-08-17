@@ -105,7 +105,11 @@ jobs:
           check_name: "tests ${{ matrix.os }}"
           annotate_only: true
           fail_on_failure: true
-          report_paths: "**/dist-*/junit-report*.xml"
+          report_paths: |
+            **/dist-tests/junit-report*.xml
+            **/dist-it-tests/junit-report*.xml
+            **/target/surefire-reports/TEST-*.xml
+            **/target/failsafe-reports/TEST-*.xml
 
       - name: "Check generated resources (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
