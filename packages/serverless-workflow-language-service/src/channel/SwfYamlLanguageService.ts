@@ -27,11 +27,13 @@ import {
   YAMLSequence,
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
+import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CompletionTranslatorArgs, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
+  private readonly codeCompletionStrategy: YamlCodeCompletionStrategy;
 
   constructor(args: Omit<SwfLanguageServiceArgs, "lang">) {
     this.ls = new SwfLanguageService({
@@ -41,6 +43,8 @@ export class SwfYamlLanguageService {
         fileMatch: ["*.sw.yaml", "*.sw.yml"],
       },
     });
+
+    this.codeCompletionStrategy = new YamlCodeCompletionStrategy();
   }
 
   parseContent(content: string): SwfLsNode | undefined {
@@ -60,7 +64,11 @@ export class SwfYamlLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content), completionTranslator });
+    return this.ls.getCompletionItems({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
@@ -75,10 +83,6 @@ export class SwfYamlLanguageService {
     return this.ls.dispose();
   }
 }
-
-const completionTranslator = ({ completion }: CompletionTranslatorArgs): string => {
-  return dump(completion, {}).slice(0, -1);
-};
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   const convertedNode: SwfLsNode = {
@@ -119,3 +123,13 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
 
   return convertedNode;
 };
+
+class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(completion: object | string): string {
+    return dump(completion, {}).slice(0, -1);
+  }
+
+  public shouldComplete(args: ShouldCompleteArgs): boolean {
+    return matchNodeWithLocation(args.root, args.node, args.path);
+  }
+}

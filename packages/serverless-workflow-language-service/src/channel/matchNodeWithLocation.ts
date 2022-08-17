@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import { SwfJsonPath, SwfLsNode } from "./types";
 
@@ -35,13 +36,14 @@ export function matchNodeWithLocation(
   }
 
   const nodesAtLocation = findNodesAtLocation(root, path);
+  const nodeToMatch = nodeUpUntilType(node, "object");
+  const starSelector = path[path.length - 1] === "*";
 
-  if (nodesAtLocation.some((currentNode) => currentNode === node)) {
-    return true;
-  }
-  if (path[path.length - 1] === "*" && node.type == "array" && node.children) {
+  if (starSelector && node.type === "array" && node?.children) {
     return matchNodeWithLocation(root, node, path.slice(0, -1));
   }
 
-  return false;
+  return nodesAtLocation.some(
+    (currentNode) => (starSelector && currentNode === nodeToMatch) || (!starSelector && currentNode === node)
+  );
 }
