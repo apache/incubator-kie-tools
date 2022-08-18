@@ -18,8 +18,6 @@
 
 package tools
 
-//go:generate go run github.com/jstemmer/go-junit-report/v2 -in ../dist-tests/go-test-output.txt -out ./dist-tests/junit-report.xml
-
 import (
 	_ "github.com/jstemmer/go-junit-report/v2"
 )
