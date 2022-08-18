@@ -100,7 +100,7 @@ jobs:
 
       - name: "Check tests and integration tests results (`main` only)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
-        uses: mikepenz/action-junit-report@1b47bb8
+        uses: mikepenz/action-junit-report@1b47bb811362f3d8d753fc148cb7a13ec9e55570
         with:
           check_name: ""
           annotate_only: true
