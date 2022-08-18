@@ -107,20 +107,17 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		return err
 	}
 
-	buildTargetKubernetes := exec.Command("docker", "build",
+	dockerArgs := []string{
+		"build",
 		fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
-		fmt.Sprintf("--target=%s", "kubernetes"),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, registry),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, repository),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, name),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, tag),
-		"--output type=local,dest=kubernetes",
-		".",
-	)
+	}
+	dockerBuildArgs := getDockerBuildArgs(cfg, registry, repository, name, tag)
+	dockerArgs = append(dockerArgs, dockerBuildArgs...)
 
+	dockerKubernetsArgs := dockerArgs
+	dockerKubernetsArgs = append(dockerKubernetsArgs, fmt.Sprintf("--target=%s", "kubernetes"), "--output type=local,dest=kubernetes", ".")
+
+	buildTargetKubernetes := exec.Command("docker", dockerKubernetsArgs...)
 	if err := common.RunCommand(
 		buildTargetKubernetes,
 		cfg.Verbose,
@@ -131,19 +128,10 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		return err
 	}
 
-	buildTargetRunner := exec.Command("docker", "build",
-		fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
-		fmt.Sprintf("--target=%s", "runner"),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, registry),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, repository),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, name),
-		fmt.Sprintf("--build-arg %s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, tag),
-		fmt.Sprintf("-t %s/%s/%s:%s", registry, repository, name, tag),
-		".",
-	)
+	dockerRunnerArgs := dockerArgs
+	dockerRunnerArgs = append(dockerRunnerArgs, fmt.Sprintf("--target=%s", "runner"), fmt.Sprintf("-t %s/%s/%s:%s", registry, repository, name, tag), ".")
+
+	buildTargetRunner := exec.Command("docker", dockerRunnerArgs...)
 
 	if err := common.RunCommand(
 		buildTargetRunner,
