@@ -43,4 +43,6 @@ runs:
           echo "::set-output name=head_sha::$(git rev-parse HEAD)"
         else
           echo "Skip merge, not a pull request"
+          echo "::set-output name=base_sha::$(git rev-parse HEAD^1)"
+          echo "::set-output name=head_sha::$(git rev-parse HEAD)"
         fi

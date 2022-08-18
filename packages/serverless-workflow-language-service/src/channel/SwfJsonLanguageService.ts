@@ -15,13 +15,14 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { SwfLsNode, CompletionTranslatorArgs } from "./types";
+import { SwfLsNode, CodeCompletionStrategy, ShouldCompleteArgs } from "./types";
 import { FileLanguage } from "../api";
 
 export class SwfJsonLanguageService {
   private readonly ls: SwfLanguageService;
+  private readonly codeCompletionStrategy: JsonCodeCompletionStrategy;
 
   constructor(args: Omit<SwfLanguageServiceArgs, "lang">) {
     this.ls = new SwfLanguageService({
@@ -31,6 +32,8 @@ export class SwfJsonLanguageService {
         fileMatch: ["*.sw.json"],
       },
     });
+
+    this.codeCompletionStrategy = new JsonCodeCompletionStrategy();
   }
 
   parseContent(content: string): SwfLsNode | undefined {
@@ -43,7 +46,11 @@ export class SwfJsonLanguageService {
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({ ...args, rootNode: this.parseContent(args.content), completionTranslator });
+    return this.ls.getCompletionItems({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
@@ -59,10 +66,13 @@ export class SwfJsonLanguageService {
   }
 }
 
-const completionTranslator = ({ completion, kind }: CompletionTranslatorArgs): string => {
-  if (kind === CompletionItemKind.Module) {
-    return JSON.stringify(completion, null, 2).slice(1, -1);
+class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(completion: object | string): string {
+    return JSON.stringify(completion, null, 2);
   }
 
-  return JSON.stringify(completion, null, 2);
-};
+  public shouldComplete(args: ShouldCompleteArgs): boolean {
+    const cursorJsonLocation = jsonc.getLocation(args.content, args.cursorOffset);
+    return cursorJsonLocation.matches(args.path) && cursorJsonLocation.path.length === args.path.length;
+  }
+}
