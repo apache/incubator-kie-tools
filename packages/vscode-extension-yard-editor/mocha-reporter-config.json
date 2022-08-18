@@ -6,6 +6,10 @@
     "junit_report_stack": 0
   },
   "mochaJunitReporterReporterOptions": {
-    "mochaFile": "./dist-it-tests/junit-report-[hash].xml"
+    "testsuitesTitle": "YARD :: VS Code Extension",
+    "mochaFile": "./dist-it-tests/junit-report-[hash].xml",
+    "testCaseSwitchClassnameAndName": true,
+    "suiteTitleSeparatedBy": ".",
+    "useFullSuiteTitle": true
   }
 }

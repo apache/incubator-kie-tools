@@ -38,11 +38,11 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_PATHS=$(cat ./.github/supporting-files/ci/non-source-paths.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
-          echo "Non-source paths:"
-          echo $NON_SOURCE_PATHS
+          export NON_SOURCE_FILES_PATTERNS=$(cat ./.github/supporting-files/ci/non-source-files-patterns.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
+          echo "Non-source files patterns:"
+          echo $NON_SOURCE_FILES_PATTERNS
 
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_PATHS"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_FILES_PATTERNS"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
@@ -104,7 +104,7 @@ jobs:
         run: |
           pnpm -F "...[${{ steps.merge_changes.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
-      - name: "Check generated resources (you should commit those!)"
+      - name: "Check hanging uncommitted files (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
@@ -127,11 +127,22 @@ jobs:
             packages/desktop/out/*.zip
             !packages/desktop/dist
 
-      - name: "Upload IT Tests artifacts"
+      - name: "Upload test artifacts"
         uses: actions/upload-artifact@v2
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
           name: it-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
-            packages/*/dist-it-tests
+            **/dist-tests
+            **/target/surefire-reports/TEST-*.xml
+
+      - name: "Upload integration tests artifacts"
+        uses: actions/upload-artifact@v2
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        with:
+          name: it-tests-artifacts-${{ matrix.os }}
+          if-no-files-found: warn
+          path: |
+            **/dist-it-tests
+            **/target/failsafe-reports/TEST-*.xml

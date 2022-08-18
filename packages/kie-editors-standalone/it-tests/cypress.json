@@ -7,8 +7,8 @@
   "supportFile": "./cypress/support/index.ts",
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "./results/junit-[hash].xml",
-    "testsuitesTitle": "@kie-tools",
+    "mochaFile": "../dist-it-tests/junit-[hash].xml",
+    "testsuitesTitle": "BPMN and DMN Standalone Editors",
     "testCaseSwitchClassnameAndName": true,
     "suiteTitleSeparatedBy": ".",
     "useFullSuiteTitle": true,

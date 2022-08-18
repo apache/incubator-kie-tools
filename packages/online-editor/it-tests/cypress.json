@@ -8,5 +8,13 @@
   "chromeWebSecurity": false,
   "video": true,
   "downloadsFolder": "downloads",
-  "defaultCommandTimeout": 10000
+  "defaultCommandTimeout": 10000,
+  "reporter": "junit",
+  "reporterOptions": {
+    "mochaFile": "../dist-it-tests/junit-[hash].xml",
+    "testsuitesTitle": "KIE Sandbox",
+    "testCaseSwitchClassnameAndName": true,
+    "suiteTitleSeparatedBy": ".",
+    "useFullSuiteTitle": true
+  }
 }

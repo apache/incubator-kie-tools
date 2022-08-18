@@ -9,6 +9,10 @@
   "defaultCommandTimeout": 10000,
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "../dist-it-tests/junit-report-[hash].xml"
+    "testsuitesTitle": "Boxed Expression",
+    "mochaFile": "../dist-it-tests/junit-report-[hash].xml",
+    "testCaseSwitchClassnameAndName": true,
+    "suiteTitleSeparatedBy": ".",
+    "useFullSuiteTitle": true
   }
 }

@@ -20,7 +20,16 @@ module.exports = {
       tsconfig: "<rootDir>/tsconfig.json",
     },
   },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-it-tests/junit-report.xml" }]],
+  reporters: [
+    "default",
+    [
+      "jest-junit",
+      {
+        suiteName: "Chrome Extension for BPMN and DMN",
+        outputFile: "./dist-it-tests/junit-report.xml",
+      },
+    ],
+  ],
   transform: {
     "^.+\\.(ts)$": "ts-jest",
   },
