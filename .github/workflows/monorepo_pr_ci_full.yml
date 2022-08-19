@@ -125,8 +125,8 @@ jobs:
           annotate_only: true
           fail_on_failure: true
           report_paths: |
-            ${{ steps.post_build_paths.outputs.tests_artifacts }}
-            ${{ steps.post_build_paths.outputs.integration_tests_artifacts }}
+            ${{ steps.post_build_paths.outputs.tests_reports }}
+            ${{ steps.post_build_paths.outputs.integration_tests_reports }}
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
