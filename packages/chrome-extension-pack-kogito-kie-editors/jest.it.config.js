@@ -27,10 +27,11 @@ module.exports = {
       {
         suiteName: "Chrome Extension for BPMN and DMN",
         outputFile: "./dist-it-tests/junit-report.xml",
-        classNameTemplate: "Chrome Extension for BPMN and DMN",
+        classNameTemplate: "Chrome Extension for BPMN and DMN ::",
         titleTemplate: "{title}",
         ancestorSeparator: " :: ",
         usePathForSuiteName: "true",
+        addFileAttribute: "true",
       },
     ],
   ],
