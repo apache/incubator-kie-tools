@@ -33,9 +33,9 @@ runs:
         echo ${#PNPM_WORKSPACE_PACKAGES_ROOTS}
         printf '%s\n' "${PNPM_WORKSPACE_PACKAGES_ROOTS[@]}"
 
-        export NON_SOURCE_FILES_PATTERNS=($(cat ./.github/supporting-files/ci/non-source-files-patterns.txt))
+        export NON_SOURCE_FILES_PATTERNS=($(cat ./.github/supporting-files/ci/non-source-files-patterns.txt | xargs -n 1 -I{} echo '"{}"'))
         echo "Non-source files patterns:"
-        echo ${#NON_SOURCE_FILES_PATTERNS}
+        echo ${#NON_SOURCE_FILES_PATTERNS[@]}
         printf '%s\n' "${NON_SOURCE_FILES_PATTERNS[@]}"
 
         export TESTS_SOURCE_FILES_PATTERNS=($(cat ./.github/supporting-files/ci/tests-source-files-patterns.txt))
