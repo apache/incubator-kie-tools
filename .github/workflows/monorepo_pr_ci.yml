@@ -42,12 +42,12 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_FILE_PATTERNS=(${{ steps.pre_build_patterns.outputs.non_source_files }})
+          export NON_SOURCE_FILES_PATTERNS=(${{ steps.pre_build_patterns.outputs.non_source_files }})
           echo "Non-source files patterns:"
-          echo ${#NON_SOURCE_FILE_PATTERNS[@]}
-          echo $NON_SOURCE_FILES_PATTERNS
+          echo ${#NON_SOURCE_FILES_PATTERNS[@]}
+          printf '%s\n' "${NON_SOURCE_FILES_PATTERNS[@]}"
 
-          export NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF=$(printf '%s\n' ${NON_SOURCE_FILE_PATTERNS[@]} | xargs -n 1 -I{} echo -n "'"':!'"{}""' ")
+          export NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF=$(printf '%s\n' ${NON_SOURCE_FILES_PATTERNS[@]} | xargs -n 1 -I{} echo -n "'"':!'"{}""' ")
           echo "Non-source files patterns for git diff:"
           echo ${#NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF[@]}
           echo $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF
