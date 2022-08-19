@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-describe.skip("Upload file test", () => {
+describe("Upload file test", () => {
   beforeEach(() => {
     cy.visit("/");
   });
 
-  it("should upload BPMN file", () => {
+  it.skip("should upload BPMN file", () => {
     // upload bpmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testProcess.bpmn", { subjectType: "drag-n-drop" });
 
@@ -85,7 +85,7 @@ describe.skip("Upload file test", () => {
     });
   });
 
-  it("should upload DMN file", () => {
+  it.skip("should upload DMN file", () => {
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testModel.dmn", { subjectType: "drag-n-drop" });
 
@@ -150,7 +150,7 @@ describe.skip("Upload file test", () => {
     });
   });
 
-  it("DMN Guided Tour popup shouldn't appear when opening broken file", () => {
+  it.skip("DMN Guided Tour popup shouldn't appear when opening broken file", () => {
     cy.on("uncaught:exception", (err, runnable) => {
       // The DMN Editor will throw an exception because it failed to marshall the contents of the uploaded file.
       // Returning false here prevents Cypress from failing the test.
@@ -172,14 +172,14 @@ describe.skip("Upload file test", () => {
     cy.get("[data-ouia-component-id='set-content-error-alert']").should("be.visible");
   });
 
-  it("DMN Automatic Layout dialogue should appear when opening file without DMNDI", () => {
+  it.skip("DMN Automatic Layout dialogue should appear when opening file without DMNDI", () => {
     // upload dmn file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testModelWithoutLayout.dmn", { subjectType: "drag-n-drop" });
 
     cy.confirmAutomaticLayoutDialogue();
   });
 
-  it("should upload PMML file", () => {
+  it.skip("should upload PMML file", () => {
     // upload pmml file from fixtures directory by drag and drop
     cy.get("#upload-field").attachFile("testScoreCard.pmml", { subjectType: "drag-n-drop" });
 

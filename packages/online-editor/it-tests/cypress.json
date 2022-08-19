@@ -11,7 +11,7 @@
   "defaultCommandTimeout": 10000,
   "reporter": "junit",
   "reporterOptions": {
-    "mochaFile": "../dist-it-tests/junit-[hash].xml",
+    "mochaFile": "../dist-it-tests/junit-report-[hash].xml",
     "testsuitesTitle": "KIE Sandbox",
     "testCaseSwitchClassnameAndName": true,
     "suiteTitleSeparatedBy": ".",
