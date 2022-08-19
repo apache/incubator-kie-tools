@@ -70,6 +70,9 @@ jobs:
 
           echo "Done"
 
+      - name: "Start telemetry service"
+        uses: runforesight/workflow-telemetry-action@7771f879afebe55ef1009a49f0b8a5d9089d8bc7
+
       - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
@@ -110,6 +113,7 @@ jobs:
             **/target/surefire-reports/TEST-*.xml
             **/dist-it-tests/junit-report*.xml
             **/target/failsafe-reports/TEST-*.xml
+            !**/node_modules
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
