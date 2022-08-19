@@ -10,13 +10,13 @@ inputs:
 outputs:
   pnpm_workspace_packages_roots:
     description: "pnpm workspace packages roots"
-    value: ${{ steps.setup_pre_build_patterns.pnpm_workspace_packages_roots }}
+    value: ${{ steps.setup_pre_build_patterns.outputs.pnpm_workspace_packages_roots }}
   non_source_files:
     description: "Non-source files patterns"
-    value: ${{ steps.setup_pre_build_patterns.non_source_files }}
+    value: ${{ steps.setup_pre_build_patterns.outputs.non_source_files }}
   tests_source_files:
     description: "Tests source files patterns"
-    value: ${{ steps.setup_pre_build_patterns.tests_source_files }}
+    value: ${{ steps.setup_pre_build_patterns.outputs.tests_source_files }}
 
 runs:
   using: "composite"

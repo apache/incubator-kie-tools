@@ -10,16 +10,16 @@ inputs:
 outputs:
   tests_reports:
     description: "Tests reports paths"
-    value: ${{ steps.setup_post_build_paths.tests_report }}
+    value: ${{ steps.setup_post_build_paths.outputs.tests_report }}
   integration_tests_reports:
     description: "Integration tests reports paths"
-    value: ${{ steps.setup_post_build_paths.integration_tests_report }}
+    value: ${{ steps.setup_post_build_paths.outputs.integration_tests_report }}
   integration_tests_artifacts:
     description: "Integration tests artifacts paths"
-    value: ${{ steps.setup_post_build_paths.integration_tests_artifacts }}
+    value: ${{ steps.setup_post_build_paths.outputs.integration_tests_artifacts }}
   build_artifacts:
     description: "Build artifacts paths"
-    value: ${{ steps.setup_post_build_paths.build_artifacts }}
+    value: ${{ steps.setup_post_build_paths.outputs.build_artifacts }}
 
 runs:
   using: "composite"
