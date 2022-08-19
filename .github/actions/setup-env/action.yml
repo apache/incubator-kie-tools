@@ -21,7 +21,7 @@ runs:
         du -sh .
 
     - name: "Setup pnpm"
-      uses: pnpm/action-setup@v2.0.1
+      uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d
       with:
         version: 7.0.0
 
@@ -67,7 +67,7 @@ runs:
 
     - name: "Configure Pagefile (Windows only)"
       if: inputs.os == 'windows-latest'
-      uses: al-cheb/configure-pagefile-action@v1.2
+      uses: al-cheb/configure-pagefile-action@7e234852c937eea04d6ee627c599fb24a5bfffee
       with:
         minimum-size: 16GB
         maximum-size: 16GB

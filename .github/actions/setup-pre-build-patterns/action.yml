@@ -1,0 +1,48 @@
+name: "Setup post-build paths"
+description: ""
+
+inputs:
+  path:
+    description: "path"
+    required: false
+    default: "."
+
+outputs:
+  pnpm_workspace_packages_roots:
+    description: "pnpm workspace packages roots"
+    value: ${{ steps.setup_pre_build_patterns.pnpm_workspace_packages_roots }}
+  non_source_files:
+    description: "Non-source files patterns"
+    value: ${{ steps.setup_pre_build_patterns.non_source_files }}
+  tests_source_files:
+    description: "Tests source files patterns"
+    value: ${{ steps.setup_pre_build_patterns.tests_source_files }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup pre-build patterns"
+      id: setup_pre_build_patterns
+      shell: bash
+      run: |
+        echo "STEP: Setup pre-build patterns"
+        cd ${{ inputs.path }}
+
+        PNPM_WORKSPACE_PACKAGES_ROOTS=(packages examples)
+        echo "pnpm workspace packages roots:"
+        echo ${#PNPM_WORKSPACE_PACKAGES_ROOTS}
+        printf '%s\n' "${PNPM_WORKSPACE_PACKAGES_ROOTS[@]}"
+
+        export NON_SOURCE_FILES_PATTERNS=($(cat ./.github/supporting-files/ci/non-source-files-patterns.txt))
+        echo "Non-source files patterns:"
+        echo ${#NON_SOURCE_FILES_PATTERNS}
+        printf '%s\n' "${NON_SOURCE_FILES_PATTERNS[@]}"
+
+        export TESTS_SOURCE_FILES_PATTERNS=($(cat ./.github/supporting-files/ci/tests-source-files-patterns.txt))
+        echo "Test source files patterns:"
+        echo ${#TESTS_SOURCE_FILES_PATTERNS}
+        printf '%s\n' "${TESTS_SOURCE_FILES_PATTERNS[@]}"
+
+        echo "::set-output name=pnpm_workspace_packages_roots::${PNPM_WORKSPACE_PACKAGES_ROOTS[@]}"
+        echo "::set-output name=non_source_files::${NON_SOURCE_FILES_PATTERNS[@]}"
+        echo "::set-output name=tests_source_files::${TESTS_SOURCE_FILES_PATTERNS[@]}"

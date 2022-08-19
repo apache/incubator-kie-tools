@@ -34,11 +34,15 @@ jobs:
         id: merge_changes
         uses: ./.github/actions/merge-pr-changes
 
+      - name: "Setup pre-build patterns"
+        id: pre_build_patterns
+        uses: ./.github/actions/setup-pre-build-patterns
+
       - name: "Check if should run or not"
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_FILES_PATTERNS=$(cat ./.github/supporting-files/ci/non-source-files-patterns.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
+          export NON_SOURCE_FILES_PATTERNS=$(echo ${{ steps.pre_build_patterns.outputs.non_source_files }} | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
           echo "Non-source files patterns:"
           echo $NON_SOURCE_FILES_PATTERNS
 
@@ -104,6 +108,11 @@ jobs:
         run: |
           pnpm -F "...[${{ steps.merge_changes.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
+      - name: "Setup post-build paths"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        id: post_build_paths
+        uses: ./.github/actions/setup_post_build_paths
+
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
@@ -122,11 +131,7 @@ jobs:
         with:
           name: build-artifacts-${{ matrix.os }}
           if-no-files-found: warn
-          path: |
-            packages/*/dist
-            packages/desktop/out/*.zip
-            !packages/desktop/dist
-            !**/node_modules
+          path: ${{ steps.post_build_paths.outputs.build_artifacts }}
 
       - name: "Upload tests artifacts"
         uses: actions/upload-artifact@v3
@@ -134,10 +139,7 @@ jobs:
         with:
           name: tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
-          path: |
-            **/dist-tests
-            **/target/surefire-reports/TEST-*.xml
-            !**/node_modules
+          path: ${{ steps.post_build_paths.outputs.tests_reports }}
 
       - name: "Upload integration tests artifacts"
         uses: actions/upload-artifact@v3
@@ -145,7 +147,4 @@ jobs:
         with:
           name: integration-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
-          path: |
-            **/dist-it-tests
-            **/target/failsafe-reports/TEST-*.xml
-            !**/node_modules
+          path: ${{ steps.post_build_paths.outputs.integration_tests_artifacts }}

@@ -1,0 +1,62 @@
+name: "Setup post-build paths"
+description: ""
+
+inputs:
+  path:
+    description: "path"
+    required: false
+    default: "."
+
+outputs:
+  tests_reports:
+    description: "Tests reports paths"
+    value: ${{ steps.setup_post_build_paths.tests_report }}
+  integration_tests_reports:
+    description: "Integration tests reports paths"
+    value: ${{ steps.setup_post_build_paths.integration_tests_report }}
+  integration_tests_artifacts:
+    description: "Integration tests artifacts paths"
+    value: ${{ steps.setup_post_build_paths.integration_tests_artifacts }}
+  build_artifacts:
+    description: "Build artifacts paths"
+    value: ${{ steps.setup_post_build_paths.build_artifacts }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup post-build paths"
+      id: setup_post_build_paths
+      shell: bash
+      run: |
+        echo "STEP: Setup post-build paths"
+        cd ${{ inputs.path }}
+
+        PNPM_WORKSPACE_PACKAGES_ROOTS=(packages examples)
+        echo "pnpm workspace packages roots:"
+        echo ${#PNPM_WORKSPACE_PACKAGES_ROOTS}
+        printf '%s\n' "${PNPM_WORKSPACE_PACKAGES_ROOTS[@]}"
+
+        TESTS_REPORTS_PATHS=($(cat ./.github/supporting-files/ci/tests-reports-patterns.txt | xargs -n1 -I{} find $PNPM_WORKSPACE_PACKAGES_ROOTS -type f -path '{}'))
+        echo "Tests reports paths:"
+        echo ${#TESTS_REPORTS_PATHS}
+        printf '%s\n' "${TESTS_REPORTS_PATHS[@]}"
+
+        INTEGRATION_TESTS_REPORTS_PATHS=($(cat ./.github/supporting-files/ci/integration-tests-reports-patterns.txt | xargs -n1 -I{} find $PNPM_WORKSPACE_PACKAGES_ROOTS -type f -path '{}'))
+        echo "Integration tests reports paths:"
+        echo ${#INTEGRATION_TESTS_REPORTS_PATHS}
+        printf '%s\n' "${INTEGRATION_TESTS_REPORTS_PATHS[@]}"
+
+        INTEGRATION_TESTS_ARTIFACTS_PATHS=($(cat ./.github/supporting-files/ci/integration-tests-artifacts-patterns.txt | xargs -n1 -I{} find $PNPM_WORKSPACE_PACKAGES_ROOTS -d 2 -type d -path '{}'))
+        echo "Integration tests artifacts paths:"
+        echo ${#INTEGRATION_TESTS_ARTIFACTS_PATHS}
+        printf '%s\n' "${INTEGRATION_TESTS_ARTIFACTS_PATHS[@]}"
+
+        BUILD_ARTIFACTS_PATHS=($(cat ./.github/supporting-files/ci/build-artifacts-patterns.txt | xargs -n1 -I{} find $PNPM_WORKSPACE_PACKAGES_ROOTS -d 2 -type d -path '{}'))
+        echo "Build artifacts paths:"
+        echo ${#BUILD_ARTIFACTS_PATHS}
+        printf '%s\n' "${BUILD_ARTIFACTS_PATHS[@]}"
+
+        echo "::set-output name=tests_reports::${TESTS_REPORTS_PATHS[@]}"
+        echo "::set-output name=integration_tests_reports::${INTEGRATION_TESTS_REPORTS_PATHS[@]}"
+        echo "::set-output name=integration_tests_artifacts::${INTEGRATION_TESTS_ARTIFACTS_PATHS[@]}"
+        echo "::set-output name=build_artifacts::${BUILD_ARTIFACTS_PATHS[@]}"
