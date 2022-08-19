@@ -42,7 +42,7 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_FILES_PATTERNS=$(echo ${{ steps.pre_build_patterns.outputs.non_source_files }} | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
+          export NON_SOURCE_FILES_PATTERNS=$(echo "${{ steps.pre_build_patterns.outputs.non_source_files }}" | xargs -n 1 -I{} echo -n "'"':!'"{}""' ")
           echo "Non-source files patterns:"
           echo $NON_SOURCE_FILES_PATTERNS
 
