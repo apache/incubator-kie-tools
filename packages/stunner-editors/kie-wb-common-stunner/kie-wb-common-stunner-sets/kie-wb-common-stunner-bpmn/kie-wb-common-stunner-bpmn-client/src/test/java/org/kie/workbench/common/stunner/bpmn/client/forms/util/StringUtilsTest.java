@@ -79,6 +79,15 @@ public class StringUtilsTest {
     }
 
     @Test
+    public void testIsGenericsFormatWrong() {
+        //wrong
+        assertFalse("Should be ok generics format", StringUtils.isOkWithGenericsFormat("<<X>>"));
+        assertFalse("Should be ok generics format", StringUtils.isOkWithGenericsFormat("<<X,<SomeClass>"));
+        assertFalse("Should be ok generics format", StringUtils.isOkWithGenericsFormat("<SomeClass>"));
+        assertFalse("Should be ok generics format", StringUtils.isOkWithGenericsFormat("List<.>"));
+    }
+
+    @Test
     public void testIsGenericsFormatCorrectMap() {
         assertTrue("Should be ok generics format", StringUtils.isOkWithGenericsFormat("Map<String,String>"));
     }
