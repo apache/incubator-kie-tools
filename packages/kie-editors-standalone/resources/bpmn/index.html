@@ -61,6 +61,7 @@
       var nodeElementType;
       var nodeElementName;
       var processId;
+      var processName = b64DecodeUnicode(encodeFile[1]);
       var contentURI = window.location.origin + "/resources/" + b64DecodeUnicode(encodeFile[0]);
       var content = getContent(contentURI);
 
