@@ -61,7 +61,8 @@
       var nodeElementType;
       var nodeElementName;
       var processId;
-      var processName = b64DecodeUnicode(encodeFile[1]);
+      var contentURI = window.location.origin + "/resources/" + b64DecodeUnicode(encodeFile[0]);
+      var content = getContent(contentURI);
 
       var proxyElementId = new Proxy(nodeElementId, {
         set: function (target, key, value) {
@@ -105,6 +106,12 @@
         },
       });
 
+      function getContent(contentURI) {
+        return fetch(contentURI).then((response) => {
+          return response.text();
+        });
+      }
+
       function b64DecodeUnicode(encode) {
         return decodeURIComponent(
           atob(encode)
@@ -119,7 +126,7 @@
 
       const editor = BpmnEditor.open({
         container: document.getElementById("bpmn-editor-container"),
-        initialContent: Promise.resolve(b64DecodeUnicode(encodeFile[0])),
+        initialContent: Promise.resolve(content),
         readOnly: false,
       });
 
