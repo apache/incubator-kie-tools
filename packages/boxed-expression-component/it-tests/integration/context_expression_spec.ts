@@ -244,7 +244,7 @@ describe("Context Expression Tests :: Nested Relations", () => {
     cy.ouiaId("expression-column-1").not("table table").should("be.focused");
   });
 
-  it("Keyboard interaction with contextMenu", () => {
+  it.skip("Keyboard interaction with contextMenu", () => {
     // open contextMenu and expression menu from the expression cell of the 2nd row and check you are not able to navigate. Then close the contextMenu.
     cy.ouiaId("OUIA-Generated-TableRow-2")
       .contains("td", "Select expression")
