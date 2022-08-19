@@ -117,32 +117,32 @@ jobs:
           du -sh .
 
       - name: "Upload build artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
-          name: artifacts-${{ matrix.os }}
+          name: build-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
             packages/*/dist
             packages/desktop/out/*.zip
             !packages/desktop/dist
 
-      - name: "Upload test artifacts"
-        uses: actions/upload-artifact@v2
+      - name: "Upload tests artifacts"
+        uses: actions/upload-artifact@v3
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
-          name: it-tests-artifacts-${{ matrix.os }}
+          name: tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
-            **/dist-tests
-            **/target/surefire-reports/TEST-*.xml
+            packages/*/dist-tests
+            packages/**/target/surefire-reports/TEST-*.xml
 
       - name: "Upload integration tests artifacts"
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         with:
-          name: it-tests-artifacts-${{ matrix.os }}
+          name: integration-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
-            **/dist-it-tests
-            **/target/failsafe-reports/TEST-*.xml
+            packages/*/dist-it-tests
+            packages/**/target/failsafe-reports/TEST-*.xml
