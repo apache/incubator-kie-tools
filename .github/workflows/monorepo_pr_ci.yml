@@ -137,7 +137,9 @@ jobs:
         with:
           name: build-artifacts-${{ matrix.os }}
           if-no-files-found: warn
-          path: ${{ steps.post_build_paths.outputs.build_artifacts }}
+          path: |
+            !**/node_modules
+            ${{ steps.post_build_paths.outputs.build_artifacts }}
 
       - name: "Upload tests artifacts"
         uses: actions/upload-artifact@v3
@@ -145,7 +147,9 @@ jobs:
         with:
           name: tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
-          path: ${{ steps.post_build_paths.outputs.tests_reports }}
+          path: |
+            !**/node_modules
+            ${{ steps.post_build_paths.outputs.tests_reports }}
 
       - name: "Upload integration tests artifacts"
         uses: actions/upload-artifact@v3
@@ -153,4 +157,6 @@ jobs:
         with:
           name: integration-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
-          path: ${{ steps.post_build_paths.outputs.integration_tests_artifacts }}
+          path: |
+            !**/node_modules
+            ${{ steps.post_build_paths.outputs.integration_tests_artifacts }}
