@@ -1,6 +1,6 @@
 {
   "name": "@kogito-tooling/kie-editors-standalone",
-  "version": "0.0.20-micord",
+  "version": "0.0.21-micord",
   "description": "",
   "license": "Apache-2.0",
   "files": [
