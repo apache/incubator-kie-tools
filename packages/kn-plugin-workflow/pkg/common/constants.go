@@ -38,16 +38,16 @@ const (
 	// Default values
 	DEFAULT_TAG = "latest"
 
-	WORKFLOW_SW_JSON = "workflow.sw.json"
-	WORKFLOW_DOCKERFILE = "Dockerfile.workflow"
+	WORKFLOW_SW_JSON    string = "workflow.sw.json"
+	WORKFLOW_DOCKERFILE string = "Dockerfile.workflow"
 
 	// Docker
 	// build-arg
-	DOCKER_BUILD_ARG_WORKFLOW_FILE            = "workflow_file"
-	DOCKER_BUILD_ARG_EXTENSIONS               = "extensions"
-	DOCKER_BUILD_ARG_WORKFLOW_NAME            = "workflow_name"
-	DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY = "container_registry"
-	DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP    = "container_group"
-	DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME     = "container_name"
-	DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG      = "container_tag"
+	DOCKER_BUILD_ARG_WORKFLOW_FILE            string = "workflow_file"
+	DOCKER_BUILD_ARG_EXTENSIONS               string = "extensions"
+	DOCKER_BUILD_ARG_WORKFLOW_NAME            string = "workflow_name"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY string = "container_registry"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP    string = "container_group"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME     string = "container_name"
+	DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG      string = "container_tag"
 )

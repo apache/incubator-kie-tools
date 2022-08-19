@@ -18,8 +18,8 @@ package single
 
 import (
 	"fmt"
-	"os/exec"
 
+	"github.com/docker/docker/client"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -75,7 +75,13 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := runBuildImage(cfg); err != nil {
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	if err := runBuildImage(cfg, cli); err != nil {
 		return err
 	}
 
@@ -101,23 +107,63 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	return
 }
 
-func runBuildImage(cfg BuildCmdConfig) error {
+func runBuildImage(cfg BuildCmdConfig, dockerClient *client.Client) error {
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
 	if err := common.CheckImageName(name); err != nil {
 		return err
 	}
 
-	dockerArgs := []string{
+	// dockerBuildArgs := getDockerBuildArgs(cfg, registry, repository, name, tag)
+	// dockerArgs := []string{
+	// 	"build",
+	// 	fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
+	// }
+
+	// dockerKubernetsArgs := dockerArgs
+	// dockerKubernetsArgs = append(dockerKubernetsArgs, fmt.Sprintf("--target=%s", "kubernetes"))
+	// dockerKubernetsArgs = append(dockerKubernetsArgs, dockerBuildArgs...)
+	// dockerKubernetsArgs = append(dockerKubernetsArgs, "--output type=local,dest=kubernetes", ".")
+
+	// // TODO: remove
+	// fmt.Printf("args\n")
+	// for _, args := range dockerKubernetsArgs {
+	// 	fmt.Printf("-- %s --\n", args)
+	// }
+
+	// os.Setenv("DOCKER_BUILDKIT", "1")
+
+	// ctx, cancel := context.WithTimeout(context.Background(), time.Second*120)
+	// defer cancel()
+
+	// var workflowSwJson string = common.WORKFLOW_SW_JSON
+
+	// buildArgs := map[string]*string{
+	// 	common.DOCKER_BUILD_ARG_WORKFLOW_FILE: &workflowSwJson,
+	// }
+
+	// opts := types.ImageBuildOptions{
+	// 	Dockerfile:     "Dockerfile.workflow",
+	// 	SuppressOutput: false,
+	// 	Tags:           []string{"test"},
+	// 	BuildArgs:      buildArgs,
+	// 	Outputs:        []types.ImageBuildOutput{},
+	// }
+
+	buildTargetKubernetes := common.ExecCommand(
+		"docker",
 		"build",
 		fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
-	}
-	dockerBuildArgs := getDockerBuildArgs(cfg, registry, repository, name, tag)
-	dockerArgs = append(dockerArgs, dockerBuildArgs...)
-
-	dockerKubernetsArgs := dockerArgs
-	dockerKubernetsArgs = append(dockerKubernetsArgs, fmt.Sprintf("--target=%s", "kubernetes"), "--output type=local,dest=kubernetes", ".")
-
-	buildTargetKubernetes := exec.Command("docker", dockerKubernetsArgs...)
+		fmt.Sprintf("--target=%s", "kubernetes"),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, registry),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, repository),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, name),
+		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, tag),
+		"--output=type=local,dest=kubernetes",
+		".",
+	)
 	if err := common.RunCommand(
 		buildTargetKubernetes,
 		cfg.Verbose,
@@ -128,20 +174,22 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		return err
 	}
 
-	dockerRunnerArgs := dockerArgs
-	dockerRunnerArgs = append(dockerRunnerArgs, fmt.Sprintf("--target=%s", "runner"), fmt.Sprintf("-t %s/%s/%s:%s", registry, repository, name, tag), ".")
+	// dockerRunnerArgs := dockerArgs
+	// dockerRunnerArgs = append(dockerRunnerArgs, fmt.Sprintf("--target=%s", "runner"))
+	// dockerRunnerArgs = append(dockerKubernetsArgs, dockerBuildArgs...)
+	// dockerKubernetsArgs = append(dockerKubernetsArgs, fmt.Sprintf("-t %s/%s/%s:%s", registry, repository, name, tag), ".")
 
-	buildTargetRunner := exec.Command("docker", dockerRunnerArgs...)
+	// buildTargetRunner := exec.Command("docker", dockerRunnerArgs...)
 
-	if err := common.RunCommand(
-		buildTargetRunner,
-		cfg.Verbose,
-		"build",
-		common.GetFriendlyMessages("building"),
-	); err != nil {
-		fmt.Println("Check the full logs with the -v | --verbose option")
-		return err
-	}
+	// if err := common.RunCommand(
+	// 	buildTargetRunner,
+	// 	cfg.Verbose,
+	// 	"build",
+	// 	common.GetFriendlyMessages("building"),
+	// ); err != nil {
+	// 	fmt.Println("Check the full logs with the -v | --verbose option")
+	// 	return err
+	// }
 
 	fmt.Println("✅ Build success")
 	return nil
