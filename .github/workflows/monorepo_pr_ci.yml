@@ -117,7 +117,7 @@ jobs:
       - name: "Setup post-build paths"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         id: post_build_paths
-        uses: ./.github/actions/setup_post_build_paths
+        uses: ./.github/actions/setup-post-build-paths
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: steps.check_diff_paths.outputs.should_run == 'true'

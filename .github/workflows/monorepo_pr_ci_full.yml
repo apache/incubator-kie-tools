@@ -115,7 +115,7 @@ jobs:
       - name: "Setup post-build paths"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
         id: post_build_paths
-        uses: ./.github/actions/setup_post_build_paths
+        uses: ./.github/actions/setup-post-build-paths
 
       - name: "Check tests and integration tests results (`main` only)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
