@@ -126,6 +126,7 @@ jobs:
             packages/*/dist
             packages/desktop/out/*.zip
             !packages/desktop/dist
+            !**/node_modules
 
       - name: "Upload tests artifacts"
         uses: actions/upload-artifact@v3
@@ -134,8 +135,9 @@ jobs:
           name: tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
-            packages/*/dist-tests
-            packages/**/target/surefire-reports/TEST-*.xml
+            **/dist-tests
+            **/target/surefire-reports/TEST-*.xml
+            !**/node_modules
 
       - name: "Upload integration tests artifacts"
         uses: actions/upload-artifact@v3
@@ -144,5 +146,6 @@ jobs:
           name: integration-tests-artifacts-${{ matrix.os }}
           if-no-files-found: warn
           path: |
-            packages/*/dist-it-tests
-            packages/**/target/failsafe-reports/TEST-*.xml
+            **/dist-it-tests
+            **/target/failsafe-reports/TEST-*.xml
+            !**/node_modules
