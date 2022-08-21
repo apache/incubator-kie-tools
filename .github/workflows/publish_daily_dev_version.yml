@@ -82,14 +82,13 @@ jobs:
       - name: "Setup environment"
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          os: ${{ matrix.os }}
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Build kie-tools"
         env:

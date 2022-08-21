@@ -33,12 +33,8 @@ jobs:
         uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
-        id: merge_changes
+        id: merge_pr_changes
         uses: ./.github/actions/merge-pr-changes
-
-      - name: "Setup pre-build patterns"
-        id: pre_build_patterns
-        uses: ./.github/actions/setup-pre-build-patterns
 
       - name: "Check if should run or not"
         id: check_diff_paths
@@ -54,7 +50,7 @@ jobs:
           echo ${#NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF[@]}
           echo $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF
 
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_pr_changes.outputs.base_sha }} ${{ steps.merge_pr_changes.outputs.head_sha }} -- $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
@@ -87,12 +83,9 @@ jobs:
       - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         if: steps.check_diff_paths.outputs.should_run == 'true'
-        id: bootstrap
         uses: ./.github/actions/bootstrap
 
       - name: "Build"
@@ -112,12 +105,7 @@ jobs:
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
 
-      - name: "Setup post-build paths"
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
-        id: post_build_paths
-        uses: ./.github/actions/setup-post-build-paths
-
-      - name: "Check tests and integration tests results (`main` only)"
+      - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
         uses: mikepenz/action-junit-report@1b47bb811362f3d8d753fc148cb7a13ec9e55570
         with:
@@ -125,48 +113,21 @@ jobs:
           annotate_only: true
           fail_on_failure: true
           report_paths: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.tests_reports }}
-            ${{ steps.post_build_paths.outputs.integration_tests_reports }}
+            ${{ steps.pre_build_config.outputs.tests_reports_patterns }}
+            ${{ steps.pre_build_config.outputs.integration_tests_reports_patterns }}
 
       - name: "Check hanging uncommitted files (you should commit those!)"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
+      - name: "Upload reports and artifacts"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        uses: ./.github/actions/upload-ci-reports-and-artifacts
+
       - name: "Print storage usage (after build)"
         shell: bash
         run: |
           du -sh .
-
-      - name: "Upload build artifacts"
-        uses: actions/upload-artifact@v3
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: build-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.build_artifacts }}
-
-      - name: "Upload tests artifacts"
-        uses: actions/upload-artifact@v3
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: tests-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.tests_reports }}
-
-      - name: "Upload integration tests artifacts"
-        uses: actions/upload-artifact@v3
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: integration-tests-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.integration_tests_artifacts }}

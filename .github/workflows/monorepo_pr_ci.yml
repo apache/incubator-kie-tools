@@ -31,7 +31,7 @@ jobs:
         uses: ./.github/actions/setup-kie-tools-bot
 
       - name: "Merge PR changes"
-        id: merge_changes
+        id: merge_pr_changes
         uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup pre-build patterns"
@@ -52,7 +52,7 @@ jobs:
           echo ${#NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF[@]}
           echo $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF
 
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_pr_changes.outputs.base_sha }} ${{ steps.merge_pr_changes.outputs.head_sha }} -- $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
@@ -78,15 +78,12 @@ jobs:
       - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         if: steps.check_diff_paths.outputs.should_run == 'true'
-        id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F "...[${{ steps.merge_changes.outputs.base_sha }}]..."
+          pnpm_filter_string: -F "...[${{ steps.merge_pr_changes.outputs.base_sha }}]..."
 
       - name: "Build dependencies"
         if: steps.check_diff_paths.outputs.should_run == 'true'
@@ -94,8 +91,8 @@ jobs:
         env:
           KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
-          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
-          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
+          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.merge_pr_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
+          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.merge_pr_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
           echo $ALL_DEPENDENCIES_FILTER
           echo $CHANGED_PKGS_EXCLUSION_FILTER
           eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
@@ -112,51 +109,20 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm -F "...[${{ steps.merge_changes.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
-
-      - name: "Setup post-build paths"
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        id: post_build_paths
-        uses: ./.github/actions/setup-post-build-paths
+          pnpm -F "...[${{ steps.merge_pr_changes.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
       - name: "Check hanging uncommitted files (you should commit those!)"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
+      - name: "Upload reports and artifacts"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        uses: ./.github/actions/upload-ci-reports-and-artifacts
+
       - name: "Print storage usage (after build)"
         shell: bash
         run: |
           du -sh .
-
-      - name: "Upload build artifacts"
-        uses: actions/upload-artifact@v3
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: build-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.build_artifacts }}
-
-      - name: "Upload tests artifacts"
-        uses: actions/upload-artifact@v3
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: tests-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.tests_reports }}
-
-      - name: "Upload integration tests artifacts"
-        uses: actions/upload-artifact@v3
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: integration-tests-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            !**/node_modules
-            ${{ steps.post_build_paths.outputs.integration_tests_artifacts }}

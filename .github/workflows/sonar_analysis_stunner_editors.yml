@@ -27,8 +27,6 @@ jobs:
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ runner.os }}
 
       - name: "Bootstrap"
         id: bootstrap

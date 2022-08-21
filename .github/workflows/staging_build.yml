@@ -106,7 +106,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Checkout kogito-online-staging (Ubuntu only)"
         if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
@@ -142,14 +142,13 @@ jobs:
       - name: "Setup environment"
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          os: ${{ matrix.os }}
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Build"
         working-directory: ${{ github.workspace }}/kie-tools

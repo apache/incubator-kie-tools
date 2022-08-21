@@ -163,8 +163,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -228,8 +226,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -304,8 +300,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -372,8 +366,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -443,7 +435,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -466,14 +458,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/online-editor...
 
       - name: "Build"
@@ -538,7 +529,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -554,14 +545,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...
 
       - name: "Build Chrome Extensions"
@@ -705,8 +695,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -760,8 +748,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -884,8 +870,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         id: bootstrap
@@ -955,8 +939,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Create pnpm filter for building"
         id: create_pnpm_filter_string_for_building
@@ -1003,7 +985,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -1019,14 +1001,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/kie-editors-standalone...
 
       - name: "Build"
@@ -1079,8 +1060,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1146,8 +1125,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1197,20 +1174,19 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Setup environment"
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/dashbuilder-images...
 
       - name: "Build Dashbuilder Images"
@@ -1258,8 +1234,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1349,8 +1323,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1398,8 +1370,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1456,7 +1426,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
-          path: kie-tools
+          working_dir: kie-tools
 
       - name: "Checkout serverless-logic-sandbox-deployment"
         if: ${{ !inputs.dry_run }}
@@ -1479,14 +1449,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/serverless-logic-sandbox...
 
       - name: "Build"

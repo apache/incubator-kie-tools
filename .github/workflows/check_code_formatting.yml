@@ -28,8 +28,6 @@ jobs:
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Check code formatting"
         shell: bash
