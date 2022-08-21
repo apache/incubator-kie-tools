@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
-        if: runner.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
@@ -99,7 +99,7 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'ubuntu-latest' }}
+          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: "true"
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
