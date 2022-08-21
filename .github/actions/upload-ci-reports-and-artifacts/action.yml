@@ -17,7 +17,7 @@ runs:
         working_dir: ${{ inputs.working_dir }}
 
     - name: "Install zip (Windows only)"
-      if: runner.os == 'windos-latest'
+      if: runner.os == 'Windows'
       shell: bash
       run: |
         choco install zip --version 3.0 -y
