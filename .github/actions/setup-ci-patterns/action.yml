@@ -51,7 +51,7 @@ runs:
           const pnpmWorkspacePackagesRootPaths = ["packages", "examples"].map(p => path.join(cwd, p)).join("\n");
 
           const nonSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/non-source-files-patterns.txt"), "utf-8");
-          const nonSourceFilesPatternsForGitDiff = nonSourceFilesPatterns.split("\n").map(p => `':!${p}'`).join(" ");
+          const nonSourceFilesPatternsForGitDiff = nonSourceFilesPatterns.split("\n").filter(p => p.trim() !== "").map(p => `':!${p}'`).join(" ");
           const testSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/tests-source-files-patterns.txt"), "utf-8");
 
           core.setOutput("pnpm_workspace_packages_root_paths", pnpmWorkspacePackagesRootPaths);
