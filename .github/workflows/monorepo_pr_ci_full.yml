@@ -44,17 +44,7 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_FILES_PATTERNS=(${{ steps.ci_patterns.outputs.non_source_files_patterns }})
-          echo "Non-source files patterns:"
-          echo ${#NON_SOURCE_FILES_PATTERNS[@]}
-          printf '%s\n' "${NON_SOURCE_FILES_PATTERNS[@]}"
-
-          export NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF=$(printf '%s\n' ${NON_SOURCE_FILES_PATTERNS[@]} | xargs -n 1 -I{} echo -n "'"':!'"{}""' ")
-          echo "Non-source files patterns for git diff:"
-          echo ${#NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF[@]}
-          echo $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF
-
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_pr_changes.outputs.base_sha }} ${{ steps.merge_pr_changes.outputs.head_sha }} -- $NON_SOURCE_FILES_PATTERNS_FOR_GIT_DIFF"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_pr_changes.outputs.base_sha }} ${{ steps.merge_pr_changes.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
