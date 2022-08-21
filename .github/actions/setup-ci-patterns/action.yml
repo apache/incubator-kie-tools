@@ -40,13 +40,13 @@ runs:
       id: ci_patterns
       uses: actions/github-script@v6
       with:
-        path: ${{ inputs.working_dir }}
+        working_dir: ${{ inputs.working_dir }}
         result-encoding: string
         script: |
           const fs = require("fs");
           const path = require("path");
 
-          const cwd = core.getInput("path");
+          const cwd = core.getInput("working_dir");
 
           const pnpmWorkspacePackagesRootPaths = ["packages", "examples"].map(p => path.join(cwd, p)).join("\n");
 
