@@ -2,7 +2,7 @@ name: "Setup CI patterns"
 description: ""
 
 inputs:
-  working-dir:
+  working_dir:
     description: "Dir path of kie-tools"
     required: false
     default: "."
