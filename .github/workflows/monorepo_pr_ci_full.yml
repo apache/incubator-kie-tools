@@ -36,11 +36,15 @@ jobs:
         id: merge_pr_changes
         uses: ./.github/actions/merge-pr-changes
 
+      - name: "Setup CI patterns"
+        id: ci_patterns
+        uses: ./.github/actions/setup-ci-patterns
+
       - name: "Check if should run or not"
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_FILES_PATTERNS=(${{ steps.pre_build_patterns.outputs.non_source_files }})
+          export NON_SOURCE_FILES_PATTERNS=(${{ steps.ci_patterns.outputs.non_source_files_patterns }})
           echo "Non-source files patterns:"
           echo ${#NON_SOURCE_FILES_PATTERNS[@]}
           printf '%s\n' "${NON_SOURCE_FILES_PATTERNS[@]}"
@@ -83,10 +87,6 @@ jobs:
       - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
-
-      - name: "Setup CI patterns"
-        id: ci_patterns
-        uses: ./.github/actions/setup-ci-patterns
 
       - name: "Bootstrap"
         if: steps.check_diff_paths.outputs.should_run == 'true'
