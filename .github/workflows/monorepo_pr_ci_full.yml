@@ -20,7 +20,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
@@ -84,6 +84,10 @@ jobs:
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
 
+      - name: "Setup CI patterns"
+        id: ci_patterns
+        uses: ./.github/actions/setup-ci-patterns
+
       - name: "Bootstrap"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/bootstrap
@@ -95,7 +99,7 @@ jobs:
           WEBPACK__tsLoaderTranspileOnly: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runIntegrationTests: ${{ matrix.os == 'ubuntu-latest' }}
+          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'ubuntu-latest' }}
           KIE_TOOLS_BUILD__buildContainerImages: "true"
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
@@ -103,7 +107,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm -r --workspace-concurrency=1 build:prod
+          pnpm -r build:prod
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
@@ -113,8 +117,8 @@ jobs:
           annotate_only: true
           fail_on_failure: true
           report_paths: |
-            ${{ steps.pre_build_config.outputs.tests_reports_patterns }}
-            ${{ steps.pre_build_config.outputs.integration_tests_reports_patterns }}
+            ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
+            ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'

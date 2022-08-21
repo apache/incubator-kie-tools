@@ -852,7 +852,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: "Support longpaths (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
@@ -883,7 +883,7 @@ jobs:
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Desktop App for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -894,7 +894,7 @@ jobs:
           asset_content_type: application/tar+gzip
 
       - name: "Upload Desktop App for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -905,11 +905,11 @@ jobs:
           asset_content_type: application/zip
 
       - name: "Compress Desktop App (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         run: "Compress-Archive -Path \"packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
 
       - name: "Upload Desktop App for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1042,7 +1042,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: "Support longpaths (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
@@ -1073,7 +1073,7 @@ jobs:
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Extended Services for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'ubuntu-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1084,7 +1084,7 @@ jobs:
           asset_content_type: application/tar+gzip
 
       - name: "Upload Extended Services for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macos-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1095,7 +1095,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: "Upload Extended Services for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'windows-latest' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
