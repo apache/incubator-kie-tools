@@ -34,11 +34,11 @@ runs:
       shell: bash
       run: |
         output_empty_zip () { echo UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA== | base64 -d; }
-        zip -r '${{ runner.temp }}/tests-reports.zip' $TESTS_REPORTS_PATTERNS || output_empty_zip > '${{ runner.temp }}/tests-reports.zip'
-        zip -r '${{ runner.temp }}/integration-tests-reports.zip' $INTEGRATION_TESTS_REPORTS_PATTERNS || output_empty_zip > '${{ runner.temp }}/integration-tests-reports.zip'
-        zip -r '${{ runner.temp }}/integration-tests-artifacts.zip' $INTEGRATION_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > '${{ runner.temp }}/integration-tests-artifacts.zip'
-        zip -r '${{ runner.temp }}/build-artifacts.zip' $BUILD_ARTIFACTS_PATTERNS || output_empty_zip > '${{ runner.temp }}/build-artifacts.zip'
-        ls -la ${{ runner.temp }}
+        zip -r $RUNNER_TEMP/tests-reports.zip $TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/tests-reports.zip
+        zip -r $RUNNER_TEMP/integration-tests-reports.zip $INTEGRATION_TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/integration-tests-reports.zip
+        zip -r $RUNNER_TEMP/integration-tests-artifacts.zip $INTEGRATION_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/integration-tests-artifacts.zip
+        zip -r $RUNNER_TEMP/build-artifacts.zip $BUILD_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/build-artifacts.zip
+        ls -la $RUNNER_TEMP
 
     - name: "Upload tests reports"
       uses: actions/upload-artifact@v3
@@ -46,7 +46,7 @@ runs:
       with:
         name: ${{ runner.os }}__tests-reports
         path: |
-          '${{ runner.temp }}/tests-reports.zip'
+          ${{ runner.temp }}/tests-reports.zip
 
     - name: "Upload integration tests reports"
       uses: actions/upload-artifact@v3
@@ -54,7 +54,7 @@ runs:
       with:
         name: ${{ runner.os }}__integration-tests-reports
         path: |
-          '${{ runner.temp }}/integration-tests-reports.zip'
+          ${{ runner.temp }}/integration-tests-reports.zip
 
     - name: "Upload integration tests artifacts"
       uses: actions/upload-artifact@v3
@@ -62,7 +62,7 @@ runs:
       with:
         name: ${{ runner.os }}__integration-tests-artifacts
         path: |
-          '${{ runner.temp }}/integration-tests-artifacts.zip'
+          ${{ runner.temp }}/integration-tests-artifacts.zip
 
     - name: "Upload build artifacts"
       uses: actions/upload-artifact@v3
@@ -70,4 +70,4 @@ runs:
       with:
         name: ${{ runner.os }}__build-artifacts
         path: |
-          '${{ runner.temp }}/build-artifacts.zip'
+          ${{ runner.temp }}/build-artifacts.zip
