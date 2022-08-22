@@ -154,7 +154,7 @@ export default class VSCodeTestHelper {
           await dialog.pushButton("Don't Save");
         }
       } catch (noSaveDialogWhenClosingError) {
-        // no-0p
+        console.warn("WARN::Tests tried to locate non-existing save dialog.");
       }
     }
   };
