@@ -43,4 +43,7 @@ execSync(`pnpm generate-build-env-report ${pnpmFilterString}`, execOpts);
 console.info("\n\n[bootstrap] Checking required preinstalled CLI commands...");
 execSync(`pnpm check-required-preinstalled-cli-commands ${pnpmFilterString}`, execOpts);
 
+console.info("\n\n[bootstrap] Checking packages dependencies...");
+execSync(`pnpm check-packages-dependencies`, execOpts);
+
 console.info("\n\n[bootstrap] Done.");
