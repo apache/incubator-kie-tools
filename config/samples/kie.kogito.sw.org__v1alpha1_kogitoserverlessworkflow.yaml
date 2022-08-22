@@ -1,0 +1,37 @@
+apiVersion: kie.kogito.sw.org/v1alpha1
+kind: KogitoServerlessWorkflow
+metadata:
+  name: greeting
+  annotations:
+    kie.kogito.sw.org/description: Greeting example on k8s!
+spec:
+  start: ChooseOnLanguage
+  functions:
+    - name: greetFunction
+      type: custom
+      operation: sysout
+  states:
+    - name: ChooseOnLanguage
+      type: switch
+      dataConditions:
+        - condition: ${ .language == "English" }
+          transition: GreetInEnglish
+        - condition: ${ .language == "Spanish" }
+          transition: GreetInSpanish
+      defaultCondition: GreetInEnglish
+    - name: GreetInEnglish
+      type: inject
+      data:
+        greeting: Hello from k8s Workflow!
+      transition: GreetPerson
+    - name: GreetInSpanish
+      type: inject
+      data:
+        greeting: Saludos desde k8s Workflow!
+      transition: GreetPerson
+    - name: GreetPerson
+      type: operation
+      actions:
+        - name: greetAction
+          functionRef: greetFunction
+      end: true

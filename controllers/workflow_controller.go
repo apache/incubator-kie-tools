@@ -24,29 +24,29 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	serverlessv1alpha1 "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	serverlessv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 )
 
-// KogitoServerlessWorkflowReconciler reconciles a KogitoServerlessWorkflow object
-type KogitoServerlessWorkflowReconciler struct {
+// WorkflowReconciler reconciles a Workflow object
+type WorkflowReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=kie.kogito.sw.org,resources=kogitoserverlessworkflows,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=kie.kogito.sw.org,resources=kogitoserverlessworkflows/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=kie.kogito.sw.org,resources=kogitoserverlessworkflows/finalizers,verbs=update
+//+kubebuilder:rbac:groups=serverless.kiegroup.org,resources=workflows,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=serverless.kiegroup.org,resources=workflows/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=serverless.kiegroup.org,resources=workflows/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
 // TODO(user): Modify the Reconcile function to compare the state specified by
-// the KogitoServerlessWorkflow object against the actual cluster state, and then
+// the Workflow object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
 //
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.2/pkg/reconcile
-func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+func (r *WorkflowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	_ = log.FromContext(ctx)
 
 	// TODO(user): your logic here
@@ -55,8 +55,8 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *KogitoServerlessWorkflowReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *WorkflowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&serverlessv1alpha1.KogitoServerlessWorkflow{}).
+		For(&serverlessv08.Workflow{}).
 		Complete(r)
 }

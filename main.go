@@ -31,6 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
+	serverlessv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	serverlessv1alpha1 "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
 	"github.com/davidesalerno/kogito-serverless-operator/controllers"
 	//+kubebuilder:scaffold:imports
@@ -45,6 +46,7 @@ func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
 	utilruntime.Must(serverlessv1alpha1.AddToScheme(scheme))
+	utilruntime.Must(serverlessv08.AddToScheme(scheme))
 	//+kubebuilder:scaffold:scheme
 }
 
@@ -83,6 +85,13 @@ func main() {
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "KogitoServerlessWorkflow")
+		os.Exit(1)
+	}
+	if err = (&controllers.WorkflowReconciler{
+		Client: mgr.GetClient(),
+		Scheme: mgr.GetScheme(),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "Workflow")
 		os.Exit(1)
 	}
 	//+kubebuilder:scaffold:builder

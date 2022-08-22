@@ -238,17 +238,25 @@ type Transition struct {
 	NextState string `json:"nextState,omitempty"`
 }
 
+type DataCondition struct {
+	Name       string     `json:"name,omitempty"`
+	Condition  string     `json:"condition"`
+	Transition string     `json:"transition,omitempty"`
+	End        string     `json:"end,omitempty"`
+	Metadata   []Metadata `json:"metadata,omitempty"`
+}
+
 type State struct {
 	// +kubebuilder:validation:Required
 	Name string `json:"name"`
 	// +kubebuilder:validation:Enum:=event;operation;switch;sleep;parallel;inject;foreach
-	Type       StateType   `json:"type"`
-	Exclusive  *bool       `json:"exclusive,omitempty"`
-	ActionMode *ActionMode `json:"actionMode,omitempty"`
-	Actions    *[]Action   `json:"actions,omitempty"`
-	Data       *[]byte     `json:"data,omitempty"`
+	Type       StateType          `json:"type"`
+	Exclusive  *bool              `json:"exclusive,omitempty"`
+	ActionMode *ActionMode        `json:"actionMode,omitempty"`
+	Actions    *[]Action          `json:"actions,omitempty"`
+	Data       *map[string]string `json:"data,omitempty"`
 	//TODO: Define a type for DataCondition objects
-	DataConditions *[]string `json:"dataConditions,omitempty"`
+	DataConditions *[]DataCondition `json:"dataConditions,omitempty"`
 	//TODO: Define a type for EventContitions objects
 	EventConditions *[]string `json:"eventConditions,omitempty"`
 	//TODO: Define a type for DefaultCondition object
@@ -268,12 +276,12 @@ type State struct {
 	EventDataFilter     *EventDataFilter `json:"eventDataFilter,omitempty"`
 	Timeouts            *Timeouts        `json:"timeouts,omitempty"`
 	StateDataFilter     *StateDataFilter `json:"stateDataFilter,omitempty"`
-	Transition          *Transition      `json:"transition,omitempty"`
+	Transition          *string          `json:"transition,omitempty"`
 	OnErrors            *[]string        `json:"onErrors,omitempty"`
 	End                 *bool            `json:"end,omitempty"`
 	CompensatedBy       *string          `json:"compensatedBy,omitempty"`
 	UsedForCompensation *bool            `json:"usedForCompensation,omitempty"`
-	Metadata            *Metadata        `json:"metadata,omitempty"`
+	Metadata            *[]Metadata      `json:"metadata,omitempty"`
 }
 
 // KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
@@ -283,11 +291,11 @@ type KogitoServerlessWorkflowSpec struct {
 	Start       string       `json:"start"`
 	Timeouts    []Timeout    `json:"timeouts,omitempty"`
 	Errors      []Error      `json:"errors,omitempty"`
-	KeepAlive   bool         `json:"keepAlive"`
+	KeepAlive   bool         `json:"keepAlive,omitempty"`
 	Auth        Auth         `json:"auth,omitempty"`
 	Events      *[]Event     `json:"events,omitempty"`
 	Functions   []Function   `json:"functions,omitempty"`
-	AutoRetries bool         `json:"autoRetries"`
+	AutoRetries bool         `json:"autoRetries,omitempty"`
 	Retries     Retry        `json:"retries,omitempty"`
 	States      []State      `json:"states"`
 }

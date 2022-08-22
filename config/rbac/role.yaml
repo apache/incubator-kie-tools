@@ -6,7 +6,7 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - serverless.kiegroup.org
+  - kie.kogito.sw.org
   resources:
   - kogitoserverlessworkflows
   verbs:
@@ -18,13 +18,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - serverless.kiegroup.org
+  - kie.kogito.sw.org
   resources:
   - kogitoserverlessworkflows/finalizers
   verbs:
   - update
 - apiGroups:
-  - serverless.kiegroup.org
+  - kie.kogito.sw.org
   resources:
   - kogitoserverlessworkflows/status
   verbs:

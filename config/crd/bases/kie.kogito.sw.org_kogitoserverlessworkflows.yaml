@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: kogitoserverlessworkflows.serverless.kiegroup.org
+  name: kogitoserverlessworkflows.kie.kogito.sw.org
 spec:
-  group: serverless.kiegroup.org
+  group: kie.kogito.sw.org
   names:
     kind: KogitoServerlessWorkflow
     listKind: KogitoServerlessWorkflowList
@@ -399,12 +399,36 @@ spec:
                     completionType:
                       type: object
                     data:
-                      format: byte
-                      type: string
+                      additionalProperties:
+                        type: string
+                      type: object
                     dataConditions:
                       description: 'TODO: Define a type for DataCondition objects'
                       items:
-                        type: string
+                        properties:
+                          condition:
+                            type: string
+                          end:
+                            type: string
+                          metadata:
+                            items:
+                              properties:
+                                key:
+                                  type: string
+                                value:
+                                  type: string
+                              required:
+                              - key
+                              - value
+                              type: object
+                            type: array
+                          name:
+                            type: string
+                          transition:
+                            type: string
+                        required:
+                        - condition
+                        type: object
                       type: array
                     defaultCondition:
                       description: 'TODO: Define a type for DefaultCondition object'
@@ -447,15 +471,17 @@ spec:
                     iterationParam:
                       type: string
                     metadata:
-                      properties:
-                        key:
-                          type: string
-                        value:
-                          type: string
-                      required:
-                      - key
-                      - value
-                      type: object
+                      items:
+                        properties:
+                          key:
+                            type: string
+                          value:
+                            type: string
+                        required:
+                        - key
+                        - value
+                        type: object
+                      type: array
                     mode:
                       type: object
                     name:
@@ -518,16 +544,7 @@ spec:
                     timeouts:
                       type: object
                     transition:
-                      properties:
-                        compensate:
-                          type: boolean
-                        nextState:
-                          type: string
-                        produceEvents:
-                          items:
-                            type: object
-                          type: array
-                      type: object
+                      type: string
                     type:
                       enum:
                       - event
@@ -561,8 +578,6 @@ spec:
                   type: object
                 type: array
             required:
-            - autoRetries
-            - keepAlive
             - start
             - states
             type: object

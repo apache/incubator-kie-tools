@@ -2,7 +2,8 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/serverless.kiegroup.org_kogitoserverlessworkflows.yaml
+- bases/kie.kogito.sw.org_kogitoserverlessworkflows.yaml
+- bases/serverless.kiegroup.org_workflows.yaml
 #+kubebuilder:scaffold:crdkustomizeresource
 
 patchesStrategicMerge:

@@ -1,6 +1,0 @@
-apiVersion: serverless.kiegroup.org/v1alpha1
-kind: KogitoServerlessWorkflow
-metadata:
-  name: kogitoserverlessworkflow-sample
-spec:
-  # TODO(user): Add fields here
