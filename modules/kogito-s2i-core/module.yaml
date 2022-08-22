@@ -54,6 +54,10 @@ envs:
     description: ^ Defines the Quarkus platform artifact id, defaults to quarkus-bom for community and product.
     example: "quarkus-bom-custom"
 
+  - name: QUARKUS_EXTRA_EXTENSIONS
+    description: ^ Defines the Quarkus' extra extensions (as comma-separated list) to be added when performing build from assets.
+    example: "org.kie.kogito:kogito-addons-quarkus-knative-eventing,quarkus-kubernetes"
+
 modules:
   install:
     - name: org.kie.kogito.persistence

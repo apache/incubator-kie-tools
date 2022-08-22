@@ -92,14 +92,15 @@ Feature: kogito-builder image tests
 
   Scenario: Verify that the Kogito Quarkus Serverless Workflow Extension is building the service properly
     Given s2i build /tmp/kogito-examples from serverless-workflow-examples/serverless-workflow-order-processing/src/main/resources using nightly-main and runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
-      | variable            | value                 |
-      | RUNTIME_TYPE        | quarkus               |
-      | NATIVE              | false                 |
-      | KOGITO_VERSION      | 2.0.0-SNAPSHOT        |
-      | PROJECT_GROUP_ID    | com.mycompany         |
-      | PROJECT_ARTIFACT_ID | myproject             |
-      | PROJECT_VERSION     | 2.0-SNAPSHOT          |
-      | K_SINK              | http://localhost:8181 |
+      | variable                 | value                                                 |
+      | RUNTIME_TYPE             | quarkus                                               |
+      | NATIVE                   | false                                                 |
+      | KOGITO_VERSION           | 2.0.0-SNAPSHOT                                        |
+      | PROJECT_GROUP_ID         | com.mycompany                                         |
+      | PROJECT_ARTIFACT_ID      | myproject                                             |
+      | PROJECT_VERSION          | 2.0-SNAPSHOT                                          |
+      | K_SINK                   | http://localhost:8181                                 |
+      | QUARKUS_EXTRA_EXTENSIONS | org.kie.kogito:kogito-addons-quarkus-knative-eventing |
     Then file /home/kogito/bin/quarkus-run.jar should exist
     And s2i build log should contain Generating quarkus project structure for myproject...
     And s2i build log should contain Adding Kogito Quarkus Workflows extension to the generated project.

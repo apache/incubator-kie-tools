@@ -133,6 +133,14 @@ function build_kogito_app() {
                     -DprojectVersion=$PROJECT_VERSION \
                     -Dextensions="kogito,quarkus-smallrye-health,quarkus-smallrye-openapi,quarkus-resteasy,quarkus-resteasy-jackson"
 
+            if [ ! -z ${QUARKUS_EXTRA_EXTENSIONS} ]; then
+                log_info "----> Adding extra Quarkus extensions: ${QUARKUS_EXTRA_EXTENSIONS}"
+                $MAVEN_HOME/bin/mvn ${MAVEN_ARGS_APPEND} -s "${MAVEN_SETTINGS_PATH}" $(get_quarkus_platform_properties) \
+				-f $PROJECT_ARTIFACT_ID/pom.xml \
+                                "${quarkus_plugin}":"${quarkus_version}":add-extension \
+                                -Dextensions="${QUARKUS_EXTRA_EXTENSIONS}"
+            fi
+
         elif [ "${RUNTIME_TYPE}" == "${SPRINGBOOT_RUNTIME_TYPE}" ]; then
             log_info "----> Using Spring Boot to bootstrap the application."
             $MAVEN_HOME/bin/mvn archetype:generate -U -B -DinteractiveMode=false -DarchetypeGroupId=org.kie.kogito \
