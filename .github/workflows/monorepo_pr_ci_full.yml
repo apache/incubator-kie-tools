@@ -97,7 +97,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm -r build:prod
+          pnpm -r --workspace-concurrency=1 build:prod
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
