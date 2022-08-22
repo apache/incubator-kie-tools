@@ -44,7 +44,7 @@ func GenerateDockerfile(dockerfilePath string) (err error) {
 # .
 
 # tag will change dynamically, each quarkus version will have a tag.
-FROM quay.io/lmotta/kn-workflow:0.0.1 as builder
+FROM quay.io/lmotta/kn-workflow:2.10.0.Final as builder
 
 WORKDIR /tmp/kn-plugin-workflow
 

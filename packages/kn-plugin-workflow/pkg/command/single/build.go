@@ -17,9 +17,16 @@
 package single
 
 import (
+	"bufio"
+	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"github.com/docker/docker/pkg/archive"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
@@ -75,7 +82,7 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	cli, err := client.NewClientWithOpts(client.FromEnv)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
@@ -109,88 +116,93 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 
 func runBuildImage(cfg BuildCmdConfig, dockerClient *client.Client) error {
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
-	if err := common.CheckImageName(name); err != nil {
-		return err
-	}
-
-	// dockerBuildArgs := getDockerBuildArgs(cfg, registry, repository, name, tag)
-	// dockerArgs := []string{
-	// 	"build",
-	// 	fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
-	// }
-
-	// dockerKubernetsArgs := dockerArgs
-	// dockerKubernetsArgs = append(dockerKubernetsArgs, fmt.Sprintf("--target=%s", "kubernetes"))
-	// dockerKubernetsArgs = append(dockerKubernetsArgs, dockerBuildArgs...)
-	// dockerKubernetsArgs = append(dockerKubernetsArgs, "--output type=local,dest=kubernetes", ".")
-
-	// // TODO: remove
-	// fmt.Printf("args\n")
-	// for _, args := range dockerKubernetsArgs {
-	// 	fmt.Printf("-- %s --\n", args)
-	// }
-
-	// os.Setenv("DOCKER_BUILDKIT", "1")
-
-	// ctx, cancel := context.WithTimeout(context.Background(), time.Second*120)
-	// defer cancel()
-
-	// var workflowSwJson string = common.WORKFLOW_SW_JSON
-
-	// buildArgs := map[string]*string{
-	// 	common.DOCKER_BUILD_ARG_WORKFLOW_FILE: &workflowSwJson,
-	// }
-
-	// opts := types.ImageBuildOptions{
-	// 	Dockerfile:     "Dockerfile.workflow",
-	// 	SuppressOutput: false,
-	// 	Tags:           []string{"test"},
-	// 	BuildArgs:      buildArgs,
-	// 	Outputs:        []types.ImageBuildOutput{},
-	// }
-
-	buildTargetKubernetes := common.ExecCommand(
-		"docker",
-		"build",
-		fmt.Sprintf("-f %s", common.WORKFLOW_DOCKERFILE),
-		fmt.Sprintf("--target=%s", "kubernetes"),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_FILE, common.WORKFLOW_SW_JSON),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_EXTENSIONS, cfg.Extesions),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_WORKFLOW_NAME, cfg.ImageName),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY, registry),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP, repository),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME, name),
-		fmt.Sprintf("--build-arg=%s=%s", common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG, tag),
-		"--output=type=local,dest=kubernetes",
-		".",
-	)
-	if err := common.RunCommand(
-		buildTargetKubernetes,
-		cfg.Verbose,
-		"build",
-		common.GetFriendlyMessages("building"),
-	); err != nil {
-		fmt.Println("Check the full logs with the -v | --verbose option")
-		return err
-	}
-
-	// dockerRunnerArgs := dockerArgs
-	// dockerRunnerArgs = append(dockerRunnerArgs, fmt.Sprintf("--target=%s", "runner"))
-	// dockerRunnerArgs = append(dockerKubernetsArgs, dockerBuildArgs...)
-	// dockerKubernetsArgs = append(dockerKubernetsArgs, fmt.Sprintf("-t %s/%s/%s:%s", registry, repository, name, tag), ".")
-
-	// buildTargetRunner := exec.Command("docker", dockerRunnerArgs...)
-
-	// if err := common.RunCommand(
-	// 	buildTargetRunner,
-	// 	cfg.Verbose,
-	// 	"build",
-	// 	common.GetFriendlyMessages("building"),
-	// ); err != nil {
-	// 	fmt.Println("Check the full logs with the -v | --verbose option")
+	// if err := common.CheckImageName(name); err != nil {
 	// 	return err
 	// }
 
+	var workflowSwJson string = common.WORKFLOW_SW_JSON
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	buildArgs := map[string]*string{
+		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY: &registry,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP:    &repository,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_NAME:     &name,
+		common.DOCKER_BUILD_ARG_CONTAINER_IMAGE_TAG:      &tag,
+		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &cfg.ImageName,
+	}
+
+	if len(cfg.Extesions) > 0 {
+		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &cfg.Extesions
+	}
+
+	tar, err := archive.TarWithOptions("./", &archive.TarOptions{})
+	if err != nil {
+		return err
+	}
+
+	imageTag := common.GetImage(registry, repository, name, tag)
+	opts := types.ImageBuildOptions{
+		Dockerfile:     common.WORKFLOW_DOCKERFILE,
+		Tags:           []string{imageTag},
+		BuildArgs:      buildArgs,
+		Version:        types.BuilderBuildKit,
+		SuppressOutput: false,
+		Target:         "kubernetes",
+		Remove:         true,
+		Outputs: []types.ImageBuildOutput{{
+			Type: "local",
+			Attrs: map[string]string{
+				"dest": "kubernetes",
+			},
+		}},
+	}
+
+	res, err := dockerClient.ImageBuild(ctx, tar, opts)
+	if err != nil {
+		return err
+	}
+
+	defer res.Body.Close()
+
+	err = print(res.Body)
+	if err != nil {
+		return err
+	}
+
 	fmt.Println("✅ Build success")
+	return nil
+}
+
+type ErrorLine struct {
+	Error       string      `json:"error"`
+	ErrorDetail ErrorDetail `json:"errorDetail"`
+}
+
+type ErrorDetail struct {
+	Message string `json:"message"`
+}
+
+func print(rd io.Reader) error {
+	var lastLine string
+
+	scanner := bufio.NewScanner(rd)
+	for scanner.Scan() {
+		lastLine = scanner.Text()
+		fmt.Println(scanner.Text())
+	}
+
+	errLine := &ErrorLine{}
+	json.Unmarshal([]byte(lastLine), errLine)
+	if errLine.Error != "" {
+		return errors.New(errLine.Error)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+
 	return nil
 }

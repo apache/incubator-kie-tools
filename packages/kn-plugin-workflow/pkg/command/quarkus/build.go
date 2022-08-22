@@ -270,7 +270,7 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 		return
 	}
 
-	out = getImage(registry, repository, name, tag)
+	out = common.GetImage(registry, repository, name, tag)
 	if cfg.Push {
 		fmt.Printf("Created and pushed an image to registry: %s\n", out)
 	} else {
@@ -279,17 +279,6 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 
 	fmt.Println("✅ Build success")
 	return
-}
-
-func getImage(registry string, repository string, name string, tag string) string {
-	if len(registry) == 0 && len(repository) == 0 {
-		return fmt.Sprintf("%s:%s", name, tag)
-	} else if len(registry) == 0 {
-		return fmt.Sprintf("%s/%s:%s", repository, name, tag)
-	} else if len(repository) == 0 {
-		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
-	}
-	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
 }
 
 func getSkipTestsConfig(cfg BuildCmdConfig) string {

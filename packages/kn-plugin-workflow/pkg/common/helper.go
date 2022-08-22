@@ -165,3 +165,14 @@ func GetImageConfig(image string, registry string, repository string, imageName 
 
 	return resultantRegistry, resultantRepository, resultantName, resultantTag
 }
+
+func GetImage(registry string, repository string, name string, tag string) string {
+	if len(registry) == 0 && len(repository) == 0 {
+		return fmt.Sprintf("%s:%s", name, tag)
+	} else if len(registry) == 0 {
+		return fmt.Sprintf("%s/%s:%s", repository, name, tag)
+	} else if len(repository) == 0 {
+		return fmt.Sprintf("%s/%s:%s", registry, name, tag)
+	}
+	return fmt.Sprintf("%s/%s/%s:%s", registry, repository, name, tag)
+}
