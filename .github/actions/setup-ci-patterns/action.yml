@@ -39,14 +39,15 @@ runs:
     - name: "Setup CI patterns"
       id: ci_patterns
       uses: actions/github-script@v6
+      env:
+        CWD: ${{ inputs.working_dir }}
       with:
-        working_dir: ${{ inputs.working_dir }}
         result-encoding: string
         script: |
           const fs = require("fs");
           const path = require("path");
 
-          const cwd = core.getInput("working_dir");
+          const cwd = process.env["CWD"];
 
           const pnpmWorkspacePackagesRootPaths = ["packages", "examples"].map(p => path.join(cwd, p)).join("\n");
 
