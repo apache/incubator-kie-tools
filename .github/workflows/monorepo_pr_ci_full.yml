@@ -70,8 +70,8 @@ jobs:
 
           echo "Done"
 
-      - name: "Start telemetry service"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+      - name: "Start telemetry service (`main` only)"
+        if: steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
         uses: runforesight/workflow-telemetry-action@7771f879afebe55ef1009a49f0b8a5d9089d8bc7
 
       - name: "Setup environment"
