@@ -60,6 +60,9 @@ public class SWEditorSeleniumIT {
     private static final String GET_CONTENT_TEMPLATE =
             "return gwtEditorBeans.get(\"SWDiagramEditor\").get().getContent()";
 
+    private static final String CONTENT_REGULAR_CHAR = "\\\"";
+    private static final String CONTENT_EXECUTOR_CHAR = "&quot;";
+
     private static final String INDEX_HTML = "target/sw-editor-kogito-app/index.html";
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
@@ -73,7 +76,6 @@ public class SWEditorSeleniumIT {
      */
     private WebDriver driver;
 
-
     @BeforeClass
     public static void setupClass() {
         WebDriverManager.firefoxdriver().useMirror().setup();
@@ -84,6 +86,7 @@ public class SWEditorSeleniumIT {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setHeadless(HEADLESS);
         driver = new FirefoxDriver(firefoxOptions);
+
         driver.manage().window().maximize();
 
         driver.get(INDEX_HTML_PATH);
@@ -284,7 +287,10 @@ public class SWEditorSeleniumIT {
 
     private void setContent(final String xml) {
         try {
-            ((JavascriptExecutor) driver).executeScript(String.format(SET_CONTENT_TEMPLATE, xml));
+            String content = String.format(SET_CONTENT_TEMPLATE, xml);
+            content = content.replace(CONTENT_REGULAR_CHAR, CONTENT_EXECUTOR_CHAR);
+            ((JavascriptExecutor) driver).executeScript(content);
+
         } catch (Exception e) {
             LOG.error("Exception during JS execution. Ex: {}", e.getMessage());
         }
@@ -293,7 +299,10 @@ public class SWEditorSeleniumIT {
     private String getContent() {
         final Object result = ((JavascriptExecutor) driver).executeScript(String.format(GET_CONTENT_TEMPLATE));
         assertThat(result).isInstanceOf(String.class);
-        return (String) result;
+
+        String content = (String) result;
+        content = content.replace(CONTENT_EXECUTOR_CHAR, CONTENT_REGULAR_CHAR);
+        return content;
     }
 
     /**

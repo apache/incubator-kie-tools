@@ -124,7 +124,7 @@ public class State {
         return this;
     }
 
-    public Object isEnd() {
+    public Object getEnd() {
         return end;
     }
 

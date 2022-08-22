@@ -136,6 +136,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         // Create an error transition from State1 to end.
         ErrorTransition errorTransition = new ErrorTransition();
         errorTransition.setErrorRef("error1");
+        errorTransition.setEnd(true);
         graphHandler.addEdgeTo(graphHandler.newEdge("error1", Optional.of(errorTransition)),
                                getNodeByName("State1"),
                                graphHandler.newNode(Marshaller.STATE_END, Optional.of(new End())));
