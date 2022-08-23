@@ -166,6 +166,7 @@ jobs:
           ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
           ONLINE_EDITOR__gtmId: ""
+          ONLINE_EDITOR__corsProxyUrl: "https://staging-cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
           DMN_DEV_SANDBOX__gtmId: ""
           DMN_DEV_SANDBOX__onlineEditorUrl: "https://kiegroup.github.io/kogito-online-staging/${{ inputs.tag }}-prerelease"
           SERVERLESS_LOGIC_SANDBOX__buildInfo: "${{ inputs.tag }} (staging) @ ${{ inputs.commit_sha }}"
@@ -173,6 +174,7 @@ jobs:
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlMacOs: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_macos_${{ inputs.tag }}.dmg"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows: "${{ inputs.download_asset_url }}/STAGING__kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
           SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
+          SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: "https://staging-cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
         run: |
           pnpm -r build:prod
 

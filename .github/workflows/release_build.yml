@@ -394,6 +394,7 @@ jobs:
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
+      ONLINE_EDITOR__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
@@ -1332,6 +1333,7 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}"
+      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
     if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') && (needs.openjdk11_mvn_image.result == 'success' || needs.openjdk11_mvn_image.result == 'skipped') }}
     runs-on: ubuntu-latest
