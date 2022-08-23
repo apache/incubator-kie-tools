@@ -409,9 +409,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+        with:
+          path: kie-tools
 
       - name: "Checkout PR"
-        uses: ./.github/actions/checkout-pr
+        uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
           path: kie-tools
@@ -497,9 +499,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+        with:
+          path: kie-tools
 
       - name: "Checkout PR"
-        uses: ./.github/actions/checkout-pr
+        uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
           path: kie-tools
@@ -931,9 +935,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+        with:
+          path: kie-tools
 
       - name: "Checkout PR"
-        uses: ./.github/actions/checkout-pr
+        uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
           path: kie-tools
@@ -1106,9 +1112,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+        with:
+          path: kie-tools
 
       - name: "Checkout PR"
-        uses: ./.github/actions/checkout-pr
+        uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
           path: kie-tools
@@ -1341,9 +1349,11 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+        with:
+          path: kie-tools
 
       - name: "Checkout PR"
-        uses: ./.github/actions/checkout-pr
+        uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
           path: kie-tools
