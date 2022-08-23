@@ -2,7 +2,7 @@ name: "Checkout PR"
 description: ""
 
 inputs:
-  base_ref:
+  ref:
     description: "Base ref of the PR to be checked out"
     required: true
   path:
@@ -21,10 +21,10 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: "Checkout kie-tools @ ${{ inputs.base_ref }}"
+    - name: "Checkout kie-tools @ ${{ inputs.ref }}"
       uses: actions/checkout@v3
       with:
-        ref: ${{ inputs.base_ref }}
+        ref: ${{ inputs.ref }}
         fetch-depth: 0
         path: ${{ inputs.path }}
 

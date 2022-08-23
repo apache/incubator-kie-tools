@@ -28,7 +28,7 @@ jobs:
         id: checkout_pr
         uses: ./.github/actions/checkout-pr
         with:
-          base_ref: ${{ github.base_ref }}
+          ref: ${{ github.base_ref }}
 
       - name: "Setup CI patterns"
         id: ci_patterns
