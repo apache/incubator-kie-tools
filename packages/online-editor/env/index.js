@@ -82,8 +82,8 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
+          corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
         },
-        corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
         dmnDevSandbox: {
           onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),
           baseImage: {
