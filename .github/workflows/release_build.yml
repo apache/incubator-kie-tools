@@ -417,7 +417,7 @@ jobs:
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
@@ -505,7 +505,7 @@ jobs:
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
@@ -939,7 +939,7 @@ jobs:
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.workspace }}/kogito-online
           fetch-depth: 0
@@ -1348,7 +1348,7 @@ jobs:
 
       - name: "Checkout serverless-logic-sandbox-deployment"
         if: ${{ !inputs.dry_run }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.workspace }}/serverless-logic-sandbox-deployment
           fetch-depth: 0

@@ -104,7 +104,7 @@ jobs:
 
       - name: "Checkout kogito-online-staging (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.workspace }}/kogito-online-staging
           fetch-depth: 0
@@ -113,7 +113,7 @@ jobs:
 
       - name: "Checkout serverless-logic-sandbox-deployment (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ${{ github.workspace }}/serverless-logic-sandbox-deployment
           fetch-depth: 0

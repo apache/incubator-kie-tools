@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: "Clone kogito-online-ci"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.KIE_TOOLS_BOT_TOKEN }}
           path: kogito-online-ci
