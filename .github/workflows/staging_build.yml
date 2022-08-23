@@ -107,6 +107,7 @@ jobs:
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
           working_dir: kie-tools
+          path: kie-tools
 
       - name: "Checkout kogito-online-staging (Ubuntu only)"
         if: ${{ runner.os == 'Linux' && !inputs.dry_run }}

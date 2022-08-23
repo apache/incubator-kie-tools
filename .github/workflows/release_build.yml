@@ -436,6 +436,7 @@ jobs:
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
           working_dir: kie-tools
+          path: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -530,6 +531,7 @@ jobs:
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
           working_dir: kie-tools
+          path: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -986,6 +988,7 @@ jobs:
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
           working_dir: kie-tools
+          path: kie-tools
 
       - name: "Checkout kogito-online"
         if: ${{ !inputs.dry_run }}
@@ -1175,6 +1178,7 @@ jobs:
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
           working_dir: kie-tools
+          path: kie-tools
 
       - name: "Setup environment"
         id: setup_env
@@ -1427,6 +1431,7 @@ jobs:
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
           working_dir: kie-tools
+          path: kie-tools
 
       - name: "Checkout serverless-logic-sandbox-deployment"
         if: ${{ !inputs.dry_run }}
