@@ -40,7 +40,7 @@ runs:
       shell: bash
       run: |
         echo "STEP: Merge PR changes (squashed)"
-        cd ${{ inputs.working_dir }}
+        cd ${{ inputs.path }}
         if [ ${{ github.event.pull_request }} ]; then
           user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
 
