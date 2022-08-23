@@ -24,17 +24,13 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        id: checkout_pr
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ github.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        id: merge_pr_changes
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup CI patterns"
         id: ci_patterns
@@ -44,7 +40,7 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_pr_changes.outputs.base_sha }} ${{ steps.merge_pr_changes.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"

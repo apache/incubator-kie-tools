@@ -1,9 +1,12 @@
-name: "Merge PR changes"
+name: "Checkout PR"
 description: ""
 
 inputs:
-  working_dir:
-    description: "kie-tools path"
+  base_ref:
+    description: "Base ref of the PR to be checked out"
+    required: true
+  path:
+    description: "Path to clone kie-tools"
     required: false
     default: "."
 
@@ -18,11 +21,25 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: "Merge changes"
+    - name: "Checkout kie-tools @ ${{ inputs.base_ref }}"
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.base_ref }}
+        fetch-depth: 0
+        path: ${{ inputs.path }}
+
+    - name: "Setup global Git user (kie-tools-bot)"
+      shell: bash
+      run: |
+        echo "STEP: Setup global Git user (kie-tools-bot)"
+        git config --global user.email "kietoolsbot@gmail.com"
+        git config --global user.name "KIE Tools Bot (kiegroup)"
+
+    - name: "Merge PR changes (squashed)"
       id: merge_changes
       shell: bash
       run: |
-        echo "STEP: Merge changes"
+        echo "STEP: Merge PR changes (squashed)"
         cd ${{ inputs.working_dir }}
         if [ ${{ github.event.pull_request }} ]; then
           user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")

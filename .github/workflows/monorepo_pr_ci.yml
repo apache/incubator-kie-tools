@@ -22,17 +22,13 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        id: checkout_pr
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
-          ref: ${{ github.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        id: merge_pr_changes
-        uses: ./.github/actions/merge-pr-changes
+          base_ref: ${{ github.base_ref }}
 
       - name: "Setup CI patterns"
         id: ci_patterns
@@ -42,7 +38,7 @@ jobs:
         id: check_diff_paths
         shell: bash
         run: |
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_pr_changes.outputs.base_sha }} ${{ steps.merge_pr_changes.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
@@ -73,7 +69,7 @@ jobs:
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F "...[${{ steps.merge_pr_changes.outputs.base_sha }}]..."
+          pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..."
 
       - name: "Build dependencies"
         if: steps.check_diff_paths.outputs.should_run == 'true'
@@ -81,8 +77,8 @@ jobs:
         env:
           KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
-          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.merge_pr_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
-          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.merge_pr_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
+          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
+          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
           echo $ALL_DEPENDENCIES_FILTER
           echo $CHANGED_PKGS_EXCLUSION_FILTER
           eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
@@ -99,7 +95,7 @@ jobs:
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm -F "...[${{ steps.merge_pr_changes.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
+          pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'

@@ -141,17 +141,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
@@ -211,17 +207,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, dmn_dev_sandbox_image, kie_sandbox_extended_services_image, cors_proxy_image]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -285,17 +277,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -351,17 +339,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -410,7 +394,6 @@ jobs:
       ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows: "https://github.com/kiegroup/kie-tools/releases/download/${{ inputs.tag }}/kie_sandbox_extended_services_windows_${{ inputs.tag }}.exe"
       ONLINE_EDITOR__kieSandboxExtendedServicesCompatibleVersion: "${{ inputs.tag }}"
       ONLINE_EDITOR__gtmId: "GTM-PQGMKNW"
-      ONLINE_EDITOR__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
       DMN_DEV_SANDBOX__baseImageRegistry: "quay.io"
       DMN_DEV_SANDBOX__baseImageAccount: "kie-tools"
       DMN_DEV_SANDBOX__baseImageName: "dmn-dev-sandbox-deployment-base-image"
@@ -423,20 +406,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, dmn_dev_sandbox_image, extended_services]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kie-tools
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./kie-tools/.github/actions/merge-pr-changes
-        with:
-          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout kogito-online"
@@ -518,20 +494,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, dmn_dev_sandbox_image, extended_services, online_editor]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kie-tools
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./kie-tools/.github/actions/merge-pr-changes
-        with:
-          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout kogito-online"
@@ -684,16 +653,12 @@ jobs:
     needs: [extract_runners]
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -737,16 +702,12 @@ jobs:
     needs: [extract_runners]
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -859,16 +820,12 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -928,16 +885,12 @@ jobs:
     needs: [extract_runners]
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -975,20 +928,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners, dmn_dev_sandbox_image, extended_services, online_editor, chrome_extensions]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kie-tools
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./kie-tools/.github/actions/merge-pr-changes
-        with:
-          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout kogito-online"
@@ -1050,16 +996,12 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -1115,16 +1057,12 @@ jobs:
     needs: [extract_runners]
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -1165,20 +1103,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kie-tools
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./kie-tools/.github/actions/merge-pr-changes
-        with:
-          working_dir: kie-tools
           path: kie-tools
 
       - name: "Setup environment"
@@ -1225,16 +1156,12 @@ jobs:
     needs: [extract_runners]
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ inputs.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -1306,17 +1233,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Cache Maven packages"
         uses: actions/cache@v2
@@ -1339,7 +1262,6 @@ jobs:
         shell: bash
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
-
       - name: "Push serverless-logic-sandbox-base-image to quay.io"
         if: ${{ !inputs.dry_run }}
         uses: redhat-actions/push-to-registry@v2
@@ -1361,17 +1283,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract_runners]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         id: setup_env
@@ -1414,26 +1332,18 @@ jobs:
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageAccount: "kie-tools"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageName: "openjdk11-mvn-image"
       SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageTag: "${{ inputs.tag }}"
-      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud"
 
     if: ${{ always() && needs.extract_runners.outputs.serverless_logic_sandbox == 'true' && (needs.extended_services.result == 'success' || needs.extended_services.result == 'skipped') && (needs.serverless_logic_sandbox_base_image.result == 'success' || needs.serverless_logic_sandbox_base_image.result == 'skipped') && (needs.openjdk11_mvn_image.result == 'success' || needs.openjdk11_mvn_image.result == 'skipped') }}
     runs-on: ubuntu-latest
     needs: [extract_runners, serverless_logic_sandbox_base_image, openjdk11_mvn_image, extended_services]
     steps:
-      - name: "Checkout kie-tools"
-        uses: actions/checkout@v2
+      - name: "Checkout"
+        uses: actions/checkout@v3
+
+      - name: "Checkout PR"
+        uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
-          path: ${{ github.workspace }}/kie-tools
-          fetch-depth: 0
-
-      - name: "Setup kie-tools-bot"
-        uses: ./kie-tools/.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        uses: ./kie-tools/.github/actions/merge-pr-changes
-        with:
-          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout serverless-logic-sandbox-deployment"
