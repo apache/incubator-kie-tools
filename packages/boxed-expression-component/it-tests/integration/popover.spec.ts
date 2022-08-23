@@ -93,7 +93,13 @@ describe("PopoverMenu Tests", () => {
   describe("Keyboard interaction with header's contextMenu in nested decision table", () => {
     beforeEach(() => {
       // open the popover by pressing enter. Esc key is needed to reset the poopover state and wait to pass the tests with Cypress in headless mode
-      cy.get("@ExpressionNameCell").type("{esc}").wait(100).type("{enter}");
+      cy.get("@ExpressionNameCell").focus().type("{esc}");
+
+      // check the popover is closed
+      cy.ouiaId("expression-popover-menu").should("not.to.exist");
+
+      // open the popover menu
+      cy.get("@ExpressionNameCell").focus().wait(100).type("{enter}");
 
       // check the popover is open
       cy.ouiaId("expression-popover-menu").should("be.visible");
