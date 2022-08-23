@@ -12,10 +12,10 @@ jobs:
     name: Build for Sonar
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout"
+      - name: "Checkout @ GitHub's PR merge branch"
         uses: actions/checkout@v3
 
-      - name: "Checkout PR"
+      - name: "Checkout @ Simulated squashed-merge of PR"
         uses: ./.github/actions/checkout-pr
         with:
           ref: ${{ github.base_ref }}
