@@ -58,6 +58,11 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
+      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: {
+        default:
+          "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
+        description: "",
+      },
     }),
     get env() {
       return {
@@ -83,6 +88,7 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
+          corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__corsProxyUrl),
         },
       };
     },
