@@ -53,7 +53,7 @@ runs:
           echo "::set-output name=base_sha::$(git rev-parse HEAD)"
 
           git merge --squash $user/${{ github.head_ref }}
-          git commit --no-edit
+          git commit --no-edit --allow-empty
 
           echo "After merging..."
           git log -n 1
