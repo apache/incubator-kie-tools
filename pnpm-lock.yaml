@@ -555,7 +555,7 @@ importers:
       "@kie-tools/stunner-editors": workspace:*
       "@types/chai": ^4.2.17
       "@types/chrome": ^0.0.193
-      "@types/selenium-webdriver": ^4.1.1
+      "@types/selenium-webdriver": ^4.1.2
       chai: ^4.3.4
       jest-junit: ^14.0.0
       selenium-webdriver: ^4.2.0
@@ -574,7 +574,7 @@ importers:
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/chai": 4.2.18
       "@types/chrome": 0.0.193
-      "@types/selenium-webdriver": 4.1.1
+      "@types/selenium-webdriver": 4.1.2
       chai: 4.3.4
       jest-junit: 14.0.0
       selenium-webdriver: 4.2.0
@@ -7768,6 +7768,13 @@ packages:
   /@types/selenium-webdriver/4.1.1:
     resolution:
       { integrity: sha512-NxxZZek50ylIACiXebKQYHD3D4One3WXOasEXWazL6aTfYbZob7ClNKxUpg8I4/oWArX87oPWvj1cHKqfel3Hg== }
+    dependencies:
+      "@types/ws": 8.2.2
+    dev: true
+
+  /@types/selenium-webdriver/4.1.2:
+    resolution:
+      { integrity: sha512-NCn1vqHC2hDgZmOuiDa4xgyo3FBZuqB+wXg5t8YcwnjIi2ufGTowqcnbUAKGHxY7z/OFfv4MnaVfuJ7gJ/xBsw== }
     dependencies:
       "@types/ws": 8.2.2
     dev: true
@@ -16968,6 +16975,16 @@ packages:
       object.assign: 4.1.2
     dev: true
 
+  /jszip/3.10.1:
+    resolution:
+      { integrity: sha512-xXDvecyTpGLrqFrvkrUSoxxfJI5AH7U8zxxtVclpsUtMCq4JQ290LY8AW5c7Ggnr/Y/oK+bQMbqK2qmtk3pN4g== }
+    dependencies:
+      lie: 3.3.0
+      pako: 1.0.11
+      readable-stream: 2.3.7
+      setimmediate: 1.0.5
+    dev: true
+
   /jszip/3.7.1:
     resolution:
       { integrity: sha512-ghL0tz1XG9ZEmRMcEN2vt7xabrDdqHHeykgARpmZ0BiIctWxM47Vt63ZO2dnp4QYt/xJVLLy5Zv1l/xRdh2byg== }
@@ -17768,6 +17785,7 @@ packages:
     resolution:
       { integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA== }
     engines: { node: ">=6" }
+    requiresBuild: true
     dependencies:
       pify: 4.0.1
       semver: 5.7.1
@@ -21899,6 +21917,19 @@ packages:
       - utf-8-validate
     dev: true
 
+  /selenium-webdriver/4.4.0:
+    resolution:
+      { integrity: sha512-Du+/xfpvNi9zHAeYgXhOWN9yH0hph+cuX+hHDBr7d+SbtQVcfNJwBzLsbdHrB1Wh7MHXFuIkSG88A9TRRQUx3g== }
+    engines: { node: ">= 10.15.0" }
+    dependencies:
+      jszip: 3.10.1
+      tmp: 0.2.1
+      ws: 8.8.1
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+    dev: true
+
   /selfsigned/2.0.0:
     resolution:
       { integrity: sha512-cUdFiCbKoa1mZ6osuJs2uDHrs0k0oprsKveFiiaBKCNq3SYyb5gs2HxhQyDNLCmL51ZZThqi4YNDpCK6GOP1iQ== }
@@ -25013,6 +25044,20 @@ packages:
   /ws/8.4.2:
     resolution:
       { integrity: sha512-Kbk4Nxyq7/ZWqr/tarI9yIt/+iNNFOjBXEWgTb4ydaNHBNGgvf2QHbS9fdfsndfjFlFwEd4Al+mw83YkaD10ZA== }
+    engines: { node: ">=10.0.0" }
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: ^5.0.2
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+    dev: true
+
+  /ws/8.8.1:
+    resolution:
+      { integrity: sha512-bGy2JzvzkPowEJV++hF07hAD6niYSr0JzBNo/J29WsB57A2r7Wlc1UFcTR9IzrPvuNVO4B8LGqF8qcpsVOhJCA== }
     engines: { node: ">=10.0.0" }
     peerDependencies:
       bufferutil: ^4.0.1

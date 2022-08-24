@@ -37,7 +37,7 @@
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/chrome": "^0.0.193",
-    "@types/selenium-webdriver": "^4.1.1",
+    "@types/selenium-webdriver": "^4.1.2",
     "chai": "^4.3.4",
     "jest-junit": "^14.0.0",
     "selenium-webdriver": "^4.2.0",
