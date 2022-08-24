@@ -137,7 +137,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCodeLensProvider(
-      { scheme: "file", pattern: "**/*.sw.json" },
+      { scheme: "file", pattern: "**/*.sw.{json,yaml,yml}" },
       {
         provideCodeLenses: async (document: vscode.TextDocument, token: vscode.CancellationToken) => {
           const lsCodeLenses = await args.vsCodeSwfLanguageService.getLs(document).getCodeLenses({
@@ -169,7 +169,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
 
   args.context.subscriptions.push(
     vscode.languages.registerCompletionItemProvider(
-      { scheme: "file", pattern: "**/*.sw.json" },
+      { scheme: "file", pattern: "**/*.sw.{json,yaml,yml}" },
       {
         provideCompletionItems: async (
           document: vscode.TextDocument,
