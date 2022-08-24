@@ -82,13 +82,18 @@ esac
 for ctx in ${contextDir}; do
     target_tmp_dir="/tmp/build/$(basename ${ctx})"
     build_target_dir="/tmp/$(basename ${ctx})"
+    mvn_local_repo="/tmp/temp_maven/$(basename ${ctx})"
     rm -rf ${target_tmp_dir} && mkdir -p ${target_tmp_dir}
     rm -rf ${build_target_dir} && mkdir -p ${build_target_dir}
+    rm -rf ${mvn_local_repo} && mkdir -p ${mvn_local_repo}
 
     . ${script_dir_path}/setup-maven.sh "${build_target_dir}"/settings.xml
 
+    echo "Copy current maven repo to maven context local repo"
+    cp -r ${HOME}/.m2/repository/* "${mvn_local_repo}"
+
     cd ${build_target_dir}
-    echo "Using branch/tag ${gitBranch}, checking out. Temporary build dir is ${build_target_dir} and target dis is ${target_tmp_dir}"
+    echo "Using branch/tag ${gitBranch}, checking out. Temporary build dir is ${build_target_dir} and target dist is ${target_tmp_dir}"
 
     if [ ! -d "${build_target_dir}/${KOGITO_APPS_REPO_NAME}" ]; then
         git_command="git clone --single-branch --branch ${gitBranch} --depth 1 ${gitUri}"
@@ -96,7 +101,7 @@ for ctx in ${contextDir}; do
         eval ${git_command}
     fi
     cd ${KOGITO_APPS_REPO_NAME} && echo "working dir `pwd`"
-    mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=/tmp/temp_maven/${ctx}"
+    mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=${mvn_local_repo}"
     echo "Building component(s) ${contextDir} with the following maven command [${mvn_command}]"
     export YARN_CACHE_FOLDER=/tmp/cache/yarn/${ctx} # Fix for building yarn apps in parallel
     export CYPRESS_CACHE_FOLDER=/tmp/cache/cypress/${ctx} # https://docs.cypress.io/guides/getting-started/installing-cypress#Advanced
