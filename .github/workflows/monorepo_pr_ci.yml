@@ -21,7 +21,7 @@ jobs:
         if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
-      - name: "Checkout @ GitHub's PR merge branch"
+      - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
 
       - name: "Checkout @ Simulated squashed merge of PR"
