@@ -48,6 +48,11 @@ module.exports = composeEnv([buildEnv, require("@kie-tools/dmn-dev-sandbox-deplo
       default: "https://localhost:9001/",
       description: "",
     },
+    ONLINE_EDITOR__corsProxyUrl: {
+      default:
+        "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
+      description: "",
+    },
     DMN_DEV_SANDBOX__baseImageTag: {
       default: "latest",
       description: "",
@@ -74,6 +79,7 @@ module.exports = composeEnv([buildEnv, require("@kie-tools/dmn-dev-sandbox-deplo
             windows: getOrDefault(this.vars.ONLINE_EDITOR__kieSandboxExtendedServicesDownloadUrlWindows),
           },
         },
+        corsProxyUrl: getOrDefault(this.vars.ONLINE_EDITOR__corsProxyUrl),
       },
       dmnDevSandbox: {
         onlineEditorUrl: getOrDefault(this.vars.DMN_DEV_SANDBOX__onlineEditorUrl),
