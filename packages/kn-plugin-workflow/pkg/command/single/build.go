@@ -82,13 +82,7 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	cli, err := client.NewClientWithOpts(client.FromEnv)
-	if err != nil {
-		fmt.Println(err.Error())
-		return nil
-	}
-
-	if err := runBuildImage(cfg, cli); err != nil {
+	if err := runBuildImage(cfg); err != nil {
 		return err
 	}
 
@@ -114,16 +108,20 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	return
 }
 
-func runBuildImage(cfg BuildCmdConfig, dockerClient *client.Client) error {
+func runBuildImage(cfg BuildCmdConfig) error {
+	ctx := context.Background()
+	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
-	// if err := common.CheckImageName(name); err != nil {
-	// 	return err
-	// }
+	if err := common.CheckImageName(name); err != nil {
+		return err
+	}
 
 	var workflowSwJson string = common.WORKFLOW_SW_JSON
-
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 
 	buildArgs := map[string]*string{
 		common.DOCKER_BUILD_ARG_WORKFLOW_FILE:            &workflowSwJson,
@@ -145,13 +143,11 @@ func runBuildImage(cfg BuildCmdConfig, dockerClient *client.Client) error {
 
 	imageTag := common.GetImage(registry, repository, name, tag)
 	opts := types.ImageBuildOptions{
-		Dockerfile:     common.WORKFLOW_DOCKERFILE,
-		Tags:           []string{imageTag},
-		BuildArgs:      buildArgs,
-		Version:        types.BuilderBuildKit,
-		SuppressOutput: false,
-		Target:         "kubernetes",
-		Remove:         true,
+		Dockerfile: common.WORKFLOW_DOCKERFILE,
+		Tags:       []string{imageTag},
+		BuildArgs:  buildArgs,
+		Version:    types.BuilderBuildKit,
+		Target:     "kubernetes",
 		Outputs: []types.ImageBuildOutput{{
 			Type: "local",
 			Attrs: map[string]string{
@@ -160,17 +156,20 @@ func runBuildImage(cfg BuildCmdConfig, dockerClient *client.Client) error {
 		}},
 	}
 
-	res, err := dockerClient.ImageBuild(ctx, tar, opts)
+	res, err := cli.ImageBuild(ctx, tar, opts)
 	if err != nil {
 		return err
 	}
-
 	defer res.Body.Close()
 
-	err = print(res.Body)
-	if err != nil {
-		return err
-	}
+	// scanner := bufio.NewScanner(res.Body)
+	// for scanner.Scan() {
+	// 	fmt.Println(scanner.Text())
+	// }
+
+	// if err := scanner.Err(); err != nil {
+	// 	return err
+	// }
 
 	fmt.Println("✅ Build success")
 	return nil

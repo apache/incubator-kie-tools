@@ -10,7 +10,7 @@
       "request": "launch",
       "mode": "exec",
       "program": "./dist/kn-workflow-darwin-amd64",
-      "args": ["build", "--verbose", "--image", "test", "--extension", "quarkus-jsonb"]
+      "args": ["build", "--verbose", "--image", "quay.io/lmotta/test:0.1.1"]
     }
   ]
 }
