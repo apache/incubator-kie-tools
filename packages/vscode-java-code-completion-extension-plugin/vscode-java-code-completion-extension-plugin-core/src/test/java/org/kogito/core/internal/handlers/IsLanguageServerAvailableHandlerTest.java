@@ -38,10 +38,9 @@ public class IsLanguageServerAvailableHandlerTest {
         activationChecker = new ActivationChecker(workspaceUtilMock);
     }
 
-
     @Test
     void isLanguageServerNotAvailable() {
-        when(workspaceUtilMock.getWorkspace()).thenReturn("src/test/resources/noActivatorProject/");
+        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/noActivatorProject/");
         IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
         activationChecker.check();
         assertFalse(handler.handle(null, null));
@@ -49,7 +48,7 @@ public class IsLanguageServerAvailableHandlerTest {
 
     @Test
     void isLanguageServerAvailable() {
-        when(workspaceUtilMock.getWorkspace()).thenReturn("src/test/resources/testProject/");
+        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/testProject/");
         IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
         activationChecker.check();
         assertTrue(handler.handle(null, null));

@@ -36,7 +36,7 @@ public class ActivationChecker {
     public void check() {
         ActivationFileVisitor visitor = new ActivationFileVisitor();
         try {
-            Files.walkFileTree(Paths.get(getRootUri()), visitor);
+            Files.walkFileTree(Paths.get(workspaceUtil.getProjectLocation()), visitor);
         } catch (IOException e) {
             JavaLanguageServerPlugin.logException("Error trying to read workspace tree", e);
         }
@@ -57,7 +57,4 @@ public class ActivationChecker {
         }
     }
 
-    private String getRootUri() {
-        return this.workspaceUtil.getWorkspace();
-    }
 }

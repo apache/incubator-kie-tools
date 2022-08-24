@@ -38,7 +38,7 @@ class ActivationCheckerTest {
 
     @Test
     public void getActivatorPathWithoutSpecialChars() {
-        when(workspaceUtilMock.getWorkspace()).thenReturn("src/test/resources/testProject/");
+        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/testProject/");
         activationChecker.check();
         var activatorUri = activationChecker.getActivatorUri();
         Assertions.assertNotNull(activatorUri);
@@ -47,7 +47,7 @@ class ActivationCheckerTest {
 
     @Test
     void getActivatorPathWithSpecialChars() {
-        when(workspaceUtilMock.getWorkspace()).thenReturn("src/test/resources/test projéct");
+        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/test projéct");
         activationChecker.check();
         var activatorUri = activationChecker.getActivatorUri();
         Assertions.assertTrue(activatorUri.contains("test%20proj%C3%A9ct"));
