@@ -2,8 +2,8 @@ name: "Merge PR changes"
 description: ""
 
 inputs:
-  path:
-    description: "path"
+  working_dir:
+    description: "kie-tools path"
     required: false
     default: "."
 
@@ -23,7 +23,7 @@ runs:
       shell: bash
       run: |
         echo "STEP: Merge changes"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         if [ ${{ github.event.pull_request }} ]; then
           user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
 

@@ -50,10 +50,10 @@ on:
         required: false
 
 env:
-  KIE_TOOLS_BUILD_lint: "false"
-  KIE_TOOLS_BUILD_test: "false"
-  KIE_TOOLS_BUILD_testIT: "false"
-  KIE_TOOLS_BUILD_docker: "true"
+  KIE_TOOLS_BUILD__runLinters: "false"
+  KIE_TOOLS_BUILD__runTests: "false"
+  KIE_TOOLS_BUILD__runIntegrationTests: "false"
+  KIE_TOOLS_BUILD__buildContainerImages: "true"
   OPENSHIFT_NAMESPACE: "kie-sandbox"
   OPENSHIFT_PART_OF: "kie-sandbox-app"
 
@@ -163,8 +163,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -228,8 +226,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -304,8 +300,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -372,8 +366,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -444,6 +436,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
+          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout kogito-online"
@@ -467,14 +460,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/online-editor...
 
       - name: "Build"
@@ -539,6 +531,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
+          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout kogito-online"
@@ -555,14 +548,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...
 
       - name: "Build Chrome Extensions"
@@ -706,8 +698,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -761,8 +751,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -867,7 +855,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: "Support longpaths (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
@@ -885,8 +873,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         id: bootstrap
@@ -900,7 +886,7 @@ jobs:
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Desktop App for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -911,7 +897,7 @@ jobs:
           asset_content_type: application/tar+gzip
 
       - name: "Upload Desktop App for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -922,11 +908,11 @@ jobs:
           asset_content_type: application/zip
 
       - name: "Compress Desktop App (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: "Compress-Archive -Path \"packages\\desktop\\out\\Business Modeler Preview-win32-x64\" -DestinationPath \"packages\\desktop\\out\\Business Modeler Preview-win32-x64.zip\""
 
       - name: "Upload Desktop App for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -956,8 +942,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Create pnpm filter for building"
         id: create_pnpm_filter_string_for_building
@@ -1004,6 +988,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
+          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout kogito-online"
@@ -1020,14 +1005,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/kie-editors-standalone...
 
       - name: "Build"
@@ -1062,7 +1046,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - name: "Support longpaths (Windows only)"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
       - name: "Checkout"
@@ -1080,8 +1064,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1095,7 +1077,7 @@ jobs:
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
       - name: "Upload Extended Services for Linux (Ubuntu only)"
-        if: ${{ matrix.os == 'ubuntu-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'Linux' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1106,7 +1088,7 @@ jobs:
           asset_content_type: application/tar+gzip
 
       - name: "Upload Extended Services for macOS (macOS only)"
-        if: ${{ matrix.os == 'macos-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'macOS' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1117,7 +1099,7 @@ jobs:
           asset_content_type: application/octet-stream
 
       - name: "Upload Extended Services for Windows (Windows only)"
-        if: ${{ matrix.os == 'windows-latest' && !inputs.dry_run }}
+        if: ${{ runner.os == 'Windows' && !inputs.dry_run }}
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.gh_token }}
@@ -1147,8 +1129,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1198,20 +1178,20 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
+          working_dir: kie-tools
           path: kie-tools
 
       - name: "Setup environment"
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/dashbuilder-images...
 
       - name: "Build Dashbuilder Images"
@@ -1259,8 +1239,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1350,8 +1328,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1400,8 +1376,6 @@ jobs:
       - name: "Setup environment"
         id: setup_env
         uses: ./.github/actions/setup-env
-        with:
-          os: ubuntu-latest
 
       - name: "Bootstrap"
         id: bootstrap
@@ -1459,6 +1433,7 @@ jobs:
       - name: "Merge PR changes"
         uses: ./kie-tools/.github/actions/merge-pr-changes
         with:
+          working_dir: kie-tools
           path: kie-tools
 
       - name: "Checkout serverless-logic-sandbox-deployment"
@@ -1482,14 +1457,13 @@ jobs:
         id: setup_env
         uses: ./kie-tools/.github/actions/setup-env
         with:
-          path: kie-tools
-          os: ubuntu-latest
+          working_dir: kie-tools
 
       - name: "Bootstrap"
         id: bootstrap
         uses: ./kie-tools/.github/actions/bootstrap
         with:
-          path: kie-tools
+          working_dir: kie-tools
           pnpm_filter_string: -F @kie-tools/serverless-logic-sandbox...
 
       - name: "Build"

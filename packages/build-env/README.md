@@ -20,7 +20,7 @@ Env definition files are plain JavaScript, allowing for better flexibility and u
 
 - `build-env {dot.separated.property}`
   - Returns the value of a property. See available properties with `build-env --print-env`.
-    - e.g. `build-env global.version` prints `0.0.0`.
+    - e.g. `build-env root.version` prints `0.0.0`.
   - It's possible to negate boolean values with the `--not flag.`
     - e.g. If `build-env build.runTests` prints `true`, then e.g. `build-env build.runTests --not` prints `false`
 

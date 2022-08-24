@@ -16,8 +16,8 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc",
-    "build:dev": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
-    "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\""
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\""
   },
   "dependencies": {
     "@kie-tools-core/envelope": "workspace:*",

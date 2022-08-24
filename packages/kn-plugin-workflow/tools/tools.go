@@ -1,3 +1,5 @@
+//go:build tools
+
 /*
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
@@ -5,7 +7,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *       http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +16,8 @@
  * limitations under the License.
  */
 
-module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.dev.json",
-    },
-  },
-  reporters: ["default"],
-  moduleDirectories: ["node_modules", "src"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  transform: {
-    "^.+\\.jsx?$": "babel-jest",
-    "^.+\\.tsx?$": "ts-jest",
-  },
-};
+package tools
+
+import (
+	_ "github.com/jstemmer/go-junit-report/v2"
+)

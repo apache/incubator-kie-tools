@@ -1,0 +1,73 @@
+name: "Upload CI reports and artifacts"
+description: ""
+
+inputs:
+  working_dir:
+    description: "Dir path of kie-tools"
+    required: false
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup CI patterns"
+      id: ci_patterns
+      uses: ./.github/actions/setup-ci-patterns
+
+    - name: "Install zip (Windows only)"
+      if: runner.os == 'Windows'
+      shell: bash
+      run: |
+        choco install zip --version 3.0 -y
+
+    - name: "Zip artifacts and reports"
+      if: always()
+      env:
+        TESTS_REPORTS_PATTERNS: >-
+          ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
+        INTEGRATION_TESTS_REPORTS_PATTERNS: >-
+          ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
+        INTEGRATION_TESTS_ARTIFACTS_PATTERNS: >-
+          ${{ steps.ci_patterns.outputs.integration_tests_artifacts_patterns }}
+        BUILD_ARTIFACTS_PATTERNS: >-
+          ${{ steps.ci_patterns.outputs.build_artifacts_patterns }}
+      shell: bash
+      run: |
+        output_empty_zip () { echo UEsFBgAAAAAAAAAAAAAAAAAAAAAAAA== | base64 -d; }
+        zip -r $RUNNER_TEMP/tests-reports.zip $TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/tests-reports.zip
+        zip -r $RUNNER_TEMP/integration-tests-reports.zip $INTEGRATION_TESTS_REPORTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/integration-tests-reports.zip
+        zip -r $RUNNER_TEMP/integration-tests-artifacts.zip $INTEGRATION_TESTS_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/integration-tests-artifacts.zip
+        zip -r $RUNNER_TEMP/build-artifacts.zip $BUILD_ARTIFACTS_PATTERNS || output_empty_zip > $RUNNER_TEMP/build-artifacts.zip
+        ls -la $RUNNER_TEMP
+
+    - name: "Upload tests reports"
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ${{ runner.os }}__tests-reports
+        path: |
+          ${{ runner.temp }}/tests-reports.zip
+
+    - name: "Upload integration tests reports"
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ${{ runner.os }}__integration-tests-reports
+        path: |
+          ${{ runner.temp }}/integration-tests-reports.zip
+
+    - name: "Upload integration tests artifacts"
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ${{ runner.os }}__integration-tests-artifacts
+        path: |
+          ${{ runner.temp }}/integration-tests-artifacts.zip
+
+    - name: "Upload build artifacts"
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: ${{ runner.os }}__build-artifacts
+        path: |
+          ${{ runner.temp }}/build-artifacts.zip
