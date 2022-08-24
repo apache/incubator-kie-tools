@@ -37,7 +37,7 @@ class ActivationCheckerTest {
     }
 
     @Test
-    public void getActivatorPathWithoutSpecialChars() {
+    void getActivatorPathWithoutSpecialChars() {
         when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/testProject/");
         activationChecker.check();
         var activatorUri = activationChecker.getActivatorUri();
