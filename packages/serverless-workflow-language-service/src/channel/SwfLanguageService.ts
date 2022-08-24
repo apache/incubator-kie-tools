@@ -120,30 +120,30 @@ export class SwfLanguageService {
       }))
     );
 
+    const matchedCompletions = Array.from(completions.entries()).filter(([path, _]) =>
+      args.codeCompletionStrategy.shouldComplete({
+        root: args.rootNode,
+        node: currentNode,
+        path: path,
+        content: args.content,
+        cursorOffset: cursorOffset,
+      })
+    );
+
     const result = await Promise.all(
-      Array.from(completions.entries())
-        .filter(([path, _]) =>
-          args.codeCompletionStrategy.shouldComplete({
-            root: args.rootNode,
-            node: currentNode,
-            path: path,
-            content: args.content,
-            cursorOffset: cursorOffset,
-          })
-        )
-        .map(([_, completionItemsDelegate]) => {
-          return completionItemsDelegate({
-            document: doc,
-            cursorPosition: args.cursorPosition,
-            currentNode,
-            currentNodePosition,
-            rootNode: args.rootNode!,
-            overwriteRange,
-            swfCompletionItemServiceCatalogServices,
-            langServiceConfig: this.args.config,
-            codeCompletionStrategy: args.codeCompletionStrategy,
-          });
-        })
+      matchedCompletions.map(([_, completionItemsDelegate]) => {
+        return completionItemsDelegate({
+          document: doc,
+          cursorPosition: args.cursorPosition,
+          currentNode,
+          currentNodePosition,
+          rootNode: args.rootNode!,
+          overwriteRange,
+          swfCompletionItemServiceCatalogServices,
+          langServiceConfig: this.args.config,
+          codeCompletionStrategy: args.codeCompletionStrategy,
+        });
+      })
     );
 
     return Promise.resolve(result.flat());
