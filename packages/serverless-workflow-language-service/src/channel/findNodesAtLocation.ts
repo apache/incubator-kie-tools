@@ -22,9 +22,14 @@ import { SwfLsNode } from "./types";
  *
  * @param root root node
  * @param path the location of the node to search
+ * @param includeUncompleteProps true to include uncomplete properties. eg: { parent: { child: }}
  * @returns an array of nodes matching the path, empty array if no matches
  */
-export function findNodesAtLocation(root: SwfLsNode | undefined, path: any): SwfLsNode[] {
+export function findNodesAtLocation(
+  root: SwfLsNode | undefined,
+  path: any,
+  includeUncompleteProps = false
+): SwfLsNode[] {
   if (!root) {
     return [];
   }
@@ -56,8 +61,12 @@ export function findNodesAtLocation(root: SwfLsNode | undefined, path: any): Swf
 
         for (const prop of n.children) {
           if (Array.isArray(prop.children) && prop.children[0].value === segment) {
-            // if prop.children[1] doesn't exist, return prop.children[0].parent to have the same value of findNodeAtOffset()
-            return [prop.children[1] || prop.children[0].parent];
+            if (prop.children.length === 2) {
+              return [prop.children[1]];
+            }
+            if (includeUncompleteProps) {
+              return [prop];
+            }
           }
         }
 

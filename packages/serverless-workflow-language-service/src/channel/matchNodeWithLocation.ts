@@ -35,8 +35,8 @@ export function matchNodeWithLocation(
     return false;
   }
 
-  const nodesAtLocation = findNodesAtLocation(root, path);
-  const nodeToMatch = nodeUpUntilType(node, "property");
+  const nodesAtLocation = findNodesAtLocation(root, path, true);
+  const nodeToMatch = nodeUpUntilType(node, ["object", "property"]);
   const starSelector = path[path.length - 1] === "*";
 
   if (starSelector && node.type === "array" && node?.children) {

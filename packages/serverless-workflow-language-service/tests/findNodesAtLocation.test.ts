@@ -221,7 +221,7 @@ describe("findNodesAtLocation", () => {
   ]
 }`.trim();
       const root = ls.parseContent(content);
-      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef"]);
+      const nodesAtLocation = findNodesAtLocation(root, ["states", "*", "actions", "*", "functionRef"], true);
 
       expect(nodesAtLocation).not.toBeUndefined();
       expect(nodesAtLocation[1]).not.toBeUndefined();
