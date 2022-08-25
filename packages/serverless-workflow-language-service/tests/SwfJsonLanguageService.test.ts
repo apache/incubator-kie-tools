@@ -238,17 +238,17 @@ describe("SWF LS JSON", () => {
   });
 
   describe("code completion", () => {
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [testRelativeService1] },
+      },
+      config: defaultConfig,
+    });
+
     describe("function completion", () => {
       test("empty completion items", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -267,15 +267,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("add into empty functions array", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [🎯]
@@ -325,15 +316,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("add at the end", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [{...},🎯]
@@ -383,15 +365,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("add at the beginning", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [🎯{...}]
@@ -441,15 +414,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("add in the middle", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [{...},🎯{...}]
@@ -499,15 +463,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("add in a new line", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -561,15 +516,6 @@ describe("SWF LS JSON", () => {
 
     describe("operation completion", () => {
       test("not in quotes / without same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -611,15 +557,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("not in quotes / with same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -662,15 +599,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / without same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -712,15 +640,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / with same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -765,15 +684,6 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef completion", () => {
       test("without same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -823,15 +733,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("with same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -883,15 +784,6 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef refName completion", () => {
       test("not in quotes / without same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -950,15 +842,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("not in quotes / with same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -1018,15 +901,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / without same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -1085,15 +959,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / with same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -1155,15 +1020,6 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef arguments completion", () => {
       test("without same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
 {
   "functions": [
@@ -1217,15 +1073,6 @@ describe("SWF LS JSON", () => {
       });
 
       test("with same level content after", async () => {
-        const ls = new SwfJsonLanguageService({
-          fs: {},
-          serviceCatalog: {
-            ...defaultServiceCatalogConfig,
-            relative: { getServices: async () => [testRelativeService1] },
-          },
-          config: defaultConfig,
-        });
-
         const { content, cursorPosition } = treat(`
           {
             "functions": [
