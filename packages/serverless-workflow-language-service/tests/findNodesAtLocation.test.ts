@@ -234,7 +234,7 @@ describe("findNodesAtLocation", () => {
         }`);
     });
 
-    test("selecting the function object", () => {
+    test("selecting the functions array", () => {
       const ls = new SwfJsonLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -253,6 +253,8 @@ describe("findNodesAtLocation", () => {
       const nodesAtLocation = findNodesAtLocation(root, ["functions"]);
 
       expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(1);
+      expect(nodesAtLocation[0].type).toBe("array");
       expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length)).toBe(`[{
         "name": "function1",
         "operation": "openapi.yml#getGreeting"
@@ -281,6 +283,8 @@ describe("findNodesAtLocation", () => {
       const nodesAtLocation = findNodesAtLocation(root, ["functions", "*"]);
 
       expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(2);
+      expect(nodesAtLocation[0].type).toBe("object");
       expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length)).toBe(`{
         "name": "function1",
         "operation": "openapi.yml#getGreeting"
@@ -350,7 +354,7 @@ states:
         firstArg: test`);
     });
 
-    test("selecting the function object", () => {
+    test("selecting the functions array", () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -367,6 +371,8 @@ states:
       const nodesAtLocation = findNodesAtLocation(root, ["functions"]);
 
       expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(1);
+      expect(nodesAtLocation[0].type).toBe("array");
       expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length))
         .toBe(`- name: function1
         operation: openapi.yml#getGreeting
@@ -389,9 +395,10 @@ states:
       `.trim();
       const root = ls.parseContent(content);
       const nodesAtLocation = findNodesAtLocation(root, ["functions", "*"]);
-      const parentNode = findNodesAtLocation(root, ["functions"]);
 
       expect(nodesAtLocation).not.toBeUndefined();
+      expect(nodesAtLocation.length).toBe(2);
+      expect(nodesAtLocation[0].type).toBe("object");
       expect(content.slice(nodesAtLocation[0].offset, nodesAtLocation[0].offset + nodesAtLocation[0].length))
         .toBe(`name: function1
         operation: openapi.yml#getGreeting`);

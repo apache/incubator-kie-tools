@@ -430,7 +430,7 @@ functions:
         expect(matchNodeWithLocation(root!, node!, ["states"])).toBeFalsy();
       });
 
-      test.skip("with cursorOffset at the first function", () => {
+      test("with cursorOffset at the first function", () => {
         expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
         expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
       });
