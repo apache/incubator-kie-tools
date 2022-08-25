@@ -813,11 +813,11 @@ type: rest`,
     });
 
     describe("operation completion", () => {
-      test.skip("not in quotes / without same level content after", async () => {
+      test("not in quotes / without same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: testRelativeFunction1
-  operation: 🎯`);
+  operation:🎯`);
 
         const completionItems = await ls.getCompletionItems({
           uri: "test.sw.json",
@@ -833,7 +833,7 @@ functions:
           detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
           filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
           textEdit: {
-            newText: `specs/testRelativeService1.yml#testRelativeFunction1`,
+            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
               start: {
                 ...cursorPosition,
@@ -849,11 +849,11 @@ functions:
         } as CompletionItem);
       });
 
-      test.skip("not in quotes / with same level content after", async () => {
+      test("not in quotes / with same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: testRelativeFunction1
-  operation: 🎯
+  operation:🎯
   type: rest`);
 
         const completionItems = await ls.getCompletionItems({
@@ -870,7 +870,7 @@ functions:
           detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
           filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
           textEdit: {
-            newText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
               start: {
                 ...cursorPosition,
@@ -961,7 +961,7 @@ functions:
     });
 
     describe("functionRef completion", () => {
-      test.skip("without same level content after", async () => {
+      test("without same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: testRelativeFunction1
@@ -973,7 +973,7 @@ states:
   transition: end
   actions:
   - name: testStateAction
-    functionRef: 🎯`);
+    functionRef:🎯`);
 
         const completionItems = await ls.getCompletionItems({
           uri: "test.sw.json",
@@ -989,18 +989,18 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1",
           textEdit: {
-            newText: `refName: testRelativeFunction1
+            newText: `refName: 'testRelativeFunction1'
 arguments:
-  argString: "\${1:}"
-  argNumber: "\${2:}"
-  argBoolean: "\${3:}"`,
+  argString: '\${1:}'
+  argNumber: '\${2:}'
+  argBoolean: '\${3:}'`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
         } as CompletionItem);
       });
 
-      test.skip("with same level content after", async () => {
+      test("with same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: testRelativeFunction1
@@ -1011,7 +1011,7 @@ states:
   type: operation
   transition: end
   actions:
-  - functionRef: 🎯
+  - functionRef:🎯
     name: testStateAction
           `);
 
@@ -1029,11 +1029,11 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1",
           textEdit: {
-            newText: `refName: testRelativeFunction1
+            newText: `refName: 'testRelativeFunction1'
 arguments:
-  argString: "\${1:}"
-  argNumber: "\${2:}"
-  argBoolean: "\${3:}"`,
+  argString: '\${1:}'
+  argNumber: '\${2:}'
+  argBoolean: '\${3:}'`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
@@ -1042,7 +1042,7 @@ arguments:
     });
 
     describe("functionRef refName completion", () => {
-      test.skip("not in quotes / without same level content after", async () => {
+      test("not in quotes / without same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: myFunc
@@ -1055,7 +1055,7 @@ states:
   actions:
   - name: testStateAction
     functionRef:
-      refName: 🎯`);
+      refName:🎯`);
 
         const completionItems = await ls.getCompletionItems({
           uri: "test.sw.json",
@@ -1072,7 +1072,7 @@ states:
           filterText: `"myFunc"`,
           sortText: `"myFunc"`,
           textEdit: {
-            newText: `"myFunc"`,
+            newText: `myFunc`,
             range: {
               start: {
                 ...cursorPosition,
@@ -1088,7 +1088,7 @@ states:
         } as CompletionItem);
       });
 
-      test.skip("not in quotes / with same level content after", async () => {
+      test("not in quotes / with same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: myFunc
@@ -1101,7 +1101,7 @@ states:
   actions:
   - name: testStateAction
     functionRef:
-      refName: 🎯
+      refName:🎯
       arguments: {}`);
 
         const completionItems = await ls.getCompletionItems({
@@ -1119,7 +1119,7 @@ states:
           filterText: `"myFunc"`,
           sortText: `"myFunc"`,
           textEdit: {
-            newText: `"myFunc"`,
+            newText: `myFunc`,
             range: {
               start: {
                 ...cursorPosition,
@@ -1230,7 +1230,7 @@ states:
     });
 
     describe("functionRef arguments completion", () => {
-      test.skip("without same level content after", async () => {
+      test("without same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: testRelativeFunction1
@@ -1244,7 +1244,7 @@ states:
   - name: testStateAction
     functionRef:
       refName: testRelativeFunction1
-      arguments: 🎯`);
+      arguments:🎯`);
 
         const completionItems = await ls.getCompletionItems({
           uri: "test.sw.json",
@@ -1260,18 +1260,16 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1 arguments",
           textEdit: {
-            newText: `{
-  "argString": "\${1:}",
-  "argNumber": "\${2:}",
-  "argBoolean": "\${3:}"
-}`,
+            newText: `argString: '\${1:}'
+argNumber: '\${2:}'
+argBoolean: '\${3:}'`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
         } as CompletionItem);
       });
 
-      test.skip("with same level content after", async () => {
+      test("with same level content after", async () => {
         const { content, cursorPosition } = treat(`---
 functions:
 - name: testRelativeFunction1
@@ -1284,7 +1282,7 @@ states:
   actions:
   - name: testStateAction
     functionRef:
-      arguments: 🎯
+      arguments:🎯
       refName: testRelativeFunction1`);
 
         const completionItems = await ls.getCompletionItems({
@@ -1301,11 +1299,9 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1 arguments",
           textEdit: {
-            newText: `{
-  "argString": "\${1:}",
-  "argNumber": "\${2:}",
-  "argBoolean": "\${3:}"
-}`,
+            newText: `argString: '\${1:}'
+argNumber: '\${2:}'
+argBoolean: '\${3:}'`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,

@@ -370,6 +370,44 @@ states:
       ).toBeTruthy();
     });
 
+    test("matching empty operation property without same level content after", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`---
+functions:
+- name: testRelativeFunction1
+  operation:🎯`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
+      const node2 = findNodeAtOffset(root!, cursorOffset, false);
+
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
+
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*", "operation"])).toBeTruthy();
+    });
+
+    test("matching empty operation property with same level content after", () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+      const { content, cursorOffset } = treat(`---
+functions:
+- name: testRelativeFunction1
+  operation:🎯
+  type: rest`);
+      const root = ls.parseContent(content);
+      const node = findNodeAtOffset(root!, cursorOffset, true);
+
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
+
+      expect(matchNodeWithLocation(root!, node!, ["functions", "*", "operation"])).toBeTruthy();
+    });
+
     describe("matching functions array", () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
