@@ -62,7 +62,7 @@ jobs:
         run: git config --system core.longpaths true
 
       - name: "Clone kie-tools"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: kie-tools
 
@@ -282,7 +282,7 @@ jobs:
 
       - name: "Checkout kogito-online (Ubuntu only)"
         if: runner.os == 'Linux'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.KIE_TOOLS_BOT_TOKEN }}
           path: kogito-online
@@ -310,7 +310,7 @@ jobs:
 
       - name: "Checkout serverless-logic-sandbox-deployment (Ubuntu only)"
         if: runner.os == 'Linux'
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           token: ${{ secrets.KIE_TOOLS_BOT_TOKEN }}
           path: serverless-logic-sandbox-deployment
