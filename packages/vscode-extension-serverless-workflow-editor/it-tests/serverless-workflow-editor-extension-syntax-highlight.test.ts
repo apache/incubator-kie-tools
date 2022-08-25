@@ -69,10 +69,10 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
     const booleanValueColor = await resolveWebElementColor(booleanValueWebElement);
 
     // check that properties have the same color
-    expect(property1Color == property2Color, "All properties should be the same color").to.be.true;
+    expect(property1Color, "All properties should be the same color").equal(property2Color);
 
     // check that string values have the same color
-    expect(stringValue1Color == stringValue2Color, "All string values should be the same color").to.be.true;
+    expect(stringValue1Color, "All string values should be the same color").equal(stringValue2Color);
 
     // check that properties, string values and boolean have different color
     const allTypesColors = [property1Color, stringValue1Color, booleanValueColor];
@@ -87,6 +87,6 @@ describe("Serverless workflow editor - syntax highlighting test", () => {
   }
 
   async function resolveWebElementColor(webElement: WebElement): Promise<string> {
-    return await (await Promise.resolve(webElement)).getAttribute("class");
+    return await webElement.getAttribute("class");
   }
 });
