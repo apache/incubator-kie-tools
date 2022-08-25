@@ -75,6 +75,8 @@ public class SugiyamaLayoutServiceTest {
     @Test
     public void testCreateLayout() {
 
+        final String endingVertexId = "ending";
+        final String startingVertexId = "starting";
         final HashMap indexByUuid = mock(HashMap.class);
         final Collection values = mock(Collection.class);
         final LayeredGraph layeredGraph = mock(LayeredGraph.class);
@@ -87,12 +89,13 @@ public class SugiyamaLayoutServiceTest {
         when(indexByUuid.values()).thenReturn(values);
         when(layeredGraph.getLayers()).thenReturn(layers);
         doReturn(indexByUuid).when(layoutService).createIndex(vertices);
-        doReturn(layeredGraph).when(layoutService).createLayeredGraph(vertices);
+        doReturn(layeredGraph).when(layoutService).createLayeredGraph(vertices, startingVertexId, endingVertexId);
         doNothing().when(layoutService).createEdges(layeredGraph, indexByUuid);
 
         doReturn(layout).when(layoutService).buildLayout(indexByUuid, layeredGraph);
 
-        final Layout createdLayout = layoutService.createLayout(vertices);
+
+        final Layout createdLayout = layoutService.createLayout(vertices, startingVertexId, endingVertexId);
 
         inOrder.verify(cycleBreaker).breakCycle(layeredGraph);
         inOrder.verify(vertexLayerer).createLayers(layeredGraph);

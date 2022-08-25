@@ -28,5 +28,7 @@ public abstract class AbstractLayoutService {
         return Math.abs(value - 0) < CLOSE_TO_ZERO_TOLERANCE;
     }
 
-    public abstract Layout createLayout(final List<Vertex> vertices);
+    public abstract Layout createLayout(final List<Vertex> vertices,
+                                        final String startingVertexId,
+                                        final String endingVertexId);
 }

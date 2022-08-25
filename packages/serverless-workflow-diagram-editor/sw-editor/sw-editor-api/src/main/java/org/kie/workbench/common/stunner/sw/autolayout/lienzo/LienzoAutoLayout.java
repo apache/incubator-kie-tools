@@ -44,14 +44,20 @@ import org.kie.workbench.common.stunner.core.graph.content.HasBounds;
 
 public class LienzoAutoLayout {
 
-    public Promise<Layout> layout(final Graph graph, final Map<String, Vertex> vertices) {
-        return Promise.resolve(processGraph(graph, vertices));
+    public Promise<Layout> layout(final Graph graph,
+                                  final Map<String, Vertex> vertices,
+                                  final String startingNodeId,
+                                  final String endingNodeId) {
+        return Promise.resolve(processGraph(graph, vertices, startingNodeId, endingNodeId));
     }
 
-    public Layout processGraph(final Graph graph, final Map<String, Vertex> vertices) {
+    public Layout processGraph(final Graph graph,
+                               final Map<String, Vertex> vertices,
+                               final String startingNodeId,
+                               final String endingNodeId) {
 
         final AbstractLayoutService layoutService = createLayoutService();
-        final Layout layout = layoutService.createLayout(new ArrayList<>(vertices.values()));
+        final Layout layout = layoutService.createLayout(new ArrayList<>(vertices.values()), startingNodeId, endingNodeId);
 
         applyLayout(layout, graph);
 

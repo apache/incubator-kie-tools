@@ -174,7 +174,7 @@ public class AutomaticLayoutExample extends BaseExample implements Example {
     private void performAutomaticLayout() {
 
         final AbstractLayoutService layoutService = createLayoutService();
-        final Layout layout = layoutService.createLayout(vertices.values().stream().collect(Collectors.toList()));
+        final Layout layout = layoutService.createLayout(vertices.values().stream().collect(Collectors.toList()), "Start", "End");
 
         final List<VertexPosition> positions = layout.getVerticesPositions();
 
@@ -201,12 +201,10 @@ public class AutomaticLayoutExample extends BaseExample implements Example {
         final VertexOrdering vertexOrdering = createVertexOrdering();
         final VertexPositioning vertexPositioning = new DefaultVertexPositioning();
 
-        final SugiyamaLayoutService layoutService = new SugiyamaLayoutService(cycleBreaker,
-                                                                              vertexLayerer,
-                                                                              vertexOrdering,
-                                                                              vertexPositioning);
-
-        return layoutService;
+        return new SugiyamaLayoutService(cycleBreaker,
+                                         vertexLayerer,
+                                         vertexOrdering,
+                                         vertexPositioning);
     }
 
     private VertexOrdering createVertexOrdering() {
@@ -214,10 +212,9 @@ public class AutomaticLayoutExample extends BaseExample implements Example {
         final VertexLayerPositioning vertexLayerPositioning = new MedianVertexLayerPositioning();
         final LayerCrossingCount crossingCount = new LayerCrossingCount();
         final VerticesTransposer verticesTranspose = new VerticesTransposer(crossingCount);
-        final VertexOrdering vertexOrdering = new DefaultVertexOrdering(vertexLayerPositioning,
-                                                                        crossingCount,
-                                                                        verticesTranspose);
-        return vertexOrdering;
+        return new DefaultVertexOrdering(vertexLayerPositioning,
+                                         crossingCount,
+                                         verticesTranspose);
     }
 }
 

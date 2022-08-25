@@ -19,6 +19,8 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -200,7 +202,24 @@ public class Marshaller {
         removeEdgesWithNullTargets(graph);
 
         try {
-            final Promise<Node> layout = AutoLayout.applyLayout(graph, context.getWorkflowRootNode(), promises, builderContext.buildExecutionContext(), false);
+
+            final Stream<Node> graphNodes = StreamSupport.stream(graph.nodes().spliterator(), false);
+            final Node startNode = graphNodes.filter(Marshaller::isStartState)
+                    .findFirst()
+                    .orElseThrow(() -> new UnsupportedOperationException("Diagram without 'start' node."));
+
+            final Node endNode = graphNodes.filter(Marshaller::isEndState)
+                    .findFirst()
+                    .orElseThrow(() -> new UnsupportedOperationException("Diagram without 'end' node."));
+
+            final Promise<Node> layout = AutoLayout.applyLayout(graph,
+                                                                context.getWorkflowRootNode(),
+                                                                promises,
+                                                                builderContext.buildExecutionContext(),
+                                                                false,
+                                                                startNode.getUUID(),
+                                                                endNode.getUUID()
+            );
             return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
                 public void onInvoke(ResolveCallbackFn<ParseResult> success, RejectCallbackFn reject) {
@@ -284,7 +303,7 @@ public class Marshaller {
         Node node = unmarshallNode(builderContext, bean);
         // TODO: Handle errors? if any (no rules execution context)?
         builderContext.execute();
-        return AutoLayout.applyLayout(context.getGraph(), node, promises, builderContext.buildExecutionContext(), true);
+        return AutoLayout.applyLayout(context.getGraph(), node, promises, builderContext.buildExecutionContext(), true, "StartingNode", "EndingNode");
     }
 
     @FunctionalInterface

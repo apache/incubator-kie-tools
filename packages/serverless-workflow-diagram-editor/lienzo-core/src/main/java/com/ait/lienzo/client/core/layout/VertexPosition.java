@@ -27,6 +27,21 @@ public class VertexPosition implements Comparable<VertexPosition> {
     private boolean isVirtual;
     private int x;
     private int y;
+    private int width;
+    private int height;
+    private int bottomRightX;
+    private int bottomRightY;
+    private List<Edge> outgoingEdges;
+
+    public VertexPosition(final String id) {
+        this(id, false);
+    }
+
+    public VertexPosition(final String id,
+                          final boolean isVirtual) {
+        this.id = id;
+        this.isVirtual = isVirtual;
+    }
 
     public int getWidth() {
         return width;
@@ -44,11 +59,6 @@ public class VertexPosition implements Comparable<VertexPosition> {
         this.height = height;
     }
 
-    private int width;
-    private int height;
-
-    private int bottomRightX;
-
     public int getBottomRightX() {
         return bottomRightX;
     }
@@ -63,20 +73,6 @@ public class VertexPosition implements Comparable<VertexPosition> {
 
     public void setBottomRightY(int bottomRightY) {
         this.bottomRightY = bottomRightY;
-    }
-
-    private int bottomRightY;
-
-    private List<Edge> outgoingEdges;
-
-    public VertexPosition(final String id) {
-        this(id, false);
-    }
-
-    public VertexPosition(final String id,
-                          final boolean isVirtual) {
-        this.id = id;
-        this.isVirtual = isVirtual;
     }
 
     public boolean isVirtual() {

@@ -49,6 +49,7 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
     private final VertexLayerer vertexLayerer;
     private final VertexOrdering vertexOrdering;
     private final VertexPositioning vertexPositioning;
+
     static final LayerArrangement DEFAULT_LAYER_ARRANGEMENT = LayerArrangement.TopDown;
 
     /**
@@ -70,10 +71,12 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
     }
 
     @Override
-    public Layout createLayout(final List<Vertex> vertices) {
+    public Layout createLayout(final List<Vertex> vertices,
+                               final String startingVertexId,
+                               final String endingVertexId) {
 
         final HashMap<String, Vertex> indexByUuid = createIndex(vertices);
-        final LayeredGraph layeredGraph = createLayeredGraph(vertices);
+        final LayeredGraph layeredGraph = createLayeredGraph(vertices, startingVertexId, endingVertexId);
 
         this.cycleBreaker.breakCycle(layeredGraph);
         this.vertexLayerer.createLayers(layeredGraph);
@@ -116,7 +119,9 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
         return indexByUuid;
     }
 
-    LayeredGraph createLayeredGraph(final Iterable<? extends Vertex> nodes) {
+    LayeredGraph createLayeredGraph(final Iterable<? extends Vertex> nodes,
+                                    final String startingVertexId,
+                                    final String endingVertexId) {
 
         final LayeredGraph layeredGraph = getLayeredGraph();
         for (final Vertex n : nodes) {
@@ -125,6 +130,9 @@ public class SugiyamaLayoutService extends AbstractLayoutService {
 
             layeredGraph.setVertexSize(n.getId(), n.getWidth(), n.getHeight());
         }
+
+        layeredGraph.setStartingVertexId(startingVertexId);
+        layeredGraph.setEndingVertexId(endingVertexId);
 
         return layeredGraph;
     }

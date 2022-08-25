@@ -33,6 +33,9 @@ public class LayeredGraph implements ReorderedGraph {
     private final HashMap<String, Integer> verticesWidth;
     private final HashMap<String, Integer> verticesHeight;
 
+    private String startingVertexId;
+    private String endingVertexId;
+
     int DEFAULT_VERTEX_WIDTH = 100;
     int DEFAULT_VERTEX_HEIGHT = 50;
 
@@ -57,6 +60,22 @@ public class LayeredGraph implements ReorderedGraph {
         for (final String[] edge : edgesMatrix) {
             addEdge(edge[0], edge[1]);
         }
+    }
+
+    public void setStartingVertexId(final String startingVertexId) {
+        this.startingVertexId = startingVertexId;
+    }
+
+    public String getStartingVertexId() {
+        return startingVertexId;
+    }
+
+    public void setEndingVertexId(final String endingVertexId) {
+        this.endingVertexId = endingVertexId;
+    }
+
+    public String getEndingVertexId() {
+        return endingVertexId;
     }
 
     public void addEdge(final String from,

@@ -59,10 +59,12 @@ public class AutoLayout {
                                             final Node parentNode,
                                             final Promises promises,
                                             final DirectGraphCommandExecutionContext context,
-                                            final boolean isSubset) {
+                                            final boolean isSubset,
+                                            final String startingNodeId,
+                                            final String endingNodeId) {
 
         final Map<String, Vertex> vertices = loadVertices(graph, parentNode, false);
-        final Promise<Layout> autoLayoutPromise = new LienzoAutoLayout().layout(graph, vertices);
+        final Promise<Layout> autoLayoutPromise = new LienzoAutoLayout().layout(graph, vertices, startingNodeId, endingNodeId);
 
         return promises.create((resolve, reject) -> autoLayoutPromise
                 .then(layout -> {
