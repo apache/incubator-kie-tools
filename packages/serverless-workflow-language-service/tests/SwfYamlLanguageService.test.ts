@@ -294,7 +294,7 @@ states:
       });
     });
 
-    test("parsing content with an incomplete functionRef", async () => {
+    test("parsing content with an incomplete functionRef object", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -322,6 +322,24 @@ states:
         rootNode?.children?.[0].children?.[1].children?.[0].children?.[2].children?.[1].children?.[0].children?.[1]
           .children?.[1].value
       ).toBe("a");
+    });
+
+    test("parsing content with an incomplete operation property", async () => {
+      const ls = new SwfYamlLanguageService({
+        fs: {},
+        serviceCatalog: defaultServiceCatalogConfig,
+        config: defaultConfig,
+      });
+
+      const { content } = trim(`---
+functions:
+- name: testRelativeFunction1
+  operation: `);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(rootNode).not.toBeUndefined();
+      expect(rootNode?.children?.[0].children?.[1].children?.[0].children?.[1].children?.[0].value).toBe("operation");
     });
   });
 

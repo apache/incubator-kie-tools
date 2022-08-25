@@ -104,12 +104,10 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   } else if (node.kind === Kind.MAPPING) {
     const yamlMapping = node as YAMLMapping;
     convertedNode.value = yamlMapping.value;
-    if (convertedNode.value) {
-      convertedNode.children = [
-        astConvert(yamlMapping.key, convertedNode),
-        astConvert(yamlMapping.value, convertedNode),
-      ];
-    }
+    convertedNode.children = [
+      astConvert(yamlMapping.key, convertedNode),
+      ...(convertedNode.value ? [astConvert(yamlMapping.value, convertedNode)] : []),
+    ];
     convertedNode.type = "property";
   } else if (node.kind === Kind.SEQ) {
     convertedNode.children = (node as YAMLSequence).items
