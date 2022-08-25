@@ -268,7 +268,7 @@ describe("KIE Editors Integration Test Suite - BPMN Editor", () => {
     await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitLanguage, "select");
 
     await bpmnEditorTester.openDiagramExplorer();
-    await bpmnEditorTester.openDiagramProperties();
+    propertiesPanel = await bpmnEditorTester.openDiagramProperties();
     await propertiesPanel.expandPropertySection(PropertiesPanelSection.IMPLEMENTATION_EXECUTION);
 
     // Asserts
