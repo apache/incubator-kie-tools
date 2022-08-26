@@ -118,7 +118,7 @@ jobs:
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
 
-      - name: "Upload integration tests results to Buildkite"
+      - name: "Upload integration tests results to Buildkite (`main` only)"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
         shell: bash
         env:
