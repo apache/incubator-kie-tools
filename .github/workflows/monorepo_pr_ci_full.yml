@@ -120,6 +120,7 @@ jobs:
 
       - name: "Upload integration tests results to Buildkite"
         if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        shell: bash
         env:
           BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_TOKEN }}
           BUILDKITE_BUILD_ID: ${{ github.run_id }}
