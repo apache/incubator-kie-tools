@@ -22,19 +22,18 @@ import (
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
 
 type RootCmdConfig struct {
-	DependenciesVersion metadata.DependenciesVersion
-	PluginVersion       string
+	Name    string
+	Version string
 }
 
-func NewRootCommand() *cobra.Command {
+func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "kn-workflow",
+		Use:   cfg.Name,
 		Short: "Serverless Workflow",
 		Long:  "Manage Kogito Serverless Workflow projects",
 	}
@@ -47,13 +46,13 @@ func NewRootCommand() *cobra.Command {
 		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
 	}
 
-	cmd.Version = metadata.PluginVersion
+	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
 	cmd.AddCommand(command.NewBuildCommand())
 	cmd.AddCommand(command.NewCreateCommand())
 	cmd.AddCommand(command.NewDeployCommand())
-	cmd.AddCommand(command.NewVersionCommand())
+	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

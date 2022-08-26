@@ -18,6 +18,8 @@ package plugin
 
 import (
 	"os"
+	"runtime/debug"
+	"strings"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
 	knplugin "knative.dev/client/pkg/kn/plugin"
@@ -38,7 +40,15 @@ func (w *workflowPlugin) Name() string {
 
 // Execute represents the plugin's entrypoint when called through kn
 func (w *workflowPlugin) Execute(args []string) error {
-	cmd := root.NewRootCommand()
+	var version string
+	info, _ := debug.ReadBuildInfo()
+	for _, dep := range info.Deps {
+		if strings.Contains(dep.Path, "github.com/kiegroup/kie-tools/packages/kn-plugin-workflow") {
+			version = dep.Version
+		}
+	}
+
+	cmd := root.NewRootCommand(root.RootCmdConfig{Name: "kn workflow", Version: version})
 	oldArgs := os.Args
 	defer (func() {
 		os.Args = oldArgs

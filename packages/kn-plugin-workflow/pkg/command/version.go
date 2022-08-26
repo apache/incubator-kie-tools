@@ -20,11 +20,10 @@ import (
 	"fmt"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/cobra"
 )
 
-func NewVersionCommand() *cobra.Command {
+func NewVersionCommand(version string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "version",
 		Short: "Show the version",
@@ -42,15 +41,13 @@ func NewVersionCommand() *cobra.Command {
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
-	version := metadata.PluginVersion
-
 	cmd.Run = func(cmd *cobra.Command, args []string) {
-		runVersion(cmd, args, version)
+		runVersion(version)
 	}
 
 	return cmd
 }
 
-func runVersion(cmd *cobra.Command, args []string, version string) {
+func runVersion(version string) {
 	fmt.Printf("Version %s\n", version)
 }
