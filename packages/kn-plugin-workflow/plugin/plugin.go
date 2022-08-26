@@ -19,9 +19,8 @@ package plugin
 import (
 	"os"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
-	"knative.dev/client/pkg/kn/plugin"
+	knplugin "knative.dev/client/pkg/kn/plugin"
 )
 
 type workflowPlugin struct{}
@@ -29,7 +28,7 @@ type workflowPlugin struct{}
 var quarkusPlatformGroupId, quarkusVersion, pluginVersion string
 
 func init() {
-	plugin.InternalPlugins = append(plugin.InternalPlugins, &workflowPlugin{})
+	knplugin.InternalPlugins = append(knplugin.InternalPlugins, &workflowPlugin{})
 }
 
 // Name is a plugin's name
@@ -39,15 +38,7 @@ func (w *workflowPlugin) Name() string {
 
 // Execute represents the plugin's entrypoint when called through kn
 func (w *workflowPlugin) Execute(args []string) error {
-	cfg := root.RootCmdConfig{
-		DependenciesVersion: common.DependenciesVersion{
-			QuarkusPlatformGroupId: quarkusPlatformGroupId,
-			QuarkusVersion:         quarkusVersion,
-		},
-		PluginVersion: pluginVersion,
-	}
-
-	cmd := root.NewRootCommand(cfg)
+	cmd := root.NewRootCommand()
 	oldArgs := os.Args
 	defer (func() {
 		os.Args = oldArgs

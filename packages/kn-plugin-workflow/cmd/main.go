@@ -20,22 +20,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
 )
 
-var quarkusPlatformGroupId, quarkusVersion, pluginVersion string
-
 func main() {
-	cfg := root.RootCmdConfig{
-		DependenciesVersion: common.DependenciesVersion{
-			QuarkusPlatformGroupId: quarkusPlatformGroupId,
-			QuarkusVersion:         quarkusVersion,
-		},
-		PluginVersion: pluginVersion,
-	}
-
-	if err := root.NewRootCommand(cfg).Execute(); err != nil {
+	if err := root.NewRootCommand().Execute(); err != nil {
 		if err.Error() != "subcommand is required" {
 			fmt.Fprintln(os.Stderr, err)
 		}
