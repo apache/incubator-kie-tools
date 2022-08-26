@@ -17,7 +17,6 @@
 package jakarta.json.bind;
 
 import jakarta.json.bind.spi.JsonbProvider;
-import jakarta.json.spi.JsonProvider;
 
 /**
  * JsonbBuilder class provides the client's entry point to the JSON Binding API. It builds {@link

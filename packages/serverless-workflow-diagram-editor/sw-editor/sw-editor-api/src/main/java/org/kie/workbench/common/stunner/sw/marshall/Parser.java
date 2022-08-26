@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
@@ -53,8 +54,14 @@ public class Parser {
     private FactoryManager factoryManager;
 
     public Workflow parse(Workflow jso) {
+
+        DomGlobal.console.log("Parser.parse 1");
+
         Workflow workflow = parse(Workflow.class, jso);
+        DomGlobal.console.log("Parser.parse 2");
+
         loadStates(workflow, jso);
+        DomGlobal.console.log("Parser.parse 3");
 
         return workflow;
     }

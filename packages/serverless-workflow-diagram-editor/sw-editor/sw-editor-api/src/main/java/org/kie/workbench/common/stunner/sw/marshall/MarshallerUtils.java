@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
+import com.google.gwt.core.client.GWT;
 import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
@@ -52,7 +53,10 @@ public class MarshallerUtils {
         T instance = factoryManager.newDefinition(type.getName());
         // TODO: Check stunner vs native approach here...
         //instance = stunnerMerge(instance, jso);
+        GWT.log("parse 1");
+
         instance = nativeMerge(instance, jso);
+        GWT.log("parse 2");
         return (T) instance;
     }
 

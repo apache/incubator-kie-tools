@@ -19,19 +19,18 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
-import org.kie.workbench.common.stunner.sw.definition.Transition;
 
-public class DataConditionTransitionEndJsonbTypeSerializer  implements JsonbSerializer<Object> {
+public class StartDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {
 
-    org.kie.workbench.common.stunner.sw.definition.Transition_JsonSerializerImpl transition_JsonSerializerImpl =
-            new org.kie.workbench.common.stunner.sw.definition.Transition_JsonSerializerImpl();
+    org.kie.workbench.common.stunner.sw.definition.custom.StartDefinition_JsonSerializerImpl startDefinitionJsonSerializerImpl =
+            new org.kie.workbench.common.stunner.sw.definition.custom.StartDefinition_JsonSerializerImpl();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
-        if (obj instanceof Boolean) {
-            generator.write("end", ((Boolean) obj));
-        } else if (obj instanceof Transition) {
-            transition_JsonSerializerImpl.serialize((Transition) obj, "end", generator, ctx);
+        if (obj instanceof String) {
+            generator.write("start", (String) obj);
+        } else if (obj instanceof StartDefinition) {
+            startDefinitionJsonSerializerImpl.serialize((StartDefinition) obj, "start", generator, ctx);
         }
     }
 }

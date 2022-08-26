@@ -30,8 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionStartJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeSerializer;
 
 /**
  * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
@@ -75,8 +75,8 @@ public class Workflow {
     /**
      * Workflow start definition.
      */
-    @JsonbTypeSerializer(DataConditionTransitionStartJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
+    @JsonbTypeSerializer(StartDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StartDefinitionJsonbTypeDeserializer.class)
     public Object start;
 
     /**

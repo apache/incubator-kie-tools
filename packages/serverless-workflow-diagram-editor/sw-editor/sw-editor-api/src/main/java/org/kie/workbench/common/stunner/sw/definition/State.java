@@ -30,8 +30,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanDock;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionTransitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 /**
  * This class defines workflow states define building blocks of the workflow execution instructions.
@@ -71,16 +73,16 @@ public class State {
      * Next transition of the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
-    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
     public Object transition;
 
     /**
      * Whether this State is a last state in the workflow.
      */
     // TODO: Not all states supports this (eg: switch state)
-    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
+    @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
     public Object end;
 
     /**
