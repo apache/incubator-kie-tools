@@ -32,7 +32,7 @@ export function useSwfTextEditorChannelApi(args: {
   channelApi?: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>;
   embeddedEditorFile?: EmbeddedEditorFile;
   onEditorReady: () => void;
-  getSwfDiagramEditorEnvelopeApi?: () => MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>;
+  swfDiagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>;
 }) {
   const [services] = useSharedValue(args.channelApi?.shared.kogitoSwfServiceCatalog_services);
   const [serviceRegistriesSettings] = useSharedValue(
@@ -49,11 +49,6 @@ export function useSwfTextEditorChannelApi(args: {
         },
       }),
     [args, stateControl]
-  );
-
-  const swfDiagramEditorEnvelopeApi = useMemo(
-    () => args.getSwfDiagramEditorEnvelopeApi?.(),
-    [args.getSwfDiagramEditorEnvelopeApi]
   );
 
   const swfServiceCatalogChannelApiImpl = useMemo(
@@ -77,9 +72,9 @@ export function useSwfTextEditorChannelApi(args: {
         channelApiImpl,
         args.channelApi,
         swfServiceCatalogChannelApiImpl,
-        swfDiagramEditorEnvelopeApi
+        args.swfDiagramEditorEnvelopeApi
       ),
-    [channelApiImpl, args.channelApi]
+    [channelApiImpl, args.channelApi, args.swfDiagramEditorEnvelopeApi]
   );
 
   return {

@@ -27,7 +27,7 @@ export function useSwfDiagramEditorChannelApi(args: {
   channelApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorChannelApi>;
   embeddedEditorFile?: EmbeddedEditorFile;
   onEditorReady: () => void;
-  getSwfTextEditorEnvelopeApi?: () => MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
+  swfTextEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>;
 }) {
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
@@ -42,18 +42,13 @@ export function useSwfDiagramEditorChannelApi(args: {
     [args, stateControl]
   );
 
-  const swfTextEditorEnvelopeApi = useMemo(
-    () => args.getSwfTextEditorEnvelopeApi?.(),
-    [args.getSwfTextEditorEnvelopeApi]
-  );
-
   const channelApi = useMemo(
     () =>
       args.channelApi &&
       channelApiImpl &&
-      swfTextEditorEnvelopeApi &&
-      new ServerlessWorkflowDiagramEditorChannelApiImpl(channelApiImpl, swfTextEditorEnvelopeApi),
-    [args.channelApi, channelApiImpl, swfTextEditorEnvelopeApi]
+      args.swfTextEditorEnvelopeApi &&
+      new ServerlessWorkflowDiagramEditorChannelApiImpl(channelApiImpl, args.swfTextEditorEnvelopeApi),
+    [args.channelApi, channelApiImpl, args.swfTextEditorEnvelopeApi]
   );
 
   return {

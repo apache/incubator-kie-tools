@@ -275,29 +275,37 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     console.error("Error setting content on diagram editor");
   }, []);
 
-  /* TODO: ServerlessWorkflowCombinedEditor: memoize this https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935782888 */
-  const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
-    useSwfDiagramEditorChannelApi({
+  const useSwfDiagramEditorChannelApiArgs = useMemo(
+    () => ({
       channelApi:
         editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorChannelApi>,
       locale: props.locale,
       embeddedEditorFile: embeddedDiagramEditorFile,
       onEditorReady: onDiagramEditorReady,
-      getSwfTextEditorEnvelopeApi: () =>
-        textEditor?.getEnvelopeServer()
-          .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>,
-    });
+      swfTextEditorEnvelopeApi: textEditor?.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>,
+    }),
+    [editorEnvelopeCtx, embeddedDiagramEditorFile, onDiagramEditorReady, textEditor]
+  );
 
-  /* TODO: ServerlessWorkflowCombinedEditor: memoize this https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935782888 */
-  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useSwfTextEditorChannelApi({
-    channelApi: editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
-    locale: props.locale,
-    embeddedEditorFile: embeddedDiagramEditorFile,
-    onEditorReady: onTextEditorReady,
-    getSwfDiagramEditorEnvelopeApi: () =>
-      diagramEditor?.getEnvelopeServer()
+  const useSwfTextEditorChannelApiArgs = useMemo(
+    () => ({
+      channelApi:
+        editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
+      locale: props.locale,
+      embeddedEditorFile: embeddedDiagramEditorFile,
+      onEditorReady: onTextEditorReady,
+      swfDiagramEditorEnvelopeApi: diagramEditor?.getEnvelopeServer()
         .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>,
-  });
+    }),
+    [editorEnvelopeCtx, embeddedDiagramEditorFile, onTextEditorReady, diagramEditor]
+  );
+
+  const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
+    useSwfDiagramEditorChannelApi(useSwfDiagramEditorChannelApiArgs);
+
+  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } =
+    useSwfTextEditorChannelApi(useSwfTextEditorChannelApiArgs);
 
   return (
     <div style={{ height: "100%" }}>
