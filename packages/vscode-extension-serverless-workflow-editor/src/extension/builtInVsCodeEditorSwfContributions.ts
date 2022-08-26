@@ -30,12 +30,20 @@ import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
+import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
+import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 
 export function setupBuiltInVsCodeEditorSwfContributions(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
   vsCodeSwfLanguageService: VsCodeSwfLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
+  kieEditorsStore: VsCodeKieEditorStore;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
@@ -108,6 +116,46 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       const commandHandler = swfLsCommandHandlers[args.command as SwfLanguageServiceCommandTypes];
       (commandHandler as (...args: any[]) => any)?.(...commandArgs);
     })
+  );
+
+  args.context.subscriptions.push(
+    vscode.commands.registerCommand(
+      COMMAND_IDS.moveCursorToNode,
+      async ({ nodeName, documentUri }: { nodeName: string; documentUri: string }) => {
+        const textEditor = vscode.window.visibleTextEditors.filter(
+          (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
+        )[0];
+
+        if (!textEditor) {
+          console.debug("TextEditor not found");
+          return;
+        }
+
+        const resourceUri = textEditor.document.uri;
+
+        const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
+
+        const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
+        if (!targetOffset) {
+          return;
+        }
+
+        const targetPosition = textEditor.document.positionAt(targetOffset);
+        if (targetPosition === null) {
+          return;
+        }
+
+        await vscode.commands.executeCommand("vscode.open", resourceUri, {
+          viewColumn: textEditor.viewColumn,
+          preserveFocus: false,
+        } as vscode.TextDocumentShowOptions);
+
+        const targetRange = new vscode.Range(targetPosition, targetPosition);
+
+        textEditor.revealRange(targetRange, vscode.TextEditorRevealType.InCenter);
+        textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
+      }
+    )
   );
 
   args.context.subscriptions.push(
@@ -222,6 +270,37 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       }
     })
   );
+
+  vscode.window.onDidChangeTextEditorSelection((e) => {
+    if (!isEventFiredFromUser(e)) {
+      return;
+    }
+
+    const uri = e.textEditor.document.uri;
+    const offset = e.textEditor.document.offsetAt(e.selections[0].active);
+
+    const swfOffsetsApi = initSwfOffsetsApi(e.textEditor.document);
+
+    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
+
+    if (!nodeName) {
+      return;
+    }
+
+    const envelopeServer = args.kieEditorsStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
+      ServerlessWorkflowDiagramEditorChannelApi,
+      ServerlessWorkflowDiagramEditorEnvelopeApi
+    >;
+
+    if (!envelopeServer) {
+      return;
+    }
+
+    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({
+      nodeName,
+      documentUri: uri.path,
+    });
+  });
 }
 
 async function setSwfJsonDiagnostics(
@@ -246,4 +325,8 @@ async function setSwfJsonDiagnostics(
 
   diagnosticsCollection.clear();
   diagnosticsCollection.set(uri, diagnostics);
+}
+
+function isEventFiredFromUser(event: vscode.TextEditorSelectionChangeEvent) {
+  return event.kind !== vscode.TextEditorSelectionChangeKind.Command;
 }

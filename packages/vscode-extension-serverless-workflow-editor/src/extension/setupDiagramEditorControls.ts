@@ -14,50 +14,18 @@
  * limitations under the License.
  */
 
+import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
+import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import * as vscode from "vscode";
+import { COMMAND_IDS } from "./commandIds";
 import {
   ShouldOpenDiagramEditorAutomaticallyConfiguration,
   SwfVsCodeExtensionConfiguration,
   WEBVIEW_EDITOR_VIEW_TYPE,
 } from "./configuration";
-import { COMMAND_IDS } from "./commandIds";
-import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
-import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import {
-  getFileLanguage,
-  FileLanguage,
-  getFileLanguageOrThrow,
-  SwfLanguageServiceChannelApi,
-  SwfOffsetsApi,
-} from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
-import {
-  ServerlessWorkflowDiagramEditorChannelApi,
-  ServerlessWorkflowDiagramEditorEnvelopeApi,
-} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-
-const swfJsonOffsets = new SwfJsonOffsets();
-const swfYamlOffsets = new SwfYamlOffsets();
-
-function isEventFiredFromUser(event: vscode.TextEditorSelectionChangeEvent) {
-  return event.kind !== vscode.TextEditorSelectionChangeKind.Command;
-}
 
 function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
-}
-
-function initSwfOffsetsApi(textDocument: vscode.TextDocument): SwfJsonOffsets | SwfYamlOffsets {
-  const fileLanguage = getFileLanguageOrThrow(textDocument.fileName);
-
-  const editorContent = textDocument.getText();
-
-  const swfOffsetsApi = fileLanguage === FileLanguage.JSON ? swfJsonOffsets : swfYamlOffsets;
-
-  swfOffsetsApi.parseContent(editorContent);
-
-  return swfOffsetsApi;
 }
 
 async function openAsDiagramIfSwf(args: { textEditor: vscode.TextEditor; active: boolean }) {
@@ -155,46 +123,6 @@ export async function setupDiagramEditorControls(args: {
     })
   );
 
-  args.context.subscriptions.push(
-    vscode.commands.registerCommand(
-      COMMAND_IDS.moveCursorToNode,
-      async ({ nodeName, documentUri }: { nodeName: string; documentUri: string }) => {
-        const textEditor = vscode.window.visibleTextEditors.filter(
-          (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
-        )[0];
-
-        if (!textEditor) {
-          console.debug("TextEditor not found");
-          return;
-        }
-
-        const resourceUri = textEditor.document.uri;
-
-        const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
-
-        const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
-        if (!targetOffset) {
-          return;
-        }
-
-        const targetPosition = textEditor.document.positionAt(targetOffset);
-        if (targetPosition === null) {
-          return;
-        }
-
-        await vscode.commands.executeCommand("vscode.open", resourceUri, {
-          viewColumn: textEditor.viewColumn,
-          preserveFocus: false,
-        } as vscode.TextDocumentShowOptions);
-
-        const targetRange = new vscode.Range(targetPosition, targetPosition);
-
-        textEditor.revealRange(targetRange, vscode.TextEditorRevealType.InCenter);
-        textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
-      }
-    )
-  );
-
   if (vscode.window.activeTextEditor) {
     if (!isSwf(vscode.window.activeTextEditor.document)) {
       return;
@@ -206,35 +134,4 @@ export async function setupDiagramEditorControls(args: {
       active: false,
     });
   }
-
-  vscode.window.onDidChangeTextEditorSelection((e) => {
-    if (!isEventFiredFromUser(e)) {
-      return;
-    }
-
-    const uri = e.textEditor.document.uri;
-    const offset = e.textEditor.document.offsetAt(e.selections[0].active);
-
-    const swfOffsetsApi = initSwfOffsetsApi(e.textEditor.document);
-
-    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
-
-    if (!nodeName) {
-      return;
-    }
-
-    const envelopeServer = args.kieEditorsStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
-      ServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
-    >;
-
-    if (!envelopeServer) {
-      return;
-    }
-
-    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({
-      nodeName,
-      documentUri: uri.path,
-    });
-  });
 }

@@ -119,6 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vsCodeSwfLanguageService,
     configuration,
     swfServiceCatalogSupportActions,
+    kieEditorsStore,
   });
 
   setupServiceRegistryIntegrationCommands({
