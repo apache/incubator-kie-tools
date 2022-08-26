@@ -219,7 +219,7 @@ digraph G {
   "@kie-tools/kie-sandbox-fs" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "blue" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/kie-sandbox-image" -> "@kie-tools/online-editor" [ style = "dashed", color = "black" ];
-  "@kie-tools/kn-plugin-workflow" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/kn-plugin-workflow" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
   "@kie-tools-core/maven-config-setup-helper" -> "@kie-tools/build-env" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/monaco-editor" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/notifications" -> "@kie-tools-core/i18n" [ style = "solid", color = "purple" ];

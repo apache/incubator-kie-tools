@@ -2,10 +2,7 @@ name: "Setup KIE Tools build environment"
 description: ""
 
 inputs:
-  os:
-    description: "Operating System"
-    required: true
-  path:
+  working_dir:
     description: "kie-tools path"
     required: false
     default: "."
@@ -17,11 +14,11 @@ runs:
       shell: bash
       run: |
         echo "STEP: Print storage usage (before setup)"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         du -sh .
 
     - name: "Setup pnpm"
-      uses: pnpm/action-setup@v2.0.1
+      uses: pnpm/action-setup@10693b3829bf86eb2572aef5f3571dcf5ca9287d
       with:
         version: 7.0.0
 
@@ -44,14 +41,14 @@ runs:
       shell: bash
       run: |
         echo "STEP: Setup network timeout"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         pnpm config set network-timeout 1000000
 
     - name: "Setup default Maven args"
       shell: bash
       run: |
         echo "STEP: Setup default Maven args"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         pnpm -r exec 'bash' '-c' 'mkdir .mvn'
         pnpm -r exec 'bash' '-c' 'echo -B -ntp > .mvn/maven.config'
         pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
@@ -60,14 +57,14 @@ runs:
       shell: bash
       run: |
         echo "STEP: Start Xvfb (Ubuntu only)"
-        cd ${{ inputs.path }}
-        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
             /usr/bin/Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
         fi
 
     - name: "Configure Pagefile (Windows only)"
-      if: inputs.os == 'windows-latest'
-      uses: al-cheb/configure-pagefile-action@v1.2
+      if: runner.os == 'Windows'
+      uses: al-cheb/configure-pagefile-action@7e234852c937eea04d6ee627c599fb24a5bfffee
       with:
         minimum-size: 16GB
         maximum-size: 16GB
@@ -77,8 +74,8 @@ runs:
       shell: bash
       run: |
         echo "STEP: Increase inotify watches (Ubuntu only)"
-        cd ${{ inputs.path }}
-        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
           echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
         fi
 
@@ -86,8 +83,8 @@ runs:
       shell: bash
       run: |
         echo "STEP: Setup GOLANG packages (Linux)"
-        cd ${{ inputs.path }}
-        if [ "${{ inputs.os }}" == "ubuntu-latest" ]; then
+        cd ${{ inputs.working_dir }}
+        if [ "${{ runner.os }}" == "Linux" ]; then
           sudo apt update && \
           sudo apt install -y \
           build-essential \
@@ -100,5 +97,5 @@ runs:
       shell: bash
       run: |
         echo "STEP: Print storage usage (after setup)"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         du -sh .

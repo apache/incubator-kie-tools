@@ -516,7 +516,7 @@
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
-      { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools/build-env", "weight": 1 },
+      { "source": "@kie-tools/kn-plugin-workflow", "target": "@kie-tools-core/run-script-if", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image", "target": "@kie-tools-core/run-script-if", "weight": 1 },

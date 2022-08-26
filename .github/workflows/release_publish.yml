@@ -30,7 +30,7 @@ jobs:
           tag: ${{ github.event.inputs.tag }}
 
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
 

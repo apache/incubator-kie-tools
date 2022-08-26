@@ -18,8 +18,8 @@
   ],
   "scripts": {
     "build": "rimraf dist && pnpm copy:css && tsc",
-    "build:dev": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
-    "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/"
   },
   "dependencies": {

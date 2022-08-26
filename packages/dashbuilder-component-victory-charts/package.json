@@ -18,9 +18,9 @@
     "build:dev": "rimraf dist && pnpm copy:css && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && pnpm copy:css && webpack",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\""
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "@kie-tools-core/patternfly-base": "workspace:*",
@@ -38,7 +38,8 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/build-env": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
-    "@types/numeral": "^2.0.2"
+    "@types/numeral": "^2.0.2",
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

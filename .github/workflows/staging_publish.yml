@@ -20,7 +20,7 @@ jobs:
       download_asset_url: ${{ steps.release_json_ext.outputs.download_url }}
     steps:
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: "Parse `tag`"
         id: release_draft_tag

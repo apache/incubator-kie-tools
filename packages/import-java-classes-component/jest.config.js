@@ -20,7 +20,7 @@ module.exports = {
       tsconfig: "<rootDir>/tsconfig.dev.json",
     },
   },
-  reporters: ["default"],
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src", "<rootDir>"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   modulePathIgnorePatterns: ["<rootDir>/showcase/", "<rootDir>/dist/"],
