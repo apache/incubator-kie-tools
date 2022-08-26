@@ -27,7 +27,7 @@ import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageSer
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
+import { setupDiagramEditorCompanionTab } from "./setupDiagramEditorCompanionTab";
 import { COMMAND_IDS } from "./commandIds";
 import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
 import { RedHatAuthExtensionStateStore } from "./RedHatAuthExtensionStateStore";
@@ -128,7 +128,7 @@ export async function activate(context: vscode.ExtensionContext) {
     serviceRegistryStore: serviceRegistriesStore,
   });
 
-  await setupDiagramEditorControls({
+  await setupDiagramEditorCompanionTab({
     context,
     configuration,
     kieEditorsStore,

@@ -63,7 +63,7 @@ async function maybeOpenAsDiagramIfSwf(args: {
   await openAsDiagramIfSwf(args);
 }
 
-export async function setupDiagramEditorControls(args: {
+export async function setupDiagramEditorCompanionTab(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
   kieEditorsStore: VsCodeKieEditorStore;
