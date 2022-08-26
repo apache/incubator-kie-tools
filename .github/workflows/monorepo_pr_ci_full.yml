@@ -126,7 +126,7 @@ jobs:
           BUILDKITE_BUILD_ID: ${{ github.run_id }}
           BUILDKITE_BUILD_NUMBER: ${{ github.run_attempt }}
           BUILDKITE_JOB_ID: ${{ github.run_id }}
-          BUILDKITE_BRANCH: main
+          BUILDKITE_BRANCH: ${{ github.ref_name }}
           BUILDKITE_COMMIT: ${{ github.sha }}
           BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
           BUILDKITE_BUILD_URL: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
