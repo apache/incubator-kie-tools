@@ -1,0 +1,21 @@
+name: go
+on:
+  pull_request: {}
+
+jobs:
+  unit:
+    name: unit
+    runs-on: ubuntu-20.04
+    needs: check_docs_only
+    if: needs.check_docs_only.outputs.skip != 'true'
+    steps:
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - run: make test
+      - uses: shogo82148/actions-goveralls@v1
+        with:
+          path-to-profile: coverage.out

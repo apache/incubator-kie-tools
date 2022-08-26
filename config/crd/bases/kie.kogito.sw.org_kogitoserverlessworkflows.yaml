@@ -237,7 +237,7 @@ spec:
                   - type
                   type: object
                 type: array
-              keepAlive:
+              keepActive:
                 type: boolean
               retries:
                 properties:

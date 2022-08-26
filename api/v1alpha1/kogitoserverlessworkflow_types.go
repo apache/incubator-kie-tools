@@ -250,11 +250,11 @@ type State struct {
 	// +kubebuilder:validation:Required
 	Name string `json:"name"`
 	// +kubebuilder:validation:Enum:=event;operation;switch;sleep;parallel;inject;foreach
-	Type       StateType          `json:"type"`
-	Exclusive  *bool              `json:"exclusive,omitempty"`
-	ActionMode *ActionMode        `json:"actionMode,omitempty"`
-	Actions    *[]Action          `json:"actions,omitempty"`
-	Data       *map[string]string `json:"data,omitempty"`
+	Type       StateType                             `json:"type"`
+	Exclusive  *bool                                 `json:"exclusive,omitempty"`
+	ActionMode *ActionMode                           `json:"actionMode,omitempty"`
+	Actions    *[]Action                             `json:"actions,omitempty"`
+	Data       *map[string]unstructured.Unstructured `json:"data,omitempty"`
 	//TODO: Define a type for DataCondition objects
 	DataConditions *[]DataCondition `json:"dataConditions,omitempty"`
 	//TODO: Define a type for EventContitions objects
@@ -291,7 +291,7 @@ type KogitoServerlessWorkflowSpec struct {
 	Start       string       `json:"start"`
 	Timeouts    []Timeout    `json:"timeouts,omitempty"`
 	Errors      []Error      `json:"errors,omitempty"`
-	KeepAlive   bool         `json:"keepAlive,omitempty"`
+	KeepActive  bool         `json:"keepActive,omitempty"`
 	Auth        Auth         `json:"auth,omitempty"`
 	Events      *[]Event     `json:"events,omitempty"`
 	Functions   []Function   `json:"functions,omitempty"`

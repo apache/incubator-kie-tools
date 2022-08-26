@@ -699,12 +699,12 @@ func (in *State) DeepCopyInto(out *State) {
 	}
 	if in.Data != nil {
 		in, out := &in.Data, &out.Data
-		*out = new(map[string]string)
+		*out = new(map[string]unstructured.Unstructured)
 		if **in != nil {
 			in, out := *in, *out
-			*out = make(map[string]string, len(*in))
+			*out = make(map[string]unstructured.Unstructured, len(*in))
 			for key, val := range *in {
-				(*out)[key] = val
+				(*out)[key] = *val.DeepCopy()
 			}
 		}
 	}

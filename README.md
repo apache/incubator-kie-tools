@@ -1,5 +1,10 @@
-# Kogito Serverless Workflow Operator
-Kogito Serverless Workflow CRD PoC
+# Kogito Serverless Operator
+
+The Kogito Serverless Operator is built in order to help the Kogito Serverless users to build and deploy easily on 
+Kubernetes/Knative/OpenShift a service based on Kogito that it will be able to execute a workflow.
+
+The CustomResources defined and managed by this operator are the following:
+- Workflow 
 
 # PreRequisites
 

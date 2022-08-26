@@ -1,0 +1,141 @@
+package converters
+
+import (
+	"context"
+	"errors"
+	"github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	"github.com/davidesalerno/kogito-serverless-operator/constants"
+	"github.com/go-logr/logr"
+	"github.com/serverlessworkflow/sdk-go/v2/model"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"path"
+	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
+	"strings"
+)
+
+var log logr.Logger
+
+type KogitoServerlessWorkflowConverter struct {
+	ctx context.Context
+}
+
+// NewKogitoServerlessWorkflowConverter ...
+func NewKogitoServerlessWorkflowConverter(contex context.Context) KogitoServerlessWorkflowConverter {
+	return KogitoServerlessWorkflowConverter{ctx: contex}
+}
+
+// Function to convert a KogitoServerlessWorkflow object to a model.Workflow one in order to be able to convert it to a YAML/Json
+func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *v1alpha1.KogitoServerlessWorkflow) (*model.Workflow, error) {
+	if serverlessWorkflow != nil {
+		log = ctrllog.FromContext(k.ctx)
+		newBaseWorkflow := &model.BaseWorkflow{ID: serverlessWorkflow.ObjectMeta.Name,
+			Key:            serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("key")],
+			Name:           serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("name")],
+			Description:    serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("description")],
+			Version:        serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("version")],
+			SpecVersion:    extractSchemaVersion(serverlessWorkflow.APIVersion),
+			ExpressionLang: serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("expressionLang")],
+			KeepActive:     serverlessWorkflow.Spec.KeepActive,
+			AutoRetries:    serverlessWorkflow.Spec.AutoRetries,
+			Start:          retrieveStartState(serverlessWorkflow.Spec.Start)}
+		log.Info("Created new Base Workflow name", newBaseWorkflow)
+		newWorkflow := &model.Workflow{BaseWorkflow: *newBaseWorkflow, Functions: retrieveFunctions(serverlessWorkflow.Spec.Functions), States: retrieveStates(serverlessWorkflow.Spec.States)}
+		return newWorkflow, nil
+	}
+	return nil, errors.New(("KogitoServerlessWorkflow is nil"))
+}
+
+// Function to extract from the apiVersion the ServerlessWorkflow schema version
+// For example given kie.kogito.sw.org/v08 we would like to extract v0.8
+func extractSchemaVersion(version string) string {
+	schemaVersion := path.Base(version)
+	strings.Replace(schemaVersion, "v0", "v0.", 1)
+	return schemaVersion
+}
+
+// Function to retrieve a Start object given the name of the start state
+func retrieveStartState(name string) *model.Start {
+	start := &model.Start{StateName: name, Schedule: nil}
+	return start
+}
+
+// Function to retrieve a list of states coming from an array of v1alpha1.State objects
+func retrieveStates(incomingStates []v1alpha1.State) []model.State {
+	states := make([]model.State, len(incomingStates))
+	for i, s := range incomingStates {
+		newBaseState := &model.BaseState{Name: s.Name}
+		if *s.End {
+			newBaseState.End = &model.End{Terminate: true}
+		}
+		switch sType := s.Type; sType {
+		case "switch":
+			newBaseSwitchState := &model.BaseSwitchState{
+				BaseState:        *newBaseState,
+				DefaultCondition: model.DefaultCondition{},
+			}
+			if s.DataConditions != nil {
+				newSwitchState := &model.DataBasedSwitchState{BaseSwitchState: *newBaseSwitchState}
+				dataConditions := make([]model.DataCondition, len(*s.DataConditions))
+				for k, dc := range *s.DataConditions {
+					newBaseCondition := &model.BaseDataCondition{Condition: dc.Condition}
+					newTrasition := &model.Transition{NextState: dc.Transition}
+					dataConditions[k] = &model.TransitionDataCondition{
+						BaseDataCondition: *newBaseCondition,
+						Transition:        *newTrasition,
+					}
+				}
+				if s.DefaultCondition != nil {
+					// Since at the moment we are not able yet to manage default condition that can be end or transition
+					// let's use Transition
+					newSwitchState.DefaultCondition = model.DefaultCondition{Transition: model.Transition{
+						NextState: *s.DefaultCondition,
+					}}
+				}
+				newSwitchState.DataConditions = dataConditions
+				states[i] = newSwitchState
+			}
+
+		case "inject":
+			data := getData(*s.Data)
+			states[i] = &model.InjectState{BaseState: *newBaseState, Data: data}
+		case "operation":
+			var actions []model.Action
+			if s.Actions != nil {
+				actions = make([]model.Action, len(*s.Actions))
+				for k, ac := range *s.Actions {
+					action := &model.Action{
+						Name: *ac.Name,
+						//TODO: We need to support arguments in FunctionRef
+						FunctionRef: model.FunctionRef{RefName: *ac.FunctionRef},
+					}
+					actions[k] = *action
+				}
+			}
+			states[i] = &model.OperationState{BaseState: *newBaseState, Actions: actions}
+		default:
+			log.Info("Unable to create a CNCF State from incoming state type ", sType)
+		}
+	}
+	return states
+}
+
+func getData(data map[string]unstructured.Unstructured) map[string]interface{} {
+	out := make(map[string]interface{}, len(data))
+	for k, v := range data {
+		out[k] = v
+	}
+	return out
+}
+
+// Function to retrieve a list of model.Function coming from an array of v1alpha1.Function objects
+func retrieveFunctions(incomingFunctions []v1alpha1.Function) []model.Function {
+	functions := make([]model.Function, len(incomingFunctions))
+	for i, f := range incomingFunctions {
+		switch ftype := f.Type; ftype {
+		default:
+			function := &model.Function{Name: f.Name, Type: model.FunctionType(f.Type), Operation: f.Operation}
+			functions[i] = *function
+		}
+	}
+	return functions
+}

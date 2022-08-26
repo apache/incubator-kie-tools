@@ -18,13 +18,14 @@ package controllers
 
 import (
 	"context"
-
+	serverlessv1alpha1 "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	"github.com/davidesalerno/kogito-serverless-operator/converters"
+	"github.com/ghodss/yaml"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/log"
-
-	serverlessv1alpha1 "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 )
 
 // KogitoServerlessWorkflowReconciler reconciles a KogitoServerlessWorkflow object
@@ -39,7 +40,6 @@ type KogitoServerlessWorkflowReconciler struct {
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
 // the KogitoServerlessWorkflow object against the actual cluster state, and then
 // perform operations to make the cluster state reflect the state specified by
 // the user.
@@ -47,10 +47,33 @@ type KogitoServerlessWorkflowReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.2/pkg/reconcile
 func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	log := ctrllog.FromContext(ctx)
+	// Lookup the KogitoServerlessWorkflow instance for this reconcile request
+	kogitoServerlessWorkflow := &serverlessv1alpha1.KogitoServerlessWorkflow{}
+	err := r.Get(ctx, req.NamespacedName, kogitoServerlessWorkflow)
+	if err != nil {
+		if errors.IsNotFound(err) {
+			// Request object not found, could have been deleted after reconcile request.
+			// Owned objects are automatically garbage collected. For additional cleanup logic use finalizers.
+			// Return and don't requeue
+			log.Info("KogitoServerlessWorkflow resource not found. Ignoring since object must be deleted")
+			return ctrl.Result{}, nil
+		}
+		// Error reading the object - requeue the request.
+		log.Error(err, "Failed to get KogitoServerlessWorkflow")
 
-	// TODO(user): your logic here
-
+		return ctrl.Result{}, err
+	}
+	//TODO KOGITO-7840 Add validation on Workflow Metadata
+	converter := converters.NewKogitoServerlessWorkflowConverter(ctx)
+	workflow, err := converter.ToCNCFWorkflow(kogitoServerlessWorkflow)
+	if err != nil {
+		log.Error(err, "Failed converting KogitoServerlessWorkflow into Workflow")
+		return ctrl.Result{}, err
+	}
+	_, _ = yaml.Marshal(workflow)
+	//TODO Save into Shared Volume
+	//TODO KOGITO-7498 Kogito Serverless Workflow Builder Image
 	return ctrl.Result{}, nil
 }
 
