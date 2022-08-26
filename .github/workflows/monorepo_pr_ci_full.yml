@@ -128,7 +128,7 @@ jobs:
           BUILDKITE_BRANCH: main
           BUILDKITE_COMMIT: ${{ github.sha }}
           BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
-          BUILDKITE_BUILD_URL: ${{ github.event.html_url }}/actions/runs/${{ github.run_id }}
+          BUILDKITE_BUILD_URL: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
           INTEGRATION_TESTS_PATTERNS: >-
             ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
         run: |
