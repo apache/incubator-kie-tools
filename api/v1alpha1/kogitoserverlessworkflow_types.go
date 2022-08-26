@@ -62,18 +62,28 @@ const (
 )
 
 type OAuth2Properties struct {
-	Authority        string     `json:"basic,omitempty"`
-	GrantType        GrantType  `json:"grantType"`
-	ClientId         string     `json:"clientId"`
-	ClientSecret     string     `json:"clientSecret"`
-	Scopes           []string   `json:"scopes,omitempty"`
-	Username         string     `json:"username,omitempty"`
-	Password         string     `json:"password,omitempty"`
-	Audiences        []string   `json:"audiences,omitempty"`
-	SubjectToken     string     `json:"subjectToken,omitempty"`
-	RequestedSubject string     `json:"requestedSubject,omitempty"`
-	RequestedIssuer  string     `json:"requestedIssuer,omitempty"`
-	Metadata         []Metadata `json:"metadata,omitempty"`
+	// +optional
+	Authority *string   `json:"basic,omitempty"`
+	GrantType GrantType `json:"grantType"`
+	ClientId  string    `json:"clientId"`
+	// +optional
+	ClientSecret *string `json:"clientSecret"`
+	// +optional
+	Scopes *[]string `json:"scopes,omitempty"`
+	// +optional
+	Username *string `json:"username,omitempty"`
+	// +optional
+	Password *string `json:"password,omitempty"`
+	// +optional
+	Audiences *[]string `json:"audiences,omitempty"`
+	// +optional
+	SubjectToken *string `json:"subjectToken,omitempty"`
+	// +optional
+	RequestedSubject *string `json:"requestedSubject,omitempty"`
+	// +optional
+	RequestedIssuer *string `json:"requestedIssuer,omitempty"`
+	// +optional
+	Metadata *[]Metadata `json:"metadata,omitempty"`
 }
 
 type AuthProperties struct {
@@ -106,13 +116,18 @@ type Metadata struct {
 }
 
 type Event struct {
-	Name        string                 `json:"name"`
-	Source      string                 `json:"source"`
-	Type        string                 `json:"type"`
-	Kind        EventKind              `json:"kind,omitempty"`
-	Correlation []EventCorrelationRule `json:"correlation,omitempty"`
-	DataOnly    bool                   `json:"dataOnly,omitempty"`
-	Metadata    []Metadata             `json:"metadata,omitempty"`
+	Name string `json:"name"`
+	// +optional
+	Source *string `json:"source"`
+	Type   string  `json:"type"`
+	// +optional
+	Kind *EventKind `json:"kind,omitempty"`
+	// +optional
+	Correlation *[]EventCorrelationRule `json:"correlation,omitempty"`
+	// +optional
+	DataOnly *bool `json:"dataOnly,omitempty"`
+	// +optional
+	Metadata *[]Metadata `json:"metadata,omitempty"`
 }
 
 type FunctionType string
@@ -127,21 +142,30 @@ const (
 )
 
 type Function struct {
-	Name      string       `json:"name"`
-	Operation string       `json:"operation"`
-	Type      FunctionType `json:"type"`
-	AuthRef   string       `json:"authRef,omitempty"`
-	Metadata  []Metadata   `json:"metadata,omitempty"`
+	Name      string `json:"name"`
+	Operation string `json:"operation"`
+	// +optional
+	Type FunctionType `json:"type"`
+	// +optional
+	AuthRef *string `json:"authRef,omitempty"`
+	// +optional
+	Metadata *[]Metadata `json:"metadata,omitempty"`
 }
 
 type Retry struct {
-	Name        string `json:"name"`
-	Delay       string `json:"delay,omitempty"`
-	MaxAttempts int    `json:"maxAttempts,omitempty"`
-	MaxDelay    string `json:"maxDelay,omitempty"`
-	Increment   string `json:"increment,omitempty"`
-	Multiplier  string `json:"multiplier,omitempty"`
-	Jitter      string `json:"jitter,omitempty"`
+	Name string `json:"name"`
+	// +optional
+	Delay *string `json:"delay,omitempty"`
+	// +optional
+	MaxAttempts *int `json:"maxAttempts,omitempty"`
+	// +optional
+	MaxDelay *string `json:"maxDelay,omitempty"`
+	// +optional
+	Increment *string `json:"increment,omitempty"`
+	// +optional
+	Multiplier *string `json:"multiplier,omitempty"`
+	// +optional
+	Jitter *string `json:"jitter,omitempty"`
 }
 
 type StateType string
@@ -322,9 +346,9 @@ type KogitoServerlessWorkflowStatus struct {
 }
 
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
-//+kubebuilder:object:root=true
-//+kubebuilder:subresource:items
-//+k8s:openapi-gen=true
+// +kubebuilder:object:root=true
+// +kubebuilder:subresource:items
+// +k8s:openapi-gen=true
 type KogitoServerlessWorkflow struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -334,8 +358,8 @@ type KogitoServerlessWorkflow struct {
 }
 
 // KogitoServerlessWorkflowList contains a list of KogitoServerlessWorkflow
-//+kubebuilder:object:root=true
-//+k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
+// +kubebuilder:object:root=true
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type KogitoServerlessWorkflowList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 // Package v1alpha1 contains API Schema definitions for the serverless v1alpha1 API group
-//+kubebuilder:object:generate=true
-//+groupName=kie.kogito.sw.org
+// +kubebuilder:object:generate=true
+// +groupName=kie.kogito.sw.org
 package v1alpha1
 
 import (
