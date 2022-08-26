@@ -216,7 +216,6 @@ public class ScrollablePanel extends LienzoBoundsPanel {
 
     @Override
     public void onResize() {
-        super.onResize();
         initResizeObserver();
     }
 
@@ -277,8 +276,6 @@ public class ScrollablePanel extends LienzoBoundsPanel {
                 if (null != m_postResizeCallback) {
                     m_postResizeCallback.execute(this);
                 }
-
-                refresh();
             }
         };
     }

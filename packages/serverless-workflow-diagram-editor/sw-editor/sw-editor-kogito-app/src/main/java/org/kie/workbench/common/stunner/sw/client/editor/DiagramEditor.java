@@ -361,7 +361,11 @@ public class DiagramEditor {
         WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
         ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
         lienzoPanel.setPostResizeCallback((panel -> {
-            PanelTransformUtils.scaleToFitPanel(lienzoPanel);
+            double scale = PanelTransformUtils.computeZoomLevelFitToWidth(lienzoPanel);
+            // Do not scale if the workflow fits the panel
+            if (scale < 1) {
+                PanelTransformUtils.scale(lienzoPanel, scale);
+            }
             lienzoPanel.setPostResizeCallback(null);
         }));
     }
