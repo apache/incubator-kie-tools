@@ -27,9 +27,6 @@ export class DiagramService implements DiagramApi {
   ) {}
 
   public onNodeSelected(nodeName: string) {
-    if (!nodeName) {
-      return;
-    }
     this.envelopeContext.channelApi.notifications.kogitoSwfDiagramEditor__onNodeSelected.send({ nodeName });
   }
 }
