@@ -54,37 +54,38 @@ public class ModelUtils {
 
     private static void cleanState(State state) {
         if (state != null) {
-            if (InjectState.TYPE_INJECT.equals(state.type)) {
+            if (InjectState.TYPE_INJECT.equals(state.getType())) {
                 cleanInjectState((InjectState) state);
-            } else if (EventState.TYPE_EVENT.equals(state.type)) {
+            } else if (EventState.TYPE_EVENT.equals(state.getType())) {
                 cleanEventState((EventState) state);
-            } else if (SwitchState.TYPE_SWITCH.equals(state.type)) {
+            } else if (SwitchState.TYPE_SWITCH.equals(state.getType())) {
                 cleanSwitchState((SwitchState) state);
-            } else if (OperationState.TYPE_OPERATION.equals(state.type)) {
+            } else if (OperationState.TYPE_OPERATION.equals(state.getType())) {
                 cleanOperationState((OperationState) state);
-            } else if (SleepState.TYPE_SLEEP.equals(state.type)) {
+            } else if (SleepState.TYPE_SLEEP.equals(state.getType())) {
                 cleanSleepState((SleepState) state);
-            } else if (ParallelState.TYPE_PARALLEL.equals(state.type)) {
+            } else if (ParallelState.TYPE_PARALLEL.equals(state.getType())) {
                 cleanParallelState((ParallelState) state);
-            } else if (ForEachState.TYPE_FOR_EACH.equals(state.type)) {
+            } else if (ForEachState.TYPE_FOR_EACH.equals(state.getType())) {
                 cleanForEachState((ForEachState) state);
-            } else if (CallbackState.TYPE_CALLBACK.equals(state.type)) {
+            } else if (CallbackState.TYPE_CALLBACK.equals(state.getType())) {
                 cleanCallbackState((CallbackState) state);
             }
 
-            state.name = (String) Js.undefined();
-            state.type = (String) Js.undefined();
-            state.transition = (String) Js.undefined();
-            state.eventTimeout = (String) Js.undefined();
-            state.compensatedBy = (String) Js.undefined();
-            state.end = null;
-            if (null != state.onErrors) {
-                for (int i = 0; i < state.onErrors.length; i++) {
-                    cleanErrorTransition(state.onErrors[i]);
-                    state.onErrors[i] = (ErrorTransition) Js.undefined();
+
+            state.setName((String) Js.undefined());
+            state.setType((String) Js.undefined());
+            state.setTransition((String) Js.undefined());
+            state.setEventTimeout((String) Js.undefined());
+            state.setCompensatedBy((String) Js.undefined());
+            state.setEnd(false);
+            if (null != state.getOnErrors()) {
+                for (int i = 0; i < state.getOnErrors().length; i++) {
+                    cleanErrorTransition(state.getOnErrors()[i]);
+                    state.getOnErrors()[i] = (ErrorTransition) Js.undefined();
                 }
             }
-            state.onErrors = (ErrorTransition[]) Js.undefined();
+            state.setOnErrors((ErrorTransition[]) Js.undefined());
         }
     }
 

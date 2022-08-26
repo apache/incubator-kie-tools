@@ -60,12 +60,12 @@ public class State {
      * Unique state name, can't be null.
      */
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     /**
      * Type of the state, can't be null.
      */
-    public String type;
+    protected String type;
 
     public Metadata metadata;
 
@@ -75,7 +75,7 @@ public class State {
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
-    public Object transition;
+    private Object transition;
 
     /**
      * Whether this State is a last state in the workflow.
@@ -83,22 +83,22 @@ public class State {
     // TODO: Not all states supports this (eg: switch state)
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
-    public Object end;
+    private Object end;
 
     /**
      * Definitions of states error handling.
      */
-    public ErrorTransition[] onErrors;
+    private ErrorTransition[] onErrors;
 
     /**
      * State specific timeouts.
      */
-    public String eventTimeout;
+    private String eventTimeout;
 
     /**
      * Unique name of a workflow state which is responsible for compensation of this state.
      */
-    public String compensatedBy;
+    private String compensatedBy;
 
     public State() {
         this.name = "State";

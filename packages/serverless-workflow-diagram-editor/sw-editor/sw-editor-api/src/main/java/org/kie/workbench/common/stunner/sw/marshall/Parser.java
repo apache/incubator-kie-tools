@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import elemental2.dom.DomGlobal;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
@@ -54,15 +53,8 @@ public class Parser {
     private FactoryManager factoryManager;
 
     public Workflow parse(Workflow jso) {
-
-        DomGlobal.console.log("Parser.parse 1");
-
         Workflow workflow = parse(Workflow.class, jso);
-        DomGlobal.console.log("Parser.parse 2");
-
         loadStates(workflow, jso);
-        DomGlobal.console.log("Parser.parse 3");
-
         return workflow;
     }
 
@@ -86,32 +78,32 @@ public class Parser {
 
     private State parseState(State jso) {
         State state = null;
-        if (InjectState.TYPE_INJECT.equals(jso.type)) {
+        if (InjectState.TYPE_INJECT.equals(jso.getType())) {
             state = parse(InjectState.class, jso);
-        } else if (EventState.TYPE_EVENT.equals(jso.type)) {
+        } else if (EventState.TYPE_EVENT.equals(jso.getType())) {
             state = parseEventState(jso);
-        } else if (SwitchState.TYPE_SWITCH.equals(jso.type)) {
+        } else if (SwitchState.TYPE_SWITCH.equals(jso.getType())) {
             state = parseSwitchState(jso);
-        } else if (OperationState.TYPE_OPERATION.equals(jso.type)) {
+        } else if (OperationState.TYPE_OPERATION.equals(jso.getType())) {
             state = parseOperationState(jso);
-        } else if (SleepState.TYPE_SLEEP.equals(jso.type)) {
+        } else if (SleepState.TYPE_SLEEP.equals(jso.getType())) {
             state = parse(SleepState.class, jso);
-        } else if (ParallelState.TYPE_PARALLEL.equals(jso.type)) {
+        } else if (ParallelState.TYPE_PARALLEL.equals(jso.getType())) {
             state = parse(ParallelState.class, jso);
-        } else if (ForEachState.TYPE_FOR_EACH.equals(jso.type)) {
+        } else if (ForEachState.TYPE_FOR_EACH.equals(jso.getType())) {
             state = parseForEachState(jso);
-        } else if (CallbackState.TYPE_CALLBACK.equals(jso.type)) {
+        } else if (CallbackState.TYPE_CALLBACK.equals(jso.getType())) {
             state = parseCallbackState(jso);
         }
 
         if (null != state) {
-            ErrorTransition[] onErrors = jso.onErrors;
+            ErrorTransition[] onErrors = jso.getOnErrors();
             if (null != onErrors) {
-                state.onErrors = new ErrorTransition[onErrors.length];
+                state.setOnErrors(new ErrorTransition[onErrors.length]);
                 for (int i = 0; i < onErrors.length; i++) {
                     ErrorTransition e = onErrors[i];
                     ErrorTransition et = parseErrorTransition(e);
-                    state.onErrors[i] = et;
+                    state.getOnErrors()[i] = et;
                 }
             }
             Metadata metadata = Js.uncheckedCast(Js.asPropertyMap(jso).get("metadata"));

@@ -78,7 +78,7 @@ public interface StateMarshalling {
                 }
 
                 // Parse transition.
-                String transition = getTransition(state.transition);
+                String transition = getTransition(state.getTransition());
                 if (isValidString(transition)) {
                     final Transition t = new Transition();
                     t.setTo(transition);
@@ -86,9 +86,9 @@ public interface StateMarshalling {
                 }
 
                 // Parse compensation transition.
-                if (isValidString(state.compensatedBy)) {
+                if (isValidString(state.getCompensatedBy())) {
                     CompensationTransition compensationTransition = new CompensationTransition();
-                    compensationTransition.setTransition(state.compensatedBy);
+                    compensationTransition.setTransition(state.getCompensatedBy());
                     Edge<ViewConnector<Object>, Node> compensationEdge = unmarshallEdge(context, compensationTransition);
                 }
 
@@ -129,7 +129,7 @@ public interface StateMarshalling {
                         if (null != timeoutNode) {
                             Object def = getElementDefinition(timeoutNode);
                             if (def instanceof EventTimeout) {
-                                state.eventTimeout = ((EventTimeout) def).getEventTimeout();
+                                state.setEventTimeout(((EventTimeout) def).getEventTimeout());
                             }
                         }
                     } else {
@@ -140,7 +140,7 @@ public interface StateMarshalling {
                         marshallEdge(context, edge);
                     }
                 }
-                state.onErrors = errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]);
+                state.setOnErrors(errors.isEmpty() ? null : errors.toArray(new ErrorTransition[errors.size()]));
                 return state;
             };
 

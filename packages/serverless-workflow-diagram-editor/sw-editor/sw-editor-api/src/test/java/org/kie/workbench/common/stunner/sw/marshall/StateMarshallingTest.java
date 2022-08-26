@@ -62,8 +62,8 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
-        assertTrue(workflow.states[0].end instanceof JsPropertyMap);
-        final JsPropertyMap end = (JsPropertyMap) workflow.states[0].end;
+        assertTrue(workflow.states[0].getEnd() instanceof JsPropertyMap);
+        final JsPropertyMap end = (JsPropertyMap) workflow.states[0].getEnd();
         assertTrue((Boolean) end.get("terminate"));
         assertTrue(end.get("continueAs").equals("{}"));
         assertTrue(!((Boolean) end.get("compensate")));
@@ -122,11 +122,11 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         Workflow workflow = marshallWorkflow();
         assertEquals(1, workflow.states.length);
         State state1 = workflow.states[0];
-        assertNull(state1.transition);
-        assertFalse(DefinitionTypeUtils.getEnd(state1.end));
-        assertNull(state1.compensatedBy);
-        assertNull(state1.eventTimeout);
-        assertNull(state1.onErrors);
+        assertNull(state1.getTransition());
+        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertNull(state1.getCompensatedBy());
+        assertNull(state1.getEventTimeout());
+        assertNull(state1.getOnErrors());
     }
 
     @Test
@@ -143,13 +143,13 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         // Assert the domain object gets properly updated once marshalling.
         Workflow workflow = marshallWorkflow();
         State state1 = workflow.states[0];
-        assertNull(state1.transition);
-        assertFalse(DefinitionTypeUtils.getEnd(state1.end));
-        assertNull(state1.compensatedBy);
-        assertNull(state1.eventTimeout);
-        assertNotNull(state1.onErrors);
-        assertEquals(1, state1.onErrors.length);
-        ErrorTransition onError = state1.onErrors[0];
+        assertNull(state1.getTransition());
+        assertFalse(DefinitionTypeUtils.getEnd(state1.getEnd()));
+        assertNull(state1.getCompensatedBy());
+        assertNull(state1.getEventTimeout());
+        assertNotNull(state1.getOnErrors());
+        assertEquals(1, state1.getOnErrors().length);
+        ErrorTransition onError = state1.getOnErrors()[0];
         assertNull(onError.transition);
         assertTrue(DefinitionTypeUtils.getEnd(onError.end));
     }

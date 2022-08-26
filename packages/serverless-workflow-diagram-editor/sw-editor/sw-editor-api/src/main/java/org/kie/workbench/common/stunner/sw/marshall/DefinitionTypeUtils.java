@@ -3,6 +3,8 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEnd;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransition;
 
 public class DefinitionTypeUtils {
 
@@ -14,10 +16,9 @@ public class DefinitionTypeUtils {
         if (end instanceof Boolean) {
             return (boolean) end;
         } else if (end != null) {
-            Object terminate = getObjectProperty(end, TERMINATE);
-            if (terminate != null) {
-                return (boolean) terminate;
-            }
+
+            StateEnd stateEnd = (StateEnd) end;
+            return stateEnd.getTerminate();
         }
         return false;
     }
@@ -26,7 +27,8 @@ public class DefinitionTypeUtils {
         if (transition instanceof String) {
             return (String) transition;
         } else if (transition != null) {
-            return (String) getObjectProperty(transition, NEXT_STATE);
+            StateTransition stateTransition = (StateTransition) transition;
+            return stateTransition.getNextState();
         }
         return null;
     }

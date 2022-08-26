@@ -131,11 +131,8 @@ public class Marshaller {
 
     @SuppressWarnings("all")
     public Promise<ParseResult> unmarshallGraph(String raw) {
-        DomGlobal.console.log("unmarshallGraph 1");
         try {
             workflow = parser.parse(mapper.fromJSON(raw));
-            DomGlobal.console.log("unmarshallGraph 2");
-
         } catch (Exception e) {
             return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override

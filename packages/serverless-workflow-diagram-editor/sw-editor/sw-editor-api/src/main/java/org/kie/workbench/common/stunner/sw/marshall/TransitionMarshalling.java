@@ -28,6 +28,7 @@ import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransition;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 
@@ -63,20 +64,15 @@ public interface TransitionMarshalling {
                         Object targetDef = getElementDefinition(targetNode);
 
                         if (targetDef instanceof End) {
-                            sourceState.transition = null;
-                            if (sourceState.end instanceof Boolean) {
-                                sourceState.end = true;
-                            }
-                        } else {
-                            if (sourceState.transition instanceof String) {
-                                sourceState.transition = getStateNodeName(targetNode);
-                            } else {
-                                setObjectProperty(sourceState.transition, "nextState", getStateNodeName(targetNode));
-                            }
 
-                            if (sourceState.end instanceof Boolean) {
-                                sourceState.end = false;
-                            }
+                            sourceState.setTransition(null);
+
+                            if (sourceState.getEnd() instanceof Boolean) {
+                                sourceState.setEnd(true);
+                            } // else is Object
+                        } else {
+                            sourceState.setTransition(getStateNodeName(targetNode));
+                            sourceState.setEnd(false);
                         }
                     }
                 }
@@ -104,10 +100,10 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         State sourceState = getElementDefinition(sourceNode);
 
-                        if (sourceState.transition instanceof String) {
-                            sourceState.transition = getStateNodeName(targetNode);
+                        if (sourceState.getTransition() instanceof String) {
+                            sourceState.setTransition(getStateNodeName(targetNode));
                         } else {
-                            setObjectProperty(sourceState.transition, "nextState", getStateNodeName(targetNode));
+                            ((StateTransition)sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
                         }
                     }
                 }
