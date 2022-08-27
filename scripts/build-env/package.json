@@ -22,10 +22,8 @@
     "src"
   ],
   "scripts": {
-    "build-env": "node dist/bin.js",
-    "install": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test && pnpm print",
+    "install": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
     "lint": "eslint ./src --ext .ts,.tsx",
-    "print": "node dist/bin.js --print-vars && node dist/bin.js --print-env",
     "test": "jest --silent --verbose --passWithNoTests"
   },
   "dependencies": {},

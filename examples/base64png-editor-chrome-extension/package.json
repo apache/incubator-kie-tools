@@ -28,6 +28,7 @@
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/chrome": "^0.0.193",
+    "kie-tools-root": "workspace:*",
     "zip-webpack-plugin": "^4.0.1"
   },
   "babel": {

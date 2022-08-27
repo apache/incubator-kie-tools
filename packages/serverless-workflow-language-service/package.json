@@ -37,7 +37,8 @@
   },
   "devDependencies": {
     "@types/json-to-ast": "^2.1.2",
-    "jest-junit": "^14.0.0"
+    "jest-junit": "^14.0.0",
+    "kie-tools-root": "workspace:*"
   },
   "babel": {
     "presets": [

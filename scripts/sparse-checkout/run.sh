@@ -28,12 +28,11 @@ git sparse-checkout set $KIE_TOOLS_PATHS_INCLUDED_BY_DEFAULT
 echo ""
 
 echo "[kie-tools-sparse-checkout] Installing scripts and root dependencies..."
-pnpm bootstrap:scripts --frozen-lockfile
 pnpm bootstrap:root --frozen-lockfile
 echo ""
 
 echo "[kie-tools-sparse-checkout] Listing paths of packages to fetch for (${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]})..."
-KIE_TOOLS_PACKAGE_PATHS_TO_FETCH=$(node scripts/sparse-checkout/list_packages_dependencies.js ./repo "${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]}")
+KIE_TOOLS_PACKAGE_PATHS_TO_FETCH=$(pnpm kie-tools--list-packages-dependencies ./repo "${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]}")
 echo $KIE_TOOLS_PACKAGE_PATHS_TO_FETCH | xargs -n1
 echo ""
 

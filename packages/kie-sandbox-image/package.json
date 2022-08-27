@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",
-    "@kie-tools/online-editor": "workspace:*"
+    "@kie-tools/online-editor": "workspace:*",
+    "kie-tools-root": "workspace:*"
   }
 }

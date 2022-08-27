@@ -31,7 +31,8 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.168",
-    "jest-junit": "^14.0.0"
+    "jest-junit": "^14.0.0",
+    "kie-tools-root": "workspace:*"
   },
   "babel": {
     "presets": [

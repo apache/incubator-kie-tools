@@ -16,5 +16,7 @@
   "files": [
     "index.js"
   ],
-  "devDependencies": {}
+  "devDependencies": {
+    "kie-tools-root": "workspace:*"
+  }
 }

@@ -14,6 +14,7 @@ importers:
       "@babel/preset-react": ^7.16.0
       "@kie-tools-build/bootstrap": workspace:*
       "@kie-tools-build/build-env": workspace:*
+      "@kie-tools-build/maven-config-setup-helper": workspace:*
       "@kie-tools-build/run-script-if": workspace:*
       "@kie-tools-build/sparse-checkout": workspace:*
       "@kie-tools-build/update-version": workspace:*
@@ -78,6 +79,7 @@ importers:
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-build/bootstrap": link:scripts/bootstrap
       "@kie-tools-build/build-env": link:scripts/build-env
+      "@kie-tools-build/maven-config-setup-helper": link:scripts/maven-config-setup-helper
       "@kie-tools-build/run-script-if": link:scripts/run-script-if
       "@kie-tools-build/sparse-checkout": link:scripts/sparse-checkout
       "@kie-tools-build/update-version": link:scripts/update-version
@@ -146,6 +148,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -158,6 +161,8 @@ importers:
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      kie-tools-root: link:../..
 
   examples/base64png-editor-chrome-extension:
     specifiers:
@@ -168,6 +173,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/base64png-editor": workspace:*
       "@types/chrome": ^0.0.193
+      kie-tools-root: workspace:*
       zip-webpack-plugin: ^4.0.1
     dependencies:
       "@kie-tools-core/chrome-extension": link:../../packages/chrome-extension
@@ -178,6 +184,7 @@ importers:
     devDependencies:
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@types/chrome": 0.0.193
+      kie-tools-root: link:../..
       zip-webpack-plugin: 4.0.1
 
   examples/base64png-editor-vscode-extension:
@@ -190,6 +197,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/base64png-editor": workspace:*
       "@types/vscode": ^1.66.0
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/backend": link:../../packages/backend
@@ -201,12 +209,14 @@ importers:
     devDependencies:
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@types/vscode": 1.66.0
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   examples/ping-pong-view:
     specifiers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -214,6 +224,8 @@ importers:
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      kie-tools-root: link:../..
 
   examples/ping-pong-view-angular:
     specifiers:
@@ -232,6 +244,7 @@ importers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-examples/ping-pong-view": workspace:*
+      kie-tools-root: workspace:*
       rxjs: ^7.4.0
       zone.js: ^0.11.4
     dependencies:
@@ -253,12 +266,14 @@ importers:
       "@angular-devkit/build-angular": 13.3.3_we6htpodawqacgcsccwjs4kcom
       "@angular/cli": 13.1.2
       "@angular/compiler-cli": 13.1.1_@angular+compiler@13.1.1
+      kie-tools-root: link:../..
 
   examples/ping-pong-view-react:
     specifiers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-examples/ping-pong-view": workspace:*
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -267,12 +282,15 @@ importers:
       "@kie-tools-examples/ping-pong-view": link:../ping-pong-view
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      kie-tools-root: link:../..
 
   examples/todo-list-view:
     specifiers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
       "@types/vscode": ^1.66.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -282,6 +300,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@types/vscode": 1.66.0
+      kie-tools-root: link:../..
 
   examples/todo-list-view-vscode-extension:
     specifiers:
@@ -291,6 +310,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/todo-list-view": workspace:*
       "@types/vscode": ^1.66.0
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
@@ -300,6 +320,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@types/vscode": 1.66.0
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   examples/webapp:
@@ -319,6 +340,7 @@ importers:
       "@kie-tools/stunner-editors": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@types/react-router-dom": ^5.1.7
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -343,6 +365,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
       "@kie-tools/stunner-editors": link:../../packages/stunner-editors
       "@types/react-router-dom": 5.1.7
+      kie-tools-root: link:../..
       react-router-dom: 5.3.0_react@17.0.2
 
   packages/backend:
@@ -356,6 +379,7 @@ importers:
       axios: ^0.27.2
       fast-xml-parser: ^3.17.4
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       portfinder: ^1.0.27
       semver: ^7.3.5
       sinon: ^11.1.1
@@ -374,13 +398,14 @@ importers:
       "@types/sinon": 10.0.2
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       stream: 0.0.2
 
   packages/backend-extended-services:
     specifiers:
-      "@kie-tools-core/maven-config-setup-helper": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
-      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
+      kie-tools-root: link:../..
 
   packages/boxed-expression-component:
     specifiers:
@@ -408,6 +433,7 @@ importers:
       cypress-real-events: ^1.7.0
       gh-pages: ^3.2.3
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       papaparse: ^5.3.2
       react: ^17.0.2
@@ -452,6 +478,7 @@ importers:
       cypress-real-events: 1.7.0_cypress@9.5.1
       gh-pages: 3.2.3
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       react-json-view: 1.21.3_sfoxds7t5ydpegc3knd667wn6m
       start-server-and-test: 1.12.1
 
@@ -465,6 +492,7 @@ importers:
       "@types/chrome": ^0.0.193
       "@types/minimatch": ^3.0.4
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -481,6 +509,7 @@ importers:
       "@types/chrome": 0.0.193
       "@types/minimatch": 3.0.4
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/chrome-extension-pack-kogito-kie-editors:
     specifiers:
@@ -496,6 +525,7 @@ importers:
       "@types/selenium-webdriver": ^4.1.1
       chai: ^4.3.4
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       selenium-webdriver: ^4.2.0
       start-server-and-test: ^1.12.1
       zip-webpack-plugin: ^4.0.1
@@ -513,6 +543,7 @@ importers:
       "@types/selenium-webdriver": 4.1.1
       chai: 4.3.4
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       selenium-webdriver: 4.2.0
       start-server-and-test: 1.12.1
       zip-webpack-plugin: 4.0.1
@@ -530,6 +561,7 @@ importers:
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
       "@kie-tools/serverless-workflow-text-editor": workspace:*
       "@types/chrome": ^0.0.193
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -547,6 +579,7 @@ importers:
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
       "@types/chrome": 0.0.193
+      kie-tools-root: link:../..
       monaco-editor: 0.33.0
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       monaco-yaml: 4.0.0_monaco-editor@0.33.0
@@ -556,29 +589,34 @@ importers:
   packages/cors-proxy-image:
     specifiers:
       "@isomorphic-git/cors-proxy": ^2.7.1
+      kie-tools-root: workspace:*
       patch-package: ^6.4.7
     devDependencies:
       "@isomorphic-git/cors-proxy": 2.7.1
+      kie-tools-root: link:../..
       patch-package: 6.4.7
 
   packages/dashbuilder:
     specifiers:
-      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools/dashbuilder-component-assembler": workspace:*
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
-      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
+      kie-tools-root: link:../..
 
   packages/dashbuilder-client:
     specifiers:
       "@kie-tools/dashbuilder": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
       "@kie-tools/dashbuilder": link:../dashbuilder
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-api:
     specifiers:
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -586,6 +624,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-assembler:
     specifiers:
@@ -598,6 +637,7 @@ importers:
       "@kie-tools/dashbuilder-component-timeseries": workspace:*
       "@kie-tools/dashbuilder-component-uniforms": workspace:*
       "@kie-tools/dashbuilder-component-victory-charts": workspace:*
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/dashbuilder-component-api": link:../dashbuilder-component-api
@@ -609,11 +649,13 @@ importers:
       "@kie-tools/dashbuilder-component-victory-charts": link:../dashbuilder-component-victory-charts
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-dev:
     specifiers:
       "@kie-tools/dashbuilder-component-api": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -622,6 +664,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-echarts:
     specifiers:
@@ -631,6 +674,7 @@ importers:
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -643,12 +687,14 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-echarts-base:
     specifiers:
       "@types/echarts": ^4.9.15
       echarts: ^5.3.2
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -658,6 +704,7 @@ importers:
     devDependencies:
       "@types/echarts": 4.9.15
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-svg-heatmap:
     specifiers:
@@ -668,6 +715,7 @@ importers:
       "@types/heatmap.js": ^2.0.36
       heatmap.js: ^2.0.5
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -681,6 +729,7 @@ importers:
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       "@types/heatmap.js": 2.0.37
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-table:
     specifiers:
@@ -691,6 +740,7 @@ importers:
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -704,6 +754,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-timeseries:
     specifiers:
@@ -713,6 +764,7 @@ importers:
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -725,6 +777,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-uniforms:
     specifiers:
@@ -736,6 +789,7 @@ importers:
       "@patternfly/react-table": ^4.27.15
       ajv: ^6.12.6
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -758,6 +812,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-component-victory-charts:
     specifiers:
@@ -770,6 +825,7 @@ importers:
       "@patternfly/react-table": ^4.27.15
       "@types/numeral": ^2.0.2
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       numeral: ^2.0.6
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -789,6 +845,7 @@ importers:
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       "@types/numeral": 2.0.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dashbuilder-editor:
     specifiers:
@@ -807,6 +864,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -835,6 +893,7 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
       vscode-json-languageservice: 4.2.1
@@ -842,14 +901,19 @@ importers:
   packages/dashbuilder-images:
     specifiers:
       "@kie-tools/dashbuilder": workspace:*
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools/dashbuilder": link:../dashbuilder
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/dashbuilder-swf-monitoring-dashboard:
     specifiers:
       "@kie-tools/dashbuilder-client": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      kie-tools-root: link:../..
 
   packages/desktop:
     specifiers:
@@ -868,6 +932,7 @@ importers:
       electron-packager: ^15.2.0
       electron-rebuild: ^2.3.5
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
@@ -894,6 +959,7 @@ importers:
       electron-packager: 15.2.0
       electron-rebuild: 2.3.5
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       spectron: 14.0.0_electron@12.2.3
 
   packages/dmn-dev-sandbox-deployment-base-image:
@@ -901,14 +967,19 @@ importers:
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/dmn-dev-sandbox-form-webapp": workspace:*
       "@kie-tools/dmn-dev-sandbox-quarkus": workspace:*
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools/dmn-dev-sandbox-form-webapp": link:../dmn-dev-sandbox-form-webapp
       "@kie-tools/dmn-dev-sandbox-quarkus": link:../dmn-dev-sandbox-quarkus
     devDependencies:
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
+      kie-tools-root: link:../..
 
   packages/dmn-dev-sandbox-deployment-base-image-env:
-    specifiers: {}
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/dmn-dev-sandbox-form-webapp:
     specifiers:
@@ -922,6 +993,7 @@ importers:
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
@@ -942,12 +1014,13 @@ importers:
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
-      "@kie-tools-core/maven-config-setup-helper": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
-      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
+      kie-tools-root: link:../..
 
   packages/editor:
     specifiers:
@@ -966,6 +1039,7 @@ importers:
       "@types/minimatch": ^3.0.4
       csstype: ^3.0.11
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -989,12 +1063,14 @@ importers:
     devDependencies:
       "@types/minimatch": 3.0.4
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/envelope:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
       csstype: ^3.0.11
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1004,10 +1080,12 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/envelope-bus:
     specifiers:
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1015,15 +1093,18 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/extended-services:
     specifiers:
       "@kie-tools/jitexecutor-native": 1.12.0-Final
       cross-env: ^7.0.3
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools/jitexecutor-native": 1.12.0-Final
     devDependencies:
       cross-env: 7.0.3
+      kie-tools-root: link:../..
 
   packages/feel-input-component:
     specifiers:
@@ -1033,6 +1114,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1047,6 +1129,7 @@ importers:
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/form:
     specifiers:
@@ -1061,6 +1144,7 @@ importers:
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1086,6 +1170,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/form-dmn:
     specifiers:
@@ -1101,6 +1186,7 @@ importers:
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1127,6 +1213,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/form-generation-tool:
     specifiers:
@@ -1137,6 +1224,7 @@ importers:
       "@types/lodash": ^4.14.168
       inquirer: ^8.1.1
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       pkg: ^5.5.2
       uniforms: ^3.5.5
@@ -1153,6 +1241,7 @@ importers:
       "@types/inquirer": 7.3.3
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       pkg: 5.5.2
 
   packages/guided-tour:
@@ -1163,6 +1252,7 @@ importers:
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1175,10 +1265,12 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/i18n:
     specifiers:
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1186,22 +1278,28 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/i18n-common-dictionary:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/image-env-to-json:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
       commander: ^8.3.0
+      kie-tools-root: workspace:*
       pkg: ^5.5.2
     dependencies:
       commander: 8.3.0
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
+      kie-tools-root: link:../..
       pkg: 5.5.2
 
   packages/import-java-classes-component:
@@ -1219,6 +1317,7 @@ importers:
       cypress-log-to-output: ^1.1.2
       identity-obj-proxy: ^3.0.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1238,12 +1337,14 @@ importers:
       cypress-log-to-output: 1.1.2
       identity-obj-proxy: 3.0.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/keyboard-shortcuts:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1253,6 +1354,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/kie-bc-editors:
     specifiers:
@@ -1267,6 +1369,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/pmml-editor-marshaller": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -1284,6 +1387,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/kie-editors-standalone:
     specifiers:
@@ -1307,6 +1411,7 @@ importers:
       cypress-log-to-output: ^1.1.2
       jest-junit: ^14.0.0
       junit-report-merger: ^2.2.2
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1334,6 +1439,7 @@ importers:
       cypress-log-to-output: 1.1.2
       jest-junit: 14.0.0
       junit-report-merger: 2.2.2
+      kie-tools-root: link:../..
       minimatch: 3.0.5
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
@@ -1344,8 +1450,11 @@ importers:
   packages/kie-sandbox-extended-services-image:
     specifiers:
       "@kie-tools/extended-services": workspace:*
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools/extended-services": link:../extended-services
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/kie-sandbox-fs:
     specifiers:
@@ -1366,6 +1475,7 @@ importers:
       karma-safari-launcher: ^1.0.0
       karma-verbose-reporter: ^0.0.6
       karma-webpack: ^5.0.0
+      kie-tools-root: workspace:*
       puppeteer: ^13.1.2
     dependencies:
       "@isomorphic-git/idb-keyval": 3.3.2
@@ -1386,30 +1496,41 @@ importers:
       karma-safari-launcher: 1.0.0_karma@6.3.12
       karma-verbose-reporter: 0.0.6_karma@6.3.12
       karma-webpack: 5.0.0
+      kie-tools-root: link:../..
       puppeteer: 13.1.2
 
   packages/kie-sandbox-image:
     specifiers:
       "@kie-tools/image-env-to-json": workspace:*
       "@kie-tools/online-editor": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
       "@kie-tools/image-env-to-json": link:../image-env-to-json
       "@kie-tools/online-editor": link:../online-editor
+      kie-tools-root: link:../..
 
   packages/kn-plugin-workflow:
     specifiers:
       cross-env: ^7.0.3
+      kie-tools-root: workspace:*
     devDependencies:
       cross-env: 7.0.3
+      kie-tools-root: link:../..
 
   packages/maven-config-setup-helper:
-    specifiers: {}
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/monaco-editor:
     specifiers:
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
     dependencies:
       monaco-editor: 0.33.0
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/notifications:
     specifiers:
@@ -1417,12 +1538,14 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/workspace": link:../workspace
     devDependencies:
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/online-editor:
     specifiers:
@@ -1468,6 +1591,7 @@ importers:
       isomorphic-git: ^1.11.1
       jest-junit: ^14.0.0
       jszip: ^3.7.1
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
       moment: ^2.29.4
       react: ^17.0.2
@@ -1529,25 +1653,36 @@ importers:
       cypress-log-to-output: 1.1.2
       cypress-real-events: 1.7.0_cypress@9.5.1
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       start-server-and-test: 1.12.1
 
   packages/openjdk11-mvn-image:
     specifiers:
       "@kie-tools/openjdk11-mvn-image-env": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
       "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
+      kie-tools-root: link:../..
 
   packages/openjdk11-mvn-image-env:
-    specifiers: {}
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/operating-system:
     specifiers:
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/patternfly-base:
-    specifiers: {}
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/pmml-editor:
     specifiers:
@@ -1581,6 +1716,7 @@ importers:
       gh-pages: ^3.2.3
       immer: ^9.0.6
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       monaco-editor: ^0.33.0
       react: ^17.0.2
@@ -1640,18 +1776,21 @@ importers:
       cypress-log-to-output: 1.1.2
       gh-pages: 3.2.3
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       start-server-and-test: 1.12.1
 
   packages/pmml-editor-marshaller:
     specifiers:
       jest-junit: ^14.0.0
       jsonata: ^1.8.3
+      kie-tools-root: workspace:*
       xml-js: ^1.6.11
     dependencies:
       jsonata: 1.8.3
       xml-js: 1.6.11
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/run-script-if:
     specifiers:
@@ -1708,6 +1847,7 @@ importers:
       jest-junit: ^14.0.0
       js-yaml: ^4.1.0
       jszip: ^3.7.1
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
       moment: ^2.29.4
       monaco-editor: ^0.33.0
@@ -1783,6 +1923,7 @@ importers:
       "@types/react-router-dom": 5.1.7
       "@types/uuid": 8.3.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
 
   packages/serverless-logic-sandbox-base-image:
@@ -1790,13 +1931,18 @@ importers:
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": workspace:*
       "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
       "@kie-tools/serverless-logic-sandbox-deployment-webapp": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": link:../dashbuilder-swf-monitoring-dashboard
       "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
       "@kie-tools/serverless-logic-sandbox-deployment-webapp": link:../serverless-logic-sandbox-deployment-webapp
+      kie-tools-root: link:../..
 
   packages/serverless-logic-sandbox-base-image-env:
-    specifiers: {}
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/serverless-logic-sandbox-deployment-webapp:
     specifiers:
@@ -1809,6 +1955,7 @@ importers:
       "@types/react-router": ^5.1.14
       "@types/react-router-dom": ^5.1.7
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
       react-router: ^5.2.1
@@ -1828,6 +1975,7 @@ importers:
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/serverless-workflow-combined-editor:
     specifiers:
@@ -1855,6 +2003,7 @@ importers:
       cypress-log-to-output: ^1.1.2
       jest-junit: ^14.0.0
       json-schema: ^0.4.0
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -1894,16 +2043,17 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
       vscode-json-languageservice: 4.2.1
 
   packages/serverless-workflow-diagram-editor:
     specifiers:
-      "@kie-tools-core/maven-config-setup-helper": workspace:*
+      kie-tools-root: workspace:*
       symlink-dir: ^5.0.1
     devDependencies:
-      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
+      kie-tools-root: link:../..
       symlink-dir: 5.0.1
 
   packages/serverless-workflow-diagram-editor-envelope:
@@ -1919,6 +2069,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/envelope": link:../envelope
@@ -1932,6 +2083,7 @@ importers:
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/serverless-workflow-language-service:
     specifiers:
@@ -1942,6 +2094,7 @@ importers:
       json-to-ast: ^2.1.0
       jsonata: ^1.8.3
       jsonc-parser: ^3.0.0
+      kie-tools-root: workspace:*
       vscode-json-languageservice: ^4.2.1
       vscode-languageserver-textdocument: ^1.0.4
       vscode-languageserver-types: ^3.16.0
@@ -1959,6 +2112,7 @@ importers:
     devDependencies:
       "@types/json-to-ast": 2.1.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/serverless-workflow-mermaid-viewer:
     specifiers:
@@ -1981,6 +2135,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       mermaid: ^9.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -2011,6 +2166,7 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       start-server-and-test: 1.12.1
 
   packages/serverless-workflow-service-catalog:
@@ -2020,6 +2176,7 @@ importers:
       "@types/lodash": ^4.14.168
       jest-junit: ^14.0.0
       js-yaml: ^4.1.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       openapi-types: ^7.0.1
     dependencies:
@@ -2031,6 +2188,7 @@ importers:
     devDependencies:
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/serverless-workflow-text-editor:
     specifiers:
@@ -2053,6 +2211,7 @@ importers:
       cypress-log-to-output: ^1.1.2
       jest-junit: ^14.0.0
       json-schema: ^0.4.0
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -2087,19 +2246,20 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
       vscode-json-languageservice: 4.2.1
 
   packages/stunner-editors:
     specifiers:
-      "@kie-tools-core/maven-config-setup-helper": workspace:*
       "@kie-tools/stunner-editors-dmn-loader": workspace:*
+      kie-tools-root: workspace:*
       symlink-dir: ^5.0.1
     dependencies:
       "@kie-tools/stunner-editors-dmn-loader": link:../stunner-editors-dmn-loader
     devDependencies:
-      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
+      kie-tools-root: link:../..
       symlink-dir: 5.0.1
 
   packages/stunner-editors-dmn-loader:
@@ -2111,6 +2271,7 @@ importers:
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/import-java-classes-component": workspace:*
       "@types/lodash": ^4.14.168
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       monaco-editor: ^0.33.0
       react: ^17.0.2
@@ -2128,6 +2289,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/lodash": 4.14.169
+      kie-tools-root: link:../..
 
   packages/text-editor:
     specifiers:
@@ -2144,6 +2306,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       monaco-yaml: ^4.0.0
       react: ^17.0.2
@@ -2168,6 +2331,7 @@ importers:
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       start-server-and-test: 1.12.1
 
   packages/uniforms-bootstrap4-codegen:
@@ -2177,6 +2341,7 @@ importers:
       "@types/simpl-schema": ^1.12.0
       "@types/underscore": ^1.11.2
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       prettier: ^2.2.1
       react: ^17.0.2
@@ -2198,6 +2363,7 @@ importers:
       "@types/simpl-schema": 1.12.0
       "@types/underscore": 1.11.2
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/uniforms-patternfly-codegen:
     specifiers:
@@ -2205,6 +2371,7 @@ importers:
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       prettier: ^2.2.1
       react: ^17.0.2
@@ -2223,6 +2390,7 @@ importers:
       "@types/lodash": 4.14.169
       "@types/simpl-schema": 1.12.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/unitables:
     specifiers:
@@ -2239,6 +2407,7 @@ importers:
       ajv-errors: ^1.0.1
       deep-object-diff: ^1.1.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -2270,6 +2439,7 @@ importers:
       uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/unitables-dmn:
     specifiers:
@@ -2287,6 +2457,7 @@ importers:
       ajv: ^6.12.6
       ajv-errors: ^1.0.1
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       lodash: ^4.17.21
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -2319,6 +2490,7 @@ importers:
       uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/vscode-extension:
     specifiers:
@@ -2334,6 +2506,7 @@ importers:
       "@types/minimatch": ^3.0.4
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2350,6 +2523,7 @@ importers:
     devDependencies:
       "@types/minimatch": 3.0.4
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/vscode-extension-backend:
     specifiers:
@@ -2359,6 +2533,7 @@ importers:
       "@kie-tools/backend-extended-services": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2368,6 +2543,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-bpmn-editor:
@@ -2383,6 +2559,7 @@ importers:
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2397,6 +2574,7 @@ importers:
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-dmn-editor:
@@ -2412,6 +2590,7 @@ importers:
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2426,26 +2605,31 @@ importers:
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-kie-ba-bundle:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
       "@types/vscode": ^1.66.0
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/vscode": 1.66.0
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-kogito-bundle:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
       "@types/vscode": ^1.66.0
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/vscode": 1.66.0
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-pack-kogito-kie-editors:
@@ -2471,6 +2655,7 @@ importers:
       "@vscode/test-web": ^0.0.22
       chai: ^4.3.4
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
       minimatch: ^3.0.4
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
@@ -2505,6 +2690,7 @@ importers:
       "@vscode/test-web": 0.0.22
       chai: 4.3.4
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
       mocha-junit-reporter: 2.0.2_mocha@9.2.0
@@ -2526,6 +2712,7 @@ importers:
       "@kie-tools/pmml-editor": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     dependencies:
       "@kie-tools-core/backend": link:../backend
@@ -2540,16 +2727,19 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-red-hat-business-automation-bundle:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
       "@types/vscode": ^1.66.0
+      kie-tools-root: workspace:*
       vsce: ^2.6.5
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@types/vscode": 1.66.0
+      kie-tools-root: link:../..
       vsce: 2.6.5
 
   packages/vscode-extension-serverless-workflow-editor:
@@ -2578,6 +2768,7 @@ importers:
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
       chai: ^4.3.4
+      kie-tools-root: workspace:*
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
       mocha-junit-reporter: ^2.0.2
@@ -2625,6 +2816,7 @@ importers:
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
       chai: 4.3.4
+      kie-tools-root: link:../..
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
       mocha-junit-reporter: 2.0.2_mocha@9.2.0
@@ -2655,6 +2847,7 @@ importers:
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
       chai: ^4.3.4
+      kie-tools-root: workspace:*
       mocha: ^9.2.0
       mocha-jenkins-reporter: ^0.4.5
       mocha-junit-reporter: ^2.0.2
@@ -2696,6 +2889,7 @@ importers:
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
       chai: 4.3.4
+      kie-tools-root: link:../..
       mocha: 9.2.0
       mocha-jenkins-reporter: 0.4.5_mocha@9.2.0
       mocha-junit-reporter: 2.0.2_mocha@9.2.0
@@ -2710,29 +2904,36 @@ importers:
     specifiers:
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
     devDependencies:
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
-      "@kie-tools-core/maven-config-setup-helper": workspace:*
+      kie-tools-root: workspace:*
     devDependencies:
-      "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
+      kie-tools-root: link:../..
 
   packages/webpack-base:
-    specifiers: {}
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   packages/workspace:
     specifiers:
       "@kie-tools-core/operating-system": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
+      kie-tools-root: workspace:*
     dependencies:
       "@kie-tools-core/operating-system": link:../operating-system
     devDependencies:
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
+      kie-tools-root: link:../..
 
   packages/yard-editor:
     specifiers:
@@ -2755,6 +2956,7 @@ importers:
       cypress-iframe: ^1.0.1
       cypress-log-to-output: ^1.1.2
       json-schema: ^0.4.0
+      kie-tools-root: workspace:*
       monaco-editor: ^0.33.0
       monaco-editor-webpack-plugin: ^7.0.1
       monaco-yaml: ^4.0.0
@@ -2786,6 +2988,7 @@ importers:
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
       cypress-log-to-output: 1.1.2
+      kie-tools-root: link:../..
       monaco-editor-webpack-plugin: 7.0.1_cnxsqw4hy73v5lwn7lflrwex4q
       start-server-and-test: 1.12.1
 
@@ -2818,6 +3021,12 @@ importers:
       jest: 26.6.3
       rimraf: 3.0.2
       typescript: 4.5.4
+
+  scripts/maven-config-setup-helper:
+    specifiers:
+      kie-tools-root: workspace:*
+    devDependencies:
+      kie-tools-root: link:../..
 
   scripts/run-script-if:
     specifiers:
@@ -8774,7 +8983,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -8783,7 +8992,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -14042,19 +14251,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dev: true
-
-  /follow-redirects/1.14.9_debug@4.3.1:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dependencies:
-      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution: { integrity: sha1-gQaNKVqBQuwKxybG4iAMMPttXoA= }
@@ -21470,7 +21666,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
   /sass/1.49.9:
@@ -24261,7 +24457,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:

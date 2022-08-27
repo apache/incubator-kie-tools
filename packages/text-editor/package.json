@@ -48,6 +48,7 @@
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
     "jest-junit": "^14.0.0",
+    "kie-tools-root": "workspace:*",
     "start-server-and-test": "^1.12.1"
   },
   "babel": {

@@ -12,5 +12,7 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "kie-tools-root": "workspace:*"
+  }
 }

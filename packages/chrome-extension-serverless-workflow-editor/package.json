@@ -35,6 +35,7 @@
     "@kie-tools/serverless-workflow-mermaid-viewer": "workspace:*",
     "@kie-tools/serverless-workflow-text-editor": "workspace:*",
     "@types/chrome": "^0.0.193",
+    "kie-tools-root": "workspace:*",
     "monaco-editor": "^0.33.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-yaml": "^4.0.0",

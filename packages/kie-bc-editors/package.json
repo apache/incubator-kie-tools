@@ -39,7 +39,8 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "jest-junit": "^14.0.0"
+    "jest-junit": "^14.0.0",
+    "kie-tools-root": "workspace:*"
   },
   "babel": {
     "presets": [

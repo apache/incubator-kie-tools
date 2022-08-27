@@ -27,7 +27,7 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
-    "@kie-tools-core/maven-config-setup-helper": "workspace:*"
+    "kie-tools-root": "workspace:*"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

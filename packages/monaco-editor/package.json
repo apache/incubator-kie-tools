@@ -20,5 +20,7 @@
   "dependencies": {
     "monaco-editor": "^0.33.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "kie-tools-root": "workspace:*"
+  }
 }

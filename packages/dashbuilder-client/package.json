@@ -23,7 +23,8 @@
     "copy:dashbuilder:win32": "mkdir dist && touch dist/.keep && echo \"Build not supported on Windows\""
   },
   "devDependencies": {
-    "@kie-tools/dashbuilder": "workspace:*"
+    "@kie-tools/dashbuilder": "workspace:*",
+    "kie-tools-root": "workspace:*"
   },
   "babel": {
     "presets": [

@@ -38,6 +38,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.22",
+    "kie-tools-root": "workspace:*",
     "vsce": "^2.6.5"
   },
   "engines": {

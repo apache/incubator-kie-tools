@@ -44,7 +44,7 @@
     "@kie-tools/dashbuilder-component-assembler": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/maven-config-setup-helper": "workspace:*"
+    "kie-tools-root": "workspace:*"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

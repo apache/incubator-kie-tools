@@ -26,7 +26,9 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "kie-tools-root": "workspace:*"
+  },
   "babel": {
     "presets": [
       [

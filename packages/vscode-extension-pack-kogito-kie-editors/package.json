@@ -56,6 +56,7 @@
     "@vscode/test-web": "^0.0.22",
     "chai": "^4.3.4",
     "jest-junit": "^14.0.0",
+    "kie-tools-root": "workspace:*",
     "mocha": "^9.2.0",
     "mocha-jenkins-reporter": "^0.4.5",
     "mocha-junit-reporter": "^2.0.2",

@@ -33,6 +33,7 @@
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",
+    "kie-tools-root": "workspace:*",
     "vsce": "^2.6.5"
   },
   "engines": {

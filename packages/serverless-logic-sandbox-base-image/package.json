@@ -28,6 +28,7 @@
   "devDependencies": {
     "@kie-tools/dashbuilder-swf-monitoring-dashboard": "workspace:*",
     "@kie-tools/serverless-logic-sandbox-base-image-env": "workspace:*",
-    "@kie-tools/serverless-logic-sandbox-deployment-webapp": "workspace:*"
+    "@kie-tools/serverless-logic-sandbox-deployment-webapp": "workspace:*",
+    "kie-tools-root": "workspace:*"
   }
 }

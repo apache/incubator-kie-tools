@@ -36,7 +36,7 @@
     "@kie-tools/stunner-editors-dmn-loader": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/maven-config-setup-helper": "workspace:*",
+    "kie-tools-root": "workspace:*",
     "symlink-dir": "^5.0.1"
   },
   "kieTools": {

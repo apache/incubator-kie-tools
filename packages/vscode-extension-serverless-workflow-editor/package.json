@@ -60,6 +60,7 @@
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.22",
     "chai": "^4.3.4",
+    "kie-tools-root": "workspace:*",
     "mocha": "^9.2.0",
     "mocha-jenkins-reporter": "^0.4.5",
     "mocha-junit-reporter": "^2.0.2",

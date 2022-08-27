@@ -37,7 +37,8 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
-    "jest-junit": "^14.0.0"
+    "jest-junit": "^14.0.0",
+    "kie-tools-root": "workspace:*"
   },
   "babel": {
     "presets": [
