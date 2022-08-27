@@ -2994,6 +2994,7 @@ importers:
 
   scripts/bootstrap:
     specifiers:
+      "@kie-tools-build/build-env": workspace:*
       "@pnpm/filter-workspace-packages": ^5.0.27
       "@pnpm/find-workspace-packages": ^4.0.27
       "@pnpm/logger": ^4.0.0
@@ -3001,6 +3002,7 @@ importers:
       graphviz: ^0.0.9
       markdown-table: ^3.0.2
     devDependencies:
+      "@kie-tools-build/build-env": link:../build-env
       "@pnpm/filter-workspace-packages": 5.0.27_@pnpm+logger@4.0.0
       "@pnpm/find-workspace-packages": 4.0.27_@pnpm+logger@4.0.0
       "@pnpm/logger": 4.0.0
@@ -21666,7 +21668,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.70.0_esbuild@0.14.22
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /sass/1.49.9:
@@ -24457,7 +24459,7 @@ packages:
       mime-types: 2.1.34
       range-parser: 1.2.1
       schema-utils: 4.0.0
-      webpack: 5.70.0_esbuild@0.14.22
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /webpack-dev-server/4.7.3_nc5o3ul7aks2kkztlwd2bfthda:

@@ -292,4 +292,5 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools-build/bootstrap" -> "@kie-tools-build/build-env" [ style = "dashed", color = "blue" ];
 }

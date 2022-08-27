@@ -6,6 +6,7 @@
     "kie-tools--bootstrap": "bootstrap.js"
   },
   "devDependencies": {
+    "@kie-tools-build/build-env": "workspace:*",
     "@pnpm/filter-workspace-packages": "^5.0.27",
     "@pnpm/find-workspace-packages": "^4.0.27",
     "@pnpm/logger": "^4.0.0",

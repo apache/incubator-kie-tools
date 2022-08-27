@@ -16,7 +16,7 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("@kie-tools-build/build-env/env")], {
+module.exports = composeEnv([require("kie-tools-root/env")], {
   vars: varsWithName({
     SWF_CHROME_EXTENSION__routerTargetOrigin: {
       default: "https://localhost:9000",
