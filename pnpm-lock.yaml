@@ -3221,7 +3221,10 @@ importers:
       typescript: 4.5.4
 
   scripts/sparse-checkout:
-    specifiers: {}
+    specifiers:
+      graph-data-structure: ^2.0.0
+    devDependencies:
+      graph-data-structure: 2.0.0
 
   scripts/update-version:
     specifiers: {}

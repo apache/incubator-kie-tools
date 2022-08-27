@@ -1,5 +1,8 @@
 {
   "name": "@kie-tools-build/sparse-checkout",
   "version": "0.0.0",
-  "keywords": []
+  "keywords": [],
+  "devDependencies": {
+    "graph-data-structure": "^2.0.0"
+  }
 }
