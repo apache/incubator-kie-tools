@@ -34,6 +34,7 @@
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/vscode": "^1.66.0",

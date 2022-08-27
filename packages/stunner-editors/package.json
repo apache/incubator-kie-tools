@@ -36,6 +36,7 @@
     "@kie-tools/stunner-editors-dmn-loader": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "symlink-dir": "^5.0.1"
   },
   "kieTools": {

@@ -47,6 +47,7 @@
     "svg-pan-zoom": "^3.6.1"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/mermaid": "^8.2.9",
     "@types/svg-pan-zoom": "^3.4.0",

@@ -35,6 +35,7 @@
     "@kie-tools/pmml-editor": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.22",

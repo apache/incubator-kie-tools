@@ -15,7 +15,7 @@
  */
 
 const { varsWithName, getOrDefault, str2bool, composeEnv } = require("@kie-tools-build/build-env");
-const rootPackageJson = require("../package.json");
+const rootPackageJson = require("../../../package.json");
 
 module.exports = composeEnv([], {
   vars: varsWithName({

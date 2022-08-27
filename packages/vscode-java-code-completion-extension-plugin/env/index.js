@@ -16,7 +16,7 @@
 
 const { varsWithName, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("kie-tools-root/env")], {
+module.exports = composeEnv([require("@kie-tools-build/root/env")], {
   vars: varsWithName({}),
   get env() {
     return {

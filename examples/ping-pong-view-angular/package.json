@@ -45,6 +45,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^13.1.2",
     "@angular/cli": "^13.1.2",
-    "@angular/compiler-cli": "^13.1.1"
+    "@angular/compiler-cli": "^13.1.1",
+    "@kie-tools-build/root": "workspace:*"
   }
 }

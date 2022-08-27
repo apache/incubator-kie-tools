@@ -26,6 +26,7 @@
     "@kie-tools-examples/base64png-editor": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/chrome": "^0.0.193",
     "zip-webpack-plugin": "^4.0.1"

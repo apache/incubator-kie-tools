@@ -28,6 +28,9 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
+  "devDependencies": {
+    "@kie-tools-build/root": "workspace:*"
+  },
   "kieTools": {
     "requiredPreinstalledCliCommands": [
       "java",

@@ -27,6 +27,7 @@
     "@kie-tools-core/workspace": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@types/vscode": "^1.66.0",
     "jest-junit": "^14.0.0"
   },

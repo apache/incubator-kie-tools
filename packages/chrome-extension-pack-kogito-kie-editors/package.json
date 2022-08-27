@@ -31,6 +31,7 @@
     "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/chai": "^4.2.17",

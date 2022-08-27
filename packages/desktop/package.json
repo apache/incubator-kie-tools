@@ -55,6 +55,7 @@
     "react-router-dom": "^5.2.1"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "cross-var": "^1.1.0",

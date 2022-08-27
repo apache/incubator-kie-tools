@@ -28,6 +28,7 @@
     "@kie-tools-examples/todo-list-view": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",

@@ -28,6 +28,7 @@
     "@kie-tools/dmn-dev-sandbox-quarkus": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*"
   }
 }

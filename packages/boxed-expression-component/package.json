@@ -39,6 +39,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/cypress-image-snapshot": "^3.1.6",
     "@types/lodash": "^4.14.168",

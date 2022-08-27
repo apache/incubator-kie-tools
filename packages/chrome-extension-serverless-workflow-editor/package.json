@@ -24,6 +24,7 @@
     "test:it:start": "pnpm start"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/chrome-extension": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",

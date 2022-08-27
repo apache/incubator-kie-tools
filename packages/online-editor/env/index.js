@@ -16,7 +16,7 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-const buildEnv = require("kie-tools-root/env");
+const buildEnv = require("@kie-tools-build/root/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 
 module.exports = composeEnv(

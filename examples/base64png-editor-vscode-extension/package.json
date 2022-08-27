@@ -31,6 +31,7 @@
     "@kie-tools-examples/base64png-editor": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",
     "vsce": "^2.6.5"

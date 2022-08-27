@@ -63,6 +63,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",

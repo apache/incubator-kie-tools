@@ -17,7 +17,7 @@
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
 module.exports = composeEnv(
-  [require("kie-tools-root/env"), require("@kie-tools/serverless-logic-sandbox-base-image-env/env")],
+  [require("@kie-tools-build/root/env"), require("@kie-tools/serverless-logic-sandbox-base-image-env/env")],
   {
     vars: varsWithName({
       SERVERLESS_LOGIC_SANDBOX__baseImageQuarkusVersion: {

@@ -36,6 +36,7 @@
     "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "jest-junit": "^14.0.0"
   },
   "babel": {

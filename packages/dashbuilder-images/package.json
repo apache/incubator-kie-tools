@@ -25,5 +25,8 @@
   },
   "dependencies": {
     "@kie-tools/dashbuilder": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools-build/root": "workspace:*"
   }
 }

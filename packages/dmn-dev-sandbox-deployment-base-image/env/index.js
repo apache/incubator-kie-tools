@@ -17,7 +17,7 @@
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
 module.exports = composeEnv(
-  [require("kie-tools-root/env"), require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env")],
+  [require("@kie-tools-build/root/env"), require("@kie-tools/dmn-dev-sandbox-deployment-base-image-env/env")],
   {
     vars: varsWithName({
       DMN_DEV_SANDBOX__baseImageBuildTags: {

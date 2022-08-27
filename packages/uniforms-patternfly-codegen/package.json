@@ -30,6 +30,7 @@
     "uniforms-bridge-simple-schema-2": "^3.5.5"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/lodash": "^4.14.168",
     "@types/simpl-schema": "^1.12.0",

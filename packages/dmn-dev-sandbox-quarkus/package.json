@@ -29,6 +29,9 @@
     "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
     "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests"
   },
+  "devDependencies": {
+    "@kie-tools-build/root": "workspace:*"
+  },
   "kieTools": {
     "requiredPreinstalledCliCommands": [
       "java",

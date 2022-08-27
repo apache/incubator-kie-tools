@@ -32,6 +32,7 @@
     "@kie-tools/backend-extended-services": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@types/vscode": "^1.66.0",
     "jest-junit": "^14.0.0",

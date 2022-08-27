@@ -65,6 +65,7 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",

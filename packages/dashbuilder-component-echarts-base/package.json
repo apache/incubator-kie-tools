@@ -31,6 +31,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@kie-tools-build/root": "workspace:*",
     "@types/echarts": "^4.9.15",
     "jest-junit": "^14.0.0"
   },

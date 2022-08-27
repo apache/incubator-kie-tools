@@ -1,0 +1,8 @@
+{
+  "name": "@kie-tools-build/root",
+  "version": "0.0.0",
+  "keywords": [],
+  "devDependencies": {
+    "@kie-tools-build/build-env": "workspace:*"
+  }
+}
