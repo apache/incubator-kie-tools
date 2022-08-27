@@ -24,12 +24,12 @@ if (pnpmFilterString.length === 0) {
   pnpmFilterStringForInstalling = "";
 } else {
   console.info(`[bootstrap] Bootstrapping packages filtered by '${pnpmFilterString}'`);
-  pnpmFilterStringForInstalling = `${pnpmFilterString} -F '{.}...'`;
+  pnpmFilterStringForInstalling = `${pnpmFilterString}`;
 }
 
 const execOpts = { stdio: "inherit" };
 
-console.info("\n\n[bootstrap] Installing dependencies...");
+console.info("\n\n[bootstrap] Installing packages dependencies...");
 execSync(`pnpm install --strict-peer-dependencies=false -F '!{.}...' ${pnpmFilterStringForInstalling}`, execOpts); // Always install root dependencies
 
 console.info("\n\n[bootstrap] Linking packages with self...");
