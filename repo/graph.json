@@ -3,10 +3,10 @@
     "nodes": [
       { "id": "kie-tools-root" },
       { "id": "@kie-tools-build/bootstrap" },
+      { "id": "@kie-tools-build/build-env" },
+      { "id": "@kie-tools-build/run-script-if" },
       { "id": "@kie-tools-build/sparse-checkout" },
       { "id": "@kie-tools-build/update-version" },
-      { "id": "@kie-tools-core/run-script-if" },
-      { "id": "@kie-tools/build-env" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools-core/backend" },
@@ -110,10 +110,10 @@
     ],
     "links": [
       { "source": "kie-tools-root", "target": "@kie-tools-build/bootstrap", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/build-env", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/run-script-if", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-build/sparse-checkout", "weight": 1 },
       { "source": "kie-tools-root", "target": "@kie-tools-build/update-version", "weight": 1 },
-      { "source": "kie-tools-root", "target": "@kie-tools-core/run-script-if", "weight": 1 },
-      { "source": "kie-tools-root", "target": "@kie-tools/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/backend", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -735,8 +735,8 @@
     ["@kie-tools-core/workspace", "packages/workspace"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
     ["@kie-tools-build/bootstrap", "scripts/bootstrap"],
-    ["@kie-tools/build-env", "scripts/build-env"],
-    ["@kie-tools-core/run-script-if", "scripts/run-script-if"],
+    ["@kie-tools-build/build-env", "scripts/build-env"],
+    ["@kie-tools-build/run-script-if", "scripts/run-script-if"],
     ["@kie-tools-build/sparse-checkout", "scripts/sparse-checkout"],
     ["@kie-tools-build/update-version", "scripts/update-version"]
   ]

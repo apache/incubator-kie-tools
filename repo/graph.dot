@@ -4,10 +4,10 @@ digraph G {
   edge [ headport = "n", tailport = "s", arrowhead =dot, arrowsize =0.5 ];
   "kie-tools-root" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-build/bootstrap" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools-build/build-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-build/run-script-if" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-build/sparse-checkout" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-build/update-version" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools-core/run-script-if" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/build-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/base64png-editor" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-core/editor" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -109,10 +109,10 @@ digraph G {
   "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "kie-tools-root" -> "@kie-tools-build/bootstrap" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-build/build-env" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-build/run-script-if" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-build/sparse-checkout" [ style = "dashed", color = "black" ];
   "kie-tools-root" -> "@kie-tools-build/update-version" [ style = "dashed", color = "black" ];
-  "kie-tools-root" -> "@kie-tools-core/run-script-if" [ style = "dashed", color = "black" ];
-  "kie-tools-root" -> "@kie-tools/build-env" [ style = "dashed", color = "black" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];

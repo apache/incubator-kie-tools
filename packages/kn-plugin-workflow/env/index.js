@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 const packageJson = require("@kie-tools/kn-plugin-workflow/package.json");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
+module.exports = composeEnv([require("@kie-tools-build/build-env/env")], {
   vars: varsWithName({
     KN_PLUGIN_WORKFLOW__version: {
       name: "KN_PLUGIN_WORKFLOW__version",

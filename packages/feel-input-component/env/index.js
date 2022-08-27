@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools/build-env");
+const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
+module.exports = composeEnv([require("@kie-tools-build/build-env/env")], {
   vars: varsWithName({
     FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl: {
       default: "",

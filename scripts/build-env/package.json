@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/build-env",
+  "name": "@kie-tools-build/build-env",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",

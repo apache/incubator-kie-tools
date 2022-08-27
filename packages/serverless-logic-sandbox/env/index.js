@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-const { version } = require("@kie-tools/build-env/package.json");
+const { version } = require("@kie-tools-build/build-env/package.json");
 
 module.exports = composeEnv(
   [
-    require("@kie-tools/build-env/env"),
+    require("@kie-tools-build/build-env/env"),
     require("@kie-tools/serverless-logic-sandbox-base-image-env/env"),
     require("@kie-tools/openjdk11-mvn-image-env/env"),
   ],

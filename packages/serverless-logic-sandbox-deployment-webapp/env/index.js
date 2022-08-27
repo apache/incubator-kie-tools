@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
+module.exports = composeEnv([require("@kie-tools-build/build-env/env")], {
   vars: varsWithName({
     SERVERLESS_LOGIC_SANDBOX__deploymentGtmId: {
       default: undefined,

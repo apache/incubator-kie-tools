@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-const buildEnv = require("@kie-tools/build-env/env");
+const buildEnv = require("@kie-tools-build/build-env/env");
 const extendedServicesEnv = require("@kie-tools/extended-services/env");
 
 module.exports = composeEnv(

@@ -1,4 +1,4 @@
-## @kie-tools/build-env
+## @kie-tools-build/build-env
 
 Helps packages inside a monorepo to define environment variables and consume them easily.
 
@@ -39,7 +39,7 @@ Given the following package structure in a monorepo:
 - packages/a/env/index.js
 
 ```js
-const { varsWithName, getOrDefault } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault } = require("@kie-tools-build/build-env");
 
 module.exports = {
   vars: varsWithName({
@@ -59,7 +59,7 @@ module.exports = {
 - packages/b/env/index.js
 
 ```js
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
 module.exports = composeEnv([require("a/env")], {
   vars: varsWithName({

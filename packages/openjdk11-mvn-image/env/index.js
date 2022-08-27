@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env"), require("@kie-tools/openjdk11-mvn-image-env/env")], {
-  vars: varsWithName({
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: {
-      default: "latest",
-      description: "",
-    },
-    SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion: {
-      default: "4.10.0-0.okd-2022-06-24-212905",
-      description: "",
-    },
-  }),
-  get env() {
-    return {
-      openJdk11MvnImage: {
-        buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags),
-        okdVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion),
+module.exports = composeEnv(
+  [require("@kie-tools-build/build-env/env"), require("@kie-tools/openjdk11-mvn-image-env/env")],
+  {
+    vars: varsWithName({
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: {
+        default: "latest",
+        description: "",
       },
-    };
-  },
-});
+      SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion: {
+        default: "4.10.0-0.okd-2022-06-24-212905",
+        description: "",
+      },
+    }),
+    get env() {
+      return {
+        openJdk11MvnImage: {
+          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags),
+          okdVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__openJdk11MvnOkdVersion),
+        },
+      };
+    },
+  }
+);
