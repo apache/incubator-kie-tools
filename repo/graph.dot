@@ -2,7 +2,7 @@ digraph G {
   graph [ ranksep =2, splines = "polyline", rankdir =TB, ordering = "out" ];
   node [ shape =box ];
   edge [ headport = "n", tailport = "s", arrowhead =dot, arrowsize =0.5 ];
-  "kie-tools" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "kie-tools-root" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-build/bootstrap" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-build/sparse-checkout" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-build/update-version" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -108,9 +108,9 @@ digraph G {
   "vscode-extension-serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "kie-tools" -> "@kie-tools-build/bootstrap" [ style = "dashed", color = "black" ];
-  "kie-tools" -> "@kie-tools-build/sparse-checkout" [ style = "dashed", color = "black" ];
-  "kie-tools" -> "@kie-tools-build/update-version" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-build/bootstrap" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-build/sparse-checkout" [ style = "dashed", color = "black" ];
+  "kie-tools-root" -> "@kie-tools-build/update-version" [ style = "dashed", color = "black" ];
   "@kie-tools-examples/base64png-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-core/chrome-extension" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/base64png-editor-chrome-extension" -> "@kie-tools-examples/base64png-editor" [ style = "solid", color = "orange" ];
@@ -326,7 +326,4 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools-build/bootstrap" -> "@kie-tools/build-env" [ style = "dashed", color = "blue" ];
-  "@kie-tools/build-env" -> "kie-tools";
-  "@kie-tools-build/sparse-checkout" -> "kie-tools";
-  "@kie-tools-build/update-version" -> "kie-tools";
 }

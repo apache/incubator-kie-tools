@@ -106,10 +106,6 @@ async function main() {
     node.set("fontcolor", pkgProperties.color);
     node.set("style", pkgProperties.nodeStyle);
 
-    if (Object.keys(resMatrix[pkgName]).length === 0 && pkgName !== "kie-tools") {
-      g.addEdge(displayPkgName, "kie-tools", {});
-    }
-
     for (const depName in resMatrix[pkgName]) {
       const displayDepName = depName;
       if (resMatrix[pkgName][depName] === "dependency") {

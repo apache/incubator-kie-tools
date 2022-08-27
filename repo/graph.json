@@ -1,7 +1,7 @@
 {
   "serializedDatavisGraph": {
     "nodes": [
-      { "id": "kie-tools" },
+      { "id": "kie-tools-root" },
       { "id": "@kie-tools-build/bootstrap" },
       { "id": "@kie-tools-build/sparse-checkout" },
       { "id": "@kie-tools-build/update-version" },
@@ -109,9 +109,9 @@
       { "id": "@kie-tools/yard-editor" }
     ],
     "links": [
-      { "source": "kie-tools", "target": "@kie-tools-build/bootstrap", "weight": 1 },
-      { "source": "kie-tools", "target": "@kie-tools-build/sparse-checkout", "weight": 1 },
-      { "source": "kie-tools", "target": "@kie-tools-build/update-version", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/bootstrap", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/sparse-checkout", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/update-version", "weight": 1 },
       { "source": "@kie-tools-build/bootstrap", "target": "@kie-tools/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/backend", "weight": 1 },
@@ -670,7 +670,7 @@
     ]
   },
   "serializedPackagesLocationByName": [
-    ["kie-tools", ""],
+    ["kie-tools-root", ""],
     ["@kie-tools-examples/base64png-editor", "examples/base64png-editor"],
     ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
     ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
