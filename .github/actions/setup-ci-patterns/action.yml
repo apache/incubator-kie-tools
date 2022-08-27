@@ -86,6 +86,7 @@ runs:
           core.setOutput(
             "integration_tests_reports_patterns_for_find", 
             prefixWithRoots(fs.readFileSync("./.github/supporting-files/ci/integration-tests-reports-patterns.txt", "utf-8"))
+              .split("\n")
               .map(p => `-path '${p}'`)
               .join(" -o ")
           );
