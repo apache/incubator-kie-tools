@@ -2,6 +2,12 @@
   "serializedDatavisGraph": {
     "nodes": [
       { "id": "kie-tools-root" },
+      { "id": "@kie-tools-build/bootstrap" },
+      { "id": "@kie-tools-build/maven-config-setup-helper" },
+      { "id": "@kie-tools-build/run-script-if" },
+      { "id": "@kie-tools-build/sparse-checkout" },
+      { "id": "@kie-tools-build/update-version" },
+      { "id": "@kie-tools-build/build-env" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools-core/backend" },
@@ -100,15 +106,15 @@
       { "id": "vscode-extension-red-hat-business-automation-bundle" },
       { "id": "vscode-extension-serverless-workflow-editor" },
       { "id": "vscode-extension-yard-editor" },
-      { "id": "@kie-tools/yard-editor" },
-      { "id": "@kie-tools-build/bootstrap" },
-      { "id": "@kie-tools-build/build-env" },
-      { "id": "@kie-tools-build/maven-config-setup-helper" },
-      { "id": "@kie-tools-build/run-script-if" },
-      { "id": "@kie-tools-build/sparse-checkout" },
-      { "id": "@kie-tools-build/update-version" }
+      { "id": "@kie-tools/yard-editor" }
     ],
     "links": [
+      { "source": "kie-tools-root", "target": "@kie-tools-build/bootstrap", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/maven-config-setup-helper", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/run-script-if", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/sparse-checkout", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-build/update-version", "weight": 1 },
+      { "source": "@kie-tools-build/bootstrap", "target": "@kie-tools-build/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/backend", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -137,6 +143,7 @@
         "weight": 1
       },
       { "source": "@kie-tools-core/chrome-extension", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools-core/webpack-base", "target": "kie-tools-root", "weight": 1 },
       {
         "source": "kie-tools-examples-base64png-editor-vscode-extension",
         "target": "@kie-tools-core/vscode-extension",
@@ -158,7 +165,9 @@
         "target": "@kie-tools-core/vscode-java-code-completion",
         "weight": 1
       },
+      { "source": "@kie-tools-core/vscode-java-code-completion", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
+      { "source": "@kie-tools-core/envelope-bus", "target": "kie-tools-root", "weight": 1 },
       {
         "source": "@kie-tools-examples/ping-pong-view-angular",
         "target": "@kie-tools-examples/ping-pong-view",
@@ -198,12 +207,16 @@
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/i18n", "weight": 1 },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/workspace", "weight": 1 },
+      { "source": "@kie-tools-core/i18n", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools-core/workspace", "target": "@kie-tools-core/operating-system", "weight": 1 },
+      { "source": "@kie-tools/backend-extended-services", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/boxed-expression-component", "target": "@kie-tools/feel-input-component", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/monaco-editor", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools-core/monaco-editor", "target": "kie-tools-root", "weight": 1 },
+      { "source": "@kie-tools-core/patternfly-base", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/i18n-common-dictionary", "target": "@kie-tools-core/i18n", "weight": 1 },
       {
         "source": "chrome-extension-pack-kogito-kie-editors",
@@ -212,6 +225,7 @@
       },
       { "source": "chrome-extension-pack-kogito-kie-editors", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "chrome-extension-pack-kogito-kie-editors", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      { "source": "@kie-tools/pmml-editor-marshaller", "target": "kie-tools-root", "weight": 1 },
       {
         "source": "@kie-tools/stunner-editors-dmn-loader",
         "target": "@kie-tools-core/keyboard-shortcuts",
@@ -257,6 +271,7 @@
         "target": "@kie-tools/serverless-workflow-text-editor",
         "weight": 1
       },
+      { "source": "@kie-tools/serverless-workflow-diagram-editor", "target": "kie-tools-root", "weight": 1 },
       {
         "source": "@kie-tools/serverless-workflow-diagram-editor-envelope",
         "target": "@kie-tools/kie-bc-editors",
@@ -275,6 +290,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/serverless-workflow-text-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/cors-proxy-image", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/dashbuilder", "target": "@kie-tools/dashbuilder-component-assembler", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-assembler",
@@ -391,6 +407,8 @@
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-client", "target": "@kie-tools/dashbuilder", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-api", "target": "kie-tools-root", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-echarts-base", "target": "kie-tools-root", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-dev",
         "target": "@kie-tools/dashbuilder-component-api",
@@ -423,10 +441,14 @@
       },
       { "source": "@kie-tools/dmn-dev-sandbox-form-webapp", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "@kie-tools/dmn-dev-sandbox-form-webapp", "target": "@kie-tools/form-dmn", "weight": 1 },
+      { "source": "@kie-tools/dmn-dev-sandbox-quarkus", "target": "kie-tools-root", "weight": 1 },
+      { "source": "@kie-tools/dmn-dev-sandbox-deployment-base-image-env", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/form-dmn", "target": "@kie-tools/form", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools-core/notifications", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools-core/operating-system", "target": "kie-tools-root", "weight": 1 },
+      { "source": "@kie-tools/extended-services", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-bootstrap4-codegen", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-patternfly-codegen", "weight": 1 },
       { "source": "@kie-tools/uniforms-bootstrap4-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
@@ -448,6 +470,7 @@
         "target": "@kie-tools/extended-services",
         "weight": 1
       },
+      { "source": "@kie-tools/kie-sandbox-fs", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/image-env-to-json", "weight": 1 },
       { "source": "@kie-tools/kie-sandbox-image", "target": "@kie-tools/online-editor", "weight": 1 },
       { "source": "@kie-tools/online-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
@@ -467,9 +490,11 @@
       { "source": "@kie-tools/pmml-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/form-dmn", "weight": 1 },
       { "source": "@kie-tools/unitables-dmn", "target": "@kie-tools/unitables", "weight": 1 },
+      { "source": "@kie-tools/kn-plugin-workflow", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/boxed-expression-component", "weight": 1 },
       { "source": "@kie-tools/unitables", "target": "@kie-tools/form", "weight": 1 },
       { "source": "@kie-tools/openjdk11-mvn-image", "target": "@kie-tools/openjdk11-mvn-image-env", "weight": 1 },
+      { "source": "@kie-tools/openjdk11-mvn-image-env", "target": "kie-tools-root", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/dashbuilder-editor", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/serverless-logic-sandbox", "target": "@kie-tools/kie-sandbox-fs", "weight": 1 },
@@ -486,6 +511,7 @@
         "weight": 1
       },
       { "source": "@kie-tools/text-editor", "target": "@kie-tools-core/editor", "weight": 1 },
+      { "source": "@kie-tools/serverless-logic-sandbox-base-image-env", "target": "kie-tools-root", "weight": 1 },
       {
         "source": "@kie-tools/serverless-logic-sandbox-base-image",
         "target": "@kie-tools/dashbuilder-swf-monitoring-dashboard",
@@ -537,6 +563,7 @@
         "weight": 1
       },
       { "source": "vscode-extension-bpmn-editor", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      { "source": "@kie-tools/vscode-java-code-completion-extension-plugin", "target": "kie-tools-root", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       {
@@ -596,8 +623,7 @@
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 },
-      { "source": "@kie-tools-build/bootstrap", "target": "@kie-tools-build/build-env", "weight": 1 }
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 }
     ]
   },
   "serializedPackagesLocationByName": [
