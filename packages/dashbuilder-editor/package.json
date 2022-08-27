@@ -55,7 +55,6 @@
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
     "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "start-server-and-test": "^1.12.1",
     "vscode-json-languageservice": "^4.2.1"

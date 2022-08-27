@@ -27,8 +27,7 @@
   },
   "devDependencies": {
     "@types/vscode": "^1.66.0",
-    "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*"
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

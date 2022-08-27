@@ -33,8 +33,7 @@
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
-    "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*"
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

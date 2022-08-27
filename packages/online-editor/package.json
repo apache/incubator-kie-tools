@@ -78,7 +78,6 @@
     "cypress-log-to-output": "^1.1.2",
     "cypress-real-events": "^1.7.0",
     "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*",
     "start-server-and-test": "^1.12.1"
   },
   "babel": {

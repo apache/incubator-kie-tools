@@ -30,7 +30,6 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/react-router-dom": "^5.1.7",
-    "kie-tools-root": "workspace:*",
     "react-router-dom": "^5.2.1"
   }
 }

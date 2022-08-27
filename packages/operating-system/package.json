@@ -25,8 +25,7 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "devDependencies": {
-    "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*"
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

@@ -15,9 +15,6 @@
   "files": [
     "."
   ],
-  "devDependencies": {
-    "kie-tools-root": "workspace:*"
-  },
   "babel": {
     "presets": [
       [

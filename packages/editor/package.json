@@ -45,8 +45,7 @@
   },
   "devDependencies": {
     "@types/minimatch": "^3.0.4",
-    "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*"
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

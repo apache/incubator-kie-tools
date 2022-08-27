@@ -27,7 +27,6 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
-    "kie-tools-root": "workspace:*",
     "pkg": "^5.5.2"
   },
   "babel": {

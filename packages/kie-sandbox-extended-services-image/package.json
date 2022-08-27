@@ -26,8 +26,5 @@
   },
   "dependencies": {
     "@kie-tools/extended-services": "workspace:*"
-  },
-  "devDependencies": {
-    "kie-tools-root": "workspace:*"
   }
 }

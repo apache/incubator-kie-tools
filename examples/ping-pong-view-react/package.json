@@ -28,8 +28,5 @@
     "@kie-tools-examples/ping-pong-view": "workspace:*",
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
-  },
-  "devDependencies": {
-    "kie-tools-root": "workspace:*"
   }
 }

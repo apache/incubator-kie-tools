@@ -38,7 +38,6 @@
     "@types/selenium-webdriver": "^4.1.1",
     "chai": "^4.3.4",
     "jest-junit": "^14.0.0",
-    "kie-tools-root": "workspace:*",
     "selenium-webdriver": "^4.2.0",
     "start-server-and-test": "^1.12.1",
     "zip-webpack-plugin": "^4.0.1"
