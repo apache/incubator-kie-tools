@@ -130,12 +130,8 @@ jobs:
           BUILDKITE_COMMIT: ${{ github.sha }}
           BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
           BUILDKITE_BUILD_URL: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
-          INTEGRATION_TESTS_PATTERNS: >-
-            ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
         run: |
-          echo $INTEGRATION_TESTS_PATTERNS
-          echo ${INTEGRATION_TESTS_PATTERNS[@]}
-          find $INTEGRATION_TESTS_PATTERNS | xargs -I{} curl -X POST \
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
             -H "Authorization: Token token=$BUILDKITE_ANALYTICS_TOKEN" \
             -F "format=junit" \
             -F "data=@{}" \
