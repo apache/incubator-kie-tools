@@ -27,12 +27,13 @@ git checkout $KIE_TOOLS_BRANCH
 git sparse-checkout set $KIE_TOOLS_PATHS_INCLUDED_BY_DEFAULT
 echo ""
 
-echo "[kie-tools-sparse-checkout] Installing root dependencies..."
-pnpm install-dependencies -F . --frozen-lockfile
+echo "[kie-tools-sparse-checkout] Installing scripts and root dependencies..."
+pnpm bootstrap:scripts --frozen-lockfile
+pnpm bootstrap:root --frozen-lockfile
 echo ""
 
 echo "[kie-tools-sparse-checkout] Listing paths of packages to fetch for (${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]})..."
-KIE_TOOLS_PACKAGE_PATHS_TO_FETCH=$(pnpm run --silent list-packages-dependencies "${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]}")
+KIE_TOOLS_PACKAGE_PATHS_TO_FETCH=$(node scripts/sparse-checkout/list_packages_dependencies.js ../../repo "${KIE_TOOLS_PACKAGE_NAMES_TO_BUILD[@]}")
 echo $KIE_TOOLS_PACKAGE_PATHS_TO_FETCH | xargs -n1
 echo ""
 
@@ -41,7 +42,7 @@ eval "git sparse-checkout set $KIE_TOOLS_PATHS_INCLUDED_BY_DEFAULT $KIE_TOOLS_PA
 echo ""
 
 echo "[kie-tools-sparse-checkout] Installing packages dependencies..."
-eval "pnpm bootstrap $KIE_TOOLS_PACKAGES_PNPM_FILTER_STRING --frozen-lockfile"
+eval "pnpm bootstrap:packages $KIE_TOOLS_PACKAGES_PNPM_FILTER_STRING --frozen-lockfile"
 echo ""
 
 echo "[kie-tools-sparse-checkout] Building packages with 'build:dev'..."

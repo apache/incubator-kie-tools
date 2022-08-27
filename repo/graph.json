@@ -2,6 +2,10 @@
   "serializedDatavisGraph": {
     "nodes": [
       { "id": "kie-tools" },
+      { "id": "@kie-tools-build/bootstrap" },
+      { "id": "@kie-tools-build/sparse-checkout" },
+      { "id": "@kie-tools-build/update-version" },
+      { "id": "@kie-tools/build-env" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools-core/backend" },
@@ -30,7 +34,6 @@
       { "id": "@kie-tools-core/workspace" },
       { "id": "@kie-tools/backend-extended-services" },
       { "id": "@kie-tools-core/maven-config-setup-helper" },
-      { "id": "@kie-tools/build-env" },
       { "id": "@kie-tools/boxed-expression-component" },
       { "id": "@kie-tools/feel-input-component" },
       { "id": "@kie-tools-core/monaco-editor" },
@@ -106,6 +109,10 @@
       { "id": "@kie-tools/yard-editor" }
     ],
     "links": [
+      { "source": "kie-tools", "target": "@kie-tools-build/bootstrap", "weight": 1 },
+      { "source": "kie-tools", "target": "@kie-tools-build/sparse-checkout", "weight": 1 },
+      { "source": "kie-tools", "target": "@kie-tools-build/update-version", "weight": 1 },
+      { "source": "@kie-tools-build/bootstrap", "target": "@kie-tools/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/backend", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -676,7 +683,6 @@
     ["@kie-tools-core/backend", "packages/backend"],
     ["@kie-tools/backend-extended-services", "packages/backend-extended-services"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
-    ["@kie-tools/build-env", "packages/build-env"],
     ["@kie-tools-core/chrome-extension", "packages/chrome-extension"],
     ["chrome-extension-pack-kogito-kie-editors", "packages/chrome-extension-pack-kogito-kie-editors"],
     ["chrome-extension-serverless-workflow-editor", "packages/chrome-extension-serverless-workflow-editor"],
@@ -771,6 +777,10 @@
     ],
     ["@kie-tools-core/webpack-base", "packages/webpack-base"],
     ["@kie-tools-core/workspace", "packages/workspace"],
-    ["@kie-tools/yard-editor", "packages/yard-editor"]
+    ["@kie-tools/yard-editor", "packages/yard-editor"],
+    ["@kie-tools-build/bootstrap", "scripts/bootstrap"],
+    ["@kie-tools/build-env", "scripts/build-env"],
+    ["@kie-tools-build/sparse-checkout", "scripts/sparse-checkout"],
+    ["@kie-tools-build/update-version", "scripts/update-version"]
   ]
 }

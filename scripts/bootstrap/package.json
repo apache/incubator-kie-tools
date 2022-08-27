@@ -1,0 +1,17 @@
+{
+  "name": "@kie-tools-build/bootstrap",
+  "version": "0.0.0",
+  "keywords": [],
+  "bin": {
+    "kie-tools--bootstrap": "bootstrap.js"
+  },
+  "devDependencies": {
+    "@kie-tools/build-env": "workspace:*",
+    "@pnpm/filter-workspace-packages": "^5.0.27",
+    "@pnpm/find-workspace-packages": "^4.0.27",
+    "@pnpm/logger": "^4.0.0",
+    "graph-data-structure": "^2.0.0",
+    "graphviz": "^0.0.9",
+    "markdown-table": "^3.0.2"
+  }
+}

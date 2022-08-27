@@ -18,7 +18,7 @@ import * as path from "path";
 import * as url from "url";
 import * as fs from "fs";
 import { markdownTable } from "markdown-table";
-import { treatVarToPrint } from "../packages/build-env/dist/index.js";
+import { treatVarToPrint } from "@kie-tools/build-env";
 import { pnpmFilter } from "./pnpm_filter.js";
 
 let pnpmFilterString;
