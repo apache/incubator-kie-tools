@@ -30,8 +30,6 @@
     "openapi-types": "^7.0.1"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@types/lodash": "^4.14.168",
     "jest-junit": "^14.0.0"
   },

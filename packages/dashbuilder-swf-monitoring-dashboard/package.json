@@ -21,8 +21,6 @@
     "copy:dashbuilder": "copyfiles -u 3 \"../dashbuilder-client/dist/**/*\" ./dist/ && copyfiles -u 1 src/* ./dist/"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@kie-tools/dashbuilder-client": "workspace:*"
   },
   "babel": {

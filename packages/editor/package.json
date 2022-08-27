@@ -44,8 +44,6 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@types/minimatch": "^3.0.4",
     "jest-junit": "^14.0.0"
   },

@@ -15,6 +15,8 @@ importers:
       "@kie-tools-build/bootstrap": workspace:*
       "@kie-tools-build/sparse-checkout": workspace:*
       "@kie-tools-build/update-version": workspace:*
+      "@kie-tools-core/run-script-if": workspace:*
+      "@kie-tools/build-env": workspace:*
       "@nice-move/prettier-plugin-package-json": ^0.6.1
       "@testing-library/jest-dom": ^5.16.1
       "@testing-library/react": ^11.2.6
@@ -77,6 +79,8 @@ importers:
       "@kie-tools-build/bootstrap": link:scripts/bootstrap
       "@kie-tools-build/sparse-checkout": link:scripts/sparse-checkout
       "@kie-tools-build/update-version": link:scripts/update-version
+      "@kie-tools-core/run-script-if": link:scripts/run-script-if
+      "@kie-tools/build-env": link:scripts/build-env
       "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
       "@testing-library/jest-dom": 5.16.1
       "@testing-library/react": 11.2.7
@@ -139,9 +143,7 @@ importers:
       "@kie-tools-core/guided-tour": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       react: ^17.0.2
@@ -156,9 +158,6 @@ importers:
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   examples/base64png-editor-chrome-extension:
     specifiers:
@@ -166,10 +165,8 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/base64png-editor": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/chrome": ^0.0.193
       zip-webpack-plugin: ^4.0.1
     dependencies:
@@ -179,9 +176,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
       "@kie-tools-examples/base64png-editor": link:../base64png-editor
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/chrome": 0.0.193
       zip-webpack-plugin: 4.0.1
 
@@ -191,11 +186,9 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/base64png-editor": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     dependencies:
@@ -206,9 +199,7 @@ importers:
       "@kie-tools-core/vscode-extension": link:../../packages/vscode-extension
       "@kie-tools-examples/base64png-editor": link:../base64png-editor
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       vsce: 2.6.5
 
@@ -216,8 +207,6 @@ importers:
     specifiers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -225,9 +214,6 @@ importers:
       "@kie-tools-core/envelope-bus": link:../../packages/envelope-bus
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   examples/ping-pong-view-angular:
     specifiers:
@@ -245,9 +231,7 @@ importers:
       "@angular/router": ^13.1.1
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-examples/ping-pong-view": workspace:*
-      "@kie-tools/build-env": workspace:*
       rxjs: ^7.4.0
       zone.js: ^0.11.4
     dependencies:
@@ -269,16 +253,12 @@ importers:
       "@angular-devkit/build-angular": 13.3.3_we6htpodawqacgcsccwjs4kcom
       "@angular/cli": 13.1.2
       "@angular/compiler-cli": 13.1.1_@angular+compiler@13.1.1
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   examples/ping-pong-view-react:
     specifiers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-examples/ping-pong-view": workspace:*
-      "@kie-tools/build-env": workspace:*
       react: ^17.0.2
       react-dom: ^17.0.2
     dependencies:
@@ -287,16 +267,11 @@ importers:
       "@kie-tools-examples/ping-pong-view": link:../ping-pong-view
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   examples/todo-list-view:
     specifiers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -306,19 +281,15 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
 
   examples/todo-list-view-vscode-extension:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/todo-list-view": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     dependencies:
@@ -327,9 +298,7 @@ importers:
       "@kie-tools-examples/todo-list-view": link:../todo-list-view
     devDependencies:
       "@kie-tools-core/patternfly-base": link:../../packages/patternfly-base
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       vsce: 2.6.5
 
@@ -339,14 +308,12 @@ importers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-examples/base64png-editor": workspace:*
       "@kie-tools-examples/ping-pong-view": workspace:*
       "@kie-tools-examples/ping-pong-view-angular": workspace:*
       "@kie-tools-examples/ping-pong-view-react": workspace:*
       "@kie-tools-examples/todo-list-view": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/kie-editors-standalone": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -373,9 +340,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../../packages/run-script-if
       "@kie-tools-core/webpack-base": link:../../packages/webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/stunner-editors": link:../../packages/stunner-editors
       "@types/react-router-dom": 5.1.7
       react-router-dom: 5.3.0_react@17.0.2
@@ -384,9 +349,7 @@ importers:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/semver": ^7.3.6
       "@types/sinon": ^10.0.2
       "@types/vscode": ^1.66.0
@@ -407,8 +370,6 @@ importers:
       semver: 7.3.5
       sinon: 11.1.1
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/semver": 7.3.6
       "@types/sinon": 10.0.2
       "@types/vscode": 1.66.0
@@ -418,21 +379,15 @@ importers:
   packages/backend-extended-services:
     specifiers:
       "@kie-tools-core/maven-config-setup-helper": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/boxed-expression-component:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/feel-input-component": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -482,9 +437,7 @@ importers:
       react-table: 7.7.0_react@17.0.2
       uuid: 8.3.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/cypress-image-snapshot": 3.1.6
       "@types/lodash": 4.14.169
       "@types/papaparse": 5.3.2
@@ -507,9 +460,7 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@octokit/rest": ^18.5.3
       "@types/chrome": ^0.0.193
       "@types/minimatch": ^3.0.4
@@ -527,8 +478,6 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/chrome": 0.0.193
       "@types/minimatch": 3.0.4
       jest-junit: 14.0.0
@@ -539,9 +488,7 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@types/chai": ^4.2.17
@@ -559,9 +506,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/chai": 4.2.18
       "@types/chrome": 0.0.193
@@ -578,9 +523,7 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
@@ -597,9 +540,7 @@ importers:
       "@kie-tools-core/editor": link:../editor
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
       "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
@@ -615,42 +556,28 @@ importers:
   packages/cors-proxy-image:
     specifiers:
       "@isomorphic-git/cors-proxy": ^2.7.1
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       patch-package: ^6.4.7
     devDependencies:
       "@isomorphic-git/cors-proxy": 2.7.1
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       patch-package: 6.4.7
 
   packages/dashbuilder:
     specifiers:
       "@kie-tools-core/maven-config-setup-helper": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-assembler": workspace:*
     dependencies:
       "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
       "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/dashbuilder-client:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder": workspace:*
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder": link:../dashbuilder
 
   packages/dashbuilder-component-api:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -658,15 +585,12 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-assembler:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-echarts": workspace:*
       "@kie-tools/dashbuilder-component-svg-heatmap": workspace:*
@@ -685,12 +609,9 @@ importers:
       "@kie-tools/dashbuilder-component-victory-charts": link:../dashbuilder-component-victory-charts
     devDependencies:
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/dashbuilder-component-dev:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       jest-junit: ^14.0.0
       react: ^17.0.2
@@ -700,16 +621,12 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-echarts:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
@@ -723,16 +640,12 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-echarts-base:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/echarts": ^4.9.15
       echarts: ^5.3.2
       jest-junit: ^14.0.0
@@ -743,17 +656,13 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/echarts": 4.9.15
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-svg-heatmap:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@types/heatmap.js": ^2.0.36
@@ -768,9 +677,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       "@types/heatmap.js": 2.0.37
       jest-junit: 14.0.0
@@ -778,9 +685,7 @@ importers:
   packages/dashbuilder-component-table:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -796,18 +701,14 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-timeseries:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
@@ -821,18 +722,14 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-uniforms:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -858,18 +755,14 @@ importers:
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
       uniforms-patternfly: 4.7.5_e4ekuclhs2oi3rmlncbxp5md3y
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       jest-junit: 14.0.0
 
   packages/dashbuilder-component-victory-charts:
     specifiers:
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@patternfly/react-charts": ^6.15.23
@@ -892,9 +785,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       victory-zoom-container: 35.11.4_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-component-dev": link:../dashbuilder-component-dev
       "@types/numeral": 2.0.2
       jest-junit: 14.0.0
@@ -906,10 +797,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -940,9 +829,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
@@ -954,23 +841,14 @@ importers:
 
   packages/dashbuilder-images:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder": workspace:*
     dependencies:
       "@kie-tools/dashbuilder": link:../dashbuilder
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/dashbuilder-swf-monitoring-dashboard:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
 
   packages/desktop:
@@ -979,9 +857,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -1012,9 +888,7 @@ importers:
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       cross-var: 1.1.0
       electron-packager: 15.2.0
@@ -1024,8 +898,6 @@ importers:
 
   packages/dmn-dev-sandbox-deployment-base-image:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/dmn-dev-sandbox-form-webapp": workspace:*
       "@kie-tools/dmn-dev-sandbox-quarkus": workspace:*
@@ -1033,23 +905,16 @@ importers:
       "@kie-tools/dmn-dev-sandbox-form-webapp": link:../dmn-dev-sandbox-form-webapp
       "@kie-tools/dmn-dev-sandbox-quarkus": link:../dmn-dev-sandbox-quarkus
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
 
   packages/dmn-dev-sandbox-deployment-base-image-env:
-    specifiers:
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools/build-env": link:../../scripts/build-env
+    specifiers: {}
 
   packages/dmn-dev-sandbox-form-webapp:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/form-dmn": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -1075,20 +940,14 @@ importers:
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
       "@kie-tools-core/maven-config-setup-helper": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/editor:
     specifiers:
@@ -1101,9 +960,7 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@types/minimatch": ^3.0.4
@@ -1130,16 +987,12 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/minimatch": 3.0.4
       jest-junit: 14.0.0
 
   packages/envelope:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       csstype: ^3.0.11
       jest-junit: ^14.0.0
       react: ^17.0.2
@@ -1150,14 +1003,10 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/envelope-bus:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1165,21 +1014,15 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/extended-services:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/jitexecutor-native": 1.12.0-Final
       cross-env: ^7.0.3
     dependencies:
       "@kie-tools/jitexecutor-native": 1.12.0-Final
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       cross-env: 7.0.3
 
   packages/feel-input-component:
@@ -1187,9 +1030,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       jest-junit: ^14.0.0
       monaco-editor: ^0.33.0
@@ -1204,18 +1045,14 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/form:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -1246,9 +1083,7 @@ importers:
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
       uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
 
@@ -1256,9 +1091,7 @@ importers:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -1291,17 +1124,13 @@ importers:
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
       uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
 
   packages/form-generation-tool:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/uniforms-bootstrap4-codegen": workspace:*
       "@kie-tools/uniforms-patternfly-codegen": workspace:*
       "@types/inquirer": ^7.3.2
@@ -1320,9 +1149,7 @@ importers:
       uniforms: 3.6.2
       uniforms-bridge-json-schema: 3.6.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/inquirer": 7.3.3
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
@@ -1333,8 +1160,6 @@ importers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       jest-junit: ^14.0.0
@@ -1349,14 +1174,10 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/i18n:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1364,43 +1185,30 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/i18n-common-dictionary:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/image-env-to-json:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       commander: ^8.3.0
       pkg: ^5.5.2
     dependencies:
       commander: 8.3.0
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       pkg: 5.5.2
 
   packages/import-java-classes-component:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -1423,9 +1231,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
@@ -1437,8 +1243,6 @@ importers:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       jest-junit: ^14.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
@@ -1448,8 +1252,6 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/kie-bc-editors:
@@ -1461,10 +1263,8 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/pmml-editor-marshaller": workspace:*
       jest-junit: ^14.0.0
       react: ^17.0.2
@@ -1483,8 +1283,6 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/kie-editors-standalone:
@@ -1496,10 +1294,8 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@types/minimatch": ^3.0.4
@@ -1525,10 +1321,8 @@ importers:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/notifications": link:../notifications
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/minimatch": 3.0.4
@@ -1549,20 +1343,13 @@ importers:
 
   packages/kie-sandbox-extended-services-image:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/extended-services": workspace:*
     dependencies:
       "@kie-tools/extended-services": link:../extended-services
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/kie-sandbox-fs:
     specifiers:
       "@isomorphic-git/idb-keyval": ^3.3.2
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       dexie: ^3.0.3
       isomorphic-textencoder: ^1.0.1
       just-debounce-it: ^3.0.1
@@ -1587,8 +1374,6 @@ importers:
       just-debounce-it: 3.0.1
       just-once: 2.0.1
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       karma: 6.3.12
       karma-browserstack-launcher: 1.6.0_karma@6.3.12
       karma-chrome-launcher: 3.1.0
@@ -1605,57 +1390,37 @@ importers:
 
   packages/kie-sandbox-image:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/image-env-to-json": workspace:*
       "@kie-tools/online-editor": workspace:*
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/image-env-to-json": link:../image-env-to-json
       "@kie-tools/online-editor": link:../online-editor
 
   packages/kn-plugin-workflow:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       cross-env: ^7.0.3
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       cross-env: 7.0.3
 
   packages/maven-config-setup-helper:
-    specifiers:
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools/build-env": link:../../scripts/build-env
+    specifiers: {}
 
   packages/monaco-editor:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       monaco-editor: ^0.33.0
     dependencies:
       monaco-editor: 0.33.0
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/notifications:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
     dependencies:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/workspace": link:../workspace
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
 
@@ -1669,11 +1434,9 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
       "@kie-tools/extended-services": workspace:*
       "@kie-tools/form": workspace:*
@@ -1751,9 +1514,7 @@ importers:
       react-router-dom: 5.3.0_react@17.0.2
       uuid: 8.3.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": link:../dmn-dev-sandbox-deployment-base-image-env
       "@kie-tools/extended-services": link:../extended-services
       "@kie-tools/stunner-editors": link:../stunner-editors
@@ -1772,37 +1533,21 @@ importers:
 
   packages/openjdk11-mvn-image:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/openjdk11-mvn-image-env": workspace:*
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
 
   packages/openjdk11-mvn-image-env:
-    specifiers:
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools/build-env": link:../../scripts/build-env
+    specifiers: {}
 
   packages/operating-system:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       jest-junit: ^14.0.0
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/patternfly-base:
-    specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
+    specifiers: {}
 
   packages/pmml-editor:
     specifiers:
@@ -1816,10 +1561,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/pmml-editor-marshaller": workspace:*
       "@patternfly/react-charts": ^6.15.23
       "@patternfly/react-core": ^4.157.3
@@ -1890,9 +1633,7 @@ importers:
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts
       "@kie-tools-core/operating-system": link:../operating-system
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
@@ -1903,8 +1644,6 @@ importers:
 
   packages/pmml-editor-marshaller:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       jest-junit: ^14.0.0
       jsonata: ^1.8.3
       xml-js: ^1.6.11
@@ -1912,8 +1651,6 @@ importers:
       jsonata: 1.8.3
       xml-js: 1.6.11
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/run-script-if:
@@ -1935,10 +1672,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
       "@kie-tools/dashbuilder-editor": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
@@ -2037,9 +1772,7 @@ importers:
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@kie-tools/openjdk11-mvn-image-env": link:../openjdk11-mvn-image-env
       "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
@@ -2054,31 +1787,22 @@ importers:
 
   packages/serverless-logic-sandbox-base-image:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": workspace:*
       "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
       "@kie-tools/serverless-logic-sandbox-deployment-webapp": workspace:*
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/dashbuilder-swf-monitoring-dashboard": link:../dashbuilder-swf-monitoring-dashboard
       "@kie-tools/serverless-logic-sandbox-base-image-env": link:../serverless-logic-sandbox-base-image-env
       "@kie-tools/serverless-logic-sandbox-deployment-webapp": link:../serverless-logic-sandbox-deployment-webapp
 
   packages/serverless-logic-sandbox-base-image-env:
-    specifiers:
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools/build-env": link:../../scripts/build-env
+    specifiers: {}
 
   packages/serverless-logic-sandbox-deployment-webapp:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -2102,9 +1826,7 @@ importers:
       react-router: 5.2.1_react@17.0.2
       react-router-dom: 5.3.0_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/serverless-workflow-combined-editor:
@@ -2116,10 +1838,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
@@ -2167,9 +1887,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       vscode-languageserver-types: 3.16.0
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/json-schema": 7.0.11
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
@@ -2183,13 +1901,9 @@ importers:
   packages/serverless-workflow-diagram-editor:
     specifiers:
       "@kie-tools-core/maven-config-setup-helper": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       symlink-dir: ^5.0.1
     devDependencies:
       "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       symlink-dir: 5.0.1
 
   packages/serverless-workflow-diagram-editor-envelope:
@@ -2201,10 +1915,8 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       jest-junit: ^14.0.0
     dependencies:
@@ -2219,14 +1931,10 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/serverless-workflow-language-service:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@severlessworkflow/sdk-typescript": ^3.0.3
       "@types/json-to-ast": ^2.1.2
@@ -2249,8 +1957,6 @@ importers:
       vscode-languageserver-types: 3.16.0
       yaml-language-server-parser: 0.1.3
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/json-to-ast": 2.1.2
       jest-junit: 14.0.0
 
@@ -2263,10 +1969,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
       "@severlessworkflow/sdk-typescript": ^3.0.3
@@ -2299,9 +2003,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       svg-pan-zoom: 3.6.1
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/mermaid": 8.2.9
       "@types/svg-pan-zoom": 3.4.0
       cypress: 9.5.1
@@ -2314,8 +2016,6 @@ importers:
   packages/serverless-workflow-service-catalog:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/js-yaml": ^4.0.5
       "@types/lodash": ^4.14.168
       jest-junit: ^14.0.0
@@ -2329,8 +2029,6 @@ importers:
       lodash: 4.17.21
       openapi-types: 7.2.3
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/lodash": 4.14.169
       jest-junit: 14.0.0
 
@@ -2342,10 +2040,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -2384,9 +2080,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
       vscode-languageserver-types: 3.16.0
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/json-schema": 7.0.11
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
@@ -2400,16 +2094,12 @@ importers:
   packages/stunner-editors:
     specifiers:
       "@kie-tools-core/maven-config-setup-helper": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/stunner-editors-dmn-loader": workspace:*
       symlink-dir: ^5.0.1
     dependencies:
       "@kie-tools/stunner-editors-dmn-loader": link:../stunner-editors-dmn-loader
     devDependencies:
       "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       symlink-dir: 5.0.1
 
   packages/stunner-editors-dmn-loader:
@@ -2417,10 +2107,8 @@ importers:
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/import-java-classes-component": workspace:*
       "@types/lodash": ^4.14.168
       lodash: ^4.17.21
@@ -2438,9 +2126,7 @@ importers:
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/lodash": 4.14.169
 
   packages/text-editor:
@@ -2451,9 +2137,7 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       cypress: ^9.5.1
       cypress-file-upload: ^5.0.8
@@ -2479,8 +2163,6 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
       cypress-iframe: 1.0.1
@@ -2490,9 +2172,7 @@ importers:
 
   packages/uniforms-bootstrap4-codegen:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
       "@types/underscore": ^1.11.2
@@ -2513,9 +2193,7 @@ importers:
       uniforms: 3.6.2_react@17.0.2
       uniforms-bridge-simple-schema-2: 3.6.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/lodash": 4.14.169
       "@types/simpl-schema": 1.12.0
       "@types/underscore": 1.11.2
@@ -2523,9 +2201,7 @@ importers:
 
   packages/uniforms-patternfly-codegen:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/lodash": ^4.14.168
       "@types/simpl-schema": ^1.12.0
       jest-junit: ^14.0.0
@@ -2543,9 +2219,7 @@ importers:
       uniforms: 3.6.2_react@17.0.2
       uniforms-bridge-simple-schema-2: 3.6.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/lodash": 4.14.169
       "@types/simpl-schema": 1.12.0
       jest-junit: 14.0.0
@@ -2554,9 +2228,7 @@ importers:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -2597,17 +2269,13 @@ importers:
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
       uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/unitables-dmn:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/form-dmn": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
@@ -2650,8 +2318,6 @@ importers:
       uniforms-bridge-json-schema: 3.6.2_react@17.0.2
       uniforms-patternfly: 4.7.5_d63oygdhkx7uuppcefuuphla7u
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       jest-junit: 14.0.0
 
   packages/vscode-extension:
@@ -2663,10 +2329,8 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/notifications": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/minimatch": ^3.0.4
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
@@ -2684,19 +2348,15 @@ importers:
       "@types/vscode": 1.66.0
       minimatch: 3.0.5
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/minimatch": 3.0.4
       jest-junit: 14.0.0
 
   packages/vscode-extension-backend:
     specifiers:
       "@kie-tools-core/backend": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/backend-extended-services": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
       vsce: ^2.6.5
@@ -2705,9 +2365,7 @@ importers:
       "@kie-tools-core/vscode-extension": link:../vscode-extension
       "@kie-tools/backend-extended-services": link:../backend-extended-services
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
       vsce: 2.6.5
@@ -2718,10 +2376,8 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
@@ -2737,9 +2393,7 @@ importers:
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/vscode-java-code-completion-extension-plugin": link:../vscode-java-code-completion-extension-plugin
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
@@ -2751,10 +2405,8 @@ importers:
       "@kie-tools-core/editor": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/stunner-editors": workspace:*
       "@kie-tools/vscode-java-code-completion-extension-plugin": workspace:*
@@ -2770,9 +2422,7 @@ importers:
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@kie-tools/vscode-java-code-completion-extension-plugin": link:../vscode-java-code-completion-extension-plugin
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
@@ -2780,29 +2430,21 @@ importers:
 
   packages/vscode-extension-kie-ba-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       vsce: 2.6.5
 
   packages/vscode-extension-kogito-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       vsce: 2.6.5
 
@@ -2815,11 +2457,9 @@ importers:
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/pmml-editor": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -2856,9 +2496,7 @@ importers:
       minimatch: 3.0.5
       monaco-editor: 0.33.0
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/stunner-editors": link:../stunner-editors
       "@types/chai": 4.2.18
       "@types/minimatch": 3.0.4
@@ -2882,11 +2520,9 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/pmml-editor": workspace:*
       "@types/vscode": ^1.66.0
       "@vscode/test-web": ^0.0.22
@@ -2901,24 +2537,18 @@ importers:
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/pmml-editor": link:../pmml-editor
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       "@vscode/test-web": 0.0.22
       vsce: 2.6.5
 
   packages/vscode-extension-red-hat-business-automation-bundle:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       vsce: ^2.6.5
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       vsce: 2.6.5
 
@@ -2932,12 +2562,10 @@ importers:
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
@@ -2989,9 +2617,7 @@ importers:
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
       "@types/chai": 4.2.18
       "@types/mocha": 8.2.2
@@ -3018,12 +2644,10 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/yard-editor": workspace:*
       "@types/chai": ^4.2.17
       "@types/mocha": ^8.2.2
@@ -3065,9 +2689,7 @@ importers:
       vscode-languageserver-types: 3.16.0
       yaml: 2.0.1
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/chai": 4.2.18
       "@types/mocha": 8.2.2
       "@types/selenium-webdriver": 4.1.1
@@ -3086,46 +2708,29 @@ importers:
 
   packages/vscode-java-code-completion:
     specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
       "@kie-tools-core/maven-config-setup-helper": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
     devDependencies:
       "@kie-tools-core/maven-config-setup-helper": link:../maven-config-setup-helper
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
 
   packages/webpack-base:
-    specifiers:
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
+    specifiers: {}
 
   packages/workspace:
     specifiers:
       "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@types/vscode": ^1.66.0
       jest-junit: ^14.0.0
     dependencies:
       "@kie-tools-core/operating-system": link:../operating-system
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/vscode": 1.66.0
       jest-junit: 14.0.0
 
@@ -3138,10 +2743,8 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools-core/run-script-if": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/build-env": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -3177,9 +2780,7 @@ importers:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
-      "@kie-tools-core/run-script-if": link:../run-script-if
       "@kie-tools-core/webpack-base": link:../webpack-base
-      "@kie-tools/build-env": link:../../scripts/build-env
       "@types/json-schema": 7.0.11
       cypress: 9.5.1
       cypress-file-upload: 5.0.8_cypress@9.5.1
@@ -3190,7 +2791,6 @@ importers:
 
   scripts/bootstrap:
     specifiers:
-      "@kie-tools/build-env": workspace:*
       "@pnpm/filter-workspace-packages": ^5.0.27
       "@pnpm/find-workspace-packages": ^4.0.27
       "@pnpm/logger": ^4.0.0
@@ -3198,7 +2798,6 @@ importers:
       graphviz: ^0.0.9
       markdown-table: ^3.0.2
     devDependencies:
-      "@kie-tools/build-env": link:../build-env
       "@pnpm/filter-workspace-packages": 5.0.27_@pnpm+logger@4.0.0
       "@pnpm/find-workspace-packages": 4.0.27_@pnpm+logger@4.0.0
       "@pnpm/logger": 4.0.0
@@ -3219,6 +2818,12 @@ importers:
       jest: 26.6.3
       rimraf: 3.0.2
       typescript: 4.5.4
+
+  scripts/run-script-if:
+    specifiers:
+      yargs: ^17.0.1
+    dependencies:
+      yargs: 17.3.1
 
   scripts/sparse-checkout:
     specifiers:
@@ -14428,17 +14033,6 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: true
-
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -15387,7 +14981,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -21511,7 +21105,8 @@ packages:
     dev: true
 
   /require-directory/2.1.1:
-    resolution: { integrity: sha1-jGStX9MNqxyXbiNE/+f3kqam30I= }
+    resolution:
+      { integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q== }
     engines: { node: ">=0.10.0" }
 
   /require-from-string/2.0.2:
@@ -21864,7 +21459,7 @@ packages:
       klona: 2.0.5
       neo-async: 2.6.2
       sass: 1.49.9
-      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack: 5.70.0_esbuild@0.14.22
     dev: true
 
   /sass/1.49.9:

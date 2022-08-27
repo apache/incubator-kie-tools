@@ -50,9 +50,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@types/json-schema": "^7.0.11",
     "cypress": "^9.5.1",
     "cypress-file-upload": "^5.0.8",

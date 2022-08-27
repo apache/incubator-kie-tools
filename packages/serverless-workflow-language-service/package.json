@@ -36,8 +36,6 @@
     "yaml-language-server-parser": "^0.1.3"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@types/json-to-ast": "^2.1.2",
     "jest-junit": "^14.0.0"
   },

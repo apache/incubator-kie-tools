@@ -30,9 +30,7 @@
     "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests"
   },
   "devDependencies": {
-    "@kie-tools-core/maven-config-setup-helper": "workspace:*",
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*"
+    "@kie-tools-core/maven-config-setup-helper": "workspace:*"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

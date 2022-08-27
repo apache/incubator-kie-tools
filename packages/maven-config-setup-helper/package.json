@@ -17,7 +17,5 @@
   ],
   "scripts": {},
   "dependencies": {},
-  "devDependencies": {
-    "@kie-tools/build-env": "workspace:*"
-  }
+  "devDependencies": {}
 }

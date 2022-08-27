@@ -72,9 +72,7 @@
     "yaml": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@kie-tools/dashbuilder-client": "workspace:*",
     "@kie-tools/openjdk11-mvn-image-env": "workspace:*",
     "@kie-tools/serverless-logic-sandbox-base-image-env": "workspace:*",

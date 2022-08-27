@@ -20,8 +20,5 @@
   "dependencies": {
     "monaco-editor": "^0.33.0"
   },
-  "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*"
-  }
+  "devDependencies": {}
 }

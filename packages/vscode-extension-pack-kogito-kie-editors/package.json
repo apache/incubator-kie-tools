@@ -47,9 +47,7 @@
     "monaco-editor": "^0.33.0"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/minimatch": "^3.0.4",

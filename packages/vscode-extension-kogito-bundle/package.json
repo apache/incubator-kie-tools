@@ -23,9 +23,7 @@
     "watch": "webpack"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@types/vscode": "^1.66.0",
     "vsce": "^2.6.5"
   },

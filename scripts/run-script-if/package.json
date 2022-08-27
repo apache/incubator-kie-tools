@@ -19,8 +19,7 @@
     "index.js"
   ],
   "scripts": {
-    "build:dev": "pnpm write-readme",
-    "build:prod": "pnpm write-readme",
+    "install": "pnpm write-readme",
     "write-readme": "run-script-os",
     "write-readme:darwin:linux": "echo '```' > README.md && ./index.js --help >> README.md && echo '```' >> README.md",
     "write-readme:win32": "echo 'Nothing to do.'"
@@ -28,7 +27,5 @@
   "dependencies": {
     "yargs": "^17.0.1"
   },
-  "devDependencies": {
-    "@kie-tools/build-env": "workspace:*"
-  }
+  "devDependencies": {}
 }

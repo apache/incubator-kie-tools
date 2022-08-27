@@ -29,8 +29,7 @@
     "@kie-tools/dashbuilder-component-victory-charts": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*"
+    "@kie-tools-core/webpack-base": "workspace:*"
   },
   "babel": {
     "presets": [

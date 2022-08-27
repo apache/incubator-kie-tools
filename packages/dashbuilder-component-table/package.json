@@ -31,9 +31,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
     "jest-junit": "^14.0.0"
   },

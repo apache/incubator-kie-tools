@@ -26,10 +26,7 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*"
   },
-  "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*"
-  },
+  "devDependencies": {},
   "babel": {
     "presets": [
       [
