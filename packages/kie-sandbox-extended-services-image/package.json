@@ -28,6 +28,6 @@
     "@kie-tools/extended-services": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*"
+    "@kie-tools/root-env": "workspace:*"
   }
 }

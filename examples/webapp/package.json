@@ -27,8 +27,8 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/react-router-dom": "^5.1.7",
     "react-router-dom": "^5.2.1"

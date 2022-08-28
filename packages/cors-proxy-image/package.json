@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@isomorphic-git/cors-proxy": "^2.7.1",
-    "@kie-tools-build/root": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "patch-package": "^6.4.7"
   }
 }

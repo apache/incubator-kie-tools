@@ -72,10 +72,10 @@
     "yaml": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-client": "workspace:*",
     "@kie-tools/openjdk11-mvn-image-env": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-sandbox-base-image-env": "workspace:*",
     "@svgr/webpack": "6.2.1",
     "@types/history": "^4.7.3",

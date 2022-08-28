@@ -36,8 +36,8 @@
     "react-router-dom": "^5.2.1"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "jest-junit": "^14.0.0"
   },
   "babel": {

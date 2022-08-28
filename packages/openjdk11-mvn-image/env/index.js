@@ -16,7 +16,7 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("@kie-tools-build/root/env"), require("@kie-tools/openjdk11-mvn-image-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/openjdk11-mvn-image-env/env")], {
   vars: varsWithName({
     SERVERLESS_LOGIC_SANDBOX__openJdk11MvnImageBuildTags: {
       default: "latest",

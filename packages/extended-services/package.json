@@ -40,7 +40,7 @@
     "@kie-tools/jitexecutor-native": "1.12.0-Final"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3"
   },
   "kieTools": {

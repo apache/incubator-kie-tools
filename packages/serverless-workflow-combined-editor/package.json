@@ -54,8 +54,8 @@
     "vscode-languageserver-types": "^3.16.0"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@types/json-schema": "^7.0.11",
     "cypress": "^9.5.1",
     "cypress-file-upload": "^5.0.8",

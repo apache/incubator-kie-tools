@@ -28,7 +28,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "jest-junit": "^14.0.0"
   },
   "babel": {

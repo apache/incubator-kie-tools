@@ -26,7 +26,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "jest-junit": "^14.0.0"
   },
   "presets": [

@@ -20,7 +20,7 @@ const { version } = require("@kie-tools-build/build-env/package.json");
 
 module.exports = composeEnv(
   [
-    require("@kie-tools-build/root/env"),
+    require("@kie-tools/root-env/env"),
     require("@kie-tools/serverless-logic-sandbox-base-image-env/env"),
     require("@kie-tools/openjdk11-mvn-image-env/env"),
   ],

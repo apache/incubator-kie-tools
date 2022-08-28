@@ -63,10 +63,10 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/history": "^4.7.3",
     "@types/minimatch": "^3.0.4",

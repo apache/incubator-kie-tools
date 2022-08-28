@@ -49,7 +49,7 @@
     "uniforms-patternfly": "^4.7.5"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "jest-junit": "^14.0.0"
   }
 }

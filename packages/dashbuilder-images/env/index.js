@@ -16,7 +16,7 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
 
-module.exports = composeEnv([require("@kie-tools-build/root/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     DASHBUILDER__baseImageRegistry: {
       default: "quay.io",

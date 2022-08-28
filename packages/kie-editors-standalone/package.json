@@ -37,7 +37,6 @@
     "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start:it http-get://0.0.0.0:$(build-env standaloneEditors.dev.port) cy:run\" \"pnpm postreport\""
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
@@ -48,6 +47,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/minimatch": "^3.0.4",
     "@types/react-router-dom": "^5.1.7",

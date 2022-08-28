@@ -26,8 +26,8 @@
     "commander": "^8.3.0"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "pkg": "^5.5.2"
   },
   "babel": {

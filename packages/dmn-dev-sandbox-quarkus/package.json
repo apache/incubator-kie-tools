@@ -30,7 +30,7 @@
     "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*"
+    "@kie-tools/root-env": "workspace:*"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

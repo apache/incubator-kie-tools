@@ -17,6 +17,6 @@
     "index.js"
   ],
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*"
+    "@kie-tools/root-env": "workspace:*"
   }
 }

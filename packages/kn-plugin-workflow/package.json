@@ -36,7 +36,7 @@
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"pnpm go:test\" \"pnpm go:test:report\""
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3"
   },
   "kieTools": {

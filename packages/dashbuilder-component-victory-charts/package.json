@@ -34,9 +34,9 @@
     "victory-zoom-container": "^35.11.4"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@types/numeral": "^2.0.2",
     "jest-junit": "^14.0.0"
   },

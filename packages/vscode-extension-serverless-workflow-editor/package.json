@@ -52,8 +52,8 @@
     "yaml": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/mocha": "^8.2.2",

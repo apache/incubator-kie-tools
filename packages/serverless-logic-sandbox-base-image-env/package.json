@@ -13,6 +13,6 @@
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*"
+    "@kie-tools/root-env": "workspace:*"
   }
 }

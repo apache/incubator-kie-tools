@@ -44,7 +44,7 @@
     "@kie-tools/dashbuilder-component-assembler": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*"
+    "@kie-tools/root-env": "workspace:*"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

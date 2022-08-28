@@ -36,8 +36,8 @@
     "uniforms-bridge-json-schema": "^3.5.5"
   },
   "devDependencies": {
-    "@kie-tools-build/root": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@types/inquirer": "^7.3.2",
     "@types/lodash": "^4.14.168",
     "jest-junit": "^14.0.0",
