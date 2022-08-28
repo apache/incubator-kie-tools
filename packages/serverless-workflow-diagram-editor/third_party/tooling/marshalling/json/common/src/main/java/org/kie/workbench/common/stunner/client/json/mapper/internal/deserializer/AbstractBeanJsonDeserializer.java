@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package jakarta.json.stream;
+package org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -24,8 +24,8 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectDecorator;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
-
-import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonbPropertyDeserializer;
 
 public abstract class AbstractBeanJsonDeserializer<T> extends JsonbDeserializer<T>
     implements jakarta.json.bind.serializer.JsonbDeserializer<T> {
@@ -34,7 +34,7 @@ public abstract class AbstractBeanJsonDeserializer<T> extends JsonbDeserializer<
 
   @Override
   public T deserialize(JsonValue value, DeserializationContext ctx) {
-    if(value instanceof JsonObject) {
+    if (value instanceof JsonObject) {
       return deserialize((JsonObject) value, ctx);
     }
     return deserialize(value.asJsonObject(), ctx);

@@ -28,12 +28,12 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.UnknownType;
-import jakarta.json.stream.AbstractBeanJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.BeanDefinition;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.FieldDefinition;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.FieldDefinitionFactory;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.logger.TreeLogger;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.AbstractBeanJsonSerializer;
 
 public class SerializerGenerator extends AbstractGenerator {
 
@@ -43,7 +43,7 @@ public class SerializerGenerator extends AbstractGenerator {
 
   public SerializerGenerator(GenerationContext context, TreeLogger logger) {
     super(context, logger);
-    fieldDefinitionFactory = new FieldDefinitionFactory(context);
+    fieldDefinitionFactory = context.getFieldDefinitionFactory();
   }
 
   @Override

@@ -36,6 +36,7 @@ import javax.lang.model.util.ElementFilter;
 import com.google.auto.common.MoreTypes;
 import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeInfo;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
@@ -76,7 +77,9 @@ public class BeanProcessor {
     annotatedBeans.forEach(this::processBean);
     beans.forEach(context::addBeanDefinition);
 
-    context.getBeans().stream().forEach(mapperGenerator::generate);
+    context.getBeans().stream()
+        .filter(bean -> !bean.getElement().getModifiers().contains(Modifier.ABSTRACT))
+        .forEach(mapperGenerator::generate);
   }
 
   private void processBean(TypeElement bean) {
@@ -166,11 +169,12 @@ public class BeanProcessor {
   }
 
   private TypeElement checkBean(TypeElement type) {
-    if (!type.getKind().isClass()) {
+    if (!type.getKind().isClass() && type.getAnnotation(JsonbTypeInfo.class) == null) {
       throw new GenerationException("A @JSONMapper bean [" + type + "] must be class");
     }
 
-    if (type.getModifiers().contains(Modifier.ABSTRACT)) {
+    if (type.getModifiers().contains(Modifier.ABSTRACT)
+        && type.getAnnotation(JsonbTypeInfo.class) == null) {
       throw new GenerationException("A @JSONMapper bean [" + type + "] must be non abstract");
     }
 

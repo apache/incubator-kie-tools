@@ -37,7 +37,6 @@ import javax.lang.model.util.Types;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.exception.TypeDeserializerNotFoundException;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.exception.TypeMapperNotFoundException;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BooleanJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.CharacterJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
@@ -56,7 +55,6 @@ import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.collection.LinkedListDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.collection.ListDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.collection.SortedSetDeserializer;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BooleanJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.CharacterJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
@@ -69,6 +67,23 @@ import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.a
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.array.PrimitiveLongArrayLongSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.array.PrimitiveShortArrayJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.collection.CollectionJsonSerializer;
+
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.BigDecimalJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.BigIntegerJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.ByteJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.DoubleJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.FloatJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.IntegerJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.LongJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.BaseNumberJsonDeserializer.ShortJsonDeserializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.BigDecimalJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.BigIntegerJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.ByteJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.DoubleJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.FloatJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.IntegerJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.LongJsonSerializer;
+import static org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.BaseNumberJsonSerializer.ShortJsonSerializer;
 
 public class TypeRegistry {
   private final ClassMapperFactory MAPPER = new ClassMapperFactory();
@@ -139,37 +154,37 @@ public class TypeRegistry {
     MAPPER
         .forType(byte.class)
         // .serializer(ByteJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.ByteJsonDeserializer.class)
+        .deserializer(ByteJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(double.class)
         // .serializer(DoubleJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.DoubleJsonDeserializer.class)
+        .deserializer(DoubleJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(float.class)
         // .serializer(FloatJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.FloatJsonDeserializer.class)
+        .deserializer(FloatJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(int.class)
         // .serializer(IntegerJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.IntegerJsonDeserializer.class)
+        .deserializer(IntegerJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(long.class)
         // .serializer(LongJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.LongJsonDeserializer.class)
+        .deserializer(LongJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(short.class)
         // .serializer(ShortJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.ShortJsonDeserializer.class)
+        .deserializer(ShortJsonDeserializer.class)
         .register(buildIn);
   }
 
@@ -208,50 +223,50 @@ public class TypeRegistry {
   private void initNumberMappers() {
     MAPPER
         .forType(BigDecimal.class)
-        .serializer(BaseNumberJsonSerializer.BigDecimalJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.BigDecimalJsonDeserializer.class)
+        .serializer(BigDecimalJsonSerializer.class)
+        .deserializer(BigDecimalJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(BigInteger.class)
-        .serializer(BaseNumberJsonSerializer.BigIntegerJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.BigIntegerJsonDeserializer.class)
+        .serializer(BigIntegerJsonSerializer.class)
+        .deserializer(BigIntegerJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(Byte.class)
-        .serializer(BaseNumberJsonSerializer.ByteJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.ByteJsonDeserializer.class)
+        .serializer(ByteJsonSerializer.class)
+        .deserializer(ByteJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(Double.class)
-        .serializer(BaseNumberJsonSerializer.DoubleJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.DoubleJsonDeserializer.class)
+        .serializer(DoubleJsonSerializer.class)
+        .deserializer(DoubleJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(Float.class)
-        .serializer(BaseNumberJsonSerializer.FloatJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.FloatJsonDeserializer.class)
+        .serializer(FloatJsonSerializer.class)
+        .deserializer(FloatJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(Integer.class)
-        .serializer(BaseNumberJsonSerializer.IntegerJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.IntegerJsonDeserializer.class)
+        .serializer(IntegerJsonSerializer.class)
+        .deserializer(IntegerJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(Long.class)
-        .serializer(BaseNumberJsonSerializer.LongJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.LongJsonDeserializer.class)
+        .serializer(LongJsonSerializer.class)
+        .deserializer(LongJsonDeserializer.class)
         .register(buildIn);
 
     MAPPER
         .forType(Short.class)
-        .serializer(BaseNumberJsonSerializer.ShortJsonSerializer.class)
-        .deserializer(BaseNumberJsonDeserializer.ShortJsonDeserializer.class)
+        .serializer(ShortJsonSerializer.class)
+        .deserializer(ShortJsonDeserializer.class)
         .register(buildIn);
   }
 

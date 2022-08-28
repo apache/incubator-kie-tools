@@ -142,7 +142,8 @@ public class JsonValueDecorator {
 
   private static class JreDecorator extends GWTDecorator {
 
-    @GwtIncompatible private JsonValue delegate;
+    @GwtIncompatible
+    private JsonValue delegate;
 
     @Override
     @GwtIncompatible

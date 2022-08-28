@@ -37,7 +37,9 @@ public class DefaultBeanFieldDefinition extends FieldDefinition {
   public Statement getFieldDeserializer(PropertyDefinition field, CompilationUnit cu) {
     TypeMirror type = field.getType();
     String deser =
-        context.getTypeUtils().getJsonDeserializerImplQualifiedName(MoreTypes.asTypeElement(type));
+        context
+            .getTypeUtils()
+            .getJsonDeserializerImplQualifiedName(MoreTypes.asTypeElement(type), cu);
 
     return new ExpressionStmt(
         new MethodCallExpr(new NameExpr("bean"), field.getSetter().getSimpleName().toString())

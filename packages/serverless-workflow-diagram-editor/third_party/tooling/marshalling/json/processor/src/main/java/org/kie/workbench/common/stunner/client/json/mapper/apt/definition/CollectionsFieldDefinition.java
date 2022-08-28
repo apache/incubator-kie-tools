@@ -20,6 +20,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
@@ -28,6 +29,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.google.auto.common.MoreTypes;
+import jakarta.json.bind.annotation.JsonbTypeInfo;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.collection.BoxedTypeCollectionJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.collection.CollectionJsonSerializer;
@@ -48,14 +50,31 @@ public class CollectionsFieldDefinition extends FieldDefinition {
     cu.addImport(deserializer.getQualifiedName().toString());
     TypeMirror typeMirror = MoreTypes.asDeclared(field.getType()).getTypeArguments().get(0);
 
-    String deser;
+    Expression deser;
     if (context.getTypeRegistry().has(typeMirror)) {
-      deser = context.getTypeRegistry().getDeserializer(typeMirror).getQualifiedName().toString();
+      deser =
+          new ObjectCreationExpr()
+              .setType(
+                  context
+                      .getTypeRegistry()
+                      .getDeserializer(typeMirror)
+                      .getQualifiedName()
+                      .toString());
+    } else if (MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeInfo.class) != null) {
+      deser =
+          new JsonbTypeInfoDefinition(
+                  MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeInfo.class),
+                  typeMirror,
+                  context)
+              .getDeserializerCreationExpr(typeMirror, cu);
     } else {
       deser =
-          context
-              .getTypeUtils()
-              .getJsonDeserializerImplQualifiedName(MoreTypes.asTypeElement(typeMirror));
+          new ObjectCreationExpr()
+              .setType(
+                  context
+                      .getTypeUtils()
+                      .getJsonDeserializerImplQualifiedName(
+                          MoreTypes.asTypeElement(typeMirror), cu));
     }
 
     ClassOrInterfaceType type = new ClassOrInterfaceType();
@@ -67,10 +86,7 @@ public class CollectionsFieldDefinition extends FieldDefinition {
     return new ExpressionStmt(
         new MethodCallExpr(new NameExpr("bean"), field.getSetter().getSimpleName().toString())
             .addArgument(
-                new MethodCallExpr(
-                        deserializerCreationExpr.addArgument(
-                            new ObjectCreationExpr().setType(deser)),
-                        "deserialize")
+                new MethodCallExpr(deserializerCreationExpr.addArgument(deser), "deserialize")
                     .addArgument(
                         new MethodCallExpr(new NameExpr("jsonObject"), "getJsonArray")
                             .addArgument(new StringLiteralExpr(field.getName())))
@@ -86,16 +102,6 @@ public class CollectionsFieldDefinition extends FieldDefinition {
     TypeMirror typeMirror = MoreTypes.asDeclared(field.getType()).getTypeArguments().get(0);
     boolean isBoxedTypeOrString = context.getTypeUtils().isBoxedTypeOrString(typeMirror);
 
-    String ser;
-    if (context.getTypeRegistry().has(typeMirror)) {
-      ser = context.getTypeRegistry().getSerializer(typeMirror).getQualifiedName().toString();
-    } else {
-      ser =
-          context
-              .getTypeUtils()
-              .getJsonSerializerImplQualifiedName(MoreTypes.asTypeElement(typeMirror));
-    }
-
     if (isBoxedTypeOrString) {
       cu.addImport(BoxedTypeCollectionJsonSerializer.class);
       type.setName(BoxedTypeCollectionJsonSerializer.class.getSimpleName());
@@ -109,11 +115,38 @@ public class CollectionsFieldDefinition extends FieldDefinition {
     type.setTypeArguments(new ClassOrInterfaceType().setName(typeMirror.toString()));
     serializerCreationExpr.setType(type);
 
+    Expression ser;
+    if (context.getTypeRegistry().has(typeMirror)) {
+      ser =
+          new ObjectCreationExpr()
+              .setType(
+                  new ClassOrInterfaceType()
+                      .setName(
+                          context
+                              .getTypeRegistry()
+                              .getSerializer(typeMirror)
+                              .getQualifiedName()
+                              .toString()));
+    } else if (MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeInfo.class) != null) {
+      ser =
+          new JsonbTypeInfoDefinition(
+                  MoreTypes.asTypeElement(typeMirror).getAnnotation(JsonbTypeInfo.class),
+                  typeMirror,
+                  context)
+              .getSerializerCreationExpr(cu);
+    } else {
+      ser =
+          new ObjectCreationExpr()
+              .setType(
+                  new ClassOrInterfaceType()
+                      .setName(
+                          context
+                              .getTypeUtils()
+                              .getJsonSerializerImplQualifiedName(
+                                  MoreTypes.asTypeElement(typeMirror))));
+    }
     return new ExpressionStmt(
-        new MethodCallExpr(
-                serializerCreationExpr.addArgument(
-                    new ObjectCreationExpr().setType(new ClassOrInterfaceType().setName(ser))),
-                "serialize")
+        new MethodCallExpr(serializerCreationExpr.addArgument(ser), "serialize")
             .addArgument(
                 new MethodCallExpr(
                     new NameExpr("bean"), field.getGetter().getSimpleName().toString()))

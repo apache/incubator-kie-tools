@@ -42,7 +42,7 @@ public class JsonbTypeSerFieldDefinition extends FieldDefinition {
             .getProcessingEnv()
             .getElementUtils()
             .getTypeElement(
-                org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer.class
+                    org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer.class
                     .getCanonicalName());
     this.JsonbDeserializer =
         context.getProcessingEnv().getTypeUtils().erasure(JsonbDeserializer.asType());

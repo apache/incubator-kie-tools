@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package jakarta.json.stream;
+package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
-
-import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializer;
+import jakarta.json.stream.JsonGenerator;
+import jakarta.json.stream.JsonGeneratorDecorator;
+import jakarta.json.stream.JsonbPropertySerializer;
 
 public class AbstractBeanJsonSerializer<T> extends JsonSerializer<T> implements JsonbSerializer<T> {
 

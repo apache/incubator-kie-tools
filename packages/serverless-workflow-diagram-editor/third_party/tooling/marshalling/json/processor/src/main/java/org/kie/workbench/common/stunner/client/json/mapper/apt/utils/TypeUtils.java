@@ -40,6 +40,7 @@ import javax.lang.model.util.ElementFilter;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
+import com.github.javaparser.ast.CompilationUnit;
 import com.google.auto.common.MoreElements;
 import com.google.auto.common.MoreTypes;
 import org.apache.commons.lang3.StringUtils;
@@ -53,10 +54,13 @@ public class TypeUtils {
 
   private final BoxedTypes boxedTypes;
 
+  private final GenerationContext context;
+
   public TypeUtils(GenerationContext context) {
     this.types = context.getProcessingEnv().getTypeUtils();
     this.elements = context.getProcessingEnv().getElementUtils();
     this.boxedTypes = new BoxedTypes();
+    this.context = context;
   }
 
   public BoxedTypes getBoxedTypes() {
@@ -235,7 +239,7 @@ public class TypeUtils {
         + BEAN_JSON_SERIALIZER_IMPL;
   }
 
-  public String getJsonDeserializerImplQualifiedName(TypeElement type) {
+  public String getJsonDeserializerImplQualifiedName(TypeElement type, CompilationUnit cu) {
     return elements.getPackageOf(type) + "." + getJsonDeserializerImplName(type);
   }
 

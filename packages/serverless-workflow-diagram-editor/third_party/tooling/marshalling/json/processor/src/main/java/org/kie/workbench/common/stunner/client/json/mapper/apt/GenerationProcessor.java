@@ -30,9 +30,14 @@ import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.MirroredTypeException;
 
 import com.google.auto.common.MoreElements;
+import com.google.auto.common.MoreTypes;
 import com.google.auto.service.AutoService;
+import com.google.common.collect.Streams;
+import jakarta.json.bind.annotation.JsonbSubtype;
+import jakarta.json.bind.annotation.JsonbTypeInfo;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.context.GenerationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.logger.PrintWriterTreeLogger;
@@ -52,7 +57,16 @@ public class GenerationProcessor extends AbstractProcessor {
       Set<? extends TypeElement> annotations, RoundEnvironment roundEnvironment) {
     if (!annotations.isEmpty()) {
       GenerationContext context = new GenerationContext(roundEnvironment, processingEnv);
-      processJsonMapper(roundEnvironment.getElementsAnnotatedWith(JSONMapper.class).stream());
+
+      Stream<? extends Element> stream =
+          Streams.concat(
+              roundEnvironment.getElementsAnnotatedWith(JSONMapper.class).stream(),
+              roundEnvironment.getElementsAnnotatedWith(JsonbTypeInfo.class).stream()
+                  .map(type -> type.getAnnotation(JsonbTypeInfo.class))
+                  .map(JsonbTypeInfo::value)
+                  .flatMap(Arrays::stream)
+                  .map(this::get));
+      processJsonMapper(stream);
       new BeanProcessor(context, logger, beans).process();
     }
     beans.clear();
@@ -70,5 +84,14 @@ public class GenerationProcessor extends AbstractProcessor {
 
   private List<Class<?>> supportedAnnotations() {
     return Arrays.asList(JSONMapper.class);
+  }
+
+  private TypeElement get(JsonbSubtype jsonbSubtype) {
+    try {
+      jsonbSubtype.type();
+    } catch (MirroredTypeException e) {
+      return MoreTypes.asTypeElement(e.getTypeMirror());
+    }
+    return null;
   }
 }

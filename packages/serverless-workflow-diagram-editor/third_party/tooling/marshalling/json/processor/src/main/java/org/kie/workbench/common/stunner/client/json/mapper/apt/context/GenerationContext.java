@@ -26,6 +26,7 @@ import javax.lang.model.type.TypeMirror;
 
 import com.google.auto.common.MoreTypes;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.BeanDefinition;
+import org.kie.workbench.common.stunner.client.json.mapper.apt.definition.FieldDefinitionFactory;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.utils.TypeRegistry;
 import org.kie.workbench.common.stunner.client.json.mapper.apt.utils.TypeUtils;
 
@@ -38,11 +39,14 @@ public class GenerationContext {
   private final TypeUtils typeUtils;
   private final Map<TypeMirror, BeanDefinition> beans = new ConcurrentHashMap<>();
 
+  private final FieldDefinitionFactory fieldDefinitionFactory;
+
   public GenerationContext(RoundEnvironment roundEnvironment, ProcessingEnvironment processingEnv) {
     this.processingEnv = processingEnv;
     this.roundEnvironment = roundEnvironment;
     this.typeRegistry = new TypeRegistry(this);
     this.typeUtils = new TypeUtils(this);
+    this.fieldDefinitionFactory = new FieldDefinitionFactory(this);
   }
 
   public RoundEnvironment getRoundEnvironment() {
@@ -80,5 +84,9 @@ public class GenerationContext {
 
   public Collection<BeanDefinition> getBeans() {
     return beans.values();
+  }
+
+  public FieldDefinitionFactory getFieldDefinitionFactory() {
+    return fieldDefinitionFactory;
   }
 }
