@@ -46,10 +46,10 @@ public class EventRef {
     // @Id
     // @Title
     // @Description
-    public String eventRef;
+    private String eventRef;
 
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     public EventRef() {
     }

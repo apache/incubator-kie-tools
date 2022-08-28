@@ -35,12 +35,12 @@ public class CallbackState extends State {
     /**
      * Reference to an unique callback event name in the defined workflow events.
      */
-    public String eventRef;
+    private String eventRef;
 
     /**
      * The action to be executed.
      */
-    public ActionNode action;
+    private ActionNode action;
 
     public CallbackState() {
         this.type = TYPE_CALLBACK;

@@ -29,8 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionTransitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeDeserializer;
 
 /**
  * Represents the transition edge from Start node to first state in the workflow.
@@ -54,9 +54,9 @@ public class StartTransition {
     /**
      * References of the target state.
      */
-    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
-    public Object transition;
+    @JsonbTypeSerializer(DataConditionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(DataConditionTransitionJsonbTypeDeserializer.class)
+    private Object transition;
 
     public StartTransition() {
     }

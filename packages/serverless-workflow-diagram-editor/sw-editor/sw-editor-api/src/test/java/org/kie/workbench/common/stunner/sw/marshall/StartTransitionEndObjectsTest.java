@@ -77,29 +77,29 @@ public class StartTransitionEndObjectsTest {
         Workflow workflow = mapper.fromJSON(json);
         assertNotNull(workflow);
 
-        assertEquals("startTransitionEndObjects", workflow.id);
-        assertEquals("Start, Transition and End as Objects", workflow.name);
-        assertEquals(StartDefinition.class, workflow.start.getClass());
-        assertEquals("Init State", ((StartDefinition)workflow.start).getStateName());
-        assertEquals("2020-03-20T09:00:00Z/2020-03-20T15:00:00Z", ((StartDefinition)workflow.start).getSchedule());
-        assertEquals(3, workflow.states.length);
-        assertEquals("Init State", workflow.states[0].getName());
-        assertEquals("Error State", workflow.states[1].getName());
-        assertEquals("Next State", workflow.states[2].getName());
+        assertEquals("startTransitionEndObjects", workflow.getId());
+        assertEquals("Start, Transition and End as Objects", workflow.getName());
+        assertEquals(StartDefinition.class, workflow.getStart().getClass());
+        assertEquals("Init State", ((StartDefinition)workflow.getStart()).getStateName());
+        assertEquals("2020-03-20T09:00:00Z/2020-03-20T15:00:00Z", ((StartDefinition)workflow.getStart()).getSchedule());
+        assertEquals(3, workflow.getStates().length);
+        assertEquals("Init State", workflow.getStates()[0].getName());
+        assertEquals("Error State", workflow.getStates()[1].getName());
+        assertEquals("Next State", workflow.getStates()[2].getName());
 
-        assertEquals("inject", workflow.states[0].getType());
-        assertEquals("inject", workflow.states[1].getType());
-        assertEquals("inject", workflow.states[2].getType());
+        assertEquals("inject", workflow.getStates()[0].getType());
+        assertEquals("inject", workflow.getStates()[1].getType());
+        assertEquals("inject", workflow.getStates()[2].getType());
 
-        assertFalse((Boolean)workflow.states[0].getEnd());
-        assertTrue((Boolean)workflow.states[1].getEnd());
-        assertTrue(((StateEnd)workflow.states[2].getEnd()).getTerminate());
+        assertFalse((Boolean)workflow.getStates()[0].getEnd());
+        assertTrue((Boolean)workflow.getStates()[1].getEnd());
+        assertTrue(((StateEnd)workflow.getStates()[2].getEnd()).getTerminate());
 
-        assertEquals("Next State", ((StateTransition)workflow.states[0].getTransition()).getNextState());
-        assertEquals(1, workflow.states[0].getOnErrors().length);
-        assertFalse((Boolean) workflow.states[0].getOnErrors()[0].end);
-        assertEquals("Some Error", workflow.states[0].getOnErrors()[0].errorRef);
-        assertEquals("Error State", ((StateTransition)workflow.states[0].getOnErrors()[0].transition).getNextState());
+        assertEquals("Next State", ((StateTransition)workflow.getStates()[0].getTransition()).getNextState());
+        assertEquals(1, workflow.getStates()[0].getOnErrors().length);
+        assertFalse((Boolean) workflow.getStates()[0].getOnErrors()[0].getEnd());
+        assertEquals("Some Error", workflow.getStates()[0].getOnErrors()[0].getErrorRef());
+        assertEquals("Error State", ((StateTransition)workflow.getStates()[0].getOnErrors()[0].getTransition()).getNextState());
 
 
         System.out.println(mapper.toJSON(mapper.fromJSON(json)));

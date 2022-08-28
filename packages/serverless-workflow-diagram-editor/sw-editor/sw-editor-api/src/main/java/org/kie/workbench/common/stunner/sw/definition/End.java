@@ -34,7 +34,7 @@ public class End {
     public static final String LABEL_END = "end";
 
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     @Category
     public static final transient String category = Categories.END;

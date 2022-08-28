@@ -23,7 +23,7 @@ public class NullKeyNullIdWorkflowTest extends BaseMarshallingTest {
     @Test
     public void testUnmarshallWorkflow() {
         unmarshallWorkflow();
-        OperationState state = (OperationState) workflow.states[0];
+        OperationState state = (OperationState) workflow.getStates()[0];
         assertDefinitionReferencedInNode(state, "State1");
         assertTrue(hasIncomingEdges("State1"));
         assertTrue(hasOutgoingEdges("State1"));

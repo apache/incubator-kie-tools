@@ -39,7 +39,7 @@ public class ForEachState extends State {
     /**
      * Actions to be executed for each of the elements of inputCollection.
      */
-    public ActionNode[] actions;
+    private ActionNode[] actions;
 
     public ForEachState() {
         this.type = TYPE_FOR_EACH;

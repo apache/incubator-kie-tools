@@ -26,7 +26,6 @@ public class StateTransitionDefinitionJsonbTypeDeserializer extends JsonbDeseria
     private static final StateTransition_JsonDeserializerImpl stateTransitionDefinitionJsonDeserializerImpl =
             new StateTransition_JsonDeserializerImpl();
 
-
     @Override
     public Object deserialize(JsonValue value, DeserializationContext ctx) {
         if (value.getValueType() != JsonValue.ValueType.NULL) {

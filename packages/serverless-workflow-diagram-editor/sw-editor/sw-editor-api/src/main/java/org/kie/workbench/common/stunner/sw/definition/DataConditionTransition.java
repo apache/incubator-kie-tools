@@ -30,8 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionTransitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ObjectJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeDeserializer;
 
 /**
  * Switch state data conditions specify a data-based condition statement,
@@ -62,29 +62,29 @@ public class DataConditionTransition {
      * Unique data condition name.
      */
     @Property
-    public String name;
+    private String name;
 
     /**
      * Workflow expression evaluated against state data. Must evaluate to true or false.
      * Example: `${ .applicant | .age > 18 }`
      */
-    public String condition;
+    private String condition;
 
     /**
      * Defines what to do if condition is true.
      * Transitions to another state if set.
      */
-    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
-    public Object transition;
+    @JsonbTypeSerializer(DataConditionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(DataConditionTransitionJsonbTypeDeserializer.class)
+    private Object transition;
 
     /**
      * Defines what to do if condition is true.
      * End the workflow if set to true.
      */
-    @JsonbTypeSerializer(DataConditionTransitionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ObjectJsonbTypeDeserializer.class)
-    public Object end;
+    @JsonbTypeSerializer(DataConditionTransitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(DataConditionTransitionJsonbTypeDeserializer.class)
+    private Object end;
 
     public DataConditionTransition() {
     }
@@ -114,7 +114,7 @@ public class DataConditionTransition {
     }
 
     public Object getEnd() {
-        return false;
+        return end;
     }
 
     public void setEnd(Object end) {

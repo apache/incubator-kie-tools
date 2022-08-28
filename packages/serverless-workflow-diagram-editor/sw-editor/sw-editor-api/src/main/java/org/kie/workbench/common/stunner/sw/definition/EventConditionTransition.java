@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -28,6 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 /**
  * Switch state event conditions specify events, which the switch state must wait for.
@@ -58,24 +62,26 @@ public class EventConditionTransition {
      * Event condition name.
      */
     @Property
-    public String name;
+    private String name;
 
     /**
      * Reference to an unique event name in the defined workflow events.
      */
-    public String eventRef;
+    private String eventRef;
 
     /**
      * Defines what to do if condition is true.
      * Transitions to another state if set.
      */
-    public Object transition;
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
+    private Object transition;
 
     /**
      * Defines what to do if condition is true.
      * End the workflow if set to true.
      */
-    public Object end;
+    private Object end;
 
     public EventConditionTransition() {
     }

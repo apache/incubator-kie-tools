@@ -36,13 +36,13 @@ public class InjectState extends State {
     /**
      * JSON object as String which can be set as state's data input and can be manipulated via filter.
      */
-    public String data;
+    private String data;
 
     /**
      * Whether the state is used to compensate for another state.
      * Defaults to false.
      */
-    public boolean usedForCompensation;
+    private boolean usedForCompensation;
 
     public InjectState() {
         this.type = TYPE_INJECT;

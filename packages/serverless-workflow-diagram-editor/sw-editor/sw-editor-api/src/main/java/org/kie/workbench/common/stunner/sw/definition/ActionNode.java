@@ -50,28 +50,28 @@ public class ActionNode {
                                                         LABEL_ACTION).collect(Collectors.toSet());
 
     @Property
-    public String id;
+    private String id;
 
     /**
      * Unique action name.
      */
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     /**
      * References to a reusable function definition.
      */
-    public String functionRef;
+    private String functionRef;
 
     /**
      * Reference to a trigger and result reusable event definition.
      */
-    public String eventRef;
+    private String eventRef;
 
     /**
      * Reference to a workflow to be invoked.
      */
-    public String subFlowRef;
+    private String subFlowRef;
 
     public ActionNode() {
     }

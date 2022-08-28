@@ -192,7 +192,7 @@ public interface StateMarshalling {
 
                 for (int i = 0; i < actions.length; i++) {
                     ActionNode action = actions[i];
-                    final Node actionNode = context.addNode(action.name, action);
+                    final Node actionNode = context.addNode(action.getName(), action);
                 }
 
                 // Set the original parent.
@@ -205,7 +205,7 @@ public interface StateMarshalling {
             (context, state) -> {
                 Node stateNode = STATE_UNMARSHALLER.unmarshall(context, state);
                 if (Marshaller.LOAD_DETAILS) {
-                    ActionNode[] actions = state.actions;
+                    ActionNode[] actions = state.getActions();
                     if (null != actions && actions.length > 0) {
                         Node actionsNode = ACTIONS_UNMARSHALLER.unmarshall(context, actions);
                     }
@@ -254,7 +254,7 @@ public interface StateMarshalling {
             (context, state) -> {
                 Node stateNode = STATE_UNMARSHALLER.unmarshall(context, state);
                 if (Marshaller.LOAD_DETAILS) {
-                    ActionNode[] actions = state.actions;
+                    ActionNode[] actions = state.getActions();
                     if (null != actions && actions.length > 0) {
                         Node actionsNode = ACTIONS_UNMARSHALLER.unmarshall(context, actions);
                         /*

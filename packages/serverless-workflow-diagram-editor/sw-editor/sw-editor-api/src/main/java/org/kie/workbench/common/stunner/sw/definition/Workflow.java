@@ -58,36 +58,36 @@ public class Workflow {
      *  Workflow unique identifier.
      */
     @Property
-    public String id;
+    private String id;
 
     /**
      *  Domain-specific workflow identifier
      */
     @Property
-    public String key;
+    private String key;
 
     /**
      * Workflow name.
      */
     @Property(meta = PropertyMetaTypes.NAME)
-    public String name;
+    private String name;
 
     /**
      * Workflow start definition.
      */
     @JsonbTypeSerializer(StartDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StartDefinitionJsonbTypeDeserializer.class)
-    public Object start;
+    private Object start;
 
     /**
      * Workflow event definitions.
      */
-    public Event[] events;
+    private Event[] events;
 
     /**
      * Workflow state definitions.
      */
-    public State[] states;
+    private State[] states;
 
     // missing specVersion, functions
 

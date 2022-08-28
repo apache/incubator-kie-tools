@@ -56,15 +56,15 @@ public class ErrorTransition {
                                                         LABEL_TRANSITION_ERROR).collect(Collectors.toSet());
 
     @Property
-    public String errorRef;
+    private String errorRef;
 
     @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
-    public Object transition;
+    private Object transition;
 
     @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
-    public Object end;
+    private Object end;
 
     public ErrorTransition() {
     }

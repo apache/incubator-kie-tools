@@ -38,22 +38,22 @@ public class SwitchState extends State {
      * Default transition of the workflow if there is no matching data conditions or event timeout is reached.
      * Can be a transition or end definition
      */
-    public DefaultConditionTransition defaultCondition;
+    private DefaultConditionTransition defaultCondition;
 
     /**
      * Events, which the switch state must wait for before transitioning to another workflow state.
      */
-    public EventConditionTransition[] eventConditions;
+    private EventConditionTransition[] eventConditions;
 
     /**
      * Data-based condition statement, which causes a transition to another workflow state if evaluated to true.
      */
-    public DataConditionTransition[] dataConditions;
+    private DataConditionTransition[] dataConditions;
 
     /**
      * If true, this state is used to compensate another state. Default is "false".
      */
-    public boolean usedForCompensation;
+    private boolean usedForCompensation;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;

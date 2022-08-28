@@ -40,7 +40,7 @@ public class SleepState extends State {
      *
      * For example: "PT15M" (sleep 15 minutes), or "P2DT3H4M" (sleep 2 days, 3 hours and 4 minutes)
      */
-    public String duration;
+    private String duration;
 
     public SleepState() {
         this.type = TYPE_SLEEP;

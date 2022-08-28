@@ -19,11 +19,12 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.Transition_JsonDeserializerImpl;
 
-public class ObjectJsonbTypeDeserializer extends JsonbDeserializer<Object> {
+public class DataConditionTransitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
 
-    org.kie.workbench.common.stunner.sw.definition.Transition_JsonDeserializerImpl transition_JsonDeserializerImpl =
-            new org.kie.workbench.common.stunner.sw.definition.Transition_JsonDeserializerImpl();
+    private static final Transition_JsonDeserializerImpl transition_JsonDeserializerImpl =
+            new Transition_JsonDeserializerImpl();
 
     @Override
     public Object deserialize(JsonValue value, DeserializationContext ctx) {

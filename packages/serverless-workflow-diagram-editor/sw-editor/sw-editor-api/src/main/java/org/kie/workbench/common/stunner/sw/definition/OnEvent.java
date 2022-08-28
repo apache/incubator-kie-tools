@@ -40,9 +40,9 @@ public class OnEvent {
     private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
                                                         LABEL_ONEVENTS).collect(Collectors.toSet());
 
-    public String[] eventRefs;
+    private String[] eventRefs;
 
-    public ActionNode[] actions;
+    private ActionNode[] actions;
 
     public OnEvent() {
     }

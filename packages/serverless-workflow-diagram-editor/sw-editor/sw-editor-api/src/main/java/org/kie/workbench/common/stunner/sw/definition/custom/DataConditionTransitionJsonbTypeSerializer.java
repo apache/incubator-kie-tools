@@ -20,11 +20,12 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
+import org.kie.workbench.common.stunner.sw.definition.Transition_JsonSerializerImpl;
 
-public class DataConditionTransitionTransitionJsonbTypeSerializer implements JsonbSerializer<Object> {
+public class DataConditionTransitionJsonbTypeSerializer implements JsonbSerializer<Object> {
 
-    org.kie.workbench.common.stunner.sw.definition.Transition_JsonSerializerImpl transition_JsonSerializerImpl =
-            new org.kie.workbench.common.stunner.sw.definition.Transition_JsonSerializerImpl();
+    private static final Transition_JsonSerializerImpl transition_JsonSerializerImpl =
+            new Transition_JsonSerializerImpl();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {

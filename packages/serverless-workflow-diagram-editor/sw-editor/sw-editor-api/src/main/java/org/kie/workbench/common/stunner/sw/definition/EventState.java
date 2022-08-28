@@ -38,12 +38,12 @@ public class EventState extends State {
      * the event defined in onEvents array.
      */
     @Property
-    public boolean exclusive;
+    private boolean exclusive;
 
     /**
      * Define the events to be consumed and optional actions to be performed.
      */
-    public OnEvent[] onEvents;
+    private OnEvent[] onEvents;
 
     public EventState() {
         this.type = TYPE_EVENT;

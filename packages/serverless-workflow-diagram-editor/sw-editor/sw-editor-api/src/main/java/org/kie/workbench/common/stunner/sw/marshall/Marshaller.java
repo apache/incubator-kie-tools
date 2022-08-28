@@ -147,7 +147,7 @@ public class Marshaller {
         HashMap<String, String> previousNameToUUIDBindings = null;
         try {
             // TODO: Use dedicated factory instead.
-            String workflowId = workflow.id != null ? workflow.id : workflow.key;
+            String workflowId = workflow.getId() != null ? workflow.getId() : workflow.getKey();
             graph = GraphImpl.build(workflowId);
             final Index index = new MapIndexBuilder().build(graph);
 

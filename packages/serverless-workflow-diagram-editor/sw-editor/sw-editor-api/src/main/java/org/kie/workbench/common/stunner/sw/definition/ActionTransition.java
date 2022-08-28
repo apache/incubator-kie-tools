@@ -50,7 +50,7 @@ public class ActionTransition {
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION_ACTION).collect(Collectors.toSet());
 
     @Property
-    public String name;
+    private String name;
 
     public ActionTransition() {
     }

@@ -37,18 +37,18 @@ public class OperationState extends State {
      * Defines if the actions are to be performed sequentially or in parallel.
      * recognized values are `sequential` and `parallel`.
      */
-    public String actionMode;
+    private String actionMode;
 
     /**
      * Actions to be performed.
      */
-    public ActionNode[] actions;
+    private ActionNode[] actions;
 
     /**
      * Whether the state is used to compensate for another state.
      * Defaults to false.
      */
-    public boolean usedForCompensation;
+    private boolean usedForCompensation;
 
     public OperationState() {
         this.type = TYPE_OPERATION;

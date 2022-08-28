@@ -51,10 +51,10 @@ public class Transition {
     private static final Set<String> labels = Stream.of(LABEL_TRANSITION).collect(Collectors.toSet());
 
     @Property
-    public String name;
+    private String name;
 
     // TODO: Do as DefaultConditionTransition?
-    public String to;
+    private String to;
 
     public Transition() {
     }
