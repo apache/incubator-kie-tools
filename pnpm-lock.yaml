@@ -10826,7 +10826,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -10835,7 +10835,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -11711,8 +11711,7 @@ packages:
     dev: true
 
   /batch/0.6.1:
-    resolution:
-      { integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw== }
+    resolution: { integrity: sha1-3DQxT05nkxgJP8dgJyUl+UvyXBY= }
     dev: true
 
   /bcrypt-pbkdf/1.0.2:
@@ -12858,8 +12857,7 @@ packages:
     dev: true
 
   /cookie-signature/1.0.6:
-    resolution:
-      { integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ== }
+    resolution: { integrity: sha1-4wOogrNCzD7oylE6eZmXNNqzriw= }
     dev: true
 
   /cookie/0.4.0:
@@ -16104,7 +16102,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9_debug@4.3.1:
+  /follow-redirects/1.14.9:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -16113,8 +16111,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -17072,7 +17068,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -19256,7 +19252,7 @@ packages:
     dependencies:
       big.js: 5.2.2
       emojis-list: 3.0.0
-      json5: 2.1.2
+      json5: 2.2.1
     dev: true
 
   /loader-utils/3.2.0:
@@ -19677,8 +19673,7 @@ packages:
     dev: true
 
   /merge-descriptors/1.0.1:
-    resolution:
-      { integrity: sha512-cCi6g3/Zr1iqQi6ySbseM1Xvooa98N0w31jzUYrXPX2xqObmFGHJ0tQ5u74H3mVh7wLouTseZyYIq39g8cNp1w== }
+    resolution: { integrity: sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E= }
     dev: true
 
   /merge-stream/2.0.0:
