@@ -77,7 +77,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     });
 
     editor.onDidCreateEditor((codeEditor) => {
-      codeEditor.onMouseDown((event) => this.onMouseDown(event));
+      codeEditor.onMouseDown((event) => this.handleMouseDown(event));
     });
   }
 
@@ -176,7 +176,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.editor?.setPosition(targetPosition);
   }
 
-  public onMouseDown(event: editor.IEditorMouseEvent): void {
+  public handleMouseDown(event: editor.IEditorMouseEvent): void {
     const position = event.target.position;
     if (!position) {
       return;

@@ -26,7 +26,6 @@ import { SwfServiceCatalogChannelApiImpl } from "../..";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../../api";
 import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
 
-/* TODO: useSwfTextEditorChannelApi: Since now we have useSwfTextEditorChannelApi and useSwfDiagramEditorChannelApi, maybe there is no point in having their code in hooks anymore. https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935927514*/
 export function useSwfTextEditorChannelApi(args: {
   locale: string;
   channelApi?: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>;
