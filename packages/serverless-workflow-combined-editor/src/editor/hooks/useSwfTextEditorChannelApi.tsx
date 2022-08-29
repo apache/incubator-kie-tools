@@ -55,11 +55,7 @@ export function useSwfTextEditorChannelApi(args: {
       args.channelApi &&
       services &&
       serviceRegistriesSettings &&
-      new SwfServiceCatalogChannelApiImpl(
-        args.channelApi as MessageBusClientApi<SwfServiceCatalogChannelApi>,
-        services,
-        serviceRegistriesSettings
-      ),
+      new SwfServiceCatalogChannelApiImpl(args.channelApi, services, serviceRegistriesSettings),
     [args.channelApi, serviceRegistriesSettings, services]
   );
 
