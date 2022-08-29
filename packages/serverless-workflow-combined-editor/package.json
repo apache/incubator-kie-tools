@@ -61,6 +61,7 @@
     "@types/jest-when": "^2.7.4",
     "@types/json-schema": "^7.0.11",
     "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
     "@types/testing-library__jest-dom": "^5.9.1",
     "copy-webpack-plugin": "^8.1.1",
     "cypress": "^9.5.1",
