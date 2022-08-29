@@ -412,7 +412,7 @@ jobs:
         with:
           path: kie-tools
 
-      - name: "Checkout @ Simulated squashed merge of PR"
+      - name: "Checkout @ Simulated squashed-merge if PR"
         uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
@@ -502,7 +502,7 @@ jobs:
         with:
           path: kie-tools
 
-      - name: "Checkout @ Simulated squashed merge of PR"
+      - name: "Checkout @ Simulated squashed-merge if PR"
         uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
@@ -938,7 +938,7 @@ jobs:
         with:
           path: kie-tools
 
-      - name: "Checkout @ Simulated squashed merge of PR"
+      - name: "Checkout @ Simulated squashed-merge if PR"
         uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
@@ -1115,7 +1115,7 @@ jobs:
         with:
           path: kie-tools
 
-      - name: "Checkout @ Simulated squashed merge of PR"
+      - name: "Checkout @ Simulated squashed-merge if PR"
         uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}
@@ -1352,7 +1352,7 @@ jobs:
         with:
           path: kie-tools
 
-      - name: "Checkout @ Simulated squashed merge of PR"
+      - name: "Checkout @ Simulated squashed-merge if PR"
         uses: ./kie-tools/.github/actions/checkout-pr
         with:
           ref: ${{ inputs.base_ref }}

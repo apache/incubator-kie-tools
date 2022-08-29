@@ -24,7 +24,7 @@ jobs:
       - name: "Checkout @ GitHub default"
         uses: actions/checkout@v3
 
-      - name: "Checkout @ Simulated squashed merge of PR"
+      - name: "Checkout @ Simulated squashed-merge if PR"
         id: checkout_pr
         uses: ./.github/actions/checkout-pr
         with:
