@@ -12,12 +12,12 @@ importers:
       "@babel/core": ^7.16.0
       "@babel/preset-env": ^7.16.0
       "@babel/preset-react": ^7.16.0
-      "@kie-tools-build/bootstrap": workspace:*
-      "@kie-tools-build/build-env": workspace:*
-      "@kie-tools-build/maven-config-setup-helper": workspace:*
-      "@kie-tools-build/run-script-if": workspace:*
-      "@kie-tools-build/sparse-checkout": workspace:*
-      "@kie-tools-build/update-version": workspace:*
+      "@kie-tools-scripts/bootstrap": workspace:*
+      "@kie-tools-scripts/build-env": workspace:*
+      "@kie-tools-scripts/maven-config-setup-helper": workspace:*
+      "@kie-tools-scripts/run-script-if": workspace:*
+      "@kie-tools-scripts/sparse-checkout": workspace:*
+      "@kie-tools-scripts/update-version": workspace:*
       "@nice-move/prettier-plugin-package-json": ^0.6.1
       "@types/node": ^15.0.2
       "@typescript-eslint/eslint-plugin": ^4.24.0
@@ -34,12 +34,12 @@ importers:
       "@babel/core": 7.16.12
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
-      "@kie-tools-build/bootstrap": link:scripts/bootstrap
-      "@kie-tools-build/build-env": link:scripts/build-env
-      "@kie-tools-build/maven-config-setup-helper": link:scripts/maven-config-setup-helper
-      "@kie-tools-build/run-script-if": link:scripts/run-script-if
-      "@kie-tools-build/sparse-checkout": link:scripts/sparse-checkout
-      "@kie-tools-build/update-version": link:scripts/update-version
+      "@kie-tools-scripts/bootstrap": link:scripts/bootstrap
+      "@kie-tools-scripts/build-env": link:scripts/build-env
+      "@kie-tools-scripts/maven-config-setup-helper": link:scripts/maven-config-setup-helper
+      "@kie-tools-scripts/run-script-if": link:scripts/run-script-if
+      "@kie-tools-scripts/sparse-checkout": link:scripts/sparse-checkout
+      "@kie-tools-scripts/update-version": link:scripts/update-version
       "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
       "@types/node": 15.6.0
       "@typescript-eslint/eslint-plugin": 4.24.0_p3e62y3nyqf6ndl7srgd7ijb6y
@@ -4760,7 +4760,7 @@ importers:
 
   scripts/bootstrap:
     specifiers:
-      "@kie-tools-build/build-env": workspace:*
+      "@kie-tools-scripts/build-env": workspace:*
       "@pnpm/filter-workspace-packages": ^5.0.27
       "@pnpm/find-workspace-packages": ^4.0.27
       "@pnpm/logger": ^4.0.0
@@ -4768,7 +4768,7 @@ importers:
       graphviz: ^0.0.9
       markdown-table: ^3.0.2
     devDependencies:
-      "@kie-tools-build/build-env": link:../build-env
+      "@kie-tools-scripts/build-env": link:../build-env
       "@pnpm/filter-workspace-packages": 5.0.27_@pnpm+logger@4.0.0
       "@pnpm/find-workspace-packages": 4.0.27_@pnpm+logger@4.0.0
       "@pnpm/logger": 4.0.0
@@ -11711,7 +11711,8 @@ packages:
     dev: true
 
   /batch/0.6.1:
-    resolution: { integrity: sha1-3DQxT05nkxgJP8dgJyUl+UvyXBY= }
+    resolution:
+      { integrity: sha512-x+VAiMRL6UPkx+kudNvxTl6hB2XNNCG2r+7wixVfIYwu/2HKRXimwQyaumLjMveWvT2Hkd/cAJw+QBMfJ/EKVw== }
     dev: true
 
   /bcrypt-pbkdf/1.0.2:
@@ -12857,7 +12858,8 @@ packages:
     dev: true
 
   /cookie-signature/1.0.6:
-    resolution: { integrity: sha1-4wOogrNCzD7oylE6eZmXNNqzriw= }
+    resolution:
+      { integrity: sha512-QADzlaHc8icV8I7vbaJXJwod9HWYp8uCqf1xa4OfNu1T7JVxQIrUgOWtHdNDtPiywmFbiS12VjotIXLrKM3orQ== }
     dev: true
 
   /cookie/0.4.0:
@@ -19675,7 +19677,8 @@ packages:
     dev: true
 
   /merge-descriptors/1.0.1:
-    resolution: { integrity: sha1-sAqqVW3YtEVoFQ7J0blT8/kMu2E= }
+    resolution:
+      { integrity: sha512-cCi6g3/Zr1iqQi6ySbseM1Xvooa98N0w31jzUYrXPX2xqObmFGHJ0tQ5u74H3mVh7wLouTseZyYIq39g8cNp1w== }
     dev: true
 
   /merge-stream/2.0.0:

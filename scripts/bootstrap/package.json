@@ -1,12 +1,12 @@
 {
-  "name": "@kie-tools-build/bootstrap",
+  "name": "@kie-tools-scripts/bootstrap",
   "version": "0.0.0",
   "keywords": [],
   "bin": {
     "kie-tools--bootstrap": "bootstrap.js"
   },
   "devDependencies": {
-    "@kie-tools-build/build-env": "workspace:*",
+    "@kie-tools-scripts/build-env": "workspace:*",
     "@pnpm/filter-workspace-packages": "^5.0.27",
     "@pnpm/find-workspace-packages": "^4.0.27",
     "@pnpm/logger": "^4.0.0",

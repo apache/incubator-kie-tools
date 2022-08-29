@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, str2bool, composeEnv } = require("@kie-tools-build/build-env");
+const { varsWithName, getOrDefault, str2bool, composeEnv } = require("@kie-tools-scripts/build-env");
 const rootPackageJson = require("../../../package.json");
 
 module.exports = composeEnv([], {

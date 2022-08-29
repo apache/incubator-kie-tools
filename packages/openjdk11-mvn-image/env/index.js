@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-build/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools/openjdk11-mvn-image-env/env")], {
   vars: varsWithName({

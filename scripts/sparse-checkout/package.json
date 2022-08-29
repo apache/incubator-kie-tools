@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools-build/sparse-checkout",
+  "name": "@kie-tools-scripts/sparse-checkout",
   "version": "0.0.0",
   "keywords": [],
   "bin": {

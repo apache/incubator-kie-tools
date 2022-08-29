@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools-build/update-version",
+  "name": "@kie-tools-scripts/update-version",
   "version": "0.0.0",
   "keywords": [],
   "bin": {

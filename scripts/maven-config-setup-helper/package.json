@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools-build/maven-config-setup-helper",
+  "name": "@kie-tools-scripts/maven-config-setup-helper",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",

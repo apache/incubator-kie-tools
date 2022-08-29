@@ -15,7 +15,7 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools-build/maven-config-setup-helper");
+const { setup } = require("@kie-tools-scripts/maven-config-setup-helper");
 
 setup(`
     -Drevision=${buildEnv.env.dashbuilder.version}

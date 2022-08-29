@@ -1,4 +1,4 @@
-## @kie-tools-build/maven-config-setup-helper
+## @kie-tools-scripts/maven-config-setup-helper
 
 This package helps to write `.mvn/maven.config` file idempotently without loosing its previous value.
 

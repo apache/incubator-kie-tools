@@ -2,12 +2,12 @@
   "serializedDatavisGraph": {
     "nodes": [
       { "id": "kie-tools-root" },
-      { "id": "@kie-tools-build/bootstrap" },
-      { "id": "@kie-tools-build/maven-config-setup-helper" },
-      { "id": "@kie-tools-build/run-script-if" },
-      { "id": "@kie-tools-build/sparse-checkout" },
-      { "id": "@kie-tools-build/update-version" },
-      { "id": "@kie-tools-build/build-env" },
+      { "id": "@kie-tools-scripts/bootstrap" },
+      { "id": "@kie-tools-scripts/maven-config-setup-helper" },
+      { "id": "@kie-tools-scripts/run-script-if" },
+      { "id": "@kie-tools-scripts/sparse-checkout" },
+      { "id": "@kie-tools-scripts/update-version" },
+      { "id": "@kie-tools-scripts/build-env" },
       { "id": "@kie-tools-examples/base64png-editor" },
       { "id": "@kie-tools-core/editor" },
       { "id": "@kie-tools-core/backend" },
@@ -110,12 +110,12 @@
       { "id": "@kie-tools/yard-editor" }
     ],
     "links": [
-      { "source": "kie-tools-root", "target": "@kie-tools-build/bootstrap", "weight": 1 },
-      { "source": "kie-tools-root", "target": "@kie-tools-build/maven-config-setup-helper", "weight": 1 },
-      { "source": "kie-tools-root", "target": "@kie-tools-build/run-script-if", "weight": 1 },
-      { "source": "kie-tools-root", "target": "@kie-tools-build/sparse-checkout", "weight": 1 },
-      { "source": "kie-tools-root", "target": "@kie-tools-build/update-version", "weight": 1 },
-      { "source": "@kie-tools-build/bootstrap", "target": "@kie-tools-build/build-env", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/bootstrap", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/maven-config-setup-helper", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/run-script-if", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/sparse-checkout", "weight": 1 },
+      { "source": "kie-tools-root", "target": "@kie-tools-scripts/update-version", "weight": 1 },
+      { "source": "@kie-tools-scripts/bootstrap", "target": "@kie-tools-scripts/build-env", "weight": 1 },
       { "source": "@kie-tools-examples/base64png-editor", "target": "@kie-tools-core/editor", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/backend", "weight": 1 },
       { "source": "@kie-tools-core/editor", "target": "@kie-tools-core/envelope", "weight": 1 },
@@ -743,11 +743,11 @@
     ["@kie-tools-core/webpack-base", "packages/webpack-base"],
     ["@kie-tools-core/workspace", "packages/workspace"],
     ["@kie-tools/yard-editor", "packages/yard-editor"],
-    ["@kie-tools-build/bootstrap", "scripts/bootstrap"],
-    ["@kie-tools-build/build-env", "scripts/build-env"],
-    ["@kie-tools-build/maven-config-setup-helper", "scripts/maven-config-setup-helper"],
-    ["@kie-tools-build/run-script-if", "scripts/run-script-if"],
-    ["@kie-tools-build/sparse-checkout", "scripts/sparse-checkout"],
-    ["@kie-tools-build/update-version", "scripts/update-version"]
+    ["@kie-tools-scripts/bootstrap", "scripts/bootstrap"],
+    ["@kie-tools-scripts/build-env", "scripts/build-env"],
+    ["@kie-tools-scripts/maven-config-setup-helper", "scripts/maven-config-setup-helper"],
+    ["@kie-tools-scripts/run-script-if", "scripts/run-script-if"],
+    ["@kie-tools-scripts/sparse-checkout", "scripts/sparse-checkout"],
+    ["@kie-tools-scripts/update-version", "scripts/update-version"]
   ]
 }
