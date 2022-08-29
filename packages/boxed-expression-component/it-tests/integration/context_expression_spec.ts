@@ -265,13 +265,13 @@ describe("Context Expression Tests :: Nested Relations", () => {
     cy.get("body").click();
 
     // focus the 1st header cell inside the nested decision table.
-    cy.contains("th", "column-3").as("targetCell").focus();
+    cy.contains("th", "column-3").as("targetCell");
 
     // check the menu is closed
     cy.get(".pf-c-popover__content").should("not.exist");
 
     // open the contextMenu by pressing enter
-    cy.wait(0).get("@targetCell").type("{enter}");
+    cy.wait(100).get("@targetCell").focus().type("{enter}");
 
     // check the menu is open
     cy.get(".pf-c-popover__content").should("be.visible");
