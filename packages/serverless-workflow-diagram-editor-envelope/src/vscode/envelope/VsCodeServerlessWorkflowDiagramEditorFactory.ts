@@ -16,7 +16,7 @@
 
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-import { DiagramApi } from "../../api/DiagramApi";
+import { DiagramExposedInteropApi } from "../../api/DiagramExposedInteropApi";
 import { DiagramService } from "../../api/DiagramService";
 import { ServerlessWorkflowDiagramEditor, ServerlessWorkflowDiagramEditorFactory } from "../../envelope";
 import { VsCodeServerlessWorkflowDiagramEditorChannelApi } from "../api/VsCodeServerlessWorkflowDiagramEditorChannelApi";
@@ -24,7 +24,7 @@ import { VsCodeServerlessWorkflowDiagramEditorChannelApi } from "../api/VsCodeSe
 export interface CustomWindow extends Window {
   envelope: {
     javaCodeCompletionService: JavaCodeCompletionApi;
-    diagramService: DiagramApi;
+    diagramService: DiagramExposedInteropApi;
   };
 }
 

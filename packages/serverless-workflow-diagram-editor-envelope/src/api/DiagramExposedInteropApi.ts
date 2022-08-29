@@ -15,10 +15,11 @@
  */
 
 /**
- * Api for diagram window interactions.
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code for diagram window interactions.
  */
-/* TODO: DiagramApi: to be renamed to DiagramExposedInteropApi, See any other ExposedInteropApis for reference. https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935817679 */
-export interface DiagramApi {
+export interface DiagramExposedInteropApi {
   /**
    * Event fired when a node is selected
    * @param nodeName the name of the node
