@@ -14,17 +14,19 @@
  *    limitations under the License.
  */
 
-package org.kogito.core.internal.engine;
+package org.kogito.core.internal.handlers;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kogito.core.internal.engine.ActivationChecker;
 import org.kogito.core.internal.util.WorkspaceUtil;
 import org.mockito.Mockito;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-class ActivationCheckerTest {
+class IsLanguageServerAvailableHandlerTest {
 
     private WorkspaceUtil workspaceUtilMock;
 
@@ -33,25 +35,23 @@ class ActivationCheckerTest {
     @BeforeEach
     public void setup() {
         workspaceUtilMock = Mockito.mock(WorkspaceUtil.class);
-        this.activationChecker = new ActivationChecker(workspaceUtilMock);
+        activationChecker = new ActivationChecker(workspaceUtilMock);
     }
 
     @Test
-    void getActivatorPathWithoutSpecialChars() {
+    void isLanguageServerNotAvailable() {
+        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/noActivatorProject/");
+        IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
+        activationChecker.check();
+        assertFalse(handler.handle(null, null));
+    }
+
+    @Test
+    void isLanguageServerAvailable() {
         when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/testProject/");
+        IsLanguageServerAvailableHandler handler = new IsLanguageServerAvailableHandler(HandlerConstants.IS_AVAILABLE, activationChecker);
         activationChecker.check();
-        var activatorUri = activationChecker.getActivatorUri();
-        Assertions.assertNotNull(activatorUri);
-        Assertions.assertTrue(activatorUri.endsWith("Activator.java"));
-    }
-
-    @Test
-    void getActivatorPathWithSpecialChars() {
-        when(workspaceUtilMock.getProjectLocation()).thenReturn("src/test/resources/test projéct");
-        activationChecker.check();
-        var activatorUri = activationChecker.getActivatorUri();
-        Assertions.assertTrue(activatorUri.contains("test%20proj%C3%A9ct"));
-        Assertions.assertTrue(activatorUri.endsWith("Activator.java"));
+        assertTrue(handler.handle(null, null));
     }
 
 }
