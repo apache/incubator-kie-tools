@@ -6,7 +6,7 @@
   "scripts": {
     "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
-    "bootstrap:root": "pnpm install --strict-peer-dependencies=false -F '{.}...'",
+    "bootstrap:root": "pnpm install --workspace-root --strict-peer-dependencies=false -F 'kie-tools-root...'",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky install",
