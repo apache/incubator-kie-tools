@@ -30,7 +30,10 @@ if (pnpmFilterString.length === 0) {
 const execOpts = { stdio: "inherit" };
 
 console.info("\n\n[bootstrap] Installing packages dependencies...");
-execSync(`pnpm install --strict-peer-dependencies=false -F '!{.}...' ${pnpmFilterStringForInstalling}`, execOpts);
+execSync(
+  `pnpm install --workspace-root --strict-peer-dependencies=false -F '!kie-tools-root...' ${pnpmFilterStringForInstalling}`,
+  execOpts
+);
 
 console.info("\n\n[bootstrap] Linking packages with self...");
 execSync(`node ${require.resolve("./link_packages_with_self.js")}`, execOpts);
