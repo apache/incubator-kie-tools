@@ -16,12 +16,8 @@
 
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { SwfLanguageServiceChannelApi } from "../../../serverless-workflow-language-service/dist/api/SwfLanguageServiceChannelApi";
-import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
-import { ServerlessWorkflowMermaidViewerChannelApi } from "@kie-tools/serverless-workflow-mermaid-viewer/dist/api";
-import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { SwfFeatureToggleChannelApi } from "./SwfFeatureToggleChannelApi";
 
-/* TODO: ServerlessWorkflowCombinedEditorChannelApi: Please clean up unused imports. https://github.com/kiegroup/kie-tools/pull/1102#discussion_r935931108  */
 export interface ServerlessWorkflowCombinedEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfFeatureToggleChannelApi,
