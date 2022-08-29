@@ -33,6 +33,7 @@
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
     "@types/testing-library__jest-dom": "^5.9.1",
     "@types/testing-library__react": "^9.1.2",
     "copy-webpack-plugin": "^8.1.1",

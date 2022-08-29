@@ -30,30 +30,21 @@ if (pnpmFilterString.length === 0) {
 const execOpts = { stdio: "inherit" };
 
 console.info("\n\n[bootstrap] Installing packages dependencies...");
-execSync(
-  `pnpm install --strict-peer-dependencies=false -F '!kie-tools-root...' ${pnpmFilterStringForInstalling}`,
-  execOpts
-);
+execSync(`pnpm install --strict-peer-dependencies=false -F '!{.}...' ${pnpmFilterStringForInstalling}`, execOpts);
 
 console.info("\n\n[bootstrap] Linking packages with self...");
-execSync(`node ${path.resolve(__dirname, "link_packages_with_self.js")}`, execOpts);
+execSync(`node ${require.resolve("./link_packages_with_self.js")}`, execOpts);
 
 console.info("\n\n[bootstrap] Generating packages graph...");
-execSync(
-  `node ${path.resolve(__dirname, "generate_packages_graph.js")} ${path.resolve(__dirname, "../../repo")}`,
-  execOpts
-);
+execSync(`node ${require.resolve("./generate_packages_graph.js")} ${path.resolve(__dirname, "../../repo")}`, execOpts);
 
 console.info("\n\n[bootstrap] Generating build-env report...");
-execSync(`node ${path.resolve(__dirname, "generate_build_env_report.mjs")} ${pnpmFilterString}`, execOpts);
+execSync(`node ${require.resolve("./generate_build_env_report.mjs")} ${pnpmFilterString}`, execOpts);
 
 console.info("\n\n[bootstrap] Checking required preinstalled CLI commands...");
-execSync(
-  `node ${path.resolve(__dirname, "check_required_preinstalled_cli_commands.mjs")} ${pnpmFilterString}`,
-  execOpts
-);
+execSync(`node ${require.resolve("./check_required_preinstalled_cli_commands.mjs")} ${pnpmFilterString}`, execOpts);
 
 console.info("\n\n[bootstrap] Checking packages dependencies...");
-execSync(`node ${path.resolve(__dirname, "check_packages_dependencies.js")}`, execOpts);
+execSync(`node ${require.resolve("./check_packages_dependencies.js")}`, execOpts);
 
 console.info("\n\n[bootstrap] Done.");
