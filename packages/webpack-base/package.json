@@ -16,7 +16,11 @@
     "."
   ],
   "devDependencies": {
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "os-browserify": "^0.3.0",
+    "path-browserify": "^1.0.1",
+    "source-map-loader": "^2.0.2",
+    "ts-loader": "^9.1.2"
   },
   "babel": {
     "presets": [

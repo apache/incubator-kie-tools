@@ -39,7 +39,13 @@
     "@kie-tools/root-env": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.22",
-    "vsce": "^2.6.5"
+    "file-loader": "^6.2.0",
+    "rimraf": "^3.0.2",
+    "vsce": "^2.6.5",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3"
   },
   "engines": {
     "vscode": "^1.66.0"

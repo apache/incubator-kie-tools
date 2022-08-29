@@ -28,8 +28,15 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
     "@types/vscode": "^1.66.0",
-    "jest-junit": "^14.0.0"
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "jest-when": "^3.5.0",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2"
   },
   "babel": {
     "presets": [

@@ -28,6 +28,10 @@
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "@types/vscode": "^1.66.0"
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "@types/vscode": "^1.66.0",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2"
   }
 }

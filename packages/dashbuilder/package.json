@@ -44,7 +44,10 @@
     "@kie-tools/dashbuilder-component-assembler": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "@kie-tools/openjdk11-mvn-image-env": "workspace:*",
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   }
 }

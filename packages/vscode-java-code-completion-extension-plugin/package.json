@@ -29,7 +29,8 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

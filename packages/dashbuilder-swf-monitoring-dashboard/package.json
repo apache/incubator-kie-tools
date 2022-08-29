@@ -22,7 +22,9 @@
   },
   "devDependencies": {
     "@kie-tools/dashbuilder-client": "workspace:*",
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "copyfiles": "^2.4.1",
+    "rimraf": "^3.0.2"
   },
   "babel": {
     "presets": [

@@ -17,6 +17,13 @@
     "index.js"
   ],
   "devDependencies": {
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "css-loader": "^5.2.6",
+    "file-loader": "^6.2.0",
+    "raw-loader": "^4.0.2",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1"
   }
 }

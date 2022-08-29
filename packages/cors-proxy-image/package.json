@@ -30,6 +30,8 @@
   "devDependencies": {
     "@isomorphic-git/cors-proxy": "^2.7.1",
     "@kie-tools/root-env": "workspace:*",
-    "patch-package": "^6.4.7"
+    "patch-package": "^6.4.7",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   }
 }

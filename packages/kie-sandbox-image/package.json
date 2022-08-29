@@ -26,6 +26,8 @@
   "devDependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",
     "@kie-tools/online-editor": "workspace:*",
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   }
 }

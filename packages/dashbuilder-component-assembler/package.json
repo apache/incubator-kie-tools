@@ -30,7 +30,13 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/root-env": "workspace:*"
+    "@kie-tools/root-env": "workspace:*",
+    "copy-webpack-plugin": "^8.1.1",
+    "rimraf": "^3.0.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3"
   },
   "babel": {
     "presets": [
