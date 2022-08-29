@@ -117,11 +117,11 @@ public class Parser {
 
     private SwitchState parseSwitchState(State jso) {
         SwitchState state = (SwitchState) parse(SwitchState.class, jso);
-        DefaultConditionTransition defaultCondition = Js.uncheckedCast(Js.asPropertyMap(jso).get("defaultCondition"));
+        DefaultConditionTransition defaultCondition = state.getDefaultCondition();
         if (null != defaultCondition) {
             state.setDefaultCondition(parse(DefaultConditionTransition.class, defaultCondition));
         }
-        EventConditionTransition[] eventConditions = Js.uncheckedCast(Js.asPropertyMap(jso).get("eventConditions"));
+        EventConditionTransition[] eventConditions = state.getEventConditions();
         if (null != eventConditions) {
             state.setEventConditions(new EventConditionTransition[eventConditions.length]);
             for (int i = 0; i < eventConditions.length; i++) {
@@ -130,7 +130,7 @@ public class Parser {
                 state.getEventConditions()[i] = eventCondition;
             }
         }
-        DataConditionTransition[] dataConditions = Js.uncheckedCast(Js.asPropertyMap(jso).get("dataConditions"));
+        DataConditionTransition[] dataConditions = state.getDataConditions();
         if (null != dataConditions) {
             state.setDataConditions(new DataConditionTransition[dataConditions.length]);
             for (int i = 0; i < dataConditions.length; i++) {
@@ -152,7 +152,7 @@ public class Parser {
 
     private ForEachState parseForEachState(State jso) {
         ForEachState state = (ForEachState) parse(ForEachState.class, jso);
-        ActionNode[] actions = parseActions(jso);
+        ActionNode[] actions = state.getActions();
         if (null != actions) {
             state.setActions(actions);
         }
@@ -161,7 +161,7 @@ public class Parser {
 
     private OperationState parseOperationState(State jso) {
         OperationState state = (OperationState) parse(OperationState.class, jso);
-        ActionNode[] actions = parseActions(jso);
+        ActionNode[] actions = state.getActions();
         if (null != actions) {
             state.setActions(actions);
         }
@@ -184,7 +184,7 @@ public class Parser {
 
     private EventState parseEventState(State jso) {
         EventState state = (EventState) parse(EventState.class, jso);
-        OnEvent[] onEvents = Js.uncheckedCast(Js.asPropertyMap(jso).get("onEvents"));
+        OnEvent[] onEvents = state.getOnEvents();
         if (null != onEvents) {
             state.setOnEvents(new OnEvent[onEvents.length]);
             for (int i = 0; i < onEvents.length; i++) {
@@ -198,7 +198,7 @@ public class Parser {
 
     private OnEvent parseOnEvent(OnEvent jso) {
         OnEvent onEvent = parse(OnEvent.class, jso);
-        ActionNode[] actions = Js.uncheckedCast(Js.asPropertyMap(jso).get("actions"));
+        ActionNode[] actions = jso.getActions();
         if (null != actions) {
             onEvent.setActions(new ActionNode[actions.length]);
             for (int i = 0; i < actions.length; i++) {

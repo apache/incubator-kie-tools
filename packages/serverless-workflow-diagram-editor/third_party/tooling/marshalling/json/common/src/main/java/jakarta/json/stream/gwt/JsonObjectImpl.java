@@ -35,33 +35,33 @@ import jsinterop.base.Js;
 
 public class JsonObjectImpl implements JsonObject {
 
-  public Object holder; // TODO make it private
+  public Object __holder__; // TODO make it private
 
   public JsonObjectImpl(String json) {
     this(Global.JSON.parse(json));
   }
 
   public JsonObjectImpl(Object holder) {
-    this.holder = holder;
+    this.__holder__ = holder;
   }
 
   @Override
   public JsonArray getJsonArray(String name) {
-    JsArray array = Js.uncheckedCast(Reflect.get(holder, name));
+    JsArray array = Js.uncheckedCast(Reflect.get(__holder__, name));
     return new JsonArrayImpl(array);
   }
 
   @Override
   public JsonObject getJsonObject(String name) {
-    if (Reflect.has(holder, name)) {
-      return new JsonObjectImpl(Reflect.get(holder, name));
+    if (Reflect.has(__holder__, name)) {
+      return new JsonObjectImpl(Reflect.get(__holder__, name));
     }
     return null;
   }
 
   @Override
   public JsonNumber getJsonNumber(String name) {
-    return new JsonNumberImpl(Js.asPropertyMap(holder).get(name));
+    return new JsonNumberImpl(Js.asPropertyMap(__holder__).get(name));
   }
 
   @Override
@@ -71,7 +71,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public String getString(String name) {
-    return Js.asPropertyMap(holder).get(name).toString();
+    return Js.asPropertyMap(__holder__).get(name).toString();
   }
 
   @Override
@@ -81,7 +81,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public int getInt(String name) {
-    return Integer.valueOf(Js.asPropertyMap(holder).get(name).toString());
+    return Integer.valueOf(Js.asPropertyMap(__holder__).get(name).toString());
   }
 
   @Override
@@ -91,7 +91,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public boolean getBoolean(String name) {
-    return Boolean.valueOf(Js.asPropertyMap(holder).get(name).toString());
+    return Boolean.valueOf(Js.asPropertyMap(__holder__).get(name).toString());
   }
 
   @Override
@@ -106,7 +106,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public ValueType getValueType() {
-    String type = Js.typeof(holder).toLowerCase(Locale.ROOT);
+    String type = Js.typeof(__holder__).toLowerCase(Locale.ROOT);
 
     if (type.equals("object")) {
       return ValueType.OBJECT;
@@ -117,7 +117,7 @@ public class JsonObjectImpl implements JsonObject {
     } else if (type.equals("string")) {
       return ValueType.STRING;
     } else if (type.equals("boolean")) {
-      if (holder.toString().toLowerCase(Locale.ROOT).equals("true")) {
+      if (__holder__.toString().toLowerCase(Locale.ROOT).equals("true")) {
         return ValueType.TRUE;
       } else {
         return ValueType.FALSE;
@@ -136,12 +136,12 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public boolean isEmpty() {
-    return Global.JSON.stringify(holder).equals("{}");
+    return Global.JSON.stringify(__holder__).equals("{}");
   }
 
   @Override
   public boolean containsKey(Object key) {
-    return Js.asPropertyMap(holder).has(key.toString());
+    return Js.asPropertyMap(__holder__).has(key.toString());
   }
 
   @Override
@@ -151,7 +151,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public JsonValue get(Object key) {
-    return new JsonObjectImpl(Js.asPropertyMap(holder).get(key.toString()));
+    return new JsonObjectImpl(Js.asPropertyMap(__holder__).get(key.toString()));
   }
 
   @Override
@@ -190,15 +190,15 @@ public class JsonObjectImpl implements JsonObject {
   }
 
   public Double asBoxedDouble() {
-    return Js.uncheckedCast(holder);
+    return Js.uncheckedCast(__holder__);
   }
 
   public JsonObject asJsonObject() {
-    return Js.uncheckedCast(holder);
+    return Js.uncheckedCast(__holder__);
   }
 
   @Override
   public String toString() {
-    return Global.JSON.stringify(holder);
+    return Global.JSON.stringify(__holder__);
   }
 }

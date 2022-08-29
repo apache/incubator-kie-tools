@@ -69,25 +69,28 @@ public class FieldDefinitionFactory {
   }
 
   public FieldDefinition getFieldDefinition(PropertyDefinition propertyDefinition) {
-    JsonbTypeSerializer jsonbTypeSerializer =
-        propertyDefinition.getVariableElement().getAnnotation(JsonbTypeSerializer.class);
-    JsonbTypeDeserializer jsonbTypeDeserializer =
-        propertyDefinition.getVariableElement().getAnnotation(JsonbTypeDeserializer.class);
-    if (jsonbTypeSerializer != null || jsonbTypeDeserializer != null) {
-      if (jsonbTypeSerializer == null || jsonbTypeDeserializer == null) {
-        throw new GenerationException(
-            "@JsonbTypeSerializer and @JsonbTypeDeserializer MUST be used together");
+    if (!(context.getTypeUtils().isIterable(propertyDefinition.getType())
+            || propertyDefinition.getType().getKind().equals(TypeKind.ARRAY))) {
+      JsonbTypeSerializer jsonbTypeSerializer =
+              propertyDefinition.getVariableElement().getAnnotation(JsonbTypeSerializer.class);
+      JsonbTypeDeserializer jsonbTypeDeserializer =
+              propertyDefinition.getVariableElement().getAnnotation(JsonbTypeDeserializer.class);
+      if (jsonbTypeSerializer != null || jsonbTypeDeserializer != null) {
+        if (jsonbTypeSerializer == null || jsonbTypeDeserializer == null) {
+          throw new GenerationException(
+                  "@JsonbTypeSerializer and @JsonbTypeDeserializer MUST be used together");
+        }
+        return new JsonbTypeSerFieldDefinition(propertyDefinition.getType(), context);
       }
-      return new JsonbTypeSerFieldDefinition(propertyDefinition.getType(), context);
     }
     TypeMirror type = propertyDefinition.getVariableElement().asType();
     if (!(type.getKind().isPrimitive() || type.getKind().equals(TypeKind.ARRAY))) {
       JsonbTypeInfo jsonbTypeInfo =
-          MoreTypes.asTypeElement(propertyDefinition.getVariableElement().asType())
-              .getAnnotation(JsonbTypeInfo.class);
+              MoreTypes.asTypeElement(propertyDefinition.getVariableElement().asType())
+                      .getAnnotation(JsonbTypeInfo.class);
       if (jsonbTypeInfo != null) {
         return new JsonbTypeInfoDefinition(
-            jsonbTypeInfo, propertyDefinition.getVariableElement().asType(), context);
+                jsonbTypeInfo, propertyDefinition.getVariableElement().asType(), context);
       }
     }
 

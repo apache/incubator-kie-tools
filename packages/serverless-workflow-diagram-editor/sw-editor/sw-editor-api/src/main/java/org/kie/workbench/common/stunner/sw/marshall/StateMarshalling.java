@@ -59,6 +59,9 @@ public interface StateMarshalling {
 
     NodeUnmarshaller<State> STATE_UNMARSHALLER =
             (context, state) -> {
+
+                System.out.println("STATE_UNMARSHALLER");
+
                 // Parse common fields.
                 String name = state.getName();
                 if (context.isStateAlreadyExist(name)) {
@@ -69,6 +72,7 @@ public interface StateMarshalling {
 
                 context.sourceNode = stateNode;
 
+                System.out.println("1");
                 // Parse end.
                 boolean end = getEnd(state.getEnd());
                 if (end) {
@@ -76,6 +80,7 @@ public interface StateMarshalling {
                     tend.setTo(STATE_END);
                     Edge tendEdge = unmarshallEdge(context, tend);
                 }
+                System.out.println("2");
 
                 // Parse transition.
                 String transition = getTransition(state.getTransition());

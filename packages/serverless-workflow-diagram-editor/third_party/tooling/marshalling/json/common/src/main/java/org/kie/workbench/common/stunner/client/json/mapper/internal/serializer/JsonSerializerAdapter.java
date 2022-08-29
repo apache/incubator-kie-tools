@@ -16,13 +16,25 @@
 
 package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer;
 
+import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 
-public abstract class JsonSerializer<T> implements jakarta.json.bind.serializer.JsonbSerializer<T> {
+public class JsonSerializerAdapter<T> extends JsonSerializer<T> {
 
-  public abstract void serialize(
-          T obj, String property, JsonGenerator generator, SerializationContext ctx);
+    private final JsonbSerializer<T> serializer;
 
-  public abstract void serialize(T obj, JsonGenerator generator, SerializationContext ctx);
+    public JsonSerializerAdapter(JsonbSerializer<T> serializer) {
+        this.serializer = serializer;
+    }
+
+    @Override
+    public void serialize(T obj, String property, JsonGenerator generator, SerializationContext ctx) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void serialize(T obj, JsonGenerator generator, SerializationContext ctx) {
+        serializer.serialize(obj, generator, ctx);
+    }
 }

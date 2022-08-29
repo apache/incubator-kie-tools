@@ -338,6 +338,7 @@ public class Marshaller {
     }
 
     public static Node unmarshallNode(BuilderContext context, Object bean) {
+        System.out.println("??? " + bean.getClass().getName() + " " + getNodeUnmarshaller(bean).getClass().getName());
         return getNodeUnmarshaller(bean).unmarshall(context, bean);
     }
 

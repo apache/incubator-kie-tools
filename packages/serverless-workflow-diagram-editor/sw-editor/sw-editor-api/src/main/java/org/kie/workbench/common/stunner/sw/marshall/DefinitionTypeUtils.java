@@ -3,6 +3,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransition;
 
@@ -38,7 +39,7 @@ public class DefinitionTypeUtils {
         if (start instanceof String) {
             return (String) start;
         } else if (start != null) {
-            Object stateName = getObjectProperty(start, STATE_NAME);
+            Object stateName =((StartDefinition)workflow.getStart()).getStateName();
             if (stateName != null) {
                 return (String) stateName;
             } else {

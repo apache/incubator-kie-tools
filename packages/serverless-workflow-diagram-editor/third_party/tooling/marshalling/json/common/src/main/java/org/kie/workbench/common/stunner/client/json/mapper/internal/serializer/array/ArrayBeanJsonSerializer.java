@@ -17,11 +17,13 @@
 package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.array;
 
 import jakarta.json.bind.serializer.JsonSerializationContext;
+import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonGeneratorDecorator;
 
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializer;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializerAdapter;
 
 public class ArrayBeanJsonSerializer<T> extends ArrayJsonSerializer<T> {
 
@@ -29,9 +31,13 @@ public class ArrayBeanJsonSerializer<T> extends ArrayJsonSerializer<T> {
     super(serializer);
   }
 
+  public ArrayBeanJsonSerializer(JsonbSerializer<T> serializer) {
+    this(new JsonSerializerAdapter<>(serializer));
+  }
+
   @Override
   public void serialize(
-      T[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
+          T[] obj, String property, JsonGenerator generator, SerializationContext ctx) {
     if (obj != null) {
       JsonGenerator builder = generator.writeStartArray(property);
       JsonSerializationContext jsonSerializationContext = (JsonSerializationContext) ctx;

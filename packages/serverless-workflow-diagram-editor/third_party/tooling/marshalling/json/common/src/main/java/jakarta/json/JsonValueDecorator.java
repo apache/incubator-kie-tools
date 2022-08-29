@@ -124,11 +124,11 @@ public class JsonValueDecorator {
       if (delegate == null) {
         return null;
       }
-      return Js.asString(delegate.holder);
+      return Js.asString(delegate.__holder__);
     }
 
     public Boolean getBoolean() {
-      return new JsBoolean(delegate.holder).valueOf();
+      return new JsBoolean(delegate.__holder__).valueOf();
     }
 
     public BigInteger getBigInteger() {

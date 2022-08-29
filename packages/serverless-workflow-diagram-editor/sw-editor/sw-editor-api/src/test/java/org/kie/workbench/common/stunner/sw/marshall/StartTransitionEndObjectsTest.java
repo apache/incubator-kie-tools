@@ -100,8 +100,5 @@ public class StartTransitionEndObjectsTest {
         assertFalse((Boolean) workflow.getStates()[0].getOnErrors()[0].getEnd());
         assertEquals("Some Error", workflow.getStates()[0].getOnErrors()[0].getErrorRef());
         assertEquals("Error State", ((StateTransition)workflow.getStates()[0].getOnErrors()[0].getTransition()).getNextState());
-
-
-        System.out.println(mapper.toJSON(mapper.fromJSON(json)));
     }
 }

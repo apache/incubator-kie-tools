@@ -32,6 +32,8 @@ import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTyp
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonSerializer;
 
 /**
  * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
@@ -72,6 +74,12 @@ public class Workflow {
     @Property(meta = PropertyMetaTypes.NAME)
     private String name;
 
+    private String description;
+
+    private String specVersion;
+
+    private String version;
+
     /**
      * Workflow start definition.
      */
@@ -87,6 +95,8 @@ public class Workflow {
     /**
      * Workflow state definitions.
      */
+    @JsonbTypeSerializer(StateJsonSerializer.class)
+    @JsonbTypeDeserializer(StateJsonDeserializer.class)
     private State[] states;
 
     // missing specVersion, functions
@@ -154,5 +164,29 @@ public class Workflow {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSpecVersion() {
+        return specVersion;
+    }
+
+    public void setSpecVersion(String specVersion) {
+        this.specVersion = specVersion;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }

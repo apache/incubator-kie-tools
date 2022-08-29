@@ -19,11 +19,13 @@ package org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.
 import java.util.Collection;
 
 import jakarta.json.bind.serializer.JsonSerializationContext;
+import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import jakarta.json.stream.JsonGeneratorDecorator;
 
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializer;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.JsonSerializerAdapter;
 
 public class CollectionJsonSerializer<T> extends JsonSerializer<Collection<T>> {
 
@@ -33,12 +35,16 @@ public class CollectionJsonSerializer<T> extends JsonSerializer<Collection<T>> {
     this.serializer = serializer;
   }
 
+  public CollectionJsonSerializer(JsonbSerializer<T> serializer) {
+    this(new JsonSerializerAdapter<>(serializer));
+  }
+
   @Override
   public void serialize(
-      Collection<T> collection,
-      String property,
-      JsonGenerator generator,
-      SerializationContext ctx) {
+          Collection<T> collection,
+          String property,
+          JsonGenerator generator,
+          SerializationContext ctx) {
     if (collection != null && !collection.isEmpty()) {
       JsonGenerator builder = generator.writeStartArray(property);
       JsonSerializationContext jsonSerializationContext = (JsonSerializationContext) ctx;

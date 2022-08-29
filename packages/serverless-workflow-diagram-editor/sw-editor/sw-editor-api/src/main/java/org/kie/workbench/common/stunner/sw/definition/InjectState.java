@@ -16,7 +16,9 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import org.jboss.errai.databinding.client.api.Bindable;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 
@@ -29,6 +31,7 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.Morph;
 @Bindable
 @Definition
 @Morph(base = State.class)
+@JSONMapper
 public class InjectState extends State {
 
     public static final String TYPE_INJECT = "inject";
@@ -36,6 +39,7 @@ public class InjectState extends State {
     /**
      * JSON object as String which can be set as state's data input and can be manipulated via filter.
      */
+    @JsonbTransient //TODO it's a JSON object in examples
     private String data;
 
     /**

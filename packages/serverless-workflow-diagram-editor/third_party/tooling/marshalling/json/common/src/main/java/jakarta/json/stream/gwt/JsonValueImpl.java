@@ -18,21 +18,25 @@ package jakarta.json.stream.gwt;
 
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
+import jsinterop.base.Js;
 
 public class JsonValueImpl implements JsonValue {
 
-  Object holder;
+  Object __holder__;
 
   public JsonValueImpl(Object holder) {
-    this.holder = holder;
+    this.__holder__ = holder;
   }
 
   @Override
   public ValueType getValueType() {
-    throw new UnsupportedOperationException();
+    return new JsonObjectImpl(__holder__).getValueType();
   }
 
   public JsonObject asJsonObject() {
-    return new JsonObjectImpl(holder);
+    if (this instanceof JsonObject) {
+      return Js.uncheckedCast(this);
+    }
+    return new JsonObjectImpl(__holder__);
   }
 }

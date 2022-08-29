@@ -30,6 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
@@ -81,6 +83,8 @@ public class EventConditionTransition {
      * Defines what to do if condition is true.
      * End the workflow if set to true.
      */
+    @JsonbTypeSerializer(StateEndDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateEndDefinitionJsonbTypeDeserializer.class)
     private Object end;
 
     public EventConditionTransition() {

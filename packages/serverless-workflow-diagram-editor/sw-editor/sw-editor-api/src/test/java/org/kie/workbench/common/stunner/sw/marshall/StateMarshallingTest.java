@@ -18,13 +18,13 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.Optional;
 
-import jsinterop.base.JsPropertyMap;
 import org.junit.Test;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateEnd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,8 +32,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.unmarshallNode;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class StateMarshallingTest extends BaseMarshallingTest {
 
@@ -53,21 +51,22 @@ public class StateMarshallingTest extends BaseMarshallingTest {
 
     @Test
     public void testEndObject() {
-        JsPropertyMap<Object> endObject = mock(JsPropertyMap.class);
-        when(endObject.get("terminate")).thenReturn(true);
-        when(endObject.get("continueAs")).thenReturn("{}");
-        when(endObject.get("compensate")).thenReturn(false);
-        when(endObject.get("produceEvents")).thenReturn("[]");
+        StateEnd endObject = new StateEnd();
+        endObject.setTerminate(true);
+        endObject.setContinueAs("{}");
+        endObject.setCompensate(false);
+
         workflow.getStates()[0].setEnd(endObject);
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
-        assertTrue(workflow.getStates()[0].getEnd() instanceof JsPropertyMap);
-        final JsPropertyMap end = (JsPropertyMap) workflow.getStates()[0].getEnd();
-        assertTrue((Boolean) end.get("terminate"));
-        assertTrue(end.get("continueAs").equals("{}"));
-        assertTrue(!((Boolean) end.get("compensate")));
-        assertTrue(end.get("produceEvents").equals("[]"));
+        System.out.println("??? getEnd " + workflow.getStates()[0].getEnd().getClass());
+        assertTrue(workflow.getStates()[0].getEnd() instanceof StateEnd);
+        final StateEnd end = (StateEnd) workflow.getStates()[0].getEnd();
+        assertTrue(end.getTerminate());
+        assertEquals("{}",end.getContinueAs());
+        assertFalse(end.getCompensate());
+        //assertTrue(end.get("produceEvents").equals("[]"));
     }
 
     @Test
