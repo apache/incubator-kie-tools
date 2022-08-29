@@ -23,6 +23,7 @@
     "@kie-tools-build/sparse-checkout": "workspace:*",
     "@kie-tools-build/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.6.1",
+    "@types/node": "^15.0.2",
     "@typescript-eslint/eslint-plugin": "^4.24.0",
     "@typescript-eslint/parser": "^4.24.0",
     "eslint": "^7.26.0",

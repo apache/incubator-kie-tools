@@ -22,11 +22,10 @@
     "src"
   ],
   "scripts": {
-    "install": "rimraf dist && tsc -p tsconfig.prod.json"
+    "install": "rimraf dist && tsc"
   },
   "dependencies": {},
   "devDependencies": {
-    "@types/node": "^15.0.2",
     "rimraf": "^3.0.2",
     "typescript": "^4.4.2"
   }

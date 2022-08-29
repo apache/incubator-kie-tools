@@ -33,7 +33,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-// import { basename } from "path";
+import { basename } from "path";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
@@ -68,7 +68,7 @@ export function DmnFormToolbar(props: Props) {
   );
 
   const filename = useMemo(() => {
-    const fullFilename = props.uri;
+    const fullFilename = basename(props.uri);
     const maxSize = 25;
     const extension = fullFilename.substring(fullFilename.lastIndexOf(".") + 1);
     const name = fullFilename.replace(`.${extension}`, "");
@@ -112,7 +112,7 @@ export function DmnFormToolbar(props: Props) {
           component="button"
           onClick={() => openForm(uri)}
         >
-          {uri}
+          {basename(uri)}
         </DropdownItem>
       ));
   }, [app.data, openForm, props.uri]);
