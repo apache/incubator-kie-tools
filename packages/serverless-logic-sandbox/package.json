@@ -78,6 +78,7 @@
     "@kie-tools/openjdk11-mvn-image-env": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-sandbox-base-image-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@svgr/webpack": "6.2.1",
     "@types/history": "^4.7.3",
     "@types/jest": "^26.0.23",

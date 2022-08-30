@@ -31,6 +31,7 @@
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "copy-webpack-plugin": "^8.1.1",
     "rimraf": "^3.0.2",
     "webpack": "^5.36.2",

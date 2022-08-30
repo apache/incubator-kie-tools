@@ -51,6 +51,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",

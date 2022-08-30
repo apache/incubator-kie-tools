@@ -38,6 +38,7 @@
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/react": "^11.2.6",
     "@types/chrome": "^0.0.193",
     "@types/jest": "^26.0.23",

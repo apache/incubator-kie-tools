@@ -28,6 +28,7 @@
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/react": "^11.2.6",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",

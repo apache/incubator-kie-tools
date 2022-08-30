@@ -26,6 +26,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "^1.66.0",
     "rimraf": "^3.0.2",
     "vsce": "^2.6.5",

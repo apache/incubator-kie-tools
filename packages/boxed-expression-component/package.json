@@ -42,6 +42,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",
     "@types/cypress-image-snapshot": "^3.1.6",

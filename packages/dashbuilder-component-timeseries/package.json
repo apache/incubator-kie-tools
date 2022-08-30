@@ -33,6 +33,7 @@
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
