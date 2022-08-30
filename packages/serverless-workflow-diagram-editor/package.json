@@ -31,6 +31,7 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "cpr": "^3.0.1",
     "rimraf": "^3.0.2",

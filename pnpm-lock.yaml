@@ -14,7 +14,6 @@ importers:
       "@babel/preset-react": ^7.16.0
       "@kie-tools-scripts/bootstrap": workspace:*
       "@kie-tools-scripts/build-env": workspace:*
-      "@kie-tools-scripts/maven-config-setup-helper": workspace:*
       "@kie-tools-scripts/run-script-if": workspace:*
       "@kie-tools-scripts/sparse-checkout": workspace:*
       "@kie-tools-scripts/update-version": workspace:*
@@ -30,7 +29,6 @@ importers:
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-scripts/bootstrap": link:scripts/bootstrap
       "@kie-tools-scripts/build-env": link:scripts/build-env
-      "@kie-tools-scripts/maven-config-setup-helper": link:scripts/maven-config-setup-helper
       "@kie-tools-scripts/run-script-if": link:scripts/run-script-if
       "@kie-tools-scripts/sparse-checkout": link:scripts/sparse-checkout
       "@kie-tools-scripts/update-version": link:scripts/update-version
@@ -421,9 +419,11 @@ importers:
 
   packages/backend-extended-services:
     specifiers:
+      "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
       run-script-os: ^1.1.6
     devDependencies:
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools/root-env": link:../root-env
       run-script-os: 1.1.6
 
@@ -746,6 +746,7 @@ importers:
   packages/dashbuilder:
     specifiers:
       "@kie-tools/dashbuilder-component-assembler": workspace:*
+      "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
       copyfiles: ^2.4.1
       rimraf: ^3.0.2
@@ -753,6 +754,7 @@ importers:
     dependencies:
       "@kie-tools/dashbuilder-component-assembler": link:../dashbuilder-component-assembler
     devDependencies:
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools/root-env": link:../root-env
       copyfiles: 2.4.1
       rimraf: 3.0.2
@@ -1611,9 +1613,11 @@ importers:
 
   packages/dmn-dev-sandbox-quarkus:
     specifiers:
+      "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
       run-script-os: ^1.1.6
     devDependencies:
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools/root-env": link:../root-env
       run-script-os: 1.1.6
 
@@ -2567,10 +2571,7 @@ importers:
       run-script-os: 1.1.6
 
   packages/maven-config-setup-helper:
-    specifiers:
-      "@kie-tools/build-env": workspace:*
-    devDependencies:
-      "@kie-tools/build-env": link:../build-env
+    specifiers: {}
 
   packages/monaco-editor:
     specifiers:
@@ -3392,12 +3393,14 @@ importers:
 
   packages/serverless-workflow-diagram-editor:
     specifiers:
+      "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
       cpr: ^3.0.1
       rimraf: ^3.0.2
       run-script-os: ^1.1.6
       symlink-dir: ^5.0.1
     devDependencies:
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools/root-env": link:../root-env
       cpr: 3.0.1
       rimraf: 3.0.2
@@ -3717,6 +3720,7 @@ importers:
 
   packages/stunner-editors:
     specifiers:
+      "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/stunner-editors-dmn-loader": workspace:*
       rimraf: ^3.0.2
@@ -3725,6 +3729,7 @@ importers:
     dependencies:
       "@kie-tools/stunner-editors-dmn-loader": link:../stunner-editors-dmn-loader
     devDependencies:
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools/root-env": link:../root-env
       rimraf: 3.0.2
       run-script-os: 1.1.6
@@ -4758,9 +4763,11 @@ importers:
 
   packages/vscode-java-code-completion-extension-plugin:
     specifiers:
+      "@kie-tools/maven-config-setup-helper": workspace:*
       "@kie-tools/root-env": workspace:*
       run-script-os: ^1.1.6
     devDependencies:
+      "@kie-tools/maven-config-setup-helper": link:../maven-config-setup-helper
       "@kie-tools/root-env": link:../root-env
       run-script-os: 1.1.6
 
