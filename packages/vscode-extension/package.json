@@ -23,7 +23,7 @@
     "build:dev": "rimraf dist && tsc -p tsconfig.dev.json",
     "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.prod.json && pnpm test",
     "compile": "webpack",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "watch": "webpack"
   },
@@ -41,6 +41,7 @@
     "minimatch": "^3.0.4"
   },
   "devDependencies": {
+    "@kie-tools/eslint": "workspace:^0.0.0",
     "@kie-tools/root-env": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",

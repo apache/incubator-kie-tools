@@ -22,7 +22,7 @@
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
     "cy:open": "cypress open --project it-tests",
     "cy:run": "cypress run -b chrome --project it-tests",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:clearCache": "jest --clearCache",
@@ -55,6 +55,7 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:^0.0.0",
     "@kie-tools/root-env": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@types/jest": "^26.0.23",

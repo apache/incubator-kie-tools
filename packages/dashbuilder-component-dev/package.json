@@ -22,7 +22,7 @@
     "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@kie-tools/eslint": "workspace:^0.0.0",
     "@kie-tools/root-env": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@types/jest": "^26.0.23",

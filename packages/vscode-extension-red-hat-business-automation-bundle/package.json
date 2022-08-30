@@ -18,12 +18,13 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "compile": "webpack",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_red_hat_business_automation_bundle_$npm_package_version.vsix",
     "watch": "webpack"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:^0.0.0",
     "@kie-tools/root-env": "workspace:*",
     "@types/vscode": "^1.66.0",
     "rimraf": "^3.0.2",

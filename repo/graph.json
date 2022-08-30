@@ -60,6 +60,7 @@
       { "id": "@kie-tools/dashbuilder-component-victory-charts" },
       { "id": "@kie-tools/dashbuilder-client" },
       { "id": "@kie-tools/dashbuilder-component-api" },
+      { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/dashbuilder-component-echarts-base" },
       { "id": "@kie-tools/dashbuilder-component-dev" },
       { "id": "@kie-tools/dashbuilder-editor" },
@@ -166,8 +167,10 @@
         "target": "@kie-tools-core/vscode-java-code-completion",
         "weight": 1
       },
+      { "source": "@kie-tools-core/vscode-java-code-completion", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/vscode-java-code-completion", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-examples/ping-pong-view", "target": "@kie-tools-core/envelope", "weight": 1 },
+      { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/envelope-bus", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools-examples/ping-pong-view-angular",
@@ -208,6 +211,7 @@
       { "source": "@kie-tools/stunner-editors", "target": "@kie-tools/stunner-editors-dmn-loader", "weight": 1 },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/i18n", "weight": 1 },
       { "source": "@kie-tools-core/notifications", "target": "@kie-tools-core/workspace", "weight": 1 },
+      { "source": "@kie-tools-core/i18n", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/i18n", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/workspace", "target": "@kie-tools-core/operating-system", "weight": 1 },
       { "source": "@kie-tools/backend-extended-services", "target": "@kie-tools/root-env", "weight": 1 },
@@ -216,6 +220,7 @@
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/patternfly-base", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/feel-input-component", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/monaco-editor", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools-core/patternfly-base", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/i18n-common-dictionary", "target": "@kie-tools-core/i18n", "weight": 1 },
@@ -226,6 +231,7 @@
       },
       { "source": "chrome-extension-pack-kogito-kie-editors", "target": "@kie-tools/kie-bc-editors", "weight": 1 },
       { "source": "chrome-extension-pack-kogito-kie-editors", "target": "@kie-tools/stunner-editors", "weight": 1 },
+      { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/pmml-editor-marshaller", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/stunner-editors-dmn-loader",
@@ -408,7 +414,9 @@
         "weight": 1
       },
       { "source": "@kie-tools/dashbuilder-client", "target": "@kie-tools/dashbuilder", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-api", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-component-api", "target": "@kie-tools/root-env", "weight": 1 },
+      { "source": "@kie-tools/dashbuilder-component-echarts-base", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/dashbuilder-component-echarts-base", "target": "@kie-tools/root-env", "weight": 1 },
       {
         "source": "@kie-tools/dashbuilder-component-dev",
@@ -452,13 +460,17 @@
       { "source": "@kie-tools/form", "target": "@kie-tools-core/notifications", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
       { "source": "@kie-tools/form", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools-core/operating-system", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/extended-services", "target": "@kie-tools/root-env", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-bootstrap4-codegen", "weight": 1 },
       { "source": "@kie-tools/form-generation-tool", "target": "@kie-tools/uniforms-patternfly-codegen", "weight": 1 },
       { "source": "@kie-tools/uniforms-bootstrap4-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/uniforms-bootstrap4-codegen", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/uniforms-patternfly-codegen", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "@kie-tools/image-env-to-json", "target": "@kie-tools/eslint", "weight": 1 },
       {
         "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/vscode-java-code-completion",
@@ -582,7 +594,9 @@
       },
       { "source": "vscode-extension-dmn-editor", "target": "@kie-tools/stunner-editors", "weight": 1 },
       { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "vscode-extension-kie-ba-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools-core/webpack-base", "weight": 1 },
+      { "source": "vscode-extension-kogito-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       {
         "source": "vscode-extension-pack-kogito-kie-editors",
         "target": "@kie-tools-core/vscode-extension",
@@ -603,6 +617,7 @@
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
+      { "source": "vscode-extension-red-hat-business-automation-bundle", "target": "@kie-tools/eslint", "weight": 1 },
       {
         "source": "vscode-extension-serverless-workflow-editor",
         "target": "@kie-tools-core/vscode-extension",
@@ -676,6 +691,7 @@
     ["@kie-tools-core/editor", "packages/editor"],
     ["@kie-tools-core/envelope", "packages/envelope"],
     ["@kie-tools-core/envelope-bus", "packages/envelope-bus"],
+    ["@kie-tools/eslint", "packages/eslint"],
     ["@kie-tools/extended-services", "packages/extended-services"],
     ["@kie-tools/feel-input-component", "packages/feel-input-component"],
     ["@kie-tools/form", "packages/form"],
