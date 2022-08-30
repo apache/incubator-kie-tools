@@ -356,5 +356,4 @@ digraph G {
   "@kie-tools/yard-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/yard-editor" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools-scripts/bootstrap" -> "@kie-tools-scripts/build-env" [ style = "dashed", color = "black" ];
-  "@kie-tools-scripts/build-env" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
 }
