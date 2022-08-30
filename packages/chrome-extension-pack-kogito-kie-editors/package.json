@@ -1,35 +1,48 @@
 {
+  "private": true,
   "name": "chrome-extension-pack-kogito-kie-editors",
   "version": "0.0.0",
-  "private": true,
   "description": "",
   "license": "Apache-2.0",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@kie-tools-core/chrome-extension": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools/kie-bc-editors": "0.0.0",
-    "@kie-tools-core/envelope": "0.0.0",
-    "@kie-tools-core/editor": "0.0.0"
-  },
-  "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/stunner-editors": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0"
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack && pnpm test:it",
+    "install": "node install.js",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve --env dev",
-    "test:it:start": "pnpm start",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test test:it:start https-get://localhost:$(build-env chromeExtension.dev.port) test:it:run\"",
     "test:it:run": "jest --runInBand -c ./jest.it.config.js",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test  test:it:start https-get://localhost:$(build-env chromeExtension.dev.port) test:it:run\""
+    "test:it:start": "pnpm start"
+  },
+  "dependencies": {
+    "@kie-tools-core/chrome-extension": "workspace:*",
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools/kie-bc-editors": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/stunner-editors": "workspace:*",
+    "@types/chai": "^4.2.17",
+    "@types/chrome": "^0.0.193",
+    "@types/selenium-webdriver": "^4.1.1",
+    "chai": "^4.3.4",
+    "jest-junit": "^14.0.0",
+    "selenium-webdriver": "^4.2.0",
+    "start-server-and-test": "^1.12.1",
+    "zip-webpack-plugin": "^4.0.1"
   },
   "babel": {
     "presets": [

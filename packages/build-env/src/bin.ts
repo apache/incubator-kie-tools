@@ -17,7 +17,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { EnvAndVarsWithName, getOrDefault } from "./index";
+import { EnvAndVarsWithName, treatVarToPrint, VarWithName } from "./index";
 
 const BUILD_ENV_RECURSION_STOP_FILE_NAME = ".build-env-root";
 
@@ -34,8 +34,11 @@ const logs = {
   envRecursionStopped: (startDir: string, curDir: string, envRecursionStopPath: string) => {
     return `[build-env] Couldn't load env from '${startDir}' to '${curDir}'. Stopped at '${envRecursionStopPath}'`;
   },
-  cantNegateNonBoolean(envPropertyValue: string) {
+  cantNegateNonBoolean(envPropertyValue: string | boolean | number) {
     return `[build-env] Cannot negate non-boolean value '${envPropertyValue}'`;
+  },
+  cantReturnNonString(propertyPath: string, propertyType: string) {
+    return `[build-env] Env property '${propertyPath}' is not of type "string", "number", or "boolean". Found "${propertyType}":`;
   },
   pleaseProvideEnvPropertyPath() {
     return `[build-env] Please provide an env property path.`;
@@ -83,32 +86,37 @@ async function findEnv(startDir: string, curDir: string): Promise<EnvAndVarsWith
 
 //
 
+function parseVars<T>(vars: { [K in keyof T]: VarWithName }) {
+  const result: Record<string, string | undefined> = {};
+  for (const v in vars) {
+    result[v] = treatVarToPrint(vars[v]);
+  }
+  return result;
+}
+
 async function main() {
-  const { env, vars } = await findEnv(path.resolve("."), path.resolve("."));
+  const { env, vars, self } = await findEnv(path.resolve("."), path.resolve("."));
 
   const opt = process.argv[2];
   const flags = process.argv[3];
 
   if (opt === "--print-vars") {
-    const result: Record<string, string | undefined> = {};
-
-    for (const v in vars) {
-      result[v] = getOrDefault(vars[v]);
-      if (vars[v].default === undefined && result[v]) {
-        result[v] += " <- CHANGED 👀️ ";
-      } else if (result[v] === undefined) {
-        result[v] = "[unset] Default value may vary ⚠️ ";
-      } else if (result[v] !== vars[v].default) {
-        result[v] += " <- CHANGED 👀️ ";
-      }
-    }
-
-    console.log(JSON.stringify(flattenObj(result), undefined, 2));
+    console.log(JSON.stringify(flattenObj(parseVars(vars)), undefined, 2));
     process.exit(0);
   }
 
   if (opt === "--print-env") {
     console.log(JSON.stringify(flattenObj(env), undefined, 2));
+    process.exit(0);
+  }
+
+  if (opt === "--print-vars:self") {
+    console.log(JSON.stringify(flattenObj(parseVars(self.vars)), undefined, 2));
+    process.exit(0);
+  }
+
+  if (opt === "--print-env:self") {
+    console.log(JSON.stringify(flattenObj(self.env), undefined, 2));
     process.exit(0);
   }
 
@@ -122,11 +130,21 @@ async function main() {
   let envPropertyValue: any = env;
   for (const p of propertyPath.split(".")) {
     envPropertyValue = envPropertyValue[p];
-    if (envPropertyValue === undefined || typeof envPropertyValue === "function") {
+    if (envPropertyValue === undefined) {
       console.error(logs.propertyNotFound(propertyPath));
       console.error(logs.seeAllEnvProperties());
       process.exit(1);
     }
+  }
+
+  if (
+    typeof envPropertyValue !== "string" &&
+    typeof envPropertyValue !== "boolean" &&
+    typeof envPropertyValue !== "number"
+  ) {
+    console.error(logs.cantReturnNonString(propertyPath, typeof envPropertyValue));
+    console.error(envPropertyValue);
+    process.exit(1);
   }
 
   if (flags === "--not") {
@@ -136,7 +154,7 @@ async function main() {
       process.exit(0);
     } else {
       console.error(logs.cantNegateNonBoolean(envPropertyValue));
-      process.exit(0);
+      process.exit(1);
     }
   }
 

@@ -50,7 +50,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
                 style={{ textDecoration: "none" }}
               >
                 <TextContent>
-                  <Text component={TextVariants.h1}>Serverless Logic Sandbox</Text>
+                  <Text component={TextVariants.h1}>Serverless Logic Web Tools</Text>
                 </TextContent>
               </MastheadBrand>
             </PageHeaderToolsItem>

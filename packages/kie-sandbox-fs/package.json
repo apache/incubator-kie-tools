@@ -1,32 +1,57 @@
 {
-  "publishConfig": {
-    "access": "public"
-  },
   "name": "@kie-tools/kie-sandbox-fs",
   "version": "0.0.0",
   "description": "In-browser FS based on KieSandboxFs",
-  "main": "dist/index.js",
-  "unpkg": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Tiago Bento",
+      "email": "tfernand@redhat.com"
+    },
+    {
+      "name": "William Hilton",
+      "email": "wmhilton@gmail.com"
+    }
+  ],
+  "keywords": [
+    "browser",
+    "fs",
+    "idb",
+    "indexeddb"
+  ],
+  "homepage": "https://github.com/kiegroup/kogito-tooling",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-tooling.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kogito-tooling/issues"
+  },
   "bin": {
     "superblocktxt": "src/superblocktxt.js"
   },
+  "types": "dist/index.d.ts",
+  "unpkg": "dist/index.js",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"karma start --single-run --watch\"",
-    "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
     "build:dev": "rimraf dist && pnpm copy:src",
-    "build:prod": "rimraf dist && pnpm copy:src && pnpm test"
+    "build:prod": "rimraf dist && pnpm copy:src && pnpm test",
+    "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"karma start --single-run --watch\""
   },
   "dependencies": {
     "@isomorphic-git/idb-keyval": "^3.3.2",
+    "dexie": "^3.0.3",
     "isomorphic-textencoder": "^1.0.1",
     "just-debounce-it": "^3.0.1",
-    "just-once": "^2.0.1",
-    "dexie": "^3.0.3"
+    "just-once": "^2.0.1"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
     "karma": "^6.3.9",
     "karma-browserstack-launcher": "^1.5.1",
     "karma-chrome-launcher": "^3.1.0",
@@ -41,28 +66,7 @@
     "karma-webpack": "^5.0.0",
     "puppeteer": "^13.1.2"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kiegroup/kogito-tooling.git"
-  },
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "browser",
-    "fs",
-    "indexeddb",
-    "idb"
-  ],
-  "contributors": [
-    {
-      "name": "William Hilton",
-      "email": "wmhilton@gmail.com"
-    },
-    {
-      "name": "Tiago Bento",
-      "email": "tfernand@redhat.com"
-    }
-  ],
-  "license": "MIT"
+  "publishConfig": {
+    "access": "public"
+  }
 }

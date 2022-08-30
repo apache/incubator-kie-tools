@@ -42,6 +42,10 @@ import { decoder, encoder } from "./commonServices/BaseFile";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
+const GIT_USER_DEFAULT = {
+  name: "Serverless Logic Web Tools",
+  email: "",
+};
 
 interface Props {
   children: React.ReactNode;
@@ -130,8 +134,8 @@ export function WorkspacesContextProvider(props: Props) {
         dir: service.getAbsolutePath({ descriptorId: args.workspaceId }),
         ref: workspace.origin.branch,
         author: {
-          name: args.gitConfig?.name ?? "Unknown",
-          email: args.gitConfig?.email ?? "unknown@email.com",
+          name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
+          email: args.gitConfig?.email ?? GIT_USER_DEFAULT.email,
         },
         authInfo: args.authInfo,
       });
@@ -181,10 +185,10 @@ export function WorkspacesContextProvider(props: Props) {
         fs: args.fs,
         dir: workspaceRootDirPath,
         targetBranch: descriptor.origin.branch,
-        message: "Changes from KIE Sandbox",
+        message: "Changes from Serverless Logic Web Tools",
         author: {
-          name: args.gitConfig?.name ?? "Unknown",
-          email: args.gitConfig?.email ?? "unknown@email.com",
+          name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
+          email: args.gitConfig?.email ?? GIT_USER_DEFAULT.email,
         },
       });
 
@@ -242,11 +246,11 @@ export function WorkspacesContextProvider(props: Props) {
           await gitService.commit({
             fs: fs,
             dir: workspaceRootDirPath,
-            message: "Initial commit from KIE Sandbox",
+            message: "Initial commit from Serverless Logic Web Tools",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
-              name: settings.github.user?.name ?? "Unknown",
-              email: settings.github.user?.email ?? "unknown@email.com",
+              name: settings.github.user?.name ?? GIT_USER_DEFAULT.name,
+              email: settings.github.user?.email ?? GIT_USER_DEFAULT.email,
             },
           });
 

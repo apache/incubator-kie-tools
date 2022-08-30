@@ -93,18 +93,18 @@ export async function activate(context: vscode.ExtensionContext) {
     generateSvgCommandId: COMMAND_IDS.getPreviewSvg,
     silentlyGenerateSvgCommandId: COMMAND_IDS.silentlyGetPreviewSvg,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping(
-        swEnvelopeType,
-        "**/*.sw.json",
-        diagramEnvelopeMappingConfig.envelopePath,
-        diagramEnvelopeMappingConfig.resourcesPathPrefix
-      ),
-      new EnvelopeMapping(
-        swEnvelopeType,
-        "**/*.sw.+(yml|yaml)",
-        baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
-        baseEnvelopePath
-      ),
+      new EnvelopeMapping({
+        type: swEnvelopeType,
+        filePathGlob: "**/*.sw.json",
+        resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
+        envelopePath: diagramEnvelopeMappingConfig.envelopePath,
+      }),
+      new EnvelopeMapping({
+        type: swEnvelopeType,
+        filePathGlob: "**/*.sw.+(yml|yaml)",
+        resourcesPathPrefix: baseEnvelopePath,
+        envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
+      }),
     ]),
     channelApiProducer: new ServerlessWorkflowDiagramEditorChannelApiProducer({
       configuration,

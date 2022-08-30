@@ -1,4 +1,4 @@
-name: "CI :: Monorepo (full)"
+name: "CI :: Build (full)"
 
 on:
   push:
@@ -7,11 +7,12 @@ on:
     branches: "**"
 
 concurrency:
-  group: ${{ github.event.pull_request && format('monorepo-pr-ci-full-{0}', github.event.pull_request.number) || format('monorepo-ci-full-push-main-{0}', github.sha) }}
+  group: ${{ github.event.pull_request && format('ci-build-full-pr-{0}', github.event.pull_request.number) || format('ci-build-full-push-main-{0}', github.sha) }}
   cancel-in-progress: true
 
 jobs:
-  ci-full:
+  run:
+    environment: ci
     if: github.event.pull_request.draft == false
     strategy:
       fail-fast: false
@@ -20,108 +21,131 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
-      - name: "Checkout"
-        uses: actions/checkout@v2
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        id: checkout_pr
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        id: merge_changes
-        uses: ./.github/actions/merge-pr-changes
+      - name: "Setup CI patterns"
+        id: ci_patterns
+        uses: ./.github/actions/setup-ci-patterns
 
       - name: "Check if should run or not"
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_PATHS=$(cat ./.github/supporting-files/ci/non-source-paths.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
-          echo "Non-source paths:"
-          echo $NON_SOURCE_PATHS
-
-          # Setting IFS to empty string will preserve new lines on CHANGED_SOURCE_PATHS
-          IFS_BKP=$IFS
-          IFS=
-          export CHANGED_SOURCE_PATHS=$(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_PATHS")
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
           echo "Changed source paths:"
-          echo $CHANGED_SOURCE_PATHS
-          IFS=$IFS_BKP
+          echo ${#CHANGED_SOURCE_PATHS[@]}
+          printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
 
-          export CHANGED_SOURCE_PATHS_IN_ROOT=($(echo "$CHANGED_SOURCE_PATHS" | grep -v -e "^packages" -e "^examples"))
+          export CHANGED_SOURCE_PATHS_IN_ROOT=($(printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}" | grep -v -e "^packages" -e "^examples"))
           echo "Changed source paths in root:"
           echo ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
-            echo 'No source files changed; `CI :: Monorepo (full)` will not run.'
+            echo 'No source files changed; `CI :: Build (full)` will not run.'
             echo "::set-output name=should_run::false"
           elif [ ! ${{ github.event.pull_request }} ]; then
-            echo 'Push to the `main` branch happened; `CI :: Monorepo (full)` will run.'
+            echo 'Push to the `main` branch happened; `CI :: Build (full)` will run.'
             echo "::set-output name=should_run::true"
           elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
-            echo 'No source files changed in root; `CI :: Monorepo (full)` will not run.'
+            echo 'No source files changed in root; `CI :: Build (full)` will not run.'
             echo "::set-output name=should_run::false"
           else
-            echo 'Source files changed in root; `CI :: Monorepo (full)` will run.'
+            echo 'Source files changed in root; `CI :: Build (full)` will run.'
             echo "::set-output name=should_run::true"
           fi
 
           echo "Done"
 
+      - name: "Start telemetry service (`main` only)"
+        if: steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        uses: runforesight/workflow-telemetry-action@f5b7d16a7dd7bbf8c615334fa354a548dadda915
+
       - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
+
+      - name: "Bootstrap"
+        if: steps.check_diff_paths.outputs.should_run == 'true'
+        uses: ./.github/actions/bootstrap
 
       - name: "Build"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
-          KIE_TOOLS_BUILD_lint: "true"
-          KIE_TOOLS_BUILD_test: "true"
-          KIE_TOOLS_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
-          KIE_TOOLS_BUILD_docker: "true"
-          KIE_TOOLS_BUILD_examples: "true"
+          KIE_TOOLS_BUILD__runLinters: "true"
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
+          KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
+          KIE_TOOLS_BUILD__ignoreIntegrationTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
 
-      - name: "Check generated resources (you should commit those!)"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+      - name: "Check tests result (`main` only)"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        uses: mikepenz/action-junit-report@1b47bb811362f3d8d753fc148cb7a13ec9e55570
+        with:
+          check_name: "-"
+          annotate_only: true
+          fail_on_failure: true
+          report_paths: |
+            ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
+            ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
+
+      - name: "Check hanging uncommitted files (you should commit those!)"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
+      - name: "Upload reports and artifacts"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        uses: ./.github/actions/upload-ci-reports-and-artifacts
+
+      - name: "Upload integration tests results to Buildkite (`main` only)"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        shell: bash
+        env:
+          BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_TOKEN }}
+          BUILDKITE_BUILD_ID: ${{ github.run_id }}
+          BUILDKITE_BUILD_NUMBER: ${{ github.run_attempt }}
+          BUILDKITE_JOB_ID: ${{ github.run_id }}
+          BUILDKITE_BRANCH: ${{ github.ref_name }}
+          BUILDKITE_COMMIT: ${{ github.sha }}
+          BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
+          BUILDKITE_BUILD_URL: ${{ github.event.repository.html_url }}/actions/runs/${{ github.run_id }}
+        run: |
+          eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
+            -H "Authorization: Token token=$BUILDKITE_ANALYTICS_TOKEN" \
+            -F "format=junit" \
+            -F "data=@{}" \
+            -F "run_env[CI]=buildkite" \
+            -F "run_env[key]=$BUILDKITE_BUILD_ID" \
+            -F "run_env[number]=$BUILDKITE_BUILD_NUMBER" \
+            -F "run_env[job_id]=$BUILDKITE_JOB_ID" \
+            -F "run_env[branch]=$BUILDKITE_BRANCH" \
+            -F "run_env[commit_sha]=$BUILDKITE_COMMIT" \
+            -F "run_env[message]=$BUILDKITE_MESSAGE" \
+            -F "run_env[url]=$BUILDKITE_BUILD_URL" \
+            https://analytics-api.buildkite.com/v1/uploads
+
       - name: "Print storage usage (after build)"
         shell: bash
         run: |
           du -sh .
-
-      - name: "Upload build artifacts"
-        uses: actions/upload-artifact@v2
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            packages/*/dist
-            packages/desktop/out/*.zip
-            !packages/desktop/dist
-
-      - name: "Upload IT Tests artifacts"
-        uses: actions/upload-artifact@v2
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: it-tests-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            packages/*/dist-it-tests

@@ -34,34 +34,34 @@ class JavaEngineTest {
     }
 
     @Test
-    public void testGetClassName() {
+    void testGetClassName() {
         String result = this.javaEngine.getClassName(uri);
         assertThat(result).isEqualTo("MainClass");
     }
 
     @Test
-    public void testImportPosition() {
+    void testImportPosition() {
         BuildInformation info = this.javaEngine.buildImportClass(uri, "java.util.");
         int position = info.getPosition();
         assertThat(position).isEqualTo(17);
     }
 
     @Test
-    public void testEmptyImportPosition() {
+    void testEmptyImportPosition() {
         BuildInformation info = this.javaEngine.buildImportClass(uri, "");
         int position = info.getPosition();
         assertThat(position).isEqualTo(7);
     }
 
     @Test
-    public void testPublicMethodPosition() {
+    void testPublicMethodPosition() {
         BuildInformation info = this.javaEngine.buildPublicContent(uri, "org.kie.MyClass", "get");
         int position = info.getPosition();
         assertThat(position).isEqualTo(33);
     }
 
     @Test
-    public void testEmptyPublicMethodPosition() {
+    void testEmptyPublicMethodPosition() {
         BuildInformation info = this.javaEngine.buildPublicContent(uri, "org.kie.MyClass", "");
         int position = info.getPosition();
         assertThat(position).isEqualTo(30);

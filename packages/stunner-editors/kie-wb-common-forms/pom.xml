@@ -6,7 +6,7 @@
   <parent>
     <artifactId>stunner-editors-parent</artifactId>
     <groupId>org.kie.kogito.stunner.editors</groupId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 

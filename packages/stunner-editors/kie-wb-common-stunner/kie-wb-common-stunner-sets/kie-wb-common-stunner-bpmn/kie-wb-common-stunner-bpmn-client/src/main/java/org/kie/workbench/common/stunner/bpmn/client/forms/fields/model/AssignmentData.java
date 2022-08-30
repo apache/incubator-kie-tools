@@ -213,8 +213,9 @@ public class AssignmentData {
         return getStringForList(processVariables);
     }
 
-    public void setProcessVariables(final String sProcessVariables) {
+    public void setProcessVariables(String sProcessVariables) {
         processVariables.clear();
+        sProcessVariables = StringUtils.preFilterVariablesForGenerics(sProcessVariables);
         if (sProcessVariables != null && !sProcessVariables.isEmpty()) {
             HashSet<String> procVarNames = new HashSet<String>();
             String[] processVars = sProcessVariables.split(",");

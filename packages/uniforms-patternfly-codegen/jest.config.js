@@ -15,8 +15,13 @@
  */
 
 module.exports = {
+  globals: {
+    "ts-jest": {
+      tsconfig: "<rootDir>/tsconfig.json",
+    },
+  },
   setupFilesAfterEnv: ["./src/__tests__/jest.setup.ts"],
-  reporters: ["default"],
+  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
   moduleDirectories: ["node_modules", "src"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",

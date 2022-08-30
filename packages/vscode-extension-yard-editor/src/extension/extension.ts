@@ -43,12 +43,12 @@ export async function activate(context: vscode.ExtensionContext) {
     context: context,
     viewType: WEBVIEW_EDITOR_VIEW_TYPE,
     editorEnvelopeLocator: new EditorEnvelopeLocator("vscode", [
-      new EnvelopeMapping(
-        "yard",
-        "**/*.yard.+(json|yml|yaml)",
-        "dist/webview/YardEditorEnvelopeApp.js",
-        "dist/webview/editors/yard"
-      ),
+      new EnvelopeMapping({
+        type: "yard",
+        filePathGlob: "**/*.yard.+(json|yml|yaml)",
+        resourcesPathPrefix: "dist/webview/editors/yard",
+        envelopePath: "dist/webview/YardEditorEnvelopeApp.js",
+      }),
     ]),
     backendProxy,
   });

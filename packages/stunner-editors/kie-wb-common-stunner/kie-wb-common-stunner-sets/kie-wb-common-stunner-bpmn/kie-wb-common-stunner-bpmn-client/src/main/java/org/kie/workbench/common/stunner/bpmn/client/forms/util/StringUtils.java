@@ -221,6 +221,11 @@ public class StringUtils {
         List<List<Integer>> ranges = new ArrayList<>();
         int maximumLength = 0;
         int maximumIndex = 0;
+
+        if (string.startsWith("<") || string.contains("<<") || string.contains("<.>") || string.contains(",<")) {
+            return false;
+        }
+
         for (int i = 0; i < string.length(); i++) {
             char c = string.charAt(i);
             if (c == '<') {

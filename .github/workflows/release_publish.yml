@@ -30,14 +30,14 @@ jobs:
           tag: ${{ github.event.inputs.tag }}
 
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ fromJSON(steps.fetch_release_for_tag.outputs.data).target_commitish }}
 
-      - name: "Check `tag` against `(lerna.json).version`"
+      - name: "Check `tag` against `(package.json).version`"
         shell: bash
         run: |
-          [ "${{ github.event.inputs.tag }}" == "$(node -p "require('./lerna.json').version")" ]
+          [ "${{ github.event.inputs.tag }}" == "$(node -p "require('./package.json').version")" ]
 
       - name: "Generate download URL for Release assets"
         id: download_asset_url

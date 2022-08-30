@@ -67,7 +67,9 @@ export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCode
         configuration: this.args.configuration,
         swfServiceCatalogSupportActions: this.args.swfServiceCatalogSupportActions,
       }),
-      new SwfLanguageServiceChannelApiImpl({ ls }),
+      new SwfLanguageServiceChannelApiImpl({
+        ls: this.args.vsCodeSwfLanguageService.getLsForDiagramEditor(editor.document.document),
+      }),
       new ServerlessWorkflowTextEditorEnvelopeApiImpl()
     );
   }

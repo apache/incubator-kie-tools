@@ -40,6 +40,10 @@ import { DEFAULT_CORS_PROXY_URL, useEnv } from "../env/EnvContext";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
+const GIT_USER_DEFAULT = {
+  name: "KIE Sandbox",
+  email: "",
+};
 
 interface Props {
   children: React.ReactNode;
@@ -131,8 +135,8 @@ export function WorkspacesContextProvider(props: Props) {
         dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
         ref: workspace.origin.branch,
         author: {
-          name: args.gitConfig?.name ?? "Unknown",
-          email: args.gitConfig?.email ?? "unknown@email.com",
+          name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
+          email: args.gitConfig?.email ?? GIT_USER_DEFAULT.email,
         },
         authInfo: args.authInfo,
       });
@@ -184,8 +188,8 @@ export function WorkspacesContextProvider(props: Props) {
         targetBranch: descriptor.origin.branch,
         message: "Changes from KIE Sandbox",
         author: {
-          name: args.gitConfig?.name ?? "Unknown",
-          email: args.gitConfig?.email ?? "unknown@email.com",
+          name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
+          email: args.gitConfig?.email ?? GIT_USER_DEFAULT.email,
         },
       });
 
@@ -251,8 +255,8 @@ export function WorkspacesContextProvider(props: Props) {
             message: "Initial commit from KIE Sandbox",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
-              name: args.gitConfig?.name ?? "Unknown",
-              email: args.gitConfig?.email ?? "unknown@email.com",
+              name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
+              email: args.gitConfig?.email ?? GIT_USER_DEFAULT.email,
             },
           });
 

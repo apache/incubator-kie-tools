@@ -35,6 +35,7 @@ export class SandboxSwfJsonLanguageService extends SwfJsonLanguageService {
       },
       config: {
         shouldDisplayServiceRegistriesIntegration: async () => false,
+        shouldIncludeJsonSchemaDiagnostics: async () => true,
         shouldReferenceServiceRegistryFunctionsWithUrls: async () => true,
         getSpecsDirPosixPaths: async (_textDocument) => ({
           specsDirRelativePosixPath: "",

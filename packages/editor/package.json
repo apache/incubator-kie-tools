@@ -3,45 +3,51 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist",
-    "src"
-  ],
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
   "dependencies": {
-    "@kie-tools-core/backend": "0.0.0",
-    "@kie-tools-core/envelope": "0.0.0",
-    "@kie-tools-core/envelope-bus": "0.0.0",
-    "@kie-tools-core/operating-system": "0.0.0",
-    "@kie-tools-core/guided-tour": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/keyboard-shortcuts": "0.0.0",
-    "@kie-tools-core/notifications": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools-core/workspace": "0.0.0",
+    "@kie-tools-core/backend": "workspace:*",
+    "@kie-tools-core/envelope": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/guided-tour": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/keyboard-shortcuts": "workspace:*",
+    "@kie-tools-core/notifications": "workspace:*",
+    "@kie-tools-core/operating-system": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/workspace": "workspace:*",
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "csstype": "^3.0.11",
+    "minimatch": "^3.0.4",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "minimatch": "^3.0.4"
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@types/minimatch": "^3.0.4"
-  },
-  "scripts": {
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
-    "build:dev": "rimraf dist && pnpm copy:css && tsc -p tsconfig.dev.json",
-    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && tsc -p tsconfig.prod.json && pnpm test"
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "@types/minimatch": "^3.0.4",
+    "jest-junit": "^14.0.0"
   },
   "babel": {
     "presets": [

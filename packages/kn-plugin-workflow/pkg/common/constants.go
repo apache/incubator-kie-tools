@@ -17,18 +17,18 @@
 package common
 
 type DependenciesVersion struct {
-	QuarkusVersion string
-	KogitoVersion  string
+	QuarkusPlatformGroupId string
+	QuarkusVersion         string
 }
 
 const (
-	// Extensions
-	QUARKUS_KUBERNETES_EXTENSION                     = "io.quarkus:quarkus-kubernetes"
-	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "io.quarkus:quarkus-resteasy-reactive-jackson"
-	QUARKUS_CONTAINER_IMAGE_JIB                      = "io.quarkus:quarkus-container-image-jib"
-	QUARKUS_CONTAINER_IMAGE_DOCKER                   = "io.quarkus:quarkus-container-image-docker"
-	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "org.kie.kogito:kogito-quarkus-serverless-workflow"
-	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "org.kie.kogito:kogito-addons-quarkus-knative-eventing"
+	QUARKUS_MAVEN_PLUGIN                             = "quarkus-maven-plugin"
+	QUARKUS_KUBERNETES_EXTENSION                     = "quarkus-kubernetes"
+	QUARKUS_RESTEASY_REACTIVE_JACKSON_EXTENSION      = "quarkus-resteasy-reactive-jackson"
+	QUARKUS_CONTAINER_IMAGE_JIB                      = "quarkus-container-image-jib"
+	QUARKUS_CONTAINER_IMAGE_DOCKER                   = "quarkus-container-image-docker"
+	KOGITO_QUARKUS_SERVERLESS_WORKFLOW_EXTENSION     = "kogito-quarkus-serverless-workflow"
+	KOGITO_ADDONS_QUARKUS_KNATIVE_EVENTING_EXTENSION = "kogito-addons-quarkus-knative-eventing"
 
 	// Versions
 	JAVA_VERSION        = 11
@@ -36,10 +36,7 @@ const (
 	MAVEN_MINOR_VERSION = 8
 
 	// Default values
-	DEFAULT_REGISTRY = "quay.io"
-	DEFAULT_TAG      = "latest"
+	DEFAULT_TAG = "latest"
 
-	// Filenames
-	WORKFLOW_CONFIG_YML = "workflow.config.yml"
-	WORKFLOW_SW_JSON    = "workflow.sw.json"
+	WORKFLOW_SW_JSON = "workflow.sw.json"
 )

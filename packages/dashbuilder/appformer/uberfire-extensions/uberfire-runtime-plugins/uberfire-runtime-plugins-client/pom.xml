@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-runtime-plugins</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
   </parent>
 
   <artifactId>uberfire-runtime-plugins-client</artifactId>

@@ -1,0 +1,65 @@
+name: "Checkout PR"
+description: ""
+
+inputs:
+  ref:
+    description: "Base ref of the PR to be checked out"
+    required: true
+  path:
+    description: "Path to clone kie-tools"
+    required: false
+    default: "."
+
+outputs:
+  base_sha:
+    description: "Base SHA"
+    value: ${{ steps.merge_changes.outputs.base_sha }}
+  head_sha:
+    description: "Head SHA"
+    value: ${{ steps.merge_changes.outputs.head_sha }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Checkout kie-tools @ ${{ inputs.ref }}"
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ inputs.ref }}
+        fetch-depth: 0
+        path: ${{ inputs.path }}
+
+    - name: "Setup global Git user (kie-tools-bot)"
+      shell: bash
+      run: |
+        echo "STEP: Setup global Git user (kie-tools-bot)"
+        git config --global user.email "kietoolsbot@gmail.com"
+        git config --global user.name "KIE Tools Bot (kiegroup)"
+
+    - name: "Merge PR changes (squashed)"
+      id: merge_changes
+      shell: bash
+      run: |
+        echo "STEP: Merge PR changes (squashed)"
+        cd ${{ inputs.path }}
+        if [ ${{ github.event.pull_request }} ]; then
+          user=$(node -e "console.log('${{ github.event.pull_request.head.label }}'.match(/(.+)\:(.+)$/)[1])")
+
+          echo "Merge changes from $user/${{ github.head_ref }}"
+          git remote add $user https://github.com/$user/kie-tools.git
+          git fetch $user ${{ github.head_ref }} 
+
+          echo "Before merging..."
+          git log -n 1
+          echo "::set-output name=base_sha::$(git rev-parse HEAD)"
+
+          git merge --squash $user/${{ github.head_ref }}
+          git commit --no-edit
+
+          echo "After merging..."
+          git log -n 1
+          echo "::set-output name=head_sha::$(git rev-parse HEAD)"
+        else
+          echo "Skip merge, not a pull request"
+          echo "::set-output name=base_sha::$(git rev-parse HEAD^1)"
+          echo "::set-output name=head_sha::$(git rev-parse HEAD)"
+        fi

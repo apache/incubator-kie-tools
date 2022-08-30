@@ -30,10 +30,6 @@ public class IsLanguageServerAvailableHandler extends Handler<Boolean> {
         this.activationChecker = activationChecker;
     }
 
-    public boolean canHandle() {
-        return false;
-    }
-
     public Boolean handle(List<Object> arguments, IProgressMonitor progress) {
         return activationChecker.existActivator();
     }

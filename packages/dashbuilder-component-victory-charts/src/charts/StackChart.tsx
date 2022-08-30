@@ -16,7 +16,6 @@
 import * as React from "react";
 
 import { ChartBar, ChartStack, ChartTooltip } from "@patternfly/react-charts";
-import "@patternfly/patternfly/patternfly-charts.css"; // Required for mix-blend-mode CSS property
 import { XYChart } from "./XYChart";
 
 export class StackChart extends XYChart {

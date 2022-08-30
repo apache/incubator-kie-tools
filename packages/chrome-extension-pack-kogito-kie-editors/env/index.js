@@ -41,6 +41,7 @@ module.exports = composeEnv([require("@kie-tools/build-env/env")], {
         dev: {
           port: 9000,
         },
+        version: require("../package.json").version,
         routerTargetOrigin: getOrDefault(this.vars.CHROME_EXTENSION__routerTargetOrigin),
         routerRelativePath: getOrDefault(this.vars.CHROME_EXTENSION__routerRelativePath),
         onlineEditorUrl: getOrDefault(this.vars.CHROME_EXTENSION__onlineEditorUrl),

@@ -15,58 +15,19 @@
  */
 
 import {
-  SwfYamlLanguageService,
   findNodeAtOffset,
   matchNodeWithLocation,
+  nodeUpUntilType,
+  SwfYamlLanguageService,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
-  SwfServiceCatalogFunctionType,
-  SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
-  SwfServiceCatalogServiceType,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
-import { SwfLanguageServiceConfig } from "../src/channel";
-import { trim, treat } from "./testUtils";
-
-const testRelativeFunction1: SwfServiceCatalogFunction = {
-  name: "testRelativeFunction1",
-  type: SwfServiceCatalogFunctionType.rest,
-  source: {
-    type: SwfServiceCatalogFunctionSourceType.LOCAL_FS,
-    serviceFileAbsolutePath: "/Users/tiago/Desktop/testRelativeService1.yml",
-  },
-  arguments: {},
-};
-
-const testRelativeService1: SwfServiceCatalogService = {
-  name: "testRelativeService1",
-  source: {
-    type: SwfServiceCatalogServiceSourceType.LOCAL_FS,
-    absoluteFilePath: "/Users/tiago/Desktop/testRelativeService1.yml",
-  },
-  type: SwfServiceCatalogServiceType.rest,
-  rawContent: "",
-  functions: [testRelativeFunction1],
-};
-
-const defaultServiceCatalogConfig = {
-  relative: { getServices: async () => [] },
-  global: { getServices: async () => [] },
-  getServiceFileNameFromSwfServiceCatalogServiceId: async (registryName: string, serviceId: string) =>
-    `${serviceId}.yaml`,
-};
-
-const defaultConfig: SwfLanguageServiceConfig = {
-  shouldConfigureServiceRegistries: () => false,
-  shouldServiceRegistriesLogIn: () => false,
-  canRefreshServices: () => false,
-  getSpecsDirPosixPaths: async () => ({ specsDirRelativePosixPath: "specs", specsDirAbsolutePosixPath: "" }),
-  shouldDisplayServiceRegistriesIntegration: async () => true,
-  shouldReferenceServiceRegistryFunctionsWithUrls: async () => false,
-};
+import {
+  defaultConfig,
+  defaultServiceCatalogConfig,
+  testRelativeFunction1,
+  testRelativeService1,
+} from "./SwfLanguageServiceConfigs";
+import { treat, trim } from "./testUtils";
 
 describe("SWF LS YAML", () => {
   describe("parsing content", () => {
@@ -332,90 +293,35 @@ states:
         ],
       });
     });
-  });
 
-  describe("matchNodeWithLocation", () => {
-    test("matching root node with empty content", () => {
+    test("parsing content with an incomplete functionRef", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
       });
-      const { content, cursorOffset } = treat(`---🎯 `);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
 
-      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeFalsy();
-      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
-      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
-    });
-
-    test("matching empty function array", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`
-
+      const { content } = trim(`
 ---
-functions: [🎯]`);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
-
-      expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-      expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
-      expect(matchNodeWithLocation(root!, node!, ["functions", "none"])).toBeFalsy();
-    });
-
-    describe("matching functions array with 1 function", () => {
-      // NOTE: despite JSON in YAML there is no need to test the case without newline after "functions:"
-      test("with cursorOffset at the first function", () => {
-        const ls = new SwfYamlLanguageService({
-          fs: {},
-          serviceCatalog: defaultServiceCatalogConfig,
-          config: defaultConfig,
-        });
-        let { content, cursorOffset } = treat(`
----
-functions:
-🎯- name: function1
-  operation: openapi.yml#getGreeting`);
-        const root = ls.parseContent(content);
-        const node = findNodeAtOffset(root!, cursorOffset);
-
-        expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
-        expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeTruthy();
-      });
-    });
-
-    test("matching refName", () => {
-      const ls = new SwfYamlLanguageService({
-        fs: {},
-        serviceCatalog: defaultServiceCatalogConfig,
-        config: defaultConfig,
-      });
-      const { content, cursorOffset } = treat(`
----
-functions:
-- name: myFunc
-  operation: "./specs/myService#myFunc"
-  type: rest
 states:
-- name: testState
-  type: operation
+- name: testState1
   transition: end
   actions:
-  - name: testStateAction
+  - name: testStateAction1
+    functionRef: 
+      a
+  - name: testStateAction2
     functionRef:
-      refName: "🎯"
+      refName: myFunc
 `);
-      const root = ls.parseContent(content);
-      const node = findNodeAtOffset(root!, cursorOffset);
 
+      const rootNode = ls.parseContent(content);
+
+      expect(rootNode).not.toBeUndefined();
       expect(
-        matchNodeWithLocation(root!, node!, ["states", "*", "actions", "*", "functionRef", "refName"])
-      ).toBeTruthy();
+        rootNode?.children?.[0].children?.[1].children?.[0].children?.[2].children?.[1].children?.[0].children?.[1]
+          .children?.[1].value
+      ).toBe("a");
     });
   });
 
@@ -655,11 +561,9 @@ functions: [🎯]
       detail: "specs/testRelativeService1.yml#testRelativeFunction1",
       textEdit: {
         range: { start: cursorPosition, end: cursorPosition },
-        newText: `{
-  "name": "\${1:testRelativeFunction1}",
-  "operation": "specs/testRelativeService1.yml#testRelativeFunction1",
-  "type": "rest"
-}`,
+        newText: `name: '\${1:testRelativeFunction1}'
+operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+type: rest`,
       },
       snippet: true,
       insertTextFormat: InsertTextFormat.Snippet,
@@ -725,7 +629,7 @@ states:
       filterText: `"myFunc"`,
       sortText: `"myFunc"`,
       textEdit: {
-        newText: `"myFunc"`,
+        newText: `myFunc`,
         range: {
           start: {
             ...cursorPosition,
@@ -734,6 +638,67 @@ states:
           end: {
             ...cursorPosition,
             character: cursorPosition.character + 1,
+          },
+        },
+      },
+      insertTextFormat: InsertTextFormat.Snippet,
+    } as CompletionItem);
+  });
+
+  test("functionRef arguments completion", async () => {
+    const ls = new SwfYamlLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [testRelativeService1] },
+      },
+      config: defaultConfig,
+    });
+
+    const { content, cursorPosition } = treat(`
+---
+functions:
+- name: testRelativeFunction1
+  operation: specs/testRelativeService1.yml#testRelativeFunction1
+  type: rest
+states:
+- name: testState
+  type: operation
+  transition: end
+  actions:
+  - name: testStateAction
+    functionRef:
+      refName: testRelativeFunction1
+      arguments:
+        🎯arg
+  end: true
+`);
+
+    const completionItems = await ls.getCompletionItems({
+      uri: "test.sw.json",
+      content,
+      cursorPosition,
+      cursorWordRange: { start: cursorPosition, end: cursorPosition },
+    });
+
+    expect(completionItems).toHaveLength(1);
+    expect(completionItems[0]).toStrictEqual({
+      kind: CompletionItemKind.Module,
+      label: `'testRelativeFunction1' arguments`,
+      detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+      sortText: "testRelativeFunction1 arguments",
+      textEdit: {
+        newText: `argString: '\${1:}'
+argNumber: '$\{2:}'
+argBoolean: '\${3:}'`,
+        range: {
+          start: {
+            ...cursorPosition,
+            character: cursorPosition.character,
+          },
+          end: {
+            ...cursorPosition,
+            character: cursorPosition.character + 3,
           },
         },
       },

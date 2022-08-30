@@ -151,6 +151,101 @@ public class SWEditorSeleniumIT {
         testExample("AsyncSubFlowInvocationExample.sw.json");
     }
 
+    @Test
+    public void testEventBasedSwitchStateExample() throws Exception {
+        testExample("EventBasedSwitchStateExample.sw.json");
+    }
+
+    @Test
+    public void testProvisionOrdersExample() throws Exception {
+        testExample("ProvisionOrdersExample.sw.json");
+    }
+
+    @Test
+    public void testCustomerCreditCheckExample() throws Exception {
+        testExample("CustomerCreditCheckExample.sw.json");
+    }
+
+    @Test
+    public void testJobMonitoringExample() throws Exception {
+        testExample("JobMonitoringExample.sw.json");
+    }
+
+    @Test
+    public void testSendCloudEventOnProvisionExample() throws Exception {
+        testExample("SendCloudEventOnProvisionExample.sw.json");
+    }  
+
+    @Test
+    public void testApplicantRequestDecisionExample() throws Exception {
+        testExample("ApplicantRequestDecisionExample.sw.json");
+    }
+
+    @Test
+    public void testMonitorPatientVitalSignsExample() throws Exception {
+        testExample("MonitorPatientVitalSignsExample.sw.json");
+    }
+
+    @Test
+    public void testFinalizeCollegeExample() throws Exception {
+        testExample("FinalizeCollegeApplicationExample.sw.json");
+    }
+    
+    @Test
+    public void testHandleCarAuctionBidExample() throws Exception {
+        testExample("HandleCarAuctionBidExample.sw.json");
+    } 
+
+    @Test
+    public void testCheckInboxPeriodicallyExample() throws Exception {
+        testExample("CheckInboxPeriodicallyExample.sw.json");
+    }
+    
+    @Test
+    public void testEventBasedServiceInvocation() throws Exception {
+        testExample("EventBasedServiceInvocationExample.sw.json");
+    }
+
+    @Test
+    public void testNewPatientOnboardingExample() throws Exception {
+        testExample("NewPatientOnboardingExample.sw.json");
+    }
+
+    @Test
+    public void testPurchaseOrderDeadlineExample() throws Exception {
+        testExample("PurchaseOrderDeadlineExample.sw.json");
+    }
+
+    @Test
+    public void testAccumulateRoomReadingsExample() throws Exception {
+        testExample("AccumulateRoomReadingsExample.sw.json");
+    }
+
+    @Test
+    public void testCarVitalsCheckExample() throws Exception {
+        testExample("CarVitalsCheckExample.sw.json");
+    }
+
+    @Test
+    public void testBookLendingExample() throws Exception {
+        testExample("BookLendingExample.sw.json");
+    }
+
+    @Test
+    public void testFillGlassOfWaterExample() throws Exception {
+        testExample("FillGlassOfWaterExample.sw.json");
+    }
+
+    @Test
+    public void testNotifyCustomerWorkflowExample() throws Exception {
+        testExample("NotifyCustomerWorkflowExample.sw.json");
+    }
+
+    @Test
+    public void testProcessTransactionsExample() throws Exception {
+        testExample("ProcessTransactionsExample.sw.json");
+    }
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);

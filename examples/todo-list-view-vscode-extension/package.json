@@ -1,67 +1,73 @@
 {
-  "publisher": "kie-tools-examples",
-  "name": "kie-tools-examples-todo-list-view-vscode-extension",
-  "displayName": "Todo List View :: Kogito Examples ",
-  "description": "",
-  "main": "./dist/extension.js",
-  "version": "0.0.0",
-  "license": "Apache-2.0",
   "private": true,
-  "engines": {
-    "vscode": "^1.46.0"
-  },
+  "name": "kie-tools-examples-todo-list-view-vscode-extension",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "publisher": "kie-tools-examples",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "main": "dist/extension.js",
+  "scripts": {
+    "build": "rimraf dist && webpack",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --env dev\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\" \"pnpm pack\"",
+    "compile": "pnpm build --env dev",
+    "pack": "vsce package --no-dependencies -o ./dist/kie_tools_examples_todo_list_view_$npm_package_version.vsix",
+    "watch": "pnpm build --env dev"
+  },
+  "dependencies": {
+    "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/vscode-extension": "workspace:*",
+    "@kie-tools-examples/todo-list-view": "workspace:*"
+  },
+  "devDependencies": {
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/run-script-if": "workspace:*",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/build-env": "workspace:*",
+    "@types/vscode": "^1.66.0",
+    "vsce": "^2.6.5"
+  },
+  "engines": {
+    "vscode": "^1.66.0"
+  },
+  "displayName": "Todo List View :: Kogito Examples ",
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "*"
-  ],
-  "scripts": {
-    "pack": "vsce package  --yarn -o ./dist/kie_tools_examples_todo_list_view_$npm_package_version.vsix",
-    "compile": "pnpm build --env dev",
-    "watch": "pnpm build --env dev",
-    "build": "rimraf dist && webpack",
-    "build:dev": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build --env dev\"",
-    "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\" \"pnpm pack\""
-  },
   "contributes": {
-    "menus": {
-      "editor/context": [
-        {
-          "command": "kie-tools-examples.todo-list-view.add-item"
-        }
-      ]
-    },
     "commands": [
       {
+        "category": "TODO",
         "command": "kie-tools-examples.todo-list-view",
-        "title": "Open list",
-        "category": "TODO"
+        "title": "Open list"
       },
       {
         "command": "kie-tools-examples.todo-list-view.add-item",
         "title": "TODO: Add item(s)"
       },
       {
+        "category": "TODO",
         "command": "kie-tools-examples.todo-list-view.mark-all-as-completed",
-        "title": "Mark all as completed",
-        "category": "TODO"
+        "title": "Mark all as completed"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "kie-tools-examples.todo-list-view.add-item"
+        }
+      ]
+    }
   },
-  "dependencies": {
-    "@kie-tools-core/vscode-extension": "0.0.0",
-    "@kie-tools-examples/todo-list-view": "0.0.0",
-    "@kie-tools-core/envelope-bus": "0.0.0"
-  },
-  "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0"
-  }
+  "activationEvents": [
+    "*"
+  ]
 }

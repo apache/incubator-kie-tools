@@ -67,9 +67,14 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
         description: "Command(s) to execute if the condition is false.",
       },
       "true-if-empty": {
-        default: false,
-        type: "boolean",
+        default: "false",
+        type: "string",
         description: "If the environment variable is not set, makes the condition be true.",
+      },
+      "ignore-errors": {
+        default: "false",
+        type: "string",
+        description: "Ignore non-zero exit values when running command(s).",
       },
       silent: {
         default: false,
@@ -99,17 +104,14 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
     })
     .check((argv, options) => {
       if (argv.bool && argv.env) {
-        throw new Error("Conditions must either be --bool or --env");
+        throw new Error("Conditions must be either --bool or --env");
       }
 
-      const boolCondition = evaluateBoolCondition(argv);
-      if (boolCondition && boolCondition !== "true" && boolCondition !== "false") {
-        throw new Error(
-          `Boolean condition provided, but value is '${boolCondition}'. Boolean condition values must be either 'true' or 'false'.`
-        );
-      }
+      evalBoolStringArg(argv.bool);
+      evalBoolStringArg(argv["ignore-errors"]);
+      evalBoolStringArg(argv["true-if-empty"]);
 
-      if (argv.bool && argv["true-if-empty"]) {
+      if (argv.bool && evalBoolStringArg(argv["true-if-empty"]) === "true") {
         throw new Error("Conditions with --bool cannot be used with --true-if-empty");
       }
 
@@ -128,12 +130,13 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
 
   const envVarName = argv.env;
   const envVarValue = process.env[envVarName];
-  const shouldRunIfEmpty = argv["true-if-empty"];
-  const boolCondition = evaluateBoolCondition(argv);
+  const shouldRunIfEmpty = evalBoolStringArg(argv["true-if-empty"]) === "true";
+  const ignoreErrors = evalBoolStringArg(argv["ignore-errors"]) === "true";
+  const boolStringCondition = evalBoolStringArg(argv.bool);
 
   const condition =
     // --bool conditions are true if equals to --eq
-    boolCondition === argv.eq ||
+    boolStringCondition === argv.eq ||
     // env var value is logically empty and --true-if-empty is enabled
     ((envVarValue === undefined || envVarValue === "") && shouldRunIfEmpty) ||
     // env var value is equal to the --eq argument
@@ -146,23 +149,20 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
   if (envVarName) log(console.info, LOGS.envVarSummary(envVarName, envVarValue));
   if (argv.bool) log(console.info, LOGS.boolSummary());
   if (shouldRunIfEmpty) log(console.info, LOGS.trueIfEmptyEnabled());
+  if (ignoreErrors) log(console.info, LOGS.ignoreErrorsEnabled());
   if (argv.force) log(console.info, LOGS.forceEnabled());
   log(console.info, LOGS.conditionSummary(condition));
 
-  await runCommandStrings(log, argv, commandStringsToRun)
+  await runCommandStrings(log, { ignoreErrors }, commandStringsToRun)
     .catch(async (e) => {
-      if (e.msg) {
-        console.error(e.msg);
-      }
-
       const catchCommands = argv.catch;
       if (catchCommands.length <= 0) {
         throw e;
       }
 
       log(console.error, LOGS.runningCatchCommands());
-      await runCommandStrings(log, argv, catchCommands).catch((err) => {
-        console.error(err.msg);
+      await runCommandStrings(log, { ignoreErrors: false }, catchCommands).catch(() => {
+        //ignore
       });
 
       throw e;
@@ -174,22 +174,31 @@ $ run-script-if --bool "$(my-custom-command --isEnabled)" --then "echo 'Hello'"
       }
 
       log(console.error, LOGS.runningFinallyCommands());
-      await runCommandStrings(log, argv, finallyCommands).catch((err) => {
-        console.error(err.msg);
+      await runCommandStrings(log, { ignoreErrors: false }, finallyCommands).catch(() => {
+        //ignore
       });
     });
 }
 
-function evaluateBoolCondition(argv) {
-  if (process.platform === "win32" && argv.bool && argv.bool.startsWith("$")) {
-    const output = spawnSync(argv.bool, [], { stdio: "pipe", ...shell() });
-    return String(output.stdout).trim();
+function evalBoolStringArg(boolArg) {
+  let ret;
+  if (process.platform === "win32" && boolArg && boolArg.startsWith("$")) {
+    const output = spawnSync(boolArg, [], { stdio: "pipe", ...shell() });
+    ret = String(output.stdout).trim();
   } else {
-    return argv.bool;
+    ret = boolArg;
   }
+
+  if (ret && ret !== "true" && ret !== "false") {
+    throw new Error(
+      `Boolean argument provided, but value is '${ret}'. Boolean arguments values must be either 'true' or 'false'.`
+    );
+  }
+
+  return ret;
 }
 
-async function runCommandStrings(log, argv, commandStringsToRun) {
+async function runCommandStrings(log, { ignoreErrors }, commandStringsToRun) {
   if (commandStringsToRun.length > 0) {
     log(console.info, LOGS.running(commandStringsToRun));
   } else {
@@ -197,26 +206,31 @@ async function runCommandStrings(log, argv, commandStringsToRun) {
   }
 
   let nCommandsFinished = 0;
+
   for (const runningCommandString of commandStringsToRun) {
     await new Promise((res, rej) => {
       log(console.info, LOGS.runningCommand(runningCommandString));
       const command = spawnCommandString(runningCommandString);
 
+      // Never reject when 'ignoreErrors' is true.
+      const ret = ignoreErrors ? res : rej;
+
       command.on("error", (data) => {
-        logCommandError(log, commandStringsToRun, nCommandsFinished, runningCommandString);
-        rej({ code: 1, msg: data.toString() });
+        logCommandError(log, commandStringsToRun, nCommandsFinished, runningCommandString, ignoreErrors);
+        console.error(data.toString());
+        ret({ code: 1 });
       });
 
       command.on("exit", (code) => {
         if (code !== 0) {
-          logCommandError(log, commandStringsToRun, nCommandsFinished, runningCommandString);
-          rej({ code });
+          logCommandError(log, commandStringsToRun, nCommandsFinished, runningCommandString, ignoreErrors);
+          ret({ code });
           return;
         }
 
         nCommandsFinished += 1;
         log(console.info, LOGS.finishCommand(runningCommandString));
-        res();
+        res({ code });
       });
     });
   }
@@ -235,13 +249,21 @@ function shell() {
   return process.platform === "win32" ? { shell: "powershell.exe" } : {};
 }
 
-function logCommandError(log, commandStringsToRun, nCommandsFinished, runningCommandString) {
+function logCommandError(log, commandStringsToRun, nCommandsFinished, runningCommandString, ignoreErrors) {
   const commandsLeft = commandStringsToRun.length - nCommandsFinished - 1;
   if (commandsLeft > 0) {
     const skippedCommands = commandStringsToRun.splice(nCommandsFinished + 1);
-    log(console.error, LOGS.errorOnMiddleCommand(runningCommandString, commandsLeft, skippedCommands));
+    if (ignoreErrors) {
+      log(console.error, LOGS.ignoredErrorOnMiddleCommand(runningCommandString, commandsLeft, skippedCommands));
+    } else {
+      log(console.error, LOGS.errorOnMiddleCommand(runningCommandString, commandsLeft, skippedCommands));
+    }
   } else {
-    log(console.error, LOGS.errorOnLastCommand(runningCommandString));
+    if (ignoreErrors) {
+      log(console.error, LOGS.ignoredErrorOnLastCommand(runningCommandString));
+    } else {
+      log(console.error, LOGS.errorOnLastCommand(runningCommandString));
+    }
   }
 }
 
@@ -264,6 +286,9 @@ const LOGS = {
   errorOnLastCommand: (cmd) => {
     return `Error executing '${cmd}'.`;
   },
+  ignoredErrorOnLastCommand: (cmd) => {
+    return `Error executing '${cmd}'. Ignoring.`;
+  },
   skipping: (commandStrings) => {
     return `Skipping ${commandStrings.length} command(s): ['${commandStrings.join("', '")}']`;
   },
@@ -273,6 +298,10 @@ const LOGS = {
   errorOnMiddleCommand: (commandString, commandsLeft, skippedCommandStrings) => {
     const skippedCommandStringsLog = `'${skippedCommandStrings.join("', '")}'`;
     return `Error executing '${commandString}'. Stopping and skipping ${commandsLeft} command(s): [${skippedCommandStringsLog}]`;
+  },
+  ignoredErrorOnMiddleCommand: (commandString, commandsLeft, skippedCommandStrings) => {
+    const skippedCommandStringsLog = `'${skippedCommandStrings.join("', '")}'`;
+    return `Error executing '${commandString}'. Ignoring and continuing with ${commandsLeft} remaining command(s): [${skippedCommandStringsLog}]`;
   },
   boolSummary: () => {
     return `Boolean condition supplied.`;
@@ -294,6 +323,9 @@ const LOGS = {
   },
   forceEnabled: () => {
     return `--force is enabled.`;
+  },
+  ignoreErrorsEnabled: () => {
+    return `--ignore-errors is enabled.`;
   },
   conditionSummary: (condition) => {
     const clause = condition ? "_then_" : "_else_";
