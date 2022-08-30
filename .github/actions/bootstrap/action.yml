@@ -2,7 +2,7 @@ name: "Bootstrap KIE Tools"
 description: ""
 
 inputs:
-  path:
+  working_dir:
     description: "kie-tools path"
     required: false
     default: "."
@@ -23,19 +23,19 @@ runs:
       shell: bash
       run: |
         echo "STEP: Print storage usage (before bootstrap)"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         du -sh .
 
     - name: "Bootstrap"
       shell: bash
       run: |
         echo "STEP: Bootstrap"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         pnpm bootstrap ${{ inputs.pnpm_filter_string }}
 
     - name: "Print storage usage (after bootstrap)"
       shell: bash
       run: |
         echo "STEP: Print storage usage (after bootstrap)"
-        cd ${{ inputs.path }}
+        cd ${{ inputs.working_dir }}
         du -sh .

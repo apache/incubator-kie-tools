@@ -16,13 +16,13 @@
     "build:dev": "pnpm cleanup && pnpm copy:assets",
     "build:prod": "pnpm cleanup && pnpm copy:assets && run-script-os",
     "build:prod:darwin:win32": "echo \"Build not supported\"",
-    "build:prod:linux": "pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm podman:build\"",
+    "build:prod:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm podman:build\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:extended-services",
     "copy:extended-services": "run-script-os",
     "copy:extended-services:darwin:win32": "echo \"Copy extended-services not supported\"",
     "copy:extended-services:linux": "cp -R ../extended-services/dist/linux/kie_sandbox_extended_services_headless ./dist-dev/kie_sandbox_extended_services_headless",
-    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServicesImage.buildTags) | xargs printf -- \"-t $(build-env extendedServicesImage.registry)/$(build-env extendedServicesImage.account)/$(build-env extendedServicesImage.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env extendedServicesImage.buildTags) | xargs printf -- \"-t $(build-env extendedServicesImage.registry)/$(build-env extendedServicesImage.account)/$(build-env extendedServicesImage.name):%s\n\" | xargs echo) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "dependencies": {
     "@kie-tools/extended-services": "workspace:*"

@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@kie-tools-examples/ping-pong-view-angular",
   "version": "0.0.0",
   "license": "Apache-2.0",
@@ -19,8 +20,8 @@
   "scripts": {
     "build": "rimraf dist && pnpm build:wc && pnpm build:wc-lib && pnpm build:app",
     "build:app": "ng build ping-pong-view-angular",
-    "build:dev": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build\"",
-    "build:prod": "pnpm run-script-if --bool \"$(build-env global.build.examples)\" --then \"pnpm build --configuration production\"",
+    "build:dev": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build\"",
+    "build:prod": "run-script-if --bool \"$(build-env examples.build)\" --then \"pnpm build --configuration production\"",
     "build:wc": "ng build ping-pong-view-wc && pnpm build:wc:concat",
     "build:wc-lib": "tsc --project tsconfig.lib.json",
     "build:wc:concat": "cat dist/wc/polyfills.js dist/wc/runtime.js dist/wc/main.js > dist/wc/index.js"

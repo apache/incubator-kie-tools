@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-describe.skip("DMN Runner Test", () => {
+describe("DMN Runner Test", () => {
   beforeEach(() => {
     cy.visit("/");
   });
 
-  it("Test DMN Runner on DMN sample", () => {
+  it.skip("Test DMN Runner on DMN sample", () => {
     // click Create new decision model button (new DMN)
     cy.get("[data-ouia-component-id='try-dmn-sample-button']").click();
 

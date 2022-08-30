@@ -12,26 +12,18 @@ jobs:
     name: Build for Sonar
     runs-on: ubuntu-latest
     steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ github.base_ref }}
-
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        id: merge_changes
-        uses: ./.github/actions/merge-pr-changes
 
       - name: "Setup environment"
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ runner.os }}
 
       - name: "Bootstrap"
-        id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: -F @kie-tools/stunner-editors...

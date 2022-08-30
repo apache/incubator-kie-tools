@@ -23,14 +23,14 @@
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:dashbuilder": "copyfiles -u 3 \"../dashbuilder-client/dist/**/*\" ./dist/dashbuilder-client && copyfiles -u 1 src/setup.js ./dist/dashbuilder-client/",
     "copy:images": "cpr ./static/images ./dist/images",
-    "cy:open": "pnpm cypress open --project it-tests",
-    "cy:run": "pnpm cypress run -b chrome --project it-tests",
+    "cy:open": "cypress open --project it-tests",
+    "cy:run": "cypress run -b chrome --project it-tests",
     "deploy": "gh-pages -d dist",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
     "test:clearCache": "jest --clearCache",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env dashbuilderEditor.dev.port) cy:run\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env dashbuilderEditor.dev.port) cy:run\"",
     "test:watch": "jest --watch"
   },
   "dependencies": {
@@ -56,6 +56,7 @@
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
+    "jest-junit": "^14.0.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "start-server-and-test": "^1.12.1",
     "vscode-json-languageservice": "^4.2.1"

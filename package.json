@@ -5,6 +5,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "bootstrap": "node ./scripts/bootstrap.js",
+    "check-packages-dependencies": "node ./scripts/check_packages_dependencies.js",
     "check-required-preinstalled-cli-commands": "node ./scripts/check_required_preinstalled_cli_commands.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -85,6 +86,10 @@
   "resolutions": {
     "@types/react": "^17.0.6",
     "react-dropzone": "^11.4.2"
+  },
+  "engines": {
+    "node": ">=16",
+    "pnpm": "7.0.0"
   },
   "pnpm": {
     "packageExtensions": {
