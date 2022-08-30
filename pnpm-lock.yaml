@@ -5084,11 +5084,9 @@ importers:
 
   scripts/build-env:
     specifiers:
-      "@kie-tools/tsconfig": workspace:*
       rimraf: ^3.0.2
       typescript: ^4.4.2
     devDependencies:
-      "@kie-tools/tsconfig": link:../../packages/tsconfig
       rimraf: 3.0.2
       typescript: 4.5.4
 
