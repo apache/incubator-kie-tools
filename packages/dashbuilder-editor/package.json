@@ -4,13 +4,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kogito-tooling",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kogito-tooling/issues"
+    "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "types": "./dist/editor/index.d.ts",
   "main": "dist/editor/index.js",
