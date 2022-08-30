@@ -1,4 +1,4 @@
-name: "CI :: Build (full)"
+name: "CI :: Build"
 
 on:
   push:
@@ -37,8 +37,8 @@ jobs:
         id: ci_patterns
         uses: ./.github/actions/setup-ci-patterns
 
-      - name: "Check if should run or not"
-        id: check_diff_paths
+      - name: "Setup build mode {none,full,partial}"
+        id: setup_build_mode
         shell: bash
         run: |
           export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
@@ -52,35 +52,35 @@ jobs:
           printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
 
           if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
-            echo 'No source files changed; `CI :: Build (full)` will not run.'
-            echo "::set-output name=should_run::false"
+            echo 'No source files changed; `CI :: Build` (none) will run.'
+            echo "::set-output name=mode::none"
           elif [ ! ${{ github.event.pull_request }} ]; then
-            echo 'Push to the `main` branch happened; `CI :: Build (full)` will run.'
-            echo "::set-output name=should_run::true"
+            echo 'Push to the `main` branch happened; `CI :: Build` (full) will run.'
+            echo "::set-output name=mode::full"
           elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
-            echo 'No source files changed in root; `CI :: Build (full)` will not run.'
-            echo "::set-output name=should_run::false"
+            echo 'No source files changed in root; `CI :: Build` (partial) will run.'
+            echo "::set-output name=mode::partial"
           else
-            echo 'Source files changed in root; `CI :: Build (full)` will run.'
-            echo "::set-output name=should_run::true"
+            echo 'Source files changed in root; `CI :: Build` (full) will run.'
+            echo "::set-output name=mode::full"
           fi
 
           echo "Done"
 
       - name: "Start telemetry service (`main` only)"
-        if: steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        if: steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         uses: runforesight/workflow-telemetry-action@7af88337f61e495d20c0ffa970cf7691532af740
 
       - name: "Setup environment"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+        if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
-      - name: "Bootstrap"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+      - name: "FULL -> Bootstrap"
+        if: steps.setup_build_mode.outputs.mode == 'full'
         uses: ./.github/actions/bootstrap
 
-      - name: "Build"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+      - name: "FULL -> Build"
+        if: steps.setup_build_mode.outputs.mode == 'full'
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
@@ -96,8 +96,41 @@ jobs:
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
 
+      - name: "PARTIAL -> Bootstrap"
+        if: steps.setup_build_mode.outputs.mode == 'partial'
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..."
+
+      - name: "PARTIAL -> Build dependencies"
+        if: steps.setup_build_mode.outputs.mode == 'partial'
+        shell: bash
+        env:
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
+        run: |
+          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
+          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
+          echo $ALL_DEPENDENCIES_FILTER
+          echo $CHANGED_PKGS_EXCLUSION_FILTER
+          eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
+
+      - name: "PARTIAL -> Build changed and dependents"
+        if: steps.setup_build_mode.outputs.mode == 'partial'
+        env:
+          WEBPACK__minimize: "false"
+          KIE_TOOLS_BUILD__runLinters: "true"
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
+          DISPLAY: ":99.0"
+          START_SERVER_AND_TEST_INSECURE: "true"
+        run: |
+          pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
+
       - name: "Check tests result (`main` only)"
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         uses: mikepenz/action-junit-report@1b47bb811362f3d8d753fc148cb7a13ec9e55570
         with:
           check_name: "-"
@@ -108,18 +141,18 @@ jobs:
             ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
 
       - name: "Check hanging uncommitted files (you should commit those!)"
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
       - name: "Upload reports and artifacts"
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
 
       - name: "Upload integration tests results to Buildkite (`main` only)"
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true' && !github.event.pull_request
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request
         shell: bash
         env:
           BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_TOKEN }}

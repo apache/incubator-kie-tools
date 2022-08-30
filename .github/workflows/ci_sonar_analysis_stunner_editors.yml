@@ -1,11 +1,11 @@
-name: "Sonar :: stunner-editors"
+name: "CI :: Sonar :: stunner-editors"
 on:
   push:
     branches:
       - main
     paths:
       - "packages/stunner-editors/**"
-      - ".github/workflows/sonar_analysis_stunner_editors.yml"
+      - ".github/workflows/ci_sonar_analysis_stunner_editors.yml"
 
 jobs:
   check:
