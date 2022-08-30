@@ -29,7 +29,6 @@ import { debounce } from "../debounce";
 import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
 import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";

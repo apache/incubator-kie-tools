@@ -50,9 +50,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCode
     viewType: string,
     i18n: I18n<VsCodeI18n>
   ): KogitoEditorChannelApi {
-    const fileLanguage = getFileLanguageOrThrow(editor.document.document.uri.path);
-    const ls = this.args.vsCodeSwfLanguageService.getLs(fileLanguage);
-
     return new ServerlessWorkflowDiagramEditorChannelApiImpl(
       editor,
       resourceContentService,
