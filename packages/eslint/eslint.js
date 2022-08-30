@@ -24,7 +24,7 @@ console.info("[kie-tools--eslint] Lint path: " + lintPath);
 console.info("[kie-tools--eslint] Config path: " + configPath);
 
 try {
-  execSync(`pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath}`, { stdio: "inherit" });
+  execSync(`pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath}`, { stdio: "inherit", cwd: __dirname });
 } catch (e) {
   console.info("[kie-tools--eslint] Error.");
   process.exit(1);
