@@ -29,7 +29,7 @@
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",

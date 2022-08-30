@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
     "@types/vscode": "^1.66.0",

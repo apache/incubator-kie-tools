@@ -74,7 +74,7 @@
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-client": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/openjdk11-mvn-image-env": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-logic-sandbox-base-image-env": "workspace:*",

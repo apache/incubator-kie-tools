@@ -375,7 +375,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -433,7 +433,7 @@ importers:
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/feel-input-component": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -553,7 +553,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@octokit/rest": ^18.5.3
       "@testing-library/react": ^11.2.6
@@ -609,7 +609,7 @@ importers:
       "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -672,7 +672,7 @@ importers:
       "@kie-tools-core/keyboard-shortcuts": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
@@ -774,7 +774,7 @@ importers:
 
   packages/dashbuilder-component-api:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
@@ -847,7 +847,7 @@ importers:
   packages/dashbuilder-component-dev:
     specifiers:
       "@kie-tools/dashbuilder-component-api": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
@@ -892,7 +892,7 @@ importers:
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
@@ -946,7 +946,7 @@ importers:
 
   packages/dashbuilder-component-echarts-base:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@types/echarts": ^4.9.15
@@ -991,7 +991,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@types/heatmap.js": ^2.0.36
@@ -1052,7 +1052,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
@@ -1116,7 +1116,7 @@ importers:
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
       "@kie-tools/dashbuilder-component-echarts-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
@@ -1174,7 +1174,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-table": ^4.27.15
@@ -1245,7 +1245,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/dashbuilder-component-api": workspace:*
       "@kie-tools/dashbuilder-component-dev": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-charts": ^6.15.23
       "@patternfly/react-core": ^4.157.3
@@ -1320,7 +1320,7 @@ importers:
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -1429,7 +1429,7 @@ importers:
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -1537,7 +1537,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/form-dmn": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -1629,7 +1629,7 @@ importers:
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -1697,7 +1697,7 @@ importers:
   packages/envelope:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -1801,7 +1801,7 @@ importers:
       "@kie-tools-core/monaco-editor": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
@@ -1867,7 +1867,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -1932,7 +1932,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -2003,7 +2003,7 @@ importers:
   packages/form-generation-tool:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/uniforms-bootstrap4-codegen": workspace:*
       "@kie-tools/uniforms-patternfly-codegen": workspace:*
@@ -2062,7 +2062,7 @@ importers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -2108,7 +2108,7 @@ importers:
 
   packages/i18n:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@testing-library/react": ^11.2.6
@@ -2150,7 +2150,7 @@ importers:
   packages/i18n-common-dictionary:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -2175,7 +2175,7 @@ importers:
   packages/image-env-to-json:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       commander: ^8.3.0
       pkg: ^5.5.2
@@ -2208,7 +2208,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -2286,7 +2286,7 @@ importers:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
       "@testing-library/react": ^11.2.6
@@ -2338,7 +2338,7 @@ importers:
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/pmml-editor-marshaller": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
@@ -2395,7 +2395,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -2574,7 +2574,7 @@ importers:
 
   packages/monaco-editor:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -2617,7 +2617,7 @@ importers:
     specifiers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -2658,7 +2658,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/form-dmn": workspace:*
@@ -2815,7 +2815,7 @@ importers:
 
   packages/operating-system:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -2871,7 +2871,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/pmml-editor-marshaller": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-charts": ^6.15.23
@@ -2998,7 +2998,7 @@ importers:
 
   packages/pmml-editor-marshaller:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -3051,7 +3051,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/dashbuilder-client": workspace:*
       "@kie-tools/dashbuilder-editor": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/kie-sandbox-fs": workspace:*
       "@kie-tools/openjdk11-mvn-image-env": workspace:*
@@ -3223,7 +3223,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -3296,7 +3296,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
@@ -3415,7 +3415,7 @@ importers:
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/jest-dom": ^5.16.1
@@ -3455,7 +3455,7 @@ importers:
 
   packages/serverless-workflow-language-service:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-service-catalog": workspace:*
       "@severlessworkflow/sdk-typescript": ^3.0.3
@@ -3509,7 +3509,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@patternfly/react-icons": ^4.11.17
@@ -3588,7 +3588,7 @@ importers:
   packages/serverless-workflow-service-catalog:
     specifiers:
       "@kie-tools-core/envelope-bus": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -3632,7 +3632,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-service-catalog": workspace:*
@@ -3737,7 +3737,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/import-java-classes-component": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
@@ -3796,7 +3796,7 @@ importers:
       "@kie-tools-core/operating-system": workspace:*
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
       "@testing-library/jest-dom": ^5.16.1
@@ -3855,7 +3855,7 @@ importers:
   packages/uniforms-bootstrap4-codegen:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/react": ^11.2.6
       "@types/jest": ^26.0.23
@@ -3924,7 +3924,7 @@ importers:
   packages/uniforms-patternfly-codegen:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@testing-library/react": ^11.2.6
       "@types/jest": ^26.0.23
@@ -3993,7 +3993,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -4068,7 +4068,7 @@ importers:
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/form": workspace:*
       "@kie-tools/form-dmn": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
@@ -4149,7 +4149,7 @@ importers:
       "@kie-tools-core/notifications": workspace:*
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -4193,7 +4193,7 @@ importers:
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools/backend-extended-services": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -4242,7 +4242,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -4287,7 +4287,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/stunner-editors": workspace:*
@@ -4327,7 +4327,7 @@ importers:
   packages/vscode-extension-kie-ba-bundle:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
@@ -4351,7 +4351,7 @@ importers:
   packages/vscode-extension-kogito-bundle:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
@@ -4384,7 +4384,7 @@ importers:
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/kie-bc-editors": workspace:*
       "@kie-tools/pmml-editor": workspace:*
       "@kie-tools/root-env": workspace:*
@@ -4479,7 +4479,7 @@ importers:
       "@kie-tools-core/vscode-extension": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/pmml-editor": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/vscode": ^1.66.0
@@ -4517,7 +4517,7 @@ importers:
   packages/vscode-extension-red-hat-business-automation-bundle:
     specifiers:
       "@kie-tools-core/webpack-base": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/vscode": ^1.66.0
       rimraf: ^3.0.2
@@ -4552,7 +4552,7 @@ importers:
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
@@ -4654,7 +4654,7 @@ importers:
       "@kie-tools-core/vscode-java-code-completion": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/yard-editor": workspace:*
       "@types/chai": ^4.2.17
@@ -4732,7 +4732,7 @@ importers:
 
   packages/vscode-java-code-completion:
     specifiers:
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -4781,7 +4781,7 @@ importers:
   packages/workspace:
     specifiers:
       "@kie-tools-core/operating-system": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -4818,7 +4818,7 @@ importers:
       "@kie-tools-core/patternfly-base": workspace:*
       "@kie-tools-core/webpack-base": workspace:*
       "@kie-tools-core/workspace": workspace:*
-      "@kie-tools/eslint": workspace:^0.0.0
+      "@kie-tools/eslint": workspace:*
       "@kie-tools/i18n-common-dictionary": workspace:*
       "@kie-tools/root-env": workspace:*
       "@patternfly/react-core": ^4.157.3
@@ -4907,6 +4907,7 @@ importers:
       graph-data-structure: ^2.0.0
       graphviz: ^0.0.9
       markdown-table: ^3.0.2
+      prettier: ^2.2.1
     devDependencies:
       "@kie-tools-scripts/build-env": link:../build-env
       "@pnpm/filter-workspace-packages": 5.0.27_@pnpm+logger@4.0.0
@@ -4915,6 +4916,7 @@ importers:
       graph-data-structure: 2.0.0
       graphviz: 0.0.9
       markdown-table: 3.0.2
+      prettier: 2.3.0
 
   scripts/build-env:
     specifiers:
@@ -4923,6 +4925,16 @@ importers:
     devDependencies:
       rimraf: 3.0.2
       typescript: 4.5.4
+
+  scripts/code-formatter:
+    specifiers:
+      "@nice-move/prettier-plugin-package-json": ^0.6.1
+      prettier: ^2.2.1
+      pretty-quick: ^3.1.0
+    devDependencies:
+      "@nice-move/prettier-plugin-package-json": 0.6.1_prettier@2.3.0
+      prettier: 2.3.0
+      pretty-quick: 3.1.0_prettier@2.3.0
 
   scripts/maven-config-setup-helper:
     specifiers: {}
@@ -10933,7 +10945,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -10942,7 +10954,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -16227,7 +16239,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
+  /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -16236,6 +16248,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -17186,7 +17200,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

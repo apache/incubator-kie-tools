@@ -28,7 +28,7 @@
     "react": "^17.0.2"
   },
   "devDependencies": {
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^11.2.6",

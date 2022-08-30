@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@kie-tools-scripts/sparse-checkout",
   "version": "0.0.0",
   "keywords": [],

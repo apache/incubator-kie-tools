@@ -46,7 +46,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",

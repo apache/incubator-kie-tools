@@ -31,7 +31,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@testing-library/jest-dom": "^5.16.1",
     "@types/jest": "^26.0.23",

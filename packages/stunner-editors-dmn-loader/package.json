@@ -25,7 +25,7 @@
   "devDependencies": {
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",

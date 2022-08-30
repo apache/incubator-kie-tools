@@ -65,7 +65,7 @@
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": "workspace:*",
-    "@kie-tools/eslint": "workspace:^0.0.0",
+    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/extended-services": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
