@@ -156,6 +156,8 @@ jobs:
         shell: bash
         env:
           BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_TOKEN }}
+          BUILDKITE_BRANCH: ${{ github.ref_name }}
+          BUILDKITE_MESSAGE: ${{ github.event.commits[0].message }}
         run: |
           eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
             -H "Authorization: Token token=\"$BUILDKITE_ANALYTICS_TOKEN\"" \
@@ -164,8 +166,9 @@ jobs:
             -F "run_env[CI]=github_actions" \
             -F "run_env[key]=$GITHUB_ACTION-$GITHUB_RUN_NUMBER-$GITHUB_RUN_ATTEMPT" \
             -F "run_env[number]=$GITHUB_RUN_NUMBER" \
-            -F "run_env[branch]=$GITHUB_REF" \
+            -F "run_env[branch]=$BUILDKITE_BRANCH" \
             -F "run_env[commit_sha]=$GITHUB_SHA" \
+            -F "run_env[message]=$BUILDKITE_MESSAGE" \
             -F "run_env[url]=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
             https://analytics-api.buildkite.com/v1/uploads
 
