@@ -25,18 +25,18 @@ import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelo
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
-import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import {
-  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceContentService,
   ResourceListRequest,
   ResourcesList,
   WorkspaceChannelApi,
+  WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
 import {
   ServerlessWorkflowDiagramEditorChannelApi,
@@ -50,7 +50,7 @@ import {
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import * as vscode from "vscode";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { ServerlessWorkflowTextEditorEnvelopeApi } from "./ServerlessWorkflowTextEditorEnvelopeApiImpl";
+import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
 
 export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   private readonly defaultApiImpl: KogitoEditorChannelApi;
@@ -66,7 +66,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     i18n: I18n<VsCodeI18n>,
     private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
     private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi,
-    private readonly swfTextEditorEnvelopeApiImpl: ServerlessWorkflowTextEditorEnvelopeApi,
     private readonly diagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
   ) {
     this.defaultApiImpl = new DefaultVsCodeKieEditorChannelApiImpl(
@@ -178,11 +177,39 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
   }
 
-  public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
-    this.swfTextEditorEnvelopeApiImpl.kogitoSwfTextEditor__moveCursorToNode({
-      ...args,
-      documentUri: this.editor.document.document.uri.path,
-    });
+  public async kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string }): Promise<void> {
+    const textEditor = vscode.window.visibleTextEditors.filter(
+      (textEditor: vscode.TextEditor) => textEditor.document.uri.path === this.editor.document.document.uri.path
+    )[0];
+
+    if (!textEditor) {
+      console.debug("TextEditor not found");
+      return;
+    }
+
+    const resourceUri = textEditor.document.uri;
+
+    const swfOffsetsApi = initSwfOffsetsApi(textEditor.document);
+
+    const targetOffset = swfOffsetsApi.getStateNameOffset(args.nodeName);
+    if (!targetOffset) {
+      return;
+    }
+
+    const targetPosition = textEditor.document.positionAt(targetOffset);
+    if (targetPosition === null) {
+      return;
+    }
+
+    await vscode.commands.executeCommand("vscode.open", resourceUri, {
+      viewColumn: textEditor.viewColumn,
+      preserveFocus: false,
+    } as vscode.TextDocumentShowOptions);
+
+    const targetRange = new vscode.Range(targetPosition, targetPosition);
+
+    textEditor.revealRange(targetRange, vscode.TextEditorRevealType.InCenter);
+    textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
   }
 
   public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void {

@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-import { VsCodeKieEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorChannelApiProducer";
-import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "./ServerlessWorkflowDiagramEditorChannelApiImpl";
-import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
-import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
-import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
+import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
+import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
+import { VsCodeKieEditorChannelApiProducer } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorChannelApiProducer";
+import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
+import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
 import { SwfVsCodeExtensionConfiguration } from "./configuration";
-import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 import { SwfLanguageServiceChannelApiImpl } from "./languageService/SwfLanguageServiceChannelApiImpl";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
-import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "./ServerlessWorkflowTextEditorEnvelopeApiImpl";
+import { ServerlessWorkflowDiagramEditorChannelApiImpl } from "./ServerlessWorkflowDiagramEditorChannelApiImpl";
+import { SwfServiceCatalogChannelApiImpl } from "./serviceCatalog/SwfServiceCatalogChannelApiImpl";
+import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
 
 export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCodeKieEditorChannelApiProducer {
   constructor(
@@ -66,8 +64,7 @@ export class ServerlessWorkflowDiagramEditorChannelApiProducer implements VsCode
       }),
       new SwfLanguageServiceChannelApiImpl({
         ls: this.args.vsCodeSwfLanguageService.getLsForDiagramEditor(editor.document.document),
-      }),
-      new ServerlessWorkflowTextEditorEnvelopeApiImpl()
+      })
     );
   }
 }
