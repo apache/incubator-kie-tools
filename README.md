@@ -47,7 +47,7 @@ To install only the dependencies that are relevant to the package called `[pkg-n
 
 - `pnpm bootstrap -F [pkg-name]...`
 
-  > **⚠️ NOTE:** Here, the `...` are actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+  > **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
 
 After dependencies are installed, you'll be able to build. To do so, you'll have two choices - `dev`, or `prod`.
 
@@ -56,7 +56,7 @@ Note that it is recommended that you specify which package you want to build, so
 - `pnpm -F [pkg-name]... build:dev` - This is fast, but not as strict. It skips tests, linters, and some type checks. Be prepared for the CI to fail on your PRs.
 - `pnpm -F [pkg-name]... build:prod` - The default command to build production-ready packages. Use that to make sure your changes are correct.
 
-> **⚠️ NOTE:** Here, `...` are actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
+> **⚠️ NOTE:** Here, `...` is actually **necessary**! They're part of a [`pnpm` filter](https://pnpm.io/filtering#--filter-package_name-1).
 
 > **ℹ️ NOTE:** If you want to build _everything_, run `pnpm -r build:dev` or `pnpm -r build:prod`. It's going to take a while, though :)
 
