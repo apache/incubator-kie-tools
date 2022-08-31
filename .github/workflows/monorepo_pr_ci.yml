@@ -18,31 +18,27 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: git config --system core.longpaths true
 
-      - name: "Checkout"
-        uses: actions/checkout@v2
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        id: checkout_pr
+        uses: ./.github/actions/checkout-pr
         with:
-          fetch-depth: 0
           ref: ${{ github.base_ref }}
 
-      - name: "Setup kie-tools-bot"
-        uses: ./.github/actions/setup-kie-tools-bot
-
-      - name: "Merge PR changes"
-        id: merge_changes
-        uses: ./.github/actions/merge-pr-changes
+      - name: "Setup CI patterns"
+        id: ci_patterns
+        uses: ./.github/actions/setup-ci-patterns
 
       - name: "Check if should run or not"
         id: check_diff_paths
         shell: bash
         run: |
-          export NON_SOURCE_PATHS=$(cat ./.github/supporting-files/ci/non-source-paths.txt | xargs -n1 -I{} echo -n "'"':!'"{}""' ")
-          echo "Non-source paths:"
-          echo $NON_SOURCE_PATHS
-
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.merge_changes.outputs.base_sha }} ${{ steps.merge_changes.outputs.head_sha }} -- $NON_SOURCE_PATHS"))
+          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
           echo "Changed source paths:"
           echo ${#CHANGED_SOURCE_PATHS[@]}
           printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
@@ -68,24 +64,21 @@ jobs:
       - name: "Setup environment"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         uses: ./.github/actions/setup-env
-        with:
-          os: ${{ matrix.os }}
 
       - name: "Bootstrap"
         if: steps.check_diff_paths.outputs.should_run == 'true'
-        id: bootstrap
         uses: ./.github/actions/bootstrap
         with:
-          pnpm_filter_string: -F "...[${{ steps.merge_changes.outputs.base_sha }}]..."
+          pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..."
 
       - name: "Build dependencies"
         if: steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         env:
-          KIE_TOOLS_BUILD_examples: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
-          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
-          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.merge_changes.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
+          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
+          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
           echo $ALL_DEPENDENCIES_FILTER
           echo $CHANGED_PKGS_EXCLUSION_FILTER
           eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
@@ -94,44 +87,28 @@ jobs:
         if: steps.check_diff_paths.outputs.should_run == 'true'
         env:
           WEBPACK__minimize: "false"
-          KIE_TOOLS_BUILD_lint: "true"
-          KIE_TOOLS_BUILD_test: "true"
-          KIE_TOOLS_BUILD_testIT: ${{ matrix.os == 'ubuntu-latest' }}
-          KIE_TOOLS_BUILD_docker: "true"
-          KIE_TOOLS_BUILD_examples: "true"
+          KIE_TOOLS_BUILD__runLinters: "true"
+          KIE_TOOLS_BUILD__runTests: "true"
+          KIE_TOOLS_BUILD__runIntegrationTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__buildContainerImages: "true"
+          KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
         run: |
-          pnpm -F "...[${{ steps.merge_changes.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
+          pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
 
-      - name: "Check generated resources (you should commit those!)"
-        if: steps.check_diff_paths.outputs.should_run == 'true'
+      - name: "Check hanging uncommitted files (you should commit those!)"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
         shell: bash
         run: |
           git diff
           [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
+      - name: "Upload reports and artifacts"
+        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
+        uses: ./.github/actions/upload-ci-reports-and-artifacts
+
       - name: "Print storage usage (after build)"
         shell: bash
         run: |
           du -sh .
-
-      - name: "Upload build artifacts"
-        uses: actions/upload-artifact@v2
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            packages/*/dist
-            packages/desktop/out/*.zip
-            !packages/desktop/dist
-
-      - name: "Upload IT Tests artifacts"
-        uses: actions/upload-artifact@v2
-        if: always() && !cancelled() && steps.check_diff_paths.outputs.should_run == 'true'
-        with:
-          name: it-tests-artifacts-${{ matrix.os }}
-          if-no-files-found: warn
-          path: |
-            packages/*/dist-it-tests

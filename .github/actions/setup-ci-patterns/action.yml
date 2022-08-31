@@ -1,0 +1,105 @@
+name: "Setup CI patterns"
+description: ""
+
+inputs:
+  working_dir:
+    description: "Dir path of kie-tools"
+    required: false
+    default: "."
+
+outputs:
+  pnpm_workspace_packages_root_paths:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.pnpm_workspace_packages_root_paths }}
+  non_source_files_patterns:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.non_source_files_patterns }}
+  non_source_files_patterns_for_git_diff:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}
+  tests_source_files_patterns:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.tests_source_files_patterns }}
+  tests_reports_patterns:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.tests_reports_patterns }}
+  integration_tests_reports_patterns:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}
+  integration_tests_artifacts_patterns:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.integration_tests_artifacts_patterns }}
+  build_artifacts_patterns:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.build_artifacts_patterns }}
+  integration_tests_reports_patterns_for_find:
+    description: ""
+    value: ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup CI patterns"
+      id: ci_patterns
+      uses: actions/github-script@v6
+      env:
+        CWD: ${{ inputs.working_dir }}
+      with:
+        result-encoding: string
+        script: |
+          const fs = require("fs");
+          const path = require("path");
+
+          const cwd = process.env["CWD"];
+
+          const pnpmWorkspacePackagesRootPaths = ["packages", "examples"].map(p => path.join(cwd, p)).join("\n");
+
+          const nonSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/non-source-files-patterns.txt"), "utf-8");
+          const nonSourceFilesPatternsForGitDiff = nonSourceFilesPatterns.split("\n").filter(p => p.trim() !== "").map(p => `':!${p}'`).join(" ");
+          const testSourceFilesPatterns = fs.readFileSync(path.join(cwd, "./.github/supporting-files/ci/tests-source-files-patterns.txt"), "utf-8");
+
+          core.setOutput("pnpm_workspace_packages_root_paths", pnpmWorkspacePackagesRootPaths);
+          core.setOutput("non_source_files_patterns", nonSourceFilesPatterns);
+          core.setOutput("non_source_files_patterns_for_git_diff", nonSourceFilesPatternsForGitDiff);
+          core.setOutput("tests_source_files_patterns", testSourceFilesPatterns);
+
+          function prefixWithRoots(patterns) {
+            return patterns.split("\n")
+              .filter(p => p.trim() !== "")
+              .flatMap(p => pnpmWorkspacePackagesRootPaths.split("\n").map(r => path.join(r, p)))
+              .join("\n");
+          }
+
+          async function outputPatternsPrefixedWithRoots(outputName, patternsFilePath) {
+            const patterns = prefixWithRoots(fs.readFileSync(patternsFilePath, "utf-8"));
+            console.log(outputName + ":");
+            console.log(patterns);
+            console.log("-");
+            core.setOutput(outputName, patterns);
+          }
+
+          await outputPatternsPrefixedWithRoots("tests_reports_patterns", path.join(cwd, "./.github/supporting-files/ci/tests-reports-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("integration_tests_reports_patterns", path.join(cwd, "./.github/supporting-files/ci/integration-tests-reports-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("integration_tests_artifacts_patterns", path.join(cwd, "./.github/supporting-files/ci/integration-tests-artifacts-patterns.txt"));
+          await outputPatternsPrefixedWithRoots("build_artifacts_patterns", path.join(cwd, "./.github/supporting-files/ci/build-artifacts-patterns.txt"));
+
+          core.setOutput(
+            "integration_tests_reports_patterns_for_find", 
+            prefixWithRoots(fs.readFileSync("./.github/supporting-files/ci/integration-tests-reports-patterns.txt", "utf-8"))
+              .split("\n")
+              .map(p => `-path '${p}'`)
+              .join(" -o ")
+          );
+
+    - name: "Print CI patterns"
+      shell: bash
+      run: |
+        echo "${{ steps.ci_patterns.outputs.pnpm_workspace_packages_root_paths }}" 
+        echo "${{ steps.ci_patterns.outputs.non_source_files_patterns }}" 
+        echo "${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}" 
+        echo "${{ steps.ci_patterns.outputs.tests_source_files_patterns }}" 
+        echo "${{ steps.ci_patterns.outputs.tests_reports_patterns }}"
+        echo "${{ steps.ci_patterns.outputs.integration_tests_reports_patterns }}" 
+        echo "${{ steps.ci_patterns.outputs.integration_tests_artifacts_patterns }}" 
+        echo "${{ steps.ci_patterns.outputs.build_artifacts_patterns }}"
+        echo "${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}"

@@ -15,13 +15,13 @@
   "scripts": {
     "build:dev": "pnpm cleanup",
     "build:prod": "pnpm cleanup && run-script-os",
-    "build:prod:darwin:linux": "pnpm run-script-if --bool \"$(build-env global.build.docker)\" --then \"pnpm copy:assets\" \"pnpm podman:build\"",
+    "build:prod:darwin:linux": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm copy:assets\" \"pnpm podman:build\"",
     "build:prod:win32": "echo \"Build not supported on Windows\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:dmn-dev-sandbox-form-webapp && pnpm copy:dmn-dev-sandbox-quarkus",
     "copy:dmn-dev-sandbox-form-webapp": "cp -R ../dmn-dev-sandbox-form-webapp/dist ./dist-dev/dmn-dev-sandbox-form-webapp",
     "copy:dmn-dev-sandbox-quarkus": "cp -R ../dmn-dev-sandbox-quarkus ./dist-dev/dmn-dev-sandbox-quarkus",
-    "podman:build": "pnpm run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevSandboxDeploymentBaseImage.buildTags) | xargs printf -- \"-t $(build-env dmnDevSandboxDeploymentBaseImageEnv.registry)/$(build-env dmnDevSandboxDeploymentBaseImageEnv.account)/$(build-env dmnDevSandboxDeploymentBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
+    "podman:build": "run-script-if --bool $([ $(command -v podman) ] && echo true || echo false) --then \"podman build $(echo $(build-env dmnDevSandboxDeploymentBaseImage.buildTags) | xargs printf -- \"-t $(build-env dmnDevSandboxDeploymentBaseImageEnv.registry)/$(build-env dmnDevSandboxDeploymentBaseImageEnv.account)/$(build-env dmnDevSandboxDeploymentBaseImageEnv.name):%s\n\" | xargs echo) --build-arg QUARKUS_PLATFORM_VERSION=$(build-env quarkusPlatform.version) --build-arg KOGITO_RUNTIME_VERSION=$(build-env kogitoRuntime.version) -f Containerfile\" --else \"echo Podman not found, skipping image build.\""
   },
   "dependencies": {
     "@kie-tools/dmn-dev-sandbox-form-webapp": "workspace:*",

@@ -22,13 +22,13 @@
     "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.prod.json && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:images": "cpr ./static/images ./dist/images",
-    "cy:open": "pnpm cypress open --project it-tests",
-    "cy:run": "pnpm cypress run -b chrome --project it-tests",
+    "cy:open": "cypress open --project it-tests",
+    "cy:run": "cypress run -b chrome --project it-tests",
     "deploy": "gh-pages -d dist",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
     "start": "webpack serve -c ./dev-webapp/webpack.config.js --host 0.0.0.0 --env dev",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:it": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
+    "test:it": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"pnpm start-server-and-test start http-get://0.0.0.0:$(build-env pmmlEditor.dev.port) cy:run\"",
     "test:watch": "jest --watch"
   },
   "dependencies": {
@@ -80,6 +80,7 @@
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
     "gh-pages": "^3.2.3",
+    "jest-junit": "^14.0.0",
     "start-server-and-test": "^1.12.1"
   },
   "babel": {
