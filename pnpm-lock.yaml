@@ -5250,12 +5250,14 @@ importers:
 
   packages/webpack-base:
     specifiers:
+      "@babel/traverse": ^7.16.0
       "@kie-tools/root-env": workspace:*
       os-browserify: ^0.3.0
       path-browserify: ^1.0.1
       source-map-loader: ^2.0.2
       ts-loader: ^9.1.2
     devDependencies:
+      "@babel/traverse": 7.17.9
       "@kie-tools/root-env": link:../root-env
       os-browserify: 0.3.0
       path-browserify: 1.0.1
