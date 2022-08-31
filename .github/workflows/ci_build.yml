@@ -75,11 +75,11 @@ jobs:
         if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
-      - name: "FULL -> Bootstrap"
+      - name: "FULL → Bootstrap"
         if: steps.setup_build_mode.outputs.mode == 'full'
         uses: ./.github/actions/bootstrap
 
-      - name: "FULL -> Build"
+      - name: "FULL → Build"
         if: steps.setup_build_mode.outputs.mode == 'full'
         env:
           WEBPACK__minimize: "false"
@@ -96,13 +96,13 @@ jobs:
         run: |
           pnpm -r --workspace-concurrency=1 build:prod
 
-      - name: "PARTIAL -> Bootstrap"
+      - name: "PARTIAL → Bootstrap"
         if: steps.setup_build_mode.outputs.mode == 'partial'
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..."
 
-      - name: "PARTIAL -> Build dependencies"
+      - name: "PARTIAL → Build dependencies"
         if: steps.setup_build_mode.outputs.mode == 'partial'
         shell: bash
         env:
@@ -115,7 +115,7 @@ jobs:
           echo $CHANGED_PKGS_EXCLUSION_FILTER
           eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
 
-      - name: "PARTIAL -> Build changed and dependents"
+      - name: "PARTIAL → Build changed and dependents"
         if: steps.setup_build_mode.outputs.mode == 'partial'
         env:
           WEBPACK__minimize: "false"
