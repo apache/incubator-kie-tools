@@ -158,7 +158,6 @@ jobs:
           BUILDKITE_ANALYTICS_TOKEN: ${{ secrets.BUILDKITE_TOKEN }}
         run: |
           eval "find -P * -type f ${{ steps.ci_patterns.outputs.integration_tests_reports_patterns_for_find }}" | xargs -I{} curl -X POST \
-            --fail-with-body \
             -H "Authorization: Token token=\"$BUILDKITE_ANALYTICS_TOKEN\"" \
             -F "format=junit" \
             -F "data=@{}" \
