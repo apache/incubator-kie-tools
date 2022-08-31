@@ -157,6 +157,14 @@ test('<TextField> - renders a label', () => {
   );
 });
 
+test('<TextField> - renders a help', () => {
+  const element = <TextField required={false} name="x" helperText="y"/>;
+  const wrapper = mount(element, createContext({ x: { type: String } }));
+
+  expect(wrapper.find('div.pf-c-form__helper-text')).toHaveLength(1);
+  expect(wrapper.find('div.pf-c-form__helper-text').text()).toBe('y');
+});
+
 test('<TextField> - renders a wrapper with unknown props', () => {
   const element = <TextField name="x" data-x="x" data-y="y" data-z="z" />;
   const wrapper = mount(element, createContext({ x: { type: String } }));

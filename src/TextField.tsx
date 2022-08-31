@@ -18,6 +18,7 @@ export type TextFieldProps = {
   disabled: boolean;
   error?: boolean;
   errorMessage?: string;
+  helperText?: string;
   field?: { format: string };
 } & Omit<TextInputProps, 'isDisabled'>;
 
@@ -114,6 +115,9 @@ const Text = (props: TextFieldProps) => {
     [props.disabled, props.onChange]
   );
 
+  // https://github.com/aerogear/uniforms-patternfly/issues/106
+  const {helperText, ...withoutHelperTextProps} = props;
+
   return wrapField(
     props,
     props.type === 'date' || props.field?.format === 'date' ? (
@@ -168,7 +172,7 @@ const Text = (props: TextFieldProps) => {
         ref={props.inputRef}
         type={props.type ?? 'text'}
         value={props.value ?? ''}
-        {...filterDOMProps(props)}
+        {...filterDOMProps(withoutHelperTextProps)}
       />
     )
   );
