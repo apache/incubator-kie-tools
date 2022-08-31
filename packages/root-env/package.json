@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "name": "@kie-tools/root-env",
+  "version": "0.0.0",
+  "keywords": [],
+  "devDependencies": {}
+}

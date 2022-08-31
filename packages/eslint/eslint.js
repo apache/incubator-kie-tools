@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools/build-env");
+const execSync = require("child_process").execSync;
+const path = require("path");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {};
-  },
-});
+const lintPath = path.resolve(process.argv[2]);
+const configPath = require.resolve("./.eslintrc.js");
+
+console.info("[kie-tools--eslint] Lint path: " + lintPath);
+console.info("[kie-tools--eslint] Config path: " + configPath);
+
+try {
+  execSync(`pnpm eslint ${lintPath} --ext .ts,.tsx --config ${configPath}`, { stdio: "inherit", cwd: __dirname });
+} catch (e) {
+  console.info("[kie-tools--eslint] Error.");
+  process.exit(1);
+}
+
+console.info("[kie-tools--eslint] Done.");
