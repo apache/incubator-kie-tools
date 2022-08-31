@@ -31,9 +31,11 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
-    "@kie-tools-core/maven-config-setup-helper": "workspace:*",
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "cpr": "^3.0.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
     "symlink-dir": "^5.0.1"
   },
   "kieTools": {

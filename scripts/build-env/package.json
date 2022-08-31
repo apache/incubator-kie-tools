@@ -1,0 +1,32 @@
+{
+  "name": "@kie-tools-scripts/build-env",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "bin": {
+    "build-env": "bin.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "bin.js",
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "install": "rimraf dist && tsc"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.2"
+  }
+}
