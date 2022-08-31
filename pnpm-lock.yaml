@@ -3740,6 +3740,7 @@ importers:
   packages/serverless-workflow-text-editor:
     specifiers:
       "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope": workspace:*
       "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/guided-tour": workspace:*
       "@kie-tools-core/notifications": workspace:*
@@ -3786,6 +3787,7 @@ importers:
       webpack-merge: ^5.7.3
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope": link:../envelope
       "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/notifications": link:../notifications
