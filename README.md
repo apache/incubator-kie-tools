@@ -1,4 +1,4 @@
-<div style="text-align:center"><img alt="kie" width="55%" src="docs/kie.svg" /></div>
+<p align="center"><img width=40% src="docs/kie.png"></p>
 
 ---
 
