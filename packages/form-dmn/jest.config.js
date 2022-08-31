@@ -27,7 +27,7 @@ module.exports = {
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transformIgnorePatterns: [],
   transform: {
-    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
   },
   moduleNameMapper: {

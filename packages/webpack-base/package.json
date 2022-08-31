@@ -21,18 +21,5 @@
     "path-browserify": "^1.0.1",
     "source-map-loader": "^2.0.2",
     "ts-loader": "^9.1.2"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }
