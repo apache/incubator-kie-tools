@@ -17,8 +17,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
@@ -27,6 +30,18 @@ import (
 var quarkusPlatformGroupId, quarkusVersion, pluginVersion string
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	sigs := make(chan os.Signal, 1)
+	signal.Notify(sigs, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		<-sigs
+		cancel()
+		<-sigs // second sigint/sigterm is treated as sigkill
+		os.Exit(137)
+	}()
+
 	cfg := root.RootCmdConfig{
 		DependenciesVersion: common.DependenciesVersion{
 			QuarkusPlatformGroupId: quarkusPlatformGroupId,
@@ -35,7 +50,7 @@ func main() {
 		PluginVersion: pluginVersion,
 	}
 
-	if err := root.NewRootCommand(cfg).Execute(); err != nil {
+	if err := root.NewRootCommand(cfg).ExecuteContext(ctx); err != nil {
 		if err.Error() != "subcommand is required" {
 			fmt.Fprintln(os.Stderr, err)
 		}

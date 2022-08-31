@@ -18,11 +18,11 @@ package single
 
 import (
 	"bufio"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"sync"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -44,6 +44,20 @@ type BuildCmdConfig struct {
 
 	// Plugin options
 	Verbose bool
+}
+
+// Client that panics when used after Close()
+type closeGuardingClient struct {
+	pimpl  client.CommonAPIClient
+	m      sync.RWMutex
+	closed bool
+}
+
+func (c *closeGuardingClient) Close() error {
+	c.m.Lock()
+	defer c.m.Unlock()
+	c.closed = true
+	return c.pimpl.Close()
 }
 
 func NewBuildCommand() *cobra.Command {
@@ -82,7 +96,7 @@ func runBuild(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := runBuildImage(cfg); err != nil {
+	if err := runBuildImage(cfg, cmd); err != nil {
 		return err
 	}
 
@@ -108,13 +122,15 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 	return
 }
 
-func runBuildImage(cfg BuildCmdConfig) error {
-	ctx := context.Background()
-	cli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
+	var dockerClient client.CommonAPIClient
+	dockerClient, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil
 	}
+	cli := &closeGuardingClient{pimpl: dockerClient}
+	defer cli.Close()
 
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
 	if err := common.CheckImageName(name); err != nil {
@@ -148,6 +164,7 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		BuildArgs:  buildArgs,
 		Version:    types.BuilderBuildKit,
 		Target:     "kubernetes",
+		PullParent: true,
 		Outputs: []types.ImageBuildOutput{{
 			Type: "local",
 			Attrs: map[string]string{
@@ -156,23 +173,23 @@ func runBuildImage(cfg BuildCmdConfig) error {
 		}},
 	}
 
-	res, err := cli.ImageBuild(ctx, tar, opts)
+	res, err := dockerClient.ImageBuild(cmd.Context(), tar, opts)
 	if err != nil {
-		return err
+		return fmt.Errorf("cannot build the app image: %w", err)
 	}
 	defer res.Body.Close()
 
-	// scanner := bufio.NewScanner(res.Body)
-	// for scanner.Scan() {
-	// 	fmt.Println(scanner.Text())
-	// }
+	scanner := bufio.NewScanner(res.Body)
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
 
-	// if err := scanner.Err(); err != nil {
-	// 	return err
-	// }
+	if err := scanner.Err(); err != nil {
+		return err
+	}
 
 	fmt.Println("✅ Build success")
-	return nil
+	return
 }
 
 type ErrorLine struct {
