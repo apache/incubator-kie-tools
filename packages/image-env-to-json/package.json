@@ -20,16 +20,25 @@
     "build:standalone:darwin": "pkg dist/index.js -t node16-macos-x64 -o dist/macos/image-env-to-json-standalone",
     "build:standalone:linux": "pkg dist/index.js -t node16-linux-x64 -o dist/linux/image-env-to-json-standalone",
     "build:standalone:win32": "pkg dist/index.js -t node16-win-x64 -o dist/win/image-env-to-json-standalone",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts\""
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
     "commander": "^8.3.0"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
-    "pkg": "^5.5.2"
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "pkg": "^5.5.2",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3",
+    "webpack-node-externals": "^3.0.0"
   },
   "babel": {
     "presets": [

@@ -39,7 +39,7 @@ export const FileLoader: React.FC<Props> = (props: Props) => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
     if (fileInput!.current!.files!.length > 0) {
-      Array.from(fileInput!.current!.files!).forEach((file) => {
+      Array.from(fileInput.current?.files ?? []).forEach((file) => {
         readUploadedFileAsText(file).then((fileContent) =>
           props.setFiles((files) => [
             ...files,

@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "@kie-tools-scripts/sparse-checkout",
+  "version": "0.0.0",
+  "keywords": [],
+  "bin": {
+    "kie-tools--list-packages-dependencies": "list_packages_dependencies.js"
+  },
+  "devDependencies": {
+    "graph-data-structure": "^2.0.0"
+  }
+}

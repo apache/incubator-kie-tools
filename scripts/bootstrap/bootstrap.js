@@ -15,6 +15,7 @@
  */
 
 const execSync = require("child_process").execSync;
+const path = require("path");
 
 let pnpmFilterString = process.argv.slice(2).join(" ");
 let pnpmFilterStringForInstalling;
@@ -23,27 +24,30 @@ if (pnpmFilterString.length === 0) {
   pnpmFilterStringForInstalling = "";
 } else {
   console.info(`[bootstrap] Bootstrapping packages filtered by '${pnpmFilterString}'`);
-  pnpmFilterStringForInstalling = `${pnpmFilterString} -F .`;
+  pnpmFilterStringForInstalling = `${pnpmFilterString}`;
 }
 
 const execOpts = { stdio: "inherit" };
 
-console.info("\n\n[bootstrap] Installing dependencies...");
-execSync(`pnpm install-dependencies ${pnpmFilterStringForInstalling}`, execOpts); // Always install root dependencies
+console.info("\n\n[bootstrap] Installing packages dependencies...");
+execSync(
+  `pnpm install --strict-peer-dependencies=false -F !kie-tools-root... ${pnpmFilterStringForInstalling}`,
+  execOpts
+);
 
 console.info("\n\n[bootstrap] Linking packages with self...");
-execSync(`pnpm link-packages-with-self`, execOpts);
+execSync(`node ${require.resolve("./link_packages_with_self.js")}`, execOpts);
 
 console.info("\n\n[bootstrap] Generating packages graph...");
-execSync(`pnpm generate-packages-graph`, execOpts);
+execSync(`node ${require.resolve("./generate_packages_graph.js")} ${path.resolve(__dirname, "../../repo")}`, execOpts);
 
 console.info("\n\n[bootstrap] Generating build-env report...");
-execSync(`pnpm generate-build-env-report ${pnpmFilterString}`, execOpts);
+execSync(`node ${require.resolve("./generate_build_env_report.mjs")} ${pnpmFilterString}`, execOpts);
 
 console.info("\n\n[bootstrap] Checking required preinstalled CLI commands...");
-execSync(`pnpm check-required-preinstalled-cli-commands ${pnpmFilterString}`, execOpts);
+execSync(`node ${require.resolve("./check_required_preinstalled_cli_commands.mjs")} ${pnpmFilterString}`, execOpts);
 
 console.info("\n\n[bootstrap] Checking packages dependencies...");
-execSync(`pnpm check-packages-dependencies`, execOpts);
+execSync(`node ${require.resolve("./check_packages_dependencies.js")}`, execOpts);
 
 console.info("\n\n[bootstrap] Done.");

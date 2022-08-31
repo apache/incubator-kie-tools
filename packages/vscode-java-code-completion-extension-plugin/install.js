@@ -15,7 +15,7 @@
  */
 
 const buildEnv = require("./env");
-const { setup } = require("@kie-tools-core/maven-config-setup-helper");
+const { setup } = require("@kie-tools/maven-config-setup-helper");
 const fs = require("fs");
 const path = require("path");
 
