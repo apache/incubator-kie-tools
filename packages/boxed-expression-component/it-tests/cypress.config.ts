@@ -19,6 +19,6 @@ export default defineConfig({
       return require("./cypress/plugins/index.js")(on, config);
     },
     specPattern: "e2e/**/*.cy.{js,jsx,ts,tsx}",
-    supportFile: "support/index.ts",
+    supportFile: "support/e2e.ts",
   },
 });
