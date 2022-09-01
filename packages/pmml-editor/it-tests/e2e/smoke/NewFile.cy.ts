@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { env } from "../../env";
+import { env } from "../../../env";
 const buildEnv = env;
 
 describe("New File basic user's interaction", () => {
