@@ -10,4 +10,5 @@ docs
 gifs
 repo
 .vscode
+.idea
 .github/CODEOWNERS
