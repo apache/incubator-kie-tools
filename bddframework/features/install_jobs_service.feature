@@ -14,6 +14,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -41,6 +42,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -75,6 +77,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -110,6 +113,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -150,6 +154,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "jobs-service-data-index-id",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -187,6 +192,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "jobs-service-data-index-id",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -200,6 +206,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "jobs-service-data-index-id-2",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -214,6 +221,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "jobs-service-data-index-id-3",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -243,6 +251,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -260,6 +269,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "2",
+        "processId": "2",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -291,6 +301,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -308,6 +319,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "2",
+        "processId": "2",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -338,6 +350,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "1",
+        "processId": "1",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
@@ -355,6 +368,7 @@ Feature: Install Kogito Jobs Service
       """json
       {
         "id": "2",
+        "processId": "2",
         "priority": "1",
         "expirationTime": "2100-01-29T18:19:00Z",
         "callbackEndpoint": "http://localhost:8080/callback"
