@@ -343,6 +343,99 @@ functions:
     });
   });
 
+  describe("isNodeUncompleted", () => {
+    const ls = new SwfYamlLanguageService({
+      fs: {},
+      serviceCatalog: {
+        ...defaultServiceCatalogConfig,
+        relative: { getServices: async () => [testRelativeService1] },
+      },
+      config: defaultConfig,
+    });
+
+    test("with space after property name", async () => {
+      const { content, cursorPosition } = treat(`---
+functions: 🎯`);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(
+        ls.isNodeUncompleted({
+          content,
+          uri: "test.sw.yaml",
+          rootNode,
+          cursorPosition,
+        })
+      ).toBeTruthy();
+    });
+
+    test("inside double quotes", async () => {
+      const { content, cursorPosition } = treat(`---
+functions: "🎯"`);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(
+        ls.isNodeUncompleted({
+          content,
+          uri: "test.sw.yaml",
+          rootNode,
+          cursorPosition,
+        })
+      ).toBeFalsy();
+    });
+
+    test("inside single quotes", async () => {
+      const { content, cursorPosition } = treat(`---
+functions: '🎯'`);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(
+        ls.isNodeUncompleted({
+          content,
+          uri: "test.sw.yaml",
+          rootNode,
+          cursorPosition,
+        })
+      ).toBeFalsy();
+    });
+
+    test("defining an array", async () => {
+      const { content, cursorPosition } = treat(`---
+functions: 
+  - 🎯`);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(
+        ls.isNodeUncompleted({
+          content,
+          uri: "test.sw.yaml",
+          rootNode,
+          cursorPosition,
+        })
+      ).toBeFalsy();
+    });
+
+    test("defining an object", async () => {
+      const { content, cursorPosition } = treat(`---
+functions: 
+  🎯`);
+
+      const rootNode = ls.parseContent(content);
+
+      expect(
+        ls.isNodeUncompleted({
+          content,
+          uri: "test.sw.yaml",
+          rootNode,
+          cursorPosition,
+        })
+      ).toBeFalsy();
+    });
+  });
+
   test("basic", async () => {
     const ls = new SwfYamlLanguageService({
       fs: {},
@@ -1055,7 +1148,7 @@ states:
   actions:
   - name: testStateAction
     functionRef:
-      refName:🎯`);
+      refName: 🎯`);
 
         const completionItems = await ls.getCompletionItems({
           uri: "test.sw.json",
@@ -1072,7 +1165,7 @@ states:
           filterText: `"myFunc"`,
           sortText: `"myFunc"`,
           textEdit: {
-            newText: `myFunc`,
+            newText: ` myFunc`,
             range: {
               start: {
                 ...cursorPosition,

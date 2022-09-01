@@ -15,6 +15,8 @@
  */
 
 import {
+  FileLanguage,
+  getFileLanguage,
   SwfLanguageServiceCommandHandlers,
   SwfLanguageServiceCommandTypes,
 } from "@kie-tools/serverless-workflow-language-service/dist/api";
@@ -177,7 +179,10 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
           token: vscode.CancellationToken,
           context: vscode.CompletionContext
         ) => {
-          const cursorWordRange = document.getWordRangeAtPosition(position);
+          const cursorWordRange =
+            getFileLanguage(document.uri.path) === FileLanguage.YAML
+              ? new vscode.Range(position, position)
+              : document.getWordRangeAtPosition(position);
 
           const lsCompletionItems = await args.vsCodeSwfLanguageService.getLs(document).getCompletionItems({
             uri: document.uri.toString(),

@@ -28,8 +28,9 @@ import {
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
-import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
+import { TextDocument } from "vscode-json-languageservice";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -58,17 +59,61 @@ export class SwfYamlLanguageService {
     return astConvert(ast);
   }
 
-  public getCompletionItems(args: {
+  /**
+   * Check if a node at a position is uncompleted.
+   * eg. "refName: 🎯"
+   *
+   * @param args -
+   * @returns true if the node is uncompleted, false otherwise.
+   */
+  public isNodeUncompleted = (args: {
+    content: string;
+    uri: string;
+    rootNode: SwfLsNode;
+    cursorPosition: Position;
+  }): boolean => {
+    /* TODO: SwfYamlLanguageService: test isNodeUncompleted */
+    const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
+    const cursorOffset = doc.offsetAt(args.cursorPosition);
+
+    if (args.content.slice(cursorOffset - 1, cursorOffset) !== " ") {
+      return false;
+    }
+
+    const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, cursorOffset - 1, true);
+
+    return nodeAtPrevOffset.colonOffset === cursorOffset - 1;
+  };
+
+  public async getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({
+    const rootNode = this.parseContent(args.content);
+    const isCurrentNodeUncompleted = this.isNodeUncompleted({
       ...args,
-      rootNode: this.parseContent(args.content),
+      rootNode,
+    });
+
+    if (isCurrentNodeUncompleted) {
+      args.cursorPosition.character--;
+    }
+
+    const completions = await this.ls.getCompletionItems({
+      ...args,
+      rootNode,
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
+
+    if (isCurrentNodeUncompleted) {
+      completions.forEach((completion) => {
+        completion.textEdit.newText = " " + completion.textEdit.newText;
+      });
+    }
+
+    return completions;
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
