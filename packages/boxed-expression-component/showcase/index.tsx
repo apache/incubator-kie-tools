@@ -20,7 +20,6 @@ import * as ReactDOM from "react-dom";
 import "./index.css";
 // noinspection ES6PreferShortImport
 import {
-  BoxedExpressionEditor,
   ContextProps,
   DataType,
   DecisionTableProps,
@@ -31,7 +30,8 @@ import {
   LiteralExpressionProps,
   LogicType,
   RelationProps,
-} from "../src";
+} from "../src/api";
+import { BoxedExpressionEditor } from "../src/components";
 import { Button, Modal } from "@patternfly/react-core";
 import { PenIcon } from "@patternfly/react-icons/dist/js/icons/pen-icon";
 import "../src/components/BoxedExpressionEditor/base-no-reset-wrapped.css";
