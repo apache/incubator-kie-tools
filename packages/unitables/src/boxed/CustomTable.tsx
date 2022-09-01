@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useCallback, useLayoutEffect, useMemo } from "react";
 import { Column, ColumnInstance } from "react-table";
-import "@kie-tools/boxed-expression-component";
+
 import {
   ColumnsUpdateArgs,
   ExpressionProps,
@@ -30,6 +30,8 @@ import { getColumnsAtLastLevel, Table } from "@kie-tools/boxed-expression-compon
 import "./CustomTable.css";
 import { BoxedExpressionOutputRule, UnitablesClause, UnitablesInputRule } from "../UnitablesBoxedTypes";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
+
+import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 
 export const CELL_MINIMUM_WIDTH = 150;
 

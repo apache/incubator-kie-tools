@@ -19,7 +19,8 @@ import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState 
 import { UnitablesI18n } from "./i18n";
 import { ColumnInstance } from "react-table";
 import { useUnitablesInputs } from "./UnitablesInputs";
-import { BoxedExpressionProvider, TableOperation } from "@kie-tools/boxed-expression-component";
+import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
+import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/dist/components";
 import nextId from "react-id-generator";
 import { CustomTable } from "./boxed";
 import { UnitablesInputRule } from "./UnitablesBoxedTypes";

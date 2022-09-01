@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { executeIfExpressionDefinitionChanged, LogicType } from "@kie-tools/boxed-expression-component";
+import { executeIfExpressionDefinitionChanged, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("BoxedExpressionEditor tests", () => {
   describe("executeIfExpressionDefinitionChanged function", () => {

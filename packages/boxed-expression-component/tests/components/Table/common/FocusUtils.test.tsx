@@ -33,7 +33,7 @@ import {
   getParentCell,
 } from "@kie-tools/boxed-expression-component/dist/components/Table/common";
 import { PMMLLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
-import { LogicType } from "@kie-tools/boxed-expression-component";
+import { LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 
 /**
  * Create Mock HTML Table.

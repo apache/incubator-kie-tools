@@ -19,7 +19,7 @@ import { EDIT_EXPRESSION_NAME, updateElementViaPopover, usingTestingBoxedExpress
 import { ContextEntryInfoCell } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as _ from "lodash";
 import * as React from "react";
-import { DataType } from "@kie-tools/boxed-expression-component";
+import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { DataRecord } from "react-table";
 
 jest.useFakeTimers();

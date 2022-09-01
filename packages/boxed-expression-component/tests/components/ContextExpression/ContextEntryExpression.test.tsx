@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import { ContextEntryExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";

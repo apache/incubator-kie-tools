@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.prod.json && pnpm test",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:dashbuilder && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:dashbuilder": "copyfiles -u 3 \"../dashbuilder-client/dist/**/*\" ./dist/dashbuilder-client && copyfiles -u 1 src/setup.js ./dist/dashbuilder-client/",
     "copy:images": "cpr ./static/images ./dist/images",
