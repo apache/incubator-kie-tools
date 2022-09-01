@@ -26,7 +26,7 @@ module.exports = {
   setupFilesAfterEnv: ["./tests/jest.setup.ts"],
   testRegex: "/tests/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
-    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
   },
   moduleNameMapper: {

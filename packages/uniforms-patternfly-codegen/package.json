@@ -30,6 +30,9 @@
     "uniforms-bridge-simple-schema-2": "^3.5.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
@@ -56,18 +59,5 @@
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

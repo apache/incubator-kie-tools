@@ -21,7 +21,6 @@ import {
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType,
 } from "../api";
-import { DefaultKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope";
 import { EditorEnvelopeView, EditorEnvelopeViewApi } from "./EditorEnvelopeView";
 import * as ReactDOM from "react-dom";
 import * as React from "react";
@@ -31,7 +30,7 @@ import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI1
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { getOperatingSystem } from "@kie-tools-core/operating-system";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";
-import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/src/envelope/KeyboardShortcutsService";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 
 export class KogitoEditorEnvelope<
   E extends Editor,
