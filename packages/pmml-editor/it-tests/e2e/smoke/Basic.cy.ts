@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,4 +14,19 @@
  * limitations under the License.
  */
 
-module.exports = (on: any, config: any) => {};
+import { env } from "../../../env";
+const buildEnv = env;
+
+describe("Basic user's interaction", () => {
+  beforeEach(() => {
+    cy.visit(`http://localhost:${buildEnv.pmmlEditor.dev.port}/`);
+  });
+
+  it("new button exists", () => {
+    cy.newButtonPMML().contains("New").should("be.visible");
+  });
+
+  it("upload button exists", () => {
+    cy.uploadButtonPMML().contains("Upload").should("be.visible");
+  });
+});

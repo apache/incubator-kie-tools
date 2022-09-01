@@ -7,5 +7,5 @@
     "types": ["cypress"],
     "baseUrl": "./"
   },
-  "include": ["support", "integration"]
+  "include": ["support", "e2e"]
 }
