@@ -293,7 +293,7 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
       channelApi:
         editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
       locale: props.locale,
-      embeddedEditorFile: embeddedDiagramEditorFile,
+      embeddedEditorFile: embeddedTextEditorFile,
       onEditorReady: onTextEditorReady,
       swfDiagramEditorEnvelopeApi: diagramEditor?.getEnvelopeServer()
         .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>,
