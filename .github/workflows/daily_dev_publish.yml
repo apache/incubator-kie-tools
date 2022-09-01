@@ -1,4 +1,4 @@
-name: "CI :: Daily dev version"
+name: "Daily dev :: Publish"
 
 on:
   schedule:
