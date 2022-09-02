@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Column, DataType, generateUuid, LogicType, Row } from "@kie-tools/boxed-expression-component";
+import { Column, DataType, generateUuid, LogicType, Row } from "@kie-tools/boxed-expression-component/dist/api";
 import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
 import * as React from "react";

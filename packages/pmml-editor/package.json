@@ -18,8 +18,8 @@
     "dist/editor"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.dev.json",
-    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.prod.json && pnpm test",
+    "build:dev": "rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json",
+    "build:prod": "pnpm lint && rimraf dist && pnpm copy:css && pnpm copy:images && tsc -p tsconfig.json && pnpm test",
     "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css}\" dist/",
     "copy:images": "cpr ./static/images ./dist/images",
     "cy:open": "cypress open --project it-tests",

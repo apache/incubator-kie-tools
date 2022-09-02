@@ -4267,6 +4267,7 @@ importers:
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
       "@types/lodash": ^4.14.168
+      "@types/prettier": ^2.2.1
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/simpl-schema": ^1.12.0
@@ -4312,6 +4313,7 @@ importers:
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
       "@types/lodash": 4.14.169
+      "@types/prettier": 2.2.3
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/simpl-schema": 1.12.0
@@ -4344,6 +4346,7 @@ importers:
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
       "@types/lodash": ^4.14.168
+      "@types/prettier": ^2.2.1
       "@types/react": ^17.0.6
       "@types/react-dom": ^17.0.5
       "@types/simpl-schema": ^1.12.0
@@ -4387,6 +4390,7 @@ importers:
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
       "@types/lodash": 4.14.169
+      "@types/prettier": 2.2.3
       "@types/react": 17.0.21
       "@types/react-dom": 17.0.8
       "@types/simpl-schema": 1.12.0
@@ -13539,7 +13543,7 @@ packages:
       p-limit: 3.1.0
       schema-utils: 3.1.1
       serialize-javascript: 5.0.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /copyfiles/2.4.1:
@@ -23165,7 +23169,7 @@ packages:
     dependencies:
       loader-utils: 2.0.2
       schema-utils: 3.1.1
-      webpack: 5.70.0
+      webpack: 5.70.0_webpack-cli@4.7.0
     dev: true
 
   /rc/1.2.8:

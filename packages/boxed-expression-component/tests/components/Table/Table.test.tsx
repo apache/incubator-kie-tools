@@ -25,10 +25,10 @@ import {
   ColumnsUpdateArgs,
   DataType,
   RowsUpdateArgs,
-  Table,
   TableHandlerConfiguration,
   TableOperation,
-} from "@kie-tools/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component/dist/api";
+
 import {
   activateNameAndDataTypePopover,
   EDIT_EXPRESSION_DATA_TYPE,
@@ -40,6 +40,7 @@ import {
   wrapComponentInContext,
 } from "../test-utils";
 import { DEFAULT_MIN_WIDTH } from "@kie-tools/boxed-expression-component/dist/components/Resizer";
+import { Table } from "@kie-tools/boxed-expression-component/dist/components";
 
 jest.useFakeTimers();
 
