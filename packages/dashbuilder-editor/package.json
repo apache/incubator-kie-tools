@@ -4,13 +4,13 @@
   "description": "",
   "license": "Apache-2.0",
   "keywords": [],
-  "homepage": "https://github.com/kiegroup/kogito-tooling",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kiegroup/kogito-tooling.git"
+    "url": "https://github.com/kiegroup/kie-tools.git"
   },
   "bugs": {
-    "url": "https://github.com/kiegroup/kogito-tooling/issues"
+    "url": "https://github.com/kiegroup/kie-tools/issues"
   },
   "types": "./dist/editor/index.d.ts",
   "main": "dist/editor/index.js",
@@ -49,6 +49,9 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
@@ -61,7 +64,7 @@
     "copy-webpack-plugin": "^8.1.1",
     "copyfiles": "^2.4.1",
     "cpr": "^3.0.1",
-    "cypress": "^9.5.1",
+    "cypress": "^10.7.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
@@ -78,18 +81,5 @@
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

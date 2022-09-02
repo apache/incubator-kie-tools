@@ -31,6 +31,9 @@
     "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
@@ -56,18 +59,5 @@
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3",
     "zip-webpack-plugin": "^4.0.1"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

@@ -35,6 +35,9 @@
     "uniforms-patternfly": "^4.7.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/dashbuilder-component-dev": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
@@ -58,18 +61,5 @@
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

@@ -64,6 +64,9 @@
     "uuid": "^8.3.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
@@ -87,7 +90,7 @@
     "copy-webpack-plugin": "^8.1.1",
     "copyfiles": "^2.4.1",
     "cpr": "^3.0.1",
-    "cypress": "^9.5.1",
+    "cypress": "^10.7.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
@@ -104,18 +107,5 @@
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }
