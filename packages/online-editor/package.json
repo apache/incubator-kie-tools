@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/envelope-bus": "workspace:*",
     "@kie-tools-core/guided-tour": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
