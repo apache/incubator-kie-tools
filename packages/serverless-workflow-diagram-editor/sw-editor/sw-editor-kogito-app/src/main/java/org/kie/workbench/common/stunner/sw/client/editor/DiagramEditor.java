@@ -169,7 +169,6 @@ public class DiagramEditor {
                                                              Layer bgLayer = new Layer() {
                                                                  @Override
                                                                  public Layer draw(Context2D context) {
-                                                                     super.draw(context);
                                                                      context.setFillColor("#f2f2f2");
                                                                      context.fillRect(0, 0, getWidth(), getHeight());
 
@@ -362,7 +361,7 @@ public class DiagramEditor {
         ScrollablePanel lienzoPanel = ((ScrollableLienzoPanel) canvas.getView().getLienzoPanel()).getView();
         lienzoPanel.setPostResizeCallback((panel -> {
             double scale = PanelTransformUtils.computeZoomLevelFitToWidth(lienzoPanel);
-            // Do not scale if the workflow fits the panel
+            // Do not scale if workflow fits in the panel
             if (scale < 1) {
                 PanelTransformUtils.scale(lienzoPanel, scale);
             }

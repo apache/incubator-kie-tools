@@ -150,9 +150,6 @@ public class WiresConnectorView<T> extends WiresConnector
 
     private void refreshControlPoints() {
         getLine().refresh();
-        if (null != getGroup().getLayer()) {
-            getGroup().getLayer().batch();
-        }
     }
 
     @SuppressWarnings("unchecked")

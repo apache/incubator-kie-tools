@@ -150,11 +150,6 @@ public class WiresLayoutContainer implements LayoutContainer {
             doPositionChild(child, false);
         }
 
-        if (null != getGroup().getLayer()) {
-
-            getGroup().getLayer().batch();
-        }
-
         return this;
     }
 
