@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
-
 export class InMemoryBackend {
-  constructor(public readonly dexieBackend: DexieBackend, public fs = new Map<string, any>()) {}
+  constructor(public fs = new Map<string, any>()) {}
 
   async saveSuperblock(superblock: any) {
     this.fs.set("!root", superblock);

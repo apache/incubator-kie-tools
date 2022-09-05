@@ -42,95 +42,108 @@ module.exports = async (env, argv) => {
     dmnDevSandbox_baseImageName,
     dmnDevSandbox_baseImageTag,
     dmnDevSandbox_onlineEditorUrl,
-  ] = getDmnDevSandboxArgs(argv);
+  ] = getDmnDevSandboxArgs();
   const gtmResource = getGtmResource(argv);
 
-  return merge(common(env), {
-    entry: {
-      index: "./src/index.tsx",
-      "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
-      "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
-      "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
-      "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
-    },
-    plugins: [
-      new HtmlWebpackPlugin({
-        template: "./static/index.html",
-        inject: false,
-        minify: false,
-      }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
-          replacement: (match, gtm, type) => {
-            if (gtmResource) {
-              return gtmResource[type] ?? `${match}`;
-            }
-            return `${match}`;
-          },
-        },
-      ]),
-      new EnvironmentPlugin({
-        WEBPACK_REPLACE__buildInfo: buildInfo,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
-        WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
-        WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
-        WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
-        WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
-        WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
-        WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
-      }),
-      new CopyPlugin({
-        patterns: [
-          { from: "./static/resources", to: "./resources" },
-          { from: "./static/images", to: "./images" },
-          { from: "./static/samples", to: "./samples" },
-          { from: "./static/favicon.svg", to: "./favicon.svg" },
-          { from: "./static/env.json", to: "./env.json" },
-          {
-            from: stunnerEditors.dmnEditorPath(),
-            to: "./gwt-editors/dmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
-          },
-          {
-            from: stunnerEditors.bpmnEditorPath(),
-            to: "./gwt-editors/bpmn",
-            globOptions: { ignore: ["WEB-INF/**/*"] },
-          },
-          { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
-          { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
-          { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
-          {
-            from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
-            to: "./images",
-          },
-        ],
-      }),
-      new ProvidePlugin({
-        Buffer: ["buffer", "Buffer"],
-      }),
-    ],
-    resolve: {
-      alias: {
-        // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
-        // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
-        // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
-        "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
+  return [
+    merge(common(env), {
+      entry: {
+        "workspacesWorker/worker": "./src/workspacesWorker/worker.ts",
       },
-    },
-    module: {
-      rules: [...patternflyBase.webpackModuleRules],
-    },
-    devServer: {
-      https: true,
-      historyApiFallback: false,
-      static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
-      compress: true,
-      port: buildEnv.onlineEditor.dev.port,
-    },
-  });
+      target: "webworker",
+      plugins: [
+        new ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+        }),
+      ],
+    }),
+    merge(common(env), {
+      entry: {
+        index: "./src/index.tsx",
+        "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
+        "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
+        "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
+        "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
+      },
+      plugins: [
+        new HtmlWebpackPlugin({
+          template: "./static/index.html",
+          inject: false,
+          minify: false,
+        }),
+        new HtmlReplaceWebpackPlugin([
+          {
+            pattern: /(<!-- gtm):([\w-\/]+)(\s*-->)?/g,
+            replacement: (match, gtm, type) => {
+              if (gtmResource) {
+                return gtmResource[type] ?? `${match}`;
+              }
+              return `${match}`;
+            },
+          },
+        ]),
+        new EnvironmentPlugin({
+          WEBPACK_REPLACE__buildInfo: buildInfo,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesLinuxDownloadUrl: kieSandboxExtendedServices_linuxDownloadUrl,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesMacOsDownloadUrl: kieSandboxExtendedServices_macOsDownloadUrl,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesWindowsDownloadUrl: kieSandboxExtendedServices_windowsDownloadUrl,
+          WEBPACK_REPLACE__kieSandboxExtendedServicesCompatibleVersion: kieSandboxExtendedServices_compatibleVersion,
+          WEBPACK_REPLACE__dmnDevSandbox_baseImageFullUrl: `${dmnDevSandbox_baseImageRegistry}/${dmnDevSandbox_baseImageAccount}/${dmnDevSandbox_baseImageName}:${dmnDevSandbox_baseImageTag}`,
+          WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
+          WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
+          WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
+        }),
+        new CopyPlugin({
+          patterns: [
+            { from: "./static/resources", to: "./resources" },
+            { from: "./static/images", to: "./images" },
+            { from: "./static/samples", to: "./samples" },
+            { from: "./static/favicon.svg", to: "./favicon.svg" },
+            { from: "./static/env.json", to: "./env.json" },
+            {
+              from: stunnerEditors.dmnEditorPath(),
+              to: "./gwt-editors/dmn",
+              globOptions: { ignore: ["WEB-INF/**/*"] },
+            },
+            {
+              from: stunnerEditors.bpmnEditorPath(),
+              to: "./gwt-editors/bpmn",
+              globOptions: { ignore: ["WEB-INF/**/*"] },
+            },
+            { from: "./static/envelope/pmml-envelope.html", to: "./pmml-envelope.html" },
+            { from: "./static/envelope/bpmn-envelope.html", to: "./bpmn-envelope.html" },
+            { from: "./static/envelope/dmn-envelope.html", to: "./dmn-envelope.html" },
+            {
+              from: path.join(path.dirname(require.resolve("@kie-tools/pmml-editor/package.json")), "/static/images"),
+              to: "./images",
+            },
+          ],
+        }),
+        new ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+        }),
+      ],
+      resolve: {
+        alias: {
+          // `react-monaco-editor` points to the `monaco-editor` package by default, therefore doesn't use our minified
+          // version. To solve that, we fool webpack, saying that every import for Monaco directly should actually point to
+          // `@kie-tools-core/monaco-editor`. This way, everything works as expected.
+          "monaco-editor/esm/vs/editor/editor.api": require.resolve("@kie-tools-core/monaco-editor"),
+        },
+      },
+      module: {
+        rules: [...patternflyBase.webpackModuleRules],
+      },
+      devServer: {
+        https: true,
+        historyApiFallback: false,
+        static: [{ directory: path.join(__dirname, "./dist") }, { directory: path.join(__dirname, "./static") }],
+        compress: true,
+        port: buildEnv.onlineEditor.dev.port,
+      },
+    }),
+  ];
 };
 
 function getGtmResource() {
@@ -186,7 +199,7 @@ function getKieSandboxExtendedServicesArgs() {
   return [linuxDownloadUrl, macOsDownloadUrl, windowsDownloadUrl, compatibleVersion];
 }
 
-function getDmnDevSandboxArgs(argv) {
+function getDmnDevSandboxArgs() {
   const baseImageRegistry = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.registry;
   const baseImageAccount = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.account;
   const baseImageName = buildEnv.dmnDevSandboxDeploymentBaseImageEnv.name;

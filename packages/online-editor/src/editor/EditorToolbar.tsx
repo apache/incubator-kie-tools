@@ -878,25 +878,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     );
   }, [deleteWorkspaceFile, props.workspaceFile]);
 
-  const createSavePointDropdownItem = useMemo(() => {
-    return (
-      <DropdownItem
-        key={"commit-dropdown-item"}
-        icon={<SaveIcon />}
-        onClick={async () =>
-          workspaces.createSavePoint({
-            fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
-            workspaceId: props.workspaceFile.workspaceId,
-            gitConfig: githubAuthInfo,
-          })
-        }
-        description={"Create a save point"}
-      >
-        Commit
-      </DropdownItem>
-    );
-  }, [workspaces, props.workspaceFile, githubAuthInfo]);
-
   const pushingAlert = useAlert(
     props.alerts,
     useCallback(
@@ -920,6 +901,55 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       [workspacePromise]
     )
   );
+
+  const comittingAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          variant="info"
+          title={
+            <>
+              <Spinner size={"sm"} />
+              &nbsp;&nbsp; {`Creating commit...`}
+            </>
+          }
+        />
+      );
+    }, [])
+  );
+
+  const commitSuccessAlert = useAlert(
+    props.alerts,
+    useCallback(({ close }) => {
+      return <Alert variant="success" title={`Commit created.`} />;
+    }, []),
+    { durationInSeconds: 2 }
+  );
+
+  const createSavePointDropdownItem = useMemo(() => {
+    return (
+      <DropdownItem
+        key={"commit-dropdown-item"}
+        icon={<SaveIcon />}
+        onClick={async () => {
+          comittingAlert.show();
+          await workspaces.fsService.withInMemoryFs(props.workspaceFile.workspaceId, (fs) => {
+            return workspaces.createSavePoint({
+              fs,
+              workspaceId: props.workspaceFile.workspaceId,
+              gitConfig: githubAuthInfo,
+            });
+          });
+          comittingAlert.close();
+          commitSuccessAlert.show();
+        }}
+        description={"Create a save point"}
+      >
+        Commit
+      </DropdownItem>
+    );
+  }, [workspaces, props.workspaceFile, githubAuthInfo, comittingAlert, commitSuccessAlert]);
 
   const pushSuccessAlert = useAlert(
     props.alerts,

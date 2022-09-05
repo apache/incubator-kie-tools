@@ -20,10 +20,18 @@ import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
 import { GIT_ORIGIN_REMOTE_NAME } from "../services/GitService";
+import { WorkspacesWorkerApi } from "../../workspacesWorker/WorkspacesWorkerApi";
+
+// FIXME: This is not a good place to star the worker.
+const workspacesWorker = new Worker("workspacesWorker/worker.js");
+const workspacesWorkerBus = new EnvelopeBusMessageManager<{}, WorkspacesWorkerApi>((a) => {
+  workspacesWorker.postMessage(a);
+});
+workspacesWorker.onmessage = (m) => workspacesWorkerBus.server.receive(m.data, {});
 
 export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
-  const workspaces = useWorkspaces();
   const [isModifiedPromise, setModifiedPromise] = usePromiseState<{ hasLocalChanges: boolean; isSynced: boolean }>();
 
   const refresh = useCallback(
@@ -34,8 +42,7 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         return;
       }
 
-      const hasLocalChanges = await workspaces.hasLocalChanges({
-        fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
+      const hasLocalChanges = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspaces_hasLocalChanges({
         workspaceId: workspace.descriptor.workspaceId,
       });
       if (canceled.get()) {
@@ -51,15 +58,13 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         workspace.descriptor.origin.kind === WorkspaceKind.GIT ||
         workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
       ) {
-        const head = await workspaces.gitService.resolveRef({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
-          dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
+        const head = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspaces_resolveRef({
+          workspaceId: workspace.descriptor.workspaceId,
           ref: "HEAD",
         });
 
-        const remote = await workspaces.gitService.resolveRef({
-          fs: await workspaces.fsService.getWorkspaceFs(workspace.descriptor.workspaceId),
-          dir: await workspaces.getAbsolutePath({ workspaceId: workspace.descriptor.workspaceId }),
+        const remote = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspaces_resolveRef({
+          workspaceId: workspace.descriptor.workspaceId,
           ref: `${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`,
         });
 
@@ -71,7 +76,7 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         return;
       }
     },
-    [workspace, workspaces, setModifiedPromise]
+    [workspace, setModifiedPromise]
   );
 
   useCancelableEffect(

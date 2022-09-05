@@ -2933,6 +2933,7 @@ importers:
       "@babel/preset-env": ^7.16.0
       "@babel/preset-react": ^7.16.0
       "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/envelope-bus": workspace:*
       "@kie-tools-core/guided-tour": workspace:*
       "@kie-tools-core/i18n": workspace:*
       "@kie-tools-core/keyboard-shortcuts": workspace:*
@@ -3008,6 +3009,7 @@ importers:
       webpack-merge: ^5.7.3
     dependencies:
       "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/envelope-bus": link:../envelope-bus
       "@kie-tools-core/guided-tour": link:../guided-tour
       "@kie-tools-core/i18n": link:../i18n
       "@kie-tools-core/keyboard-shortcuts": link:../keyboard-shortcuts

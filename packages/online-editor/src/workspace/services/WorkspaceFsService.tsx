@@ -57,7 +57,7 @@ export class WorkspaceFsService {
     const dbName = workspaceId; // don't change. (This is hardcoded on KieSandboxFs).
     const storeName = workspaceId + "_files"; // don't change (This is hardcoded on KieSandboxFs).
     const dexieBackend = new DexieBackend(dbName, storeName);
-    const inMemoryBackend = new InMemoryBackend(dexieBackend, new Map(await readEntireFs(dexieBackend)));
+    const inMemoryBackend = new InMemoryBackend(new Map(await readEntireFs(dexieBackend)));
 
     const flush = async () => {
       // TODO: Mutate `inMemoryBackend` to not allow further use after flush.
