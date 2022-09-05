@@ -70,19 +70,15 @@ export class SwfYamlLanguageService {
     content: string;
     uri: string;
     rootNode: SwfLsNode;
-    cursorPosition: Position;
+    cursorOffset: number;
   }): boolean => {
-    /* TODO: SwfYamlLanguageService: test isNodeUncompleted */
-    const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
-    const cursorOffset = doc.offsetAt(args.cursorPosition);
-
-    if (args.content.slice(cursorOffset - 1, cursorOffset) !== " ") {
+    if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {
       return false;
     }
 
-    const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, cursorOffset - 1, true);
+    const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
 
-    return nodeAtPrevOffset.colonOffset === cursorOffset - 1;
+    return nodeAtPrevOffset?.colonOffset === args.cursorOffset - 1;
   };
 
   public async getCompletionItems(args: {
@@ -92,13 +88,25 @@ export class SwfYamlLanguageService {
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
     const rootNode = this.parseContent(args.content);
+    const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
+    const cursorOffset = doc.offsetAt(args.cursorPosition);
+
+    if (
+      !rootNode ||
+      args.content.slice(cursorOffset - 1, cursorOffset) === ":" ||
+      args.content.slice(cursorOffset - 1, cursorOffset) === "-"
+    ) {
+      return [];
+    }
+
     const isCurrentNodeUncompleted = this.isNodeUncompleted({
       ...args,
       rootNode,
+      cursorOffset,
     });
 
     if (isCurrentNodeUncompleted) {
-      args.cursorPosition.character--;
+      args.cursorPosition = Position.create(args.cursorPosition.line, args.cursorPosition.character - 1);
     }
 
     const completions = await this.ls.getCompletionItems({
@@ -109,7 +117,9 @@ export class SwfYamlLanguageService {
 
     if (isCurrentNodeUncompleted) {
       completions.forEach((completion) => {
-        completion.textEdit.newText = " " + completion.textEdit.newText;
+        if (completion.textEdit) {
+          completion.textEdit.newText = " " + completion.textEdit.newText;
+        }
       });
     }
 
