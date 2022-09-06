@@ -38,6 +38,7 @@ import (
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/moby/buildkit/identity"
+	"github.com/moby/buildkit/session/filesync"
 	"github.com/moby/buildkit/util/bklog"
 	"github.com/moby/buildkit/util/grpcerrors"
 	"github.com/ory/viper"
@@ -186,6 +187,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	defer func() { // make sure the Status ends cleanly on build errors
 		session.Close()
 	}()
+	session.Allow(filesync.NewFSSyncTargetDir("./kubernetes"))
 
 	eg, ctx := errgroup.WithContext(ctx)
 
@@ -199,14 +201,13 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	imageTag := common.GetImage(registry, repository, name, tag)
 	opts := types.ImageBuildOptions{
 		RemoteContext: "client-session",
-		// BuildID:       "buildIdTest",
-		SessionID:   session.ID(),
-		Dockerfile:  "Dockerfile.workflow",
-		Tags:        []string{imageTag},
-		BuildArgs:   buildArgs,
-		Version:     types.BuilderBuildKit,
-		Target:      "kubernetes",
-		NetworkMode: "default",
+		SessionID:     session.ID(),
+		Dockerfile:    "Dockerfile.workflow",
+		Tags:          []string{imageTag},
+		BuildArgs:     buildArgs,
+		Version:       types.BuilderBuildKit,
+		Target:        "kubernetes",
+		NetworkMode:   "default",
 		Outputs: []types.ImageBuildOutput{{
 			Type:  "local",
 			Attrs: map[string]string{},
@@ -380,6 +381,11 @@ func (s *Session) Close() error {
 		<-s.done
 	}
 	return nil
+}
+
+// Allow enables a given service to be reachable through the grpc session
+func (s *Session) Allow(a Attachable) {
+	a.Register(s.grpcServer)
 }
 
 // updates needed in opentelemetry-contrib to avoid this

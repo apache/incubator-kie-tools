@@ -12,6 +12,7 @@
 **/target/
 **/.dashbuilder/
 **/out/
+**/vendor/
 **/.idea/
 **/.DS_Store
 *.log
