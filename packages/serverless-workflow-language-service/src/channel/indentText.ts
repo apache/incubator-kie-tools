@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-export * from "./SwfJsonLanguageService";
-export * from "./SwfLanguageService";
-export * from "./SwfYamlLanguageService";
-export * from "./matchNodeWithLocation";
-export * from "./findNodesAtLocation";
-export * from "./refValidation";
-export * from "./nodeUpUntilType";
-export * from "./types";
-export * from "./indentText";
+/**
+ * Indent a text.
+ *
+ * @param text the text to indent
+ * @param indentNum number of characters to indent
+ * @param indentChar character to use to indent
+ * @param skipFirstLine true to skip first line
+ * @returns the indented string
+ */
+export function indentText(text: string, indentNum = 0, indentChar = " ", skipFirstLine = true): string {
+  if (!text) {
+    return "";
+  }
+
+  const indentation = new Array(indentNum).fill(indentChar).join("");
+
+  const indentedText = text.replace(/^/gm, indentation);
+
+  return !skipFirstLine ? indentedText : indentedText.replace(indentation, "");
+}

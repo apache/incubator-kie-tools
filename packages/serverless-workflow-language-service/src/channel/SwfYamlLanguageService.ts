@@ -31,6 +31,7 @@ import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
 import { TextDocument } from "vscode-json-languageservice";
+import { indentText } from "./indentText";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -115,13 +116,13 @@ export class SwfYamlLanguageService {
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
 
-    if (isCurrentNodeUncompleted) {
-      completions.forEach((completion) => {
-        if (completion.textEdit) {
-          completion.textEdit.newText = " " + completion.textEdit.newText;
-        }
-      });
-    }
+    // if (isCurrentNodeUncompleted) {
+    //   completions.forEach((completion) => {
+    //     if (completion.textEdit) {
+    //       completion.textEdit.newText = " " + completion.textEdit.newText;
+    //     }
+    //   });
+    // }
 
     return completions;
   }
@@ -179,7 +180,7 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
 
 class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(completion: object | string): string {
-    return dump(completion, {}).slice(0, -1);
+    return indentText(dump(completion, {}).slice(0, -1), 2, " ");
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
