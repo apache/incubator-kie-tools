@@ -33,7 +33,6 @@ func NewVersionCommand(version string) *cobra.Command {
 		Example: `
 	 # Shows the plugin version
 	 {{.Name}} version
-	 {{.Version}}
 		 `,
 		SuggestFor: []string{"vers", "verison"}, //nolint:misspell
 		PreRunE:    common.BindEnv("verbose"),
