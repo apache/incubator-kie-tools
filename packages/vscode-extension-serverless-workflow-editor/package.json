@@ -142,7 +142,7 @@
           "type": "string"
         },
         "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview": {
-          "default": false,
+          "default": true,
           "markdownDescription": "Enable/disable Kogito Serverless Workflow Visualization Preview for JSON files.",
           "type": "boolean"
         },
