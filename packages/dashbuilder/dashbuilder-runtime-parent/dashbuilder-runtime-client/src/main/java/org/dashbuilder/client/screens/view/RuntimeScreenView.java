@@ -21,12 +21,13 @@ import javax.inject.Inject;
 import elemental2.dom.HTMLDivElement;
 import elemental2.dom.HTMLElement;
 import org.dashbuilder.client.RuntimeCommunication;
-import org.dashbuilder.client.navbar.AppNavBar;
+import org.dashbuilder.client.navigation.widget.NavTilesWidget;
 import org.dashbuilder.client.screens.RuntimeScreen;
+import org.dashbuilder.navigation.NavTree;
+import org.jboss.errai.common.client.dom.elemental2.Elemental2DomUtil;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.Templated;
 import org.uberfire.ext.widgets.common.client.common.BusyIndicatorView;
-import org.uberfire.workbench.model.menu.Menus;
 
 @Dependent
 @Templated
@@ -37,13 +38,16 @@ public class RuntimeScreenView implements RuntimeScreen.View {
     HTMLDivElement runtimePage;
 
     @Inject
-    AppNavBar appNavBar;
-
-    @Inject
     RuntimeCommunication runtimeCommunication;
 
     @Inject
     BusyIndicatorView loading;
+
+    @Inject
+    NavTilesWidget tilesWidget;
+
+    @Inject
+    Elemental2DomUtil elementalUtil;
 
     @Override
     public HTMLElement getElement() {
@@ -52,12 +56,13 @@ public class RuntimeScreenView implements RuntimeScreen.View {
 
     @Override
     public void init(RuntimeScreen presenter) {
-        // empty
+        elementalUtil.appendWidgetToElement(runtimePage, tilesWidget.asWidget());
     }
 
     @Override
-    public void addMenus(Menus menus) {
-        appNavBar.setupMenus(menus);
+    public void loadNavTree(NavTree navTree, boolean keepHistory) {
+        tilesWidget.clearSelectedItem();
+        tilesWidget.show(navTree.getRootItems(), !keepHistory);
     }
 
 }

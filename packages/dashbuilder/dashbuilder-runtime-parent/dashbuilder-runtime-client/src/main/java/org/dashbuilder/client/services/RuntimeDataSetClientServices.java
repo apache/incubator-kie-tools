@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Alternative;
 import javax.inject.Inject;
 import javax.ws.rs.core.HttpHeaders;
@@ -48,6 +49,7 @@ import org.dashbuilder.dataset.client.DataSetExportReadyCallback;
 import org.dashbuilder.dataset.client.DataSetMetadataCallback;
 import org.dashbuilder.dataset.client.DataSetReadyCallback;
 import org.dashbuilder.dataset.def.DataSetDef;
+import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.dataset.json.DataSetJSONMarshaller;
 import org.dashbuilder.dataset.json.DataSetLookupJSONMarshaller;
 import org.jboss.errai.common.client.api.RemoteCallback;
@@ -221,6 +223,16 @@ public class RuntimeDataSetClientServices implements DataSetClientServices {
                     });
             return null;
         }).catch_(this::handleError);
+    }
+
+    void onDataSetDefRemovedEvent(@Observes DataSetDefRemovedEvent evt) {
+        if (evt.getDataSetDef() != null) {
+            var uuid = evt.getDataSetDef().getUUID();
+            metadataCache.remove(uuid);
+            externalDataSetClientProvider.unregister(uuid);
+            clientDataSetManager.removeDataSet(uuid);
+        }
+
     }
 
     private IThenable<Object> handleResponseText(DataSetDef def,

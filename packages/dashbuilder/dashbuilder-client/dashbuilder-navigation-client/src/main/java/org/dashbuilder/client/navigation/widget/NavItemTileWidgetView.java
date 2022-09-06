@@ -69,7 +69,7 @@ public class NavItemTileWidgetView implements NavItemTileWidget.View, IsElement 
         }
         else if (ItemType.RUNTIME_PERSPECTIVE == type) {
             mainDiv.setClassName("uf-navitem-tile-body uf-navitem-tile-runtime-perspective");
-            iconSpan.setClassName("pficon-virtual-machine");
+            iconSpan.setClassName("fa fa-tachometer");
             mainDiv.setTitle(NavigationConstants.INSTANCE.showNavItem(name));
         }
     }

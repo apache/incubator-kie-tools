@@ -15,23 +15,18 @@
  */
 import * as React from "react";
 
-import { ChartBar, ChartGroup } from "@patternfly/react-charts";
+import { ChartArea, ChartGroup, ChartScatter } from "@patternfly/react-charts";
 import { XYChart } from "./XYChart";
 
-export class BarChart extends XYChart {
+export class ScatterChart extends XYChart {
   buildChartGroup(): any {
     return (
-      <ChartGroup
-        offset={(this.props.barWidth || 0) + (this.props.barOffset || 10)}
-        horizontal={this.props.horizontalBars}
-      >
+      <ChartGroup>
         {this.dataSetToXYData()
-          .map((line) => {
-            return this.seriesLines(line);
-          })
-          .map((lineData, i) => {
-            return <ChartBar key={i} data={lineData} y={(d) => d.yVal} barWidth={this.props.barWidth} />;
-          })}
+          .map((line) => this.seriesLines(line))
+          .map((lineData, i) => (
+            <ChartScatter key={i} data={lineData} />
+          ))}
       </ChartGroup>
     );
   }

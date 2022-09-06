@@ -38,6 +38,7 @@ import org.dashbuilder.client.resources.i18n.AppConstants;
 import org.dashbuilder.client.screens.RouterScreen;
 import org.dashbuilder.client.setup.RuntimeClientMode;
 import org.dashbuilder.client.setup.RuntimeClientSetup;
+import org.dashbuilder.dataset.events.DataSetDefRemovedEvent;
 import org.dashbuilder.shared.event.UpdatedRuntimeModelEvent;
 import org.dashbuilder.shared.model.DashbuilderRuntimeMode;
 import org.dashbuilder.shared.model.RuntimeModel;
@@ -81,6 +82,8 @@ public class RuntimeClientLoader {
 
     RuntimeClientSetup setup;
 
+    Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent;
+
     String clientModelBaseUrl;
 
     boolean hideNavBar;
@@ -99,6 +102,7 @@ public class RuntimeClientLoader {
                                RuntimeModelClientParserFactory parserFactory,
                                RuntimeModelContentListener contentListener,
                                Event<UpdatedRuntimeModelEvent> updatedRuntimeModelEvent,
+                               Event<DataSetDefRemovedEvent> dataSetDefRemovedEvent,
                                RouterScreen router) {
         this.runtimeModelResourceClient = runtimeModelResourceClient;
         this.perspectiveEditorGenerator = perspectiveEditorGenerator;
@@ -109,6 +113,7 @@ public class RuntimeClientLoader {
         this.contentListener = contentListener;
         this.loading = loading;
         this.updatedRuntimeModelEvent = updatedRuntimeModelEvent;
+        this.dataSetDefRemovedEvent = dataSetDefRemovedEvent;
         this.router = router;
     }
 
@@ -249,7 +254,6 @@ public class RuntimeClientLoader {
         } else {
             var parser = parserFactory.getEditorParser(content);
             var runtimeModel = parser.parse(content);
-            clearObsoletePerspectives(runtimeModel);
             registerModel(runtimeModel);
             this.clientModel = runtimeModel;
             updatedRuntimeModelEvent.fire(new UpdatedRuntimeModelEvent(""));
@@ -267,12 +271,9 @@ public class RuntimeClientLoader {
             return response.text();
         }).then(content -> {
             loading.hideBusyIndicator();
-            var parserOp = parserFactory.get(content);
             try {
-                var parser = parserOp.orElseThrow(() -> new IllegalArgumentException("Content is not supported"));
-                var runtimeModel = parser.parse(content);
-                registerModel(runtimeModel);
-                responseConsumer.accept(runtimeModel);
+                loadClientModel(content);
+                responseConsumer.accept(this.clientModel);
             } catch (Exception e) {
                 error.accept("Error loading content", e);
             }
@@ -317,6 +318,8 @@ public class RuntimeClientLoader {
     }
 
     private void registerModel(RuntimeModel runtimeModel) {
+        clearObsoletePerspectives(runtimeModel);
+        clearObsoleteDataSets(runtimeModel);
         runtimeModel.getLayoutTemplates().forEach(perspectiveEditorGenerator::generatePerspective);
         runtimeModel.getClientDataSets().forEach(externalDataSetProvider::register);
         runtimePerspectivePluginManager.setTemplates(runtimeModel.getLayoutTemplates());
@@ -351,9 +354,17 @@ public class RuntimeClientLoader {
                     .stream()
                     .filter(lt -> !runtimeModel.getLayoutTemplates()
                             .stream()
-                            .filter(lt2 -> lt2.getName().equals(lt.getName()))
-                            .findFirst().isPresent())
+                            .anyMatch(lt2 -> lt2.getName().equals(lt.getName())))
                     .forEach(lt -> perspectiveEditorGenerator.unregisterPerspective(lt));
+        }
+    }
+
+    private void clearObsoleteDataSets(RuntimeModel runtimeModel) {
+        if (this.clientModel != null) {
+            this.clientModel.getClientDataSets()
+                    .stream()
+                    .filter(ds -> !runtimeModel.getClientDataSets().stream().anyMatch(dsOld -> dsOld.equals(ds)))
+                    .forEach(ds -> dataSetDefRemovedEvent.fire(new DataSetDefRemovedEvent(ds)));
         }
     }
 
