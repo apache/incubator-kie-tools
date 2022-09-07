@@ -417,11 +417,7 @@ functions:
       let { content, cursorOffset } = treat(`
 ---
 functions:
-- 🎯name: function1
-  operation: openapi.yml#getGreeting
-- name: function2
-  operation: openapi.yml#getGreeting
-`);
+- 🎯`);
       const root = ls.parseContent(content);
       const node = findNodeAtOffset(root!, cursorOffset, true);
 
@@ -430,7 +426,7 @@ functions:
         expect(matchNodeWithLocation(root!, node!, ["states"])).toBeFalsy();
       });
 
-      test.skip("with cursorOffset at the first function", () => {
+      test.skip("with cursorOffset at the first function property", () => {
         expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
         expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
       });
