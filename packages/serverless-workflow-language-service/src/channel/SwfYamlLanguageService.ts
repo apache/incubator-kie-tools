@@ -116,14 +116,6 @@ export class SwfYamlLanguageService {
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
 
-    // if (isCurrentNodeUncompleted) {
-    //   completions.forEach((completion) => {
-    //     if (completion.textEdit) {
-    //       completion.textEdit.newText = " " + completion.textEdit.newText;
-    //     }
-    //   });
-    // }
-
     return completions;
   }
 

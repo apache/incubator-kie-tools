@@ -414,8 +414,7 @@ functions:
         serviceCatalog: defaultServiceCatalogConfig,
         config: defaultConfig,
       });
-      let { content, cursorOffset } = treat(`
----
+      const { content, cursorOffset } = treat(`---
 functions:
 - 🎯`);
       const root = ls.parseContent(content);
@@ -426,8 +425,11 @@ functions:
         expect(matchNodeWithLocation(root!, node!, ["states"])).toBeFalsy();
       });
 
-      test.skip("with cursorOffset at the first function property", () => {
+      test("with cursorOffset at the first function property against 'functions *' selector", () => {
         expect(matchNodeWithLocation(root!, node!, ["functions", "*"])).toBeTruthy();
+      });
+
+      test.skip("with cursorOffset at the first function property against 'functions' selector", () => {
         expect(matchNodeWithLocation(root!, node!, ["functions"])).toBeFalsy();
       });
     });
