@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 import { TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";
+import { SwfJsonLanguageService, SwfYamlLanguageService } from "../dist/channel";
 
 /**
  * Gets the corresponding line from an offset.
@@ -40,4 +42,30 @@ export function treat(content: ContentWithCursor) {
 
 export function trim(content: string) {
   return { content: content.trim() };
+}
+
+/**
+ * Gets the CompletionItem and the cursorPosition for a content with cursor
+ *
+ * @param ls -
+ * @param documentUri -
+ * @param contentToParse -
+ * @returns
+ */
+export async function codeCompletionTester(
+  ls: SwfJsonLanguageService | SwfYamlLanguageService,
+  documentUri: DocumentUri,
+  contentToParse: ContentWithCursor
+): Promise<{ completionItems: CompletionItem[]; cursorPosition: Position }> {
+  const { content, cursorPosition } = treat(contentToParse);
+
+  return {
+    completionItems: await ls.getCompletionItems({
+      uri: documentUri,
+      content,
+      cursorPosition,
+      cursorWordRange: { start: cursorPosition, end: cursorPosition },
+    }),
+    cursorPosition,
+  };
 }

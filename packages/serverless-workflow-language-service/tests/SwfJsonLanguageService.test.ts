@@ -22,9 +22,11 @@ import {
   testRelativeFunction1,
   testRelativeService1,
 } from "./SwfLanguageServiceConfigs";
-import { treat, trim } from "./testUtils";
+import { codeCompletionTester, trim } from "./testUtils";
 
 describe("SWF LS JSON", () => {
+  const documentUri = "test.sw.json";
+
   test("basic", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},
@@ -33,14 +35,14 @@ describe("SWF LS JSON", () => {
     });
 
     const completionItems = await ls.getCompletionItems({
-      uri: "test.sw.json",
+      uri: documentUri,
       content: "{}",
       cursorPosition: { line: 0, character: 0 },
       cursorWordRange: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
     });
 
     const codeLenses = await ls.getCodeLenses({
-      uri: "test.sw.json",
+      uri: documentUri,
       content: "{}",
     });
 
@@ -61,7 +63,7 @@ describe("SWF LS JSON", () => {
   "functions": []
 }`);
 
-      const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
@@ -83,7 +85,7 @@ describe("SWF LS JSON", () => {
 
       const { content } = trim(`{"functions":[]}`);
 
-      const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
@@ -114,7 +116,7 @@ describe("SWF LS JSON", () => {
   "functions": []
 }`);
 
-      const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
@@ -139,7 +141,7 @@ describe("SWF LS JSON", () => {
   "functions": []
 }`);
 
-      const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
@@ -175,7 +177,7 @@ describe("SWF LS JSON", () => {
   "functions": []
 }`);
 
-      const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
@@ -211,7 +213,7 @@ describe("SWF LS JSON", () => {
   "functions": []
 }`);
 
-      const codeLenses = await ls.getCodeLenses({ uri: "test.sw.json", content });
+      const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(2);
       expect(codeLenses[0]).toStrictEqual({
@@ -245,35 +247,27 @@ describe("SWF LS JSON", () => {
 
     describe("function completion", () => {
       test("empty completion items", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {🎯}
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(0);
       });
 
       test("add into empty functions array", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [🎯]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -295,7 +289,7 @@ describe("SWF LS JSON", () => {
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri: documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -312,17 +306,14 @@ describe("SWF LS JSON", () => {
       });
 
       test("add at the end", async () => {
-        const { content, cursorPosition } = treat(`
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `
 {
   "functions": [{...},🎯]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -344,7 +335,7 @@ describe("SWF LS JSON", () => {
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri: documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -361,17 +352,13 @@ describe("SWF LS JSON", () => {
       });
 
       test("add at the beginning", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [🎯{...}]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -393,7 +380,7 @@ describe("SWF LS JSON", () => {
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri: documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -410,17 +397,13 @@ describe("SWF LS JSON", () => {
       });
 
       test("add in the middle", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [{...},🎯{...}]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -442,7 +425,7 @@ describe("SWF LS JSON", () => {
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri: documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -459,19 +442,15 @@ describe("SWF LS JSON", () => {
       });
 
       test("add in a new line", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     🎯
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -493,7 +472,7 @@ describe("SWF LS JSON", () => {
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri: documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -512,22 +491,18 @@ describe("SWF LS JSON", () => {
 
     describe("operation completion", () => {
       test("not in quotes / without same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
       "operation": 🎯
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -553,8 +528,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("not in quotes / with same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -562,14 +539,8 @@ describe("SWF LS JSON", () => {
       "type": "rest"
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -595,22 +566,18 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / without same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
       "operation": "🎯"
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -636,8 +603,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / with same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -645,14 +614,8 @@ describe("SWF LS JSON", () => {
       "type": "rest"
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -680,8 +643,10 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef completion", () => {
       test("without same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -702,14 +667,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -729,8 +688,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("with same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -751,14 +712,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -780,8 +735,10 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef refName completion", () => {
       test("not in quotes / without same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "myFunc",
@@ -804,14 +761,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -838,8 +789,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("not in quotes / with same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "myFunc",
@@ -863,14 +816,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -897,8 +844,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / without same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "myFunc",
@@ -921,14 +870,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -955,8 +898,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("inside quotes / with same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "myFunc",
@@ -980,14 +925,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -1016,8 +955,10 @@ describe("SWF LS JSON", () => {
 
     describe("functionRef arguments completion", () => {
       test("without same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-{
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
   "functions": [
     {
       "name": "testRelativeFunction1",
@@ -1041,14 +982,8 @@ describe("SWF LS JSON", () => {
       ]
     }
   ]
-}`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+}`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
@@ -1069,8 +1004,10 @@ describe("SWF LS JSON", () => {
       });
 
       test("with same level content after", async () => {
-        const { content, cursorPosition } = treat(`
-          {
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `{
             "functions": [
               {
                 "name": "testRelativeFunction1",
@@ -1094,14 +1031,8 @@ describe("SWF LS JSON", () => {
                   ]
                 }
               ]
-          }`);
-
-        const completionItems = await ls.getCompletionItems({
-          uri: "test.sw.json",
-          content,
-          cursorPosition,
-          cursorWordRange: { start: cursorPosition, end: cursorPosition },
-        });
+          }`
+        );
 
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
