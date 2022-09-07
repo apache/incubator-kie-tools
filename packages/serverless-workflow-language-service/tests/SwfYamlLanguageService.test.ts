@@ -966,7 +966,7 @@ functions:
         } as CompletionItem);
       });
 
-      test("inside quotes / without same level content after", async () => {
+      test("inside single quotes / without same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
@@ -999,7 +999,7 @@ functions:
         } as CompletionItem);
       });
 
-      test("inside quotes / with same level content after", async () => {
+      test("inside single quotes / with same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
@@ -1008,6 +1008,39 @@ functions:
 - name: testRelativeFunction1
   operation: '🎯'
   type: 'rest'`
+        );
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Folder,
+          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          textEdit: {
+            newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+            range: {
+              start: {
+                ...cursorPosition,
+                character: cursorPosition.character - 1,
+              },
+              end: {
+                ...cursorPosition,
+                character: cursorPosition.character + 1,
+              },
+            },
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
+
+      test("inside double quotes / without same level content after", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `---
+functions:
+- name: testRelativeFunction1
+  operation: "🎯"`
         );
 
         expect(completionItems).toHaveLength(1);
@@ -1188,6 +1221,7 @@ states:
 
         expect(completionItems).toHaveLength(0);
       });
+
       test("not in quotes / without same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
@@ -1275,7 +1309,50 @@ states:
         } as CompletionItem);
       });
 
-      test("inside quotes / without same level content after", async () => {
+      test("inside single quotes / without same level content after", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `---
+functions:
+- name: myFunc
+  operation: "./specs/myService#myFunc"
+  type: rest
+states:
+- name: testState
+  type: operation
+  transition: end
+  actions:
+  - name: testStateAction
+    functionRef:
+      refName: '🎯'`
+        );
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Value,
+          label: `"myFunc"`,
+          detail: `"myFunc"`,
+          filterText: `"myFunc"`,
+          sortText: `"myFunc"`,
+          textEdit: {
+            newText: `myFunc`,
+            range: {
+              start: {
+                ...cursorPosition,
+                character: cursorPosition.character - 1,
+              },
+              end: {
+                ...cursorPosition,
+                character: cursorPosition.character + 1,
+              },
+            },
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
+
+      test("inside double quotes / without same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
@@ -1318,7 +1395,7 @@ states:
         } as CompletionItem);
       });
 
-      test("inside quotes / with same level content after", async () => {
+      test("inside double quotes / with same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,

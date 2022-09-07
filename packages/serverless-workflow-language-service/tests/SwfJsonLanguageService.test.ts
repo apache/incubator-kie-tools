@@ -565,7 +565,7 @@ describe("SWF LS JSON", () => {
         } as CompletionItem);
       });
 
-      test("inside quotes / without same level content after", async () => {
+      test("inside double quotes / without same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
@@ -602,7 +602,7 @@ describe("SWF LS JSON", () => {
         } as CompletionItem);
       });
 
-      test("inside quotes / with same level content after", async () => {
+      test("inside double quotes / with same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
@@ -843,7 +843,7 @@ describe("SWF LS JSON", () => {
         } as CompletionItem);
       });
 
-      test("inside quotes / without same level content after", async () => {
+      test("inside double quotes / without same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
@@ -897,7 +897,7 @@ describe("SWF LS JSON", () => {
         } as CompletionItem);
       });
 
-      test("inside quotes / with same level content after", async () => {
+      test("inside double quotes / with same level content after", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
           documentUri,
