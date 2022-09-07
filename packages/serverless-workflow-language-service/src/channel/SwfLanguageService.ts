@@ -15,6 +15,16 @@
  */
 
 import {
+  SwfServiceCatalogFunction,
+  SwfServiceCatalogFunctionSourceType,
+  SwfServiceCatalogService,
+  SwfServiceCatalogServiceSourceType,
+} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { Specification } from "@severlessworkflow/sdk-typescript";
+import * as jsonc from "jsonc-parser";
+import { posix as posixPath } from "path";
+import { getLanguageService, TextDocument } from "vscode-json-languageservice";
+import {
   CodeLens,
   CompletionItem,
   CompletionItemKind,
@@ -22,23 +32,13 @@ import {
   Position,
   Range,
 } from "vscode-languageserver-types";
-import * as jsonc from "jsonc-parser";
-import { posix as posixPath } from "path";
-import {
-  SwfServiceCatalogFunction,
-  SwfServiceCatalogFunctionSourceType,
-  SwfServiceCatalogService,
-  SwfServiceCatalogServiceSourceType,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
 import { FileLanguage, SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
-import * as swfModelQueries from "./modelQueries";
-import { Specification } from "@severlessworkflow/sdk-typescript";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
-import { getLanguageService, TextDocument } from "vscode-json-languageservice";
-import { doRefValidation } from "./refValidation";
-import { nodeUpUntilType } from "./nodeUpUntilType";
 import { findNodesAtLocation } from "./findNodesAtLocation";
-import { SwfJsonPath, SwfLsNode, CodeCompletionStrategy } from "./types";
+import * as swfModelQueries from "./modelQueries";
+import { nodeUpUntilType } from "./nodeUpUntilType";
+import { doRefValidation } from "./refValidation";
+import { CodeCompletionStrategy, SwfJsonPath, SwfLsNode } from "./types";
 
 export type SwfLanguageServiceConfig = {
   shouldConfigureServiceRegistries: () => boolean; //TODO: See https://issues.redhat.com/browse/KOGITO-7107
@@ -468,7 +468,7 @@ const completions = new Map<
                   ? swfServiceCatalogService.source.url
                   : swfServiceCatalogFunc.operation,
               textEdit: {
-                newText: codeCompletionStrategy.translate(swfFunction) + separator,
+                newText: codeCompletionStrategy.translate(swfFunction, kind) + separator,
                 range: overwriteRange,
               },
               snippet: true,
@@ -514,7 +514,7 @@ const completions = new Map<
             detail: `"${swfServiceCatalogFunc.operation}"`,
             filterText: `"${swfServiceCatalogFunc.operation}"`,
             textEdit: {
-              newText: codeCompletionStrategy.translate(`${swfServiceCatalogFunc.operation}`),
+              newText: codeCompletionStrategy.translate(`${swfServiceCatalogFunc.operation}`, kind),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -558,7 +558,7 @@ const completions = new Map<
             sortText: `${swfFunctionRef.refName}`,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
-              newText: codeCompletionStrategy.translate(swfFunctionRef),
+              newText: codeCompletionStrategy.translate(swfFunctionRef, CompletionItemKind.Module),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -581,7 +581,7 @@ const completions = new Map<
             detail: `"${swfFunction.name}"`,
             filterText: `"${swfFunction.name}"`,
             textEdit: {
-              newText: codeCompletionStrategy.translate(`${swfFunction.name}`),
+              newText: codeCompletionStrategy.translate(`${swfFunction.name}`, CompletionItemKind.Value),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -639,7 +639,7 @@ const completions = new Map<
           sortText: `${swfFunctionRefName} arguments`,
           detail: swfFunction.operation,
           textEdit: {
-            newText: codeCompletionStrategy.translate(swfFunctionRefArgs),
+            newText: codeCompletionStrategy.translate(swfFunctionRefArgs, CompletionItemKind.Module),
             range: overwriteRange,
           },
           insertTextFormat: InsertTextFormat.Snippet,

@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { CompletionItemKind } from "vscode-languageserver-types";
+
 // types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
 export declare type SwfJsonPath = (string | number)[];
 export declare type SwfLsNodeType = "object" | "array" | "property" | "string" | "number" | "boolean" | "null";
@@ -39,6 +42,6 @@ export interface ShouldCompleteArgs {
 }
 
 export interface CodeCompletionStrategy {
-  translate(completion: object | string): string;
+  translate(completion: object | string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
 }

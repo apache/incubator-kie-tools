@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-import {
-  findNodeAtOffset,
-  matchNodeWithLocation,
-  SwfJsonLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import {
   defaultConfig,

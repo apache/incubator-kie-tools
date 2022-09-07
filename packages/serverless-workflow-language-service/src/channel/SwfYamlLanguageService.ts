@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { TextDocument } from "vscode-json-languageservice";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import {
   dump,
   Kind,
@@ -27,11 +28,10 @@ import {
   YAMLSequence,
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
+import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
-import { TextDocument } from "vscode-json-languageservice";
-import { indentText } from "./indentText";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -179,8 +179,11 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
 };
 
 class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(completion: object | string): string {
-    return indentText(dump(completion, {}).slice(0, -1), 2, " ");
+  public translate(completion: object | string, completionItemKind: CompletionItemKind): string {
+    const skipFirstLineIndent = completionItemKind !== CompletionItemKind.Module;
+    const completionItemNewLine = completionItemKind === CompletionItemKind.Module ? "\n" : "";
+
+    return completionItemNewLine + indentText(dump(completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {

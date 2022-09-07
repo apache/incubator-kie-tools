@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-import {
-  findNodeAtOffset,
-  matchNodeWithLocation,
-  nodeUpUntilType,
-  SwfYamlLanguageService,
-} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { SwfYamlLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat, Position } from "vscode-languageserver-types";
 import {
@@ -32,6 +27,8 @@ import {
 import { ContentWithCursor, treat, trim } from "./testUtils";
 
 describe("SWF LS YAML", () => {
+  const documentUri = "test.sw.yaml";
+
   describe("parsing content", () => {
     test("parsing content with empty function array", async () => {
       const ls = new SwfYamlLanguageService({
@@ -663,7 +660,7 @@ functions: []
 
       return {
         completionItems: await ls.getCompletionItems({
-          uri: "test.sw.json",
+          uri: documentUri,
           content,
           cursorPosition,
           cursorWordRange: { start: cursorPosition, end: cursorPosition },
@@ -681,7 +678,7 @@ functions:
         expect(completionItems).toHaveLength(0);
       });
 
-      test.skip("add into empty functions array", async () => {
+      test.skip("using JSON format", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(`---
 functions: [🎯]`);
 
@@ -703,7 +700,7 @@ functions: [🎯]`);
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -743,7 +740,7 @@ functions:
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -783,7 +780,7 @@ functions:
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -824,7 +821,7 @@ functions:
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -863,7 +860,7 @@ functions:
             title: "Import function from completion item",
             arguments: [
               {
-                documentUri: "test.sw.json",
+                documentUri,
                 containingService: {
                   ...testRelativeService1,
                   functions: [
@@ -1048,11 +1045,12 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1",
           textEdit: {
-            newText: `refName: 'testRelativeFunction1'
-arguments:
-  argString: '\${1:}'
-  argNumber: '\${2:}'
-  argBoolean: '\${3:}'`,
+            newText: `
+  refName: 'testRelativeFunction1'
+  arguments:
+    argString: '\${1:}'
+    argNumber: '\${2:}'
+    argBoolean: '\${3:}'`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
@@ -1081,11 +1079,42 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1",
           textEdit: {
-            newText: `refName: 'testRelativeFunction1'
-arguments:
-  argString: '\${1:}'
-  argNumber: '\${2:}'
-  argBoolean: '\${3:}'`,
+            newText: `
+  refName: 'testRelativeFunction1'
+  arguments:
+    argString: '\${1:}'
+    argNumber: '\${2:}'
+    argBoolean: '\${3:}'`,
+            range: { start: cursorPosition, end: cursorPosition },
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
+
+      test.skip("using JSON format", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(`---
+functions:
+- name: testRelativeFunction1
+  operation: specs/testRelativeService1.yml#testRelativeFunction1
+  type: rest
+states:
+- name: testState
+  type: operation
+  transition: end
+  actions:
+  - functionRef: {🎯}`);
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Module,
+          label: "testRelativeFunction1",
+          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+          sortText: "testRelativeFunction1",
+          textEdit: {
+            newText: `{
+  "refName": "testRelativeFunction1",
+  "arguments": {\n    "argString": "\${1:}",\n    "argNumber": "\${2:}",\n    "argBoolean": "\${3:}"\n  }
+}`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
@@ -1134,7 +1163,7 @@ states:
           filterText: `"myFunc"`,
           sortText: `"myFunc"`,
           textEdit: {
-            newText: ` myFunc`,
+            newText: `myFunc`,
             range: {
               start: {
                 ...cursorPosition,
@@ -1174,7 +1203,7 @@ states:
           filterText: `"myFunc"`,
           sortText: `"myFunc"`,
           textEdit: {
-            newText: ` myFunc`,
+            newText: `myFunc`,
             range: {
               start: {
                 ...cursorPosition,
@@ -1313,9 +1342,10 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1 arguments",
           textEdit: {
-            newText: `argString: '\${1:}'
-argNumber: '\${2:}'
-argBoolean: '\${3:}'`,
+            newText: `
+  argString: '\${1:}'
+  argNumber: '\${2:}'
+  argBoolean: '\${3:}'`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
@@ -1335,7 +1365,7 @@ states:
   actions:
   - name: testStateAction
     functionRef:
-      arguments:🎯
+      arguments: 🎯
       refName: testRelativeFunction1`);
 
         expect(completionItems).toHaveLength(1);
@@ -1345,9 +1375,44 @@ states:
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
           sortText: "testRelativeFunction1 arguments",
           textEdit: {
-            newText: `argString: '\${1:}'
-argNumber: '\${2:}'
-argBoolean: '\${3:}'`,
+            newText: `
+  argString: '\${1:}'
+  argNumber: '\${2:}'
+  argBoolean: '\${3:}'`,
+            range: { start: cursorPosition, end: cursorPosition },
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
+
+      test.skip("using JSON format", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(`---
+functions:
+- name: testRelativeFunction1
+  operation: specs/testRelativeService1.yml#testRelativeFunction1
+  type: rest
+states:
+- name: testState
+  type: operation
+  transition: end
+  actions:
+  - name: testStateAction
+    functionRef:
+      refName: testRelativeFunction1
+      arguments: {🎯}`);
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Module,
+          label: `'testRelativeFunction1' arguments`,
+          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+          sortText: "testRelativeFunction1 arguments",
+          textEdit: {
+            newText: `{
+  "argString": "\${1:}",
+  "argNumber": "\${2:}",
+  "argBoolean": "\${3:}"
+}`,
             range: { start: cursorPosition, end: cursorPosition },
           },
           insertTextFormat: InsertTextFormat.Snippet,
