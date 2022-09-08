@@ -14,21 +14,6 @@
  * limitations under the License.
  */
 
-package main
+package metadata
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
-)
-
-func main() {
-	if err := root.NewRootCommand(root.RootCmdConfig{Name: "kn workflow", Version: metadata.PluginVersion}).Execute(); err != nil {
-		if err.Error() != "subcommand is required" {
-			fmt.Fprintln(os.Stderr, err)
-		}
-		os.Exit(1)
-	}
-}
+var PluginVersion string

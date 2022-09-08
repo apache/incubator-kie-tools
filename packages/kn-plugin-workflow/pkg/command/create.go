@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -31,13 +32,13 @@ type CreateCmdConfig struct {
 	Extesions   string // List of extensions separated by "," to be add on the Quarkus project
 
 	// Dependencies versions
-	DependenciesVersion common.DependenciesVersion
+	DependenciesVersion metadata.DependenciesVersion
 
 	// Plugin options
 	Verbose bool
 }
 
-func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
+func NewCreateCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:   "create",
 		Short: "Create a Kogito Serverless Workflow project",
@@ -68,10 +69,12 @@ func NewCreateCommand(dependenciesVersion common.DependenciesVersion) *cobra.Com
 		return runCreate(cmd, args)
 	}
 
+	quarkusDepedencies := metadata.ResolveQuarkusDependencies()
+
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
 	cmd.Flags().StringP("extension", "e", "", "Project custom Maven extensions, separated with a comma.")
-	cmd.Flags().StringP("quarkus-platform-group-id", "G", dependenciesVersion.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
-	cmd.Flags().StringP("quarkus-version", "V", dependenciesVersion.QuarkusVersion, "Quarkus version to be set in the project.")
+	cmd.Flags().StringP("quarkus-platform-group-id", "G", quarkusDepedencies.QuarkusPlatformGroupId, "Quarkus group id to be set in the project.")
+	cmd.Flags().StringP("quarkus-version", "V", quarkusDepedencies.QuarkusVersion, "Quarkus version to be set in the project.")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -138,7 +141,7 @@ func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 			viper.GetString("extension"),
 		),
 
-		DependenciesVersion: common.DependenciesVersion{
+		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: quarkusPlatformGroupId,
 			QuarkusVersion:         quarkusVersion,
 		},
