@@ -12,6 +12,32 @@ operator-sdk-v1.22.2
 
 Go 1.19
 
+Minikube or CRC
+
+# Minikube
+
+```sh 
+minikube start --cpus 4 --memory 4096
+```
+```sh
+minikube addons enable registry
+```
+```sh
+kubectl create namespace kogito-builder
+```
+```sh
+minikube addons enable registry-creds
+```
+```sh
+minikube addons configure registry-creds
+```
+configure docker registry with quay.io credentials or with your preferred docker registry
+
+Create a secret 
+```sh
+kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email>
+```
+
 ## Description
 The aim of this project is to collect everything is needed for a proof-of-concept of the Kogito Serverless Workflow CRD
 

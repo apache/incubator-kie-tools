@@ -17,6 +17,7 @@ limitations under the License.
 package v1alpha1
 
 import (
+	"github.com/RHsyseng/operator-utils/pkg/olm"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -338,19 +339,35 @@ type Endpoint struct {
 	Protocol string `json:"protocol,omitempty"` // "TCP" or "UDP"; never empty
 }
 
-type StatusCondition string
-
-const (
-	BuildingStatusCondition StatusCondition = "Building"
-	ReadyStatusCondition    StatusCondition = "Ready"
-)
-
 // KogitoServerlessWorkflowStatus defines the observed state of KogitoServerlessWorkflow
 type KogitoServerlessWorkflowStatus struct {
-	Conditions StatusCondition    `json:"conditions,omitempty"`
-	Endpoints  []Endpoint         `json:"endpoints"`
-	Address    duckv1.Addressable `json:"address,omitempty"`
+	Conditions  BuildStatusCondition         `json:"conditions,omitempty"`
+	Endpoints   []Endpoint                   `json:"endpoints"`
+	Address     duckv1.Addressable           `json:"address,omitempty"`
+	Deployments olm.DeploymentStatus         `json:"deployments"`
+	Phase       ConditionType                `json:"phase,omitempty"`
+	Applied     KogitoServerlessWorkflowSpec `json:"applied,omitempty"`
+	Version     string                       `json:"version,omitempty"`
 }
+
+// ConditionType - type of condition
+type ConditionType string
+
+const (
+	// DeployedConditionType - the kieapp is deployed
+	DeployedConditionType ConditionType = "Deployed"
+	// ProvisioningConditionType - the kieapp is being provisioned
+	ProvisioningConditionType ConditionType = "Provisioning"
+	// FailedConditionType - the kieapp is in a failed state
+	FailedConditionType ConditionType = "Failed"
+)
+
+type BuildStatusCondition string
+
+const (
+	BuildingStatusCondition BuildStatusCondition = "Building"
+	ReadyStatusCondition    BuildStatusCondition = "Ready"
+)
 
 // KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
 // +kubebuilder:object:root=true
