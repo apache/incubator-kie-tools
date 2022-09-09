@@ -26,22 +26,20 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
 
   const refresh = useCallback(
     async (workspaceId: string, relativePath: string, canceled: Holder<boolean>) => {
-      workspaces
-        .getFile({ fs: await workspaces.fsService.getWorkspaceFs(workspaceId), workspaceId, relativePath })
-        .then((workspaceFile) => {
-          if (canceled.get()) {
-            return;
-          }
+      workspaces.getFile({ workspaceId, relativePath }).then((workspaceFile) => {
+        if (canceled.get()) {
+          return;
+        }
 
-          if (!workspaceFile) {
-            setWorkspaceFilePromise({
-              error: `File '${relativePath}' not found in Workspace '${workspaceId}'`,
-            });
-            return;
-          }
+        if (!workspaceFile) {
+          setWorkspaceFilePromise({
+            error: `File '${relativePath}' not found in Workspace '${workspaceId}'`,
+          });
+          return;
+        }
 
-          setWorkspaceFilePromise({ data: workspaceFile });
-        });
+        setWorkspaceFilePromise({ data: workspaceFile });
+      });
     },
     [workspaces, setWorkspaceFilePromise]
   );

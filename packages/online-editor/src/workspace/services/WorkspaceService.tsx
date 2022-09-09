@@ -27,6 +27,10 @@ import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
+import {
+  WorkspaceWorkerFile,
+  WorkspaceWorkerFileDescriptor,
+} from "../../workspacesWorker/api/WorkspaceWorkerFileDescriptor";
 
 export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
 
@@ -149,10 +153,13 @@ export class WorkspaceService {
 
   public async createOrOverwriteFile(
     fs: KieSandboxFs,
-    file: WorkspaceFile,
+    file: WorkspaceWorkerFile,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
-    await this.storageService.createOrOverwriteFile(fs, this.toStorageFile(file));
+    await this.storageService.createOrOverwriteFile(
+      fs,
+      this.toStorageFile(file, async () => file.content)
+    );
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
@@ -174,7 +181,7 @@ export class WorkspaceService {
     fs: KieSandboxFs;
     workspaceId: string;
     relativePath: string;
-  }): Promise<WorkspaceFile | undefined> {
+  }): Promise<WorkspaceWorkerFile | undefined> {
     const absolutePath = this.getAbsolutePath(args);
     const storageFile = await this.storageService.getFile(args.fs, absolutePath);
     if (!storageFile) {
@@ -185,78 +192,75 @@ export class WorkspaceService {
 
   public async updateFile(
     fs: KieSandboxFs,
-    file: WorkspaceFile,
+    wwfd: WorkspaceWorkerFileDescriptor,
     getNewContents: () => Promise<string>,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
-    await this.storageService.updateFile(
-      fs,
-      this.toStorageFile(
-        new WorkspaceFile({
-          relativePath: file.relativePath,
-          workspaceId: file.workspaceId,
-          getFileContents: () => getNewContents().then((c) => encoder.encode(c)),
-        })
-      )
+    await this.storageService.updateFile(fs, this.getAbsolutePath(wwfd), () =>
+      getNewContents().then((c) => encoder.encode(c))
     );
 
     if (broadcastArgs.broadcast) {
-      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(wwfd.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(file));
-      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(wwfd));
+      const broadcastChannel2 = new BroadcastChannel(wwfd.workspaceId);
       broadcastChannel1.postMessage({
         type: "UPDATE",
-        relativePath: file.relativePath,
+        relativePath: wwfd.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "UPDATE_FILE",
-        relativePath: file.relativePath,
+        relativePath: wwfd.relativePath,
       } as WorkspaceEvents);
     }
   }
 
-  public async deleteFile(fs: KieSandboxFs, file: WorkspaceFile, broadcastArgs: { broadcast: boolean }): Promise<void> {
-    await this.storageService.deleteFile(fs, this.toStorageFile(file).path);
+  public async deleteFile(
+    fs: KieSandboxFs,
+    wwfd: WorkspaceWorkerFileDescriptor,
+    broadcastArgs: { broadcast: boolean }
+  ): Promise<void> {
+    await this.storageService.deleteFile(fs, this.toExistingStorageFile(wwfd).path);
 
     if (broadcastArgs.broadcast) {
-      await this.workspaceDescriptorService.bumpLastUpdatedDate(file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(wwfd.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(file));
-      const broadcastChannel2 = new BroadcastChannel(file.workspaceId);
+      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(wwfd));
+      const broadcastChannel2 = new BroadcastChannel(wwfd.workspaceId);
       broadcastChannel1.postMessage({
         type: "DELETE",
-        relativePath: file.relativePath,
+        relativePath: wwfd.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
         type: "DELETE_FILE",
-        relativePath: file.relativePath,
+        relativePath: wwfd.relativePath,
       } as WorkspaceEvents);
     }
   }
 
   public async renameFile(args: {
     fs: KieSandboxFs;
-    file: WorkspaceFile;
+    wwfd: WorkspaceWorkerFileDescriptor;
     newFileNameWithoutExtension: string;
     broadcastArgs: { broadcast: boolean };
-  }): Promise<WorkspaceFile> {
+  }): Promise<WorkspaceWorkerFileDescriptor> {
     const renamedStorageFile = await this.storageService.renameFile(
       args.fs,
-      this.toStorageFile(args.file),
+      this.toExistingStorageFile(args.wwfd),
       args.newFileNameWithoutExtension
     );
-    const renamedWorkspaceFile = this.toWorkspaceFile(args.file.workspaceId, renamedStorageFile);
+    const renamedWorkspaceFile = await this.toWorkspaceFile(args.wwfd.workspaceId, renamedStorageFile);
 
     if (args.broadcastArgs.broadcast) {
-      await this.workspaceDescriptorService.bumpLastUpdatedDate(args.file.workspaceId);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(args.wwfd.workspaceId);
 
-      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(args.file));
+      const broadcastChannel1 = new BroadcastChannel(this.getUniqueFileIdentifier(args.wwfd));
       const broadcastChannel2 = new BroadcastChannel(this.getUniqueFileIdentifier(renamedWorkspaceFile));
-      const broadcastChannel3 = new BroadcastChannel(args.file.workspaceId);
+      const broadcastChannel3 = new BroadcastChannel(args.wwfd.workspaceId);
       broadcastChannel1.postMessage({
         type: "RENAME",
-        oldRelativePath: args.file.relativePath,
+        oldRelativePath: args.wwfd.relativePath,
         newRelativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceFileEvents);
       broadcastChannel2.postMessage({
@@ -265,7 +269,7 @@ export class WorkspaceService {
       } as WorkspaceFileEvents);
       broadcastChannel3.postMessage({
         type: "RENAME_FILE",
-        oldRelativePath: args.file.relativePath,
+        oldRelativePath: args.wwfd.relativePath,
         newRelativePath: renamedWorkspaceFile.relativePath,
       } as WorkspaceEvents);
     }
@@ -283,14 +287,16 @@ export class WorkspaceService {
 
   public async deleteFiles(
     fs: KieSandboxFs,
-    files: WorkspaceFile[],
+    files: WorkspaceWorkerFile[],
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
     if (files.length === 0) {
       return;
     }
 
-    await Promise.all(files.map((f) => this.toStorageFile(f)).map((f) => this.storageService.deleteFile(fs, f.path)));
+    await Promise.all(
+      files.map((f) => this.toExistingStorageFile(f)).map((f) => this.storageService.deleteFile(fs, f.path))
+    );
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(files[0].workspaceId);
@@ -307,7 +313,7 @@ export class WorkspaceService {
 
   public async moveFiles(
     fs: KieSandboxFs,
-    files: WorkspaceFile[],
+    files: WorkspaceWorkerFile[],
     newDirPath: string,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
@@ -317,7 +323,7 @@ export class WorkspaceService {
 
     const relativePaths = await this.storageService.moveFiles(
       fs,
-      files.map((f) => this.toStorageFile(f)),
+      files.map((f) => this.toExistingStorageFile(f)),
       newDirPath
     );
 
@@ -333,22 +339,30 @@ export class WorkspaceService {
     }
   }
 
-  private toWorkspaceFile(workspaceId: string, storageFile: StorageFile): WorkspaceFile {
-    return new WorkspaceFile({
+  private async toWorkspaceFile(workspaceId: string, storageFile: StorageFile): Promise<WorkspaceWorkerFile> {
+    return {
       workspaceId,
-      getFileContents: storageFile.getFileContents,
+      content: await storageFile.getFileContents(),
       relativePath: relative(this.getAbsolutePath({ workspaceId }), storageFile.path),
+    };
+  }
+  private toStorageFile(wwfd: WorkspaceWorkerFileDescriptor, getFileContents: () => Promise<Uint8Array>): StorageFile {
+    return new StorageFile({
+      path: this.getAbsolutePath(wwfd),
+      getFileContents,
     });
   }
 
-  private toStorageFile(workspaceFile: WorkspaceFile): StorageFile {
-    return new StorageFile({
-      path: this.getAbsolutePath(workspaceFile),
-      getFileContents: workspaceFile.getFileContents,
-    });
+  private toExistingStorageFile(wwfd: WorkspaceWorkerFileDescriptor): StorageFile {
+    return this.toStorageFile(wwfd, async () =>
+      this.storageService.getFileContent(
+        await this.fsService.getWorkspaceFs(wwfd.workspaceId),
+        this.getAbsolutePath(wwfd)
+      )
+    );
   }
 
   public getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
-    return args.workspaceId + "__" + this.getAbsolutePath(args);
+    return args.workspaceId + "__" + this.getAbsolutePath(args); // FIXME: DUPLICATED
   }
 }

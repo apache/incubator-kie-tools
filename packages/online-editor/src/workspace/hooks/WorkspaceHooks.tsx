@@ -92,7 +92,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
       }
 
       try {
-        const descriptor = await workspaces.descriptorService.get(workspaceId);
+        const descriptor = await workspaces.getWorkspace({ workspaceId });
         if (canceled.get()) {
           return;
         }
@@ -103,7 +103,6 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         }
 
         const files = await workspaces.getFiles({
-          fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
           workspaceId,
         });
         if (canceled.get()) {
@@ -113,6 +112,7 @@ export function useWorkspacePromise(workspaceId: string | undefined) {
         setWorkspacePromise({ data: { descriptor, files } });
       } catch (error) {
         setWorkspacePromise({ error: `Can't find Workspace with id '${workspaceId}'` });
+        console.error(error);
         return;
       }
     },

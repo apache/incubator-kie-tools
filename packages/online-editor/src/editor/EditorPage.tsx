@@ -165,7 +165,6 @@ export function EditorPage(props: Props) {
     // }
 
     await workspaces.updateFile({
-      fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
       file: workspaceFilePromise.data,
       getNewContents: () => Promise.resolve(content),
     });
@@ -212,7 +211,6 @@ export function EditorPage(props: Props) {
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
       return workspaces.resourceContentGet({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         relativePath: request.path,
         opts: request.opts,
@@ -224,7 +222,6 @@ export function EditorPage(props: Props) {
   const handleResourceListRequest = useCallback(
     async (request: ResourceListRequest) => {
       return workspaces.resourceContentList({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceId),
         workspaceId: props.workspaceId,
         globPattern: request.pattern,
         opts: request.opts,
@@ -264,7 +261,6 @@ export function EditorPage(props: Props) {
       }
 
       const file = await workspaces.getFile({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceFilePromise.data.workspaceId),
         workspaceId: workspaceFilePromise.data.workspaceId,
         relativePath,
       });

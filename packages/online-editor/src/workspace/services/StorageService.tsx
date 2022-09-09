@@ -68,13 +68,13 @@ export class StorageService {
     await fs.promises.writeFileBulk(filesArray);
   }
 
-  public async updateFile(fs: KieSandboxFs, file: StorageFile): Promise<void> {
-    if (!(await this.exists(fs, file.path))) {
-      throw new Error(`File ${file.path} does not exist`);
+  public async updateFile(fs: KieSandboxFs, path: string, getFileContents: () => Promise<Uint8Array>): Promise<void> {
+    if (!(await this.exists(fs, path))) {
+      throw new Error(`File ${path} does not exist`);
     }
 
-    const content = await file.getFileContents();
-    await fs.promises.writeFile(file.path, content);
+    const content = await getFileContents();
+    await fs.promises.writeFile(path, content);
   }
 
   public async deleteFile(fs: KieSandboxFs, path: string): Promise<void> {
@@ -98,7 +98,7 @@ export class StorageService {
 
     const newFile = new StorageFile({
       path: newPath,
-      getFileContents: file.getFileContents,
+      getFileContents: () => this.getFileContent(fs, newPath),
     });
     await fs.promises.rename(file.path, newFile.path);
 
@@ -128,6 +128,14 @@ export class StorageService {
       paths.set(fileToMove.path, movedFile.path);
     }
     return paths;
+  }
+
+  public async getFileContent(fs: KieSandboxFs, path: string): Promise<Uint8Array> {
+    if (!(await this.exists(fs, path))) {
+      throw new Error(`File '${path}' doesn't exist`);
+    }
+
+    return await fs.promises.readFile(path);
   }
 
   public async getFile(fs: KieSandboxFs, path: string): Promise<StorageFile | undefined> {

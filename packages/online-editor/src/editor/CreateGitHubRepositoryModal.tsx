@@ -103,7 +103,11 @@ export function CreateGitHubRepositoryModal(props: {
         authInfo: githubAuthInfo,
       });
 
-      await workspaces.descriptorService.turnIntoGit(props.workspace.workspaceId, new URL(cloneUrl));
+      await workspaces.initGitOnWorkspace({
+        workspaceId: props.workspace.workspaceId,
+        remoteUrl: new URL(cloneUrl),
+      });
+
       await workspaces.renameWorkspace({
         workspaceId: props.workspace.workspaceId,
         newName: new URL(repo.data.html_url).pathname.substring(1),

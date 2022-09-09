@@ -23,14 +23,8 @@ import {
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
-import { WorkspaceService } from "./services/WorkspaceService";
 import { basename, extname, parse } from "path";
-import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
-import { WorkspaceFsService } from "./services/WorkspaceFsService";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
-import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
-import { StorageService } from "./services/StorageService";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -87,16 +81,23 @@ export interface LocalFile {
 }
 
 export interface WorkspacesContextType {
-  svgService: WorkspaceSvgService;
-  descriptorService: WorkspaceDescriptorService;
-  fsService: WorkspaceFsService;
+  // util
 
-  // create
+  getUniqueFileIdentifier(args: {
+    workspaceId: string; //
+    relativePath: string;
+  }): string;
+
+  // git
+
   createWorkspaceFromLocal: (args: {
     useInMemoryFs: boolean;
     localFiles: LocalFile[];
     preferredName?: string;
-  }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+  }) => Promise<{
+    workspace: WorkspaceDescriptor;
+    suggestedFirstFile?: WorkspaceFile;
+  }>;
 
   createWorkspaceFromGitRepository: (args: {
     origin: GistOrigin | GitHubOrigin;
@@ -149,57 +150,83 @@ export interface WorkspacesContextType {
     ref: string;
   }): Promise<string>;
 
-  hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
+  hasLocalChanges(args: {
+    workspaceId: string; //
+  }): Promise<boolean>;
 
-  createSavePoint(args: { workspaceId: string; gitConfig?: { email: string; name: string } }): Promise<void>;
+  createSavePoint(args: {
+    workspaceId: string; //
+    gitConfig?: {
+      email: string;
+      name: string;
+    };
+  }): Promise<void>;
 
-  // edit workspace
+  // storage
+
   addEmptyFile(args: {
-    fs: KieSandboxFs;
     workspaceId: string;
     destinationDirRelativePath: string;
     extension: string;
   }): Promise<WorkspaceFile>;
-  prepareZip(args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
-  getFiles(args: { fs: KieSandboxFs; workspaceId: string }): Promise<WorkspaceFile[]>;
-  getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
-  deleteWorkspace(args: { workspaceId: string }): Promise<void>;
-  renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
 
-  resourceContentList: (args: {
-    fs: KieSandboxFs;
+  prepareZip(args: {
+    workspaceId: string; //
+    onlyExtensions?: string[];
+  }): Promise<Blob>;
+
+  getFiles(args: {
+    workspaceId: string; //
+  }): Promise<WorkspaceFile[]>;
+
+  deleteWorkspace(args: {
+    workspaceId: string; //
+  }): Promise<void>;
+
+  renameWorkspace(args: {
+    workspaceId: string; //
+    newName: string;
+  }): Promise<void>;
+
+  resourceContentList(args: {
     workspaceId: string;
     globPattern: string;
     opts?: ResourceListOptions;
-  }) => Promise<ResourcesList>;
+  }): Promise<ResourcesList>;
 
-  resourceContentGet: (args: {
-    fs: KieSandboxFs;
+  resourceContentGet(args: {
     workspaceId: string;
     relativePath: string;
     opts?: ResourceContentOptions;
-  }) => Promise<ResourceContent | undefined>;
+  }): Promise<ResourceContent | undefined>;
 
   //
 
-  getFile(args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
+  getFile(args: {
+    workspaceId: string; //
+    relativePath: string;
+  }): Promise<WorkspaceFile | undefined>;
+
+  getFileContent(args: {
+    workspaceId: string; //
+    relativePath: string;
+  }): Promise<Uint8Array>;
 
   renameFile(args: {
-    fs: KieSandboxFs;
-    file: WorkspaceFile;
+    file: WorkspaceFile; //
     newFileNameWithoutExtension: string;
   }): Promise<WorkspaceFile>;
 
   updateFile(args: {
-    fs: KieSandboxFs;
-    file: WorkspaceFile;
+    file: WorkspaceFile; //
     getNewContents: () => Promise<string | undefined>;
   }): Promise<void>;
 
-  deleteFile(args: { fs: KieSandboxFs; file: WorkspaceFile }): Promise<void>;
+  deleteFile(args: {
+    file: WorkspaceFile; //
+  }): Promise<void>;
 
   addFile(args: {
-    fs: KieSandboxFs;
     workspaceId: string;
     name: string;
     destinationDirRelativePath: string;
@@ -207,7 +234,26 @@ export interface WorkspacesContextType {
     extension: string;
   }): Promise<WorkspaceFile>;
 
-  existsFile(args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }): Promise<boolean>;
+  existsFile(args: {
+    workspaceId: string; //
+    relativePath: string;
+  }): Promise<boolean>;
+
+  listAllWorkspaces(): Promise<WorkspaceDescriptor[]>;
+
+  getWorkspace(args: {
+    workspaceId: string; //
+  }): Promise<WorkspaceDescriptor>;
+
+  initGitOnWorkspace(args: {
+    workspaceId: string; //
+    remoteUrl: URL;
+  }): Promise<void>;
+
+  initGistOnWorkspace(args: {
+    workspaceId: string; //
+    remoteUrl: URL;
+  }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

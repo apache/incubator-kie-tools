@@ -298,8 +298,7 @@ export function EditorToolbar(props: Props) {
       return;
     }
 
-    const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-    const zipBlob = await workspaces.prepareZip({ fs, workspaceId: props.workspaceFile.workspaceId });
+    const zipBlob = await workspaces.prepareZip({ workspaceId: props.workspaceFile.workspaceId });
     if (downloadAllRef.current) {
       downloadAllRef.current.href = URL.createObjectURL(zipBlob);
       downloadAllRef.current.click();
@@ -444,7 +443,10 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         throw new Error("Gist creation failed.");
       }
 
-      await workspaces.descriptorService.turnIntoGist(props.workspaceFile.workspaceId, new URL(gist.data.git_push_url));
+      await workspaces.initGistOnWorkspace({
+        workspaceId: props.workspaceFile.workspaceId,
+        remoteUrl: new URL(gist.data.git_push_url),
+      });
 
       await workspaces.addRemote({
         workspaceId: props.workspaceFile.workspaceId,
@@ -778,7 +780,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       .pop();
 
     await workspaces.deleteFile({
-      fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
       file: props.workspaceFile,
     });
 
@@ -1145,7 +1146,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         gitConfig: githubAuthInfo,
       });
 
-      const workspace = await workspaces.descriptorService.get(workspaceId);
+      const workspace = await workspaces.getWorkspace({ workspaceId });
       await workspaces.push({
         workspaceId: props.workspaceFile.workspaceId,
         ref: workspace.origin.branch,

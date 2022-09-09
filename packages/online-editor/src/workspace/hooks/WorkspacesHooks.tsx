@@ -26,8 +26,8 @@ export function useWorkspaceDescriptorsPromise() {
 
   const refresh = useCallback(
     async (canceled: Holder<boolean>) => {
-      workspaces.descriptorService
-        .listAll()
+      workspaces
+        .listAllWorkspaces()
         .then((descriptors) => {
           if (!canceled.get()) {
             setWorkspaceDescriptorsPromise({

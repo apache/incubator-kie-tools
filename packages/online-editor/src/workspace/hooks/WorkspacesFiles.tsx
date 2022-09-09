@@ -34,7 +34,6 @@ export function useWorkspacesFilesPromise(workspaceDescriptors: WorkspaceDescrip
         await Promise.all(
           workspaceDescriptors.map(async (descriptor) => {
             const files = await workspaces.getFiles({
-              fs: await workspaces.fsService.getWorkspaceFs(descriptor.workspaceId),
               workspaceId: descriptor.workspaceId,
             });
             return [descriptor.workspaceId, files] as [string, WorkspaceFile[]];

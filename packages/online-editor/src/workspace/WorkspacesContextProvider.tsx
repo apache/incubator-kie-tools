@@ -14,30 +14,17 @@
  * limitations under the License.
  */
 
-import {
-  ContentType,
-  ResourceContent,
-  ResourceContentOptions,
-  ResourcesList,
-} from "@kie-tools-core/workspace/dist/api";
+import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { StorageService } from "./services/StorageService";
-import { WorkspaceService } from "./services/WorkspaceService";
-import { decoder, encoder, LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { join } from "path";
-import { Buffer } from "buffer";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
-import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
-import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
-import { WorkspacesWorkerGitApi } from "../workspacesWorker/api/WorkspacesWorkerGitApi";
-
-const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
-const NEW_FILE_DEFAULT_NAME = "Untitled";
+import { WorkspacesWorkerApi } from "../workspacesWorker/api/WorkspacesWorkerApi";
+import { WorkspaceWorkerFileDescriptor } from "../workspacesWorker/api/WorkspaceWorkerFileDescriptor";
+import * as path from "path";
 
 interface Props {
   children: React.ReactNode;
@@ -45,7 +32,7 @@ interface Props {
 
 const workspacesWorker = new Worker("workspacesWorker/worker.js");
 
-const workspacesWorkerBus = new EnvelopeBusMessageManager<{}, WorkspacesWorkerGitApi>((m) => {
+const workspacesWorkerBus = new EnvelopeBusMessageManager<{}, WorkspacesWorkerApi>((m) => {
   workspacesWorker.postMessage(m);
 });
 
@@ -54,21 +41,6 @@ workspacesWorker.onmessage = (m) => {
 };
 
 export function WorkspacesContextProvider(props: Props) {
-  const storageService = useMemo(() => new StorageService(), []);
-  const descriptorService = useMemo(() => new WorkspaceDescriptorService(storageService), [storageService]);
-  const svgService = useMemo(() => new WorkspaceSvgService(storageService), [storageService]);
-  const fsService = useMemo(() => new WorkspaceFsService(descriptorService), [descriptorService]);
-
-  const service = useMemo(
-    () => new WorkspaceService(storageService, descriptorService, fsService),
-    [storageService, descriptorService, fsService]
-  );
-
-  const getUniqueFileIdentifier = useCallback(
-    (args: { workspaceId: string; relativePath: string }) => service.getUniqueFileIdentifier(args),
-    [service]
-  );
-
   const hasLocalChanges = useCallback(async (args: { workspaceId: string }) => {
     return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_hasLocalChanges(args);
   }, []);
@@ -119,6 +91,11 @@ export function WorkspacesContextProvider(props: Props) {
     []
   );
 
+  const getFile = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
+    const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFile(args);
+    return wwfd ? toWorkspaceFile(wwfd) : undefined;
+  }, []);
+
   const createWorkspaceFromLocal = useCallback(
     async (args: {
       useInMemoryFs: boolean;
@@ -126,20 +103,19 @@ export function WorkspacesContextProvider(props: Props) {
       preferredName?: string;
       gitConfig?: { email: string; name: string };
     }) => {
-      const w = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args);
+      const workspaceInit = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args);
 
       return {
-        workspace: w.workspace,
-        suggestedFirstFile: w.suggestedFirstFile
-          ? await service.getFile({
-              fs: await fsService.getWorkspaceFs(w.workspace.workspaceId),
-              workspaceId: w.suggestedFirstFile.workspaceId,
-              relativePath: w.suggestedFirstFile.relativePath,
+        workspace: workspaceInit.workspace,
+        suggestedFirstFile: workspaceInit.suggestedFirstFile
+          ? await getFile({
+              workspaceId: workspaceInit.suggestedFirstFile.workspaceId,
+              relativePath: workspaceInit.suggestedFirstFile.relativePath,
             })
           : undefined,
       };
     },
-    [fsService, service]
+    [getFile]
   );
 
   const createWorkspaceFromGitRepository = useCallback(
@@ -151,169 +127,136 @@ export function WorkspacesContextProvider(props: Props) {
         password: string;
       };
     }) => {
-      const w = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_clone(args);
+      const workspaceClone = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_clone(args);
       return {
-        workspace: w.workspace,
-        suggestedFirstFile: w.suggestedFirstFile
-          ? await service.getFile({
-              fs: await fsService.getWorkspaceFs(w.workspace.workspaceId),
-              workspaceId: w.suggestedFirstFile.workspaceId,
-              relativePath: w.suggestedFirstFile.relativePath,
+        workspace: workspaceClone.workspace,
+        suggestedFirstFile: workspaceClone.suggestedFirstFile
+          ? await getFile({
+              workspaceId: workspaceClone.suggestedFirstFile.workspaceId,
+              relativePath: workspaceClone.suggestedFirstFile.relativePath,
             })
           : undefined,
       };
     },
-    [fsService, service]
+    [getFile]
   );
 
-  const renameFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
-      const newFile = service.renameFile({
-        fs: args.fs,
-        file: args.file,
-        newFileNameWithoutExtension: args.newFileNameWithoutExtension,
-        broadcastArgs: { broadcast: true },
-      });
-      await svgService.renameSvg(args.file, args.newFileNameWithoutExtension);
-      return newFile;
-    },
-    [service, svgService]
-  );
+  const getUniqueFileIdentifier = useCallback((args: { workspaceId: string; relativePath: string }) => {
+    return args.workspaceId + "__" + path.join("/", args.relativePath ?? ""); // FIXME: DUPLICATED
+  }, []);
 
-  const getFiles = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string }) => {
-      return service.getFilesWithLazyContent(args.fs, args.workspaceId);
-    },
-    [service]
-  );
+  const renameFile = useCallback(async (args: { file: WorkspaceFile; newFileNameWithoutExtension: string }) => {
+    const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_renameFile({
+      wwfd: {
+        workspaceId: args.file.workspaceId,
+        relativePath: args.file.relativePath,
+      },
+      newFileNameWithoutExtension: args.newFileNameWithoutExtension,
+    });
+    return toWorkspaceFile(wwfd);
+  }, []);
 
-  const getFile = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) => {
-      return service.getFile(args);
-    },
-    [service]
-  );
+  const getFiles = useCallback(async (args: { fs: KieSandboxFs; workspaceId: string }) => {
+    const wwfds = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFiles(args);
+    return wwfds.map((wwfd) => toWorkspaceFile(wwfd));
+  }, []);
 
-  const deleteFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: WorkspaceFile }) => {
-      await service.deleteFile(args.fs, args.file, { broadcast: true });
-      await svgService.deleteSvg(args.file);
-    },
-    [service, svgService]
-  );
+  const getFileContent = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFileContent(args);
+  }, []);
 
-  const updateFile = useCallback(
-    async (args: { fs: KieSandboxFs; file: WorkspaceFile; getNewContents: () => Promise<string> }) => {
-      await service.updateFile(args.fs, args.file, args.getNewContents, { broadcast: true });
-    },
-    [service]
-  );
+  const deleteFile = useCallback(async (args: { file: WorkspaceFile }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_deleteFile({
+      wwfd: {
+        workspaceId: args.file.workspaceId,
+        relativePath: args.file.relativePath,
+      },
+    });
+  }, []);
+
+  const updateFile = useCallback(async (args: { file: WorkspaceFile; getNewContents: () => Promise<string> }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_updateFile({
+      wwfd: {
+        workspaceId: args.file.workspaceId,
+        relativePath: args.file.relativePath,
+      },
+      newContent: await args.getNewContents(),
+    });
+  }, []);
 
   const addFile = useCallback(
     async (args: {
-      fs: KieSandboxFs;
       workspaceId: string;
       name: string;
       destinationDirRelativePath: string;
       content: string;
       extension: SupportedFileExtensions;
     }) => {
-      for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
-        const index = i === 0 ? "" : `-${i}`;
-        const fileName = `${args.name}${index}.${args.extension}`;
-        const relativePath = join(args.destinationDirRelativePath, fileName);
-
-        if (await service.existsFile({ fs: args.fs, workspaceId: args.workspaceId, relativePath })) {
-          continue;
-        }
-
-        const newFile = new WorkspaceFile({
-          workspaceId: args.workspaceId,
-          getFileContents: () => Promise.resolve(encoder.encode(args.content)),
-          relativePath,
-        });
-        await service.createOrOverwriteFile(args.fs, newFile, { broadcast: true });
-        return newFile;
-      }
-
-      throw new Error("Max attempts of new empty file exceeded.");
+      const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_addFile(args);
+      return toWorkspaceFile(wwfd);
     },
-    [service]
+    []
   );
 
-  const existsFile = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string }) => await service.existsFile(args),
-    [service]
-  );
+  const existsFile = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_existsFile(args);
+  }, []);
 
   const addEmptyFile = useCallback(
-    async (args: {
-      fs: KieSandboxFs;
-      workspaceId: string;
-      destinationDirRelativePath: string;
-      extension: SupportedFileExtensions;
-    }) => addFile({ ...args, name: NEW_FILE_DEFAULT_NAME, content: "" }),
-    [addFile]
+    async (args: { workspaceId: string; destinationDirRelativePath: string; extension: SupportedFileExtensions }) => {
+      const wwfd = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_addEmptyFile(args);
+      return toWorkspaceFile(wwfd);
+    },
+    []
   );
 
-  const prepareZip = useCallback(
-    (args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }) =>
-      service.prepareZip(args.fs, args.workspaceId, args.onlyExtensions),
-    [service]
-  );
+  const prepareZip = useCallback((args: { workspaceId: string; onlyExtensions?: string[] }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_prepareZip(args);
+  }, []);
 
   const resourceContentGet = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
-      const file = await service.getFile(args);
-      if (!file) {
-        throw new Error(`File '${args.relativePath}' not found in Workspace ${args.workspaceId}`);
-      }
-
-      try {
-        const content = await file.getFileContents();
-        if (args.opts?.type === "binary") {
-          return new ResourceContent(args.relativePath, Buffer.from(content).toString("base64"), ContentType.BINARY);
-        }
-
-        // "text" is the default
-        return new ResourceContent(args.relativePath, decoder.decode(content), ContentType.TEXT);
-      } catch (e) {
-        console.error(e);
-        throw e;
-      }
+    async (args: { workspaceId: string; relativePath: string; opts?: ResourceContentOptions }) => {
+      return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentGet(args);
     },
-    [service]
+    []
   );
 
-  const resourceContentList = useCallback(
-    async (args: { fs: KieSandboxFs; workspaceId: string; globPattern: string }) => {
-      const files = await service.getFilesWithLazyContent(args.fs, args.workspaceId, args.globPattern);
-      const matchingPaths = files.map((file) => file.relativePath);
-      return new ResourcesList(args.globPattern, matchingPaths);
-    },
-    [service]
-  );
+  const resourceContentList = useCallback(async (args: { workspaceId: string; globPattern: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentList(args);
+  }, []);
 
-  const deleteWorkspace = useCallback(
-    async (args: { workspaceId: string }) => {
-      await service.delete(args.workspaceId, { broadcast: true });
-      await svgService.delete(args.workspaceId);
-    },
-    [service, svgService]
-  );
+  const deleteWorkspace = useCallback(async (args: { workspaceId: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_deleteWorkspace(args);
+  }, []);
 
-  const renameWorkspace = useCallback(
-    async (args: { workspaceId: string; newName: string }) => {
-      await service.rename(args.workspaceId, args.newName, { broadcast: true });
-    },
-    [service]
-  );
+  const renameWorkspace = useCallback(async (args: { workspaceId: string; newName: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_renameWorkspace(args);
+  }, []);
+
+  const listAllWorkspaces = useCallback(async () => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_listAllWorkspaces();
+  }, []);
+
+  const getWorkspace = useCallback(async (args: { workspaceId: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getWorkspace(args);
+  }, []);
+
+  const initGitOnWorkspace = useCallback(async (args: { workspaceId: string; remoteUrl: URL }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitOnExistingWorkspace({
+      workspaceId: args.workspaceId,
+      remoteUrl: args.remoteUrl.toString(),
+    });
+  }, []);
+
+  const initGistOnWorkspace = useCallback(async (args: { workspaceId: string; remoteUrl: URL }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGistOnExistingWorkspace({
+      workspaceId: args.workspaceId,
+      remoteUrl: args.remoteUrl.toString(),
+    });
+  }, []);
 
   const value = useMemo(
     () => ({
-      fsService,
-      svgService,
-      descriptorService,
       //
       resourceContentGet,
       resourceContentList,
@@ -340,6 +283,12 @@ export function WorkspacesContextProvider(props: Props) {
       updateFile,
       deleteFile,
       getFile,
+      getFileContent,
+      //
+      listAllWorkspaces,
+      getWorkspace,
+      initGitOnWorkspace,
+      initGistOnWorkspace,
     }),
     [
       addEmptyFile,
@@ -350,8 +299,7 @@ export function WorkspacesContextProvider(props: Props) {
       createWorkspaceFromLocal,
       deleteFile,
       deleteWorkspace,
-      descriptorService,
-      fsService,
+      getFileContent,
       getFile,
       getFiles,
       getUniqueFileIdentifier,
@@ -366,10 +314,21 @@ export function WorkspacesContextProvider(props: Props) {
       renameWorkspace,
       resourceContentGet,
       resourceContentList,
-      svgService,
       updateFile,
+      listAllWorkspaces,
+      getWorkspace,
+      initGitOnWorkspace,
+      initGistOnWorkspace,
     ]
   );
 
   return <WorkspacesContext.Provider value={value}>{props.children}</WorkspacesContext.Provider>;
+}
+
+function toWorkspaceFile(wwfd: WorkspaceWorkerFileDescriptor) {
+  return new WorkspaceFile({
+    workspaceId: wwfd.workspaceId,
+    relativePath: wwfd.relativePath,
+    getFileContents: () => workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFileContent(wwfd),
+  });
 }
