@@ -79,22 +79,24 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
         );
       }, new Set<string>());
 
-      const localFiles: LocalFile[] = Array.from(acceptedFiles ?? []).map((file: File & { path?: string }) => {
-        const path = resolveRelativePath({
-          file,
-          keepRootDirs: uploadedRootDirs.size > 1,
-        });
+      const localFiles: LocalFile[] = await Promise.all(
+        Array.from(acceptedFiles ?? []).map(async (file: File & { path?: string }) => {
+          const path = resolveRelativePath({
+            file,
+            keepRootDirs: uploadedRootDirs.size > 1,
+          });
 
-        return {
-          path,
-          getFileContents: () =>
-            new Promise<Uint8Array>((res) => {
-              const reader = new FileReader();
-              reader.onload = (event: ProgressEvent<FileReader>) => res(event.target?.result as Uint8Array);
-              reader.readAsArrayBuffer(file);
-            }),
-        };
-      });
+          return {
+            path,
+            fileContents: await (async () =>
+              new Promise<Uint8Array>((res) => {
+                const reader = new FileReader();
+                reader.onload = (event: ProgressEvent<FileReader>) => res(event.target?.result as Uint8Array);
+                reader.readAsArrayBuffer(file);
+              }))(),
+          };
+        })
+      );
 
       const preferredName =
         uploadedRootDirs.size !== 1

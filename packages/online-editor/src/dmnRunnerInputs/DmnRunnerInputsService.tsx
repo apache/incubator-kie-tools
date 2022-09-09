@@ -22,7 +22,8 @@ import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
 import { InputRow } from "@kie-tools/form-dmn";
 
 export class DmnRunnerInputsService {
-  constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
+  private readonly storageService = new StorageService();
+  private readonly fsCache = new FsCache();
 
   public getDmnRunnerInputsFs(workspaceId: string) {
     return this.fsCache.getOrCreateFs(this.getDmnRunnerInputsStoreName(workspaceId));

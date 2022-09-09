@@ -28,7 +28,6 @@ import { basename, extname, parse } from "path";
 import { WorkspaceDescriptorService } from "./services/WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./services/WorkspaceFsService";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { GitService } from "./services/GitService";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { WorkspaceSvgService } from "./services/WorkspaceSvgService";
 import { StorageService } from "./services/StorageService";
@@ -84,13 +83,10 @@ export class WorkspaceFile {
 
 export interface LocalFile {
   path: string;
-  getFileContents: () => Promise<Uint8Array>;
+  fileContents: Uint8Array;
 }
 
 export interface WorkspacesContextType {
-  storageService: StorageService;
-  service: WorkspaceService;
-  gitService: GitService;
   svgService: WorkspaceSvgService;
   descriptorService: WorkspaceDescriptorService;
   fsService: WorkspaceFsService;
@@ -109,10 +105,12 @@ export interface WorkspacesContextType {
       username: string;
       password: string;
     };
-  }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
+  }) => Promise<{
+    workspace: WorkspaceDescriptor;
+    suggestedFirstFile?: WorkspaceFile;
+  }>;
 
   pull(args: {
-    fs: KieSandboxFs;
     workspaceId: string;
     gitConfig?: { email: string; name: string };
     authInfo?: {
@@ -120,6 +118,40 @@ export interface WorkspacesContextType {
       password: string;
     };
   }): Promise<void>;
+
+  push(args: {
+    workspaceId: string;
+    ref: string;
+    remoteRef?: string;
+    remote: string;
+    force: boolean;
+    authInfo: {
+      username: string;
+      password: string;
+    };
+  }): Promise<void>;
+
+  branch(args: {
+    workspaceId: string; //
+    name: string;
+    checkout: boolean;
+  }): Promise<void>;
+
+  addRemote(args: {
+    workspaceId: string; //
+    name: string;
+    url: string;
+    force: boolean;
+  }): Promise<void>;
+
+  resolveRef(args: {
+    workspaceId: string; //
+    ref: string;
+  }): Promise<string>;
+
+  hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
+
+  createSavePoint(args: { workspaceId: string; gitConfig?: { email: string; name: string } }): Promise<void>;
 
   // edit workspace
   addEmptyFile(args: {
@@ -130,13 +162,6 @@ export interface WorkspacesContextType {
   }): Promise<WorkspaceFile>;
   prepareZip(args: { fs: KieSandboxFs; workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
   getFiles(args: { fs: KieSandboxFs; workspaceId: string }): Promise<WorkspaceFile[]>;
-  hasLocalChanges(args: { fs: KieSandboxFs; workspaceId: string }): Promise<boolean>;
-  createSavePoint(args: {
-    fs: KieSandboxFs;
-    workspaceId: string;
-    gitConfig?: { email: string; name: string };
-  }): Promise<void>;
-  getAbsolutePath(args: { workspaceId: string; relativePath?: string }): string;
   getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): string;
   deleteWorkspace(args: { workspaceId: string }): Promise<void>;
   renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;

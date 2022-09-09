@@ -32,12 +32,12 @@ export interface LocalOrigin {
 
 export interface GitHubOrigin {
   kind: WorkspaceKind.GIT;
-  url: URL;
+  url: string;
   branch: string;
 }
 
 export interface GistOrigin {
   kind: WorkspaceKind.GITHUB_GIST;
-  url: URL;
+  url: string;
   branch: typeof GIST_DEFAULT_BRANCH;
 }

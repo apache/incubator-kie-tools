@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export interface WorkspacesWorkerApi {
-  kieSandboxWorkspaces_hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
-  kieSandboxWorkspaces_resolveRef(args: { workspaceId: string; ref: string }): Promise<string>;
+export interface WorkspaceWorkerFileDescriptor {
+  workspaceId: string;
+  relativePath: string;
 }
