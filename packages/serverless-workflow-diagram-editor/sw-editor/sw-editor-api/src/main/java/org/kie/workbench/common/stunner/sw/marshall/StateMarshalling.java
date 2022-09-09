@@ -66,7 +66,7 @@ public interface StateMarshalling {
                 context.sourceNode = stateNode;
 
                 // Parse end.
-                boolean end = getEnd(state.isEnd());
+                boolean end = getEnd(state.end);
                 if (end) {
                     final Transition tend = new Transition();
                     tend.setTo(STATE_END);
@@ -115,11 +115,6 @@ public interface StateMarshalling {
     NodeMarshaller<State> STATE_MARSHALLER =
             (context, stateNode) -> {
                 State state = stateNode.getContent().getDefinition();
-
-                // TODO: Clear states here or on each marshaller?
-                state.transition = null;
-                state.compensatedBy = null;
-                state.eventTimeout = null;
 
                 // Iterate and marshaller edges.
                 List<ErrorTransition> errors = new ArrayList<>();

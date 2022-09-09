@@ -50,7 +50,7 @@ public interface WorkflowMarshalling {
 
     NodeUnmarshaller<Workflow> START_NODE_UNMARSHALLER =
             (context, workflow) -> {
-                String start = DefinitionTypeUtils.getStart(workflow.getStart());
+                String start = DefinitionTypeUtils.getStart(workflow);
                 Node startNode = null;
                 if (isValidString(start)) {
                     startNode = context.addNode(STATE_START, new Start());
@@ -72,7 +72,7 @@ public interface WorkflowMarshalling {
                     Edge startEdge = (Edge) startNode.getOutEdges().get(0);
                     marshallEdge(context, startEdge);
                 } else {
-                    workflow.setStart("");
+                    workflow.setStart(null);
                 }
                 return workflow;
             };
@@ -119,8 +119,6 @@ public interface WorkflowMarshalling {
 
                 // Start State.
                 START_NODE_MARSHALLER.marshall(context, workflowNode);
-
-                // TODO: End?
 
                 // States.
                 List<Object> beans = new ArrayList<>();

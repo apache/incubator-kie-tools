@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
+import org.kie.workbench.common.stunner.sw.definition.CallEventAction;
 import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
 import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
@@ -213,7 +214,11 @@ public class Parser {
         } else if (null != jso.subFlowRef) {
             action = parse(CallSubflowAction.class, jso);
             action.setSubFlowRef(jso.subFlowRef);
+        } else if (null != jso.eventRef) {
+            action = parse(CallEventAction.class, jso);
+            action.setEventRef(jso.eventRef);
         }
+
         return action;
     }
 
