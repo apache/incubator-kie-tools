@@ -24,6 +24,9 @@
     "test:it:start": "pnpm start"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/chrome-extension": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
@@ -55,18 +58,5 @@
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3",
     "zip-webpack-plugin": "^4.0.1"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

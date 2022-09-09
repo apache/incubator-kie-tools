@@ -21,7 +21,7 @@ import { render } from "@testing-library/react";
 import { usingTestingBoxedExpressionI18nContext, wrapComponentInContext } from "../../test-utils";
 import * as React from "react";
 import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
-import { ContextProps } from "@kie-tools/boxed-expression-component";
+import { ContextProps } from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
 
 let cell: Cell;

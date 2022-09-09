@@ -20,6 +20,7 @@ import (
 	"fmt"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +34,6 @@ func NewVersionCommand(version string) *cobra.Command {
 		Example: `
 	 # Shows the plugin version
 	 {{.Name}} version
-	 {{.Version}}
 		 `,
 		SuggestFor: []string{"vers", "verison"}, //nolint:misspell
 		PreRunE:    common.BindEnv("verbose"),
@@ -42,12 +42,15 @@ func NewVersionCommand(version string) *cobra.Command {
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	cmd.Run = func(cmd *cobra.Command, args []string) {
-		runVersion(cmd, args, version)
+		runVersion(version)
 	}
 
 	return cmd
 }
 
-func runVersion(cmd *cobra.Command, args []string, version string) {
-	fmt.Printf("Version %s\n", version)
+func runVersion(version string) {
+	fmt.Printf("Version: %s\n\n", version)
+
+	fmt.Printf("Default Quarkus version:           %s\n", metadata.QuarkusVersion)
+	fmt.Printf("Default Quarkus platform group Id: %s\n", metadata.QuarkusPlatformGroupId)
 }

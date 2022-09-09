@@ -25,7 +25,7 @@ import { WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { Drawer, DrawerContent, DrawerPanelContent } from "@patternfly/react-core/dist/js/components/Drawer";
-import { TableOperation } from "@kie-tools/boxed-expression-component";
+import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";

@@ -30,6 +30,9 @@
     "uniforms-bridge-simple-schema-2": "^3.5.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
@@ -38,6 +41,7 @@
     "@types/jest": "^26.0.23",
     "@types/jest-when": "^2.7.4",
     "@types/lodash": "^4.14.168",
+    "@types/prettier": "^2.2.1",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/simpl-schema": "^1.12.0",
@@ -56,18 +60,5 @@
     "webpack-dev-server": "^4.7.3",
     "webpack-merge": "^5.7.3",
     "webpack-node-externals": "^3.0.0"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

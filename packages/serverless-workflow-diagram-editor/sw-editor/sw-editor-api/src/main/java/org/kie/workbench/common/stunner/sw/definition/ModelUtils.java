@@ -77,7 +77,7 @@ public class ModelUtils {
             state.transition = (String) Js.undefined();
             state.eventTimeout = (String) Js.undefined();
             state.compensatedBy = (String) Js.undefined();
-            state.end = false;
+            state.end = null;
             if (null != state.onErrors) {
                 for (int i = 0; i < state.onErrors.length; i++) {
                     cleanErrorTransition(state.onErrors[i]);
@@ -92,7 +92,7 @@ public class ModelUtils {
         if (errorTransition != null) {
             errorTransition.errorRef = (String) Js.undefined();
             errorTransition.transition = (String) Js.undefined();
-            errorTransition.end = false;
+            errorTransition.end = null;
         }
     }
 
@@ -179,7 +179,7 @@ public class ModelUtils {
     public static void cleanDefaultConditionTransition(DefaultConditionTransition defaultConditionTransition) {
         if (defaultConditionTransition != null) {
             defaultConditionTransition.transition = (String) Js.undefined();
-            defaultConditionTransition.end = false;
+            defaultConditionTransition.end = null;
         }
     }
 
@@ -188,7 +188,7 @@ public class ModelUtils {
             eventConditionTransition.name = (String) Js.undefined();
             eventConditionTransition.eventRef = (String) Js.undefined();
             eventConditionTransition.transition = (String) Js.undefined();
-            eventConditionTransition.end = false;
+            eventConditionTransition.end = null;
         }
     }
 
@@ -197,7 +197,7 @@ public class ModelUtils {
             dataConditionTransition.name = (String) Js.undefined();
             dataConditionTransition.condition = (String) Js.undefined();
             dataConditionTransition.transition = (String) Js.undefined();
-            dataConditionTransition.end = false;
+            dataConditionTransition.end = null;
         }
     }
 

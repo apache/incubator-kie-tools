@@ -8,5 +8,6 @@
   "window.dialogStyle": "custom",
   "explorer.compactFolders": false,
   "security.workspace.trust.enabled": false,
-  "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor": "Open automatically"
+  "kogito.swf.automaticallyOpenDiagramEditorAlongsideTextEditor": "Open automatically",
+  "kogito.swf.enableKogitoServerlessWorkflowVisualizationPreview": false
 }

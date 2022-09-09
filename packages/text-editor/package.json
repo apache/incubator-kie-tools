@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
-    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.prod.json && pnpm test",
+    "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm test",
     "cy:open": "cypress open --project it-tests",
     "cy:run": "cypress run -b chrome --project it-tests",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
@@ -43,6 +43,9 @@
     "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
@@ -51,7 +54,7 @@
     "@types/jest-when": "^2.7.4",
     "@types/react": "^17.0.6",
     "@types/testing-library__jest-dom": "^5.9.1",
-    "cypress": "^9.5.1",
+    "cypress": "^10.7.0",
     "cypress-file-upload": "^5.0.8",
     "cypress-iframe": "^1.0.1",
     "cypress-log-to-output": "^1.1.2",
@@ -62,18 +65,5 @@
     "start-server-and-test": "^1.12.1",
     "ts-jest": "^26.5.6",
     "typescript": "^4.4.2"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
   }
 }

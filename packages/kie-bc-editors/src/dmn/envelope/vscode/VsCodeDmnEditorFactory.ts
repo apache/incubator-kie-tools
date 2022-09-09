@@ -21,7 +21,7 @@ import { VsCodeDmnEditorChannelApi } from "./VsCodeDmnEditorChannelApi";
 import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
-} from "@kie-tools-core/vscode-java-code-completion/src/api";
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 /**
  * EXPOSED INTEROP API

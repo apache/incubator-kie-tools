@@ -32,7 +32,9 @@ import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
+import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getObjectProperty;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
+import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.setObjectProperty;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.EDGE_START;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
@@ -59,19 +61,26 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         State sourceState = getElementDefinition(sourceNode);
                         Object targetDef = getElementDefinition(targetNode);
+
                         if (targetDef instanceof End) {
                             sourceState.transition = null;
-
                             if (sourceState.end instanceof Boolean) {
                                 sourceState.end = true;
-                            } // else is Object
+                            }
                         } else {
-                            sourceState.transition = getStateNodeName(targetNode);
-                            sourceState.end = false;
+                            if (sourceState.transition instanceof String) {
+                                sourceState.transition = getStateNodeName(targetNode);
+                            } else {
+                                setObjectProperty(sourceState.transition, "nextState", getStateNodeName(targetNode));
+                            }
+
+                            if (sourceState.end instanceof Boolean) {
+                                sourceState.end = false;
+                            }
                         }
                     }
                 }
-                // TODO: Update Transition.to ?
+
                 return edge;
             };
 
@@ -94,11 +103,15 @@ public interface TransitionMarshalling {
                     Node targetNode = edge.getTargetNode();
                     if (null != targetNode) {
                         State sourceState = getElementDefinition(sourceNode);
-                        sourceState.transition = getStateNodeName(targetNode);
+
+                        if (sourceState.transition instanceof String) {
+                            sourceState.transition = getStateNodeName(targetNode);
+                        } else {
+                            setObjectProperty(sourceState.transition, "nextState", getStateNodeName(targetNode));
+                        }
                     }
                 }
-                // TODO: Update CompensationTransition.name ?
-                // TODO: Update CompensationTransition.transition ?
+
                 return edge;
             };
 
@@ -124,12 +137,23 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         DataConditionTransition dataConditionTransition = getElementDefinition(edge);
                         Object targetDef = getElementDefinition(targetNode);
+
                         if (targetDef instanceof End) {
                             dataConditionTransition.transition = null;
-                            dataConditionTransition.end = true;
+
+                            if (dataConditionTransition.end instanceof Boolean) {
+                                dataConditionTransition.end = true;
+                            }
                         } else {
-                            dataConditionTransition.transition = getStateNodeName(targetNode);
-                            dataConditionTransition.end = false;
+                            if (dataConditionTransition.transition instanceof String) {
+                                dataConditionTransition.transition = getStateNodeName(targetNode);
+                            } else {
+                                setObjectProperty(dataConditionTransition.transition, "nextState", getStateNodeName(targetNode));
+                            }
+
+                            if (dataConditionTransition.end instanceof Boolean) {
+                                dataConditionTransition.end = false;
+                            }
                         }
                     }
                 }
@@ -159,12 +183,23 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         DefaultConditionTransition defaultConditionTransition = getElementDefinition(edge);
                         Object targetDef = getElementDefinition(targetNode);
+
                         if (targetDef instanceof End) {
                             defaultConditionTransition.transition = null;
-                            defaultConditionTransition.end = true;
+
+                            if (defaultConditionTransition.end instanceof Boolean) {
+                                defaultConditionTransition.end = true;
+                            }
                         } else {
-                            defaultConditionTransition.transition = getStateNodeName(targetNode);
-                            defaultConditionTransition.end = false;
+                            if (defaultConditionTransition.transition instanceof String) {
+                                defaultConditionTransition.transition = getStateNodeName(targetNode);
+                            } else {
+                                setObjectProperty(defaultConditionTransition.transition, "nextState", getStateNodeName(targetNode));
+                            }
+
+                            if (defaultConditionTransition.end instanceof Boolean) {
+                                defaultConditionTransition.end = false;
+                            }
                         }
                     }
                 }
@@ -193,12 +228,23 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         ErrorTransition errorTransition = getElementDefinition(edge);
                         Object targetDef = getElementDefinition(targetNode);
+
                         if (targetDef instanceof End) {
                             errorTransition.transition = null;
-                            errorTransition.end = true;
+
+                            if (errorTransition.end instanceof Boolean) {
+                                errorTransition.end = true;
+                            }
                         } else {
-                            errorTransition.transition = getStateNodeName(targetNode);
-                            errorTransition.end = false;
+                            if (errorTransition.transition instanceof String) {
+                                errorTransition.transition = getStateNodeName(targetNode);
+                            } else {
+                                setObjectProperty(errorTransition.transition, "nextState", getStateNodeName(targetNode));
+                            }
+
+                            if (errorTransition.end instanceof Boolean) {
+                                errorTransition.end = false;
+                            }
                         }
                     }
                 }
@@ -220,6 +266,7 @@ public interface TransitionMarshalling {
                 return edge;
             };
 
+
     EdgeMarshaller<EventConditionTransition> EVENT_CONDITION_TRANSITION_MARSHALLER =
             (context, edge) -> {
                 Node sourceNode = edge.getSourceNode();
@@ -228,12 +275,23 @@ public interface TransitionMarshalling {
                     if (null != targetNode) {
                         EventConditionTransition eventConditionTransition = getElementDefinition(edge);
                         Object targetDef = getElementDefinition(targetNode);
+
                         if (targetDef instanceof End) {
                             eventConditionTransition.transition = null;
-                            eventConditionTransition.end = true;
+
+                            if (eventConditionTransition.end instanceof Boolean) {
+                                eventConditionTransition.end = true;
+                            }
                         } else {
-                            eventConditionTransition.transition = getStateNodeName(targetNode);
-                            eventConditionTransition.end = false;
+                            if (eventConditionTransition.transition instanceof String) {
+                                eventConditionTransition.transition = getStateNodeName(targetNode);
+                            } else {
+                                setObjectProperty(eventConditionTransition.transition, "nextState", getStateNodeName(targetNode));
+                            }
+
+                            if (eventConditionTransition.end instanceof Boolean) {
+                                eventConditionTransition.end = false;
+                            }
                         }
                     }
                 }
@@ -260,11 +318,20 @@ public interface TransitionMarshalling {
                 if (null != edge.getTargetNode()) {
                     Node targetNode = edge.getTargetNode();
                     String stateName = getStateNodeName(targetNode);
-                    workflow.setStart(stateName);
+
+                    if (workflow.start instanceof String) {
+                        workflow.setStart(stateName);
+                    } else if (workflow.start != null) {
+                        Object startName = getObjectProperty(workflow.start, stateName);
+                        if (startName != null) {
+                            setObjectProperty(workflow.start, "stateName", stateName);
+                        }
+                    }
                 } else {
-                    workflow.setStart("");
+                    workflow.setStart(null);
                 }
-                // TODO: Update StartTransition.transition ?
+
                 return edge;
             };
+
 }

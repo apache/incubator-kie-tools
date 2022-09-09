@@ -1,0 +1,50 @@
+name: "CI :: Sonar :: stunner-editors"
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/stunner-editors/**"
+      - ".github/workflows/ci_sonar_analysis_stunner_editors.yml"
+
+jobs:
+  check:
+    name: Build for Sonar
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+
+      - name: "Bootstrap"
+        uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: -F @kie-tools/stunner-editors...
+
+      - name: "Cache SonarCloud packages"
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar-stunner-editors
+          restore-keys: ${{ runner.os }}-sonar-stunner-editors
+
+      - name: "Build with Maven to measure code coverage"
+        run: |
+          pnpm -F @kie-tools/stunner-editors^... build:dev
+          cd packages/stunner-editors
+          mvn clean install --fail-at-end -Prun-code-coverage -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'
+
+      - name: "Analyze with Sonar"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
+          SONARCLOUD_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd packages/stunner-editors
+          mvn -B validate org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=org.kie.kogito:kogito-tooling -Dsonar.organization=kiegroup -Dsonar.host.url=https://sonarcloud.io -DskipTests -Dgwt.compiler.skip -Dsonar.login=${{ env.SONARCLOUD_TOKEN }} -pl '!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-runtime,!kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-testing,!lienzo-webapp'

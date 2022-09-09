@@ -26,7 +26,7 @@ import {
 } from "../test-utils";
 import { ContextExpression } from "@kie-tools/boxed-expression-component/dist/components/ContextExpression";
 import * as React from "react";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("ContextExpression tests", () => {
   const name = "contextName";
@@ -115,7 +115,7 @@ describe("ContextExpression tests", () => {
   });
 });
 
-jest.mock("@kie-tools/boxed-expression-component", () => ({
-  ...(jest.requireActual("@kie-tools/boxed-expression-component") as Record<string, unknown>),
+jest.mock("@kie-tools/boxed-expression-component/dist/api", () => ({
+  ...(jest.requireActual("@kie-tools/boxed-expression-component/dist/api") as Record<string, unknown>),
   getHandlerConfiguration: jest.fn(),
 }));

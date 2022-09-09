@@ -26,11 +26,10 @@ import { act } from "react-dom/test-utils";
 import { fireEvent } from "@testing-library/react";
 import { BoxedExpressionGlobalContext } from "@kie-tools/boxed-expression-component/dist/context";
 import {
-  BoxedExpressionEditorGWTService,
   BoxedExpressionProvider,
   BoxedExpressionProviderProps,
-  DataType,
-} from "@kie-tools/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component/dist/components";
+import { BoxedExpressionEditorGWTService, DataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 global.console = { ...global.console, warn: () => ({}) };
 
