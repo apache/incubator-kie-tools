@@ -23,7 +23,7 @@
     "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs=$(build-env global.build.testIT --not) `-Pno-showcase\" && pnpm dist",
     "build:prod": "run-script-os",
     "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env integrationTests.run --not) -Pno-showcase && pnpm dist",
-    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env global.build.test --not) `-DskipITs=$(build-env global.build.testIT --not) `-Pno-showcase\" && pnpm dist",
+    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env integrationTests.run --not) `-Pno-showcase\" && pnpm dist",
     "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
     "dist:sw": "mkdir \"dist/sw\" && cpr ./sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
     "install": "node install.js",
