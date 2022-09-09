@@ -305,7 +305,7 @@ export function EditorToolbar(props: Props) {
       downloadAllRef.current.click();
     }
     if (workspacePromise.data?.descriptor.origin.kind === WorkspaceKind.LOCAL) {
-      await workspaces.createSavePoint({ fs, workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
+      await workspaces.createSavePoint({ workspaceId: props.workspaceFile.workspaceId, gitConfig: githubAuthInfo });
     }
   }, [props.editor, props.workspaceFile, workspaces, workspacePromise.data, githubAuthInfo]);
 
@@ -326,11 +326,9 @@ export function EditorToolbar(props: Props) {
       }
 
       setGitHubGistLoading(true);
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
 
-      await workspaces.gitService.push({
-        fs,
-        dir: await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId }),
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -339,7 +337,6 @@ export function EditorToolbar(props: Props) {
       });
 
       await workspaces.pull({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
@@ -390,18 +387,14 @@ export function EditorToolbar(props: Props) {
       }
 
       setGitHubGistLoading(true);
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const dir = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
       await workspaces.createSavePoint({
-        fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
-      await workspaces.gitService.push({
-        fs,
-        dir,
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -410,7 +403,6 @@ export function EditorToolbar(props: Props) {
       });
 
       await workspaces.pull({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
@@ -454,33 +446,26 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
       await workspaces.descriptorService.turnIntoGist(props.workspaceFile.workspaceId, new URL(gist.data.git_push_url));
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
-
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspaceFile.workspaceId,
         url: gist.data.git_push_url,
         name: GIST_ORIGIN_REMOTE_NAME,
         force: true,
       });
 
-      await workspaces.gitService.branch({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.branch({
+        workspaceId: props.workspaceFile.workspaceId,
         checkout: true,
         name: GIST_DEFAULT_BRANCH,
       });
 
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -489,7 +474,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       });
 
       await workspaces.pull({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         authInfo: githubAuthInfo,
       });
@@ -525,15 +509,11 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         gist_id: gitHubGist.id,
       });
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
-
       const remoteName = gist.data.id;
 
       // Adds forked gist remote to current one
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspaceFile.workspaceId,
         url: gist.data.git_push_url,
         name: remoteName,
         force: true,
@@ -541,15 +521,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
       // Commit
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
       // Push to forked gist remote
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         remote: remoteName,
         ref: GIST_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIST_DEFAULT_BRANCH}`,
@@ -934,12 +912,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         icon={<SaveIcon />}
         onClick={async () => {
           comittingAlert.show();
-          await workspaces.fsService.withInMemoryFs(props.workspaceFile.workspaceId, (fs) => {
-            return workspaces.createSavePoint({
-              fs,
-              workspaceId: props.workspaceFile.workspaceId,
-              gitConfig: githubAuthInfo,
-            });
+          await workspaces.createSavePoint({
+            workspaceId: props.workspaceFile.workspaceId,
+            gitConfig: githubAuthInfo,
           });
           comittingAlert.close();
           commitSuccessAlert.show();
@@ -1033,25 +1008,16 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
       try {
         pushingAlert.show();
-        const fs = await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId);
-        const workspaceRootDirPath = await workspaces.getAbsolutePath({ workspaceId: props.workspaceFile.workspaceId });
 
         await workspaces.createSavePoint({
-          fs: fs,
           workspaceId: props.workspaceFile.workspaceId,
           gitConfig: githubAuthInfo,
         });
 
-        await workspaces.gitService.branch({
-          fs,
-          dir: workspaceRootDirPath,
-          checkout: false,
-          name: newBranchName,
-        });
+        await workspaces.branch({ workspaceId: props.workspaceFile.workspaceId, checkout: false, name: newBranchName });
 
-        await workspaces.gitService.push({
-          fs: fs,
-          dir: workspaceRootDirPath,
+        await workspaces.push({
+          workspaceId: props.workspaceFile.workspaceId,
           remote: GIT_ORIGIN_REMOTE_NAME,
           remoteRef: `refs/heads/${newBranchName}`,
           ref: newBranchName,
@@ -1125,14 +1091,12 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         pullingAlert.show();
       }
       await workspaces.createSavePoint({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         gitConfig: githubAuthInfo,
       });
 
       try {
         await workspaces.pull({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
           workspaceId: props.workspaceFile.workspaceId,
           authInfo: githubAuthInfo,
         });
@@ -1177,15 +1141,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     try {
       const workspaceId = props.workspaceFile.workspaceId;
       await workspaces.createSavePoint({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
         workspaceId: workspaceId,
         gitConfig: githubAuthInfo,
       });
 
       const workspace = await workspaces.descriptorService.get(workspaceId);
-      await workspaces.gitService.push({
-        fs: await workspaces.fsService.getWorkspaceFs(workspaceId),
-        dir: await workspaces.service.getAbsolutePath({ workspaceId }),
+      await workspaces.push({
+        workspaceId: props.workspaceFile.workspaceId,
         ref: workspace.origin.branch,
         remote: GIST_ORIGIN_REMOTE_NAME,
         remoteRef: `refs/heads/${workspace.origin.branch}`,
@@ -1411,9 +1373,9 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                 )}
                                 <DropdownItem
                                   href={`https://vscode.dev/github${
-                                    workspace.descriptor.origin.url.pathname.endsWith(".git")
-                                      ? workspace.descriptor.origin.url.pathname.replace(".git", "")
-                                      : workspace.descriptor.origin.url.pathname
+                                    new URL(workspace.descriptor.origin.url).pathname.endsWith(".git")
+                                      ? new URL(workspace.descriptor.origin.url).pathname.replace(".git", "")
+                                      : new URL(workspace.descriptor.origin.url).pathname
                                   }/tree/${workspace.descriptor.origin.branch}`}
                                   target={"_blank"}
                                   icon={<ExternalLinkAltIcon />}

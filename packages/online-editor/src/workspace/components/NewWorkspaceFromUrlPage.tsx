@@ -120,7 +120,7 @@ export function NewWorkspaceFromUrlPage() {
             await importGitWorkspace({
               origin: {
                 kind: WorkspaceKind.GIT,
-                url,
+                url: url.toString(),
                 branch: queryParamBranch ?? GIT_DEFAULT_BRANCH,
               },
               gitConfig: githubAuthInfo,
@@ -148,7 +148,7 @@ export function NewWorkspaceFromUrlPage() {
           await importGitWorkspace({
             origin: {
               kind: WorkspaceKind.GIT,
-              url: importableUrl.url,
+              url: importableUrl.url.toString(),
               branch: queryParamBranch ?? importableUrl.branch ?? GIT_DEFAULT_BRANCH,
             },
             gitConfig: githubAuthInfo,
@@ -158,7 +158,7 @@ export function NewWorkspaceFromUrlPage() {
           await importGitWorkspace({
             origin: {
               kind: WorkspaceKind.GIT,
-              url: importableUrl.url,
+              url: importableUrl.url.toString(),
               branch: GIT_DEFAULT_BRANCH,
             },
             gitConfig: githubAuthInfo,
@@ -170,7 +170,7 @@ export function NewWorkspaceFromUrlPage() {
           importableUrl.url.hash = "";
 
           const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromGitRepository({
-            origin: { kind: WorkspaceKind.GITHUB_GIST, url: importableUrl.url, branch: GIST_DEFAULT_BRANCH },
+            origin: { kind: WorkspaceKind.GITHUB_GIST, url: importableUrl.url.toString(), branch: GIST_DEFAULT_BRANCH },
           });
 
           if (!suggestedFirstFile) {
@@ -222,7 +222,7 @@ export function NewWorkspaceFromUrlPage() {
 
           await createWorkspaceForFile({
             path: basename(decodeURIComponent(rawUrl.pathname)),
-            getFileContents: () => Promise.resolve(encoder.encode(content)),
+            fileContents: encoder.encode(content),
           });
         }
 

@@ -79,19 +79,14 @@ export function CreateGitHubRepositoryModal(props: {
 
       const cloneUrl = repo.data.clone_url;
 
-      const fs = await workspaces.fsService.getWorkspaceFs(props.workspace.workspaceId);
-      const workspaceRootDirPath = workspaces.getAbsolutePath({ workspaceId: props.workspace.workspaceId });
-
-      await workspaces.gitService.addRemote({
-        fs,
-        dir: workspaceRootDirPath,
+      await workspaces.addRemote({
+        workspaceId: props.workspace.workspaceId,
         url: cloneUrl,
         name: GIT_ORIGIN_REMOTE_NAME,
         force: true,
       });
 
       await workspaces.createSavePoint({
-        fs: fs,
         workspaceId: props.workspace.workspaceId,
         gitConfig: {
           name: githubAuthInfo.name,
@@ -99,9 +94,8 @@ export function CreateGitHubRepositoryModal(props: {
         },
       });
 
-      await workspaces.gitService.push({
-        fs: fs,
-        dir: workspaceRootDirPath,
+      await workspaces.push({
+        workspaceId: props.workspace.workspaceId,
         remote: GIT_ORIGIN_REMOTE_NAME,
         ref: GIT_DEFAULT_BRANCH,
         remoteRef: `refs/heads/${GIT_DEFAULT_BRANCH}`,

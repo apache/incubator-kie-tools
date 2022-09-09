@@ -25,11 +25,9 @@ import { WORKSPACES_BROADCAST_CHANNEL } from "../workspace/services/WorkspaceSer
 import { WorkspacesEvents } from "../workspace/hooks/WorkspacesHooks";
 
 export function DmnRunnerInputsContextProvider(props: React.PropsWithChildren<{}>) {
-  const workspaces = useWorkspaces();
-
   const dmnRunnerInputsService = useMemo(() => {
-    return new DmnRunnerInputsService(workspaces.storageService);
-  }, [workspaces.storageService]);
+    return new DmnRunnerInputsService();
+  }, []);
 
   useCancelableEffect(
     useCallback(

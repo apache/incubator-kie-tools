@@ -109,7 +109,7 @@ export class WorkspaceDescriptorService {
         ...(await this.get(workspaceId)),
         origin: {
           kind: WorkspaceKind.GITHUB_GIST,
-          url: gistUrl,
+          url: gistUrl.toString(),
           branch: GIST_DEFAULT_BRANCH,
         },
       })
@@ -123,7 +123,7 @@ export class WorkspaceDescriptorService {
         ...(await this.get(workspaceId)),
         origin: {
           kind: WorkspaceKind.GIT,
-          url,
+          url: url.toString(),
           branch: GIT_DEFAULT_BRANCH,
         },
       })
