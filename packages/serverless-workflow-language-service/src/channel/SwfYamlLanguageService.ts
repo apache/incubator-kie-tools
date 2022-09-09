@@ -110,13 +110,11 @@ export class SwfYamlLanguageService {
       args.cursorPosition = Position.create(args.cursorPosition.line, args.cursorPosition.character - 1);
     }
 
-    const completions = await this.ls.getCompletionItems({
+    return await this.ls.getCompletionItems({
       ...args,
       rootNode,
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
-
-    return completions;
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
