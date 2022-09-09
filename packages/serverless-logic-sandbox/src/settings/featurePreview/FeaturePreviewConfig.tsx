@@ -23,12 +23,13 @@ export interface FeaturePreviewSettingsConfig {
 }
 
 export const DEFAULT_CONFIG: FeaturePreviewSettingsConfig = {
-  stunnerEnabled: false,
+  stunnerEnabled: true,
 };
 
 export function readFeaturePreviewConfigCookie(): FeaturePreviewSettingsConfig {
+  const stunnerEnabledCookie = getCookie(FEATURE_PREVIEW_STUNNER_ENABLED_COOKIE_NAME);
   return {
-    stunnerEnabled: getCookie(FEATURE_PREVIEW_STUNNER_ENABLED_COOKIE_NAME) === "true" ?? DEFAULT_CONFIG.stunnerEnabled,
+    stunnerEnabled: stunnerEnabledCookie ? stunnerEnabledCookie === "true" : DEFAULT_CONFIG.stunnerEnabled,
   };
 }
 

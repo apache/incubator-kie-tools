@@ -158,7 +158,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
   public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
     return (
       this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
-        defaultValue: { stunnerEnabled: false },
+        defaultValue: { stunnerEnabled: true },
       }
     );
   }
