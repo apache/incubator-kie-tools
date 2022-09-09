@@ -358,6 +358,9 @@
     "onLanguage:serverless-workflow-yaml",
     "onCustomEditor:kieKogitoWebviewEditorsServerlessWorkflow"
   ],
+  "extensionDependencies": [
+    "redhat.vscode-yaml"
+  ],
   "icon": "icon.png",
   "capabilities": {
     "untrustedWorkspaces": {
