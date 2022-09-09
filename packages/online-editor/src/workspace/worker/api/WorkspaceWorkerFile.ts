@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-export interface WorkspaceWorkerFileDescriptor {
-  workspaceId: string;
-  relativePath: string;
-}
-
 export interface WorkspaceWorkerFile {
   workspaceId: string;
   relativePath: string;

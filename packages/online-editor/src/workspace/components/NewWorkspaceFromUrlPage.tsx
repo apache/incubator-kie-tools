@@ -29,7 +29,7 @@ import { OnlineEditorPage } from "../../pageTemplate/OnlineEditorPage";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { basename } from "path";
 import { WorkspaceKind } from "../model/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../services/GitService";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useGitHubAuthInfo } from "../../github/Hooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";

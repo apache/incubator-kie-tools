@@ -70,7 +70,11 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
-import { GIST_DEFAULT_BRANCH, GIST_ORIGIN_REMOTE_NAME, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import {
+  GIST_DEFAULT_BRANCH,
+  GIST_ORIGIN_REMOTE_NAME,
+  GIT_ORIGIN_REMOTE_NAME,
+} from "../workspace/constants/GitConstants";
 import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";

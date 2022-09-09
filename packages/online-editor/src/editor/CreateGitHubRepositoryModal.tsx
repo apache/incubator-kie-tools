@@ -30,7 +30,7 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/services/GitService";
+import { GIT_DEFAULT_BRANCH, GIT_ORIGIN_REMOTE_NAME } from "../workspace/constants/GitConstants";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useGitHubAuthInfo } from "../github/Hooks";
