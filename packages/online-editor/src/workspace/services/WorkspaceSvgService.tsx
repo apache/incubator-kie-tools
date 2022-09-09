@@ -17,6 +17,7 @@
 import { FsCache } from "./FsCache";
 import { encoder, WorkspaceFile } from "../WorkspacesContext";
 import { StorageFile, StorageService } from "./StorageService";
+import { WorkspaceWorkerFileDescriptor } from "../../workspacesWorker/api/WorkspaceWorkerFileDescriptor";
 
 export class WorkspaceSvgService {
   constructor(private readonly storageService: StorageService, private readonly fsCache = new FsCache()) {}
@@ -25,51 +26,51 @@ export class WorkspaceSvgService {
     return this.fsCache.getOrCreateFs(`${workspaceId}__svgs`);
   }
 
-  public async getSvg(workspaceFile: WorkspaceFile) {
-    return this.storageService.getFile(
-      await this.getWorkspaceSvgsFs(workspaceFile.workspaceId),
-      `/${workspaceFile.relativePath}.svg`
-    );
+  public async getSvg(wwfd: WorkspaceWorkerFileDescriptor) {
+    return this.storageService.getFile(await this.getWorkspaceSvgsFs(wwfd.workspaceId), `/${wwfd.relativePath}.svg`);
   }
 
-  public async deleteSvg(workspaceFile: WorkspaceFile) {
-    const svgFile = await this.getSvg(workspaceFile);
+  public async deleteSvg(wwfd: WorkspaceWorkerFileDescriptor) {
+    const svgFile = await this.getSvg(wwfd);
     if (!svgFile) {
       console.debug(
-        `Can't delete SVG, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
+        `Can't delete SVG, because it doesn't exist for file '${wwfd.relativePath}' on Workspace '${wwfd.workspaceId}'`
       );
       return;
     }
 
-    await this.storageService.deleteFile(
-      await this.getWorkspaceSvgsFs(workspaceFile.workspaceId),
-      `/${workspaceFile.relativePath}.svg`
-    );
+    await this.storageService.deleteFile(await this.getWorkspaceSvgsFs(wwfd.workspaceId), `/${wwfd.relativePath}.svg`);
   }
 
-  public async createOrOverwriteSvg(workspaceFile: WorkspaceFile, svgString: string) {
+  public async createOrOverwriteSvg(wwfd: WorkspaceWorkerFileDescriptor, svgString: string) {
     await this.storageService.createOrOverwriteFile(
-      await this.getWorkspaceSvgsFs(workspaceFile.workspaceId),
+      await this.getWorkspaceSvgsFs(wwfd.workspaceId),
       new StorageFile({
         getFileContents: () => Promise.resolve(encoder.encode(svgString)),
-        path: `/${workspaceFile.relativePath}.svg`,
+        path: `/${wwfd.relativePath}.svg`,
       })
     );
   }
 
-  public async renameSvg(workspaceFile: WorkspaceFile, newFileNameWithoutExtension: string) {
-    const svgFile = await this.getSvg(workspaceFile);
+  public async renameSvg(wwfd: WorkspaceWorkerFileDescriptor, newFileNameWithoutExtension: string) {
+    const svgFile = await this.getSvg(wwfd);
     if (!svgFile) {
       console.debug(
-        `Can't rename SVG, because it doesn't exist for file '${workspaceFile.relativePath}' on Workspace '${workspaceFile.workspaceId}'`
+        `Can't rename SVG, because it doesn't exist for file '${wwfd.relativePath}' on Workspace '${wwfd.workspaceId}'`
       );
       return;
     }
 
+    const wf = new WorkspaceFile({
+      workspaceId: wwfd.workspaceId,
+      relativePath: wwfd.relativePath,
+      getFileContents: async () => new Uint8Array(), // This is just temporary to be able to use `wf.extension`
+    });
+
     return this.storageService.renameFile(
-      await this.getWorkspaceSvgsFs(workspaceFile.workspaceId),
+      await this.getWorkspaceSvgsFs(wwfd.workspaceId),
       svgFile,
-      `${newFileNameWithoutExtension}.${workspaceFile.extension}`
+      `${newFileNameWithoutExtension}.${wf.extension}`
     );
   }
 

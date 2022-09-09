@@ -98,4 +98,14 @@ export interface WorkspacesWorkerGitApi {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
   }): Promise<void>;
+
+  kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
+    workspaceId: string; //
+    remoteUrl: string;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
+    workspaceId: string; //
+    remoteUrl: string;
+  }): Promise<void>;
 }

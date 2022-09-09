@@ -18,3 +18,9 @@ export interface WorkspaceWorkerFileDescriptor {
   workspaceId: string;
   relativePath: string;
 }
+
+export interface WorkspaceWorkerFile {
+  workspaceId: string;
+  relativePath: string;
+  content: Uint8Array;
+}

@@ -59,13 +59,11 @@ export class WorkspaceDescriptorService {
   }
 
   public async bumpLastUpdatedDate(workspaceId: string): Promise<void> {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        lastUpdatedDateISO: new Date().toISOString(),
-      })
-    );
+    const file = this.toStorageFile({
+      ...(await this.get(workspaceId)),
+      lastUpdatedDateISO: new Date().toISOString(),
+    });
+    await this.storageService.updateFile(this.descriptorsFs, file.path, file.getFileContents);
   }
 
   public async get(workspaceId: string): Promise<WorkspaceDescriptor> {
@@ -93,41 +91,35 @@ export class WorkspaceDescriptorService {
   }
 
   public async rename(workspaceId: string, newName: string) {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        name: newName,
-      })
-    );
+    const file = this.toStorageFile({
+      ...(await this.get(workspaceId)),
+      name: newName,
+    });
+    await this.storageService.updateFile(this.descriptorsFs, file.path, file.getFileContents);
   }
 
   public async turnIntoGist(workspaceId: string, gistUrl: URL) {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        origin: {
-          kind: WorkspaceKind.GITHUB_GIST,
-          url: gistUrl.toString(),
-          branch: GIST_DEFAULT_BRANCH,
-        },
-      })
-    );
+    const file = this.toStorageFile({
+      ...(await this.get(workspaceId)),
+      origin: {
+        kind: WorkspaceKind.GITHUB_GIST,
+        url: gistUrl.toString(),
+        branch: GIST_DEFAULT_BRANCH,
+      },
+    });
+    await this.storageService.updateFile(this.descriptorsFs, file.path, file.getFileContents);
   }
 
   public async turnIntoGit(workspaceId: string, url: URL) {
-    await this.storageService.updateFile(
-      this.descriptorsFs,
-      this.toStorageFile({
-        ...(await this.get(workspaceId)),
-        origin: {
-          kind: WorkspaceKind.GIT,
-          url: url.toString(),
-          branch: GIT_DEFAULT_BRANCH,
-        },
-      })
-    );
+    const file = this.toStorageFile({
+      ...(await this.get(workspaceId)),
+      origin: {
+        kind: WorkspaceKind.GIT,
+        url: url.toString(),
+        branch: GIT_DEFAULT_BRANCH,
+      },
+    });
+    await this.storageService.updateFile(this.descriptorsFs, file.path, file.getFileContents);
   }
 
   private toStorageFile(descriptor: WorkspaceDescriptor) {

@@ -76,7 +76,6 @@ export function DmnRunnerProvider(props: PropsWithChildren<Props>) {
     async (data?: any) => {
       const files = (
         await workspaces.getFiles({
-          fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
           workspaceId: props.workspaceFile.workspaceId,
         })
       ).filter((f) => f.extension === "dmn");

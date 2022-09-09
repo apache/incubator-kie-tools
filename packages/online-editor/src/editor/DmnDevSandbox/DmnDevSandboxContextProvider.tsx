@@ -69,14 +69,12 @@ export function DmnDevSandboxContextProvider(props: Props) {
         return false;
       }
 
-      const fs = await workspaces.fsService.getWorkspaceFs(workspaceFile.workspaceId);
       const zipBlob = await workspaces.prepareZip({
-        fs,
         workspaceId: workspaceFile.workspaceId,
         onlyExtensions: ["dmn"],
       });
 
-      const descriptorService = await workspaces.descriptorService.get(workspaceFile.workspaceId);
+      const descriptorService = await workspaces.getWorkspace({ workspaceId: workspaceFile.workspaceId });
 
       const workspaceName =
         descriptorService.name !== NEW_WORKSPACE_DEFAULT_NAME ? descriptorService.name : workspaceFile.name;

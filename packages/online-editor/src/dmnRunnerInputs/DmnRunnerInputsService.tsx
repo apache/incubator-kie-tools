@@ -91,10 +91,8 @@ export class DmnRunnerInputsService {
   public async updateDmnRunnerInputs(workspaceFile: WorkspaceFile, dmnRunnerInputs: string): Promise<void> {
     await this.storageService.updateFile(
       await this.getDmnRunnerInputsFs(workspaceFile.workspaceId),
-      new StorageFile({
-        getFileContents: () => Promise.resolve(encoder.encode(dmnRunnerInputs)),
-        path: `/${workspaceFile.relativePath}`,
-      })
+      `/${workspaceFile.relativePath}`,
+      () => Promise.resolve(encoder.encode(dmnRunnerInputs))
     );
 
     const broadcastChannel = new BroadcastChannel(

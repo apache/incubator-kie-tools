@@ -101,7 +101,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       );
 
       const hasConflictingFileName = await workspaces.existsFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         workspaceId: props.workspaceFile.workspaceId,
         relativePath: newRelativePath,
       });
@@ -127,7 +126,6 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
       }
 
       await workspaces.renameFile({
-        fs: await workspaces.fsService.getWorkspaceFs(props.workspaceFile.workspaceId),
         file: props.workspaceFile,
         newFileNameWithoutExtension: trimmedNewFileName.trim(),
       });
@@ -465,19 +463,20 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        Promise.resolve()
-          .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
-          .then(async (file) => {
-            if (canceled.get()) {
-              return;
-            }
-
-            if (file) {
-              setSvg({ data: decoder.decode(await file.getFileContents()) });
-            } else {
-              setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
-            }
-          });
+        // FIXME: Uncomment when KOGITO-6181 is fixed
+        // Promise.resolve()
+        //   .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
+        //   .then(async (file) => {
+        //     if (canceled.get()) {
+        //       return;
+        //     }
+        //
+        //     if (file) {
+        //       setSvg({ data: decoder.decode(await file.getFileContents()) });
+        //     } else {
+        //       setSvg({ error: `Can't find SVG for '${props.workspaceFile.relativePath}'` });
+        //     }
+        //   });
       },
       [props.workspaceFile, workspaces, setSvg]
     )
@@ -735,7 +734,8 @@ export function FilesMenuItems(props: {
                         </CardHeaderMain>
                       </CardHeader>
                       <CardBody style={{ padding: 0 }}>
-                        <FileSvg workspaceFile={file} />
+                        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
+                        {/* <FileSvg workspaceFile={file} />*/}
                       </CardBody>
                     </Card>
                   ))}

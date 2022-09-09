@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-export function jsonParseWithDate(json: string): object {
-  return JSON.parse(json, (_key: string, value: any) => {
-    const regexISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
-    return typeof value === "string" && regexISO.test(value) ? new Date(value) : value;
-  });
-}
+import { WorkspacesWorkerGitApi } from "./WorkspacesWorkerGitApi";
+import { WorkspacesWorkerStorageApi } from "./WorkspacesWorkerStorageApi";
 
-export function jsonParseWithUrl<T>(json: string): T {
-  return JSON.parse(json) as T;
+export interface WorkspacesWorkerApi extends WorkspacesWorkerGitApi, WorkspacesWorkerStorageApi {
+  //
 }
