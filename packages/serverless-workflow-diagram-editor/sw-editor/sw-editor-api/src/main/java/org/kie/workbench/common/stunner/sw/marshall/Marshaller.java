@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -203,12 +202,13 @@ public class Marshaller {
 
         try {
 
-            final Stream<Node> graphNodes = StreamSupport.stream(graph.nodes().spliterator(), false);
-            final Node startNode = graphNodes.filter(Marshaller::isStartState)
+            final Node startNode = StreamSupport.stream(graph.nodes().spliterator(), false)
+                    .filter(Marshaller::isStartState)
                     .findFirst()
                     .orElseThrow(() -> new UnsupportedOperationException("Diagram without 'start' node."));
 
-            final Node endNode = graphNodes.filter(Marshaller::isEndState)
+            final Node endNode = StreamSupport.stream(graph.nodes().spliterator(), false)
+                    .filter(Marshaller::isEndState)
                     .findFirst()
                     .orElseThrow(() -> new UnsupportedOperationException("Diagram without 'end' node."));
 
