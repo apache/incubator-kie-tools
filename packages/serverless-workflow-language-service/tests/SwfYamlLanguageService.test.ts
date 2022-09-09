@@ -912,9 +912,9 @@ functions:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
           textEdit: {
             newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
@@ -946,9 +946,9 @@ functions:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
           textEdit: {
             newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
@@ -979,9 +979,9 @@ functions:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
           textEdit: {
             newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
@@ -1013,9 +1013,9 @@ functions:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
           textEdit: {
             newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
@@ -1046,9 +1046,9 @@ functions:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Folder,
-          label: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          detail: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
-          filterText: `"specs/testRelativeService1.yml#testRelativeFunction1"`,
+          label: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          detail: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
+          filterText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
           textEdit: {
             newText: `'specs/testRelativeService1.yml#testRelativeFunction1'`,
             range: {
@@ -1244,10 +1244,10 @@ states:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Value,
-          label: `"myFunc"`,
+          label: `myFunc`,
           detail: `"myFunc"`,
-          filterText: `"myFunc"`,
-          sortText: `"myFunc"`,
+          filterText: `myFunc`,
+          sortText: `myFunc`,
           textEdit: {
             newText: `myFunc`,
             range: {
@@ -1288,10 +1288,10 @@ states:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Value,
-          label: `"myFunc"`,
+          label: `myFunc`,
           detail: `"myFunc"`,
-          filterText: `"myFunc"`,
-          sortText: `"myFunc"`,
+          filterText: `myFunc`,
+          sortText: `myFunc`,
           textEdit: {
             newText: `myFunc`,
             range: {
@@ -1331,10 +1331,10 @@ states:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Value,
-          label: `"myFunc"`,
+          label: `myFunc`,
           detail: `"myFunc"`,
-          filterText: `"myFunc"`,
-          sortText: `"myFunc"`,
+          filterText: `myFunc`,
+          sortText: `myFunc`,
           textEdit: {
             newText: `myFunc`,
             range: {
@@ -1374,10 +1374,10 @@ states:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Value,
-          label: `"myFunc"`,
+          label: `myFunc`,
           detail: `"myFunc"`,
-          filterText: `"myFunc"`,
-          sortText: `"myFunc"`,
+          filterText: `myFunc`,
+          sortText: `myFunc`,
           textEdit: {
             newText: `myFunc`,
             range: {
@@ -1418,10 +1418,10 @@ states:
         expect(completionItems).toHaveLength(1);
         expect(completionItems[0]).toStrictEqual({
           kind: CompletionItemKind.Value,
-          label: `"myFunc"`,
+          label: `myFunc`,
           detail: `"myFunc"`,
-          filterText: `"myFunc"`,
-          sortText: `"myFunc"`,
+          filterText: `myFunc`,
+          sortText: `myFunc`,
           textEdit: {
             newText: `myFunc`,
             range: {
@@ -1489,7 +1489,7 @@ states:
           kind: CompletionItemKind.Module,
           label: `'testRelativeFunction1' arguments`,
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1 arguments",
+          sortText: `'testRelativeFunction1' arguments`,
           textEdit: {
             newText: `
   argString: '\${1:}'
@@ -1526,7 +1526,7 @@ states:
           kind: CompletionItemKind.Module,
           label: `'testRelativeFunction1' arguments`,
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1 arguments",
+          sortText: `'testRelativeFunction1' arguments`,
           textEdit: {
             newText: `
   argString: '\${1:}'
@@ -1563,7 +1563,7 @@ states:
           kind: CompletionItemKind.Module,
           label: `'testRelativeFunction1' arguments`,
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1 arguments",
+          sortText: `'testRelativeFunction1' arguments`,
           textEdit: {
             newText: `{
   "argString": "\${1:}",

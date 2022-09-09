@@ -178,6 +178,13 @@ class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
     return completionItemNewLine + indentText(dump(completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
   }
 
+  public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
+    if (completionItemKind === CompletionItemKind.Function || completionItemKind === CompletionItemKind.Folder) {
+      return `'${label}'`;
+    }
+    return label;
+  }
+
   public shouldComplete(args: ShouldCompleteArgs): boolean {
     return matchNodeWithLocation(args.root, args.node, args.path);
   }

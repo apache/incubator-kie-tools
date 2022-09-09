@@ -460,9 +460,14 @@ const completions = new Map<
                 ? CompletionItemKind.Interface
                 : CompletionItemKind.Reference;
 
+            const label = codeCompletionStrategy.formatLabel(
+              toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
+              kind
+            );
+
             return {
               kind,
-              label: toCompletionItemLabelPrefix(swfServiceCatalogFunc, specsDir.specsDirRelativePosixPath),
+              label,
               detail:
                 swfServiceCatalogService.source.type === SwfServiceCatalogServiceSourceType.SERVICE_REGISTRY
                   ? swfServiceCatalogService.source.url
@@ -508,11 +513,13 @@ const completions = new Map<
               ? CompletionItemKind.Function
               : CompletionItemKind.Folder;
 
+          const label = codeCompletionStrategy.formatLabel(swfServiceCatalogFunc.operation, kind);
+
           return {
             kind,
-            label: `"${swfServiceCatalogFunc.operation}"`,
-            detail: `"${swfServiceCatalogFunc.operation}"`,
-            filterText: `"${swfServiceCatalogFunc.operation}"`,
+            label,
+            detail: label,
+            filterText: label,
             textEdit: {
               newText: codeCompletionStrategy.translate(`${swfServiceCatalogFunc.operation}`, kind),
               range: overwriteRange,
@@ -551,11 +558,14 @@ const completions = new Map<
           arguments: swfFunctionRefArgs,
         };
 
+        const kind = CompletionItemKind.Module;
+        const label = codeCompletionStrategy.formatLabel(swfFunctionRef.refName, kind);
+
         return [
           {
-            kind: CompletionItemKind.Module,
-            label: `${swfFunctionRef.refName}`,
-            sortText: `${swfFunctionRef.refName}`,
+            kind,
+            label,
+            sortText: label,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
               newText: codeCompletionStrategy.translate(swfFunctionRef, CompletionItemKind.Module),
@@ -573,13 +583,16 @@ const completions = new Map<
     ["states", "*", "actions", "*", "functionRef", "refName"],
     ({ overwriteRange, rootNode, codeCompletionStrategy }) => {
       const result = swfModelQueries.getFunctions(rootNode).flatMap((swfFunction) => {
+        const kind = CompletionItemKind.Value;
+        const label = codeCompletionStrategy.formatLabel(swfFunction.name, kind);
+
         return [
           {
-            kind: CompletionItemKind.Value,
-            label: `"${swfFunction.name}"`,
-            sortText: `"${swfFunction.name}"`,
+            kind,
+            label,
+            sortText: label,
             detail: `"${swfFunction.name}"`,
-            filterText: `"${swfFunction.name}"`,
+            filterText: label,
             textEdit: {
               newText: codeCompletionStrategy.translate(`${swfFunction.name}`, CompletionItemKind.Value),
               range: overwriteRange,
@@ -632,11 +645,14 @@ const completions = new Map<
         swfFunctionRefArgs[argName] = `$\{${argIndex++}:}`;
       });
 
+      const kind = CompletionItemKind.Module;
+      const label = `'${swfFunctionRefName}' arguments`;
+
       return Promise.resolve([
         {
-          kind: CompletionItemKind.Module,
-          label: `'${swfFunctionRefName}' arguments`,
-          sortText: `${swfFunctionRefName} arguments`,
+          kind,
+          label,
+          sortText: label,
           detail: swfFunction.operation,
           textEdit: {
             newText: codeCompletionStrategy.translate(swfFunctionRefArgs, CompletionItemKind.Module),

@@ -990,7 +990,7 @@ describe("SWF LS JSON", () => {
           kind: CompletionItemKind.Module,
           label: `'testRelativeFunction1' arguments`,
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1 arguments",
+          sortText: `'testRelativeFunction1' arguments`,
           textEdit: {
             newText: `{
   "argString": "\${1:}",
@@ -1039,7 +1039,7 @@ describe("SWF LS JSON", () => {
           kind: CompletionItemKind.Module,
           label: `'testRelativeFunction1' arguments`,
           detail: "specs/testRelativeService1.yml#testRelativeFunction1",
-          sortText: "testRelativeFunction1 arguments",
+          sortText: `'testRelativeFunction1' arguments`,
           textEdit: {
             newText: `{
   "argString": "\${1:}",

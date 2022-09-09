@@ -15,7 +15,7 @@
  */
 
 import * as jsonc from "jsonc-parser";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
 import { SwfLsNode, CodeCompletionStrategy, ShouldCompleteArgs } from "./types";
 import { FileLanguage } from "../api";
@@ -69,6 +69,17 @@ export class SwfJsonLanguageService {
 class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(completion: object | string): string {
     return JSON.stringify(completion, null, 2);
+  }
+
+  public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
+    if (
+      completionItemKind === CompletionItemKind.Value ||
+      completionItemKind === CompletionItemKind.Function ||
+      completionItemKind === CompletionItemKind.Folder
+    ) {
+      return `"${label}"`;
+    }
+    return label;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {

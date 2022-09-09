@@ -43,5 +43,6 @@ export interface ShouldCompleteArgs {
 
 export interface CodeCompletionStrategy {
   translate(completion: object | string, completionItemKind: CompletionItemKind): string;
+  formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
 }
