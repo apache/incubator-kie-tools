@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-import { GIT_DEFAULT_BRANCH, GitService } from "../workspace/services/GitService";
+import { GitService } from "../services/GitService";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
-import { StorageFile, StorageService } from "../workspace/services/StorageService";
-import { WorkspaceDescriptorService } from "../workspace/services/WorkspaceDescriptorService";
-import { WorkspaceFsService } from "../workspace/services/WorkspaceFsService";
-import { WorkspaceService } from "../workspace/services/WorkspaceService";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
-import { WorkspaceWorkerFile, WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
-import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "../workspace/model/WorkspaceOrigin";
-import { decoder, encoder, LocalFile, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { StorageFile, StorageService } from "../services/StorageService";
+import { WorkspaceDescriptorService } from "../services/WorkspaceDescriptorService";
+import { WorkspaceFsService } from "../services/WorkspaceFsService";
+import { WorkspaceService } from "../services/WorkspaceService";
+import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
+import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
+import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
+import { decoder, encoder, LocalFile, WorkspaceFile } from "../WorkspacesContext";
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import { WorkspaceEvents } from "../workspace/hooks/WorkspaceHooks";
+import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import {
   ContentType,
@@ -34,16 +35,17 @@ import {
   ResourceListOptions,
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
-import { WorkspaceSvgService } from "../workspace/services/WorkspaceSvgService";
+import { WorkspaceSvgService } from "../services/WorkspaceSvgService";
 import { join } from "path";
 import { Buffer } from "buffer";
-
-console.log("[workspaces-worker] Loaded.");
+import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
 
-const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, {}>((a) => postMessage(a));
+const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, {}>((m) => {
+  postMessage(m);
+});
 
 const GIT_USER_DEFAULT = {
   name: "KIE Sandbox",
@@ -56,14 +58,15 @@ const editorEnvelopeLocator = {
     return ["bpmn", "bpmn2", "dmn", "pmml"].some((ext) => relativePath.endsWith(ext));
   },
 };
+
 const corsProxyUrl =
   "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud";
 ////
 
 const storageService = new StorageService();
-const descriptorService = new WorkspaceDescriptorService(storageService);
-const fsService = new WorkspaceFsService(descriptorService);
-const service = new WorkspaceService(storageService, descriptorService, fsService);
+const workspaceDescriptorService = new WorkspaceDescriptorService(storageService);
+const fsService = new WorkspaceFsService(workspaceDescriptorService);
+const workspacesService = new WorkspaceService(storageService, workspaceDescriptorService, fsService);
 const gitService = new GitService(corsProxyUrl);
 const svgService = new WorkspaceSvgService(storageService);
 
@@ -73,7 +76,7 @@ const createWorkspace = async (args: {
   origin: WorkspaceOrigin;
   preferredName?: string;
 }) => {
-  const { workspace, files } = await service.create({
+  const { workspace, files } = await workspacesService.create({
     useInMemoryFs: args.useInMemoryFs,
     storeFiles: args.storeFiles,
     broadcastArgs: { broadcast: true },
@@ -99,24 +102,32 @@ const createWorkspace = async (args: {
 };
 
 const impl: WorkspacesWorkerApi = {
-  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void> {
-    return descriptorService.turnIntoGist(args.workspaceId, new URL(args.remoteUrl));
+  async kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
+    workspaceId: string; //
+    remoteUrl: string;
+  }): Promise<void> {
+    return workspaceDescriptorService.turnIntoGist(args.workspaceId, new URL(args.remoteUrl));
   },
-  kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void> {
-    return descriptorService.turnIntoGit(args.workspaceId, new URL(args.remoteUrl));
+  async kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
+    workspaceId: string; //
+    remoteUrl: string;
+  }): Promise<void> {
+    return workspaceDescriptorService.turnIntoGit(args.workspaceId, new URL(args.remoteUrl));
   },
-  kieSandboxWorkspacesStorage_getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor> {
-    return descriptorService.get(args.workspaceId);
+  async kieSandboxWorkspacesStorage_getWorkspace(args: {
+    workspaceId: string; //
+  }): Promise<WorkspaceDescriptor> {
+    return workspaceDescriptorService.get(args.workspaceId);
   },
-  kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]> {
-    return descriptorService.listAll();
+  async kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]> {
+    return workspaceDescriptorService.listAll();
   },
   async kieSandboxWorkspacesStorage_resourceContentGet(args: {
     workspaceId: string;
     relativePath: string;
     opts?: ResourceContentOptions;
   }): Promise<ResourceContent | undefined> {
-    const file = await service.getFile({
+    const file = await workspacesService.getFile({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
       workspaceId: args.workspaceId,
       relativePath: args.relativePath,
@@ -147,7 +158,7 @@ const impl: WorkspacesWorkerApi = {
     globPattern: string;
     opts?: ResourceListOptions;
   }): Promise<ResourcesList> {
-    const files = await service.getFilesWithLazyContent(
+    const files = await workspacesService.getFilesWithLazyContent(
       await fsService.getWorkspaceFs(args.workspaceId),
       args.workspaceId,
       args.globPattern
@@ -176,7 +187,7 @@ const impl: WorkspacesWorkerApi = {
 
       const fs = await fsService.getWorkspaceFs(args.workspaceId);
 
-      if (await service.existsFile({ fs, workspaceId: args.workspaceId, relativePath })) {
+      if (await workspacesService.existsFile({ fs, workspaceId: args.workspaceId, relativePath })) {
         continue;
       }
 
@@ -185,22 +196,24 @@ const impl: WorkspacesWorkerApi = {
         content: encoder.encode(args.content),
         relativePath,
       };
-      await service.createOrOverwriteFile(fs, newFile, { broadcast: true });
+      await workspacesService.createOrOverwriteFile(fs, newFile, { broadcast: true });
       return newFile;
     }
 
     throw new Error("Max attempts of new empty file exceeded.");
   },
   async kieSandboxWorkspacesStorage_deleteFile(args: { wwfd: WorkspaceWorkerFileDescriptor }): Promise<void> {
-    await service.deleteFile(await fsService.getWorkspaceFs(args.wwfd.workspaceId), args.wwfd, { broadcast: true });
+    await workspacesService.deleteFile(await fsService.getWorkspaceFs(args.wwfd.workspaceId), args.wwfd, {
+      broadcast: true,
+    });
     await svgService.deleteSvg(args.wwfd);
   },
   async kieSandboxWorkspacesStorage_deleteWorkspace(args: { workspaceId: string }): Promise<void> {
-    await service.delete(args.workspaceId, { broadcast: true });
+    await workspacesService.delete(args.workspaceId, { broadcast: true });
     await svgService.delete(args.workspaceId);
   },
   async kieSandboxWorkspacesStorage_existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean> {
-    return await service.existsFile({
+    return await workspacesService.existsFile({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
       workspaceId: args.workspaceId,
       relativePath: args.relativePath,
@@ -210,7 +223,7 @@ const impl: WorkspacesWorkerApi = {
     workspaceId: string;
     relativePath: string;
   }): Promise<WorkspaceWorkerFileDescriptor | undefined> {
-    const file = await service.getFile({
+    const file = await workspacesService.getFile({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
       workspaceId: args.workspaceId,
       relativePath: args.relativePath,
@@ -229,12 +242,15 @@ const impl: WorkspacesWorkerApi = {
   }): Promise<Uint8Array> {
     return storageService.getFileContent(
       await fsService.getWorkspaceFs(args.workspaceId),
-      service.getAbsolutePath(args)
+      workspacesService.getAbsolutePath(args)
     );
   },
   async kieSandboxWorkspacesStorage_getFiles(args: { workspaceId: string }): Promise<WorkspaceWorkerFileDescriptor[]> {
     return (
-      await service.getFilesWithLazyContent(await fsService.getWorkspaceFs(args.workspaceId), args.workspaceId)
+      await workspacesService.getFilesWithLazyContent(
+        await fsService.getWorkspaceFs(args.workspaceId),
+        args.workspaceId
+      )
     ).map((file) => ({
       workspaceId: file.workspaceId,
       relativePath: file.relativePath,
@@ -244,13 +260,17 @@ const impl: WorkspacesWorkerApi = {
     workspaceId: string;
     onlyExtensions?: string[];
   }): Promise<Blob> {
-    return service.prepareZip(await fsService.getWorkspaceFs(args.workspaceId), args.workspaceId, args.onlyExtensions);
+    return workspacesService.prepareZip(
+      await fsService.getWorkspaceFs(args.workspaceId),
+      args.workspaceId,
+      args.onlyExtensions
+    );
   },
   async kieSandboxWorkspacesStorage_renameFile(args: {
     wwfd: WorkspaceWorkerFileDescriptor;
     newFileNameWithoutExtension: string;
   }): Promise<WorkspaceWorkerFileDescriptor> {
-    const newFile = service.renameFile({
+    const newFile = workspacesService.renameFile({
       fs: await fsService.getWorkspaceFs(args.wwfd.workspaceId),
       wwfd: args.wwfd,
       newFileNameWithoutExtension: args.newFileNameWithoutExtension,
@@ -260,13 +280,13 @@ const impl: WorkspacesWorkerApi = {
     return newFile;
   },
   async kieSandboxWorkspacesStorage_renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void> {
-    await service.rename(args.workspaceId, args.newName, { broadcast: true });
+    await workspacesService.rename(args.workspaceId, args.newName, { broadcast: true });
   },
   async kieSandboxWorkspacesStorage_updateFile(args: {
     wwfd: WorkspaceWorkerFileDescriptor;
     newContent: string;
   }): Promise<void> {
-    return service.updateFile(
+    return workspacesService.updateFile(
       await fsService.getWorkspaceFs(args.wwfd.workspaceId),
       args.wwfd,
       async () => args.newContent,
@@ -284,14 +304,14 @@ const impl: WorkspacesWorkerApi = {
   }): Promise<void> {
     return gitService.addRemote({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
-      dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+      dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
       ...args,
     });
   },
   async kieSandboxWorkspacesGit_branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void> {
     return gitService.branch({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
-      dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+      dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
       ...args,
     });
   },
@@ -307,13 +327,13 @@ const impl: WorkspacesWorkerApi = {
       storeFiles: async (fs, workspace) => {
         await gitService.clone({
           fs,
-          dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
+          dir: workspacesService.getAbsolutePath({ workspaceId: workspace.workspaceId }),
           repositoryUrl: new URL(args.origin.url),
           gitConfig: args.gitConfig,
           authInfo: args.authInfo,
           sourceBranch: args.origin.branch,
         });
-        return service.getFilesWithLazyContent(fs, workspace.workspaceId);
+        return workspacesService.getFilesWithLazyContent(fs, workspace.workspaceId);
       },
     });
   },
@@ -321,9 +341,9 @@ const impl: WorkspacesWorkerApi = {
     workspaceId: string;
     gitConfig?: { email: string; name: string };
   }): Promise<void> {
-    const descriptor = await descriptorService.get(args.workspaceId);
+    const descriptor = await workspaceDescriptorService.get(args.workspaceId);
 
-    const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
+    const workspaceRootDirPath = workspacesService.getAbsolutePath({ workspaceId: args.workspaceId });
 
     const fs = await fsService.getWorkspaceFs(args.workspaceId);
 
@@ -340,7 +360,7 @@ const impl: WorkspacesWorkerApi = {
     await Promise.all(
       fileRelativePaths.map(async (relativePath) => {
         if (
-          await service.existsFile({
+          await workspacesService.existsFile({
             fs,
             workspaceId: args.workspaceId,
             relativePath,
@@ -392,14 +412,17 @@ const impl: WorkspacesWorkerApi = {
           .map(
             (localFile) =>
               new StorageFile({
-                path: service.getAbsolutePath({ workspaceId: workspace.workspaceId, relativePath: localFile.path }),
+                path: workspacesService.getAbsolutePath({
+                  workspaceId: workspace.workspaceId,
+                  relativePath: localFile.path,
+                }),
                 getFileContents: async () => localFile.fileContents,
               })
           );
 
         await storageService.createFiles(fs, files);
 
-        const workspaceRootDirPath = await service.getAbsolutePath({ workspaceId: workspace.workspaceId });
+        const workspaceRootDirPath = await workspacesService.getAbsolutePath({ workspaceId: workspace.workspaceId });
 
         const ignoredPaths = await storageService.walk({
           fs,
@@ -435,7 +458,7 @@ const impl: WorkspacesWorkerApi = {
           },
         });
 
-        return service.getFilesWithLazyContent(fs, workspace.workspaceId);
+        return workspacesService.getFilesWithLazyContent(fs, workspace.workspaceId);
       },
     });
   },
@@ -444,10 +467,10 @@ const impl: WorkspacesWorkerApi = {
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
   }): Promise<void> {
-    const workspace = await descriptorService.get(args.workspaceId);
+    const workspace = await workspaceDescriptorService.get(args.workspaceId);
     await gitService.pull({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
-      dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+      dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
       ref: workspace.origin.branch,
       author: {
         name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
@@ -473,21 +496,21 @@ const impl: WorkspacesWorkerApi = {
   }): Promise<void> {
     return gitService.push({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
-      dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+      dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
       ...args,
     });
   },
   async kieSandboxWorkspacesGit_resolveRef(args: { workspaceId: string; ref: string }): Promise<string> {
     return gitService.resolveRef({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
-      dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+      dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
       ref: args.ref,
     });
   },
   async kieSandboxWorkspacesGit_hasLocalChanges(args: { workspaceId: string }) {
     return gitService.hasLocalChanges({
       fs: await fsService.getWorkspaceFs(args.workspaceId),
-      dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+      dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
     });
   },
 };

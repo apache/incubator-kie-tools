@@ -23,12 +23,12 @@ import { FsCache } from "./FsCache";
 
 export class WorkspaceFsService {
   constructor(
-    private readonly descriptorService: WorkspaceDescriptorService,
+    private readonly workspaceDescriptorService: WorkspaceDescriptorService,
     private readonly fsCache = new FsCache()
   ) {}
 
   public async getWorkspaceFs(workspaceId: string) {
-    if (!(await this.descriptorService.get(workspaceId))) {
+    if (!(await this.workspaceDescriptorService.get(workspaceId))) {
       throw new Error(`Can't get FS for non-existent workspace '${workspaceId}'`);
     }
     return this.fsCache.getOrCreateFs(workspaceId);

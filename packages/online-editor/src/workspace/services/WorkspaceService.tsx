@@ -27,10 +27,8 @@ import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
-import {
-  WorkspaceWorkerFile,
-  WorkspaceWorkerFileDescriptor,
-} from "../../workspacesWorker/api/WorkspaceWorkerFileDescriptor";
+import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
+import { WorkspaceWorkerFile } from "../worker/api/WorkspaceWorkerFile";
 
 export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
 
@@ -346,6 +344,7 @@ export class WorkspaceService {
       relativePath: relative(this.getAbsolutePath({ workspaceId }), storageFile.path),
     };
   }
+
   private toStorageFile(wwfd: WorkspaceWorkerFileDescriptor, getFileContents: () => Promise<Uint8Array>): StorageFile {
     return new StorageFile({
       path: this.getAbsolutePath(wwfd),

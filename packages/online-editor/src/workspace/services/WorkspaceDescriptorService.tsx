@@ -22,7 +22,7 @@ import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../WorkspacesContext";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
-import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "./GitService";
+import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { jsonParseWithUrl } from "../../json/JsonParse";
 
 const WORKSPACE_DESCRIPTORS_FS_NAME = "workspaces";

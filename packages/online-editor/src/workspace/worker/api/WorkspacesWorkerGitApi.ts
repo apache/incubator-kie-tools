@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin } from "../../workspace/model/WorkspaceOrigin";
-import { LocalFile } from "../../workspace/WorkspacesContext";
+import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
+import { GistOrigin, GitHubOrigin } from "../../model/WorkspaceOrigin";
+import { LocalFile } from "../../WorkspacesContext";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 
 export interface WorkspacesWorkerGitApi {
@@ -96,7 +96,10 @@ export interface WorkspacesWorkerGitApi {
 
   kieSandboxWorkspacesGit_commit(args: {
     workspaceId: string;
-    gitConfig?: { email: string; name: string };
+    gitConfig?: {
+      email: string;
+      name: string;
+    };
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {

@@ -22,15 +22,15 @@ import { SupportedFileExtensions } from "../envelopeLocator/EditorEnvelopeLocato
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
-import { WorkspacesWorkerApi } from "../workspacesWorker/api/WorkspacesWorkerApi";
-import { WorkspaceWorkerFileDescriptor } from "../workspacesWorker/api/WorkspaceWorkerFileDescriptor";
+import { WorkspacesWorkerApi } from "./worker/api/WorkspacesWorkerApi";
+import { WorkspaceWorkerFileDescriptor } from "./worker/api/WorkspaceWorkerFileDescriptor";
 import * as path from "path";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const workspacesWorker = new Worker("workspacesWorker/worker.js");
+const workspacesWorker = new Worker("workspace/worker/worker.js");
 
 const workspacesWorkerBus = new EnvelopeBusMessageManager<{}, WorkspacesWorkerApi>((m) => {
   workspacesWorker.postMessage(m);

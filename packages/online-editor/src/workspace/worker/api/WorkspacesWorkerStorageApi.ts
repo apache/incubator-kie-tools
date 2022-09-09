@@ -21,17 +21,31 @@ import {
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
-import { WorkspaceDescriptor } from "../../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
 
 export interface WorkspacesWorkerStorageApi {
   // model
 
-  kieSandboxWorkspacesStorage_deleteWorkspace(args: { workspaceId: string }): Promise<void>;
-  kieSandboxWorkspacesStorage_renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
+  kieSandboxWorkspacesStorage_deleteWorkspace(args: {
+    workspaceId: string; //
+  }): Promise<void>;
+  kieSandboxWorkspacesStorage_renameWorkspace(args: {
+    workspaceId: string; //
+    newName: string;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesStorage_getWorkspace(args: {
+    workspaceId: string; //
+  }): Promise<WorkspaceDescriptor>;
+
+  kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]>;
 
   // util
 
-  kieSandboxWorkspacesStorage_prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
+  kieSandboxWorkspacesStorage_prepareZip(args: {
+    workspaceId: string; //
+    onlyExtensions?: string[];
+  }): Promise<Blob>;
 
   kieSandboxWorkspacesStorage_resourceContentList(args: {
     workspaceId: string;
@@ -57,7 +71,10 @@ export interface WorkspacesWorkerStorageApi {
     extension: string;
   }): Promise<WorkspaceWorkerFileDescriptor>;
 
-  kieSandboxWorkspacesStorage_getFileContent(args: { workspaceId: string; relativePath: string }): Promise<Uint8Array>;
+  kieSandboxWorkspacesStorage_getFileContent(args: {
+    workspaceId: string; //
+    relativePath: string;
+  }): Promise<Uint8Array>;
 
   kieSandboxWorkspacesStorage_getFile(args: {
     workspaceId: string;
@@ -90,10 +107,4 @@ export interface WorkspacesWorkerStorageApi {
     workspaceId: string; //
     relativePath: string;
   }): Promise<boolean>;
-
-  kieSandboxWorkspacesStorage_getWorkspace(args: {
-    workspaceId: string; //
-  }): Promise<WorkspaceDescriptor>;
-
-  kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]>;
 }
