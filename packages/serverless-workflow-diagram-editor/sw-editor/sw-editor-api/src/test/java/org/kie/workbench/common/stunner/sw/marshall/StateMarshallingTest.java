@@ -60,7 +60,6 @@ public class StateMarshallingTest extends BaseMarshallingTest {
         unmarshallWorkflow();
         assertTrue(hasOutgoingEdges("State1"));
         assertTrue(hasOutgoingEdgeTo("State1", Marshaller.STATE_END));
-        System.out.println("??? getEnd " + workflow.getStates()[0].getEnd().getClass());
         assertTrue(workflow.getStates()[0].getEnd() instanceof StateEnd);
         final StateEnd end = (StateEnd) workflow.getStates()[0].getEnd();
         assertTrue(end.getTerminate());

@@ -19,7 +19,6 @@ package org.kie.workbench.common.stunner.sw.marshall;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.sw.definition.ActionNode;
 import org.kie.workbench.common.stunner.sw.definition.CallEventAction;
@@ -166,20 +165,6 @@ public class Parser {
             state.setActions(actions);
         }
         return state;
-    }
-
-    private ActionNode[] parseActions(State jso) {
-        ActionNode[] actions = Js.uncheckedCast(Js.asPropertyMap(jso).get("actions"));
-        if (null != actions) {
-            ActionNode[] result = new ActionNode[actions.length];
-            for (int i = 0; i < actions.length; i++) {
-                ActionNode a = actions[i];
-                ActionNode action = parseAction(a);
-                result[i] = action;
-            }
-            return result;
-        }
-        return null;
     }
 
     private EventState parseEventState(State jso) {
