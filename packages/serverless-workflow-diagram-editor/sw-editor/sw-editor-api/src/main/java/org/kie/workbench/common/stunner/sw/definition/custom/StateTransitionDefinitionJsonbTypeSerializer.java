@@ -19,17 +19,21 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition_JsonSerializerImpl;
 
 public class StateTransitionDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {
-    private static final StateTransition_JsonSerializerImpl stateTransitionDefinitionJsonSerializerImpl =
-            new StateTransition_JsonSerializerImpl();
+    private static final StateTransition_JsonSerializerImpl serializer =
+            StateTransition_JsonSerializerImpl.INSTANCE;
+
+    private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
-            generator.write("transition", (String) obj);
+            stringJsonSerializer.serialize((String) obj, "transition", generator, ctx);
         } else if (obj instanceof StateTransition) {
-            stateTransitionDefinitionJsonSerializerImpl.serialize((StateTransition) obj, "transition", generator, ctx);
+            serializer.serialize((StateTransition) obj, "transition", generator, ctx);
         }
     }
 }

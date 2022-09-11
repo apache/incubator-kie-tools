@@ -19,17 +19,20 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
 
 public class StartDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
 
     private static final StartDefinition_JsonDeserializerImpl startDefinitionJsonDeserializerImpl =
             new StartDefinition_JsonDeserializerImpl();
 
+    private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
+
     @Override
     public Object deserialize(JsonValue value, DeserializationContext ctx) {
         if (value.getValueType() != JsonValue.ValueType.NULL) {
             if (value.getValueType() == JsonValue.ValueType.STRING) {
-                return value.toString();
+                return stringJsonDeserializer.deserialize(value, ctx);
             } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
                 return startDefinitionJsonDeserializerImpl.deserialize(value, ctx);
             }

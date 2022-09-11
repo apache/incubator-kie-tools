@@ -22,8 +22,8 @@ import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer
 
 public class StateEndDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
 
-    private static final StateEnd_JsonDeserializerImpl stateEndDefinitionJsonDeserializerImpl =
-            new StateEnd_JsonDeserializerImpl();
+    private static final StateEnd_JsonDeserializerImpl deserializer =
+            StateEnd_JsonDeserializerImpl.INSTANCE;
 
     @Override
     public Object deserialize(JsonValue value, DeserializationContext ctx) {
@@ -36,7 +36,7 @@ public class StateEndDefinitionJsonbTypeDeserializer extends JsonbDeserializer<O
                     return false;
                 }
             } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
-                return stateEndDefinitionJsonDeserializerImpl.deserialize(value, ctx);
+                return deserializer.deserialize(value, ctx);
             }
         }
         return null;

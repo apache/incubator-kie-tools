@@ -19,18 +19,19 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd_JsonSerializerImpl;
 
 public class StateEndDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {
 
-    private static final StateEnd_JsonSerializerImpl transition_JsonSerializerImpl =
-            new StateEnd_JsonSerializerImpl();
+    private static final StateEnd_JsonSerializerImpl serializer =
+            StateEnd_JsonSerializerImpl.INSTANCE;
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof Boolean) {
             generator.write("end", ((Boolean) obj));
         } else if (obj instanceof StateEnd) {
-            transition_JsonSerializerImpl.serialize((StateEnd) obj, "end", generator, ctx);
+            serializer.serialize((StateEnd) obj, "end", generator, ctx);
         }
     }
 }
