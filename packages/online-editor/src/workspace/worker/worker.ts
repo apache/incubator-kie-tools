@@ -256,6 +256,9 @@ const impl: WorkspacesWorkerApi = {
       relativePath: file.relativePath,
     }));
   },
+  async kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
+    return workspacesService.getUniqueFileIdentifier(args);
+  },
   async kieSandboxWorkspacesStorage_prepareZip(args: {
     workspaceId: string;
     onlyExtensions?: string[];
@@ -266,6 +269,7 @@ const impl: WorkspacesWorkerApi = {
       args.onlyExtensions
     );
   },
+
   async kieSandboxWorkspacesStorage_renameFile(args: {
     wwfd: WorkspaceWorkerFileDescriptor;
     newFileNameWithoutExtension: string;

@@ -362,6 +362,6 @@ export class WorkspaceService {
   }
 
   public getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
-    return args.workspaceId + "__" + this.getAbsolutePath(args); // FIXME: DUPLICATED
+    return args.workspaceId + "__" + this.getAbsolutePath(args);
   }
 }

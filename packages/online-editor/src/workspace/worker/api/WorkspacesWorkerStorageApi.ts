@@ -42,6 +42,11 @@ export interface WorkspacesWorkerStorageApi {
 
   // util
 
+  kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: {
+    workspaceId: string; //
+    relativePath: string;
+  }): Promise<string>;
+
   kieSandboxWorkspacesStorage_prepareZip(args: {
     workspaceId: string; //
     onlyExtensions?: string[];
