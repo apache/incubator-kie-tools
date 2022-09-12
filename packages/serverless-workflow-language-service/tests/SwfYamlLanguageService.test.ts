@@ -458,7 +458,7 @@ states:
   });
 
   describe("functions code lenses", () => {
-    test("add function - formatted", async () => {
+    test("add function", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -467,22 +467,23 @@ states:
 
       const { content } = trim(`
 ---
-functions: []`);
+functions: 
+- `);
 
       const codeLenses = await ls.getCodeLenses({ uri: documentUri, content });
 
       expect(codeLenses).toHaveLength(1);
       expect(codeLenses[0]).toStrictEqual({
-        range: { start: { line: 1, character: 11 }, end: { line: 1, character: 11 } },
+        range: { start: { line: 2, character: 0 }, end: { line: 2, character: 0 } },
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 0, line: 2 } }],
         },
       } as CodeLens);
     });
 
-    test("add function - unformatted", async () => {
+    test("add function - using JSON format", async () => {
       const ls = new SwfYamlLanguageService({
         fs: {},
         serviceCatalog: defaultServiceCatalogConfig,
@@ -501,7 +502,7 @@ functions: [] `);
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -532,7 +533,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -565,7 +566,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -601,7 +602,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -637,7 +638,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -860,6 +861,49 @@ functions:
             newText: `name: '\${1:testRelativeFunction1}'
   operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
   type: rest`,
+          },
+          snippet: true,
+          insertTextFormat: InsertTextFormat.Snippet,
+          command: {
+            command: "swf.ls.commands.ImportFunctionFromCompletionItem",
+            title: "Import function from completion item",
+            arguments: [
+              {
+                documentUri,
+                containingService: {
+                  ...testRelativeService1,
+                  functions: [
+                    {
+                      ...testRelativeFunction1,
+                      operation: "specs/testRelativeService1.yml#testRelativeFunction1",
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        } as CompletionItem);
+      });
+
+      test("add at the beginning, using the code lenses", async () => {
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `---
+functions:
+🎯- name: helloWorldFunction`
+        );
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Reference,
+          label: "specs»testRelativeService1.yml#testRelativeFunction1",
+          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+          textEdit: {
+            range: { start: cursorPosition, end: cursorPosition },
+            newText: `- name: '\${1:testRelativeFunction1}'
+  operation: 'specs/testRelativeService1.yml#testRelativeFunction1'
+  type: rest\n`,
           },
           snippet: true,
           insertTextFormat: InsertTextFormat.Snippet,

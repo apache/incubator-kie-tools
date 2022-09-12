@@ -32,7 +32,12 @@ import {
   Position,
   Range,
 } from "vscode-languageserver-types";
-import { FileLanguage, SwfLanguageServiceCommandArgs, SwfLanguageServiceCommandExecution } from "../api";
+import {
+  FileLanguage,
+  getFileLanguage,
+  SwfLanguageServiceCommandArgs,
+  SwfLanguageServiceCommandExecution,
+} from "../api";
 import { SW_SPEC_WORKFLOW_SCHEMA } from "../schemas";
 import { findNodesAtLocation } from "./findNodesAtLocation";
 import * as swfModelQueries from "./modelQueries";
@@ -205,6 +210,7 @@ export class SwfLanguageService {
     }
 
     const document = TextDocument.create(args.uri, this.args.lang.fileLanguage, 0, args.content);
+    const isYaml = getFileLanguage(args.uri) === FileLanguage.YAML;
 
     const addFunction = this.createCodeLenses({
       document,
@@ -216,7 +222,7 @@ export class SwfLanguageService {
           return [];
         }
 
-        const newCursorPosition = document.positionAt(node.offset + 1);
+        const newCursorPosition = document.positionAt(node.offset + (isYaml ? 0 : 1));
 
         return [
           {
@@ -432,7 +438,13 @@ const completions = new Map<
       langServiceConfig,
       codeCompletionStrategy,
     }) => {
-      const separator = currentNode.type === "object" ? "," : "";
+      const isYaml = getFileLanguage(document.uri) === FileLanguage.YAML;
+      const getNewTextTemplate = (newText: string): string => {
+        if (isYaml && overwriteRange.end.character === 0) {
+          return `- ${newText}\n`;
+        }
+        return currentNode.type === "object" ? `${newText},` : newText;
+      };
       const existingFunctionOperations = swfModelQueries.getFunctions(rootNode).map((f) => f.operation);
 
       const specsDir = await langServiceConfig.getSpecsDirPosixPaths(document);
@@ -473,7 +485,7 @@ const completions = new Map<
                   ? swfServiceCatalogService.source.url
                   : swfServiceCatalogFunc.operation,
               textEdit: {
-                newText: codeCompletionStrategy.translate(swfFunction, kind) + separator,
+                newText: getNewTextTemplate(codeCompletionStrategy.translate(swfFunction, kind)),
                 range: overwriteRange,
               },
               snippet: true,
