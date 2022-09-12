@@ -36,7 +36,6 @@ func NewVersionCommand(version string) *cobra.Command {
 	 {{.Name}} version
 		 `,
 		SuggestFor: []string{"vers", "verison"}, //nolint:misspell
-		PreRunE:    common.BindEnv("verbose"),
 	}
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
