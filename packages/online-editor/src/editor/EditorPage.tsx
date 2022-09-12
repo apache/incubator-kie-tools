@@ -202,7 +202,7 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    console.info(`Saving @ current (${version}); marking as saved.`);
+    console.info(`Saving @ current version (${version}); marking as saved.`);
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 
