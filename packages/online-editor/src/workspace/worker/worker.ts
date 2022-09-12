@@ -173,13 +173,12 @@ const impl: WorkspacesWorkerApi = {
     content: string;
     extension: string;
   }): Promise<WorkspaceWorkerFile> {
+    const fs = await fsService.getWorkspaceFs(args.workspaceId);
+
     for (let i = 0; i < MAX_NEW_FILE_INDEX_ATTEMPTS; i++) {
       const index = i === 0 ? "" : `-${i}`;
       const fileName = `${args.name}${index}.${args.extension}`;
       const relativePath = join(args.destinationDirRelativePath, fileName);
-
-      const fs = await fsService.getWorkspaceFs(args.workspaceId);
-
       if (await workspacesService.existsFile({ fs, workspaceId: args.workspaceId, relativePath })) {
         continue;
       }
