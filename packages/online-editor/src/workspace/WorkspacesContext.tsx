@@ -86,7 +86,7 @@ export interface WorkspacesContextType {
   getUniqueFileIdentifier(args: {
     workspaceId: string; //
     relativePath: string;
-  }): string;
+  }): Promise<string>;
 
   // git
 

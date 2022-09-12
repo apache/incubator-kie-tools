@@ -24,7 +24,6 @@ import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
 import { WorkspacesWorkerApi } from "./worker/api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFileDescriptor } from "./worker/api/WorkspaceWorkerFileDescriptor";
-import * as path from "path";
 
 interface Props {
   children: React.ReactNode;
@@ -142,7 +141,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const getUniqueFileIdentifier = useCallback((args: { workspaceId: string; relativePath: string }) => {
-    return args.workspaceId + "__" + path.join("/", args.relativePath ?? ""); // FIXME: DUPLICATED
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args);
   }, []);
 
   const renameFile = useCallback(async (args: { file: WorkspaceFile; newFileNameWithoutExtension: string }) => {

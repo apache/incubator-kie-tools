@@ -68,7 +68,7 @@ export function EditorPage(props: Props) {
 
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
 
-  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.extension === "dmn" && !isFileBroken);
+  useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.workspaceFile.extension === "dmn" && !isFileBroken);
 
   const setContentErrorAlert = useAlert(
     alerts,
@@ -98,9 +98,9 @@ export function EditorPage(props: Props) {
 
     history.replace({
       pathname: routes.workspaceWithFilePath.path({
-        workspaceId: workspaceFilePromise.data.workspaceId,
-        fileRelativePath: workspaceFilePromise.data.relativePathWithoutExtension,
-        extension: workspaceFilePromise.data.extension,
+        workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+        fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
+        extension: workspaceFilePromise.data.workspaceFile.extension,
       }),
       search: queryParams.toString(),
     });
@@ -114,7 +114,7 @@ export function EditorPage(props: Props) {
           return;
         }
 
-        workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+        workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
             return;
           }
@@ -126,11 +126,11 @@ export function EditorPage(props: Props) {
           lastContent.current = content;
 
           setEmbeddedEditorFile({
-            path: workspaceFilePromise.data.relativePath,
+            path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
             isReadOnly: false,
-            fileExtension: workspaceFilePromise.data.extension,
-            fileName: workspaceFilePromise.data.nameWithoutExtension,
+            fileExtension: workspaceFilePromise.data.workspaceFile.extension,
+            fileName: workspaceFilePromise.data.workspaceFile.nameWithoutExtension,
           });
         });
       },
@@ -139,9 +139,7 @@ export function EditorPage(props: Props) {
   );
 
   // auto-save
-  const uniqueFileId = workspaceFilePromise.data
-    ? workspaces.getUniqueFileIdentifier(workspaceFilePromise.data)
-    : undefined;
+  const uniqueFileId = workspaceFilePromise.data?.uniqueId;
 
   const prevUniqueFileId = usePrevious(uniqueFileId);
   if (prevUniqueFileId !== uniqueFileId) {
@@ -165,7 +163,7 @@ export function EditorPage(props: Props) {
     // }
 
     await workspaces.updateFile({
-      file: workspaceFilePromise.data,
+      file: workspaceFilePromise.data.workspaceFile,
       getNewContents: () => Promise.resolve(content),
     });
     editor?.getStateControl().setSavedCommand();
@@ -200,7 +198,7 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    workspaceFilePromise.data.getFileContentsAsString().then((content) => {
+    workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
       if (content !== "") {
         return;
       }
@@ -237,7 +235,11 @@ export function EditorPage(props: Props) {
 
   // validate
   useEffect(() => {
-    if (workspaceFilePromise.data?.extension === "dmn" || !workspaceFilePromise.data || !editor?.isReady) {
+    if (
+      workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+      !workspaceFilePromise.data ||
+      !editor?.isReady
+    ) {
       return;
     }
 
@@ -261,12 +263,14 @@ export function EditorPage(props: Props) {
       }
 
       const file = await workspaces.getFile({
-        workspaceId: workspaceFilePromise.data.workspaceId,
+        workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
         relativePath,
       });
 
       if (!file) {
-        throw new Error(`Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceId}'`);
+        throw new Error(
+          `Can't find ${relativePath} on Workspace '${workspaceFilePromise.data.workspaceFile.workspaceId}'`
+        );
       }
 
       history.push({
@@ -303,10 +307,10 @@ export function EditorPage(props: Props) {
         rejected={(errors) => <EditorPageErrorPage errors={errors} path={props.fileRelativePath} />}
         resolved={(file) => (
           <>
-            <DmnRunnerProvider workspaceFile={file} editorPageDock={editorPageDock}>
+            <DmnRunnerProvider workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
               <Page>
                 <EditorToolbar
-                  workspaceFile={file}
+                  workspaceFile={file.workspaceFile}
                   editor={editor}
                   alerts={alerts}
                   alertsRef={alertsRef}
@@ -314,14 +318,18 @@ export function EditorPage(props: Props) {
                 />
                 <Divider />
                 <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }}>
-                  <DmnRunnerDrawer workspaceFile={file} editorPageDock={editorPageDock}>
-                    <EditorPageDockDrawer ref={editorPageDockRef} isEditorReady={editor?.isReady} workspaceFile={file}>
+                  <DmnRunnerDrawer workspaceFile={file.workspaceFile} editorPageDock={editorPageDock}>
+                    <EditorPageDockDrawer
+                      ref={editorPageDockRef}
+                      isEditorReady={editor?.isReady}
+                      workspaceFile={file.workspaceFile}
+                    >
                       {embeddedEditorFile && (
                         <EmbeddedEditor
                           /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
                            * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
                            */
-                          key={workspaces.getUniqueFileIdentifier(file)}
+                          key={uniqueFileId}
                           ref={editorRef}
                           file={embeddedEditorFile}
                           kogitoWorkspace_openFile={handleOpenFile}
@@ -340,11 +348,11 @@ export function EditorPage(props: Props) {
             </DmnRunnerProvider>
             <TextEditorModal
               editor={editor}
-              workspaceFile={file}
+              workspaceFile={file.workspaceFile}
               refreshEditor={refreshEditor}
               isOpen={isTextEditorModalOpen}
             />
-            <DmnDevSandboxModalConfirmDeploy workspaceFile={file} alerts={alerts} />
+            <DmnDevSandboxModalConfirmDeploy workspaceFile={file.workspaceFile} alerts={alerts} />
           </>
         )}
       />
