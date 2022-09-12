@@ -33,9 +33,6 @@ type CreateCmdConfig struct {
 
 	// Dependencies versions
 	DependenciesVersion metadata.DependenciesVersion
-
-	// Plugin options
-	Verbose bool
 }
 
 func NewCreateCommand() *cobra.Command {
@@ -110,9 +107,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
 
 	if err := common.RunCommand(
 		create,
-		cfg.Verbose,
 		"create",
-		common.GetFriendlyMessages("creating"),
 	); err != nil {
 		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
@@ -145,8 +140,6 @@ func runCreateCmdConfig(cmd *cobra.Command) (cfg CreateCmdConfig, err error) {
 			QuarkusPlatformGroupId: quarkusPlatformGroupId,
 			QuarkusVersion:         quarkusVersion,
 		},
-
-		Verbose: viper.GetBool("verbose"),
 	}
 	return
 }
