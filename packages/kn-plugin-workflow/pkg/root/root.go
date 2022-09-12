@@ -18,7 +18,6 @@ package root
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -40,11 +39,6 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
 	viper.SetEnvPrefix("workflow") // ensure thay all have the prefix
-
-	cmd.PersistentFlags().BoolP("verbose", "v", false, "Print verbose logs")
-	if err := viper.BindPFlag("verbose", cmd.PersistentFlags().Lookup("verbose")); err != nil {
-		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
-	}
 
 	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
