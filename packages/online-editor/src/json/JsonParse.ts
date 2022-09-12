@@ -20,7 +20,3 @@ export function jsonParseWithDate(json: string): object {
     return typeof value === "string" && regexISO.test(value) ? new Date(value) : value;
   });
 }
-
-export function jsonParseWithUrl<T>(json: string): T {
-  return JSON.parse(json) as T;
-}
