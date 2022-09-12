@@ -62,7 +62,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { ArrowLeftIcon } from "@patternfly/react-icons/dist/js/icons/arrow-left-icon";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 const ROOT_MENU_ID = "rootMenu";
 

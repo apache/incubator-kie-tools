@@ -89,7 +89,7 @@ import { Location } from "history";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { CreateGitHubRepositoryModal } from "./CreateGitHubRepositoryModal";
 import { useGitHubAuthInfo } from "../github/Hooks";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
 

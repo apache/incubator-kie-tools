@@ -17,7 +17,7 @@
 import { matchPath } from "react-router";
 import { extname } from "path";
 import { useMemo } from "react";
-import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export enum UrlType {
   GIT,

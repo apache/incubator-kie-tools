@@ -29,7 +29,10 @@ import {
   MenuItem,
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import { SupportedFileExtensions, useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import {
+  SupportedFileExtensions,
+  useEditorEnvelopeLocator,
+} from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";

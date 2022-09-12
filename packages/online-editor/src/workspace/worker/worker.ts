@@ -39,36 +39,29 @@ import { WorkspaceSvgService } from "../services/WorkspaceSvgService";
 import { join } from "path";
 import { Buffer } from "buffer";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
+import { ENV_FILE_PATH } from "../../env/EnvConstants";
+import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
-
-const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, {}>((m) => {
-  postMessage(m);
-});
 
 const GIT_USER_DEFAULT = {
   name: "KIE Sandbox",
   email: "",
 };
 
-/// MOCKS
-const editorEnvelopeLocator = {
-  hasMappingFor(relativePath: string) {
-    return ["bpmn", "bpmn2", "dmn", "pmml"].some((ext) => relativePath.endsWith(ext));
-  },
-};
-
-const corsProxyUrl =
-  "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud";
-////
+async function corsProxyUrl() {
+  const env = await (await fetch(ENV_FILE_PATH)).json();
+  return env.WEBPACK_REPLACE__corsProxyUrl ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
+}
 
 const storageService = new StorageService();
 const workspaceDescriptorService = new WorkspaceDescriptorService(storageService);
 const fsService = new WorkspaceFsService(workspaceDescriptorService);
 const workspacesService = new WorkspaceService(storageService, workspaceDescriptorService, fsService);
-const gitService = new GitService(corsProxyUrl);
+const gitService = new GitService(corsProxyUrl());
 const svgService = new WorkspaceSvgService(storageService);
+const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
 
 const createWorkspace = async (args: {
   useInMemoryFs: boolean;
@@ -519,4 +512,5 @@ const impl: WorkspacesWorkerApi = {
   },
 };
 
+const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, {}>((m) => postMessage(m));
 onmessage = async (m) => bus.server.receive(m.data, impl);
