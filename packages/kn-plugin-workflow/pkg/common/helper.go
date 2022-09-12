@@ -17,17 +17,14 @@
 package common
 
 import (
-	"context"
 	"fmt"
 	"html/template"
 	"os/exec"
-	"time"
 
-	"github.com/briandowns/spinner"
 	"github.com/spf13/cobra"
 )
 
-func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMessages []string) error {
+func RunCommand(command *exec.Cmd, commandName string) error {
 	stdout, _ := command.StdoutPipe()
 	stderr, _ := command.StderrPipe()
 
@@ -36,60 +33,23 @@ func RunCommand(command *exec.Cmd, verbose bool, commandName string, friendlyMes
 		return err
 	}
 
-	s := spinner.New(spinner.CharSets[42], 100*time.Millisecond)
-	ctx, cancel := context.WithCancel(context.Background())
-	if verbose {
-		VerboseLog(stdout, stderr)
-	} else {
-		s.Start()
-		s.Suffix = friendlyMessages[0]
-		printBuildActivity(ctx, s, friendlyMessages)
-	}
+	VerboseLog(stdout, stderr)
 
 	if err := command.Wait(); err != nil {
-		s.Stop()
-		cancel()
 		fmt.Printf("ERROR: something went wrong during command \"%s\"\n", commandName)
 		return err
 	}
 
-	if !verbose {
-		s.Stop()
-	}
-
-	go func() {
-		cancel()
-	}()
-
 	return nil
 }
 
-func RunExtensionCommand(verbose bool, extensionCommand string, friendlyMessages []string, extensions string) error {
+func RunExtensionCommand(extensionCommand string, extensions string) error {
 	command := ExecCommand("mvn", extensionCommand, fmt.Sprintf("-Dextensions=%s", extensions))
-	if err := RunCommand(command, verbose, extensionCommand, friendlyMessages); err != nil {
+	if err := RunCommand(command, extensionCommand); err != nil {
 		fmt.Println("ERROR: It wasn't possible to add Quarkus extension in your pom.xml.")
 		return err
 	}
 	return nil
-}
-
-func printBuildActivity(ctx context.Context, s *spinner.Spinner, friendlyMessages []string) {
-	i := 1
-	ticker := time.NewTicker(10 * time.Second)
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				s.Suffix = friendlyMessages[i]
-				i++
-				i = i % len(friendlyMessages)
-			case <-ctx.Done():
-				s.Suffix = ""
-				ticker.Stop()
-				return
-			}
-		}
-	}()
 }
 
 func GetTemplate(cmd *cobra.Command, name string) *template.Template {
