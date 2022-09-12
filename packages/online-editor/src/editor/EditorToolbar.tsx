@@ -1330,7 +1330,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       style={{ fontStyle: "italic" }}
                     />
                   </div>
-                  {/*<WorkspaceStatusIndicator workspace={workspace} />*/}
+                  <WorkspaceStatusIndicator workspace={workspace} />
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
