@@ -51,7 +51,8 @@ const GIT_USER_DEFAULT = {
 };
 
 async function corsProxyUrl() {
-  const env = await (await fetch(ENV_FILE_PATH)).json();
+  const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
+  const env = await (await fetch(envFilePath)).json();
   return env.WEBPACK_REPLACE__corsProxyUrl ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
 
