@@ -114,12 +114,19 @@ export function EditorPage(props: Props) {
           return;
         }
 
+        const version = j++;
+        console.info("version (J): " + j);
         workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
             return;
           }
 
           if (content === lastContent.current) {
+            return;
+          }
+
+          if (version + 1 < i) {
+            console.info("Ignoring stale update self");
             return;
           }
 
@@ -151,21 +158,36 @@ export function EditorPage(props: Props) {
       return;
     }
 
+    const version = i++;
+    console.info("version (I): " + j);
+
     const content = await editor.getContent();
     // FIXME: Uncomment when KOGITO-6181 is fixed
     // const svgString = await editor.getPreview();
 
-    lastContent.current = content;
+    if (version + 1 < i) {
+      console.info("Ignoring stale save 1");
+      return;
+    }
 
     // FIXME: Uncomment when KOGITO-6181 is fixed
     // if (svgString) {
     //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
     // }
 
+    lastContent.current = content;
+
     await workspaces.updateFile({
-      file: workspaceFilePromise.data.workspaceFile,
-      getNewContents: () => Promise.resolve(content),
+      workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+      relativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+      newContent: content,
     });
+
+    if (version + 1 < i) {
+      console.info("Ignoring stale save 2");
+      return;
+    }
+
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 
@@ -191,20 +213,20 @@ export function EditorPage(props: Props) {
   useEffect(() => {
     setFileBroken(false);
     setContentErrorAlert.close();
-  }, [uniqueFileId]);
+  }, [setContentErrorAlert, uniqueFileId]);
 
-  useEffect(() => {
-    if (!editor?.isReady || !workspaceFilePromise.data) {
-      return;
-    }
-
-    workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
-      if (content !== "") {
-        return;
-      }
-      saveContent();
-    });
-  }, [editor, saveContent, workspaceFilePromise]);
+  // useEffect(() => {
+  //   if (!editor?.isReady || !workspaceFilePromise.data) {
+  //     return;
+  //   }
+  //
+  //   workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
+  //     if (content !== "") {
+  //       return;
+  //     }
+  //     saveContent();
+  //   });
+  // }, [editor, saveContent, workspaceFilePromise]);
 
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
@@ -233,28 +255,28 @@ export function EditorPage(props: Props) {
     setTextEditorModalOpen(false);
   }, [alerts]);
 
-  // validate
-  useEffect(() => {
-    if (
-      workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
-      !workspaceFilePromise.data ||
-      !editor?.isReady
-    ) {
-      return;
-    }
-
-    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
-    setTimeout(() => {
-      editor?.validate().then((notifications) => {
-        editorPageDock?.setNotifications(
-          i18n.terms.validation,
-          "",
-          // Removing the notification path so that we don't group it by path, as we're only validating one file.
-          Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
-        );
-      });
-    }, 200);
-  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
+  // // validate
+  // useEffect(() => {
+  //   if (
+  //     workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+  //     !workspaceFilePromise.data ||
+  //     !editor?.isReady
+  //   ) {
+  //     return;
+  //   }
+  //
+  //   //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
+  //   setTimeout(() => {
+  //     editor?.validate().then((notifications) => {
+  //       editorPageDock?.setNotifications(
+  //         i18n.terms.validation,
+  //         "",
+  //         // Removing the notification path so that we don't group it by path, as we're only validating one file.
+  //         Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
+  //       );
+  //     });
+  //   }, 200);
+  // }, [workspaceFilePromise, editor, i18n, editorPageDock]);
 
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
@@ -359,3 +381,6 @@ export function EditorPage(props: Props) {
     </OnlineEditorPage>
   );
 }
+
+let i = 1;
+let j = 0;

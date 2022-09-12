@@ -173,13 +173,13 @@ export function WorkspacesContextProvider(props: Props) {
     });
   }, []);
 
-  const updateFile = useCallback(async (args: { file: WorkspaceFile; getNewContents: () => Promise<string> }) => {
+  const updateFile = useCallback(async (args: { workspaceId: string; relativePath: string; newContent: string }) => {
     return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_updateFile({
       wwfd: {
-        workspaceId: args.file.workspaceId,
-        relativePath: args.file.relativePath,
+        workspaceId: args.workspaceId,
+        relativePath: args.relativePath,
       },
-      newContent: await args.getNewContents(),
+      newContent: args.newContent,
     });
   }, []);
 

@@ -218,8 +218,9 @@ export interface WorkspacesContextType {
   }): Promise<WorkspaceFile>;
 
   updateFile(args: {
-    file: WorkspaceFile; //
-    getNewContents: () => Promise<string | undefined>;
+    workspaceId: string; //
+    relativePath: string;
+    newContent: string;
   }): Promise<void>;
 
   deleteFile(args: {
