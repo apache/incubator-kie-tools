@@ -87,7 +87,6 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		createService,
 		"deploy",
 	); err != nil {
-		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
 	}
 	fmt.Println("✅ Knative service sucessufully created")
@@ -99,7 +98,6 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 			deploy,
 			"deploy",
 		); err != nil {
-			fmt.Println("Check the full logs with the -v | --verbose option")
 			return err
 		}
 		fmt.Println("✅ Knative Eventing bindings successfully created")

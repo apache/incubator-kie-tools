@@ -253,7 +253,6 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 			fmt.Println("ERROR: Image build failed.")
 			fmt.Println("If you're using a private registry, check if you're authenticated")
 		}
-		fmt.Println("Check the full logs with the -v | --verbose option")
 		return
 	}
 

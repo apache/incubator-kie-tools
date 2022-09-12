@@ -109,7 +109,6 @@ func runCreate(cmd *cobra.Command, args []string) error {
 		create,
 		"create",
 	); err != nil {
-		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
 	}
 
