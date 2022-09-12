@@ -30,7 +30,7 @@ import {
   DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_HOST,
   DEFAULT_KIE_SANDBOX_EXTENDED_SERVICES_PORT,
   useEnv,
-} from "../env/EnvContext";
+} from "../env/hooks/EnvContext";
 
 interface Props {
   children: React.ReactNode;

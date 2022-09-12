@@ -44,7 +44,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { DmnRunnerProvider } from "./DmnRunner/DmnRunnerProvider";
-import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export interface Props {
   workspaceId: string;

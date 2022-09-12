@@ -55,6 +55,9 @@ module.exports = async (env, argv) => {
         new ProvidePlugin({
           Buffer: ["buffer", "Buffer"],
         }),
+        new EnvironmentPlugin({
+          WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
+        }),
       ],
     }),
     merge(common(env), {
