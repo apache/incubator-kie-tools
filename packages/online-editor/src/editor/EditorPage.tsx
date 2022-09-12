@@ -51,6 +51,9 @@ export interface Props {
   fileRelativePath: string;
 }
 
+let saveVersion = 1;
+let refreshVersion = 0;
+
 export function EditorPage(props: Props) {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
@@ -106,7 +109,10 @@ export function EditorPage(props: Props) {
     });
   }, [history, routes, workspaceFilePromise, queryParams]);
 
-  // update EmbeddedEditorFile, but only if content is different than what was saved
+  // being (REFRESH)
+  // Update EmbeddedEditorFile, but only if content is different from what was saved
+  // This effect handles the case where a file was edited in another tab.
+  // It has its own version pointer to ignore stale executions.
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -114,24 +120,30 @@ export function EditorPage(props: Props) {
           return;
         }
 
-        const version = j++;
-        console.info("version (J): " + j);
+        const version = refreshVersion++;
+        console.info(`Refreshing @ new version (${refreshVersion}).`);
+
         workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
+            console.info(`Refreshing @ canceled; ignoring.`);
             return;
           }
 
           if (content === lastContent.current) {
+            console.info(`Refreshing @ unchanged content; ignoring.`);
             return;
           }
 
-          if (version + 1 < i) {
-            console.info("Ignoring stale update self");
+          if (version + 1 < saveVersion) {
+            console.info(`Refreshing @ stale version (${version}); ignoring.`);
             return;
           }
 
+          console.info(`Refreshing @ current version (${saveVersion}).`);
+          refreshVersion = saveVersion;
           lastContent.current = content;
 
+          // FIXME: PMML Editor doesn't work well after this is called. Can't edit using multiple tabs.
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
@@ -144,13 +156,15 @@ export function EditorPage(props: Props) {
       [workspaceFilePromise]
     )
   );
+  // end (REFRESH)
 
-  // auto-save
+  // begin (AUTO-SAVE)
   const uniqueFileId = workspaceFilePromise.data?.uniqueId;
-
   const prevUniqueFileId = usePrevious(uniqueFileId);
   if (prevUniqueFileId !== uniqueFileId) {
     lastContent.current = undefined;
+    saveVersion = 1;
+    refreshVersion = 0;
   }
 
   const saveContent = useCallback(async () => {
@@ -158,15 +172,15 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const version = i++;
-    console.info("version (I): " + j);
+    const version = saveVersion++;
+    console.info(`Saving @ new version (${saveVersion}).`);
 
     const content = await editor.getContent();
     // FIXME: Uncomment when KOGITO-6181 is fixed
     // const svgString = await editor.getPreview();
 
-    if (version + 1 < i) {
-      console.info("Ignoring stale save 1");
+    if (version + 1 < saveVersion) {
+      console.info(`Saving @ stale version (${version}); ignoring before writing.`);
       return;
     }
 
@@ -174,7 +188,7 @@ export function EditorPage(props: Props) {
     // if (svgString) {
     //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
     // }
-
+    console.info(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
     await workspaces.updateFile({
@@ -183,11 +197,12 @@ export function EditorPage(props: Props) {
       newContent: content,
     });
 
-    if (version + 1 < i) {
-      console.info("Ignoring stale save 2");
+    if (version + 1 < saveVersion) {
+      console.info(`Saving @ stale version (${version}); ignoring before marking as saved.`);
       return;
     }
 
+    console.info(`Saving @ current (${version}); marking as saved.`);
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 
@@ -206,6 +221,8 @@ export function EditorPage(props: Props) {
     { throttle: 200 }
   );
 
+  // end (AUTO-SAVE)
+
   useEffect(() => {
     alerts?.closeAll();
   }, [alerts]);
@@ -214,19 +231,6 @@ export function EditorPage(props: Props) {
     setFileBroken(false);
     setContentErrorAlert.close();
   }, [setContentErrorAlert, uniqueFileId]);
-
-  // useEffect(() => {
-  //   if (!editor?.isReady || !workspaceFilePromise.data) {
-  //     return;
-  //   }
-  //
-  //   workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
-  //     if (content !== "") {
-  //       return;
-  //     }
-  //     saveContent();
-  //   });
-  // }, [editor, saveContent, workspaceFilePromise]);
 
   const handleResourceContentRequest = useCallback(
     async (request: ResourceContentRequest) => {
@@ -255,28 +259,28 @@ export function EditorPage(props: Props) {
     setTextEditorModalOpen(false);
   }, [alerts]);
 
-  // // validate
-  // useEffect(() => {
-  //   if (
-  //     workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
-  //     !workspaceFilePromise.data ||
-  //     !editor?.isReady
-  //   ) {
-  //     return;
-  //   }
-  //
-  //   //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
-  //   setTimeout(() => {
-  //     editor?.validate().then((notifications) => {
-  //       editorPageDock?.setNotifications(
-  //         i18n.terms.validation,
-  //         "",
-  //         // Removing the notification path so that we don't group it by path, as we're only validating one file.
-  //         Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
-  //       );
-  //     });
-  //   }, 200);
-  // }, [workspaceFilePromise, editor, i18n, editorPageDock]);
+  // validate
+  useEffect(() => {
+    if (
+      workspaceFilePromise.data?.workspaceFile.extension === "dmn" ||
+      !workspaceFilePromise.data ||
+      !editor?.isReady
+    ) {
+      return;
+    }
+
+    //FIXME: Removing this timeout makes the notifications not work some times. Need to investigate.
+    setTimeout(() => {
+      editor?.validate().then((notifications) => {
+        editorPageDock?.setNotifications(
+          i18n.terms.validation,
+          "",
+          // Removing the notification path so that we don't group it by path, as we're only validating one file.
+          Array.isArray(notifications) ? notifications.map((n) => ({ ...n, path: "" })) : []
+        );
+      });
+    }, 200);
+  }, [workspaceFilePromise, editor, i18n, editorPageDock]);
 
   const handleOpenFile = useCallback(
     async (relativePath: string) => {
@@ -381,6 +385,3 @@ export function EditorPage(props: Props) {
     </OnlineEditorPage>
   );
 }
-
-let i = 1;
-let j = 0;
