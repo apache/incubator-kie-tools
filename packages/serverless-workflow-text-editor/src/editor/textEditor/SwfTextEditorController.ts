@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { editor, KeyCode, KeyMod } from "monaco-editor";
-import { SwfLanguageServiceCommandIds, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { EditorTheme } from "@kie-tools-core/editor/dist/api";
+import { OperatingSystem } from "@kie-tools-core/operating-system";
+import { FileLanguage, SwfLanguageServiceCommandIds } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import { editor, KeyCode, KeyMod } from "monaco-editor";
 import { initJsonSchemaDiagnostics } from "./augmentation/language/json";
 import { initYamlSchemaDiagnostics } from "./augmentation/language/yaml";
-import { OperatingSystem } from "@kie-tools-core/operating-system";
-import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 initJsonSchemaDiagnostics();
 initYamlSchemaDiagnostics();
@@ -51,10 +50,10 @@ export interface SwfTextEditorInstance {
 
 export class SwfTextEditorController implements SwfTextEditorApi {
   private readonly model: editor.ITextModel;
+  private swfJsonOffsets = new SwfJsonOffsets();
+  private swfYamlOffsets = new SwfYamlOffsets();
 
   public editor: editor.IStandaloneCodeEditor | undefined;
-
-  private swfOffsetsApi: SwfOffsetsApi;
 
   constructor(
     content: string,
@@ -63,7 +62,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     private readonly operatingSystem: OperatingSystem | undefined,
     private readonly isReadOnly: boolean,
     private readonly setValidationErrors: (errors: editor.IMarker[]) => void,
-    private readonly fileName: string = ""
+    private readonly onSelectionChanged: (nodeName: string) => void
   ) {
     this.model = editor.createModel(content, this.language);
     this.model.onDidChangeContent((event) => {
@@ -77,7 +76,13 @@ export class SwfTextEditorController implements SwfTextEditorApi {
       this.setValidationErrors(this.getValidationMarkers());
     });
 
-    this.swfOffsetsApi = this.language === FileLanguage.JSON ? new SwfJsonOffsets() : new SwfYamlOffsets();
+    editor.onDidCreateEditor((codeEditor) => {
+      codeEditor.onMouseDown((event) => this.handleMouseDown(event));
+    });
+  }
+
+  private get swfOffsetsApi(): SwfJsonOffsets | SwfYamlOffsets {
+    return this.language === FileLanguage.YAML ? this.swfYamlOffsets : this.swfJsonOffsets;
   }
 
   public redo(): void {
@@ -169,6 +174,27 @@ export class SwfTextEditorController implements SwfTextEditorApi {
 
     this.editor?.revealLineInCenter(targetPosition.lineNumber);
     this.editor?.setPosition(targetPosition);
+  }
+
+  public handleMouseDown(event: editor.IEditorMouseEvent): void {
+    const position = event.target.position;
+    if (!position) {
+      return;
+    }
+
+    const offset = this.editor?.getModel()?.getOffsetAt(position);
+    if (!offset) {
+      return;
+    }
+
+    this.swfOffsetsApi.parseContent(this.getContent());
+
+    const nodeName = this.swfOffsetsApi.getStateNameFromOffset(offset);
+    if (!nodeName) {
+      return;
+    }
+
+    this.onSelectionChanged(nodeName);
   }
 
   private getMonacoThemeByEditorTheme(theme?: EditorTheme): string {

@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-/**
- * Api for diagram window interactions.
- */
-export interface DiagramApi {
-  /**
-   * Move the cursor in the text editor to a specified node
-   * @param stateName the name of the target node
-   */
-  moveCursorToNode: (nodeName: string) => void;
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+
+export interface ServerlessWorkflowTextEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
+  kogitoSwfTextEditor__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void;
 }

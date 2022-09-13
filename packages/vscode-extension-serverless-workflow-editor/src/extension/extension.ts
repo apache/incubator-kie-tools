@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,14 @@ import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/d
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KieToolsVsCodeExtensions from "@kie-tools-core/vscode-extension";
 import * as vscode from "vscode";
-import { ServerlessWorkflowEditorChannelApiProducer } from "./ServerlessWorkflowEditorChannelApiProducer";
+import { ServerlessWorkflowDiagramEditorChannelApiProducer } from "./ServerlessWorkflowDiagramEditorChannelApiProducer";
 import { SwfVsCodeExtensionConfiguration, WEBVIEW_EDITOR_VIEW_TYPE } from "./configuration";
 import { setupServiceRegistryIntegrationCommands } from "./serviceCatalog/serviceRegistryCommands";
 import { VsCodeSwfLanguageService } from "./languageService/VsCodeSwfLanguageService";
 import { SwfServiceCatalogStore } from "./serviceCatalog/SwfServiceCatalogStore";
 import { setupBuiltInVsCodeEditorSwfContributions } from "./builtInVsCodeEditorSwfContributions";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
-import { setupDiagramEditorControls } from "./setupDiagramEditorControls";
+import { setupDiagramEditorCompanionTab } from "./setupDiagramEditorCompanionTab";
 import { COMMAND_IDS } from "./commandIds";
 import { ServiceRegistriesStore } from "./serviceCatalog/serviceRegistry";
 import { RedHatAuthExtensionStateStore } from "./RedHatAuthExtensionStateStore";
@@ -106,7 +106,7 @@ export async function activate(context: vscode.ExtensionContext) {
         envelopePath: baseEnvelopePath + "/serverless-workflow-mermaid-viewer-envelope.js",
       }),
     ]),
-    channelApiProducer: new ServerlessWorkflowEditorChannelApiProducer({
+    channelApiProducer: new ServerlessWorkflowDiagramEditorChannelApiProducer({
       configuration,
       vsCodeSwfLanguageService,
       swfServiceCatalogSupportActions,
@@ -119,6 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vsCodeSwfLanguageService,
     configuration,
     swfServiceCatalogSupportActions,
+    kieEditorsStore,
   });
 
   setupServiceRegistryIntegrationCommands({
@@ -127,7 +128,7 @@ export async function activate(context: vscode.ExtensionContext) {
     serviceRegistryStore: serviceRegistriesStore,
   });
 
-  await setupDiagramEditorControls({
+  await setupDiagramEditorCompanionTab({
     context,
     configuration,
     kieEditorsStore,

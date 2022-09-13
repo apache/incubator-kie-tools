@@ -82,7 +82,7 @@ public class ShapeEventsHandlerTest {
 
         tested.onCanvasSelectionEvent(selectionEvent);
 
-        verify(diagramApi, times(0)).moveCursorToNode(any());
+        verify(diagramApi, times(0)).onNodeSelected(any());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class ShapeEventsHandlerTest {
 
         tested.onCanvasSelectionEvent(selectionEvent);
 
-        verify(diagramApi, times(0)).moveCursorToNode(any());
+        verify(diagramApi, times(0)).onNodeSelected(any());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class ShapeEventsHandlerTest {
 
         tested.onCanvasSelectionEvent(selectionEvent);
 
-        verify(diagramApi).moveCursorToNode(isNull());
+        verify(diagramApi).onNodeSelected(isNull());
     }
 
     @Test
@@ -114,6 +114,6 @@ public class ShapeEventsHandlerTest {
 
         tested.onCanvasSelectionEvent(selectionEvent);
 
-        verify(diagramApi).moveCursorToNode(NODE_NAME);
+        verify(diagramApi).onNodeSelected(NODE_NAME);
     }
 }

@@ -14,66 +14,38 @@
  * limitations under the License.
  */
 
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import {
   EditorContent,
   EditorTheme,
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
-import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { Notification, NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { VsCodeI18n } from "@kie-tools-core/vscode-extension/dist/i18n";
-import { VsCodeKieEditorController } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
-import { DefaultVsCodeKieEditorChannelApiImpl } from "@kie-tools-core/vscode-extension/dist/DefaultVsCodeKieEditorChannelApiImpl";
-import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
+import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
+import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
   WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
-  ResourceContentService,
   ResourceListRequest,
   ResourcesList,
-  WorkspaceChannelApi,
 } from "@kie-tools-core/workspace/dist/api";
-import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import {
   SwfServiceCatalogChannelApi,
   SwfServiceCatalogService,
   SwfServiceRegistriesSettings,
 } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import * as vscode from "vscode";
+import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
-export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
-  private readonly defaultApiImpl: KogitoEditorChannelApi;
-
+export class ServerlessWorkflowTextEditorChannelApiImpl implements ServerlessWorkflowTextEditorChannelApi {
   constructor(
-    private readonly editor: VsCodeKieEditorController,
-    resourceContentService: ResourceContentService,
-    workspaceApi: WorkspaceChannelApi,
-    backendProxy: BackendProxy,
-    notificationsApi: NotificationsChannelApi,
-    javaCodeCompletionApi: JavaCodeCompletionApi,
-    viewType: string,
-    i18n: I18n<VsCodeI18n>,
-    private readonly swfServiceCatalogApiImpl: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl: SwfLanguageServiceChannelApi
-  ) {
-    this.defaultApiImpl = new DefaultVsCodeKieEditorChannelApiImpl(
-      editor,
-      resourceContentService,
-      workspaceApi,
-      backendProxy,
-      notificationsApi,
-      javaCodeCompletionApi,
-      viewType,
-      i18n
-    );
-  }
+    private readonly defaultApiImpl: KogitoEditorChannelApi,
+    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
+    private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
+    private readonly diagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>
+  ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
     return this.defaultApiImpl.kogitoEditor_contentRequest();
@@ -88,17 +60,7 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
   }
 
   public kogitoEditor_stateControlCommandUpdate(command: StateControlCommand) {
-    switch (command) {
-      case StateControlCommand.REDO:
-        vscode.commands.executeCommand("redo");
-        break;
-      case StateControlCommand.UNDO:
-        vscode.commands.executeCommand("undo");
-        break;
-      default:
-        console.info(`Unknown message type received: ${command}`);
-        break;
-    }
+    this.defaultApiImpl.kogitoEditor_stateControlCommandUpdate(command);
   }
 
   public kogitoGuidedTour_guidedTourRegisterTutorial(tutorial: Tutorial): void {
@@ -145,18 +107,29 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     return this.defaultApiImpl.kogitoEditor_theme();
   }
 
-  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_services();
+  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
+    return {
+      defaultValue: { registries: [] },
+    };
   }
+
+  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
+    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_services() ?? { defaultValue: [] };
+  }
+
   public kogitoSwfServiceCatalog_refresh(): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_refresh();
+    this.channelApi.notifications.kogitoSwfServiceCatalog_refresh.send();
   }
 
   public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
     containingService: SwfServiceCatalogService;
     documentUri: string;
   }): void {
-    this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
+    this.channelApi.notifications.kogitoSwfServiceCatalog_importFunctionFromCompletionItem.send(args);
+  }
+
+  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
+    this.channelApi.notifications.kogitoSwfServiceCatalog_logInServiceRegistries.send();
   }
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
@@ -165,29 +138,18 @@ export class ServerlessWorkflowEditorChannelApiImpl implements ServerlessWorkflo
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCompletionItems(args);
+    return this.channelApi.requests.kogitoSwfLanguageService__getCompletionItems(args);
   }
 
   public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    return this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__getCodeLenses(args);
-  }
-
-  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string }): void {
-    this.swfLanguageServiceChannelApiImpl.kogitoSwfLanguageService__moveCursorToNode({
-      ...args,
-      documentUri: this.editor.document.document.uri.path,
-    });
-  }
-
-  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_logInServiceRegistries();
-  }
-
-  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_serviceRegistriesSettings();
+    return this.channelApi.requests.kogitoSwfLanguageService__getCodeLenses(args);
   }
 
   public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
-    return this.swfServiceCatalogApiImpl.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
+    this.channelApi.notifications.kogitoSwfServiceCatalog_setupServiceRegistriesSettings.send();
+  }
+
+  public kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void {
+    this.diagramEditorEnvelopeApi?.notifications.kogitoSwfDiagramEditor__highlightNode.send(args);
   }
 }

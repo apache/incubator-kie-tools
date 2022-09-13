@@ -15,25 +15,18 @@
  */
 
 import { KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { DiagramApi } from "./DiagramApi";
+import { DiagramExposedInteropApi } from "./DiagramExposedInteropApi";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "./ServerlessWorkflowDiagramEditorChannelApi";
 
 /**
  * Class for diagram window interactions.
  */
-export class DiagramService implements DiagramApi {
+export class DiagramService implements DiagramExposedInteropApi {
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowDiagramEditorChannelApi>
   ) {}
 
-  /**
-   * Move the cursor in the text editor to a specified node
-   * @param nodeName the name of the target node
-   */
-  public moveCursorToNode(nodeName: string) {
-    if (!nodeName) {
-      return;
-    }
-    this.envelopeContext.channelApi.notifications.kogitoSwfLanguageService__moveCursorToNode.send({ nodeName });
+  public onNodeSelected(nodeName: string) {
+    this.envelopeContext.channelApi.notifications.kogitoSwfDiagramEditor__onNodeSelected.send({ nodeName });
   }
 }
