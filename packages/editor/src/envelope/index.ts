@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import "@patternfly/react-core/dist/styles/base.css";
 import "./styles.scss";
 import {
   Editor,
