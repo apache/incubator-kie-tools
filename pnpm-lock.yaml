@@ -1586,7 +1586,7 @@ importers:
       "@types/testing-library__react": ^9.1.2
       copy-webpack-plugin: ^8.1.1
       cross-var: ^1.1.0
-      electron: ^15.5.0
+      electron: ^12.0.11
       electron-packager: ^15.2.0
       electron-rebuild: ^2.3.5
       jest: ^26.6.3
@@ -1614,7 +1614,7 @@ importers:
       "@kie-tools/kie-bc-editors": link:../kie-bc-editors
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      electron: 15.5.7
+      electron: 12.2.3
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-router: 5.2.1_react@17.0.2
@@ -1645,7 +1645,7 @@ importers:
       jest-when: 3.5.0_jest@26.6.3
       rimraf: 3.0.2
       run-script-os: 1.1.6
-      spectron: 14.0.0_electron@15.5.7
+      spectron: 14.0.0_electron@12.2.3
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       webpack: 5.70.0_webpack-cli@4.7.0
@@ -7417,13 +7417,13 @@ packages:
       - supports-color
     dev: false
 
-  /@electron/remote/1.1.0_electron@15.5.7:
+  /@electron/remote/1.1.0_electron@12.2.3:
     resolution:
       { integrity: sha512-yr8gZTkIgJYKbFqExI4QZqMSjn1kL/us9Dl46+TH1EZdhgRtsJ6HDfdsIxu0QEc6Hv+DMAXs69rgquH+8FDk4w== }
     peerDependencies:
       electron: ">= 10.0.0-beta.1"
     dependencies:
-      electron: 15.5.7
+      electron: 12.2.3
     dev: true
 
   /@eslint/eslintrc/0.4.1:
@@ -15431,9 +15431,9 @@ packages:
       { integrity: sha512-Huen6taaVrUrSy8o7mGStByba8PfOWWluHNxSHGBrCgEdFVLtvdQDBr9LBCF9Uci8SYxh28QNNMO0oC17wbGAg== }
     dev: true
 
-  /electron/15.5.7:
+  /electron/12.2.3:
     resolution:
-      { integrity: sha512-n4mVlxoMc4eYx07wWFWGficL+iOMz5xZEf5dBtE/wwLm0fQpYVyW4AlknMFG9F8Css0MM0JSwNMOyRg5e1vDtg== }
+      { integrity: sha512-B27c7eqx1bC5kea6An8oVhk1pShNC4VGqWarHMhD47MDtmg54KepHO5AbAvmKKZK/jWN7NTC7wyCYTDElJNtQA== }
     engines: { node: ">= 8.6" }
     hasBin: true
     requiresBuild: true
@@ -16766,17 +16766,6 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
-    resolution:
-      { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
-    engines: { node: ">=4.0" }
-    peerDependencies:
-      debug: "*"
-    peerDependenciesMeta:
-      debug:
-        optional: true
-    dev: true
-
   /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
@@ -17763,7 +17752,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -25004,13 +24993,13 @@ packages:
       - supports-color
     dev: true
 
-  /spectron/14.0.0_electron@15.5.7:
+  /spectron/14.0.0_electron@12.2.3:
     resolution:
       { integrity: sha512-88GM7D1eLiTxjByjtY7lxU7CJcQ92kX1x0WfnADaIXqqYRLbI1KlIWxXz1Xm5UxuMJh5N847K0NONG49mvZtuw== }
     engines: { node: ">=10.12.0" }
     requiresBuild: true
     dependencies:
-      "@electron/remote": 1.1.0_electron@15.5.7
+      "@electron/remote": 1.1.0_electron@12.2.3
       dev-null: 0.1.1
       electron-chromedriver: 12.0.0
       got: 11.8.2
