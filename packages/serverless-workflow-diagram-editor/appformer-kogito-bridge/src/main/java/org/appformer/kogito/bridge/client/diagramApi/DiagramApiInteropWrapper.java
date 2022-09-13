@@ -29,7 +29,7 @@ public class DiagramApiInteropWrapper {
      * Move the cursor in the text editor to a specified node
      * @param nodeName the name of the target node
      */
-    public native void moveCursorToNode(String stateName);
+    public native void onNodeSelected(String nodeName);
 
     @JsProperty(name = "diagramService")
     public static native DiagramApiInteropWrapper get();

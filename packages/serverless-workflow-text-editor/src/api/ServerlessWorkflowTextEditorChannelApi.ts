@@ -21,4 +21,6 @@ import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-serv
 export interface ServerlessWorkflowTextEditorChannelApi
   extends KogitoEditorChannelApi,
     SwfServiceCatalogChannelApi,
-    SwfLanguageServiceChannelApi {}
+    SwfLanguageServiceChannelApi {
+  kogitoSwfTextEditor__onSelectionChanged(args: { nodeName: string; documentUri?: string }): void;
+}

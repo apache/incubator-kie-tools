@@ -24,7 +24,7 @@ import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
 
 export class SwfServiceCatalogChannelApiImpl implements SwfServiceCatalogChannelApi {
   constructor(
-    private readonly channelApi: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>,
+    private readonly channelApi: MessageBusClientApi<SwfServiceCatalogChannelApi>,
     private readonly services: SwfServiceCatalogService[],
     private readonly serviceRegistriesSettings: SwfServiceRegistriesSettings
   ) {}

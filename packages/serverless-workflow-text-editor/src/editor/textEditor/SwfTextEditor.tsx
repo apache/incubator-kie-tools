@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
+import { useEffect, useImperativeHandle, useMemo, useRef, useCallback } from "react";
 import { SwfTextEditorController, SwfTextEditorApi } from "./SwfTextEditorController";
 import { initJsonCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
@@ -49,6 +49,10 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
 
   const fileLanguage = useMemo(() => getFileLanguage(fileName), [fileName]);
 
+  const onSelectionChanged = useCallback((nodeName: string) => {
+    editorEnvelopeCtx.channelApi.notifications.kogitoSwfTextEditor__onSelectionChanged.send({ nodeName });
+  }, []);
+
   const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {
     if (fileLanguage !== null) {
       return new SwfTextEditorController(
@@ -57,7 +61,8 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
         fileLanguage,
         editorEnvelopeCtx.operatingSystem,
         isReadOnly,
-        setValidationErrors
+        setValidationErrors,
+        onSelectionChanged
       );
     }
     throw new Error(`Unsupported extension '${fileName}'`);
@@ -100,13 +105,6 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     editorEnvelopeCtx.channelApi,
     editorEnvelopeCtx.operatingSystem,
   ]);
-
-  useSubscription(
-    editorEnvelopeCtx.channelApi?.notifications.kogitoSwfLanguageService__moveCursorToNode,
-    ({ nodeName }: { nodeName: string }) => {
-      controller.moveCursorToNode(nodeName);
-    }
-  );
 
   useImperativeHandle(forwardedRef, () => controller, [controller]);
 

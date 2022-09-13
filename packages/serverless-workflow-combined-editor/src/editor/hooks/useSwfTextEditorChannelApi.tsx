@@ -18,25 +18,25 @@ import { EmbeddedEditorFile, StateControl } from "@kie-tools-core/editor/dist/ch
 import { EmbeddedEditorChannelApiImpl } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { SwfServiceCatalogChannelApi } from "@kie-tools/serverless-workflow-service-catalog/dist/api";
+import { ServerlessWorkflowTextEditorChannelApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import { useMemo } from "react";
+import { SwfServiceCatalogChannelApiImpl } from "../..";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../../api";
-import { SwfCombinedEditorChannelApiImpl } from "../../impl/SwfCombinedEditorChannelApiImpl";
-import { SwfFeatureToggleChannelApiImpl } from "../../impl/SwfFeatureToggleChannelApiImpl";
-import { SwfLanguageServiceChannelApiImpl } from "../../impl/SwfLanguageServiceChannelApiImpl";
-import { SwfServiceCatalogChannelApiImpl } from "../../impl/SwfServiceCatalogChannelApiImpl";
+import { ServerlessWorkflowTextEditorChannelApiImpl } from "../../impl/ServerlessWorkflowTextEditorChannelApiImpl";
 
-export function useCustomSwfChannelApi(args: {
+export function useSwfTextEditorChannelApi(args: {
   locale: string;
-  channelApi?: MessageBusClientApi<ServerlessWorkflowCombinedEditorChannelApi>;
+  channelApi?: MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>;
   embeddedEditorFile?: EmbeddedEditorFile;
   onEditorReady: () => void;
+  swfDiagramEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>;
 }) {
-  const [featureToggle] = useSharedValue(args.channelApi?.shared.kogitoSwfFeatureToggle_get);
   const [services] = useSharedValue(args.channelApi?.shared.kogitoSwfServiceCatalog_services);
   const [serviceRegistriesSettings] = useSharedValue(
     args.channelApi?.shared.kogitoSwfServiceCatalog_serviceRegistriesSettings
   );
-
   const stateControl = useMemo(() => new StateControl(), [args.embeddedEditorFile?.getFileContents]);
 
   const channelApiImpl = useMemo(
@@ -50,11 +50,6 @@ export function useCustomSwfChannelApi(args: {
     [args, stateControl]
   );
 
-  const swfFeatureToggleChannelApiImpl = useMemo(
-    () => featureToggle && new SwfFeatureToggleChannelApiImpl(featureToggle),
-    [featureToggle]
-  );
-
   const swfServiceCatalogChannelApiImpl = useMemo(
     () =>
       args.channelApi &&
@@ -64,28 +59,17 @@ export function useCustomSwfChannelApi(args: {
     [args.channelApi, serviceRegistriesSettings, services]
   );
 
-  const swfLanguageServiceChannelApiImpl = useMemo(
-    () => args.channelApi && new SwfLanguageServiceChannelApiImpl(args.channelApi),
-    [args.channelApi]
-  );
-
   const channelApi = useMemo(
     () =>
-      args.channelApi &&
       channelApiImpl &&
-      new SwfCombinedEditorChannelApiImpl(
+      args.channelApi &&
+      new ServerlessWorkflowTextEditorChannelApiImpl(
         channelApiImpl,
-        swfFeatureToggleChannelApiImpl,
+        args.channelApi,
         swfServiceCatalogChannelApiImpl,
-        swfLanguageServiceChannelApiImpl
+        args.swfDiagramEditorEnvelopeApi
       ),
-    [
-      args.channelApi,
-      channelApiImpl,
-      swfFeatureToggleChannelApiImpl,
-      swfLanguageServiceChannelApiImpl,
-      swfServiceCatalogChannelApiImpl,
-    ]
+    [channelApiImpl, args.channelApi, args.swfDiagramEditorEnvelopeApi]
   );
 
   return {
