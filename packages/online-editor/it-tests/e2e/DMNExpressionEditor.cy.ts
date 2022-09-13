@@ -265,8 +265,7 @@ describe.skip("DMN Expression Editor Test :: keyboard shortcuts", () => {
     cy.visit("/");
   });
 
-  // https://issues.redhat.com/browse/KOGITO-6402
-  it.skip("Test New Expresssion editor - undo", () => {
+  it("Test New Expresssion editor - undo", () => {
     // click Create new decision model button (new DMN)
     cy.ouia({ ouiaId: "try-dmn-sample-button" }).click();
 
