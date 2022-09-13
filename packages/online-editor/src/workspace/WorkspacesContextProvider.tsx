@@ -36,7 +36,14 @@ const workspacesWorkerBus = new EnvelopeBusMessageManager<{}, WorkspacesWorkerAp
 });
 
 workspacesWorker.onmessage = (m) => {
-  workspacesWorkerBus.server.receive(m.data, {});
+  if (m.data.BCNAME) {
+    console.debug(`BroadcastChannel message received from Worker: ${m.data.BCNAME}`);
+    const bc = new BroadcastChannel(m.data.BCNAME);
+    bc.postMessage(m.data.BCDATA);
+    bc.close();
+  } else {
+    workspacesWorkerBus.server.receive(m.data, {});
+  }
 };
 
 export function WorkspacesContextProvider(props: Props) {
