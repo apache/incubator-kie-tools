@@ -14,6 +14,4 @@
  * limitations under the License.
  */
 
-export * from "./ServerlessWorkflowDiagramEditor";
-export * from "./ServerlessWorkflowDiagramEditorFactory";
-export * from "./ServerlessWorkflowDiagramEditorEnvelopeApiImpl";
+export * from "./VsCodeServerlessWorkflowDiagramEditorChannelApi";

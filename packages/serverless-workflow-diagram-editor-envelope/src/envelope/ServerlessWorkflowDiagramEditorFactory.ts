@@ -17,7 +17,7 @@
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors/dist/common";
 import { getServerlessWorkflowLanguageData, ServerlessWorkflowDiagramEditorChannelApi } from "../api";
-import { DiagramApi } from "../api/DiagramApi";
+import { DiagramExposedInteropApi } from "../api/DiagramExposedInteropApi";
 import { DiagramService } from "../api/DiagramService";
 import {
   ServerlessWorkflowDiagramEditor,
@@ -26,7 +26,7 @@ import {
 
 export interface CustomWindow {
   envelope: {
-    diagramService: DiagramApi;
+    diagramService: DiagramExposedInteropApi;
   };
 }
 

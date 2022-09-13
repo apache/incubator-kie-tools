@@ -42,9 +42,6 @@ type BuildCmdConfig struct {
 	Push      bool // choose to push an image to a remote registry or not (Docker only)
 
 	Test bool // choose to run the project tests
-
-	// Plugin options
-	Verbose bool
 }
 
 func NewBuildCommand() *cobra.Command {
@@ -167,8 +164,6 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 		Push:      viper.GetBool("push"),
 
 		Test: viper.GetBool("test"),
-
-		Verbose: viper.GetBool("verbose"),
 	}
 	if len(cfg.Image) == 0 && len(cfg.ImageName) == 0 {
 		fmt.Println("ERROR: either --image or --image-name should be used")
@@ -195,17 +190,13 @@ func runAddExtension(cfg BuildCmdConfig) error {
 	if cfg.Jib || cfg.JibPodman {
 		fmt.Printf(" - Adding Quarkus Jib extension\n")
 		if err := common.RunExtensionCommand(
-			cfg.Verbose,
 			"quarkus:remove-extension",
-			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
 		}
 		if err := common.RunExtensionCommand(
-			cfg.Verbose,
 			"quarkus:add-extension",
-			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
@@ -213,17 +204,13 @@ func runAddExtension(cfg BuildCmdConfig) error {
 	} else {
 		fmt.Printf(" - Adding Quarkus Docker extension\n")
 		if err := common.RunExtensionCommand(
-			cfg.Verbose,
 			"quarkus:remove-extension",
-			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.QUARKUS_CONTAINER_IMAGE_JIB,
 		); err != nil {
 			return err
 		}
 		if err := common.RunExtensionCommand(
-			cfg.Verbose,
 			"quarkus:add-extension",
-			common.GetFriendlyMessages("adding Quarkus extension"),
 			common.QUARKUS_CONTAINER_IMAGE_DOCKER,
 		); err != nil {
 			return err
@@ -260,15 +247,12 @@ func runBuildImage(cfg BuildCmdConfig) (out string, err error) {
 
 	if err = common.RunCommand(
 		build,
-		cfg.Verbose,
 		"build",
-		common.GetFriendlyMessages("building"),
 	); err != nil {
 		if cfg.Push {
 			fmt.Println("ERROR: Image build failed.")
 			fmt.Println("If you're using a private registry, check if you're authenticated")
 		}
-		fmt.Println("Check the full logs with the -v | --verbose option")
 		return
 	}
 

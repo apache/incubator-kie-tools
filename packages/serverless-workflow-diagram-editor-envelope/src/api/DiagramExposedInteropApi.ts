@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
-export * from "./ServerlessWorkflowDiagramEditor";
-export * from "./ServerlessWorkflowDiagramEditorFactory";
-export * from "./ServerlessWorkflowDiagramEditorEnvelopeApiImpl";
+/**
+ * EXPOSED INTEROP API
+ *
+ * This API is exposed from the Envelope to be consumed on Java code for diagram window interactions.
+ */
+export interface DiagramExposedInteropApi {
+  /**
+   * Event fired when a node is selected
+   * @param nodeName the name of the node
+   */
+  onNodeSelected: (nodeName: string) => void;
+}

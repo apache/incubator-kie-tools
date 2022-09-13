@@ -31,6 +31,13 @@ import { debounce } from "../debounce";
 import { COMMAND_IDS } from "./commandIds";
 import { CONFIGURATION_SECTIONS, SwfVsCodeExtensionConfiguration } from "./configuration";
 import { SwfServiceCatalogSupportActions } from "./serviceCatalog/SwfServiceCatalogSupportActions";
+import { initSwfOffsetsApi } from "./languageService/initSwfOffsetsApi";
+import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 import {
   SWF_JSON_LANGUAGE_ID,
   SWF_YAML_LANGUAGE_ID,
@@ -52,6 +59,7 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
   configuration: SwfVsCodeExtensionConfiguration;
   vsCodeSwfLanguageService: VsCodeSwfLanguageService;
   swfServiceCatalogSupportActions: SwfServiceCatalogSupportActions;
+  kieEditorsStore: VsCodeKieEditorStore;
 }) {
   const swfLsCommandHandlers: SwfLanguageServiceCommandHandlers = {
     "swf.ls.commands.ImportFunctionFromCompletionItem": (cmdArgs) => {
@@ -248,6 +256,37 @@ export function setupBuiltInVsCodeEditorSwfContributions(args: {
       }
     })
   );
+
+  vscode.window.onDidChangeTextEditorSelection((e) => {
+    if (!isEventFiredFromUser(e)) {
+      return;
+    }
+
+    const uri = e.textEditor.document.uri;
+    const offset = e.textEditor.document.offsetAt(e.selections[0].active);
+
+    const swfOffsetsApi = initSwfOffsetsApi(e.textEditor.document);
+
+    const nodeName = swfOffsetsApi.getStateNameFromOffset(offset);
+
+    if (!nodeName) {
+      return;
+    }
+
+    const envelopeServer = args.kieEditorsStore.get(uri)?.envelopeServer as unknown as EnvelopeServer<
+      ServerlessWorkflowDiagramEditorChannelApi,
+      ServerlessWorkflowDiagramEditorEnvelopeApi
+    >;
+
+    if (!envelopeServer) {
+      return;
+    }
+
+    envelopeServer.envelopeApi.notifications.kogitoSwfDiagramEditor__highlightNode.send({
+      nodeName,
+      documentUri: uri.path,
+    });
+  });
 }
 
 async function setSwfDiagnostics(
@@ -274,4 +313,8 @@ async function setSwfDiagnostics(
 
   diagnosticsCollection.clear();
   diagnosticsCollection.set(document.uri, vscodeDiagnostics);
+}
+
+function isEventFiredFromUser(event: vscode.TextEditorSelectionChangeEvent) {
+  return event.kind !== vscode.TextEditorSelectionChangeKind.Command;
 }
