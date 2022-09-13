@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflowJson } from "../extension";
+import { isSandboxAsset, isServerlessWorkflowJson, isServerlessWorkflowYaml } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -55,6 +55,7 @@ import {
   SwfCombinedEditorChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
+import { SandboxSwfYamlLanguageService } from "./api/SandboxSwfYamlLanguageService";
 
 export interface Props {
   workspaceId: string;
@@ -170,6 +171,11 @@ export function EditorPage(props: Props) {
     [workspaceFilePromise.data]
   );
 
+  const isSwfYaml = useMemo(
+    () => workspaceFilePromise.data && isServerlessWorkflowYaml(workspaceFilePromise.data.name),
+    [workspaceFilePromise.data]
+  );
+
   useStateControlSubscription(
     editor,
     useCallback(
@@ -223,9 +229,18 @@ export function EditorPage(props: Props) {
     return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
   }, [isSwfJson, settingsDispatch.serviceRegistry.catalogStore]);
 
+  const swfLanguageService = useMemo(() => {
+    if (isSwfYaml) {
+      return new SandboxSwfYamlLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+    } else if (isSwfJson) {
+      return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+    }
+    return;
+  }, [isSwfYaml, settingsDispatch.serviceRegistry.catalogStore]);
+
   const swfLanguageServiceChannelApiImpl = useMemo(
-    () => swfJsonLanguageService && new SwfLanguageServiceChannelApiImpl(swfJsonLanguageService),
-    [swfJsonLanguageService]
+    () => swfLanguageService && new SwfLanguageServiceChannelApiImpl(swfLanguageService),
+    [swfLanguageService]
   );
 
   const swfServiceCatalogChannelApiImpl = useMemo(
@@ -241,13 +256,18 @@ export function EditorPage(props: Props) {
   );
 
   useEffect(() => {
-    if (embeddedEditorFile && !isServerlessWorkflowJson(embeddedEditorFile.path || "") && !isReady) {
+    if (
+      embeddedEditorFile &&
+      !isServerlessWorkflowJson(embeddedEditorFile.path || "") &&
+      !isServerlessWorkflowYaml(embeddedEditorFile.path || "") &&
+      !isReady
+    ) {
       setReady(true);
     }
   }, [embeddedEditorFile, isReady, settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry]);
 
   const apiImpl = useMemo(() => {
-    if (!channelApiImpl || !swfJsonLanguageService || !swfServiceCatalogChannelApiImpl) {
+    if (!channelApiImpl || !swfLanguageService || !swfServiceCatalogChannelApiImpl) {
       return;
     }
 
@@ -259,23 +279,18 @@ export function EditorPage(props: Props) {
     );
   }, [
     channelApiImpl,
-    swfJsonLanguageService,
+    swfLanguageService,
     swfServiceCatalogChannelApiImpl,
     swfFeatureToggleChannelApiImpl,
     swfLanguageServiceChannelApiImpl,
   ]);
 
   useEffect(() => {
-    if (
-      !editor?.isReady ||
-      lastContent.current === undefined ||
-      !workspaceFilePromise.data ||
-      !swfJsonLanguageService
-    ) {
+    if (!editor?.isReady || lastContent.current === undefined || !workspaceFilePromise.data || !swfLanguageService) {
       return;
     }
 
-    swfJsonLanguageService
+    swfLanguageService
       .getDiagnostics({
         content: lastContent.current,
         uriPath: workspaceFilePromise.data.relativePath,
@@ -294,7 +309,7 @@ export function EditorPage(props: Props) {
         editorPageDock?.setNotifications(i18n.terms.validation, "", diagnostics);
       })
       .catch((e) => console.error(e));
-  }, [workspaceFilePromise.data, editor, swfJsonLanguageService, editorPageDock, i18n.terms.validation]);
+  }, [workspaceFilePromise.data, editor, swfLanguageService, editorPageDock, i18n.terms.validation]);
 
   return (
     <OnlineEditorPage>

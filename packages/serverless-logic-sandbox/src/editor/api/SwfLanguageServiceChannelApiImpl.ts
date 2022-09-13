@@ -15,11 +15,14 @@
  */
 
 import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfJsonLanguageService,
+  SwfYamlLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
 
 export class SwfLanguageServiceChannelApiImpl implements SwfLanguageServiceChannelApi {
-  constructor(private readonly ls: SwfJsonLanguageService) {}
+  constructor(private readonly ls: SwfJsonLanguageService | SwfYamlLanguageService) {}
 
   public async kogitoSwfLanguageService__getCompletionItems(args: {
     content: string;
