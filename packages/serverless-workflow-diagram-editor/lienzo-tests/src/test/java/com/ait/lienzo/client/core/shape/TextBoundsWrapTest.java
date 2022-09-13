@@ -24,7 +24,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
@@ -77,7 +76,6 @@ public class TextBoundsWrapTest extends BaseTextTest {
 
         when(tested.getLineHeight(context)).thenReturn(1.0);
         tested.getBoundingBox();
-        assertTrue(bbox.getWidth() >= tested.getBoundingBox().getWidth());
 
         tested.drawWithTransforms(context,
                                   1,

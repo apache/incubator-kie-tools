@@ -133,7 +133,7 @@ public class Text extends Shape<Text> {
         return wrapper.getBoundingBox();
     }
 
-    private BoundingBox getBoundingBoxForString(String string) {
+    public BoundingBox getBoundingBoxForString(String string) {
         return textUtils.getBoundingBox(string,
                                         getFontSize(),
                                         getFontStyle(),
