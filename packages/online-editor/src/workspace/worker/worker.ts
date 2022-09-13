@@ -41,6 +41,7 @@ import { Buffer } from "buffer";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
+import "../../polyfill/BroadcastChannelSingleTabOnWorker";
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
