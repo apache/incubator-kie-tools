@@ -1,4 +1,4 @@
-@quay.io/kiegroup/kogito-builder
+@quay.io/kiegroup/kogito-s2i-builder
 @quay.io/kiegroup/kogito-runtime-jvm
 @quay.io/kiegroup/kogito-data-index-infinispan
 @quay.io/kiegroup/kogito-data-index-ephemeral

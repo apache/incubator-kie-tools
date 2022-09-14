@@ -55,7 +55,7 @@ modules:
     - name: org.kie.kogito.maven
       version: "3.8.6"
     - name: org.kie.kogito.s2i.core
-    - name: org.kie.kogito.builder
+    - name: org.kie.kogito.s2i.builder
     - name: org.kie.kogito.rhpam.prod.profile
 
 packages:

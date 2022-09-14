@@ -1,4 +1,4 @@
-@quay.io/kiegroup/kogito-builder
+@quay.io/kiegroup/kogito-s2i-builder
 @quay.io/kiegroup/kogito-runtime-native
 @quay.io/kiegroup/kogito-runtime-jvm
 @rhpam-7/rhpam-kogito-builder-rhel8

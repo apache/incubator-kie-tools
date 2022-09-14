@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# S2I run script for the 'kogito-builder' image.
+# S2I run script for the 'kogito-s2i-builder' image.
 # The run script executes the server that runs your application.
 #
 # For more information see the documentation:

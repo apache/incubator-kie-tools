@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-IMAGE_NAME="quay.io/kiegroup/kogito-builder"
+IMAGE_NAME="quay.io/kiegroup/kogito-s2i-builder"
 RUNTIME_JVM_IMAGE_NAME="quay.io/kiegroup/kogito-runtime-jvm"
 
 NATIVE_COMMANDS="For the native build, just set the NATIVE environment variable to "true" and use

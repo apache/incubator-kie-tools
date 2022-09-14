@@ -42,7 +42,7 @@ modules:
   - name: org.kie.kogito.runtime.jvm
   - name: org.kie.kogito.security.custom.truststores
 
-## s2i build . quay.io/kiegroup/kogito-builder:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
+## s2i build . quay.io/kiegroup/kogito-s2i-builder:latest kogitotest:10.0 --runtime-image quay.io/kiegroup/kogito-runtime-jvm:latest
 ## where "." is the sources dir, ie: /data/dev/sources/kogito-examples/kogito-quarkus-examples/rules-quarkus-helloworld
 run:
   workdir: "/home/kogito"

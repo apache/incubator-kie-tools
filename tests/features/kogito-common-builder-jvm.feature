@@ -1,5 +1,5 @@
-@quay.io/kiegroup/kogito-builder @rhpam-7/rhpam-kogito-builder-rhel8
-Feature: kogito-builder image JVM build tests
+@quay.io/kiegroup/kogito-s2i-builder @rhpam-7/rhpam-kogito-builder-rhel8
+Feature: kogito-s2i-builder image JVM build tests
 
   Scenario: verify if the maven and java installation are correct
     When container is started with command bash

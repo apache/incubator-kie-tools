@@ -1,6 +1,6 @@
 schema_version: 1
 
-name: "quay.io/kiegroup/kogito-builder"
+name: "quay.io/kiegroup/kogito-s2i-builder"
 description: "Platform for building Kogito based on Quarkus or Springboot"
 
 labels:
@@ -11,7 +11,7 @@ labels:
 - name: "io.k8s.display-name"
   value: "Kogito based on Quarkus or Spring Boot"
 - name: "io.openshift.tags"
-  value: "builder,kogito,quarkus,springboot"
+  value: "s2i-builder,kogito,quarkus,springboot"
 
 envs:
 - name: "SCRIPT_DEBUG"
@@ -51,7 +51,7 @@ modules:
   - name: org.kie.kogito.maven
     version: "3.8.6"
   - name: org.kie.kogito.s2i.core
-  - name: org.kie.kogito.builder
+  - name: org.kie.kogito.s2i.builder
 
 packages:
   install:

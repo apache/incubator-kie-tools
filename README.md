@@ -28,9 +28,9 @@ Table of Contents
   - [Kogito Images Requirements](#kogito-images-requirements)
   - [Kogito Images JVM Memory Management](#kogito-images-jvm-memory-management)
   - [Kogito Runtime and Builder Images](#kogito-runtime-and-builder-images)
-    - [Kogito Builder Images](#kogito-builder-images)
-      - [Kogito Builder Image usage](#kogito-builder-image-usage)
-      - [Kogito Builder Image example](#kogito-builder-image-example)
+    - [Kogito s2i Builder Images](#kogito-s2i-builder-images)
+      - [Kogito s2i Builder Image usage](#kogito-s2i-builder-image-usage)
+      - [Kogito s2i Builder Image example](#kogito-s2i-builder-image-example)
         - [Builder Image Examples with Quarkus](#builder-image-example-with-quarkus)
         - [Builder Image Examples with Springboot](#builder-image-example-with-springboot)
       - [Improving Build Time](#improving-build-time)
@@ -146,7 +146,7 @@ be used by the Kogito Runtime images to run the Kogito application.
 
 The current available Kogito Builder image is:
 
-* [quay.io/kiegroup/kogito-builder](https://quay.io/kiegroup/kogito-builder)
+* [quay.io/kiegroup/kogito-s2i-builder](https://quay.io/kiegroup/kogito-s2i-builder)
 
 The builder image supports building applications based on Spring Boot and Quarkus. To define your runtime, specify the `RUNTIME_TYPE` environment variable. If var is not defined, it defaults to `quarkus`.
 When `RUNTIME_TYPE` quarkus is chosen, the Builder Image allows you to create a native image using GraalVM, which allows you to have lightweight and fast applications ready to run in the Cloud.
@@ -158,7 +158,7 @@ The Kogito Builder Image is equipped with the following components:
  * OpenJDK 11.0.6
  * Maven 3.8.6
  
-For more information about what is installed on this image, take a look [here](kogito-builder-overrides.yaml) in the
+For more information about what is installed on this image, take a look [here](kogito-s2i-builder-overrides.yaml) in the
 **modules.install** section. 
 
 #### Kogito Builder Image usage
@@ -166,7 +166,7 @@ For more information about what is installed on this image, take a look [here](k
 This image contains a helper option to better understand how to use it:
 
 ```bash
-$ docker run -it quay.io/kiegroup/kogito-builder:latest /home/kogito/kogito-app-launch.sh -h
+$ docker run -it quay.io/kiegroup/kogito-s2i-builder:latest /home/kogito/kogito-app-launch.sh -h
 ```
 
 By default, quarkus is selected as runtime, and a normal java build will be performed. To perform a native build, just set the **NATIVE** build environment variable to **true**.
@@ -186,7 +186,7 @@ $ s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus \
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
-    quay.io/kiegroup/kogito-builder:latest \
+    quay.io/kiegroup/kogito-s2i-builder:latest \
     rules-example:1.0
 ...
 [INFO] BUILD SUCCESS
@@ -233,7 +233,7 @@ $ s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     --context-dir kogito-springboot-examples/process-springboot-example \
     -e RUNTIME_TYPE=springboot \
-    quay.io/kiegroup/kogito-builder:latest \
+    quay.io/kiegroup/kogito-s2i-builder:latest \
     springboot-example:1.0
 ```
 
@@ -270,7 +270,7 @@ $ time s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
-    quay.io/kiegroup/kogito-builder:latest \
+    quay.io/kiegroup/kogito-s2i-builder:latest \
     rules-example-incremental:1.0 \
     --incremental \    
     --env NATIVE=false
@@ -288,7 +288,7 @@ $ time s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
-    quay.io/kiegroup/kogito-builder:latest \
+    quay.io/kiegroup/kogito-s2i-builder:latest \
     rules-example-incremental:1.0 \
     --incremental \
     --env NATIVE=false
@@ -316,7 +316,7 @@ $ time s2i build https://github.com/kiegroup/kogito-examples.git \
     --ref main \
     -e RUNTIME_TYPE=quarkus
     --context-dir kogito-quarkus-examples/rules-quarkus-helloworld \
-    quay.io/kiegroup/kogito-builder:latest \
+    quay.io/kiegroup/kogito-s2i-builder:latest \
     rules-example-incremental-1 \
     --incremental \
     --env NATIVE=false \
@@ -857,7 +857,7 @@ to build a new example application in Ruby.
 $ oc create -f https://raw.githubusercontent.com/kiegroup/kogito-images/0.16.0/kogito-imagestream.yaml
 imagestream.image.openshift.io/kogito-runtime-native created
 imagestream.image.openshift.io/kogito-runtime-jvm created
-imagestream.image.openshift.io/kogito-builder created
+imagestream.image.openshift.io/kogito-s2i-builder created
 imagestream.image.openshift.io/kogito-data-index-infinispan created
 imagestream.image.openshift.io/kogito-data-index-ephemeral created
 imagestream.image.openshift.io/kogito-data-index-mongodb created
@@ -872,10 +872,10 @@ imagestream.image.openshift.io/kogito-jobs-service-postgresql created
 imagestream.image.openshift.io/kogito-management-console created
 
 # performing a new build
-$ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-builder:latest \ 
+$ oc new-build --name=rules-quarkus-helloworld-builder --image-stream=kogito-s2i-builder:latest \ 
     https://github.com/kiegroup/kogito-examples.git#main --context-dir=kogito-quarkus-examples/rules-quarkus-helloworld \
     --strategy=source --env NATIVE=false 
---> Found image 8c9d756 (5 days old) in image stream "rules-quarkus-helloworld/kogito-builder" under tag "latest" for "kogito-builder:latest"
+--> Found image 8c9d756 (5 days old) in image stream "rules-quarkus-helloworld/kogito-s2i-builder" under tag "latest" for "kogito-s2i-builder:latest"
 
     Kogito based on Quarkus 
     ----------------------- 
@@ -991,24 +991,24 @@ For more complex deployment, please use the [Kogito Cloud Operator](https://gith
 
 To be able to build the image it should be installed and available on OpenShift before it can be used.
 
-Suppose we have built the kogito-builder with the following command:
+Suppose we have built the kogito-s2i-builder with the following command:
 
 ```bash
-$ make build-image image_name=kogito-builder
+$ make build-image image_name=kogito-s2i-builder
 ```
 
 We'll have as output the following image:
 
 ```bash
-quay.io/kiegroup/kogito-builder:X.X.X
+quay.io/kiegroup/kogito-s2i-builder:X.X.X
 ```
 
 Then we need to tag the image properly. 
 Suppose your local registry is openshift.local.registry:8443, you should do:
 
 ```bash
-$ docker tag quay.io/kiegroup/kogito-builder:X.X.X \
-    openshift.local.registry:8443/{NAMESPACE}/kogito-builder:X.X.X
+$ docker tag quay.io/kiegroup/kogito-s2i-builder:X.X.X \
+    openshift.local.registry:8443/{NAMESPACE}/kogito-s2i-builder:X.X.X
 ```
 
 Where the namespace is the place where you want the image to be available for usage. 
@@ -1016,7 +1016,7 @@ Once the image is properly tagged, log in to the registry and push the new image
 
 ```bash
 $ docker login -u <USERNAME> -p <PASSWORD>  openshift.local.registry:8443
-$ docker push  openshift.local.registry:8443/{NAMESPACE}/kogito-builder:X.X.X
+$ docker push  openshift.local.registry:8443/{NAMESPACE}/kogito-s2i-builder:X.X.X
 ```
 
 To deploy and test the new image, follow the same steps as described [here](#using-released-images)
@@ -1048,7 +1048,7 @@ With this Makefile you can:
  
 - Build images individually, by default it will build and test each image
      ```bash
-     $ make build-image image_name=kogito-builder
+     $ make build-image image_name=kogito-s2i-builder
      $ make build-image image_name=kogito-runtime-jvm-ubi8
      $ make build-image image_name=kogito-runtime-native
      $ make build-image image_name=kogito-data-index-infinispan
@@ -1151,7 +1151,7 @@ Below you can find all modules used to build the Kogito Images
 - [kogito-persistence](modules/kogito-persistence): Provides the needed configuration scripts to properly configure the Kogito Services in the target image.
 - [kogito-runtime-native](modules/kogito-runtime-native): Main module for the quay.io/kiegroup/kogito-runtime-native image.
 - [kogito-runtime-jvm](modules/kogito-runtime-jvm): Main module for the quay.io/kiegroup/kogito-runtime-jvm image.
-- [kogito-builder](modules/kogito-builder): Main module for the quay.io/kiegroup/kogito-builder image.
+- [kogito-s2i-builder](modules/kogito-s2i-builder): Main module for the quay.io/kiegroup/kogito-s2i-builder image.
 - [kogito-s2i-core](modules/kogito-s2i-core): Provides the source-to-image needed scripts and configurations.
 
 
@@ -1176,7 +1176,7 @@ Please inspect the images overrides files to learn which modules are being insta
 - [quay.io/kiegroup/kogito-jit-runner](kogito-jit-runner-overrides.yaml)
 - [quay.io/kiegroup/kogito-runtime-jvm](kogito-runtime-jvm-overrides.yaml)
 - [quay.io/kiegroup/kogito-runtime-native](kogito-runtime-native-overrides.yaml)
-- [quay.io/kiegroup/kogito-builder](kogito-builder-overrides.yaml)
+- [quay.io/kiegroup/kogito-s2i-builder](kogito-s2i-builder-overrides.yaml)
 
 
 ### Testing Images
@@ -1201,12 +1201,12 @@ See [Writing Behave Tests](#writing-behave-tests).
 
 Example:
 ```bash
-make build-image image_name=kogito-builder test_options=--wip
+make build-image image_name=kogito-s2i-builder test_options=--wip
 ```
 
 Or by name:
 ```bash
-make build-image image_name=kogito-builder test_options=--name <Test Scenario Name>
+make build-image image_name=kogito-s2i-builder test_options=--name <Test Scenario Name>
 ```
 
 You can also add `cekit_option` to the make command, which will be appended to the Cekit command. Default is `cekit -v`.

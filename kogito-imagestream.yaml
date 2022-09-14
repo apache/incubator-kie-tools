@@ -51,7 +51,7 @@ items:
   - kind: ImageStream
     apiVersion: v1
     metadata:
-      name: kogito-builder
+      name: kogito-s2i-builder
       annotations:
         openshift.io/display-name: Platform for building Kogito based on Quarkus or Springboot
         openshift.io/provider-display-name: Kie Group.
@@ -61,14 +61,14 @@ items:
           annotations:
             description: Platform for building Kogito based on Quarkus or Springboot
             iconClass: icon-jbpm
-            tags: builder,kogito,quarkus,springboot
+            tags: s2i-builder,kogito,quarkus,springboot
             supports: quarkus
             version: '2.0.0-snapshot'
           referencePolicy:
             type: Local
           from:
             kind: DockerImage
-            name: quay.io/kiegroup/kogito-builder:2.0.0-snapshot
+            name: quay.io/kiegroup/kogito-s2i-builder:2.0.0-snapshot
   - kind: ImageStream
     apiVersion: v1
     metadata:

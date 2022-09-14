@@ -1,9 +1,8 @@
 <!-- Keep them in alphabetical order -->
 ## Enhancements
-[KOGITO-7700](https://issues.redhat.com/browse/KOGITO-7700) - Allow adding quarkus extensions when building from assets
+[KOGITO-7891](KOGITO-7891) - SInce 1.28 the legacy builder based on s2i is renamed kogito-s2-builder and the new builder will be a jvm and maven builder
 
 ## Bug Fixes
-[KOGITO-7791](https://issues.redhat.com/browse/KOGITO-7791) - [TEST] - Serverless Workflow Extension is building the service properly is failing
 
 ## Known Issues
 

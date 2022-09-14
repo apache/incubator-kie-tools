@@ -1,8 +1,6 @@
 schema_version: 1
-
-name: "kogito-image-real-name-on-overrides-file"
+name: org.kie.kogito.s2i.builder
 version: "2.0.0-snapshot"
-from: "registry.access.redhat.com/ubi8/ubi-minimal:latest"
 
 labels:
   - name: "io.openshift.s2i.scripts-url"
@@ -12,16 +10,10 @@ labels:
   - name: "io.openshift.expose-services"
     value: "8080:http"
 
-modules:
-  repositories:
-    - path: modules
-
-envs:
-  - name: "KOGITO_VERSION"
-    value: "2.0.0-SNAPSHOT"
-
-packages:
-  manager: microdnf
+execute:
+  - script: configure
 
 run:
   user: 1001
+  cmd:
+    - "/usr/local/s2i/run"
