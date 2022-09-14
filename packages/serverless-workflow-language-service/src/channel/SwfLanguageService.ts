@@ -580,7 +580,7 @@ const completions = new Map<
             sortText: label,
             detail: `${swfServiceCatalogFunc.operation}`,
             textEdit: {
-              newText: codeCompletionStrategy.translate(swfFunctionRef, CompletionItemKind.Module),
+              newText: codeCompletionStrategy.translate(swfFunctionRef, kind),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -606,7 +606,7 @@ const completions = new Map<
             detail: `"${swfFunction.name}"`,
             filterText: label,
             textEdit: {
-              newText: codeCompletionStrategy.translate(`${swfFunction.name}`, CompletionItemKind.Value),
+              newText: codeCompletionStrategy.translate(`${swfFunction.name}`, kind),
               range: overwriteRange,
             },
             insertTextFormat: InsertTextFormat.Snippet,
@@ -667,7 +667,7 @@ const completions = new Map<
           sortText: label,
           detail: swfFunction.operation,
           textEdit: {
-            newText: codeCompletionStrategy.translate(swfFunctionRefArgs, CompletionItemKind.Module),
+            newText: codeCompletionStrategy.translate(swfFunctionRefArgs, kind),
             range: overwriteRange,
           },
           insertTextFormat: InsertTextFormat.Snippet,
