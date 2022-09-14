@@ -26,6 +26,8 @@ Following commands assume the use of Widfly:
 
 ## Running in SDM
 
+Change to the `kie-tools/packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/` root folder
+
 Start GWT super dev mode by: `mvn gwt:run`
 
 ## Running in IntelliJ
