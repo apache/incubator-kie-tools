@@ -51,6 +51,7 @@ digraph G {
   "@kie-tools/dashbuilder-component-echarts-base" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/patternfly-base" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/dashbuilder-editor-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-images" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/desktop" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -183,6 +184,8 @@ digraph G {
   "@kie-tools/dashbuilder-component-victory-charts" -> "@kie-tools/dashbuilder-component-dev" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-editor" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-editor-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-editor-viewer" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
