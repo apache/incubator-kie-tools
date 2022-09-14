@@ -59,7 +59,7 @@ describe("KIE Editors Integration Test Suite - SCESIM Editor", () => {
   /**
    * As the opened sceism file is empty, a prompt to specify file under test should be shown
    */
-  it("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
+  it.only("Opens demo-dmn.scesim file in SCESIM Editor", async function () {
     this.timeout(20000);
 
     webview = await testHelper.openFileFromSidebar(DEMO_DMN_SCESIM);
