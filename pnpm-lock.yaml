@@ -3914,7 +3914,7 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@severlessworkflow/sdk-typescript": 3.0.3
-      mermaid: 9.1.6
+      mermaid: 9.1.7
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       svg-pan-zoom: 3.6.1
@@ -7396,26 +7396,6 @@ packages:
       global-tunnel-ng: 2.7.1
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@electron/get/1.14.1:
-    resolution:
-      { integrity: sha512-BrZYyL/6m0ZXz/lDxy/nlVhQz+WF+iPS6qXolEU8atw7h6v1aYkjwJZ63m+bJMBTxDE66X+r2tPS4a/8C82sZw== }
-    engines: { node: ">=8.6" }
-    dependencies:
-      debug: 4.3.3
-      env-paths: 2.2.1
-      fs-extra: 8.1.0
-      got: 9.6.0
-      progress: 2.0.3
-      semver: 6.3.0
-      sumchecker: 3.0.1
-    optionalDependencies:
-      global-agent: 3.0.0
-      global-tunnel-ng: 2.7.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
 
   /@electron/remote/1.1.0_electron@12.2.3:
     resolution:
@@ -13614,7 +13594,6 @@ packages:
     resolution:
       { integrity: sha512-vVl8j8ph6tRS3B8qir40H7yw7voy17xL0piAjlbBUsH7WIfzoedL/ZOr1OV9FyZQLWXsayOJyV4tnRyXR85/ag== }
     requiresBuild: true
-    dev: true
 
   /core-util-is/1.0.2:
     resolution:
@@ -15260,9 +15239,9 @@ packages:
       domelementtype: 2.2.0
     dev: true
 
-  /dompurify/2.3.10:
+  /dompurify/2.4.0:
     resolution:
-      { integrity: sha512-o7Fg/AgC7p/XpKjf/+RC3Ok6k4St5F7Q6q6+Nnm3p2zGWioAY6dh0CbbuwOhH2UcSzKsdniE/YnE2/92JcsA+g== }
+      { integrity: sha512-Be9tbQMZds4a3C6xTmz68NlMfeONA//4dOavl/1rNw50E+/QO0KVpbcU0PcaW0nsQxurXls9ZocqFxk8R2mWEA== }
     dev: false
 
   /domutils/2.8.0:
@@ -15438,7 +15417,7 @@ packages:
     hasBin: true
     requiresBuild: true
     dependencies:
-      "@electron/get": 1.14.1
+      "@electron/get": 1.12.4
       "@types/node": 14.17.0
       extract-zip: 1.7.0
     transitivePeerDependencies:
@@ -17171,22 +17150,6 @@ packages:
       roarr: 2.15.4
       semver: 7.3.5
       serialize-error: 7.0.1
-    dev: true
-    optional: true
-
-  /global-agent/3.0.0:
-    resolution:
-      { integrity: sha512-PT6XReJ+D07JvGoxQMkT6qji/jVNfX/h364XHZOWeRzy64sSFr+xJ5OX7LI3b4MPQzdL4H8Y8M0xzPpsVMwA8Q== }
-    engines: { node: ">=10.0" }
-    requiresBuild: true
-    dependencies:
-      boolean: 3.0.4
-      es6-error: 4.1.1
-      matcher: 3.0.0
-      roarr: 2.15.4
-      semver: 7.3.7
-      serialize-error: 7.0.1
-    dev: false
     optional: true
 
   /global-dirs/3.0.0:
@@ -20363,15 +20326,15 @@ packages:
     engines: { node: ">= 8" }
     dev: true
 
-  /mermaid/9.1.6:
+  /mermaid/9.1.7:
     resolution:
-      { integrity: sha512-oBuQk7s55wQgEgH/AK0GYY8U0kBqOIGK9QlJL+VYxh+1kZQtU9tNwoy0gWCfBJDaFIRdfpc/fm9PagaIXg6XFQ== }
+      { integrity: sha512-MRVHXy5FLjnUQUG7YS3UN9jEN6FXCJbFCXVGJQjVIbiR6Vhw0j/6pLIjqsiah9xoHmQU6DEaKOvB3S1g/1nBPA== }
     dependencies:
       "@braintree/sanitize-url": 6.0.0
       d3: 7.3.0
       dagre: 0.8.5
       dagre-d3: 0.6.4
-      dompurify: 2.3.10
+      dompurify: 2.4.0
       graphlib: 2.1.8
       khroma: 2.0.0
       moment-mini: 2.24.0
@@ -24446,6 +24409,7 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
+    dev: true
 
   /send/0.17.1:
     resolution:
