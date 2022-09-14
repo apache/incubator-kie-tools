@@ -17,6 +17,8 @@
 import { PMMLEditorFactory } from "@kie-tools/pmml-editor";
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 
+declare const acquireVsCodeApi: any;
+
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
