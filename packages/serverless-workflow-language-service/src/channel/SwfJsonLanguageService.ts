@@ -72,14 +72,11 @@ class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
-    if (
-      completionItemKind === CompletionItemKind.Value ||
-      completionItemKind === CompletionItemKind.Function ||
-      completionItemKind === CompletionItemKind.Folder
-    ) {
-      return `"${label}"`;
-    }
-    return label;
+    return (
+      [CompletionItemKind.Value, CompletionItemKind.Function, CompletionItemKind.Folder] as CompletionItemKind[]
+    ).includes(completionItemKind)
+      ? `"${label}"`
+      : label;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
