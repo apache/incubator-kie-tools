@@ -13,9 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
+import {
+  SwfJsonLanguageService,
+  SwfJsonPath,
+  SwfYamlLanguageService,
+  findNodeAtLocation,
+  JsonCodeCompletionStrategy,
+  YamlCodeCompletionStrategy,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CompletionItem, DocumentUri, Position } from "vscode-languageserver-types";
-import { SwfJsonLanguageService, SwfYamlLanguageService } from "../dist/channel";
 
 /**
  * Gets the corresponding line from an offset.
@@ -68,4 +76,22 @@ export async function codeCompletionTester(
     }),
     cursorPosition,
   };
+}
+
+/**
+ * Get the returned position from getStartNodeValuePosition().
+ *
+ * @param args -
+ */
+export function getStartNodeValuePositionTester(args: {
+  content: string;
+  path: SwfJsonPath;
+  codeCompletionStrategy: JsonCodeCompletionStrategy | YamlCodeCompletionStrategy;
+  documentUri: string;
+  ls: SwfJsonLanguageService | SwfYamlLanguageService;
+}): Position | undefined {
+  const rootNode = args.ls.parseContent(args.content);
+  const doc = TextDocument.create(args.documentUri, FileLanguage.YAML, 0, args.content);
+  const node = findNodeAtLocation(rootNode!, args.path);
+  return args.codeCompletionStrategy.getStartNodeValuePosition(doc, node!);
 }

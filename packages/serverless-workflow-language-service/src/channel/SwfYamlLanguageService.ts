@@ -31,7 +31,7 @@ import { FileLanguage } from "../api";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode, TranslateArgs } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -118,7 +118,11 @@ export class SwfYamlLanguageService {
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    return this.ls.getCodeLenses({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCodeLenses({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
@@ -168,12 +172,18 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   return convertedNode;
 };
 
-class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(completion: object | string, completionItemKind: CompletionItemKind): string {
-    const skipFirstLineIndent = completionItemKind !== CompletionItemKind.Module;
-    const completionItemNewLine = completionItemKind === CompletionItemKind.Module ? "\n" : "";
+export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(args: TranslateArgs): string {
+    const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
+    const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
+    const completionText =
+      completionItemNewLine + indentText(dump(args.completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
 
-    return completionItemNewLine + indentText(dump(completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
+    return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
+      args.completionItemKind
+    ) && args.overwriteRange?.end.character === 0
+      ? `- ${completionText}\n`
+      : completionText;
   }
 
   public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
@@ -182,6 +192,12 @@ class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
     )
       ? `'${label}'`
       : label;
+  }
+
+  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
+    const offSetAddition = ["string", "object"].includes(node.type) ? 1 : 0;
+
+    return document.positionAt(node.offset + offSetAddition);
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
