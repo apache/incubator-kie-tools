@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@kie-tools/serverless-workflow-diagram-editor",
   "version": "0.0.0",
   "description": "",
@@ -12,8 +13,6 @@
   "bugs": {
     "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "types": "index.d.ts",
-  "main": "index.js",
   "files": [
     "dist"
   ],

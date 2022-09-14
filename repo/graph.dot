@@ -90,10 +90,11 @@ digraph G {
   "@kie-tools/serverless-logic-sandbox-base-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-sandbox-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/serverless-workflow-diagram-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-workflow-diagram-editor-assets" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-text-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -279,12 +280,13 @@ digraph G {
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-sandbox-deployment-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "black" ];
-  "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-text-editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "blue" ];
-  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
+  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/maven-config-setup-helper" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-workflow-diagram-editor" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
+  "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-mermaid-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -342,7 +344,7 @@ digraph G {
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-language-service" [ style = "solid", color = "blue" ];
   "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-mermaid-viewer" [ style = "solid", color = "blue" ];
-  "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
+  "vscode-extension-serverless-workflow-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
   "vscode-extension-yard-editor" -> "@kie-tools-core/vscode-extension" [ style = "solid", color = "blue" ];
   "vscode-extension-yard-editor" -> "@kie-tools/yard-editor" [ style = "solid", color = "blue" ];
   "@kie-tools-core/vscode-java-code-completion" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];

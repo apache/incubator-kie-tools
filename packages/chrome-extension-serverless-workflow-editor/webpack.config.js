@@ -23,7 +23,7 @@ const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { EnvironmentPlugin } = require("webpack");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { env } = require("./env");
 const buildEnv = env;
 

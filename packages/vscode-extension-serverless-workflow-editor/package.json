@@ -55,7 +55,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",
+    "@kie-tools/serverless-workflow-diagram-editor-assets": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/chai": "^4.2.17",
     "@types/mocha": "^8.2.2",
