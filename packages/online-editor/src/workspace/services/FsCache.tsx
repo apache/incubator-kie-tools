@@ -230,7 +230,6 @@ function toLfsStat(workspaceId: string, path: any, stat: any) {
 
 // Reference: https://github.com/emscripten-core/emscripten/blob/main/system/include/wasi/api.h
 function throwWasiErrorToNodeError(e: any, ...args: any[]) {
-  console.info(e);
   switch (e.errno) {
     case 20:
       throw { code: "EEXIST", message: "EEXIST", args };
