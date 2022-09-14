@@ -48,7 +48,7 @@ module.exports = (env) =>
         ],
       }),
       new MonacoWebpackPlugin({
-        languages: ["json"],
+        languages: ["yaml"],
         customLanguages: [
           {
             label: "yaml",

@@ -188,7 +188,7 @@ export function EditorPage(props: Props) {
       },
       [saveContent]
     ),
-    { throttle: isSwfJson && swfFeatureToggle.stunnerEnabled ? 400 : 200 }
+    { throttle: (isSwfJson || isSwfYaml) && swfFeatureToggle.stunnerEnabled ? 400 : 200 }
   );
 
   useEffect(() => {
