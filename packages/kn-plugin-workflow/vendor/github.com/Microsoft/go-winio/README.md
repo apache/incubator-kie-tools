@@ -23,13 +23,15 @@ We also require that contributors sign their commits using git commit -s or git 
 or otherwise have permission to use it in this project. Please see https://developercertificate.org/ for more info, as well as to make sure that you can
 attest to the rules listed. Our CI uses the DCO Github app to ensure that all commits in a given PR are signed-off.
 
+
 ## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
 For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
 contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
-## Special Thanks
 
+
+## Special Thanks
 Thanks to natefinch for the inspiration for this library. See https://github.com/natefinch/npipe
 for another named pipe implementation.

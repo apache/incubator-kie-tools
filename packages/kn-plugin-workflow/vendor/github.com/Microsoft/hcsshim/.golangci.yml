@@ -10,6 +10,7 @@ linters-settings:
     # https://staticcheck.io/docs/checks
     checks: ["all"]
 
+
 issues:
   # This repo has a LOT of generated schema files, operating system bindings, and other things that ST1003 from stylecheck won't like
   # (screaming case Windows api constants for example). There's also some structs that we *could* change the initialisms to be Go
