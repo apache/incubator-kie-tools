@@ -23,7 +23,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
@@ -280,7 +280,7 @@ export class WorkspaceService {
   }
 
   public getAbsolutePath(args: { workspaceId: string; relativePath?: string }) {
-    return join("/", args.relativePath ?? "");
+    return join("/", args.workspaceId, args.relativePath ?? "");
   }
 
   public async deleteFiles(

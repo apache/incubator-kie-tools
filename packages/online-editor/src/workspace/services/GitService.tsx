@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import git, { STAGE, WORKDIR } from "isomorphic-git";
 import http from "isomorphic-git/http/web";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";

@@ -16,14 +16,14 @@
 
 import { join } from "path";
 import { StorageFile, StorageService } from "../workspace/services/StorageService";
-import { FsCache } from "../workspace/services/FsCache";
+import { DmnRunnerInputsFsCache } from "./DmnRunnerInputsFsCache";
 import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
 import { InputRow } from "@kie-tools/form-dmn";
 
 export class DmnRunnerInputsService {
   private readonly storageService = new StorageService();
-  private readonly fsCache = new FsCache();
+  private readonly fsCache = new DmnRunnerInputsFsCache();
 
   public getDmnRunnerInputsFs(workspaceId: string) {
     return this.fsCache.getOrCreateFs(this.getDmnRunnerInputsStoreName(workspaceId));

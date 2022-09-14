@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { basename, dirname, extname, join, relative, resolve } from "path";
 
 export class EagerStorageFile {

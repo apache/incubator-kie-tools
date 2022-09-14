@@ -16,9 +16,11 @@
 
 function main() {
   if ("BroadcastChannel" in window) {
+    console.info("Using provided BroadcastChannel.");
     return;
   }
 
+  console.info("Injecting BroadcastChannel single-tab polyfill.");
   const subscriptions = new Map<string, Set<any>>();
 
   (window as any).BroadcastChannel = class BroadcastChannel {

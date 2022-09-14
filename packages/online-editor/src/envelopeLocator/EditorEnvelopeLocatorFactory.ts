@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
+import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api/EditorEnvelopeLocator";
 
 export class EditorEnvelopeLocatorFactory {
   public create(args: { targetOrigin: string }) {

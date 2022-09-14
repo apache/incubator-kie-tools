@@ -16,8 +16,11 @@
 
 function broadcastChannelPolyfillOnWorkerMain() {
   if ("BroadcastChannel" in self) {
+    console.info("Using provided BroadcastChannel (worker).");
     return;
   }
+
+  console.info("Injecting BroadcastChannel single-tab polyfill (worker).");
   const subscriptions = new Map<string, Set<any>>();
 
   (self as any).BroadcastChannel = class BroadcastChannel {
