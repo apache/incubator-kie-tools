@@ -22,7 +22,7 @@ import {
   usingTestingBoxedExpressionI18nContext,
   usingTestingBoxedExpressionProviderContext,
 } from "../test-utils";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { InvocationExpression } from "@kie-tools/boxed-expression-component/dist/components/InvocationExpression";
 
@@ -109,7 +109,7 @@ describe("InvocationExpression tests", () => {
   });
 });
 
-jest.mock("@kie-tools/boxed-expression-component", () => ({
-  ...(jest.requireActual("@kie-tools/boxed-expression-component") as Record<string, unknown>),
+jest.mock("@kie-tools/boxed-expression-component/dist/api", () => ({
+  ...(jest.requireActual("@kie-tools/boxed-expression-component/dist/api") as Record<string, unknown>),
   getHandlerConfiguration: jest.fn(),
 }));

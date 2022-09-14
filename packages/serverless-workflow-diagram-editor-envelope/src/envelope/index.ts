@@ -16,4 +16,4 @@
 
 export * from "./ServerlessWorkflowDiagramEditor";
 export * from "./ServerlessWorkflowDiagramEditorFactory";
-export * from "./ServerlessWorkflowDiagramEnvelopeApiFactory";
+export * from "./ServerlessWorkflowDiagramEditorEnvelopeApiImpl";

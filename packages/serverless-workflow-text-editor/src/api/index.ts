@@ -15,3 +15,4 @@
  */
 
 export * from "./ServerlessWorkflowTextEditorChannelApi";
+export * from "./ServerlessWorkflowTextEditorEnvelopeApi";

@@ -19,11 +19,11 @@
   ],
   "scripts": {
     "build:dev": "run-script-os",
-    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs -Pno-showcase && pnpm dist",
-    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs `-Pno-showcase\" && pnpm dist",
+    "build:dev:linux:darwin": "mvn clean install -DskipTests -DskipITs=$(build-env global.build.testIT --not) -Pno-showcase && pnpm dist",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-DskipITs=$(build-env global.build.testIT --not) `-Pno-showcase\" && pnpm dist",
     "build:prod": "run-script-os",
-    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs -Pno-showcase && pnpm dist",
-    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs `-Pno-showcase\" && pnpm dist",
+    "build:prod:linux:darwin": "pnpm lint && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -DskipITs=$(build-env integrationTests.run --not) -Pno-showcase && pnpm dist",
+    "build:prod:win32": "pnpm lint && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-DskipITs=$(build-env integrationTests.run --not) `-Pno-showcase\" && pnpm dist",
     "dist": "rimraf dist && mkdir dist && pnpm dist:sw",
     "dist:sw": "mkdir \"dist/sw\" && cpr ./sw-editor/sw-editor-kogito-app/target/sw-editor-kogito-app/org.kie.workbench.common.stunner.sw.KogitoSWEditor ./dist/sw/org.kie.workbench.common.stunner.sw.KogitoSWEditor",
     "install": "node install.js",
@@ -31,9 +31,11 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
-    "@kie-tools-core/maven-config-setup-helper": "workspace:*",
-    "@kie-tools-core/run-script-if": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/maven-config-setup-helper": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "cpr": "^3.0.1",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
     "symlink-dir": "^5.0.1"
   },
   "kieTools": {

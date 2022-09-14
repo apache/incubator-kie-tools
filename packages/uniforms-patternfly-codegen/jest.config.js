@@ -26,7 +26,7 @@ module.exports = {
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
   testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
   transform: {
-    "^.+\\.jsx?$": "babel-jest",
+    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
     "^.+\\.tsx?$": "ts-jest",
     "^.+\\.txt?$": "jest-raw-loader",
   },

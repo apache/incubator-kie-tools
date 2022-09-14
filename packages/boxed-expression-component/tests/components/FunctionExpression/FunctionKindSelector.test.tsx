@@ -18,7 +18,7 @@ import { render } from "@testing-library/react";
 import { activateSelector, usingTestingBoxedExpressionI18nContext } from "../test-utils";
 import * as React from "react";
 import { FunctionKindSelector } from "@kie-tools/boxed-expression-component/dist/components/FunctionExpression";
-import { FunctionKind } from "@kie-tools/boxed-expression-component";
+import { FunctionKind } from "@kie-tools/boxed-expression-component/dist/api";
 import * as _ from "lodash";
 
 jest.useFakeTimers();

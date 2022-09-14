@@ -23,11 +23,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/root"
 )
-
-var quarkusPlatformGroupId, quarkusVersion, pluginVersion string
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
@@ -43,11 +41,8 @@ func main() {
 	}()
 
 	cfg := root.RootCmdConfig{
-		DependenciesVersion: common.DependenciesVersion{
-			QuarkusPlatformGroupId: quarkusPlatformGroupId,
-			QuarkusVersion:         quarkusVersion,
-		},
-		PluginVersion: pluginVersion,
+	    Name: "kn workflow",
+	    Version: metadata.PluginVersion
 	}
 
 	if err := root.NewRootCommand(cfg).ExecuteContext(ctx); err != nil {

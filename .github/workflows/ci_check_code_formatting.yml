@@ -1,0 +1,32 @@
+name: "CI :: Code formatting"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: "**"
+
+concurrency:
+  group: ${{ github.event.pull_request && format('check-code-formatting-pr-{0}', github.event.pull_request.number) || format('check-code-formatting-push-main-{0}', github.sha) }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+
+      - name: "Check code formatting"
+        shell: bash
+        run: |
+          pnpm bootstrap:root
+          pnpm format:check

@@ -18,7 +18,6 @@ package root
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
@@ -29,13 +28,13 @@ import (
 )
 
 type RootCmdConfig struct {
-	DependenciesVersion common.DependenciesVersion
-	PluginVersion       string
+	Name    string
+	Version string
 }
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "kn-workflow",
+		Use:   cfg.Name,
 		Short: "Serverless Workflow",
 		Long:  "Manage Kogito Serverless Workflow projects",
 	}
@@ -43,17 +42,12 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
 	viper.SetEnvPrefix("workflow") // ensure thay all have the prefix
 
-	cmd.PersistentFlags().BoolP("verbose", "v", false, "Print verbose logs")
-	if err := viper.BindPFlag("verbose", cmd.PersistentFlags().Lookup("verbose")); err != nil {
-		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
-	}
-
-	cmd.AddCommand(quarkus.NewQuarkusCommand(cfg.DependenciesVersion))
-	cmd.AddCommand(command.NewVersionCommand(cfg.PluginVersion))
-	single.NewSingleCommand(cmd)
-
-	cmd.Version = cfg.PluginVersion
+	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
+
+	cmd.AddCommand(quarkus.NewQuarkusCommand())
+	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
+	cmd.AddCommand(single.NewSingleCommand(cmd))
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

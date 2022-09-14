@@ -44,7 +44,6 @@ import (
 	"github.com/ory/viper"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/net/http2"

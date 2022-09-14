@@ -16,11 +16,6 @@
 
 package common
 
-type DependenciesVersion struct {
-	QuarkusPlatformGroupId string
-	QuarkusVersion         string
-}
-
 const (
 	QUARKUS_MAVEN_PLUGIN                             = "quarkus-maven-plugin"
 	QUARKUS_KUBERNETES_EXTENSION                     = "quarkus-kubernetes"
@@ -36,8 +31,7 @@ const (
 	MAVEN_MINOR_VERSION = 8
 
 	// Default values
-	DEFAULT_TAG = "latest"
-
+	DEFAULT_TAG         string = "latest"
 	WORKFLOW_SW_JSON    string = "workflow.sw.json"
 	WORKFLOW_DOCKERFILE string = "Dockerfile.workflow"
 

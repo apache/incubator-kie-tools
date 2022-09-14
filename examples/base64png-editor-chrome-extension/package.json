@@ -26,16 +26,17 @@
     "@kie-tools-examples/base64png-editor": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@types/chrome": "^0.0.193",
+    "copy-webpack-plugin": "^8.1.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3",
     "zip-webpack-plugin": "^4.0.1"
-  },
-  "babel": {
-    "presets": [
-      "@babel/env",
-      "@babel/react"
-    ]
   }
 }

@@ -15,9 +15,7 @@
  */
 
 import {
-  BoxedExpressionEditor,
   BoxedExpressionEditorGWTService,
-  BoxedExpressionEditorProps,
   ContextProps,
   DataTypeProps,
   DecisionTableProps,
@@ -29,7 +27,11 @@ import {
   LogicType,
   PMMLParams,
   RelationProps,
-} from "@kie-tools/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BoxedExpressionEditor,
+  BoxedExpressionEditorProps,
+} from "@kie-tools/boxed-expression-component/dist/components";
 import {
   ImportJavaClasses,
   GWTLayerService,

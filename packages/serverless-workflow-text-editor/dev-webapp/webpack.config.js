@@ -62,14 +62,7 @@ module.exports = (env) =>
       }),
     ],
     module: {
-      rules: [
-        {
-          test: /\.js$/,
-          enforce: "pre",
-          use: ["source-map-loader"],
-        },
-        ...patternflyBase.webpackModuleRules,
-      ],
+      rules: [...patternflyBase.webpackModuleRules],
     },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {

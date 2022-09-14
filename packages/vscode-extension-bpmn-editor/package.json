@@ -19,7 +19,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "rimraf dist && webpack && pnpm pack:prod",
     "compile": "webpack",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/vscode_extension_bpmn_editor_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
     "watch": "webpack"
@@ -34,13 +34,20 @@
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*"
   },
   "devDependencies": {
-    "@kie-tools-core/run-script-if": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/build-env": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/stunner-editors": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "^1.66.0",
     "@vscode/test-web": "^0.0.22",
-    "vsce": "^2.6.5"
+    "copy-webpack-plugin": "^8.1.1",
+    "rimraf": "^3.0.2",
+    "vsce": "^2.6.5",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3"
   },
   "engines": {
     "vscode": "^1.66.0"

@@ -135,10 +135,6 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
   }
 
-  public kogitoSwfLanguageService__moveCursorToNode(args: { nodeName: string; documentUri?: string }): void {
-    this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__moveCursorToNode(args);
-  }
-
   public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
     return (
       this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {
@@ -158,7 +154,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
   public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
     return (
       this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
-        defaultValue: { stunnerEnabled: false },
+        defaultValue: { stunnerEnabled: true },
       }
     );
   }

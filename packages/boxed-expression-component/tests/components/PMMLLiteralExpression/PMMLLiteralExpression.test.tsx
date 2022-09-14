@@ -16,7 +16,7 @@
 
 import { render } from "@testing-library/react";
 import { activateSelector, usingTestingBoxedExpressionI18nContext } from "../test-utils";
-import { LogicType } from "@kie-tools/boxed-expression-component";
+import { LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { PMMLLiteralExpression } from "@kie-tools/boxed-expression-component/dist/components/LiteralExpression";
 

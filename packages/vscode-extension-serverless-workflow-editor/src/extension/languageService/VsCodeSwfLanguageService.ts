@@ -28,7 +28,7 @@ import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/di
 import { FsWatchingServiceCatalogRelativeStore } from "../serviceCatalog/fs";
 import { getServiceFileNameFromSwfServiceCatalogServiceId } from "../serviceCatalog/serviceRegistry";
 import { definitelyPosixPath } from "@kie-tools-core/vscode-extension/dist/ConfigurationInterpolation";
-import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/src/api";
+import { getFileLanguageOrThrow } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import { KogitoEditorDocument } from "@kie-tools-core/vscode-extension/dist/VsCodeKieEditorController";
 
 export const SWF_YAML_LANGUAGE_ID = "serverless-workflow-yaml";

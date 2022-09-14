@@ -27,7 +27,7 @@ const (
 	Deploy = "deploy"
 )
 
-func NewQuarkusCommand(dependenciesVersion common.DependenciesVersion) *cobra.Command {
+func NewQuarkusCommand() *cobra.Command {
 	var cmd = &cobra.Command{
 		Use:        "quarkus",
 		Short:      "Manage Kogito Serverless Workflow projects",
@@ -42,7 +42,7 @@ func NewQuarkusCommand(dependenciesVersion common.DependenciesVersion) *cobra.Co
 	}
 
 	cmd.AddCommand(NewBuildCommand())
-	cmd.AddCommand(NewCreateCommand(dependenciesVersion))
+	cmd.AddCommand(NewCreateCommand())
 	cmd.AddCommand(NewDeployCommand())
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)

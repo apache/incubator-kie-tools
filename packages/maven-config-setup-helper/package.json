@@ -1,5 +1,6 @@
 {
-  "name": "@kie-tools-core/maven-config-setup-helper",
+  "private": true,
+  "name": "@kie-tools/maven-config-setup-helper",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -16,8 +17,5 @@
     "index.js"
   ],
   "scripts": {},
-  "dependencies": {},
-  "devDependencies": {
-    "@kie-tools/build-env": "workspace:*"
-  }
+  "devDependencies": {}
 }
