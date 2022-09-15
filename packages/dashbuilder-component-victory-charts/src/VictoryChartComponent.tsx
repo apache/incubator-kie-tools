@@ -42,8 +42,8 @@ export function VictoryChartComponent(props: Props) {
       setVictoryChartProps((props: VictoryChartProps) => {
         return {
           ...props,
-          width: +(params.get("width") || 600),
-          height: +(params.get("height") || 400),
+          width: +(params.get("width") || 0),
+          height: +(params.get("height") || 0),
           type: (params.get("chartType") as ChartType) || "bar",
           themeColor: (params.get("themeColor") as ThemeColorType) || "multi",
           themeVariant: (params.get("themeVariant") as ThemeVariantType) || "light",
@@ -73,6 +73,10 @@ export function VictoryChartComponent(props: Props) {
 
           donutTitle: (params.get("donutTitle") as string) || "",
           donutSubTitle: (params.get("donutSubTitle") as string) || "",
+
+          barWidth: +params.get("barWidth"),
+          barOffset: +params.get("barOffset"),
+          horizontalBars: params.get("horizontalBars") === "true",
 
           dataset: null,
         };

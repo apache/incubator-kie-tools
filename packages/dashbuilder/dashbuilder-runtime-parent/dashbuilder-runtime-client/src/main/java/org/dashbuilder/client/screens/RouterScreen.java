@@ -65,7 +65,7 @@ public class RouterScreen {
 
     @Inject
     DashboardsListScreen dashboardsListScreen;
-    
+
     @Inject
     ContentErrorScreen contentErrorScreen;
 
@@ -109,13 +109,7 @@ public class RouterScreen {
     protected void route(RuntimeServiceResponse response) {
         mode = response.getMode();
         var runtimeModelOp = response.getRuntimeModelOp();
-        if (mode == DashbuilderRuntimeMode.MULTIPLE_IMPORT) {
-            appNavBar.setHide(false);
-            appNavBar.setDashboardListEnabled(true);
-            appNavBar.setup();
-        } else {
-            appNavBar.setHide(true);
-        }
+        appNavBar.setHide(true);
 
         if (runtimeModelOp.isPresent()) {
             var runtimeModel = runtimeModelOp.get();
@@ -123,12 +117,8 @@ public class RouterScreen {
             placeManager.goTo(RuntimePerspective.ID);
             runtimeScreen.loadDashboards(runtimeModel);
             runtimeScreen.goToIndex(layoutTemplates);
-            appNavBar.setHide(mode != DashbuilderRuntimeMode.MULTIPLE_IMPORT && layoutTemplates.size() == 1);
-            appNavBar.setDisplayMainMenu(layoutTemplates.size() > 1);
             return;
         }
-
-        appNavBar.setDisplayMainMenu(false);
 
         if (response.getAvailableModels().isEmpty()) {
             placeManager.goTo(EmptyPerspective.ID);
@@ -168,7 +158,7 @@ public class RouterScreen {
                 GWT.getHostPageBaseURL());
         doRoute();
     }
-    
+
     public void goToContentError(Throwable contentException) {
         contentErrorScreen.showContentError(contentException.getMessage());
         placeManager.goTo(ContentErrorPerspective.ID);

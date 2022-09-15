@@ -32,6 +32,7 @@ import {
 import { validateDataSetForChart } from "./charts/PropsValidation";
 import { UtilizationDonut } from "./charts/UtilizationDonut";
 import { DataSet } from "@kie-tools/dashbuilder-component-api";
+import { ScatterChart } from "./charts/ScatterChart";
 
 export interface VictoryChartProps {
   dataSet?: DataSet;
@@ -69,6 +70,8 @@ export interface VictoryChartProps {
   staticTitle?: boolean;
 
   horizontalBars?: boolean;
+  barWidth?: number;
+  barOffset?: number;
 
   onValidationError?: (message: string) => void;
   onValidationSuccess?: () => void;
@@ -120,6 +123,8 @@ export const VictoryChart = (props: VictoryChartProps) => {
         donutTitle: props.donutTitle,
         donutSubTitle: props.donutSubTitle,
         horizontalBars: props.horizontalBars,
+        barWidth: props.barWidth,
+        barOffset: props.barOffset,
         zoom: props.zoom,
       };
       switch (type) {
@@ -137,6 +142,8 @@ export const VictoryChart = (props: VictoryChartProps) => {
           return <StackChart {...victoryProps} />;
         case "utilization-donut":
           return <UtilizationDonut {...victoryProps} />;
+        case "scatter":
+          return <ScatterChart {...victoryProps} />;
       }
     },
     [props]

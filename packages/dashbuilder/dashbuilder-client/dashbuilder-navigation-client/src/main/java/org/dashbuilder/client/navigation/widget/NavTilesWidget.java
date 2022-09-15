@@ -90,6 +90,13 @@ public class NavTilesWidget extends BaseNavWidget {
         this.show(navGroup, true);
     }
 
+    public void show(List<NavItem> itemList, boolean clearBreadcrumb) {
+        if (clearBreadcrumb) {
+            clearBreadcrumb();
+        }
+        this.show(itemList);
+    }
+
     @Override
     public void show(List<NavItem> itemList) {
         currentPerspectiveNavItem = null;
@@ -99,15 +106,14 @@ public class NavTilesWidget extends BaseNavWidget {
     public void show(NavGroup navGroup, boolean clearBreadcrumb) {
         if (navGroup == null) {
             view.errorNavGroupNotFound();
-        }
-        else {
+        } else {
             NavGroup clone = (NavGroup) navGroup.cloneItem();
             clone.setParent(null);
 
             if (clearBreadcrumb) {
-                navItemStack.clear();
-                updateBreadcrumb();
+                clearBreadcrumb();
             }
+
             currentPerspectiveNavItem = null;
             super.show(clone);
         }
@@ -140,8 +146,7 @@ public class NavTilesWidget extends BaseNavWidget {
 
         if (navItem instanceof NavGroup) {
             this.show((NavGroup) navItem, false);
-        }
-        else {
+        } else {
             NavWorkbenchCtx navCtx = NavWorkbenchCtx.get(navItem);
             String resourceId = navCtx.getResourceId();
             if (resourceId != null && ActivityResourceType.PERSPECTIVE.equals(navCtx.getResourceType())) {
@@ -164,7 +169,8 @@ public class NavTilesWidget extends BaseNavWidget {
         String navRootId = navCtx.getNavGroupId();
         currentPerspectiveNavItem = perspectiveItem;
         LayoutTemplateContext layoutCtx = new LayoutTemplateContext(navRootId);
-        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, layoutCtx, view::showTileContent, this::onInfiniteRecursion);
+        perspectivePluginManager.buildPerspectiveWidget(perspectiveId, layoutCtx, view::showTileContent,
+                this::onInfiniteRecursion);
     }
 
     public void onInfiniteRecursion(LayoutRecursionIssue issue) {
@@ -174,9 +180,9 @@ public class NavTilesWidget extends BaseNavWidget {
 
     protected void updateBreadcrumb() {
         view.clearBreadcrumb();
-        for (int i=0; i<navItemStack.size(); i++) {
+        for (int i = 0; i < navItemStack.size(); i++) {
             final NavItem navItem = navItemStack.get(i);
-            if (i == navItemStack.size()-1) {
+            if (i == navItemStack.size() - 1) {
                 view.addBreadcrumbItem(navItem.getName());
             } else {
                 view.addBreadcrumbItem(navItem.getName(), () -> gotoBreadcrumbItem(navItem));
@@ -206,4 +212,10 @@ public class NavTilesWidget extends BaseNavWidget {
             }
         }
     }
+
+    private void clearBreadcrumb() {
+        navItemStack.clear();
+        updateBreadcrumb();
+    }
+
 }
