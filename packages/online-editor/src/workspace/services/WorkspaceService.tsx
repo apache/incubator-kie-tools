@@ -40,7 +40,7 @@ export class WorkspaceService {
   ) {}
 
   public async create(args: {
-    useInMemoryFs: boolean;
+    useInMemoryFs: boolean; // FIXME: Delete this
     storeFiles: (fs: KieSandboxFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
     broadcastArgs: { broadcast: boolean };
     origin: WorkspaceOrigin;
@@ -52,9 +52,9 @@ export class WorkspaceService {
     });
 
     try {
-      const files = await (args.useInMemoryFs
-        ? this.fsService.withInMemoryFs(workspace.workspaceId, (fs) => args.storeFiles(fs, workspace))
-        : args.storeFiles(await this.fsService.getWorkspaceFs(workspace.workspaceId), workspace));
+      const files = await this.fsService.withReadWriteInMemoryFs(workspace.workspaceId, (fs) =>
+        args.storeFiles(fs, workspace)
+      );
 
       if (args.broadcastArgs.broadcast) {
         const broadcastChannel1 = new BroadcastChannel(WORKSPACES_BROADCAST_CHANNEL);
@@ -219,7 +219,7 @@ export class WorkspaceService {
     wwfd: WorkspaceWorkerFileDescriptor,
     broadcastArgs: { broadcast: boolean }
   ): Promise<void> {
-    await this.storageService.deleteFile(fs, this.toExistingStorageFile(wwfd).path);
+    await this.storageService.deleteFile(fs, this.toExistingStorageFile(fs, wwfd).path);
 
     if (broadcastArgs.broadcast) {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(wwfd.workspaceId);
@@ -245,7 +245,7 @@ export class WorkspaceService {
   }): Promise<WorkspaceWorkerFileDescriptor> {
     const renamedStorageFile = await this.storageService.renameFile(
       args.fs,
-      this.toExistingStorageFile(args.wwfd),
+      this.toExistingStorageFile(args.fs, args.wwfd),
       args.newFileNameWithoutExtension
     );
     const renamedWorkspaceFile = await this.toWorkspaceFile(args.wwfd.workspaceId, renamedStorageFile);
@@ -293,7 +293,7 @@ export class WorkspaceService {
     }
 
     await Promise.all(
-      files.map((f) => this.toExistingStorageFile(f)).map((f) => this.storageService.deleteFile(fs, f.path))
+      files.map((f) => this.toExistingStorageFile(fs, f)).map((f) => this.storageService.deleteFile(fs, f.path))
     );
 
     if (broadcastArgs.broadcast) {
@@ -321,7 +321,7 @@ export class WorkspaceService {
 
     const relativePaths = await this.storageService.moveFiles(
       fs,
-      files.map((f) => this.toExistingStorageFile(f)),
+      files.map((f) => this.toExistingStorageFile(fs, f)),
       newDirPath
     );
 
@@ -352,13 +352,8 @@ export class WorkspaceService {
     });
   }
 
-  private toExistingStorageFile(wwfd: WorkspaceWorkerFileDescriptor): StorageFile {
-    return this.toStorageFile(wwfd, async () =>
-      this.storageService.getFileContent(
-        await this.fsService.getWorkspaceFs(wwfd.workspaceId),
-        this.getAbsolutePath(wwfd)
-      )
-    );
+  private toExistingStorageFile(fs: KieSandboxFs, wwfd: WorkspaceWorkerFileDescriptor): StorageFile {
+    return this.toStorageFile(wwfd, async () => this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)));
   }
 
   public getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {

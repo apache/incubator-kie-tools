@@ -24,23 +24,65 @@ export class WorkspaceFsService {
     private readonly fsCache = new FsCache()
   ) {}
 
-  public async getWorkspaceFs(workspaceId: string) {
-    if (!(await this.workspaceDescriptorService.get(workspaceId))) {
-      throw new Error(`Can't get FS for non-existent workspace '${workspaceId}'`);
-    }
-    return this.fsCache.getOrCreateFs(workspaceId);
-  }
-
-  public async withInMemoryFs<T>(workspaceId: string, callback: (fs: KieSandboxFs) => Promise<T>) {
+  public async withReadWriteInMemoryFs<T>(workspaceId: string, callback: (fs: KieSandboxFs) => Promise<T>) {
     const { fs, flush } = await this.createInMemoryWorkspaceFs(workspaceId);
     const ret = await callback(fs);
     await flush();
     return ret;
   }
 
+  public async withReadonlyInMemoryFs<T>(workspaceId: string, callback: (fs: KieSandboxFs) => Promise<T>) {
+    const { fs } = await this.createInMemoryWorkspaceFs(workspaceId);
+    const readonlyFs = {
+      promises: {
+        writeFile: async (path: any, data: any, options: any) => {
+          throw new Error("Can't mutate read-only FS - " + workspaceId);
+        },
+        unlink: async (path: any) => {
+          throw new Error("Can't mutate read-only FS - " + workspaceId);
+        },
+        mkdir: async (path: any, mode: any) => {
+          throw new Error("Can't mutate read-only FS - " + workspaceId);
+        },
+        rmdir: async (path: any) => {
+          throw new Error("Can't mutate read-only FS - " + workspaceId);
+        },
+        symlink: async (target: any, path: any, type: any) => {
+          throw new Error("Can't mutate read-only FS - " + workspaceId);
+        },
+        chmod: async (path: any, mode: any) => {
+          throw new Error("Can't mutate read-only FS - " + workspaceId);
+        },
+        readFile: async (path: string, options: any) => {
+          return fs.promises.readFile(path, options);
+        },
+        readdir: async (path: any, options: any) => {
+          return fs.promises.readdir(path, options);
+        },
+        stat: async (path: any, options: any) => {
+          return fs.promises.stat(path, options);
+        },
+        lstat: async (path: any, options: any) => {
+          return fs.promises.lstat(path, options);
+        },
+        readlink: async (path: any, options: any) => {
+          return fs.promises.readlink(path, options);
+        },
+      },
+    };
+
+    return await callback(readonlyFs as any);
+  }
+
   private async createInMemoryWorkspaceFs(workspaceId: string) {
     const fs = await this.fsCache.getOrCreateFs(workspaceId);
-    const flush = () => flushFs(fs, workspaceId);
+    const flush = () => {
+      console.time("Flush FS - " + workspaceId);
+      console.log("Flushing FS - " + workspaceId);
+      const ret = flushFs(fs, workspaceId);
+      console.timeEnd("Flush FS - " + workspaceId);
+      return ret;
+    };
     return { fs, flush };
   }
 }

@@ -51,8 +51,9 @@ export class FsCache {
         unlink: async (path: any) => {
           try {
             // console.log("unlink",path)
-            // FIXME: Update inos[dir]
-            return FS.unlink(path);
+            const ret = FS.unlink(path);
+            inos[workspaceId].delete(path);
+            return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
           }
@@ -68,8 +69,9 @@ export class FsCache {
         mkdir: async (path: any, mode: any) => {
           try {
             // console.log("mkdir",path, mode)
-            // FIXME: Update inos[dir]
-            return FS.mkdir(path, mode);
+            const ret = FS.mkdir(path, mode);
+            await newFs.promises.lstat(path, {});
+            return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path, mode);
           }
@@ -77,8 +79,9 @@ export class FsCache {
         rmdir: async (path: any) => {
           try {
             // console.log("rmdir",path)
-            // FIXME: Update inos[dir]
-            return FS.rmdir(path);
+            const ret = FS.rmdir(path);
+            inos[workspaceId].delete(path);
+            return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
           }
@@ -119,8 +122,9 @@ export class FsCache {
         chmod: async (path: any, mode: any) => {
           try {
             // console.log("chmod",path, mode)
-            // FIXME: Update inos[dir]
-            return FS.chmod(path, mode);
+            const ret = FS.chmod(path, mode);
+            await newFs.promises.lstat(path, {});
+            return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path, mode);
           }
@@ -128,14 +132,17 @@ export class FsCache {
       },
     };
 
-    console.log(`Bring FS to memory - ${workspaceId}`);
+    console.time(`Bring FS to memory - ${workspaceId}`);
+    console.log(`Bringing FS to memory - ${workspaceId}`);
     await initFs(workspaceId);
     await restoreFs(newFs as any, workspaceId);
+    console.timeEnd(`Bring FS to memory - ${workspaceId}`);
 
     this.fsCache.set(workspaceId, this.fsCache.get(workspaceId) ?? newFs);
-    return newFs;
+    return this.fsCache.get(workspaceId);
   }
 }
+
 async function syncfs(isRestore: any, workspaceId: string) {
   await new Promise((res) => {
     IDBFS.syncfs({ mountpoint: workspaceId }, isRestore, res);
