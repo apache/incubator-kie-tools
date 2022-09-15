@@ -34,7 +34,7 @@ export type ThemeColorType =
 export type ThemeVariantType = "light" | "dark";
 
 export type LegendPosition = "bottom-left" | "bottom" | "right";
-export type ChartType = "bar" | "area" | "line" | "donut" | "pie" | "stack" | "utilization-donut";
+export type ChartType = "bar" | "area" | "line" | "donut" | "pie" | "stack" | "utilization-donut" | "scatter";
 export type LegendOrientation = "horizontal" | "vertical";
 
 export interface XYChartData {
@@ -90,6 +90,10 @@ export interface ChartProps {
 
   horizontalBars?: boolean;
   fixLabelsOverlap?: boolean;
+
+  // Bar Chart configuration
+  barWidth?: number;
+  barOffset?: number;
 
   zoom?: boolean;
 }

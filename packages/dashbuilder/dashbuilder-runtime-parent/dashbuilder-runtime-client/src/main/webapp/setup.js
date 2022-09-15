@@ -7,9 +7,6 @@ dashbuilder = {
 	dashboards: [ "dashboard1.yaml", "dashboard2.json"],
 
 	// base path to look for dashboards. Default is /
-	path: "/path",
-
-	// Set this as true to always hide the nav bar
-	hideNavBar: true
+	path: "/path"
 */
 };

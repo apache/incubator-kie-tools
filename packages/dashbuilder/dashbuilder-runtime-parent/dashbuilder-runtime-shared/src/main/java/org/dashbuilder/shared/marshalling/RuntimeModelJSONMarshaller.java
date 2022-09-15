@@ -162,6 +162,7 @@ public class RuntimeModelJSONMarshaller {
             throw new IllegalArgumentException("Pages must be a list", e);
         }
 
+        LayoutTemplateJSONMarshaller.get().resetPageCounter();
         for (int i = 0; i < nPages; i++) {
             var ltJson = ltArray.getObject(i);
             if (ltJson != null && ltJson.getType() == JsonType.OBJECT) {

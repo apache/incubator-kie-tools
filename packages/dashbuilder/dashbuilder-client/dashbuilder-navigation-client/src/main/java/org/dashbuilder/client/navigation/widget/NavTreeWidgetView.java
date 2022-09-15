@@ -69,7 +69,7 @@ public class NavTreeWidgetView extends TargetDivNavWidgetView<NavTreeWidget>
 
     @Override
     public void addRuntimePerspective(String id, String name, String description, Command onClicked) {
-        this.addItem("pficon-virtual-machine", id, name, description, onClicked);
+        this.addItem("fa fa-tachometer", id, name, description, onClicked);
     }
 
     @Override

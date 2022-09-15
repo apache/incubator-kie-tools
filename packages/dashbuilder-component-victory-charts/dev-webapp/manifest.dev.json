@@ -2,7 +2,7 @@
   "init": [
     {
       "key": "chartType",
-      "value": "area"
+      "value": "stack"
     },
     {
       "key": "themeColor",
@@ -83,6 +83,10 @@
     {
       "key": "donutSubTitle",
       "value": "Donut Subtitle"
+    },
+    {
+      "key": "barOffset",
+      "value": "10"
     }
   ],
   "dataSet": {

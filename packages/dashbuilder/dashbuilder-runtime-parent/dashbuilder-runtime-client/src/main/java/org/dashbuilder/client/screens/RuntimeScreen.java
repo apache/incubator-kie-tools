@@ -18,6 +18,7 @@ package org.dashbuilder.client.screens;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import org.dashbuilder.client.navbar.AppNavBar;
 import org.dashbuilder.client.navbar.NavBarHelper;
 import org.dashbuilder.client.resources.i18n.AppConstants;
+import org.dashbuilder.navigation.NavTree;
 import org.dashbuilder.shared.model.RuntimeModel;
 import org.uberfire.client.annotations.WorkbenchPartTitle;
 import org.uberfire.client.annotations.WorkbenchPartView;
@@ -33,7 +35,6 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.client.mvp.UberElemental;
 import org.uberfire.client.workbench.events.PerspectiveChange;
 import org.uberfire.ext.layout.editor.api.editor.LayoutTemplate;
-import org.uberfire.workbench.model.menu.Menus;
 
 /**
  * The Main application screen that contains dashboards from a RuntimeModel. 
@@ -51,7 +52,7 @@ public class RuntimeScreen {
 
     public interface View extends UberElemental<RuntimeScreen> {
 
-        void addMenus(Menus menus);
+        void loadNavTree(NavTree navTree, boolean keepNavigation);
 
     }
 
@@ -73,6 +74,13 @@ public class RuntimeScreen {
 
     boolean keepHistory;
 
+    boolean newNavigation;
+
+    @PostConstruct
+    void setup() {
+        view.init(this);
+    }
+
     @WorkbenchPartTitle
     public String getScreenTitle() {
         return i18n.runtimeScreenTitle();
@@ -84,58 +92,47 @@ public class RuntimeScreen {
     }
 
     public void loadDashboards(RuntimeModel runtimeModel) {
+        newNavigation = this.currentRuntimeModel != null &&
+                        !this.currentRuntimeModel.getNavTree().equals(runtimeModel.getNavTree());
         this.currentRuntimeModel = runtimeModel;
-        refreshMenus();
+        view.loadNavTree(runtimeModel.getNavTree(), !newNavigation);
     }
 
     public void goToIndex(List<LayoutTemplate> templates) {
         if (keepHistory &&
             lastVisited != null &&
+            !newNavigation &&
             templates.stream().anyMatch(t -> t.getName().equals(lastVisited))) {
             keepHistory = false;
             placeManager.goTo(lastVisited);
-        }
-
-        else if (templates.size() == 1) {
-            placeManager.goTo(templates.get(0).getName());
-        } else {
+        } else if (templates.stream().anyMatch(lt -> lt.getName().equals(INDEX_PAGE_NAME))) {
             templates.stream()
-                     .map(LayoutTemplate::getName)
-                     .filter(INDEX_PAGE_NAME::equals)
-                     .findFirst()
-                     .ifPresent(placeManager::goTo);
+                    .map(LayoutTemplate::getName)
+                    .filter(INDEX_PAGE_NAME::equals)
+                    .findFirst()
+                    .ifPresent(placeManager::goTo);
+        } else if (templates.size() == 1) {
+            placeManager.goTo(templates.get(0).getName());
         }
     }
 
     public void setKeepHistory(boolean keepHistory) {
         this.keepHistory = keepHistory;
     }
-    
+
     public void clearCurrentSelection() {
         currentRuntimeModel = null;
     }
 
     void onPerspectiveChange(@Observes PerspectiveChange perspectiveChange) {
         if (currentRuntimeModel != null) {
-            String perspective = perspectiveChange.getIdentifier();
-            boolean isLayoutTemplate = currentRuntimeModel.getLayoutTemplates()
-                                                                   .stream()
-                                                                   .anyMatch(lt -> lt.getName().equals(perspective));
-            appNavBar.setExternalMenuEnabled(isLayoutTemplate);
-            refreshMenus();
+            var perspective = perspectiveChange.getIdentifier();
+            var isLayoutTemplate = currentRuntimeModel.getLayoutTemplates()
+                    .stream()
+                    .anyMatch(lt -> lt.getName().equals(perspective));
             if (isLayoutTemplate) {
                 lastVisited = perspective;
             }
-        } else {
-            appNavBar.setExternalMenuEnabled(false);
-            appNavBar.setupMenus();
         }
     }
-
-    private void refreshMenus() {
-        var navTree = currentRuntimeModel.getNavTree();
-        var menus = menusHelper.buildMenusFromNavTree(navTree).build();
-        view.addMenus(menus);
-    }
-
 }
