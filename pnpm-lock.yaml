@@ -1655,6 +1655,101 @@ importers:
       copyfiles: 2.4.1
       rimraf: 3.0.2
 
+  packages/dashbuilder-viewer:
+    specifiers:
+      "@babel/core": ^7.16.0
+      "@babel/preset-env": ^7.16.0
+      "@babel/preset-react": ^7.16.0
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/operating-system": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
+      "@patternfly/react-icons": ^4.11.17
+      "@testing-library/jest-dom": ^5.16.1
+      "@types/jest": ^26.0.23
+      "@types/jest-when": ^2.7.4
+      "@types/react": ^17.0.6
+      "@types/testing-library__jest-dom": ^5.9.1
+      copy-webpack-plugin: ^8.1.1
+      copyfiles: ^2.4.1
+      cpr: ^3.0.1
+      cypress: ^10.7.0
+      cypress-file-upload: ^5.0.8
+      cypress-iframe: ^1.0.1
+      cypress-log-to-output: ^1.1.2
+      jest: ^26.6.3
+      jest-junit: ^14.0.0
+      jest-when: ^3.5.0
+      monaco-editor: ^0.33.0
+      monaco-editor-webpack-plugin: ^7.0.1
+      monaco-yaml: ^4.0.0
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      rimraf: ^3.0.2
+      start-server-and-test: ^1.12.1
+      ts-jest: ^26.5.6
+      typescript: ^4.4.2
+      vscode-json-languageservice: ^4.2.1
+      webpack: ^5.36.2
+      webpack-cli: ^4.7.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.7.3
+    dependencies:
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/operating-system": link:../operating-system
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
+      "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
+      monaco-editor: 0.33.0
+      monaco-yaml: 4.0.0_monaco-editor@0.33.0
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@babel/core": 7.16.12
+      "@babel/preset-env": 7.16.11_@babel+core@7.16.12
+      "@babel/preset-react": 7.16.0_@babel+core@7.16.12
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@testing-library/jest-dom": 5.16.1
+      "@types/jest": 26.0.23
+      "@types/jest-when": 2.7.4
+      "@types/react": 17.0.21
+      "@types/testing-library__jest-dom": 5.9.5
+      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copyfiles: 2.4.1
+      cpr: 3.0.1
+      cypress: 10.7.0
+      cypress-file-upload: 5.0.8_cypress@10.7.0
+      cypress-iframe: 1.0.1
+      cypress-log-to-output: 1.1.2
+      jest: 26.6.3
+      jest-junit: 14.0.0
+      jest-when: 3.5.0_jest@26.6.3
+      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
+      rimraf: 3.0.2
+      start-server-and-test: 1.12.1
+      ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
+      typescript: 4.5.4
+      vscode-json-languageservice: 4.2.1
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack-merge: 5.8.0
+
   packages/desktop:
     specifiers:
       "@babel/core": ^7.16.0

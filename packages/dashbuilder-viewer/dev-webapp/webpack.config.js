@@ -27,7 +27,7 @@ module.exports = (env) =>
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
-      "dashbuilder-editor-envelope": path.resolve(__dirname, "./envelope/DashbuilderEditorEnvelopeApp.ts"),
+      "dashbuilder-viewer-envelope": path.resolve(__dirname, "./envelope/DashbuilderViewerEnvelopeApp.ts"),
     },
     output: {
       path: path.resolve("../dist-dev"),
@@ -43,8 +43,8 @@ module.exports = (env) =>
             to: "./dashbuilder-client",
           },
           {
-            from: path.resolve(__dirname, "./static/envelope/dashbuilder-editor-envelope.html"),
-            to: "./dashbuilder-editor-envelope.html",
+            from: path.resolve(__dirname, "./static/envelope/dashbuilder-viewer-envelope.html"),
+            to: "./dashbuilder-viewer-envelope.html",
           },
         ],
       }),

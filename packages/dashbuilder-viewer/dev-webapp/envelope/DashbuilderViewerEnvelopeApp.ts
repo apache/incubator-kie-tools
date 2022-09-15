@@ -15,10 +15,10 @@
  */
 
 import { init } from "@kie-tools-core/editor/dist/envelope";
-import { DashbuilderEditorViewerFactory } from "../../src";
+import { DashbuilderViewerFactory } from "../../src";
 
 init({
   container: document.getElementById("envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  editorFactory: new DashbuilderEditorViewerFactory(),
+  editorFactory: new DashbuilderViewerFactory(),
 });

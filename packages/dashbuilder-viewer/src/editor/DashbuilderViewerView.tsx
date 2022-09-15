@@ -23,17 +23,17 @@ import {
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { DashbuilderEditorViewer } from "./DashbuilderEditorViewer";
-import { DashbuilderEditorViewerChannelApi } from "./DashbuilderEditorViewerChannelApi";
+import { DashbuilderViewer } from "./DashbuilderViewer";
+import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
 
-export class DashbuilderEditorViewerView implements Editor {
+export class DashbuilderViewerView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
   public af_isReact = true;
   public af_componentId: "dashbuilder-editor";
   public af_componentTitle: "Dashbuilder Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<DashbuilderEditorViewerChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
@@ -57,7 +57,7 @@ export class DashbuilderEditorViewerView implements Editor {
 
   public af_componentRoot() {
     return (
-      <DashbuilderEditorViewer
+      <DashbuilderViewer
         ref={this.editorRef}
         channelType={this.initArgs.channel}
         onReady={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}

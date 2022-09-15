@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { DashbuilderEditorViewerView } from "./DashbuilderEditorViewerView";
+import { DashbuilderViewerView } from "./DashbuilderViewerView";
 import {
   Editor,
   EditorFactory,
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { DashbuilderEditorViewerChannelApi } from "./DashbuilderEditorViewerChannelApi";
+import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
 
-export class DashbuilderEditorViewerFactory implements EditorFactory<Editor, DashbuilderEditorViewerChannelApi> {
+export class DashbuilderViewerFactory implements EditorFactory<Editor, DashbuilderViewerChannelApi> {
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<DashbuilderEditorViewerChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
     initArgs: EditorInitArgs
   ) {
-    return new DashbuilderEditorViewerView(ctx, initArgs);
+    return new DashbuilderViewerView(ctx, initArgs);
   }
 }

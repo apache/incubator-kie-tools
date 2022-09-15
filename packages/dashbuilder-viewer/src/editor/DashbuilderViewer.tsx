@@ -60,10 +60,10 @@ export type DashbuilderEditorViewRef = {
   setContent(path: string, content: string): Promise<void>;
 };
 
-const RefForwardingDashbuilderEditorViewer: React.ForwardRefRenderFunction<
-  DashbuilderEditorViewRef | undefined,
-  Props
-> = (props, forwardedRef) => {
+const RefForwardingDashbuilderViewer: React.ForwardRefRenderFunction<DashbuilderEditorViewRef | undefined, Props> = (
+  props,
+  forwardedRef
+) => {
   const [renderContent, setRenderContent] = useState("");
 
   useImperativeHandle(
@@ -113,4 +113,4 @@ const RefForwardingDashbuilderEditorViewer: React.ForwardRefRenderFunction<
   );
 };
 
-export const DashbuilderEditorViewer = React.forwardRef(RefForwardingDashbuilderEditorViewer);
+export const DashbuilderViewer = React.forwardRef(RefForwardingDashbuilderViewer);
