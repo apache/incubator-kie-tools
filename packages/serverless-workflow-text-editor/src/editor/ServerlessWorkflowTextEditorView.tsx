@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-import {
-  Editor,
-  EditorApi,
-  EditorInitArgs,
-  EditorTheme,
-  KogitoEditorEnvelopeContextType,
-} from "@kie-tools-core/editor/dist/api";
+import { Editor, EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { ServerlessWorkflowTextEditorChannelApi } from "../api";
 import { ServerlessWorkflowTextEditor } from "./ServerlessWorkflowTextEditor";
 
-export class ServerlessWorkflowTextEditorView implements Editor {
-  private readonly editorRef: React.RefObject<EditorApi>;
+export interface ServerlessWorkflowTextEditorApi extends Editor {
+  moveCursorToNode(nodeName: string): void;
+}
+
+export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextEditorApi {
+  private readonly editorRef: React.RefObject<ServerlessWorkflowTextEditorApi>;
   public af_isReact = true;
   public af_componentId: "serverless-workflow-text-editor";
   public af_componentTitle: "Serverless Workflow Text Editor";
@@ -37,7 +35,7 @@ export class ServerlessWorkflowTextEditorView implements Editor {
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowTextEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
-    this.editorRef = React.createRef<EditorApi>();
+    this.editorRef = React.createRef<ServerlessWorkflowTextEditorApi>();
   }
 
   public async getElementPosition() {
@@ -85,5 +83,9 @@ export class ServerlessWorkflowTextEditorView implements Editor {
 
   public async setTheme(theme: EditorTheme) {
     return this.editorRef.current!.setTheme(theme);
+  }
+
+  public moveCursorToNode(nodeName: string): void {
+    this.editorRef.current?.moveCursorToNode(nodeName);
   }
 }

@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
-import { ServerlessWorkflowTextEditorFactory } from "@kie-tools/serverless-workflow-text-editor/dist/editor";
+import { initCustom } from "@kie-tools-core/editor/dist/envelope";
+import {
+  ServerlessWorkflowTextEditorChannelApi,
+  ServerlessWorkflowTextEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-text-editor/dist/api";
+import {
+  ServerlessWorkflowTextEditorApi,
+  ServerlessWorkflowTextEditorFactory,
+} from "@kie-tools/serverless-workflow-text-editor/dist/editor";
+import { ServerlessWorkflowTextEditorEnvelopeApiImpl } from "@kie-tools/serverless-workflow-text-editor/dist/envelope/ServerlessWorkflowTextEditorEnvelopeApiImpl";
 
-init({
+initCustom<
+  ServerlessWorkflowTextEditorApi,
+  ServerlessWorkflowTextEditorEnvelopeApi,
+  ServerlessWorkflowTextEditorChannelApi
+>({
   container: document.getElementById("swf-text-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
-  editorFactory: new ServerlessWorkflowTextEditorFactory(),
+  apiImplFactory: {
+    create: (args) => new ServerlessWorkflowTextEditorEnvelopeApiImpl(args, new ServerlessWorkflowTextEditorFactory()),
+  },
 });

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
+import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
+import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import * as vscode from "vscode";
+import { COMMAND_IDS } from "./commandIds";
 import {
   ShouldOpenDiagramEditorAutomaticallyConfiguration,
   SwfVsCodeExtensionConfiguration,
   WEBVIEW_EDITOR_VIEW_TYPE,
 } from "./configuration";
-import { COMMAND_IDS } from "./commandIds";
-import { VsCodeKieEditorStore } from "@kie-tools-core/vscode-extension";
-import { FileLanguage, getFileLanguage, SwfOffsetsApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfJsonOffsets, SwfYamlOffsets } from "@kie-tools/serverless-workflow-language-service/dist/editor";
-
-let swfOffsetsApi: SwfOffsetsApi | undefined = undefined;
 
 function isSwf(textDocument: vscode.TextDocument) {
   return getFileLanguage(textDocument.fileName) !== null;
@@ -66,7 +63,7 @@ async function maybeOpenAsDiagramIfSwf(args: {
   await openAsDiagramIfSwf(args);
 }
 
-export async function setupDiagramEditorControls(args: {
+export async function setupDiagramEditorCompanionTab(args: {
   context: vscode.ExtensionContext;
   configuration: SwfVsCodeExtensionConfiguration;
   kieEditorsStore: VsCodeKieEditorStore;
@@ -124,58 +121,6 @@ export async function setupDiagramEditorControls(args: {
         background: false,
       });
     })
-  );
-
-  args.context.subscriptions.push(
-    vscode.commands.registerCommand(
-      COMMAND_IDS.moveCursorToNode,
-      async ({ nodeName, documentUri }: { nodeName: string; documentUri: string }) => {
-        const textEditor = vscode.window.visibleTextEditors.filter(
-          (textEditor: vscode.TextEditor) => textEditor.document.uri.path === documentUri
-        )[0];
-
-        if (!textEditor) {
-          console.debug("TextEditor not found");
-          return;
-        }
-
-        const resourceUri = textEditor.document.uri;
-
-        const fileLanguage = getFileLanguage(textEditor.document.fileName);
-        if (!fileLanguage) {
-          return;
-        }
-
-        const editorContent = textEditor.document.getText();
-
-        if (!swfOffsetsApi || documentUri !== swfOffsetsApi.documentUri) {
-          swfOffsetsApi =
-            fileLanguage === FileLanguage.JSON ? new SwfJsonOffsets(documentUri) : new SwfYamlOffsets(documentUri);
-        }
-
-        swfOffsetsApi.parseContent(editorContent);
-
-        const targetOffset = swfOffsetsApi.getStateNameOffset(nodeName);
-        if (!targetOffset) {
-          return;
-        }
-
-        const targetPosition = textEditor.document.positionAt(targetOffset);
-        if (targetPosition === null) {
-          return;
-        }
-
-        await vscode.commands.executeCommand("vscode.open", resourceUri, {
-          viewColumn: textEditor.viewColumn,
-          preserveFocus: false,
-        } as vscode.TextDocumentShowOptions);
-
-        const targetRange = new vscode.Range(targetPosition, targetPosition);
-
-        textEditor.revealRange(targetRange, vscode.TextEditorRevealType.InCenter);
-        textEditor.selections = [new vscode.Selection(targetPosition, targetPosition)];
-      }
-    )
   );
 
   if (vscode.window.activeTextEditor) {

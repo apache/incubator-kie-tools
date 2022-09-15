@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,31 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
-import { VsCodeServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope/vscode";
+import { initCustom } from "@kie-tools-core/editor/dist/envelope";
+import { VsCodeServerlessWorkflowDiagramEditorFactory } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/vscode/envelope";
+import {
+  ServerlessWorkflowDiagramEditor,
+  ServerlessWorkflowDiagramEditorEnvelopeApiImpl,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
 
 declare const acquireVsCodeApi: any;
 
-init({
+initCustom<
+  ServerlessWorkflowDiagramEditor,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+  ServerlessWorkflowDiagramEditorChannelApi
+>({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true }),
+  apiImplFactory: {
+    create: (args) =>
+      new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(
+        args,
+        new VsCodeServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true })
+      ),
+  },
 });

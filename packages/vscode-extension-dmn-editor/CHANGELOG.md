@@ -1,3 +1,7 @@
+# 0.23.0 (alpha)
+
+- [KOGITO-7797](https://issues.redhat.com/browse/KOGITO-7797) - [DMN Designer] Improving \"Import Java Classes\" button's tooltip message
+
 # 0.22.0 (alpha)
 
 - _(No new features)_

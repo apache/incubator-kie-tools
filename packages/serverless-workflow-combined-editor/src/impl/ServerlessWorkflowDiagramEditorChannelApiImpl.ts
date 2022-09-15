@@ -20,31 +20,23 @@ import {
   KogitoEditorChannelApi,
   StateControlCommand,
 } from "@kie-tools-core/editor/dist/api";
-import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+import { MessageBusClientApi, SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 import { Tutorial, UserInteraction } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import {
-  WorkspaceEdit,
   ResourceContent,
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
+  WorkspaceEdit,
 } from "@kie-tools-core/workspace/dist/api";
-import { SwfLanguageServiceChannelApi } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import {
-  SwfServiceCatalogChannelApi,
-  SwfServiceCatalogService,
-  SwfServiceRegistriesSettings,
-} from "@kie-tools/serverless-workflow-service-catalog/dist/api";
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
-import { ServerlessWorkflowCombinedEditorChannelApi, SwfFeatureToggle, SwfFeatureToggleChannelApi } from "../api";
+import { ServerlessWorkflowDiagramEditorChannelApi } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import { ServerlessWorkflowTextEditorEnvelopeApi } from "@kie-tools/serverless-workflow-text-editor/dist/api";
 
-export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombinedEditorChannelApi {
+export class ServerlessWorkflowDiagramEditorChannelApiImpl implements ServerlessWorkflowDiagramEditorChannelApi {
   constructor(
     private readonly defaultApiImpl: KogitoEditorChannelApi,
-    private readonly swfFeatureToggleApiImpl?: SwfFeatureToggleChannelApi,
-    private readonly swfServiceCatalogApiImpl?: SwfServiceCatalogChannelApi,
-    private readonly swfLanguageServiceChannelApiImpl?: SwfLanguageServiceChannelApi
+    private readonly textEditorEnvelopeApi?: MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>
   ) {}
 
   public kogitoEditor_contentRequest(): Promise<EditorContent> {
@@ -107,55 +99,7 @@ export class SwfCombinedEditorChannelApiImpl implements ServerlessWorkflowCombin
     return this.defaultApiImpl.kogitoEditor_theme();
   }
 
-  public kogitoSwfServiceCatalog_services(): SharedValueProvider<SwfServiceCatalogService[]> {
-    return this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_services() ?? { defaultValue: [] };
-  }
-
-  public kogitoSwfServiceCatalog_refresh(): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_refresh();
-  }
-
-  public kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args: {
-    containingService: SwfServiceCatalogService;
-    documentUri: string;
-  }): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_importFunctionFromCompletionItem(args);
-  }
-
-  public async kogitoSwfLanguageService__getCompletionItems(args: {
-    content: string;
-    uri: string;
-    cursorPosition: Position;
-    cursorWordRange: Range;
-  }): Promise<CompletionItem[]> {
-    return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCompletionItems(args) ?? [];
-  }
-
-  public async kogitoSwfLanguageService__getCodeLenses(args: { uri: string; content: string }): Promise<CodeLens[]> {
-    return this.swfLanguageServiceChannelApiImpl?.kogitoSwfLanguageService__getCodeLenses(args) ?? [];
-  }
-
-  public kogitoSwfServiceCatalog_serviceRegistriesSettings(): SharedValueProvider<SwfServiceRegistriesSettings> {
-    return (
-      this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_serviceRegistriesSettings() ?? {
-        defaultValue: { registries: [] },
-      }
-    );
-  }
-
-  public kogitoSwfServiceCatalog_logInServiceRegistries(): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_logInServiceRegistries();
-  }
-
-  public kogitoSwfServiceCatalog_setupServiceRegistriesSettings(): void {
-    this.swfServiceCatalogApiImpl?.kogitoSwfServiceCatalog_setupServiceRegistriesSettings();
-  }
-
-  public kogitoSwfFeatureToggle_get(): SharedValueProvider<SwfFeatureToggle> {
-    return (
-      this.swfFeatureToggleApiImpl?.kogitoSwfFeatureToggle_get() ?? {
-        defaultValue: { stunnerEnabled: true },
-      }
-    );
+  public kogitoSwfDiagramEditor__onNodeSelected(args: { nodeName: string; documentUri?: string }): void {
+    return this.textEditorEnvelopeApi?.notifications.kogitoSwfTextEditor__moveCursorToNode.send(args);
   }
 }

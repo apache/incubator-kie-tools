@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@isomorphic-git/idb-keyval": "^3.3.2",
-    "dexie": "^3.0.3",
+    "dexie": "^3.2.2",
     "isomorphic-textencoder": "^1.0.1",
     "just-debounce-it": "^3.0.1",
     "just-once": "^2.0.1"
