@@ -26,6 +26,8 @@ Following commands assume the use of Widfly:
 
 ## Running in SDM
 
+Change to the `kie-tools/packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app` root folder
+
 Start GWT super dev mode by: `mvn gwt:run`
 
 ## Running in IntelliJ
