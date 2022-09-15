@@ -85,7 +85,9 @@ export class JsonCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
-    return document.positionAt(node.offset + 1);
+    const position = document.positionAt(node.offset);
+    const nextPosition = document.positionAt(node.offset + 1);
+    return node.type === "boolean" ? position : nextPosition;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {

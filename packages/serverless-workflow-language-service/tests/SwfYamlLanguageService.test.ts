@@ -57,7 +57,7 @@ describe("YamlCodeCompletionStrategy", () => {
             ls,
             codeCompletionStrategy,
           })
-        ).toStrictEqual({ line: 1, character: 17 });
+        ).toStrictEqual({ line: 1, character: 16 });
       });
 
       test("single quotes", () => {
@@ -65,6 +65,19 @@ describe("YamlCodeCompletionStrategy", () => {
           getStartNodeValuePositionTester({
             content: `---
           name: 'Greeting workflow'`,
+            path: ["name"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 17 });
+      });
+
+      test("double quotes", () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          name: "Greeting workflow"`,
             path: ["name"],
             documentUri,
             ls,
@@ -84,11 +97,11 @@ describe("YamlCodeCompletionStrategy", () => {
           ls,
           codeCompletionStrategy,
         })
-      ).toStrictEqual({ line: 1, character: 16 });
+      ).toStrictEqual({ line: 1, character: 15 });
     });
 
     describe("arrays", () => {
-      test.skip("single line declaration using JSON format", async () => {
+      test("single line declaration using JSON format", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
@@ -101,7 +114,7 @@ describe("YamlCodeCompletionStrategy", () => {
         ).toStrictEqual({ line: 1, character: 22 });
       });
 
-      test.skip("single line declaration using JSON format / with one element", async () => {
+      test("single line declaration using JSON format / with one element", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
@@ -120,7 +133,7 @@ describe("YamlCodeCompletionStrategy", () => {
         ).toStrictEqual({ line: 1, character: 22 });
       });
 
-      test("two lines declaration", async () => {
+      test("YAML format declaration", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
@@ -134,7 +147,7 @@ describe("YamlCodeCompletionStrategy", () => {
         ).toStrictEqual({ line: 2, character: 10 });
       });
 
-      test("single line declaration / with one function / with content before and after", async () => {
+      test("YAML format declaration / with one function / with content before and after", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
@@ -157,7 +170,7 @@ describe("YamlCodeCompletionStrategy", () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
-          data: {🎯}`,
+          data: {}`,
             path: ["data"],
             documentUri,
             ls,
@@ -181,7 +194,7 @@ describe("YamlCodeCompletionStrategy", () => {
         ).toStrictEqual({ line: 1, character: 19 });
       });
 
-      test("two lines declaration", async () => {
+      test("YAML format declaration", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
@@ -192,10 +205,10 @@ describe("YamlCodeCompletionStrategy", () => {
             documentUri,
             ls,
           })
-        ).toStrictEqual({ line: 2, character: 13 });
+        ).toStrictEqual({ line: 2, character: 12 });
       });
 
-      test("single line declaration / with one function / with content before and after", async () => {
+      test("YAML format declaration / with one attribute / with content before and after", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `---
@@ -208,7 +221,7 @@ describe("YamlCodeCompletionStrategy", () => {
             documentUri,
             ls,
           })
-        ).toStrictEqual({ line: 3, character: 13 });
+        ).toStrictEqual({ line: 3, character: 12 });
       });
     });
   });
@@ -688,7 +701,7 @@ functions: [] `);
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -719,7 +732,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -752,7 +765,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -788,7 +801,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -824,7 +837,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });

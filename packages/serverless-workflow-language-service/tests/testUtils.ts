@@ -15,11 +15,11 @@
  */
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
 import {
+  findNodeAtLocation,
+  JsonCodeCompletionStrategy,
   SwfJsonLanguageService,
   SwfJsonPath,
   SwfYamlLanguageService,
-  findNodeAtLocation,
-  JsonCodeCompletionStrategy,
   YamlCodeCompletionStrategy,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";

@@ -195,9 +195,13 @@ export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   }
 
   public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
-    const offSetAddition = ["string", "object"].includes(node.type) ? 1 : 0;
+    const position = document.positionAt(node.offset);
+    const nextPosition = document.positionAt(node.offset + 1);
+    const charAtPosition = document.getText(Range.create(position, nextPosition));
+    const isStartingCharJsonFormat = /"|'|\[|{/.test(charAtPosition);
 
-    return document.positionAt(node.offset + offSetAddition);
+    // if node is in JSON format return a position the same way SwfJsonLanguageService does.
+    return isStartingCharJsonFormat ? nextPosition : position;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {

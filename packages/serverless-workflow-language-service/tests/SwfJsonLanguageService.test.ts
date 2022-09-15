@@ -69,7 +69,7 @@ describe("JsonCodeCompletionStrategy", () => {
           documentUri,
           ls,
         })
-      ).toStrictEqual({ line: 1, character: 18 });
+      ).toStrictEqual({ line: 1, character: 17 });
     });
 
     describe("arrays", () => {
@@ -156,7 +156,7 @@ describe("JsonCodeCompletionStrategy", () => {
         ).toStrictEqual({ line: 2, character: 13 });
       });
 
-      test("single line declaration / with one function / with content before and after", async () => {
+      test("single line declaration / with one attribute / with content before and after", async () => {
         expect(
           getStartNodeValuePositionTester({
             content: `{
