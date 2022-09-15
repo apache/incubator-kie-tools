@@ -148,6 +148,15 @@ export class FsCache {
     await restoreFs(newFs, fsMountPoint);
     console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
 
+    // Keep only one FS in memory at the time
+    if (this.fsCache.size > 0) {
+      const previouslyCachedFss = [...this.fsCache.keys()];
+      this.fsCache.clear();
+      for (const mountPoint of previouslyCachedFss) {
+        await deinitFs(mountPoint);
+      }
+    }
+
     this.fsCache.set(fsMountPoint, this.fsCache.get(fsMountPoint) ?? newFs);
     return this.fsCache.get(fsMountPoint)!;
   }
@@ -169,7 +178,8 @@ export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) 
 }
 
 export async function initFs(fsMountPoint: string) {
-  console.log(`Init FS - ${fsMountPoint}`);
+  console.time(`Init FS - ${fsMountPoint}`);
+  console.log(`Initiating FS - ${fsMountPoint}`);
   try {
     FS.mkdir(fsMountPoint);
     FS.mount(IDBFS, {}, fsMountPoint);
@@ -179,15 +189,18 @@ export async function initFs(fsMountPoint: string) {
     try {
       throwWasiErrorToNodeError(e, fsMountPoint);
     } catch (e) {
-      console.error(`Error initing FS - ${fsMountPoint}`);
+      console.error(`Error initiating FS - ${fsMountPoint}`);
       console.error(e);
     }
+  } finally {
+    console.timeEnd(`Init FS - ${fsMountPoint}`);
   }
   inos[fsMountPoint] = new Map();
 }
 
 export async function deinitFs(fsMountPoint: string) {
-  console.log(`Deinit FS - ${fsMountPoint}`);
+  console.log(`Deinitiating FS - ${fsMountPoint}`);
+  console.time(`Deinit FS - ${fsMountPoint}`);
   delete inos[fsMountPoint];
   try {
     FS.unmount(inosDir(fsMountPoint));
@@ -198,9 +211,11 @@ export async function deinitFs(fsMountPoint: string) {
     try {
       throwWasiErrorToNodeError(e, fsMountPoint);
     } catch (e) {
-      console.error(`Error initiating FS - ${fsMountPoint}`);
+      console.error(`Error deinitiating FS - ${fsMountPoint}`);
       console.error(e);
     }
+  } finally {
+    console.timeEnd(`Deinit FS - ${fsMountPoint}`);
   }
 }
 
