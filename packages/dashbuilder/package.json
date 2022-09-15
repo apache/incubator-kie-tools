@@ -16,8 +16,12 @@
     "**/dist/*"
   ],
   "scripts": {
-    "build:dev": "run-script-os",
+    "build:dev": "run-script-os && pnpm build:dev:runtime",
     "build:dev:linux:darwin": "mvn clean install -DskipTests -Dgwt.compiler.skip=true",
+    "build:dev:runtime": "run-script-os",
+    "build:dev:runtime:darwin": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Psources -DskipTests",
+    "build:dev:runtime:linux": "cd ./dashbuilder-runtime-parent/dashbuilder-runtime-client/ && mvn clean install -Psources -DskipTests",
+    "build:dev:runtime:win32": "echo \"Build not supported on Windows\"",
     "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests `-Dgwt.compiler.skip=true\"",
     "build:prod": "pnpm copy:components && pnpm lint && run-script-os && pnpm build:prod:authoring && pnpm build:prod:runtime && pnpm dist && pnpm delete:components",
     "build:prod:authoring": "run-script-os",
