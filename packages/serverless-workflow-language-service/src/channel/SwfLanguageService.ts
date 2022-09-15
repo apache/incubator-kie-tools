@@ -376,7 +376,7 @@ export class SwfLanguageService {
     }) => ({ title: string } & SwfLanguageServiceCommandExecution<any>)[];
     positionLensAt: "begin" | "end";
   }): CodeLens[] {
-    const nodes = findNodesAtLocation(args.rootNode, args.jsonPath);
+    const nodes = findNodesAtLocation({ root: args.rootNode, path: args.jsonPath });
     const codeLenses = nodes.flatMap((node) => {
       // Only position at the end if the type is object or array and has at least one child.
       const position =
@@ -698,7 +698,7 @@ function toCompletionItemLabelPrefix(
 }
 
 export function findNodeAtLocation(root: SwfLsNode, path: SwfJsonPath): SwfLsNode | undefined {
-  return findNodesAtLocation(root, path)[0];
+  return findNodesAtLocation({ root, path })[0];
 }
 
 export function findNodeAtOffset(root: SwfLsNode, offset: number, includeRightBound?: boolean): SwfLsNode | undefined {

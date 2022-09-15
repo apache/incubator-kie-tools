@@ -35,7 +35,7 @@ export function matchNodeWithLocation(
     return false;
   }
 
-  const nodesAtLocation = findNodesAtLocation(root, path, true);
+  const nodesAtLocation = findNodesAtLocation({ root, path, includeUncompleteProps: true });
   const nodeToMatch = nodeUpUntilType(node, ["object", "property"]);
   const starSelector = path[path.length - 1] === "*";
 
