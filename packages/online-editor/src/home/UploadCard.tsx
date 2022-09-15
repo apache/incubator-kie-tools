@@ -109,7 +109,6 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
 
       try {
         const { workspace, suggestedFirstFile } = await workspaces.createWorkspaceFromLocal({
-          useInMemoryFs: true,
           localFiles,
           preferredName,
         });

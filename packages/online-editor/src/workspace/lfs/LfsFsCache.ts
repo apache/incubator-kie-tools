@@ -18,21 +18,22 @@ import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import DefaultBackend from "@kie-tools/kie-sandbox-fs/dist/DefaultBackend";
 import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 
-export class DmnRunnerInputsFsCache {
+export class LfsFsCache {
   private fsCache = new Map<string, KieSandboxFs>();
-  public getOrCreateFs(workspaceId: string) {
-    const fs = this.fsCache.get(workspaceId);
+
+  public getOrCreateFs(fsMountPoint: string) {
+    const fs = this.fsCache.get(fsMountPoint);
     if (fs) {
       return fs;
     }
 
-    const newFs = new KieSandboxFs(workspaceId, {
+    const newFs = new KieSandboxFs(fsMountPoint, {
       backend: new DefaultBackend({
         idbBackendDelegate: (dbName, storeName) => new DexieBackend(dbName, storeName),
       }) as any,
     });
 
-    this.fsCache.set(workspaceId, newFs);
+    this.fsCache.set(fsMountPoint, newFs);
     return newFs;
   }
 }

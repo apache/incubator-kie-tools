@@ -48,7 +48,7 @@ module.exports = async (env, argv) => {
   return [
     merge(common(env), {
       entry: {
-        "workspace/worker/worker": "./src/workspace/worker/worker.ts",
+        "workspace/worker/sharedWorker": "./src/workspace/worker/sharedWorker.ts",
       },
       target: "webworker",
       plugins: [

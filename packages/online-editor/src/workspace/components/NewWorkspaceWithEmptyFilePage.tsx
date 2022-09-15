@@ -32,7 +32,7 @@ export function NewWorkspaceWithEmptyFilePage(props: { extension: string }) {
 
   useEffect(() => {
     workspaces
-      .createWorkspaceFromLocal({ useInMemoryFs: false, localFiles: [] })
+      .createWorkspaceFromLocal({ localFiles: [] })
       .then(async ({ workspace }) =>
         workspaces.addEmptyFile({
           workspaceId: workspace.workspaceId,

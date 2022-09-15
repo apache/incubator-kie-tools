@@ -19,7 +19,6 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
 import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
 import { WorkspacesWorkerApi } from "./worker/api/WorkspacesWorkerApi";
@@ -29,16 +28,20 @@ interface Props {
   children: React.ReactNode;
 }
 
-const workspacesWorker = new Worker("workspace/worker/worker.js");
+const workspacesWorker = new SharedWorker("workspace/worker/sharedWorker.js", "workspaces-shared-worker");
+workspacesWorker.port.start();
+
 const workspacesWorkerBus = new EnvelopeBusMessageManager<
   { kieToolsWorkspacesWorker_ready: () => void },
   WorkspacesWorkerApi
 >((m) => {
-  workspacesWorker.postMessage(m);
+  workspacesWorker.port.postMessage(m);
 });
 
 const ready = new Promise<void>((res) => {
-  workspacesWorker.onmessage = (m) => {
+  console.log("workspaces-shared-worker is ready.");
+
+  workspacesWorker.port.onmessage = (m) => {
     if (m.data.BCNAME) {
       console.debug(`BroadcastChannel message received from Worker: ${m.data.BCNAME}`);
       const bc = new BroadcastChannel(m.data.BCNAME);
@@ -119,12 +122,7 @@ export function WorkspacesContextProvider(props: Props) {
   }, []);
 
   const createWorkspaceFromLocal = useCallback(
-    async (args: {
-      useInMemoryFs: boolean;
-      localFiles: LocalFile[];
-      preferredName?: string;
-      gitConfig?: { email: string; name: string };
-    }) => {
+    async (args: { localFiles: LocalFile[]; preferredName?: string; gitConfig?: { email: string; name: string } }) => {
       await ready;
       const workspaceInit = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_init(args);
 
@@ -182,7 +180,7 @@ export function WorkspacesContextProvider(props: Props) {
     return toWorkspaceFile(wwfd);
   }, []);
 
-  const getFiles = useCallback(async (args: { fs: KieSandboxFs; workspaceId: string }) => {
+  const getFiles = useCallback(async (args: { workspaceId: string }) => {
     await ready;
     const wwfds = await workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getFiles(args);
     return wwfds.map((wwfd) => toWorkspaceFile(wwfd));

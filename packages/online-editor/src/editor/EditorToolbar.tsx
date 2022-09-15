@@ -1451,7 +1451,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               <span>
                                 <CheckCircleIcon size={"sm"} />
                               </span>
-                              <ToolbarItem visibility={hideWhenTiny}>
+                              <ToolbarItem visibility={hideWhenTiny} style={{ display: "inline" }}>
                                 &nbsp;
                                 <span>Saved</span>
                               </ToolbarItem>

@@ -30,7 +30,6 @@ export interface WorkspacesWorkerGitApi {
   }): Promise<string>;
 
   kieSandboxWorkspacesGit_init(args: {
-    useInMemoryFs: boolean;
     localFiles: LocalFile[];
     preferredName?: string;
     gitConfig?: {

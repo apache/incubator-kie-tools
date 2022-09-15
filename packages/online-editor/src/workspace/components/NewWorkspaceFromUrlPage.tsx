@@ -87,20 +87,18 @@ export function NewWorkspaceFromUrlPage() {
 
   const createWorkspaceForFile = useCallback(
     async (file: LocalFile) => {
-      workspaces
-        .createWorkspaceFromLocal({ useInMemoryFs: false, localFiles: [file] })
-        .then(({ workspace, suggestedFirstFile }) => {
-          if (!suggestedFirstFile) {
-            return;
-          }
-          history.replace({
-            pathname: routes.workspaceWithFilePath.path({
-              workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
-            }),
-          });
+      workspaces.createWorkspaceFromLocal({ localFiles: [file] }).then(({ workspace, suggestedFirstFile }) => {
+        if (!suggestedFirstFile) {
+          return;
+        }
+        history.replace({
+          pathname: routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
+            extension: suggestedFirstFile.extension,
+          }),
         });
+      });
     },
     [routes, history, workspaces]
   );

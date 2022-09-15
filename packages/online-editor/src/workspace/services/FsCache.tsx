@@ -14,22 +14,32 @@
  * limitations under the License.
  */
 
-import type KieSandboxFs from "@kie-tools/kie-sandbox-fs";
+import { KieSandboxWorkspacesFs, LfsStat } from "./KieSandboxWorkspaceFs";
 
-const inos: any = {};
-declare let FS: any;
-declare let IDBFS: any;
+const inos: Record<string, Map<string, { ino: number; mode: number }>> = {};
+
+declare let FS: any; // comes from lg2.wasm
+declare let IDBFS: any; // comes from lg2.wasm
 
 export class FsCache {
-  private fsCache = new Map<string, any>();
-  public async getOrCreateFs(workspaceId: string) {
-    const fs = this.fsCache.get(workspaceId);
+  private fsCache = new Map<string, KieSandboxWorkspacesFs>();
+
+  public async getOrCreateFs(fsMountPoint: string) {
+    const fs = this.fsCache.get(fsMountPoint);
     if (fs) {
       return fs;
     }
 
-    const newFs = {
+    const newFs: KieSandboxWorkspacesFs = {
       promises: {
+        rename: async (path: string, newPath: string) => {
+          try {
+            // console.log("rename", path, newPath)
+            return FS.rename(path, newPath);
+          } catch (e) {
+            throwWasiErrorToNodeError(e, path, newPath);
+          }
+        },
         readFile: async (path: string, options: any) => {
           try {
             // console.log("readFile",path, options)
@@ -52,7 +62,7 @@ export class FsCache {
           try {
             // console.log("unlink",path)
             const ret = FS.unlink(path);
-            inos[workspaceId].delete(path);
+            inos[fsMountPoint].delete(path);
             return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
@@ -80,7 +90,7 @@ export class FsCache {
           try {
             // console.log("rmdir",path)
             const ret = FS.rmdir(path);
-            inos[workspaceId].delete(path);
+            inos[fsMountPoint].delete(path);
             return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
@@ -89,7 +99,7 @@ export class FsCache {
         stat: async (path: any, options: any) => {
           try {
             // console.log("stat",path, options)
-            return toLfsStat(workspaceId, path, FS.stat(path, options));
+            return toLfsStat(fsMountPoint, path, FS.stat(path, options));
           } catch (e) {
             throwWasiErrorToNodeError(e, path, options);
           }
@@ -97,7 +107,7 @@ export class FsCache {
         lstat: async (path: any, options: any) => {
           try {
             // console.log("lstat",path, options)
-            return toLfsStat(workspaceId, path, FS.stat(path, true));
+            return toLfsStat(fsMountPoint, path, FS.stat(path, true));
           } catch (e) {
             throwWasiErrorToNodeError(e, path, options);
           }
@@ -132,68 +142,68 @@ export class FsCache {
       },
     };
 
-    console.time(`Bring FS to memory - ${workspaceId}`);
-    console.log(`Bringing FS to memory - ${workspaceId}`);
-    await initFs(workspaceId);
-    await restoreFs(newFs as any, workspaceId);
-    console.timeEnd(`Bring FS to memory - ${workspaceId}`);
+    console.time(`Bring FS to memory - ${fsMountPoint}`);
+    console.log(`Bringing FS to memory - ${fsMountPoint}`);
+    await initFs(fsMountPoint);
+    await restoreFs(newFs as any, fsMountPoint);
+    console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
 
-    this.fsCache.set(workspaceId, this.fsCache.get(workspaceId) ?? newFs);
-    return this.fsCache.get(workspaceId);
+    this.fsCache.set(fsMountPoint, this.fsCache.get(fsMountPoint) ?? newFs);
+    return this.fsCache.get(fsMountPoint)!;
   }
 }
 
-async function syncfs(isRestore: any, workspaceId: string) {
+async function syncfs(isRestore: any, fsMountPoint: string) {
   await new Promise((res) => {
-    IDBFS.syncfs({ mountpoint: workspaceId }, isRestore, res);
+    IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
   });
   await new Promise((res) => {
-    IDBFS.syncfs({ mountpoint: inosDir(workspaceId) }, isRestore, res);
+    IDBFS.syncfs({ mountpoint: inosDir(fsMountPoint) }, isRestore, res);
   });
 }
 
-export async function flushFs(fs: KieSandboxFs, workspaceId: string) {
-  const all = new TextEncoder().encode(JSON.stringify(Array.from(inos[workspaceId].entries())));
-  fs.promises.writeFile(inosIndexJsonPath(workspaceId), all, { encoding: "utf-8" } as any);
-  return syncfs(false, workspaceId);
+export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
+  const all = new TextEncoder().encode(JSON.stringify(Array.from(inos[fsMountPoint].entries())));
+  fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), all, { encoding: "utf-8" } as any);
+  return syncfs(false, fsMountPoint);
 }
 
-export async function initFs(workspaceId: string) {
-  FS.mkdir(workspaceId);
-  FS.mount(IDBFS, {}, workspaceId);
-  FS.mkdir(inosDir(workspaceId));
-  FS.mount(IDBFS, {}, inosDir(workspaceId));
-  inos[workspaceId] = new Map();
+export async function initFs(fsMountPoint: string) {
+  FS.mkdir(fsMountPoint);
+  FS.mount(IDBFS, {}, fsMountPoint);
+  FS.mkdir(inosDir(fsMountPoint));
+  FS.mount(IDBFS, {}, inosDir(fsMountPoint));
+  inos[fsMountPoint] = new Map();
 }
 
-export async function deinitFs(workspaceId: string) {
-  delete inos[workspaceId];
-  FS.unmount(inosDir(workspaceId));
-  FS.rmdir(inosDir(workspaceId));
-  FS.unmount(workspaceId);
-  FS.rmdir(workspaceId);
+export async function deinitFs(fsMountPoint: string) {
+  delete inos[fsMountPoint];
+  FS.unmount(inosDir(fsMountPoint));
+  FS.rmdir(inosDir(fsMountPoint));
+  FS.unmount(fsMountPoint);
+  FS.rmdir(fsMountPoint);
 }
 
-export async function restoreFs(fs: KieSandboxFs, workspaceId: string) {
-  await syncfs(true, workspaceId);
+export async function restoreFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
+  await syncfs(true, fsMountPoint);
 
   let inosIndexJson;
   try {
-    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(workspaceId), { encoding: "utf8" });
+    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(fsMountPoint), { encoding: "utf8" });
   } catch (e) {
     // ENOENT
     inosIndexJson = "[]";
   }
 
-  inos[workspaceId] = new Map(JSON.parse(inosIndexJson as string));
+  inos[fsMountPoint] = new Map(JSON.parse(inosIndexJson as string));
 }
 
-export function inosDir(workspaceId: string) {
-  return workspaceId + "_inos";
+function inosDir(fsMountPoint: string) {
+  return fsMountPoint + "_inos";
 }
 
-export function inosIndexJsonPath(workspaceId: string) {
-  return inosDir(workspaceId) + "/index.json";
+function inosIndexJsonPath(fsMountPoint: string) {
+  return inosDir(fsMountPoint) + "/index.json";
 }
 
 // Reference: https://github.com/isomorphic-git/lightning-fs#fswritefilefilepath-data-opts-cb
@@ -207,19 +217,23 @@ function removeDotPaths(a: any) {
 }
 
 // Reference: https://github.com/isomorphic-git/lightning-fs#fsstatfilepath-opts-cb
-function toLfsStat(workspaceId: string, path: any, stat: any) {
+function toLfsStat(fsMountPoint: string, path: any, stat: any): LfsStat {
   // isomorphic-git expects that `ino` and `mode` never change once they are created,
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   //
-  // We need to persist an index containig the `ino`s and `mode`s for all files.
-  // Luckily this is very cheap to do, as long as we kepe the `inos[dir]` map up-to-date.
-  const perpetualStat = inos[workspaceId]
-    .set(path, inos[workspaceId].get(path) ?? { ino: stat.ino, mode: stat.mode })
+  // We need to persist an index containing the `ino`s and `mode`s for all files.
+  // Luckily this is very cheap to do, as long as we keep the `inos[fsMountPoint]` map up-to-date.
+  const perpetualStat = inos[fsMountPoint]
+    .set(path, inos[fsMountPoint].get(path) ?? { ino: stat.ino, mode: stat.mode })
     .get(path);
 
-  const isDir = FS.isDir(perpetualStat.mode);
-  const isFile = FS.isFile(perpetualStat.mode);
-  const isLink = FS.isLink(perpetualStat.mode);
+  if (!perpetualStat) {
+    throw new Error("This error should never happen.");
+  }
+
+  const isDir: boolean = FS.isDir(perpetualStat.mode);
+  const isFile: boolean = FS.isFile(perpetualStat.mode);
+  const isLink: boolean = FS.isLink(perpetualStat.mode);
 
   return {
     mode: perpetualStat.mode,
@@ -237,7 +251,7 @@ function toLfsStat(workspaceId: string, path: any, stat: any) {
 }
 
 // Reference: https://github.com/emscripten-core/emscripten/blob/main/system/include/wasi/api.h
-function throwWasiErrorToNodeError(e: any, ...args: any[]) {
+function throwWasiErrorToNodeError(e: any, ...args: any[]): never {
   switch (e.errno) {
     case 20:
       throw { code: "EEXIST", message: "EEXIST", args };
