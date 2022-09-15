@@ -48,7 +48,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        writeFile: async (path: any, data: any, options: any) => {
+        writeFile: async (path: string, data: any, options: any) => {
           try {
             // console.log("writeFile",path, data, options)
             const ret = await FS.writeFile(path, data, toReadWriteFileOptions(options));
@@ -58,7 +58,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, data, options);
           }
         },
-        unlink: async (path: any) => {
+        unlink: async (path: string) => {
           try {
             // console.log("unlink",path)
             const ret = FS.unlink(path);
@@ -68,7 +68,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path);
           }
         },
-        readdir: async (path: any, options: any) => {
+        readdir: async (path: string, options: any) => {
           try {
             // console.log("readdir",path, options)
             return removeDotPaths(FS.readdir(path, options));
@@ -76,7 +76,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        mkdir: async (path: any, mode: any) => {
+        mkdir: async (path: string, mode: any) => {
           try {
             // console.log("mkdir",path, mode)
             const ret = FS.mkdir(path, mode);
@@ -86,7 +86,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, mode);
           }
         },
-        rmdir: async (path: any) => {
+        rmdir: async (path: string) => {
           try {
             // console.log("rmdir",path)
             const ret = FS.rmdir(path);
@@ -96,7 +96,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path);
           }
         },
-        stat: async (path: any, options: any) => {
+        stat: async (path: string, options: any) => {
           try {
             // console.log("stat",path, options)
             return toLfsStat(fsMountPoint, path, FS.stat(path, options));
@@ -104,7 +104,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        lstat: async (path: any, options: any) => {
+        lstat: async (path: string, options: any) => {
           try {
             // console.log("lstat",path, options)
             return toLfsStat(fsMountPoint, path, FS.stat(path, true));
@@ -112,7 +112,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        readlink: async (path: any, options: any) => {
+        readlink: async (path: string, options: any) => {
           try {
             // console.log("readlink",path, options)
             return FS.readlink(path, options);
@@ -120,7 +120,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        symlink: async (target: any, path: any, type: any) => {
+        symlink: async (target: string, path: string, type: any) => {
           try {
             // console.log("symlink",target, path, type)
             // FIXME: Update inos[dir]
@@ -129,7 +129,7 @@ export class FsCache {
             throwWasiErrorToNodeError(e, target, path, type);
           }
         },
-        chmod: async (path: any, mode: any) => {
+        chmod: async (path: string, mode: number) => {
           try {
             // console.log("chmod",path, mode)
             const ret = FS.chmod(path, mode);
@@ -145,7 +145,7 @@ export class FsCache {
     console.time(`Bring FS to memory - ${fsMountPoint}`);
     console.log(`Bringing FS to memory - ${fsMountPoint}`);
     await initFs(fsMountPoint);
-    await restoreFs(newFs as any, fsMountPoint);
+    await restoreFs(newFs, fsMountPoint);
     console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
 
     this.fsCache.set(fsMountPoint, this.fsCache.get(fsMountPoint) ?? newFs);
@@ -153,7 +153,7 @@ export class FsCache {
   }
 }
 
-async function syncfs(isRestore: any, fsMountPoint: string) {
+async function syncfs(isRestore: boolean, fsMountPoint: string) {
   await new Promise((res) => {
     IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
   });
@@ -164,24 +164,44 @@ async function syncfs(isRestore: any, fsMountPoint: string) {
 
 export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
   const all = new TextEncoder().encode(JSON.stringify(Array.from(inos[fsMountPoint].entries())));
-  fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), all, { encoding: "utf-8" } as any);
+  await fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), all, { encoding: "utf-8" });
   return syncfs(false, fsMountPoint);
 }
 
 export async function initFs(fsMountPoint: string) {
-  FS.mkdir(fsMountPoint);
-  FS.mount(IDBFS, {}, fsMountPoint);
-  FS.mkdir(inosDir(fsMountPoint));
-  FS.mount(IDBFS, {}, inosDir(fsMountPoint));
+  console.log(`Init FS - ${fsMountPoint}`);
+  try {
+    FS.mkdir(fsMountPoint);
+    FS.mount(IDBFS, {}, fsMountPoint);
+    FS.mkdir(inosDir(fsMountPoint));
+    FS.mount(IDBFS, {}, inosDir(fsMountPoint));
+  } catch (e) {
+    try {
+      throwWasiErrorToNodeError(e, fsMountPoint);
+    } catch (e) {
+      console.error(`Error initing FS - ${fsMountPoint}`);
+      console.error(e);
+    }
+  }
   inos[fsMountPoint] = new Map();
 }
 
 export async function deinitFs(fsMountPoint: string) {
+  console.log(`Deinit FS - ${fsMountPoint}`);
   delete inos[fsMountPoint];
-  FS.unmount(inosDir(fsMountPoint));
-  FS.rmdir(inosDir(fsMountPoint));
-  FS.unmount(fsMountPoint);
-  FS.rmdir(fsMountPoint);
+  try {
+    FS.unmount(inosDir(fsMountPoint));
+    FS.rmdir(inosDir(fsMountPoint));
+    FS.unmount(fsMountPoint);
+    FS.rmdir(fsMountPoint);
+  } catch (e) {
+    try {
+      throwWasiErrorToNodeError(e, fsMountPoint);
+    } catch (e) {
+      console.error(`Error initiating FS - ${fsMountPoint}`);
+      console.error(e);
+    }
+  }
 }
 
 export async function restoreFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
@@ -212,12 +232,12 @@ function toReadWriteFileOptions(options: any) {
 }
 
 // Not doing that causes a loop during `clone`s.
-function removeDotPaths(a: any) {
-  return a.slice(2); // Remove "." and ".." entries
+function removeDotPaths(paths: string[]) {
+  return paths.slice(2); // Remove "." and ".." entries
 }
 
 // Reference: https://github.com/isomorphic-git/lightning-fs#fsstatfilepath-opts-cb
-function toLfsStat(fsMountPoint: string, path: any, stat: any): LfsStat {
+function toLfsStat(fsMountPoint: string, path: string, stat: any): LfsStat {
   // isomorphic-git expects that `ino` and `mode` never change once they are created,
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   //

@@ -604,12 +604,7 @@ onconnect = async (e: any) => {
   const impl = await implPromise;
 
   port.addEventListener("message", async (m: MessageEvent) => {
-    try {
-      bus.server.receive(m.data, impl);
-    } catch (e) {
-      port.postMessage(e);
-      throw e;
-    }
+    bus.server.receive(m.data, impl);
   });
 
   port.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
