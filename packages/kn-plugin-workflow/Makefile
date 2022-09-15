@@ -35,10 +35,10 @@ endif
 build-all: build-linux build-darwin-amd64 build-darwin-arm64 build-win32
 
 build-darwin:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -mod vendor -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
 
 build-darwin-amd64:
-	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -mod vendor -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_AMD64) cmd/main.go
 
 build-darwin-arm64:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -mod vendor -ldflags $(LDFLAGS) -o ./dist/$(BIN_DARWIN_ARM64) cmd/main.go

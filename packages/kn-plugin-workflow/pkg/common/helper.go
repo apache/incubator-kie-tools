@@ -22,7 +22,6 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 )

@@ -41,8 +41,8 @@ func main() {
 	}()
 
 	cfg := root.RootCmdConfig{
-	    Name: "kn workflow",
-	    Version: metadata.PluginVersion
+		Name:    "kn workflow",
+		Version: metadata.PluginVersion,
 	}
 
 	if err := root.NewRootCommand(cfg).ExecuteContext(ctx); err != nil {
