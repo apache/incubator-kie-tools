@@ -128,10 +128,11 @@ export class FsCache {
       },
     };
 
+    console.log(`Bring FS to memory - ${workspaceId}`);
     await initFs(workspaceId);
     await restoreFs(newFs as any, workspaceId);
 
-    this.fsCache.set(workspaceId, newFs as any);
+    this.fsCache.set(workspaceId, this.fsCache.get(workspaceId) ?? newFs);
     return newFs;
   }
 }
@@ -217,8 +218,8 @@ function toLfsStat(workspaceId: string, path: any, stat: any) {
     mode: perpetualStat.mode,
     size: -1,
     ino: perpetualStat.ino,
-    mtimeMs: 0,
-    ctimeMs: 0,
+    mtimeMs: stat.mtime,
+    ctimeMs: stat.ctime,
     uid: 1,
     gid: 1,
     dev: 1,
