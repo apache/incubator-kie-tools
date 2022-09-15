@@ -40,6 +40,7 @@ import (
 	"github.com/ory/viper"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	fsutiltypes "github.com/tonistiigi/fsutil/types"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc"
 )
@@ -160,7 +161,9 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	}
 
 	// creates a tar with the Dockerfile and the workflow.sw.json
-	tar, err := archive.TarWithOptions("./docker", &archive.TarOptions{})
+	tar, err := archive.TarWithOptions(".", &archive.TarOptions{
+		IncludeFiles: []string{"Dockerfile.workflow", "workflow.sw.json"},
+	})
 	if err != nil {
 		log.Fatal(err, " :unable to open Dockerfile")
 	}
@@ -175,7 +178,18 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		session.Close()
 	}()
 	// Adds the fs methods to the session
-	session.Allow(filesync.NewFSSyncTargetDir("kubernetes"))
+	session.Allow(filesync.NewFSSyncProvider([]filesync.SyncedDir{
+		{
+			Name: "context",
+			Dir:  ".",
+			Map:  resetUIDAndGID,
+		},
+		{
+			Name: "dockerfile",
+			Dir:  ".",
+		},
+	}))
+	session.Allow(filesync.NewFSSyncTargetDir("./kubernets"))
 
 	dialSession := func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
 		return dockerClient.DialHijack(ctx, "/session", proto, meta)
@@ -273,6 +287,12 @@ func tryNodeIdentifier() string {
 		}
 	}
 	return out
+}
+
+func resetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
+	s.Uid = 0
+	s.Gid = 0
+	return true
 }
 
 // // NewSession returns a new long running session
