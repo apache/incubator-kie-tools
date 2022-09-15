@@ -48,11 +48,11 @@ FROM quay.io/lmotta/kn-workflow:2.10.0.Final as builder
 
 WORKDIR /tmp/kn-plugin-workflow
 
-ARG extensions
-RUN if [[ -z "$extensions" ]]; \
-	then echo "WITHOUT ADDITIONAL EXTENSIONS"; \
-	else ./mvnw quarkus:add-extension -Dextensions=${extensions}; \
-	fi
+# ARG extensions
+# RUN if [[ -z "$extensions" ]]; \
+#	then echo "WITHOUT ADDITIONAL EXTENSIONS"; \
+#	else ./mvnw quarkus:add-extension -Dextensions=${extensions}; \
+#	fi
 
 # copy application.properties if exists
 ARG workflow_file

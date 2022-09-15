@@ -53,9 +53,6 @@ type BuildCmdConfig struct {
 	Repository string // image repository (overrides image name)
 	ImageName  string // image name (overrides image name)
 	Tag        string // image tag (overrides image name)
-
-	// Plugin options
-	Verbose bool
 }
 
 // Client that panics when used after Close()
@@ -79,7 +76,7 @@ func NewBuildCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"biuld", "buidl", "built"},
-		PreRunE:    common.BindEnv("verbose", "extension", "image", "image-registry", "image-repository", "image-name", "image-tag"),
+		PreRunE:    common.BindEnv("extension", "image", "image-registry", "image-repository", "image-name", "image-tag"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -123,8 +120,6 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 		Repository: viper.GetString("repository"),
 		ImageName:  viper.GetString("name"),
 		Tag:        viper.GetString("tag"),
-
-		Verbose: viper.GetBool("verbose"),
 	}
 	if len(cfg.Image) == 0 && len(cfg.ImageName) == 0 {
 		fmt.Println("ERROR: either --image or --image-name should be used")
@@ -172,7 +167,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	defer tar.Close()
 
 	// creates a session for the dir
-	session, err := trySession(dockerClient, "./docker", false)
+	session, err := trySession(dockerClient, ".", false)
 	if err != nil {
 		log.Fatal(err, " : failed session")
 	}
@@ -180,7 +175,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		session.Close()
 	}()
 	// Adds the fs methods to the session
-	session.Allow(filesync.NewFSSyncTargetDir("./kubernetes"))
+	session.Allow(filesync.NewFSSyncTargetDir("kubernetes"))
 
 	dialSession := func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
 		return dockerClient.DialHijack(ctx, "/session", proto, meta)
@@ -193,7 +188,7 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 
 	imageTag := common.GetImage(registry, repository, name, tag)
 	opts := types.ImageBuildOptions{
-		RemoteContext: "client-session",
+		RemoteContext: "kn-workflow",
 		SessionID:     session.ID(),
 		Dockerfile:    "Dockerfile.workflow",
 		Tags:          []string{imageTag},
@@ -218,8 +213,13 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		log.Fatal(err, " :unable to read image build response")
 	}
 
+	_, err = io.Copy(os.Stderr, res.Body)
+	if err != nil {
+		log.Fatal(err, " :unable to read image build response")
+	}
+
 	fmt.Println("✅ Build success")
-	return
+	return nil
 }
 
 // Session is a long running connection between client and a daemon

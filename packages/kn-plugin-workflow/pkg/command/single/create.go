@@ -30,9 +30,6 @@ import (
 type CreateConfig struct {
 	// Quarkus project options
 	ProjectName string // Project name
-
-	// Plugin options
-	Verbose bool
 }
 
 func NewCreateCommand() *cobra.Command {
@@ -42,7 +39,7 @@ func NewCreateCommand() *cobra.Command {
 		Long:       ``,
 		Example:    ``,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"},
-		PreRunE:    common.BindEnv("name", "verbose"),
+		PreRunE:    common.BindEnv("name"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -83,7 +80,6 @@ func runCreate(cmd *cobra.Command, args []string) error {
 func runCreateConfig(cmd *cobra.Command) (cfg CreateConfig, err error) {
 	cfg = CreateConfig{
 		ProjectName: viper.GetString("name"),
-		Verbose:     viper.GetBool("verbose"),
 	}
 	return
 }

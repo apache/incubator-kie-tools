@@ -47,7 +47,7 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 
 	cmd.AddCommand(quarkus.NewQuarkusCommand())
 	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
-	cmd.AddCommand(single.NewSingleCommand(cmd))
+	single.NewSingleCommand(cmd)
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)
