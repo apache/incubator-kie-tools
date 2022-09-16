@@ -41,9 +41,7 @@ import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
 
-declare let importScripts: any;
-declare let onconnect: any;
-
+declare const importScripts: any;
 importScripts("fsMain.js");
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
@@ -567,6 +565,8 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
   resImpl(impl);
 });
 
+declare let onconnect: any;
+// eslint-disable-next-line prefer-const
 onconnect = async (e: any) => {
   const port = e.ports[0];
 
