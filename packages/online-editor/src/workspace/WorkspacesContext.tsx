@@ -22,9 +22,9 @@ import {
 } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { WorkspaceDescriptor } from "./model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "./worker/api/WorkspaceDescriptor";
 import { basename, extname, parse } from "path";
-import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
+import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();

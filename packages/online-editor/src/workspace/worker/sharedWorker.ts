@@ -19,10 +19,10 @@ import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/com
 import { StorageFile, StorageService } from "../services/StorageService";
 import { WorkspaceDescriptorService } from "../services/WorkspaceDescriptorService";
 import { WorkspaceService } from "../services/WorkspaceService";
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
-import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
+import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./api/WorkspaceOrigin";
 import { decoder, encoder, LocalFile, WorkspaceFile } from "../WorkspacesContext";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import {

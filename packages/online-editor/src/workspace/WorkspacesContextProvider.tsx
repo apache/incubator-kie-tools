@@ -19,7 +19,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { SupportedFileExtensions } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { GistOrigin, GitHubOrigin } from "./model/WorkspaceOrigin";
+import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
 import { WorkspacesWorkerApi } from "./worker/api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFileDescriptor } from "./worker/api/WorkspaceWorkerFileDescriptor";

@@ -75,7 +75,7 @@ import {
   GIST_ORIGIN_REMOTE_NAME,
   GIT_ORIGIN_REMOTE_NAME,
 } from "../workspace/constants/GitConstants";
-import { WorkspaceKind } from "../workspace/model/WorkspaceOrigin";
+import { WorkspaceKind } from "../workspace/worker/api/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";

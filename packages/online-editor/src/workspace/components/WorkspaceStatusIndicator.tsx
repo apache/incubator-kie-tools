@@ -18,7 +18,7 @@ import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { useWorkspaceGitStatusPromise } from "../hooks/WorkspaceHooks";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../hooks/PromiseState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";

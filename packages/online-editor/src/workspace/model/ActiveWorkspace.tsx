@@ -15,7 +15,7 @@
  */
 
 import { WorkspaceFile } from "../WorkspacesContext";
-import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 
 export interface ActiveWorkspace {
   descriptor: WorkspaceDescriptor;

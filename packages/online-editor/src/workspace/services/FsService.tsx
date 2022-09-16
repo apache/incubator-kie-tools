@@ -72,13 +72,13 @@ export class FsService {
     const { fs } = await this.getInMemoryWorkspaceFs(fsMountPoint);
     const readonlyFs = {
       promises: {
-        writeFile: async (path: string, data: any, options: any) => {
+        writeFile: async (path: string, data: Uint8Array | string, options: any) => {
           throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
         },
         unlink: async (path: string) => {
           throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
         },
-        mkdir: async (path: string, mode: any) => {
+        mkdir: async (path: string, mode?: number) => {
           throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
         },
         rmdir: async (path: string) => {
@@ -99,11 +99,11 @@ export class FsService {
         readdir: async (path: string, options: any) => {
           return fs.promises.readdir(path, options);
         },
-        stat: async (path: string, options: any) => {
-          return fs.promises.stat(path, options);
+        stat: async (path: string) => {
+          return fs.promises.stat(path);
         },
-        lstat: async (path: string, options: any) => {
-          return fs.promises.lstat(path, options);
+        lstat: async (path: string) => {
+          return fs.promises.lstat(path);
         },
         readlink: async (path: string, options: any) => {
           return fs.promises.readlink(path, options);
@@ -111,7 +111,7 @@ export class FsService {
       },
     };
 
-    return await callback({ fs: readonlyFs as any });
+    return await callback({ fs: readonlyFs });
   }
 
   private async getInMemoryWorkspaceFs(fsMountPoint: string) {

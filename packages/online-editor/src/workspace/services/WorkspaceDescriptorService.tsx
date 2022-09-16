@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { v4 as uuid } from "uuid";
 import { StorageFile, StorageService } from "./StorageService";
 import { decoder, encoder } from "../WorkspacesContext";
-import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
+import { WorkspaceKind, WorkspaceOrigin } from "../worker/api/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";

@@ -18,7 +18,7 @@ import { useWorkspaces } from "../WorkspacesContext";
 import { useCallback } from "react";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { WORKSPACES_BROADCAST_CHANNEL } from "../services/WorkspaceService";
 
 export function useWorkspaceDescriptorsPromise() {

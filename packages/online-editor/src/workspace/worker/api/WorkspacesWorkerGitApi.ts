@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
-import { GistOrigin, GitHubOrigin } from "../../model/WorkspaceOrigin";
+import { WorkspaceDescriptor } from "../../worker/api/WorkspaceDescriptor";
+import { GistOrigin, GitHubOrigin } from "../../worker/api/WorkspaceOrigin";
 import { LocalFile } from "../../WorkspacesContext";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 

@@ -28,19 +28,56 @@ export interface LfsStat {
   isSymbolicLink: () => boolean;
 }
 
+export interface EmscriptenFsStat {
+  dev: number;
+  ino: number;
+  mode: number;
+  nlink: number;
+  uid: number;
+  gid: number;
+  rdev: number;
+  size: number;
+  atime: number;
+  mtime: number;
+  ctime: number;
+  blksize: number;
+  blocks: number;
+}
+
 export interface KieSandboxWorkspacesFs {
   promises: {
     rename(path: string, newPath: string): Promise<void>;
-    readFile(path: string, options?: any): Promise<Uint8Array>;
-    writeFile(path: any, data: any, options?: any): Promise<void>;
-    unlink(path: any): Promise<void>;
-    readdir(path: any, options?: any): Promise<string[]>;
-    mkdir(path: any, mode?: any): Promise<void>;
-    rmdir(path: any): Promise<void>;
-    stat(path: any, options?: any): Promise<LfsStat>;
-    lstat(path: any, options?: any): Promise<LfsStat>;
-    readlink(path: any, options?: any): Promise<string>;
-    symlink(target: any, path: any, type: any): Promise<void>;
-    chmod(path: any, mode: any): Promise<void>;
+    readFile(path: string, options?: any): Promise<Uint8Array | string>;
+    writeFile(path: string, data: Uint8Array | string, options?: any): Promise<void>;
+    unlink(path: string): Promise<void>;
+    readdir(path: string, options?: any): Promise<string[]>;
+    mkdir(path: string, mode?: number): Promise<void>;
+    rmdir(path: string): Promise<void>;
+    stat(path: string, options?: any): Promise<LfsStat>;
+    lstat(path: string): Promise<LfsStat>;
+    readlink(path: string, options?: any): Promise<string>;
+    symlink(target: string, path: string, type: any): Promise<void>;
+    chmod(path: string, mode: number): Promise<void>;
   };
+}
+
+export interface EmscriptenFs {
+  rename(path: string, newPath: string): void;
+  readFile(path: string, options?: any): Uint8Array | string;
+  writeFile(path: string, data: Uint8Array | string, options?: any): void;
+  unlink(path: string): void;
+  readdir(path: string, options?: any): string[];
+  mkdir(path: string, mode?: number): void;
+  rmdir(path: string): void;
+  stat(path: string): EmscriptenFsStat;
+  lstat(path: string): EmscriptenFsStat;
+  readlink(path: string): string;
+  symlink(target: string, path: string): void;
+  chmod(path: string, mode: number): void;
+  //
+  mount(fs: any, opts: any, mountpoint: string): void;
+  unmount(mountpoint: string): void;
+  isDir(mode: number): boolean;
+  isFile(mode: number): boolean;
+  isLink(mode: number): boolean;
 }

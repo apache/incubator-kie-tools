@@ -21,7 +21,7 @@ import {
   ResourcesList,
 } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
-import { WorkspaceDescriptor } from "../../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
 
 export interface WorkspacesWorkerStorageApi {
   // model

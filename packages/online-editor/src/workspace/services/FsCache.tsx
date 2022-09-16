@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-import { KieSandboxWorkspacesFs, LfsStat } from "./KieSandboxWorkspaceFs";
+import { EmscriptenFs, KieSandboxWorkspacesFs, LfsStat } from "./KieSandboxWorkspaceFs";
 
 const inos: Record<string, Map<string, { ino: number; mode: number }>> = {};
 
-declare let FS: any; // comes from lg2.wasm
-declare let IDBFS: any; // comes from lg2.wasm
+// comes from fsMain.fs
+declare let FS: EmscriptenFs;
+
+// comes from fsMain.fs
+declare let IDBFS: EmscriptenFs & {
+  syncfs(mount: { mountpoint: string }, mode: boolean, callback: (...args: any[]) => void): void;
+};
 
 export class FsCache {
   private fsCache = new Map<string, KieSandboxWorkspacesFs>();
@@ -48,12 +53,11 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        writeFile: async (path: string, data: any, options: any) => {
+        writeFile: async (path: string, data: Uint8Array | string, options: any) => {
           try {
             // console.log("writeFile",path, data, options)
-            const ret = await FS.writeFile(path, data, toReadWriteFileOptions(options));
-            await newFs.promises.lstat(path, {});
-            return ret;
+            FS.writeFile(path, data, toReadWriteFileOptions(options));
+            await newFs.promises.lstat(path);
           } catch (e) {
             throwWasiErrorToNodeError(e, path, data, options);
           }
@@ -61,9 +65,8 @@ export class FsCache {
         unlink: async (path: string) => {
           try {
             // console.log("unlink",path)
-            const ret = FS.unlink(path);
+            FS.unlink(path);
             inos[fsMountPoint].delete(path);
-            return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
           }
@@ -76,12 +79,11 @@ export class FsCache {
             throwWasiErrorToNodeError(e, path, options);
           }
         },
-        mkdir: async (path: string, mode: any) => {
+        mkdir: async (path: string, mode?: number) => {
           try {
             // console.log("mkdir",path, mode)
-            const ret = FS.mkdir(path, mode);
-            await newFs.promises.lstat(path, {});
-            return ret;
+            FS.mkdir(path, mode);
+            await newFs.promises.lstat(path);
           } catch (e) {
             throwWasiErrorToNodeError(e, path, mode);
           }
@@ -89,33 +91,32 @@ export class FsCache {
         rmdir: async (path: string) => {
           try {
             // console.log("rmdir",path)
-            const ret = FS.rmdir(path);
+            FS.rmdir(path);
             inos[fsMountPoint].delete(path);
-            return ret;
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
           }
         },
-        stat: async (path: string, options: any) => {
+        stat: async (path: string) => {
           try {
             // console.log("stat",path, options)
-            return toLfsStat(fsMountPoint, path, FS.stat(path, options));
+            return toLfsStat(fsMountPoint, path, FS.stat(path));
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, options);
+            throwWasiErrorToNodeError(e, path);
           }
         },
-        lstat: async (path: string, options: any) => {
+        lstat: async (path: string) => {
           try {
             // console.log("lstat",path, options)
-            return toLfsStat(fsMountPoint, path, FS.stat(path, true));
+            return toLfsStat(fsMountPoint, path, FS.stat(path));
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, options);
+            throwWasiErrorToNodeError(e, path);
           }
         },
         readlink: async (path: string, options: any) => {
           try {
             // console.log("readlink",path, options)
-            return FS.readlink(path, options);
+            return FS.readlink(path);
           } catch (e) {
             throwWasiErrorToNodeError(e, path, options);
           }
@@ -123,8 +124,8 @@ export class FsCache {
         symlink: async (target: string, path: string, type: any) => {
           try {
             // console.log("symlink",target, path, type)
-            // FIXME: Update inos[dir]
-            return FS.symlink(target, path, type);
+            FS.symlink(target, path);
+            await newFs.promises.lstat(path);
           } catch (e) {
             throwWasiErrorToNodeError(e, target, path, type);
           }
@@ -132,9 +133,8 @@ export class FsCache {
         chmod: async (path: string, mode: number) => {
           try {
             // console.log("chmod",path, mode)
-            const ret = FS.chmod(path, mode);
-            await newFs.promises.lstat(path, {});
-            return ret;
+            FS.chmod(path, mode);
+            await newFs.promises.lstat(path);
           } catch (e) {
             throwWasiErrorToNodeError(e, path, mode);
           }

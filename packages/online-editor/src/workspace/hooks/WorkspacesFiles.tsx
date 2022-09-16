@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { usePromiseState } from "./PromiseState";
 import { useCallback } from "react";

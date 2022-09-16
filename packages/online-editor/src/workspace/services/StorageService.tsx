@@ -128,7 +128,7 @@ export class StorageService {
       throw new Error(`File '${path}' doesn't exist`);
     }
 
-    return await fs.promises.readFile(path);
+    return (await fs.promises.readFile(path)) as Uint8Array;
   }
 
   public async getFile(fs: KieSandboxWorkspacesFs, path: string): Promise<StorageFile | undefined> {
@@ -138,7 +138,7 @@ export class StorageService {
 
     return new StorageFile({
       path,
-      getFileContents: () => fs.promises.readFile(path),
+      getFileContents: () => fs.promises.readFile(path) as Promise<Uint8Array>,
     });
   }
 

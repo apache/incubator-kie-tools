@@ -49,7 +49,7 @@ import { useWorkspaceDescriptorsPromise } from "../workspace/hooks/WorkspacesHoo
 import { PromiseStateWrapper, useCombinedPromiseState, usePromiseState } from "../workspace/hooks/PromiseState";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceDescriptor } from "../workspace/model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../workspace/worker/api/WorkspaceDescriptor";
 import { useWorkspacesFilesPromise } from "../workspace/hooks/WorkspacesFiles";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";

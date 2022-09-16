@@ -16,13 +16,13 @@
 
 import { encoder, WorkspaceFile } from "../WorkspacesContext";
 import JSZip from "jszip";
-import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
+import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
 import { extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { BroadcasterDispatch } from "./FsService";
-import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
+import { WorkspaceOrigin } from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceWorkerFile } from "../worker/api/WorkspaceWorkerFile";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";

@@ -19,7 +19,7 @@ import { useCallback } from "react";
 import { ActiveWorkspace } from "../model/ActiveWorkspace";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
-import { WorkspaceKind } from "../model/WorkspaceOrigin";
+import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { GIT_ORIGIN_REMOTE_NAME } from "../constants/GitConstants";
 
 export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefined) {
