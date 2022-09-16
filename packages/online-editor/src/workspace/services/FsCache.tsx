@@ -260,11 +260,7 @@ function toLfsStat(fsMountPoint: string, path: string, stat: any): LfsStat {
   // Luckily this is very cheap to do, as long as we keep the `inos[fsMountPoint]` map up-to-date.
   const perpetualStat = inos[fsMountPoint]
     .set(path, inos[fsMountPoint].get(path) ?? { ino: stat.ino, mode: stat.mode })
-    .get(path);
-
-  if (!perpetualStat) {
-    throw new Error("This error should never happen.");
-  }
+    .get(path)!;
 
   const isDir: boolean = FS.isDir(perpetualStat.mode);
   const isFile: boolean = FS.isFile(perpetualStat.mode);
