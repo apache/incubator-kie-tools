@@ -19,6 +19,8 @@ package single
 import (
 	"fmt"
 	"os"
+
+	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 )
 
 func GenerateDockerfile(dockerfilePath string) (err error) {
@@ -28,32 +30,23 @@ func GenerateDockerfile(dockerfilePath string) (err error) {
 	}
 
 	defer file.Close()
-	_, err = file.WriteString(`
-# ===============================================================
-# BUILDER
-# ===============================================================
 
-# docker build -f Dockerfile.workflow --target=builder \
-# --build-arg workflow_file=workflow.sw.json \
-# --build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
-# --build-arg workflow_name=my-project \
-# --build-arg container_registry=quay.io \
-# --build-arg container_group=lmotta \
-# --build-arg container_name=test \
-# --build-arg container_tag=0.0.1 \
-# .
+	dockerfile := fmt.Sprintf(`
+# true or false
+ARG extensions
 
-# tag will change dynamically, each quarkus version will have a tag.
-FROM quay.io/lmotta/kn-workflow:2.10.0.Final as builder
-
+FROM quay.io/lmotta/kn-workflow:%s as base
 WORKDIR /tmp/kn-plugin-workflow
 
-# ARG extensions
-# RUN if [[ -z "$extensions" ]]; \
-#	then echo "WITHOUT ADDITIONAL EXTENSIONS"; \
-#	else ./mvnw quarkus:add-extension -Dextensions=${extensions}; \
-#	fi
+# add additional extensions
+FROM base as true-extensions
+ARG extensions_list
+RUN ./mvnw quarkus:add-extension -Dextensions=${extensions_list}
 
+FROM base as false-extensions
+RUN echo "WITHOUT ADDITIONAL EXTENSIONS"
+
+FROM ${extensions}-extensions as builder
 # copy application.properties if exists
 ARG workflow_file
 COPY ${workflow_file} application.propertie[s] ./src/main/resources/
@@ -72,35 +65,8 @@ RUN ./mvnw package \
 	-Dquarkus.container-image.name=${container_name} \
 	-Dquarkus.container-image.tag=${container_tag}
 
-# ===============================================================
-# KUBERNETES
-# ===============================================================
-
-# DOCKER_BUILDKIT=1 docker build -f Dockerfile.workflow --target=kubernetes \
-# --build-arg workflow_file=workflow.sw.json \
-# --build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
-# --build-arg workflow_name=my-project \
-# --build-arg container_registry=quay.io \
-# --build-arg container_group=lmotta \
-# --build-arg container_name=test \
-# --build-arg container_tag=0.0.1 \
-# --output type=local,dest=kubernetes .
-FROM scratch as kubernetes
+FROM scratch as output-files
 COPY --from=builder /tmp/kn-plugin-workflow/target/kubernetes .
-
-# ===============================================================
-# RUNNER
-# ===============================================================
-
-# docker build -f Dockerfile.workflow --target=runner \
-# --build-arg workflow_file=workflow.sw.json \
-# --build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
-# --build-arg workflow_name=my-project \
-# --build-arg container_registry=quay.io \
-# --build-arg container_group=lmotta \
-# --build-arg container_name=test \
-# --build-arg container_tag=0.0.1 \
-# -t quay.io/lmotta/runner .
 
 # TODO: change to minimal image
 FROM openjdk:11 as runner
@@ -113,24 +79,6 @@ EXPOSE 8080
 
 CMD ["java", "-jar", "/deployments/quarkus-run.jar", "-Dquarkus.http.host=0.0.0.0"]
 
-# ===============================================================
-# DEV
-# ===============================================================
-
-# docker build -f Dockerfile.workflow --target=dev \
-# --build-arg workflow_file=workflow.sw.json \
-# --build-arg extensions=quarkus-jsonp,quarkus-smallrye-openapi \
-# --build-arg workflow_name=my-project \
-# --build-arg container_registry=quay.io \
-# --build-arg container_group=lmotta \
-# --build-arg container_name=test \
-# --build-arg container_tag=0.0.1 \
-# -t quay.io/lmotta/dev .
-
-# docker container run -it \
-# --mount type=bind,source="$(pwd)",target=/tmp/kn-plugin-workflow/src/main/resources \
-# -p 8080:8080 quay.io/lmotta/dev
-
 # TODO: change to minimal image
 FROM openjdk:11 as dev
 
@@ -141,9 +89,9 @@ WORKDIR /tmp/kn-plugin-workflow/
 	
 EXPOSE 8080
 
-CMD ["./mvnw", "quarkus:dev"]
-	
-`)
+CMD ["./mvnw", "quarkus:dev"]	
+`, metadata.QuarkusVersion)
+	_, err = file.WriteString(dockerfile)
 
 	if err != nil {
 		return fmt.Errorf("error creating Dockerfile.workflow: %w", err)

@@ -39,6 +39,7 @@ const (
 	// build-arg
 	DOCKER_BUILD_ARG_WORKFLOW_FILE            string = "workflow_file"
 	DOCKER_BUILD_ARG_EXTENSIONS               string = "extensions"
+	DOCKER_BUILD_ARG_EXTENSIONS_LIST          string = "extensions-list"
 	DOCKER_BUILD_ARG_WORKFLOW_NAME            string = "workflow_name"
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_REGISTRY string = "container_registry"
 	DOCKER_BUILD_ARG_CONTAINER_IMAGE_GROUP    string = "container_group"

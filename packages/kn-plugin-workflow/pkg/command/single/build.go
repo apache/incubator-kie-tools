@@ -17,20 +17,19 @@
 package single
 
 import (
+	"bufio"
 	"context"
-	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
-	"os"
 	"path/filepath"
+	"strconv"
 	"sync"
 
-	cliconfig "github.com/docker/cli/cli/config"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/archive"
@@ -61,13 +60,6 @@ type closeGuardingClient struct {
 	pimpl  client.CommonAPIClient
 	m      sync.RWMutex
 	closed bool
-}
-
-func (c *closeGuardingClient) Close() error {
-	c.m.Lock()
-	defer c.m.Unlock()
-	c.closed = true
-	return c.pimpl.Close()
 }
 
 func NewBuildCommand() *cobra.Command {
@@ -131,14 +123,41 @@ func runBuildCmdConfig(cmd *cobra.Command) (cfg BuildCmdConfig, err error) {
 }
 func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 	ctx := cmd.Context()
-	var dockerClient client.CommonAPIClient
-	dockerClient, err = client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+	dockerCli, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
 	if err != nil {
-		fmt.Println(err.Error())
-		return nil
+		return fmt.Errorf(err.Error())
 	}
-	cli := &closeGuardingClient{pimpl: dockerClient}
-	defer cli.Close()
+
+	// creates a session for the dir
+	// TODO: path flag?
+	session, err := trySession(".", false)
+	if err != nil {
+		log.Fatal(err, " : failed session")
+	}
+	if session == nil {
+		return fmt.Errorf("buildkit not supported by daemon")
+	}
+
+	// Adds the fs methods to the session
+	session.Allow(filesync.NewFSSyncProvider([]filesync.SyncedDir{
+		{
+			Name: "context",
+			Dir:  ".",
+			Map:  resetUIDAndGID,
+		},
+		{
+			Name: "dockerfile",
+			Dir:  ".",
+		},
+	}))
+	session.Allow(filesync.NewFSSyncTargetDir("./kubernets"))
+
+	eg, ctx := errgroup.WithContext(ctx)
+	eg.Go(func() error {
+		return session.Run(context.TODO(), func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
+			return dockerCli.DialHijack(ctx, "/session", proto, meta)
+		})
+	})
 
 	registry, repository, name, tag := common.GetImageConfig(cfg.Image, cfg.Registry, cfg.Repository, cfg.ImageName, cfg.Tag)
 	if err := common.CheckImageName(name); err != nil {
@@ -156,84 +175,118 @@ func runBuildImage(cfg BuildCmdConfig, cmd *cobra.Command) (err error) {
 		common.DOCKER_BUILD_ARG_WORKFLOW_NAME:            &cfg.ImageName,
 	}
 
+	existExtensions := strconv.FormatBool(len(cfg.Extesions) > 0)
+	buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &existExtensions
+
 	if len(cfg.Extesions) > 0 {
-		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS] = &cfg.Extesions
+		buildArgs[common.DOCKER_BUILD_ARG_EXTENSIONS_LIST] = &cfg.Extesions
+	}
+	imageTag := common.GetImage(registry, repository, name, tag)
+
+	eg.Go(func() error {
+		// make sure the Status ends cleanly on build errors
+		defer func() {
+			session.Close()
+		}()
+
+		if err := generateOutputFiles(ctx, dockerCli, buildArgs, session.ID()); err != nil {
+			return fmt.Errorf("error output: %w", err)
+		}
+
+		if err := generateRunnerImage(ctx, dockerCli, buildArgs, imageTag, session.ID()); err != nil {
+			return fmt.Errorf("error runner: %w", err)
+		}
+
+		return nil
+	})
+
+	if err := eg.Wait(); err != nil {
+		return err
 	}
 
-	// creates a tar with the Dockerfile and the workflow.sw.json
-	tar, err := archive.TarWithOptions(".", &archive.TarOptions{
-		IncludeFiles: []string{"Dockerfile.workflow", "workflow.sw.json"},
-	})
+	fmt.Println("✅ Build success")
+
+	return nil
+}
+
+func generateOutputFiles(
+	ctx context.Context,
+	dockerCli client.CommonAPIClient,
+	buildArgs map[string]*string,
+	sessionId string,
+) (err error) {
+	tar, err := createTarFromDockerfile()
 	if err != nil {
-		log.Fatal(err, " :unable to open Dockerfile")
+		return
 	}
 	defer tar.Close()
 
-	// creates a session for the dir
-	session, err := trySession(dockerClient, ".", false)
-	if err != nil {
-		log.Fatal(err, " : failed session")
-	}
-	defer func() { // make sure the Status ends cleanly on build errors
-		session.Close()
-	}()
-	// Adds the fs methods to the session
-	session.Allow(filesync.NewFSSyncProvider([]filesync.SyncedDir{
-		{
-			Name: "context",
-			Dir:  ".",
-			Map:  resetUIDAndGID,
-		},
-		{
-			Name: "dockerfile",
-			Dir:  ".",
-		},
-	}))
-	session.Allow(filesync.NewFSSyncTargetDir("./kubernets"))
-
-	dialSession := func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error) {
-		return dockerClient.DialHijack(ctx, "/session", proto, meta)
-	}
-
-	eg, ctx := errgroup.WithContext(ctx)
-	eg.Go(func() error {
-		return session.Run(context.TODO(), dialSession)
-	})
-
-	imageTag := common.GetImage(registry, repository, name, tag)
-	opts := types.ImageBuildOptions{
-		RemoteContext: "kn-workflow",
-		SessionID:     session.ID(),
-		Dockerfile:    "Dockerfile.workflow",
-		Tags:          []string{imageTag},
-		BuildArgs:     buildArgs,
-		Version:       types.BuilderBuildKit,
-		Target:        "kubernetes",
-		NetworkMode:   "default",
+	outputFilesOptions := types.ImageBuildOptions{
+		SessionID:   sessionId,
+		Dockerfile:  "Dockerfile.workflow",
+		BuildArgs:   buildArgs,
+		Version:     types.BuilderBuildKit,
+		Target:      "output-files",
+		NetworkMode: "default",
 		Outputs: []types.ImageBuildOutput{{
 			Type:  "local",
 			Attrs: map[string]string{},
 		}},
 	}
 
-	res, err := dockerClient.ImageBuild(ctx, tar, opts)
+	res, err := dockerCli.ImageBuild(ctx, tar, outputFilesOptions)
 	if err != nil {
 		return fmt.Errorf("cannot build the app image: %w", err)
 	}
 	defer res.Body.Close()
 
-	_, err = io.Copy(os.Stdout, res.Body)
+	return print(res.Body)
+}
+
+func generateRunnerImage(
+	ctx context.Context,
+	dockerCli client.CommonAPIClient,
+	buildArgs map[string]*string,
+	imageTag string,
+	sessionId string,
+) (err error) {
+	tar, err := createTarFromDockerfile()
 	if err != nil {
-		log.Fatal(err, " :unable to read image build response")
+		return
+	}
+	defer tar.Close()
+
+	outputFilesOptions := types.ImageBuildOptions{
+		Dockerfile:  "Dockerfile.workflow",
+		SessionID:   sessionId,
+		Tags:        []string{imageTag},
+		BuildArgs:   buildArgs,
+		Version:     types.BuilderBuildKit,
+		Target:      "runner",
+		NetworkMode: "default",
 	}
 
-	_, err = io.Copy(os.Stderr, res.Body)
+	res, err := dockerCli.ImageBuild(ctx, tar, outputFilesOptions)
 	if err != nil {
-		log.Fatal(err, " :unable to read image build response")
+		return fmt.Errorf("cannot build the app image: %w", err)
+	}
+	defer res.Body.Close()
+
+	return print(res.Body)
+}
+
+func createTarFromDockerfile() (tar io.ReadCloser, err error) {
+	// creates a tar with the Dockerfile and the workflow.sw.json
+	// TODO: path flag?
+	tar, err = archive.TarWithOptions("./", &archive.TarOptions{
+		IncludeFiles: []string{"Dockerfile.workflow", "workflow.sw.json"},
+	})
+
+	if err != nil {
+		err = fmt.Errorf("%w :unable to open Dockerfile", err)
 	}
 
-	fmt.Println("✅ Build success")
-	return nil
+	return
 }
 
 // Session is a long running connection between client and a daemon
@@ -250,43 +303,14 @@ type Session struct {
 
 // Creates a new session
 // A session is a grpc server that enables the Docker sdk to have a longer connection
-func trySession(dockerCli client.CommonAPIClient, contextDir string, forStream bool) (*session.Session, error) {
-	sharedKey := getBuildSharedKey(contextDir)
-	s, err := session.NewSession(context.Background(), filepath.Base(contextDir), sharedKey)
+func trySession(contextDir string, forStream bool) (*session.Session, error) {
+	sessionHash := sha256.Sum256([]byte(fmt.Sprintf("%s", contextDir)))
+	sharedKey := hex.EncodeToString(sessionHash[:])
+	session, err := session.NewSession(context.Background(), filepath.Base(contextDir), sharedKey)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to create session")
 	}
-	return s, nil
-}
-
-func getBuildSharedKey(dir string) string {
-	// build session is hash of build dir with node based randomness
-	s := sha256.Sum256([]byte(fmt.Sprintf("%s:%s", tryNodeIdentifier(), dir)))
-	return hex.EncodeToString(s[:])
-}
-
-func tryNodeIdentifier() string {
-	out := cliconfig.Dir() // return config dir as default on permission error
-	if err := os.MkdirAll(cliconfig.Dir(), 0700); err == nil {
-		sessionFile := filepath.Join(cliconfig.Dir(), ".buildNodeID")
-		if _, err := os.Lstat(sessionFile); err != nil {
-			if os.IsNotExist(err) { // create a new file with stored randomness
-				b := make([]byte, 32)
-				if _, err := rand.Read(b); err != nil {
-					return out
-				}
-				if err := ioutil.WriteFile(sessionFile, []byte(hex.EncodeToString(b)), 0600); err != nil {
-					return out
-				}
-			}
-		}
-
-		dt, err := ioutil.ReadFile(sessionFile)
-		if err == nil {
-			return string(dt)
-		}
-	}
-	return out
+	return session, nil
 }
 
 func resetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
@@ -295,134 +319,33 @@ func resetUIDAndGID(_ string, s *fsutiltypes.Stat) bool {
 	return true
 }
 
-// // NewSession returns a new long running session
-// func newSession(ctx context.Context, name, sharedKey string) (*Session, error) {
-// 	id := identity.NewID()
+type ErrorDetail struct {
+	Message string `json:"message"`
+}
 
-// 	var unary []grpc.UnaryServerInterceptor
-// 	var stream []grpc.StreamServerInterceptor
+type ErrorLine struct {
+	Error       string      `json:"error"`
+	ErrorDetail ErrorDetail `json:"errorDetail"`
+}
 
-// 	serverOpts := []grpc.ServerOption{}
+func print(rd io.Reader) error {
+	var lastLine string
 
-// 	if span := trace.SpanFromContext(ctx); span.SpanContext().IsValid() {
-// 		unary = append(unary, filterServer(otelgrpc.UnaryServerInterceptor(otelgrpc.WithTracerProvider(span.TracerProvider()), otelgrpc.WithPropagators(propagators))))
-// 		stream = append(stream, otelgrpc.StreamServerInterceptor(otelgrpc.WithTracerProvider(span.TracerProvider()), otelgrpc.WithPropagators(propagators)))
-// 	}
+	scanner := bufio.NewScanner(rd)
+	for scanner.Scan() {
+		lastLine = scanner.Text()
+		fmt.Println(scanner.Text())
+	}
 
-// 	unary = append(unary, grpcerrors.UnaryServerInterceptor)
-// 	stream = append(stream, grpcerrors.StreamServerInterceptor)
+	errLine := &ErrorLine{}
+	json.Unmarshal([]byte(lastLine), errLine)
+	if errLine.Error != "" {
+		return errors.New(errLine.Error)
+	}
 
-// 	if len(unary) == 1 {
-// 		serverOpts = append(serverOpts, grpc.UnaryInterceptor(unary[0]))
-// 	} else if len(unary) > 1 {
-// 		serverOpts = append(serverOpts, grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(unary...)))
-// 	}
+	if err := scanner.Err(); err != nil {
+		return err
+	}
 
-// 	if len(stream) == 1 {
-// 		serverOpts = append(serverOpts, grpc.StreamInterceptor(stream[0]))
-// 	} else if len(stream) > 1 {
-// 		serverOpts = append(serverOpts, grpc.StreamInterceptor(grpc_middleware.ChainStreamServer(stream...)))
-// 	}
-
-// 	s := &Session{
-// 		id:         id,
-// 		name:       name,
-// 		sharedKey:  sharedKey,
-// 		grpcServer: grpc.NewServer(serverOpts...),
-// 	}
-
-// 	grpc_health_v1.RegisterHealthServer(s.grpcServer, health.NewServer())
-
-// 	return s, nil
-// }
-
-// const (
-// 	headerSessionID        = "X-Docker-Expose-Session-Uuid"
-// 	headerSessionName      = "X-Docker-Expose-Session-Name"
-// 	headerSessionSharedKey = "X-Docker-Expose-Session-Sharedkey"
-// 	headerSessionMethod    = "X-Docker-Expose-Session-Grpc-Method"
-// )
-
-// var propagators = propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{})
-
-// // Dialer returns a connection that can be used by the session
-// type Dialer func(ctx context.Context, proto string, meta map[string][]string) (net.Conn, error)
-
-// // Attachable defines a feature that can be exposed on a session
-// type Attachable interface {
-// 	Register(*grpc.Server)
-// }
-
-// // ID returns unique identifier for the session
-// func (s *Session) ID() string {
-// 	return s.id
-// }
-
-// // Run activates the session
-// func (s *Session) Run(ctx context.Context, dialer Dialer) error {
-// 	ctx, cancel := context.WithCancel(ctx)
-// 	s.cancelCtx = cancel
-// 	s.done = make(chan struct{})
-
-// 	defer cancel()
-// 	defer close(s.done)
-
-// 	meta := make(map[string][]string)
-// 	meta[headerSessionID] = []string{s.id}
-// 	meta[headerSessionName] = []string{s.name}
-// 	meta[headerSessionSharedKey] = []string{s.sharedKey}
-
-// 	for name, svc := range s.grpcServer.GetServiceInfo() {
-// 		for _, method := range svc.Methods {
-// 			meta[headerSessionMethod] = append(meta[headerSessionMethod], MethodURL(name, method.Name))
-// 		}
-// 	}
-// 	conn, err := dialer(ctx, "h2c", meta)
-// 	if err != nil {
-// 		return errors.Wrap(err, "failed to dial gRPC")
-// 	}
-// 	s.conn = conn
-// 	serve(ctx, s.grpcServer, conn)
-// 	return nil
-// }
-
-// // Close closes the session
-// func (s *Session) Close() error {
-// 	if s.cancelCtx != nil && s.done != nil {
-// 		if s.conn != nil {
-// 			s.conn.Close()
-// 		}
-// 		s.grpcServer.Stop()
-// 		<-s.done
-// 	}
-// 	return nil
-// }
-
-// // Allow enables a given service to be reachable through the grpc session
-// func (s *Session) Allow(a Attachable) {
-// 	a.Register(s.grpcServer)
-// }
-
-// // updates needed in opentelemetry-contrib to avoid this
-// func filterServer(intercept grpc.UnaryServerInterceptor) grpc.UnaryServerInterceptor {
-// 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-// 		if strings.HasSuffix(info.FullMethod, "Health/Check") {
-// 			return handler(ctx, req)
-// 		}
-// 		return intercept(ctx, req, info, handler)
-// 	}
-// }
-
-// // MethodURL returns a gRPC method URL for service and method name
-// func MethodURL(s, m string) string {
-// 	return "/" + s + "/" + m
-// }
-
-// func serve(ctx context.Context, grpcServer *grpc.Server, conn net.Conn) {
-// 	go func() {
-// 		<-ctx.Done()
-// 		conn.Close()
-// 	}()
-// 	bklog.G(ctx).Debugf("serving grpc connection")
-// 	(&http2.Server{}).ServeConn(conn, &http2.ServeConnOpts{Handler: grpcServer})
-// }
+	return nil
+}
