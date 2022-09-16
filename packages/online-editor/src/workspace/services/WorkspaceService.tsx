@@ -20,21 +20,23 @@ import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
 import { extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
-import { WORKSPACE_DESCRIPTORS_FS_NAME, WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
-import { BroadcasterDispatch, FsService } from "./FsService";
+import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
+import { BroadcasterDispatch } from "./FsService";
 import { WorkspaceOrigin } from "../model/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceWorkerFile } from "../worker/api/WorkspaceWorkerFile";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
+import { WorkspaceFsService } from "./WorkspaceFsService";
 
 export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
 
 export class WorkspaceService {
   public constructor(
     public readonly storageService: StorageService,
-    private readonly descriptorsFsService: FsService,
+    private readonly descriptorsFsService: WorkspaceDescriptorFsService,
     private readonly workspaceDescriptorService: WorkspaceDescriptorService,
-    private readonly fsService: FsService
+    private readonly fsService: WorkspaceFsService
   ) {}
 
   public async create(args: {
@@ -42,16 +44,13 @@ export class WorkspaceService {
     origin: WorkspaceOrigin;
     preferredName?: string;
   }) {
-    const workspace = await this.descriptorsFsService.withReadWriteInMemoryFs(
-      WORKSPACE_DESCRIPTORS_FS_NAME,
-      ({ fs }) => {
-        return this.workspaceDescriptorService.create({
-          fs,
-          origin: args.origin,
-          preferredName: args.preferredName,
-        });
-      }
-    );
+    const workspace = await this.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+      return this.workspaceDescriptorService.create({
+        fs,
+        origin: args.origin,
+        preferredName: args.preferredName,
+      });
+    });
 
     try {
       return this.fsService.withReadWriteInMemoryFs(workspace.workspaceId, async ({ fs, broadcaster }) => {
@@ -76,7 +75,7 @@ export class WorkspaceService {
         return { workspace, files };
       });
     } catch (e) {
-      await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+      await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
         await this.workspaceDescriptorService.delete(fs, workspace.workspaceId);
       });
       throw e;
@@ -112,43 +111,37 @@ export class WorkspaceService {
   }
 
   public async delete(workspaceId: string): Promise<void> {
-    await this.descriptorsFsService.withReadWriteInMemoryFs(
-      WORKSPACE_DESCRIPTORS_FS_NAME,
-      async ({ fs, broadcaster }) => {
-        await this.workspaceDescriptorService.delete(fs, workspaceId);
-        indexedDB.deleteDatabase(workspaceId);
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs, broadcaster }) => {
+      await this.workspaceDescriptorService.delete(fs, workspaceId);
+      indexedDB.deleteDatabase(workspaceId);
 
-        broadcaster.broadcast({
-          channel: WORKSPACES_BROADCAST_CHANNEL,
-          message: async () => ({ type: "DELETE_WORKSPACE", workspaceId }),
-        });
+      broadcaster.broadcast({
+        channel: WORKSPACES_BROADCAST_CHANNEL,
+        message: async () => ({ type: "DELETE_WORKSPACE", workspaceId }),
+      });
 
-        broadcaster.broadcast({
-          channel: workspaceId,
-          message: async () => ({ type: "DELETE", workspaceId }),
-        });
-      }
-    );
+      broadcaster.broadcast({
+        channel: workspaceId,
+        message: async () => ({ type: "DELETE", workspaceId }),
+      });
+    });
   }
 
   public async rename(workspaceId: string, newName: string): Promise<void> {
-    await this.descriptorsFsService.withReadWriteInMemoryFs(
-      WORKSPACE_DESCRIPTORS_FS_NAME,
-      async ({ fs, broadcaster }) => {
-        await this.workspaceDescriptorService.rename(fs, workspaceId, newName);
-        await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, workspaceId);
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs, broadcaster }) => {
+      await this.workspaceDescriptorService.rename(fs, workspaceId, newName);
+      await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, workspaceId);
 
-        broadcaster.broadcast({
-          channel: WORKSPACES_BROADCAST_CHANNEL,
-          message: async () => ({ type: "RENAME_WORKSPACE", workspaceId }),
-        });
+      broadcaster.broadcast({
+        channel: WORKSPACES_BROADCAST_CHANNEL,
+        message: async () => ({ type: "RENAME_WORKSPACE", workspaceId }),
+      });
 
-        broadcaster.broadcast({
-          channel: workspaceId,
-          message: async () => ({ type: "RENAME", workspaceId }),
-        });
-      }
-    );
+      broadcaster.broadcast({
+        channel: workspaceId,
+        message: async () => ({ type: "RENAME", workspaceId }),
+      });
+    });
   }
 
   public async prepareZip(fs: KieSandboxWorkspacesFs, workspaceId: string, onlyExtensions?: string[]): Promise<Blob> {
@@ -188,7 +181,7 @@ export class WorkspaceService {
       fs,
       this.toStorageFile(file, async () => file.content)
     );
-    await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, file.workspaceId);
     });
 
@@ -231,7 +224,7 @@ export class WorkspaceService {
     await this.storageService.updateFile(fs, this.getAbsolutePath(wwfd), () =>
       getNewContents().then((c) => encoder.encode(c))
     );
-    await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, wwfd.workspaceId);
     });
 
@@ -258,7 +251,7 @@ export class WorkspaceService {
     broadcaster: BroadcasterDispatch
   ): Promise<void> {
     await this.storageService.deleteFile(fs, this.toExistingStorageFile(fs, wwfd).path);
-    await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, wwfd.workspaceId);
     });
 
@@ -292,7 +285,7 @@ export class WorkspaceService {
     );
     const renamedWorkspaceFile = await this.toWorkspaceFile(args.wwfd.workspaceId, renamedStorageFile);
 
-    await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, args.wwfd.workspaceId);
     });
 
@@ -333,7 +326,7 @@ export class WorkspaceService {
   }
 
   public getAbsolutePath(args: { workspaceId: string; relativePath?: string }) {
-    return join("/", args.workspaceId, args.relativePath ?? "");
+    return join("/", this.fsService.getMountPoint(args.workspaceId), args.relativePath ?? "");
   }
 
   public async deleteFiles(
@@ -349,7 +342,7 @@ export class WorkspaceService {
       files.map((f) => this.toExistingStorageFile(fs, f)).map((f) => this.storageService.deleteFile(fs, f.path))
     );
 
-    await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, files[0].workspaceId);
     });
 
@@ -381,7 +374,7 @@ export class WorkspaceService {
       newDirPath
     );
 
-    await this.descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, async ({ fs }) => {
+    await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, files[0].workspaceId);
     });
 

@@ -21,17 +21,22 @@ import { decoder, encoder } from "../WorkspacesContext";
 import { WorkspaceKind, WorkspaceOrigin } from "../model/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
+import { join } from "path";
 
-export const WORKSPACE_DESCRIPTORS_FS_NAME = "workspaces";
+export const WORKSPACE_DESCRIPTORS_FS_NAME__OLD = "workspaces";
 export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
 export class WorkspaceDescriptorService {
-  constructor(private readonly storageService: StorageService) {}
+  constructor(
+    private readonly descriptorFsService: WorkspaceDescriptorFsService,
+    private readonly storageService: StorageService
+  ) {}
 
   public async listAll(fs: KieSandboxWorkspacesFs): Promise<WorkspaceDescriptor[]> {
     const workspaceDescriptorsFilePaths = await this.storageService.walk({
       fs: fs,
-      startFromDirPath: `/${WORKSPACE_DESCRIPTORS_FS_NAME}`,
+      startFromDirPath: this.getAbsolutePath(""),
       shouldExcludeDir: () => false,
       onVisit: async ({ absolutePath }) => absolutePath,
     });
@@ -111,7 +116,7 @@ export class WorkspaceDescriptorService {
   }
 
   private getAbsolutePath(relativePath: string) {
-    return `/${WORKSPACE_DESCRIPTORS_FS_NAME}/${relativePath}`;
+    return join("/", this.descriptorFsService.getMountPoint(), relativePath ?? "");
   }
 
   private toStorageFile(descriptor: WorkspaceDescriptor) {

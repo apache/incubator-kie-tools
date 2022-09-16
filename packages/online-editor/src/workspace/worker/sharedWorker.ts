@@ -17,8 +17,7 @@
 import { GitService } from "../services/GitService";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
 import { StorageFile, StorageService } from "../services/StorageService";
-import { WORKSPACE_DESCRIPTORS_FS_NAME, WorkspaceDescriptorService } from "../services/WorkspaceDescriptorService";
-import { FsService } from "../services/FsService";
+import { WorkspaceDescriptorService } from "../services/WorkspaceDescriptorService";
 import { WorkspaceService } from "../services/WorkspaceService";
 import { WorkspaceDescriptor } from "../model/WorkspaceDescriptor";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
@@ -40,6 +39,8 @@ import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import "../../polyfill/BroadcastChannelSingleTabOnWorker";
+import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
+import { WorkspaceFsService } from "../services/WorkspaceFsService";
 
 declare let self: any;
 declare let importScripts: any;
@@ -82,15 +83,10 @@ const fsPromise = new Promise<void>((resFs) => {
 const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
   await fsPromise;
   const storageService = new StorageService();
-  const fsService = new FsService();
-  const descriptorsFsService = new FsService();
-  const workspaceDescriptorService = new WorkspaceDescriptorService(storageService);
-  const workspacesService = new WorkspaceService(
-    storageService,
-    descriptorsFsService,
-    workspaceDescriptorService,
-    fsService
-  );
+  const fsService = new WorkspaceFsService();
+  const descriptorsFsService = new WorkspaceDescriptorFsService();
+  const descriptorService = new WorkspaceDescriptorService(descriptorsFsService, storageService);
+  const service = new WorkspaceService(storageService, descriptorsFsService, descriptorService, fsService);
   const gitService = new GitService(corsProxyUrl());
   // const svgService = new WorkspaceSvgService(storageService);
   const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
@@ -100,7 +96,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
     origin: WorkspaceOrigin;
     preferredName?: string;
   }) => {
-    const { workspace, files } = await workspacesService.create({
+    const { workspace, files } = await service.create({
       storeFiles: args.storeFiles,
       origin: args.origin,
       preferredName: args.preferredName,
@@ -128,28 +124,28 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       workspaceId: string; //
       remoteUrl: string;
     }): Promise<void> {
-      return descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, ({ fs }) => {
-        return workspaceDescriptorService.turnIntoGist(fs, args.workspaceId, new URL(args.remoteUrl));
+      return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+        return descriptorService.turnIntoGist(fs, args.workspaceId, new URL(args.remoteUrl));
       });
     },
     async kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
       workspaceId: string; //
       remoteUrl: string;
     }): Promise<void> {
-      return descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, ({ fs }) => {
-        return workspaceDescriptorService.turnIntoGit(fs, args.workspaceId, new URL(args.remoteUrl));
+      return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+        return descriptorService.turnIntoGit(fs, args.workspaceId, new URL(args.remoteUrl));
       });
     },
     async kieSandboxWorkspacesStorage_getWorkspace(args: {
       workspaceId: string; //
     }): Promise<WorkspaceDescriptor> {
-      return descriptorsFsService.withReadonlyInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, ({ fs }) => {
-        return workspaceDescriptorService.get(fs, args.workspaceId);
+      return descriptorsFsService.withReadonlyInMemoryFs(({ fs }) => {
+        return descriptorService.get(fs, args.workspaceId);
       });
     },
     async kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]> {
-      return descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, ({ fs }) => {
-        return workspaceDescriptorService.listAll(fs);
+      return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+        return descriptorService.listAll(fs);
       });
     },
     async kieSandboxWorkspacesStorage_resourceContentGet(args: {
@@ -158,7 +154,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       opts?: ResourceContentOptions;
     }): Promise<ResourceContent | undefined> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        const file = await workspacesService.getFile({
+        const file = await service.getFile({
           fs: fs,
           workspaceId: args.workspaceId,
           relativePath: args.relativePath,
@@ -191,7 +187,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       opts?: ResourceListOptions;
     }): Promise<ResourcesList> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        const files = await workspacesService.getFilesWithLazyContent(fs, args.workspaceId, args.globPattern);
+        const files = await service.getFilesWithLazyContent(fs, args.workspaceId, args.globPattern);
         const matchingPaths = files.map((file) => file.relativePath);
         return new ResourcesList(args.globPattern, matchingPaths);
       });
@@ -215,7 +211,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
           const index = i === 0 ? "" : `-${i}`;
           const fileName = `${args.name}${index}.${args.extension}`;
           const relativePath = join(args.destinationDirRelativePath, fileName);
-          if (await workspacesService.existsFile({ fs, workspaceId: args.workspaceId, relativePath })) {
+          if (await service.existsFile({ fs, workspaceId: args.workspaceId, relativePath })) {
             continue;
           }
 
@@ -224,7 +220,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
             content: encoder.encode(args.content),
             relativePath,
           };
-          await workspacesService.createOrOverwriteFile(fs, newFile, broadcaster);
+          await service.createOrOverwriteFile(fs, newFile, broadcaster);
           return newFile;
         }
 
@@ -233,12 +229,12 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
     },
     async kieSandboxWorkspacesStorage_deleteFile(args: { wwfd: WorkspaceWorkerFileDescriptor }): Promise<void> {
       return fsService.withReadWriteInMemoryFs(args.wwfd.workspaceId, async ({ fs, broadcaster }) => {
-        await workspacesService.deleteFile(fs, args.wwfd, broadcaster);
+        await service.deleteFile(fs, args.wwfd, broadcaster);
         // await svgService.deleteSvg(args.wwfd);
       });
     },
     async kieSandboxWorkspacesStorage_deleteWorkspace(args: { workspaceId: string }): Promise<void> {
-      await workspacesService.delete(args.workspaceId);
+      await service.delete(args.workspaceId);
       // await svgService.delete(args.workspaceId);
     },
     async kieSandboxWorkspacesStorage_existsFile(args: {
@@ -246,7 +242,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       relativePath: string;
     }): Promise<boolean> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return await workspacesService.existsFile({
+        return await service.existsFile({
           fs: fs,
           workspaceId: args.workspaceId,
           relativePath: args.relativePath,
@@ -258,7 +254,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       relativePath: string;
     }): Promise<WorkspaceWorkerFileDescriptor | undefined> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        const file = await workspacesService.getFile({
+        const file = await service.getFile({
           fs: fs,
           workspaceId: args.workspaceId,
           relativePath: args.relativePath,
@@ -277,28 +273,28 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       relativePath: string;
     }): Promise<Uint8Array> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return storageService.getFileContent(fs, workspacesService.getAbsolutePath(args));
+        return storageService.getFileContent(fs, service.getAbsolutePath(args));
       });
     },
     async kieSandboxWorkspacesStorage_getFiles(args: {
       workspaceId: string;
     }): Promise<WorkspaceWorkerFileDescriptor[]> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return (await workspacesService.getFilesWithLazyContent(fs, args.workspaceId)).map((file) => ({
+        return (await service.getFilesWithLazyContent(fs, args.workspaceId)).map((file) => ({
           workspaceId: file.workspaceId,
           relativePath: file.relativePath,
         }));
       });
     },
     async kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
-      return workspacesService.getUniqueFileIdentifier(args);
+      return service.getUniqueFileIdentifier(args);
     },
     async kieSandboxWorkspacesStorage_prepareZip(args: {
       workspaceId: string;
       onlyExtensions?: string[];
     }): Promise<Blob> {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return workspacesService.prepareZip(fs, args.workspaceId, args.onlyExtensions);
+        return service.prepareZip(fs, args.workspaceId, args.onlyExtensions);
       });
     },
 
@@ -307,7 +303,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       newFileNameWithoutExtension: string;
     }): Promise<WorkspaceWorkerFileDescriptor> {
       return fsService.withReadWriteInMemoryFs(args.wwfd.workspaceId, async ({ fs, broadcaster }) => {
-        const newFile = workspacesService.renameFile({
+        const newFile = service.renameFile({
           fs: fs,
           wwfd: args.wwfd,
           newFileNameWithoutExtension: args.newFileNameWithoutExtension,
@@ -318,14 +314,14 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       });
     },
     async kieSandboxWorkspacesStorage_renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void> {
-      await workspacesService.rename(args.workspaceId, args.newName);
+      await service.rename(args.workspaceId, args.newName);
     },
     async kieSandboxWorkspacesStorage_updateFile(args: {
       wwfd: WorkspaceWorkerFileDescriptor;
       newContent: string;
     }): Promise<void> {
       return fsService.withReadWriteInMemoryFs(args.wwfd.workspaceId, async ({ fs, broadcaster }) => {
-        return workspacesService.updateFile(fs, args.wwfd, async () => args.newContent, broadcaster);
+        return service.updateFile(fs, args.wwfd, async () => args.newContent, broadcaster);
       });
     },
 
@@ -340,7 +336,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       return fsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs, broadcaster }) => {
         return gitService.addRemote({
           fs: fs,
-          dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
       });
@@ -353,7 +349,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       return fsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs, broadcaster }) => {
         return gitService.branch({
           fs: fs,
-          dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
       });
@@ -369,13 +365,13 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
         storeFiles: async (fs, workspace) => {
           await gitService.clone({
             fs,
-            dir: workspacesService.getAbsolutePath({ workspaceId: workspace.workspaceId }),
+            dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
             repositoryUrl: new URL(args.origin.url),
             gitConfig: args.gitConfig,
             authInfo: args.authInfo,
             sourceBranch: args.origin.branch,
           });
-          return workspacesService.getFilesWithLazyContent(fs, workspace.workspaceId);
+          return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },
       });
     },
@@ -383,11 +379,11 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       workspaceId: string;
       gitConfig?: { email: string; name: string };
     }): Promise<void> {
-      const descriptor = await descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, ({ fs }) => {
-        return workspaceDescriptorService.get(fs, args.workspaceId);
+      const descriptor = await descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+        return descriptorService.get(fs, args.workspaceId);
       });
 
-      const workspaceRootDirPath = workspacesService.getAbsolutePath({ workspaceId: args.workspaceId });
+      const workspaceRootDirPath = service.getAbsolutePath({ workspaceId: args.workspaceId });
 
       return fsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs, broadcaster }) => {
         const fileRelativePaths = await gitService.unstagedModifiedFileRelativePaths({
@@ -403,7 +399,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
         await Promise.all(
           fileRelativePaths.map(async (relativePath) => {
             if (
-              await workspacesService.existsFile({
+              await service.existsFile({
                 fs,
                 workspaceId: args.workspaceId,
                 relativePath,
@@ -458,7 +454,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
             .map(
               (localFile) =>
                 new StorageFile({
-                  path: workspacesService.getAbsolutePath({
+                  path: service.getAbsolutePath({
                     workspaceId: workspace.workspaceId,
                     relativePath: localFile.path,
                   }),
@@ -472,7 +468,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
             })
           );
 
-          const workspaceRootDirPath = await workspacesService.getAbsolutePath({
+          const workspaceRootDirPath = service.getAbsolutePath({
             workspaceId: workspace.workspaceId,
           });
 
@@ -518,7 +514,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
             },
           });
 
-          return workspacesService.getFilesWithLazyContent(fs, workspace.workspaceId);
+          return service.getFilesWithLazyContent(fs, workspace.workspaceId);
         },
       });
     },
@@ -527,14 +523,14 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       gitConfig?: { email: string; name: string };
       authInfo?: { username: string; password: string };
     }): Promise<void> {
-      const workspace = await descriptorsFsService.withReadWriteInMemoryFs(WORKSPACE_DESCRIPTORS_FS_NAME, ({ fs }) => {
-        return workspaceDescriptorService.get(fs, args.workspaceId);
+      const workspace = await descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+        return descriptorService.get(fs, args.workspaceId);
       });
 
       return fsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs, broadcaster }) => {
         await gitService.pull({
           fs: fs,
-          dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
           ref: workspace.origin.branch,
           author: {
             name: args.gitConfig?.name ?? GIT_USER_DEFAULT.name,
@@ -566,7 +562,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       return fsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs, broadcaster }) => {
         return gitService.push({
           fs: fs,
-          dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
           ...args,
         });
       });
@@ -575,7 +571,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
         return gitService.resolveRef({
           fs: fs,
-          dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
           ref: args.ref,
         });
       });
@@ -584,7 +580,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
         return gitService.hasLocalChanges({
           fs: fs,
-          dir: workspacesService.getAbsolutePath({ workspaceId: args.workspaceId }),
+          dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
         });
       });
     },
