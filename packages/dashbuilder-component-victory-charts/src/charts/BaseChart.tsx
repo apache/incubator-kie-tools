@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 import * as React from "react";
-import "@patternfly/patternfly/patternfly-charts.css";
 import { ChartVoronoiContainer } from "@patternfly/react-charts";
+import { VictoryZoomContainer } from "victory-zoom-container";
 import { DataSet } from "@kie-tools/dashbuilder-component-api";
 
 export type ThemeColorType =
@@ -34,7 +34,7 @@ export type ThemeColorType =
 export type ThemeVariantType = "light" | "dark";
 
 export type LegendPosition = "bottom-left" | "bottom" | "right";
-export type ChartType = "bar" | "area" | "line" | "donut" | "pie" | "stack" | "utilization-donut";
+export type ChartType = "bar" | "area" | "line" | "donut" | "pie" | "stack" | "utilization-donut" | "scatter";
 export type LegendOrientation = "horizontal" | "vertical";
 
 export interface XYChartData {
@@ -78,6 +78,7 @@ export interface ChartProps {
   themeVariant: ThemeVariantType;
   dataSet: DataSet;
   legendPosition: LegendPosition;
+  legendOrientation?: LegendOrientation;
   animation: AnimationProp;
   ariaTitle: string;
   ariaDescription: string;
@@ -89,6 +90,12 @@ export interface ChartProps {
 
   horizontalBars?: boolean;
   fixLabelsOverlap?: boolean;
+
+  // Bar Chart configuration
+  barWidth?: number;
+  barOffset?: number;
+
+  zoom?: boolean;
 }
 
 export abstract class BaseChart extends React.Component<ChartProps, any> {
@@ -104,12 +111,17 @@ export abstract class BaseChart extends React.Component<ChartProps, any> {
   constructor(props: ChartProps) {
     super(props);
     this.buildLegendData();
-    this.legendOrientation = this.props.legendPosition === "right" ? "vertical" : "horizontal";
+    this.legendOrientation =
+      this.props.legendOrientation || (this.props.legendPosition === "right" ? "vertical" : "horizontal");
     if (props.animation.enabled) {
       this.animationProp = {
         duration: props.animation.duration,
         easing: props.animation.easing,
       };
+    }
+
+    if (props.zoom) {
+      this.containerComponent = <VictoryZoomContainer />;
     }
   }
 

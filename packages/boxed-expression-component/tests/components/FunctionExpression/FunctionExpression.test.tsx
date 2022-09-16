@@ -35,7 +35,7 @@ import {
   FunctionKind,
   FunctionProps,
   LogicType,
-} from "@kie-tools/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component/dist/api";
 import { act } from "react-dom/test-utils";
 
 describe("FunctionExpression tests", () => {

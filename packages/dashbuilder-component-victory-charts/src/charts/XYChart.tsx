@@ -100,4 +100,10 @@ export abstract class XYChart extends BaseChart {
       return { name: series.name, x: d.x, y: d.y, yVal: Numeral(d.y).value() };
     });
   }
+
+  scatterLines(series: XYChartSeries): XYChartDataLine[] {
+    return series.data.map((d) => {
+      return { name: d.x, x: series.name, y: d.y, yVal: Numeral(d.y).value() };
+    });
+  }
 }

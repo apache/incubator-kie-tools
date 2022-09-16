@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ActivationFileVisitorTest {
+class ActivationFileVisitorTest {
 
     private ActivationFileVisitor activationFileVisitor;
 
@@ -37,20 +37,20 @@ public class ActivationFileVisitorTest {
     }
 
     @Test
-    public void testContainsActivator() throws IOException {
+    void testContainsActivator() throws IOException {
         Path workspace = Paths.get("src/test/resources/testProject");
         Files.walkFileTree(workspace.toAbsolutePath(), this.activationFileVisitor);
         assertThat(this.activationFileVisitor.isPresent()).isTrue();
     }
 
     @Test
-    public void testContainsActivatorImport() {
+    void testContainsActivatorImport() {
         boolean present = this.activationFileVisitor.containsActivator(ActivationFileVisitor.IMPORT_ACTIVATOR);
         assertThat(present).isTrue();
     }
 
     @Test
-    public void testContainsActivatorAnnotation() {
+    void testContainsActivatorAnnotation() {
         boolean present = this.activationFileVisitor.containsActivator(ActivationFileVisitor.ANNOTATION_ACTIVATOR);
         assertThat(present).isTrue();
     }

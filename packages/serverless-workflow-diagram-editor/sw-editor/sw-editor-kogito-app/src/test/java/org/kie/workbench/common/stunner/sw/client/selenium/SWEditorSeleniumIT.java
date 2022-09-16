@@ -60,6 +60,9 @@ public class SWEditorSeleniumIT {
     private static final String GET_CONTENT_TEMPLATE =
             "return gwtEditorBeans.get(\"SWDiagramEditor\").get().getContent()";
 
+    private static final String CONTENT_REGULAR_CHAR = "\\\"";
+    private static final String CONTENT_EXECUTOR_CHAR = "&quot;";
+
     private static final String INDEX_HTML = "target/sw-editor-kogito-app/index.html";
     private static final String INDEX_HTML_PATH = "file:///" + new File(INDEX_HTML).getAbsolutePath();
 
@@ -73,7 +76,6 @@ public class SWEditorSeleniumIT {
      */
     private WebDriver driver;
 
-
     @BeforeClass
     public static void setupClass() {
         WebDriverManager.firefoxdriver().useMirror().setup();
@@ -84,6 +86,7 @@ public class SWEditorSeleniumIT {
         final FirefoxOptions firefoxOptions = new FirefoxOptions();
         firefoxOptions.setHeadless(HEADLESS);
         driver = new FirefoxDriver(firefoxOptions);
+
         driver.manage().window().maximize();
 
         driver.get(INDEX_HTML_PATH);
@@ -151,6 +154,101 @@ public class SWEditorSeleniumIT {
         testExample("AsyncSubFlowInvocationExample.sw.json");
     }
 
+    @Test
+    public void testEventBasedSwitchStateExample() throws Exception {
+        testExample("EventBasedSwitchStateExample.sw.json");
+    }
+
+    @Test
+    public void testProvisionOrdersExample() throws Exception {
+        testExample("ProvisionOrdersExample.sw.json");
+    }
+
+    @Test
+    public void testCustomerCreditCheckExample() throws Exception {
+        testExample("CustomerCreditCheckExample.sw.json");
+    }
+
+    @Test
+    public void testJobMonitoringExample() throws Exception {
+        testExample("JobMonitoringExample.sw.json");
+    }
+
+    @Test
+    public void testSendCloudEventOnProvisionExample() throws Exception {
+        testExample("SendCloudEventOnProvisionExample.sw.json");
+    }  
+
+    @Test
+    public void testApplicantRequestDecisionExample() throws Exception {
+        testExample("ApplicantRequestDecisionExample.sw.json");
+    }
+
+    @Test
+    public void testMonitorPatientVitalSignsExample() throws Exception {
+        testExample("MonitorPatientVitalSignsExample.sw.json");
+    }
+
+    @Test
+    public void testFinalizeCollegeExample() throws Exception {
+        testExample("FinalizeCollegeApplicationExample.sw.json");
+    }
+    
+    @Test
+    public void testHandleCarAuctionBidExample() throws Exception {
+        testExample("HandleCarAuctionBidExample.sw.json");
+    } 
+
+    @Test
+    public void testCheckInboxPeriodicallyExample() throws Exception {
+        testExample("CheckInboxPeriodicallyExample.sw.json");
+    }
+    
+    @Test
+    public void testEventBasedServiceInvocation() throws Exception {
+        testExample("EventBasedServiceInvocationExample.sw.json");
+    }
+
+    @Test
+    public void testNewPatientOnboardingExample() throws Exception {
+        testExample("NewPatientOnboardingExample.sw.json");
+    }
+
+    @Test
+    public void testPurchaseOrderDeadlineExample() throws Exception {
+        testExample("PurchaseOrderDeadlineExample.sw.json");
+    }
+
+    @Test
+    public void testAccumulateRoomReadingsExample() throws Exception {
+        testExample("AccumulateRoomReadingsExample.sw.json");
+    }
+
+    @Test
+    public void testCarVitalsCheckExample() throws Exception {
+        testExample("CarVitalsCheckExample.sw.json");
+    }
+
+    @Test
+    public void testBookLendingExample() throws Exception {
+        testExample("BookLendingExample.sw.json");
+    }
+
+    @Test
+    public void testFillGlassOfWaterExample() throws Exception {
+        testExample("FillGlassOfWaterExample.sw.json");
+    }
+
+    @Test
+    public void testNotifyCustomerWorkflowExample() throws Exception {
+        testExample("NotifyCustomerWorkflowExample.sw.json");
+    }
+
+    @Test
+    public void testProcessTransactionsExample() throws Exception {
+        testExample("ProcessTransactionsExample.sw.json");
+    }
+
     private void testExample(String exampleName) throws Exception {
         final String expected = loadResource(exampleName);
         setContent(expected);
@@ -189,7 +287,10 @@ public class SWEditorSeleniumIT {
 
     private void setContent(final String xml) {
         try {
-            ((JavascriptExecutor) driver).executeScript(String.format(SET_CONTENT_TEMPLATE, xml));
+            String content = String.format(SET_CONTENT_TEMPLATE, xml);
+            content = content.replace(CONTENT_REGULAR_CHAR, CONTENT_EXECUTOR_CHAR);
+            ((JavascriptExecutor) driver).executeScript(content);
+
         } catch (Exception e) {
             LOG.error("Exception during JS execution. Ex: {}", e.getMessage());
         }
@@ -198,7 +299,10 @@ public class SWEditorSeleniumIT {
     private String getContent() {
         final Object result = ((JavascriptExecutor) driver).executeScript(String.format(GET_CONTENT_TEMPLATE));
         assertThat(result).isInstanceOf(String.class);
-        return (String) result;
+
+        String content = (String) result;
+        content = content.replace(CONTENT_EXECUTOR_CHAR, CONTENT_REGULAR_CHAR);
+        return content;
     }
 
     /**

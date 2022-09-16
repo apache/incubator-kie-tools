@@ -1,0 +1,100 @@
+{
+  "id": "provisionorders",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "Provision Orders",
+  "description": "Provision Orders and handle errors thrown",
+  "start": "ProvisionOrder",
+  "functions": [
+    {
+      "name": "provisionOrderFunction",
+      "operation": "http://myapis.org/provisioningapi.json#doProvision"
+    }
+  ],
+  "errors": [
+    {
+      "name": "Missing order id"
+    },
+    {
+      "name": "Missing order item"
+    },
+    {
+      "name": "Missing order quantity"
+    }
+  ],
+  "states": [
+    {
+      "name": "ProvisionOrder",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "functionRef": {
+            "refName": "provisionOrderFunction",
+            "arguments": {
+              "order": "${ .order }"
+            }
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ .exceptions }"
+      },
+      "transition": "ApplyOrder",
+      "onErrors": [
+        {
+          "errorRef": "Missing order id",
+          "transition": "MissingId"
+        },
+        {
+          "errorRef": "Missing order item",
+          "transition": "MissingItem"
+        },
+        {
+          "errorRef": "Missing order quantity",
+          "transition": "MissingQuantity"
+        }
+      ]
+    },
+    {
+      "name": "MissingId",
+      "type": "operation",
+      "actions": [
+        {
+          "subFlowRef": "handleMissingIdExceptionWorkflow"
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "MissingItem",
+      "type": "operation",
+      "actions": [
+        {
+          "subFlowRef": "handleMissingItemExceptionWorkflow"
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "MissingQuantity",
+      "type": "operation",
+      "actions": [
+        {
+          "subFlowRef": "handleMissingQuantityExceptionWorkflow"
+        }
+      ],
+      "end": true
+    },
+    {
+      "name": "ApplyOrder",
+      "type": "operation",
+      "actions": [
+        {
+          "subFlowRef": "applyOrderWorkflowId"
+        }
+      ],
+      "end": true
+    }
+  ]
+}

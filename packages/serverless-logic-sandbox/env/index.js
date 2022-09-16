@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const { version } = require("@kie-tools/build-env/package.json");
+const { version } = require("@kie-tools-scripts/build-env/package.json");
 
 module.exports = composeEnv(
   [
-    require("@kie-tools/build-env/env"),
+    require("@kie-tools/root-env/env"),
     require("@kie-tools/serverless-logic-sandbox-base-image-env/env"),
     require("@kie-tools/openjdk11-mvn-image-env/env"),
   ],
@@ -58,6 +58,11 @@ module.exports = composeEnv(
         default: "latest",
         description: "",
       },
+      SERVERLESS_LOGIC_SANDBOX__corsProxyUrl: {
+        default:
+          "https://cors-proxy-kie-sandbox.rhba-cluster-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud",
+        description: "",
+      },
     }),
     get env() {
       return {
@@ -83,6 +88,7 @@ module.exports = composeEnv(
               windows: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__kieSandboxExtendedServicesDownloadUrlWindows),
             },
           },
+          corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_SANDBOX__corsProxyUrl),
         },
       };
     },

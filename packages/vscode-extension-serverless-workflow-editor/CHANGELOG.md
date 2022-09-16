@@ -1,3 +1,31 @@
+# 0.23.0 (alpha)
+
+- [KOGITO-7663](https://issues.redhat.com/browse/KOGITO-7663) - Fix inconsistency in filename template description and default value
+- [KOGITO-6427](https://issues.redhat.com/browse/KOGITO-6427) - User is able to input malformed custom data types
+- [KOGITO-7372](https://issues.redhat.com/browse/KOGITO-7372) - Source/Target of data assignments shows malformed data when specific generics are used
+- [KOGITO-7893](https://issues.redhat.com/browse/KOGITO-7893) - Stunner should now be the default workflow viewer
+- [KOGITO-7531](https://issues.redhat.com/browse/KOGITO-7531) - [SWF Editor] End construct support
+- [KOGITO-7591](https://issues.redhat.com/browse/KOGITO-7591) - [SWF Editor] Is adding extra "end": false to eventConditions fields even when transition is set
+- [KOGITO-7608](https://issues.redhat.com/browse/KOGITO-7608) - [SWF Editor] Is removing "schedule" from "start" object and makes is a string
+- [KOGITO-7609](https://issues.redhat.com/browse/KOGITO-7609) - [SWF Editor] Is changing transition object to string
+- [KOGITO-7599](https://issues.redhat.com/browse/KOGITO-7599) - [SWF Editor] Cannot open workflows from specification examples
+- [KOGITO-7594](https://issues.redhat.com/browse/KOGITO-7594) - [SWF Editor] Is unable to load SendCloudEventOnProvisionExample.sw.json
+
+# 0.22.0 (alpha)
+
+- [KOGITO-7530](https://issues.redhat.com/browse/KOGITO-7530) - SWF Viewer - Can't visualize the workflow when some reference is broken
+- [KOGITO-7567](https://issues.redhat.com/browse/KOGITO-7567) - [SWF Editor] is duplicating actions in worklow after getContent()
+- [KOGITO-7577](https://issues.redhat.com/browse/KOGITO-7577) - SWF Stunner Editor - Parameter named 'uuid' should be not null!
+- [KOGITO-7623](https://issues.redhat.com/browse/KOGITO-7623) - Specs folder is not detected in Windows on SWF VSCode Extension
+- [KOGITO-7629](https://issues.redhat.com/browse/KOGITO-7629) - SWF Viewer - Exception is thrown when an arrow is selected
+- [KOGITO-7699](https://issues.redhat.com/browse/KOGITO-7699) - [SWF Editor] LS auto-completion for functionRef arguments does not work
+- [KOGITO-7532](https://issues.redhat.com/browse/KOGITO-7532) - SWF Viewer - States coloring
+- [KOGITO-7595](https://issues.redhat.com/browse/KOGITO-7595) - [SWF Editor] Add custom validation messages
+- [KOGITO-7587](https://issues.redhat.com/browse/KOGITO-7587) - [SWF Editor] Code lenses stop working on a specific scenario
+- [KOGITO-7679](https://issues.redhat.com/browse/KOGITO-7679) - SW Stunner Editor changes user's cursor if node is selected making it impossible to edit the file
+- [KOGITO-7731](https://issues.redhat.com/browse/KOGITO-7731) - [SWF Editor] LS auto-completion for full functionRef object does not work
+- [KOGITO-6981](https://issues.redhat.com/browse/KOGITO-6981) - SWF Editor - Viewer Look&Feel
+
 # 0.21.1 (alpha)
 
 - [KOGITO-7586](https://issues.redhat.com/browse/KOGITO-7586) - [SWF Editor] Replace MAS SSO with RH SSO in the Service Registry authentication

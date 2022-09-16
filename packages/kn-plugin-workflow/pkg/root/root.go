@@ -18,7 +18,6 @@ package root
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -27,13 +26,13 @@ import (
 )
 
 type RootCmdConfig struct {
-	DependenciesVersion common.DependenciesVersion
-	PluginVersion       string
+	Name    string
+	Version string
 }
 
 func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	var cmd = &cobra.Command{
-		Use:   "kn-workflow",
+		Use:   cfg.Name,
 		Short: "Serverless Workflow",
 		Long:  "Manage Kogito Serverless Workflow projects",
 	}
@@ -41,19 +40,13 @@ func NewRootCommand(cfg RootCmdConfig) *cobra.Command {
 	viper.AutomaticEnv()           // read in environment variables for WORKFLOW_<flag>
 	viper.SetEnvPrefix("workflow") // ensure thay all have the prefix
 
-	cmd.PersistentFlags().BoolP("verbose", "v", false, "Print verbose logs")
-	if err := viper.BindPFlag("verbose", cmd.PersistentFlags().Lookup("verbose")); err != nil {
-		fmt.Fprintf(os.Stderr, "error binding flag: %v\n", err)
-	}
-
-	cmd.Version = cfg.PluginVersion
+	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
-	cmd.AddCommand(command.NewBuildCommand(cfg.DependenciesVersion))
-	cmd.AddCommand(command.NewConfigCommand(cfg.DependenciesVersion))
-	cmd.AddCommand(command.NewCreateCommand(cfg.DependenciesVersion))
+	cmd.AddCommand(command.NewBuildCommand())
+	cmd.AddCommand(command.NewCreateCommand())
 	cmd.AddCommand(command.NewDeployCommand())
-	cmd.AddCommand(command.NewVersionCommand(cfg.PluginVersion))
+	cmd.AddCommand(command.NewVersionCommand(cfg.Version))
 
 	cmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 		runRootHelp(cmd, args)

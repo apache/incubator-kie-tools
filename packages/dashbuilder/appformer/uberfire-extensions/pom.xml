@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.uberfire</groupId>
     <artifactId>uberfire-parent</artifactId>
-    <version>0.0.0</version>
+    <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 

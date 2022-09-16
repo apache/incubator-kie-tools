@@ -24,9 +24,18 @@ import {
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { EmbeddedEditor, useEditorRef, useStateControlSubscription } from "@kie-tools-core/editor/dist/embedded";
 import { LoadingScreen } from "@kie-tools-core/editor/dist/envelope";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import {
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/api";
+import {
+  ServerlessWorkflowTextEditorChannelApi,
+  ServerlessWorkflowTextEditorEnvelopeApi,
+} from "@kie-tools/serverless-workflow-text-editor/dist/api";
 import {
   Drawer,
   DrawerContent,
@@ -47,7 +56,8 @@ import {
   useState,
 } from "react";
 import { ServerlessWorkflowCombinedEditorChannelApi } from "../api";
-import { useCustomSwfChannelApi } from "./hooks/useCustomSwfChannelApi";
+import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
+import { useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 
 interface Props {
   locale: string;
@@ -99,12 +109,12 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const textEditorEnvelopeLocator = useMemo(
     () =>
       new EditorEnvelopeLocator(targetOrigin, [
-        new EnvelopeMapping(
-          ENVELOPE_LOCATOR_TYPE,
-          "**/*.sw.+(json|yml|yaml)",
-          props.resourcesPathPrefix + "/text",
-          props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html"
-        ),
+        new EnvelopeMapping({
+          type: ENVELOPE_LOCATOR_TYPE,
+          filePathGlob: "**/*.sw.+(json|yml|yaml)",
+          resourcesPathPrefix: props.resourcesPathPrefix + "/text",
+          envelopePath: props.resourcesPathPrefix + "/serverless-workflow-text-editor-envelope.html",
+        }),
       ]),
     [props.resourcesPathPrefix, targetOrigin]
   );
@@ -120,18 +130,18 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
           envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
         };
     return new EditorEnvelopeLocator(targetOrigin, [
-      new EnvelopeMapping(
-        ENVELOPE_LOCATOR_TYPE,
-        "**/*.sw.json",
-        diagramEnvelopeMappingConfig.resourcesPathPrefix,
-        diagramEnvelopeMappingConfig.envelopePath
-      ),
-      new EnvelopeMapping(
-        ENVELOPE_LOCATOR_TYPE,
-        "**/*.sw.+(yml|yaml)",
-        props.resourcesPathPrefix + "/mermaid",
-        props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html"
-      ),
+      new EnvelopeMapping({
+        type: ENVELOPE_LOCATOR_TYPE,
+        filePathGlob: "**/*.sw.json",
+        resourcesPathPrefix: diagramEnvelopeMappingConfig.resourcesPathPrefix,
+        envelopePath: diagramEnvelopeMappingConfig.envelopePath,
+      }),
+      new EnvelopeMapping({
+        type: ENVELOPE_LOCATOR_TYPE,
+        filePathGlob: "**/*.sw.+(yml|yaml)",
+        resourcesPathPrefix: props.resourcesPathPrefix + "/mermaid",
+        envelopePath: props.resourcesPathPrefix + "/serverless-workflow-mermaid-viewer-envelope.html",
+      }),
     ]);
   }, [featureToggle, props.resourcesPathPrefix, targetOrigin]);
 
@@ -265,12 +275,37 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
     console.error("Error setting content on diagram editor");
   }, []);
 
-  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } = useCustomSwfChannelApi({
-    channelApi: editorEnvelopeCtx.channelApi,
-    locale: props.locale,
-    embeddedEditorFile: embeddedTextEditorFile,
-    onEditorReady: onTextEditorReady,
-  });
+  const useSwfDiagramEditorChannelApiArgs = useMemo(
+    () => ({
+      channelApi:
+        editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorChannelApi>,
+      locale: props.locale,
+      embeddedEditorFile: embeddedDiagramEditorFile,
+      onEditorReady: onDiagramEditorReady,
+      swfTextEditorEnvelopeApi: textEditor?.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorEnvelopeApi>,
+    }),
+    [editorEnvelopeCtx, embeddedDiagramEditorFile, onDiagramEditorReady, textEditor]
+  );
+
+  const useSwfTextEditorChannelApiArgs = useMemo(
+    () => ({
+      channelApi:
+        editorEnvelopeCtx.channelApi as unknown as MessageBusClientApi<ServerlessWorkflowTextEditorChannelApi>,
+      locale: props.locale,
+      embeddedEditorFile: embeddedTextEditorFile,
+      onEditorReady: onTextEditorReady,
+      swfDiagramEditorEnvelopeApi: diagramEditor?.getEnvelopeServer()
+        .envelopeApi as unknown as MessageBusClientApi<ServerlessWorkflowDiagramEditorEnvelopeApi>,
+    }),
+    [editorEnvelopeCtx, embeddedDiagramEditorFile, onTextEditorReady, diagramEditor]
+  );
+
+  const { stateControl: diagramEditorStateControl, channelApi: diagramEditorChannelApi } =
+    useSwfDiagramEditorChannelApi(useSwfDiagramEditorChannelApiArgs);
+
+  const { stateControl: textEditorStateControl, channelApi: textEditorChannelApi } =
+    useSwfTextEditorChannelApi(useSwfTextEditorChannelApiArgs);
 
   return (
     <div style={{ height: "100%" }}>
@@ -289,6 +324,8 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
                     kogitoEditor_setContentError={onDiagramEditorSetContentError}
                     editorEnvelopeLocator={diagramEditorEnvelopeLocator}
                     locale={props.locale}
+                    customChannelApiImpl={diagramEditorChannelApi}
+                    stateControl={diagramEditorStateControl}
                   />
                 )}
               </DrawerPanelBody>

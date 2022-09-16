@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 const packageJson = require("@kie-tools/kn-plugin-workflow/package.json");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     KN_PLUGIN_WORKFLOW__version: {
       name: "KN_PLUGIN_WORKFLOW__version",
       default: packageJson.version,
       description: "Knative Workflow plugin version",
     },
+    KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId: {
+      name: "KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId",
+      default: "io.quarkus.platform",
+      description: "Quarkus group to be used when creating the Kogito Serverless Workflow project",
+    },
     KN_PLUGIN_WORKFLOW__quarkusVersion: {
       name: "KN_PLUGIN_WORKFLOW__quarkusVersion",
       default: "2.10.0.Final",
       description: "Quarkus version to be used when creating the Kogito Serverless Workflow project",
-    },
-    KN_PLUGIN_WORKFLOW__kogitoVersion: {
-      name: "KN_PLUGIN_WORKFLOW__kogitoVersion",
-      default: "1.24.0.Final",
-      description: "Kogito version to be used when creating the Kogito Serverless Workflow project",
     },
   }),
   get env() {
     return {
       knPluginWorkflow: {
         version: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__version),
+        quarkusPlatformGroupId: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusPlatformGroupId),
         quarkusVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__quarkusVersion),
-        kogitoVersion: getOrDefault(this.vars.KN_PLUGIN_WORKFLOW__kogitoVersion),
       },
     };
   },

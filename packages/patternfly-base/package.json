@@ -3,16 +3,27 @@
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
-  "files": [
-    "index.js"
-  ],
-  "main": "index.js",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
   "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0"
+    "@kie-tools/root-env": "workspace:*",
+    "css-loader": "^5.2.6",
+    "file-loader": "^6.2.0",
+    "raw-loader": "^4.0.2",
+    "sass": "^1.43.4",
+    "sass-loader": "^12.3.0",
+    "style-loader": "^2.0.0",
+    "url-loader": "^4.1.1"
   }
 }

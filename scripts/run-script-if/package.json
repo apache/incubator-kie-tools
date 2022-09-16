@@ -1,0 +1,33 @@
+{
+  "name": "@kie-tools-scripts/run-script-if",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/kiegroup/kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
+  },
+  "bin": {
+    "run-script-if": "index.js"
+  },
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "install": "pnpm write-readme",
+    "write-readme": "run-script-os",
+    "write-readme:darwin:linux": "echo '```' > README.md && ./index.js --help >> README.md && echo '```' >> README.md",
+    "write-readme:win32": "echo 'Nothing to do.'"
+  },
+  "dependencies": {
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "run-script-os": "^1.1.6"
+  }
+}

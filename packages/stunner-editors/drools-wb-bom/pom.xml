@@ -18,7 +18,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito.stunner.editors</groupId>
   <artifactId>drools-wb-bom</artifactId>
-  <version>0.0.0</version>
+  <version>${revision}</version>
   <packaging>pom</packaging>
 
   <name>Drools-wb BOM</name>

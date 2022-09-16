@@ -38,6 +38,7 @@ export function DmnPage() {
     fileExtension: "dmn",
     getFileContents: () => Promise.resolve(""),
     isReadOnly: false,
+    path: "new-file.dmn",
   });
 
   /**
@@ -46,7 +47,12 @@ export function DmnPage() {
    */
   const editorEnvelopeLocator: EditorEnvelopeLocator = useMemo(() => {
     return new EditorEnvelopeLocator(window.location.origin, [
-      new EnvelopeMapping("dmn", "**/*.dmn", "../dmn-editor/dmn/", "envelope/dmn-editor.html"),
+      new EnvelopeMapping({
+        type: "dmn",
+        filePathGlob: "**/*.dmn",
+        resourcesPathPrefix: "../dmn-editor/dmn/",
+        envelopePath: "envelope/dmn-editor.html",
+      }),
     ]);
   }, []);
 

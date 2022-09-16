@@ -1,76 +1,91 @@
 {
+  "private": true,
   "name": "@kie-tools/desktop",
   "version": "0.0.0",
-  "private": true,
   "description": "",
   "license": "Apache-2.0",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "homepage": "https://github.com/kiegroup/kie-tools",
   "repository": {
     "type": "git",
     "url": "https://github.com/kiegroup/kie-tools.git"
   },
-  "dependencies": {
-    "@kie-tools-core/monaco-editor": "0.0.0",
-    "@kie-tools-core/i18n": "0.0.0",
-    "@kie-tools-core/editor": "0.0.0",
-    "@kie-tools-core/patternfly-base": "0.0.0",
-    "@kie-tools/i18n-common-dictionary": "0.0.0",
-    "@kie-tools/kie-bc-editors": "0.0.0",
-    "electron": "^12.0.11",
-    "react-router": "^5.2.1",
-    "react-router-dom": "^5.2.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "@patternfly/react-core": "^4.157.3",
-    "@patternfly/react-icons": "^4.11.17"
+  "bugs": {
+    "url": "https://github.com/kiegroup/kie-tools/issues"
   },
-  "devDependencies": {
-    "@kie-tools/build-env": "0.0.0",
-    "@kie-tools-core/run-script-if": "0.0.0",
-    "@kie-tools/stunner-editors": "0.0.0",
-    "@kie-tools-core/webpack-base": "0.0.0",
-    "electron-packager": "^15.2.0",
-    "electron-rebuild": "^2.3.5",
-    "cross-var": "^1.1.0",
-    "spectron": "^14.0.0"
-  },
-  "scripts": {
-    "start": "electron dist --disable-gpu",
-    "rebuild": "electron-rebuild -f -w sqlite3",
-    "lint": "pnpm run-script-if --bool \"$(build-env global.build.lint)\" --then \"pnpm eslint ./src --ext .ts,.tsx\"",
-    "test": "pnpm run-script-if --bool \"$(build-env global.build.test)\" --then \"jest --silent --verbose\"",
-    "init": "pnpm -f",
-    "build:dev": "rimraf dist && webpack --env dev",
-    "clean:prod": "rimraf out && mkdir out",
-    "compile:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
-    "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-linux-x64/ && (cd out && tar -pcvzf Business\\ Modeler\\ Preview-linux-x64.tar.gz Business\\ Modeler\\ Preview-linux-x64/)\"",
-    "package:prod:darwin": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-darwin-x64/ && (cd out && zip -qry \\\"Business Modeler Preview-darwin-x64.zip\\\" \\\"Business Modeler Preview-darwin-x64\\\")\"",
-    "package:prod:win32": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\\\"/node_modules\\\" --ignore=\\\"/out\\\" --ignore=\\\"/src\\\" --ignore=\\\"/static\\\" --ignore=\\\"/README\\\" --ignore=\\\"/LICENSE\\\" --ignore=\\\"/tsconfig.json\\\" --ignore=\\\"/webpack.config.js\\\" --ignore=\\\"/yarn-error.log\\\" && copy README \\\"out\\Business Modeler Preview-win32-x64/\\\"\"",
-    "package:prod": "run-script-os",
-    "build:prod:linux": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:linux",
-    "build:prod:darwin": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:darwin",
-    "build:prod:win32": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:win32",
-    "build:prod:all": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:linux && pnpm package:prod:darwin && pnpm package:prod:win32",
-    "build:prod": "run-script-os && pnpm test:it",
-    "test:it:linux:darwin": "pnpm run-script-if --bool \"$(build-env global.build.testIT)\" --then \"pnpm rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
-    "test:it:win32": "echo \"Not supported\"",
-    "test:it": "run-script-os"
-  },
-  "babel": {
-    "presets": [
-      [
-        "@babel/env",
-        {
-          "targets": {
-            "node": "current"
-          }
-        }
-      ],
-      "@babel/react"
-    ]
-  },
+  "types": "./dist/index.d.ts",
+  "main": "dist/index.js",
   "files": [
     "**/*"
-  ]
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && webpack --env dev",
+    "build:prod": "run-script-os && pnpm test:it",
+    "build:prod:all": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:linux && pnpm package:prod:darwin && pnpm package:prod:win32",
+    "build:prod:darwin": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:darwin",
+    "build:prod:linux": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:linux",
+    "build:prod:win32": "pnpm clean:prod && pnpm compile:prod && pnpm package:prod:win32",
+    "clean:prod": "rimraf out && mkdir out",
+    "compile:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
+    "init": "pnpm -f",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "package:prod": "run-script-os",
+    "package:prod:darwin": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=darwin --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-darwin-x64/ && (cd out && zip -qry \\\"Business Modeler Preview-darwin-x64.zip\\\" \\\"Business Modeler Preview-darwin-x64\\\")\"",
+    "package:prod:linux": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=linux --arch=x64 --overwrite --icon=./build/icon.icns --ignore=\\\"^/node_modules|^/out|^/src|^/static|^/README|^/LICENSE|^/tsconfig.json|^/webpack.config.js|^/yarn-error.log\\\" && cp README out/Business\\ Modeler\\ Preview-linux-x64/ && (cd out && tar -pcvzf Business\\ Modeler\\ Preview-linux-x64.tar.gz Business\\ Modeler\\ Preview-linux-x64/)\"",
+    "package:prod:win32": "cross-var \"electron-packager . \\\"Business Modeler Preview\\\" --out=out --platform=win32 --arch=x64 --overwrite --icon=./build/icon.ico --ignore=\\\"/node_modules\\\" --ignore=\\\"/out\\\" --ignore=\\\"/src\\\" --ignore=\\\"/static\\\" --ignore=\\\"/README\\\" --ignore=\\\"/LICENSE\\\" --ignore=\\\"/tsconfig.json\\\" --ignore=\\\"/webpack.config.js\\\" --ignore=\\\"/yarn-error.log\\\" && copy README \\\"out\\Business Modeler Preview-win32-x64/\\\"\"",
+    "rebuild": "electron-rebuild -f -w sqlite3",
+    "start": "electron dist --disable-gpu",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
+    "test:it": "run-script-os",
+    "test:it:linux:darwin": "run-script-if --ignore-errors \"$(build-env integrationTests.ignoreFailures)\" --bool \"$(build-env integrationTests.run)\" --then \"pnpm rimraf ./dist-it-tests\" \"jest --config it-tests/jest.config.json --runInBand --forceExit --verbose\"",
+    "test:it:win32": "echo \"Not supported\""
+  },
+  "dependencies": {
+    "@kie-tools-core/editor": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
+    "@kie-tools-core/monaco-editor": "workspace:*",
+    "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/kie-bc-editors": "workspace:*",
+    "@patternfly/react-core": "^4.157.3",
+    "@patternfly/react-icons": "^4.11.17",
+    "electron": "^12.0.11",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router": "^5.2.1",
+    "react-router-dom": "^5.2.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools-core/webpack-base": "workspace:*",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/stunner-editors": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^11.2.6",
+    "@types/jest": "^26.0.23",
+    "@types/jest-when": "^2.7.4",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "@types/testing-library__jest-dom": "^5.9.1",
+    "@types/testing-library__react": "^9.1.2",
+    "copy-webpack-plugin": "^8.1.1",
+    "cross-var": "^1.1.0",
+    "electron-packager": "^15.2.0",
+    "electron-rebuild": "^2.3.5",
+    "jest": "^26.6.3",
+    "jest-junit": "^14.0.0",
+    "jest-when": "^3.5.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6",
+    "spectron": "^14.0.0",
+    "ts-jest": "^26.5.6",
+    "typescript": "^4.4.2",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.7.3",
+    "webpack-merge": "^5.7.3"
+  }
 }

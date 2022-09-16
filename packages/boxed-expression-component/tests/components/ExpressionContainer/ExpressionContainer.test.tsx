@@ -18,7 +18,7 @@ import { ExpressionContainer } from "@kie-tools/boxed-expression-component/dist/
 import { render } from "@testing-library/react";
 import * as React from "react";
 import { usingTestingBoxedExpressionI18nContext, usingTestingBoxedExpressionProviderContext } from "../test-utils";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 
 describe("ExpressionContainer tests", () => {
   test("should render ExpressionContainer component", () => {

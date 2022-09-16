@@ -22,6 +22,7 @@ import {
 import {
   ServerlessWorkflowDiagramEditor,
   ServerlessWorkflowDiagramEditorEnvelopeApiImpl,
+  ServerlessWorkflowDiagramEditorFactory,
 } from "@kie-tools/serverless-workflow-diagram-editor-envelope/dist/envelope";
 
 initCustom<
@@ -33,6 +34,9 @@ initCustom<
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
   apiImplFactory: {
     create: (args) =>
-      new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(args, { shouldLoadResourcesDynamically: true }),
+      new ServerlessWorkflowDiagramEditorEnvelopeApiImpl(
+        args,
+        new ServerlessWorkflowDiagramEditorFactory({ shouldLoadResourcesDynamically: true })
+      ),
   },
 });

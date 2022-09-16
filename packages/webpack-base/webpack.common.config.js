@@ -37,7 +37,7 @@ module.exports = (env) => {
         {
           test: /\.js$/,
           enforce: "pre",
-          use: ["source-map-loader"],
+          use: [require.resolve("source-map-loader")],
         },
       ]
     : [];
@@ -51,7 +51,7 @@ module.exports = (env) => {
   const multiPackageLiveReloadLoader = live
     ? [
         {
-          loader: path.resolve(path.join(__dirname, "./multi-package-live-reload-loader.js")),
+          loader: require.resolve("./multi-package-live-reload-loader.js"),
         },
       ]
     : [];
@@ -77,7 +77,7 @@ module.exports = (env) => {
           test: /\.tsx?$/,
           use: [
             {
-              loader: "ts-loader",
+              loader: require.resolve("ts-loader"),
               options: {
                 transpileOnly,
                 compilerOptions: {

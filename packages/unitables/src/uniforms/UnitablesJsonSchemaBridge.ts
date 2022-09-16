@@ -17,7 +17,7 @@
 import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
 import { UnitablesI18n } from "../i18n";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
-import { DataType } from "@kie-tools/boxed-expression-component";
+import { DataType } from "@kie-tools/boxed-expression-component/dist/api";
 import * as React from "react";
 import { joinName } from "uniforms";
 import { AutoField } from "./AutoField";

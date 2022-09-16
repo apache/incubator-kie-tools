@@ -1,3 +1,21 @@
+# 0.23.0 (alpha)
+
+- [KOGITO-7663](https://issues.redhat.com/browse/KOGITO-7663) - Fix inconsistency in filename template description and default value
+- [KOGITO-6427](https://issues.redhat.com/browse/KOGITO-6427) - User is able to input malformed custom data types
+- [KOGITO-7372](https://issues.redhat.com/browse/KOGITO-7372) - Source/Target of data assignments shows malformed data when specific generics are used
+- [KOGITO-7893](https://issues.redhat.com/browse/KOGITO-7893) - Stunner should now be the default workflow viewer
+- [KOGITO-7531](https://issues.redhat.com/browse/KOGITO-7531) - [SWF Editor] End construct support
+- [KOGITO-7591](https://issues.redhat.com/browse/KOGITO-7591) - [SWF Editor] Is adding extra "end": false to eventConditions fields even when transition is set
+- [KOGITO-7608](https://issues.redhat.com/browse/KOGITO-7608) - [SWF Editor] Is removing "schedule" from "start" object and makes is a string
+- [KOGITO-7609](https://issues.redhat.com/browse/KOGITO-7609) - [SWF Editor] Is changing transition object to string
+- [KOGITO-7599](https://issues.redhat.com/browse/KOGITO-7599) - [SWF Editor] Cannot open workflows from specification examples
+- [KOGITO-7594](https://issues.redhat.com/browse/KOGITO-7594) - [SWF Editor] Is unable to load SendCloudEventOnProvisionExample.sw.json
+- [KOGITO-7797](https://issues.redhat.com/browse/KOGITO-7797) - [DMN Designer] Improving \"Import Java Classes\" button's tooltip message
+
+# 0.22.0 (alpha)
+
+- _(No new features)_
+
 # 0.21.0 (alpha)
 
 - [KOGITO-7375](https://issues.redhat.com/browse/KOGITO-7375) - [DMN Designer] Import Java Classes Fix cases with special characters in PATH

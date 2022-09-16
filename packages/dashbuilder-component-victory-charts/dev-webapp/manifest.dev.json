@@ -2,7 +2,7 @@
   "init": [
     {
       "key": "chartType",
-      "value": "bar"
+      "value": "stack"
     },
     {
       "key": "themeColor",
@@ -28,7 +28,6 @@
       "key": "legendPosition",
       "value": "bottom"
     },
-
     {
       "key": "title",
       "value": "Countries evolution"
@@ -84,6 +83,10 @@
     {
       "key": "donutSubTitle",
       "value": "Donut Subtitle"
+    },
+    {
+      "key": "barOffset",
+      "value": "10"
     }
   ],
   "dataSet": {

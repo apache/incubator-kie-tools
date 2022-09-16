@@ -20,12 +20,25 @@ export class EnvelopeMapping {
   public matcher: IMinimatch;
 
   constructor(
-    public readonly type: string,
-    public readonly filePathGlob: string,
-    public readonly resourcesPathPrefix: string,
-    public readonly envelopePath: string
+    private readonly args: { type: string; filePathGlob: string; resourcesPathPrefix: string; envelopePath: string }
   ) {
-    this.matcher = new Minimatch(filePathGlob, { nocase: true, dot: true });
+    this.matcher = new Minimatch(args.filePathGlob, { nocase: true, dot: true });
+  }
+
+  get type(): string {
+    return this.args.type;
+  }
+
+  get filePathGlob(): string {
+    return this.args.filePathGlob;
+  }
+
+  get resourcesPathPrefix(): string {
+    return this.args.resourcesPathPrefix;
+  }
+
+  get envelopePath(): string {
+    return this.args.envelopePath;
   }
 }
 

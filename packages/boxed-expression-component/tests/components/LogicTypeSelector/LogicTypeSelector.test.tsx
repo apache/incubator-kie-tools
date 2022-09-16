@@ -15,7 +15,7 @@
  */
 
 import "../../__mocks__/ReactWithSupervisor";
-import { DataType, LogicType } from "@kie-tools/boxed-expression-component";
+import { DataType, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import { fireEvent, render } from "@testing-library/react";
 import {
   flushPromises,

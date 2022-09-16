@@ -80,6 +80,7 @@ module.exports = async (env, argv) => {
         WEBPACK_REPLACE__dmnDevSandbox_onlineEditorUrl: dmnDevSandbox_onlineEditorUrl,
         WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
         WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
+        WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
       }),
       new CopyPlugin({
         patterns: [

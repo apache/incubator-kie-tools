@@ -1,0 +1,32 @@
+name: "CI :: Dependencies consistency"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: "**"
+
+concurrency:
+  group: ${{ github.event.pull_request && format('check-dependencies-consistency-pr-{0}', github.event.pull_request.number) || format('check-dependencies-consistency-push-main-{0}', github.sha) }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ github.base_ref }}
+
+      - name: "Setup environment"
+        uses: ./.github/actions/setup-env
+
+      - name: "Check dependencies mismatches"
+        shell: bash
+        run: |
+          pnpm bootstrap:root
+          npx --yes syncpack@6.2.0 list-mismatches

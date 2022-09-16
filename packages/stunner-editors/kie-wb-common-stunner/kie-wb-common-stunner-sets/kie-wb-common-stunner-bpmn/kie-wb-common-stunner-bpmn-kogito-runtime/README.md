@@ -1,26 +1,32 @@
-# Kogito Process Editor - Webapp
+# BPMN Editor - Kogito webapp
 
-For detailed instructions on how to configure your development environment please refer to
-the [Stunner directory README documentation](../../../).
+The BPMN editor's webapp bundle for all kogito channels.
+It results in a client side web application that can be just deployed in any web server.
+Please also take a quick look at the [Stunner README](../../../README.md).
 
 ## Building
 
-- Before building this webapp, you should build the whole of the Stunner project before
-  - change to the `kie-tools/packages/stunner-editors/kie-wb-common-stunner` root folder
+- Build Stunner and its dependencies:
+  - Change to the `kie-tools/packages/stunner-editors/` root folder
   - run `mvn clean install -DskipTests -Dgwt.compiler.skip=true`
 - Build the webapp:
-  - Production: `mvn -T 8C clean install -DskipTests=true`
+  - Change to the `kie-tools/packages/stunner-editors/kie-wb-common-stunner` root folder
   - Dev: `mvn -T 8C clean install -DskipTests=true -Ddev`
   - Dev+SourceMaps: `mvn -T 8C clean install -DskipTests=true -Dsources`
+  - Production: `mvn -T 8C clean install -DskipTests=true`
 
-## Running in Wildfly
+## Running in an application server
+
+Following commands assume the use of Widfly:
 
 - Copy the generated file `target/kie-wb-common-stunner-bpmn-kogito-runtime.war` into `$WILDFLY_ROOT/standalone/deployments`
 - Rename the deployed WAR as `ROOT.war`
 - Run the Wildfly instance: `./$WILDFLY_ROOT/bin/standalone.sh`
-- Navigate to `http://localhost:8080`
+- Navigate to `http://localhost:8080/test.html`
 
 ## Running in SDM
+
+Change to the `kie-tools/packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-kogito-runtime/` root folder
 
 Start GWT super dev mode by: `mvn gwt:run`
 
@@ -42,23 +48,21 @@ VM Options:
         -Derrai.dynamic_validation.enabled=true
         -Derrai.ioc.jsinterop.support=true
 
-[OPTIONAL] Dev Mode Parameters:
+Dev Mode Parameters:
 
-        -style PRETTY
         -generateJsInteropExports
-        -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL]
+        -style PRETTY // This parameter is optional
+        -logLevel [ERROR, WARN, INFO, TRACE, DEBUG, SPAM, or ALL] // This parameter is optional
 
 Start page: `test.html`
 
 ## Usage
 
-- Test Page (context path root)
+- Editor's test page
 
-Navigate to the context path root (eg: `http://localhost:8080`)
+Navigate to the test page in your root context path, eg: `http://localhost:8080/test.html`. The UI provides some buttons for creating new processes, opening an existing process and exporting the actual process.
 
-It provides buttons for creating new processes, opening an existing process and exporting the actual process
-
-- Also, the editor can be used using Javascript API:
+- Editor's Js API:
 
         // For creating a process
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().setContent("", "")
@@ -69,20 +73,10 @@ It provides buttons for creating new processes, opening an existing process and 
         // Get the actual process' content
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("BPMNDiagramEditor").get().getContent()
 
-        // Stunner Wires Shapes API
-        var jsl = window.frames.editorFrame.contentWindow.canvas
-        jsl.log().logWiresShapes()
-        var s = jsl.getWiresShape('_A9481DBC-3E87-40EE-9925-733B24404BC0')
-        s.getChild(1).fillColor = "red"
-
-        // Events
-        jsl.events().click(jsl.getShape('redRectangle'))
-        jsl.events().drag(jsl.getShape('redRectangle'), 400, 400, () => console.log('DONE DRAG'))
-
         // Standalone BPMN Editor
         frames[0].canvas
 
-        // JS API
+        // Stunner - Js API
         var jsl = window.frames.editorFrame.contentWindow.canvas
         jsl.getNodeIds() // Get id of all nodes
         jsl.getBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0')         // gets background color
@@ -94,3 +88,9 @@ It provides buttons for creating new processes, opening an existing process and 
         jsl.getDimensions('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'red')       // gets dimensions
         jsl.applyState('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'invalid')      // applies state (none, highlight, selected, invalid)
         jsl.centerNode('_A9481DBC-3E87-40EE-9925-733B24404BC0')                 // centers node in viewable canvas
+
+        // Stunner - (Wires) Shapes API
+        var jsl = window.frames.editorFrame.contentWindow.canvas
+        jsl.log().logWiresShapes()
+        var s = jsl.getWiresShape('_A9481DBC-3E87-40EE-9925-733B24404BC0')
+        s.getChild(1).fillColor = "red"

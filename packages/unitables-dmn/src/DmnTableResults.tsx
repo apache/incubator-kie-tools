@@ -24,7 +24,7 @@ import { BoxedExpressionProvider } from "@kie-tools/boxed-expression-component/d
 import { ColumnInstance } from "react-table";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { useDmnBoxedOutputs } from "./DmnBoxedOutputs";
-import { TableOperation } from "@kie-tools/boxed-expression-component";
+import { TableOperation } from "@kie-tools/boxed-expression-component/dist/api";
 import { DecisionResult } from "./DmnTypes";
 import { DmnUnitablesJsonSchemaBridge } from "./uniforms/DmnUnitablesJsonSchemaBridge";
 import { ErrorBoundary } from "@kie-tools/form";

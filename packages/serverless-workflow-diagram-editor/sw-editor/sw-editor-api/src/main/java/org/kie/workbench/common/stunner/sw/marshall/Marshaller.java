@@ -17,6 +17,8 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -29,6 +31,7 @@ import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
 import org.kie.workbench.common.stunner.core.api.FactoryManager;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
+import org.kie.workbench.common.stunner.core.diagram.MetadataImpl;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -60,6 +63,7 @@ import org.kie.workbench.common.stunner.sw.definition.State;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
+import org.kie.workbench.common.stunner.sw.factory.DiagramFactory;
 import org.uberfire.client.promise.Promises;
 
 import static org.kie.workbench.common.stunner.sw.marshall.StateMarshalling.ACTIONS_UNMARSHALLER;
@@ -121,7 +125,7 @@ public class Marshaller {
     }
 
     @SuppressWarnings("all")
-    public Promise<Graph> unmarshallGraph(String raw) {
+    public Promise<ParseResult> unmarshallGraph(String raw) {
         try {
             final Object root = parse(raw);
             if (null == workflow) {
@@ -130,9 +134,9 @@ public class Marshaller {
                 parser.reParse(workflow, Js.uncheckedCast(root));
             }
         } catch (Exception e) {
-            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
-                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                public void onInvoke(ResolveCallbackFn<ParseResult> resolveCallbackFn,
                                      RejectCallbackFn rejectCallbackFn) {
                     rejectCallbackFn.onInvoke(new ClientRuntimeError("Error parsing JSON file.", e));
                 }
@@ -154,9 +158,9 @@ public class Marshaller {
 
             context = new Context(index);
         } catch (Exception ex) {
-            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
-                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                public void onInvoke(ResolveCallbackFn<ParseResult> resolveCallbackFn,
                                      RejectCallbackFn rejectCallbackFn) {
                     rejectCallbackFn.onInvoke(new ClientRuntimeError("Error building graph.", ex));
                 }
@@ -169,9 +173,9 @@ public class Marshaller {
             builderContext.setPreviousNameToUUIDBindings(previousNameToUUIDBindings);
             unmarshallNode(builderContext, workflow);
         } catch (Exception ex) {
-            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
-                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                public void onInvoke(ResolveCallbackFn<ParseResult> resolveCallbackFn,
                                      RejectCallbackFn rejectCallbackFn) {
                     rejectCallbackFn.onInvoke(new ClientRuntimeError("Error unmarshalling nodes.", ex));
                 }
@@ -181,9 +185,9 @@ public class Marshaller {
         try {
             builderContext.execute();
         } catch (Exception ex) {
-            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
-                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                public void onInvoke(ResolveCallbackFn<ParseResult> resolveCallbackFn,
                                      RejectCallbackFn rejectCallbackFn) {
                     rejectCallbackFn.onInvoke(new ClientRuntimeError("Error executing builder context.", ex));
                 }
@@ -193,28 +197,53 @@ public class Marshaller {
             builderContext.setPreviousNameToUUIDBindings(null);
         }
 
+        removeEdgesWithNullTargets(graph);
+
         try {
             final Promise<Node> layout = AutoLayout.applyLayout(graph, context.getWorkflowRootNode(), promises, builderContext.buildExecutionContext(), false);
-            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
-                public void onInvoke(ResolveCallbackFn<Graph> success, RejectCallbackFn reject) {
+                public void onInvoke(ResolveCallbackFn<ParseResult> success, RejectCallbackFn reject) {
                     layout.then(new IThenable.ThenOnFulfilledCallbackFn<Node, Object>() {
                         @Override
                         public IThenable<Object> onInvoke(Node node) {
-                            success.onInvoke(graph);
+                            success.onInvoke(
+                                    new ParseResult(new DiagramFactory().build("diagram", new MetadataImpl(), (Graph) graph),
+                                                    context.getMessages()));
                             return null;
                         }
                     });
                 }
             });
         } catch (Exception ex) {
-            return promises.create(new Promise.PromiseExecutorCallbackFn<Graph>() {
+            return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
-                public void onInvoke(ResolveCallbackFn<Graph> resolveCallbackFn,
+                public void onInvoke(ResolveCallbackFn<ParseResult> resolveCallbackFn,
                                      RejectCallbackFn rejectCallbackFn) {
                     rejectCallbackFn.onInvoke(new ClientRuntimeError("Error applying auto-layout.", ex));
                 }
             });
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void removeEdgesWithNullTargets(GraphImpl<Object> graph) {
+        for (Node<View, Edge> node : graph.nodes()) {
+            List<Edge> edges = node.getOutEdges().stream()
+                    .filter(edge -> edge.getTargetNode() != null)
+                    .collect(Collectors.toList());
+
+            if (edges.size() != node.getOutEdges().size()) {
+                List<Edge> invalidEdges = node.getOutEdges().stream()
+                        .filter(edge -> edge.getTargetNode() == null)
+                        .collect(Collectors.toList());
+                for (Edge e : invalidEdges) {
+                    getContext().addMessage(new Message(MessageCode.INVALID_TARGET_NAME,
+                                                        ((State) ((View) e.getSourceNode().getContent()).getDefinition()).name));
+                }
+                node.getOutEdges().clear();
+                node.getOutEdges().addAll(edges);
+            }
         }
     }
 

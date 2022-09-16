@@ -30,9 +30,6 @@ import (
 type DeployCmdConfig struct {
 	// Deploy options
 	Path string // service name
-
-	// Plugin options
-	Verbose bool
 }
 
 func NewDeployCommand() *cobra.Command {
@@ -85,28 +82,22 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		os.Exit(1)
 	}
 
-	createService := exec.Command("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
+	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
 	if err := common.RunCommand(
 		createService,
-		cfg.Verbose,
 		"deploy",
-		common.GetFriendlyMessages("deploying"),
 	); err != nil {
-		fmt.Println("Check the full logs with the -v | --verbose option")
 		return err
 	}
 	fmt.Println("✅ Knative service sucessufully created")
 
 	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
-		deploy := exec.Command("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
+		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
 		if err := common.RunCommand(
 			deploy,
-			cfg.Verbose,
 			"deploy",
-			common.GetFriendlyMessages("deploying"),
 		); err != nil {
-			fmt.Println("Check the full logs with the -v | --verbose option")
 			return err
 		}
 		fmt.Println("✅ Knative Eventing bindings successfully created")
@@ -120,8 +111,6 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
 	cfg = DeployCmdConfig{
 		Path: viper.GetString("path"),
-
-		Verbose: viper.GetBool("verbose"),
 	}
 	return
 }

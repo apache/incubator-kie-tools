@@ -16,13 +16,20 @@
 
 package org.kogito.core.internal.util;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 public class WorkspaceUtil {
 
-    public String getWorkspace() {
-        IProject p = ResourcesPlugin.getWorkspace().getRoot().getProjects()[0];
-        return p.getRawLocation().makeAbsolute().toOSString();
+    public String getProjectLocation() {
+        String workspaceStorage = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
+        Optional<IProject> project = Arrays.stream(ResourcesPlugin.getWorkspace().getRoot().getProjects())
+                .filter(iProject -> !iProject.getLocation().makeAbsolute().toOSString().contains(workspaceStorage))
+                .findFirst();
+
+        return project.orElseThrow().getLocation().makeAbsolute().toOSString();
     }
 }

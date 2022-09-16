@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/build-env/env")], {
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry: {
       default: "quay.io",
@@ -37,13 +37,11 @@ module.exports = composeEnv([require("@kie-tools/build-env/env")], {
   }),
   get env() {
     return {
-      extendedServices: {
-        image: {
-          registry: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
-          account: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
-          name: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
-          buildTags: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
-        },
+      extendedServicesImage: {
+        registry: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry),
+        account: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageAccount),
+        name: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageName),
+        buildTags: getOrDefault(this.vars.KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTags),
       },
     };
   },
