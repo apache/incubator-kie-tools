@@ -2945,6 +2945,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/boxed-expression-component": workspace:*
       "@kie-tools/dmn-dev-sandbox-deployment-base-image-env": workspace:*
+      "@kie-tools/emscripten-fs": ^0.0.2
       "@kie-tools/eslint": workspace:*
       "@kie-tools/extended-services": workspace:*
       "@kie-tools/form": workspace:*
@@ -3019,6 +3020,7 @@ importers:
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/boxed-expression-component": link:../boxed-expression-component
+      "@kie-tools/emscripten-fs": 0.0.2
       "@kie-tools/form": link:../form
       "@kie-tools/form-dmn": link:../form-dmn
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
@@ -7709,6 +7711,11 @@ packages:
       { integrity: sha512-VPeQ7+wH0itvQxnG+lIzWgkysKIr3L9sslimFW55rHMdGu/qCQ5z5h9zq4gI8uBtqkpHhsF4Z/OwExufUCThew== }
     engines: { node: ">=6.0.0" }
     dev: true
+
+  /@kie-tools/emscripten-fs/0.0.2:
+    resolution:
+      { integrity: sha512-dxmfwq2F+yxawuGrVVRGmTeZHTqRHa79Vp4FX2KEXHAA9AgK1aaVz8mxZxXYFs2ycfp30NjWvhZCOIRbIKTjAQ== }
+    dev: false
 
   /@kie-tools/jitexecutor-native/1.12.0-Final:
     resolution:

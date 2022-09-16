@@ -38,28 +38,13 @@ import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
-import "../../polyfill/BroadcastChannelSingleTabOnWorker";
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
 
-declare let self: any;
 declare let importScripts: any;
 declare let onconnect: any;
 
-self.Module = {
-  locateFile: function (s: any) {
-    console.info(`Loading '${s}'`);
-    return "https://unpkg.com/wasm-git@0.0.8/" + s;
-  },
-  print: function (text: any) {
-    console.log(text);
-  },
-  printErr: function (text: any) {
-    console.error(text);
-  },
-};
-
-importScripts("https://unpkg.com/wasm-git@0.0.8/lg2.js");
+importScripts("fsMain.js");
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
 const NEW_FILE_DEFAULT_NAME = "Untitled";
@@ -74,14 +59,8 @@ async function corsProxyUrl() {
   const env = await (await fetch(envFilePath)).json();
   return env.WEBPACK_REPLACE__corsProxyUrl ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
-const fsPromise = new Promise<void>((resFs) => {
-  self.Module.onRuntimeInitialized = async () => {
-    resFs();
-  };
-});
 
-const implPromise = new Promise<WorkspacesWorkerApi>(async (resImpl) => {
-  await fsPromise;
+const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
   const storageService = new StorageService();
   const fsService = new WorkspaceFsService();
   const descriptorsFsService = new WorkspaceDescriptorFsService();

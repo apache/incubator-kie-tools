@@ -42,18 +42,11 @@ const ready = new Promise<void>((res) => {
   console.log("workspaces-shared-worker is ready.");
 
   workspacesWorker.port.onmessage = (m) => {
-    if (m.data.BCNAME) {
-      console.debug(`BroadcastChannel message received from Worker: ${m.data.BCNAME}`);
-      const bc = new BroadcastChannel(m.data.BCNAME);
-      bc.postMessage(m.data.BCDATA);
-      bc.close();
-    } else {
-      workspacesWorkerBus.server.receive(m.data, {
-        kieToolsWorkspacesWorker_ready() {
-          res();
-        },
-      });
-    }
+    workspacesWorkerBus.server.receive(m.data, {
+      kieToolsWorkspacesWorker_ready() {
+        res();
+      },
+    });
   };
 });
 

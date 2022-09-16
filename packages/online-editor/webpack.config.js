@@ -58,6 +58,14 @@ module.exports = async (env, argv) => {
         new EnvironmentPlugin({
           WEBPACK_REPLACE__corsProxyUrl: buildEnv.onlineEditor.corsProxyUrl,
         }),
+        new CopyPlugin({
+          patterns: [
+            {
+              from: path.join(path.dirname(require.resolve("@kie-tools/emscripten-fs/package.json")), "/dist"),
+              to: "workspace/worker",
+            },
+          ],
+        }),
       ],
     }),
     merge(common(env), {
@@ -66,7 +74,6 @@ module.exports = async (env, argv) => {
         "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
         "dmn-envelope": "./src/envelope/DmnEditorEnvelopeApp.ts",
         "pmml-envelope": "./src/envelope/PMMLEditorEnvelopeApp.ts",
-        "broadcast-channel-single-tab-polyfill": "./src/polyfill/BroadcastChannelSingleTab.ts",
       },
       plugins: [
         new HtmlWebpackPlugin({
