@@ -16,6 +16,7 @@
 
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { BroadcasterDispatch, FsService } from "./FsService";
+import { inosDir } from "./FsCache";
 
 export class WorkspaceFsService {
   constructor(private readonly fsService = new FsService()) {}
@@ -39,6 +40,6 @@ export class WorkspaceFsService {
   }
 
   public getInosMountPoint(workspaceId: string) {
-    return `fs_v1__${workspaceId}_inos`;
+    return inosDir(this.getMountPoint(workspaceId));
   }
 }

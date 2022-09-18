@@ -233,7 +233,7 @@ export async function restoreFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string
   inos[fsMountPoint] = new Map(JSON.parse(inosIndexJson as string));
 }
 
-function inosDir(fsMountPoint: string) {
+export function inosDir(fsMountPoint: string) {
   return fsMountPoint + "_inos";
 }
 
