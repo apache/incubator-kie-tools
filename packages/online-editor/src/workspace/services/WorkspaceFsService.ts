@@ -37,4 +37,8 @@ export class WorkspaceFsService {
   public getMountPoint(workspaceId: string) {
     return `fs_v1__${workspaceId}`;
   }
+
+  public getInosMountPoint(workspaceId: string) {
+    return `fs_v1__${workspaceId}_inos`;
+  }
 }

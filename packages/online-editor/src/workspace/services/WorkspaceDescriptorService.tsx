@@ -80,7 +80,7 @@ export class WorkspaceDescriptorService {
   }
 
   public async delete(fs: KieSandboxWorkspacesFs, workspaceId: string) {
-    await this.storageService.deleteFile(fs, `/${workspaceId}`);
+    await this.storageService.deleteFile(fs, this.getAbsolutePath(workspaceId));
   }
 
   public async rename(fs: KieSandboxWorkspacesFs, workspaceId: string, newName: string) {

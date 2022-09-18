@@ -113,7 +113,9 @@ export class WorkspaceService {
   public async delete(workspaceId: string): Promise<void> {
     await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs, broadcaster }) => {
       await this.workspaceDescriptorService.delete(fs, workspaceId);
+
       indexedDB.deleteDatabase(this.fsService.getMountPoint(workspaceId));
+      indexedDB.deleteDatabase(this.fsService.getInosMountPoint(workspaceId));
 
       broadcaster.broadcast({
         channel: WORKSPACES_BROADCAST_CHANNEL,
