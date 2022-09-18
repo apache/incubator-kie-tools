@@ -9,6 +9,10 @@ on:
       version:
         description: "Version"
         required: true
+  pull_request:
+    paths:
+      - ".github/supporting-files/publish_jitexecutor_native"
+      - ".github/workflows/publish_jitexecutor_native.yml"
 
 jobs:
   build_jitexecutor_native_binaries:
@@ -133,5 +137,12 @@ jobs:
           mv ./dist/darwin/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/darwin/jitexecutor
           mv ./dist/win32/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner.exe ./dist/win32/jitexecutor.exe
           npm version ${{ github.event.inputs.version }}
-          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-          npm publish --access public
+          if [ ${{ github.event.pull_request }} ]; then
+            echo "Publishing."
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            npm publish --access public
+          else
+            echo "CI. Publish skipped."
+          fi
+            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+            npm publish --access public

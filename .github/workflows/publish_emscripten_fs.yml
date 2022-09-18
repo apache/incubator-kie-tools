@@ -6,6 +6,10 @@ on:
       version:
         description: "Version"
         required: true
+  pull_request:
+    paths:
+      - ".github/supporting-files/publish_emscripten_fs"
+      - ".github/workflows/publish_emscripten_fs.yml"
 
 jobs:
   run:
@@ -24,9 +28,14 @@ jobs:
           export ACTUAL=$(node ./test.js)
           export EXPECTED='emscripten FS is alive!'
           if [ "$ACTUAL" == "$EXPECTED" ]; then
-            echo "Test passed. Publishing."
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-            npm publish --access public
+            echo "Test passed."
+            if [ ${{ github.event.pull_request }} ]; then
+              echo "Publishing."
+              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+              npm publish --access public
+            else
+              echo "CI. Publish skipped."
+            fi
           else
             echo "Test failed:"
             echo "Actual: '$ACTUAL'"
