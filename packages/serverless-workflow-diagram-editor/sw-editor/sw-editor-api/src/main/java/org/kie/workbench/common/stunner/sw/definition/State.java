@@ -34,6 +34,8 @@ import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJ
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
 /**
  * This class defines workflow states define building blocks of the workflow execution instructions.
@@ -99,6 +101,13 @@ public class State {
      * Unique name of a workflow state which is responsible for compensation of this state.
      */
     private String compensatedBy;
+
+    private StateDataFilter stateDataFilter;
+
+
+    @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
+    private Object timeouts;
 
     public State() {
         this.name = "State";
@@ -181,5 +190,20 @@ public class State {
 
     public void setMetadata(Metadata metadata) {
         this.metadata = metadata;
+    }
+    public StateDataFilter getStateDataFilter() {
+        return stateDataFilter;
+    }
+
+    public void setStateDataFilter(StateDataFilter stateDataFilter) {
+        this.stateDataFilter = stateDataFilter;
+    }
+
+    public Object getTimeouts() {
+        return timeouts;
+    }
+
+    public void setTimeouts(Object timeouts) {
+        this.timeouts = timeouts;
     }
 }

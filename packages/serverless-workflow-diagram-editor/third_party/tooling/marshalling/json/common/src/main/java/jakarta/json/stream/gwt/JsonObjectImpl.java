@@ -30,6 +30,7 @@ import jakarta.json.JsonNumberImpl;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
+import jakarta.json.bind.JsonbException;
 import jsinterop.base.Js;
 
 
@@ -106,13 +107,11 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public ValueType getValueType() {
-    String type = Js.typeof(__holder__).toLowerCase(Locale.ROOT);
-
-    if (type.equals("object")) {
-      return ValueType.OBJECT;
-    } else if (type.equals("array")) {
+    if (JsArray.isArray(__holder__)) {
       return ValueType.ARRAY;
-    } else if (type.equals("number")) {
+    }
+    String type = Js.typeof(__holder__).toLowerCase(Locale.ROOT);
+    if (type.equals("number")) {
       return ValueType.NUMBER;
     } else if (type.equals("string")) {
       return ValueType.STRING;
@@ -124,6 +123,8 @@ public class JsonObjectImpl implements JsonObject {
       }
     } else if (type.equals("null")) {
       return ValueType.NULL;
+    } else if (type.equals("object")) {
+      return ValueType.OBJECT;
     }
 
     throw new IllegalStateException("Unknown type: " + type);
@@ -193,8 +194,17 @@ public class JsonObjectImpl implements JsonObject {
     return Js.uncheckedCast(__holder__);
   }
 
+  @Override
   public JsonObject asJsonObject() {
     return Js.uncheckedCast(__holder__);
+  }
+
+  @Override
+  public JsonArray asJsonArray() {
+    if (getValueType() == ValueType.ARRAY) {
+      return new JsonArrayImpl(Js.uncheckedCast(__holder__));
+    }
+    throw new JsonbException("JsonValue is not an array");
   }
 
   @Override

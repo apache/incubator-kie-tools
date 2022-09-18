@@ -1,11 +1,11 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import jsinterop.base.Js;
+import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
-import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinition;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEnd;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransition;
 
 public class DefinitionTypeUtils {
 

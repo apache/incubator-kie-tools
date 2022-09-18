@@ -20,21 +20,21 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.StateTransition;
-import org.kie.workbench.common.stunner.sw.definition.StateTransition_JsonSerializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
+import org.kie.workbench.common.stunner.sw.definition.FunctionRef_JsonSerializerImpl;
 
-public class StateTransitionDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {
-    private static final StateTransition_JsonSerializerImpl serializer =
-            StateTransition_JsonSerializerImpl.INSTANCE;
+public class FunctionRefJsonSerializer implements JsonbSerializer<Object> {
+    private static final FunctionRef_JsonSerializerImpl serializer =
+            FunctionRef_JsonSerializerImpl.INSTANCE;
 
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
-            stringJsonSerializer.serialize((String) obj, "transition", generator, ctx);
-        } else if (obj instanceof StateTransition) {
-            serializer.serialize((StateTransition) obj, "transition", generator, ctx);
+            stringJsonSerializer.serialize((String) obj, "functionRef", generator, ctx);
+        } else if (obj instanceof FunctionRef) {
+            serializer.serialize((FunctionRef) obj, "functionRef", generator, ctx);
         }
     }
 }

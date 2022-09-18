@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd_JsonDeserializerImpl;
 
 public class StateEndDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
 

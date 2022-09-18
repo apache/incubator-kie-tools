@@ -16,6 +16,11 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
+
 /**
  * Used to define events and their correlations.
  */
@@ -35,6 +40,16 @@ public class Event {
      * @link CloudEvent type
      */
     private String type;
+
+    private Kind kind;
+
+    private Boolean dataOnly;
+
+    private Correlation[] correlation;
+
+    @JsonbTypeSerializer(WorkflowFunctionsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowFunctionsJsonDeserializer.class)
+    private Object functions;
 
     public String getName() {
         return name;
@@ -58,5 +73,37 @@ public class Event {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Boolean getDataOnly() {
+        return dataOnly;
+    }
+
+    public void setDataOnly(Boolean dataOnly) {
+        this.dataOnly = dataOnly;
+    }
+
+    public Kind getKind() {
+        return kind;
+    }
+
+    public void setKind(Kind kind) {
+        this.kind = kind;
+    }
+
+    public Correlation[] getCorrelation() {
+        return correlation;
+    }
+
+    public void setCorrelation(Correlation[] correlation) {
+        this.correlation = correlation;
+    }
+
+    public Object getFunctions() {
+        return functions;
+    }
+
+    public void setFunctions(Object functions) {
+        this.functions = functions;
     }
 }

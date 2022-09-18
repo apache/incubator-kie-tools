@@ -36,12 +36,15 @@ public class ForEachState extends State {
 
     public static final String TYPE_FOR_EACH = "foreach";
 
-    // Missing inputCollection, mode
-
     /**
      * Actions to be executed for each of the elements of inputCollection.
      */
     private ActionNode[] actions;
+
+    public String inputCollection;
+    public String outputCollection;
+
+    public String iterationParam;
 
     public ForEachState() {
         this.type = TYPE_FOR_EACH;
@@ -49,6 +52,30 @@ public class ForEachState extends State {
 
     public ActionNode[] getActions() {
         return actions;
+    }
+
+    public String getInputCollection() {
+        return inputCollection;
+    }
+
+    public void setInputCollection(String inputCollection) {
+        this.inputCollection = inputCollection;
+    }
+
+    public String getOutputCollection() {
+        return outputCollection;
+    }
+
+    public void setOutputCollection(String outputCollection) {
+        this.outputCollection = outputCollection;
+    }
+
+    public String getIterationParam() {
+        return iterationParam;
+    }
+
+    public void setIterationParam(String iterationParam) {
+        this.iterationParam = iterationParam;
     }
 
     public void setActions(ActionNode[] actions) {

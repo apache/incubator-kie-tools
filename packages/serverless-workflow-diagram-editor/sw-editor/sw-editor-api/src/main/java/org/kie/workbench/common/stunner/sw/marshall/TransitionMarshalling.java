@@ -24,19 +24,17 @@ import org.kie.workbench.common.stunner.sw.definition.DefaultConditionTransition
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.EventConditionTransition;
+import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
 import org.kie.workbench.common.stunner.sw.definition.StartTransition;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Transition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
-import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinition;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransition;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Marshaller.EdgeUnmarshaller;
 
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getEnd;
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getObjectProperty;
 import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.getTransition;
-import static org.kie.workbench.common.stunner.sw.marshall.DefinitionTypeUtils.setObjectProperty;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.EDGE_START;
 import static org.kie.workbench.common.stunner.sw.marshall.Marshaller.STATE_END;
 import static org.kie.workbench.common.stunner.sw.marshall.MarshallerUtils.getElementDefinition;
@@ -72,8 +70,15 @@ public interface TransitionMarshalling {
                                 sourceState.setEnd(true);
                             } // else is Object
                         } else {
-                            sourceState.setTransition(getStateNodeName(targetNode));
-                            sourceState.setEnd(false);
+                            if (sourceState.getTransition() instanceof String) {
+                                sourceState.setTransition(getStateNodeName(targetNode));
+                            } else {
+                                ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
+                            }
+
+                            if (sourceState.getEnd() instanceof Boolean) {
+                                sourceState.setEnd(false);
+                            }
                         }
                     }
                 }
@@ -104,7 +109,7 @@ public interface TransitionMarshalling {
                         if (sourceState.getTransition() instanceof String) {
                             sourceState.setTransition(getStateNodeName(targetNode));
                         } else {
-                            ((StateTransition)sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
+                            ((StateTransition) sourceState.getTransition()).setNextState(getStateNodeName(targetNode));
                         }
                     }
                 }
@@ -145,7 +150,7 @@ public interface TransitionMarshalling {
                             if (dataConditionTransition.getTransition() instanceof String) {
                                 dataConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                ((StateTransition)dataConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
+                                ((StateTransition) dataConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
                             if (dataConditionTransition.getEnd() instanceof Boolean) {
@@ -191,7 +196,7 @@ public interface TransitionMarshalling {
                             if (defaultConditionTransition.getTransition() instanceof String) {
                                 defaultConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                ((StateTransition)defaultConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
+                                ((StateTransition) defaultConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
                             if (defaultConditionTransition.getEnd() instanceof Boolean) {
@@ -284,7 +289,7 @@ public interface TransitionMarshalling {
                             if (eventConditionTransition.getTransition() instanceof String) {
                                 eventConditionTransition.setTransition(getStateNodeName(targetNode));
                             } else {
-                                ((StateTransition)eventConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
+                                ((StateTransition) eventConditionTransition.getTransition()).setNextState(getStateNodeName(targetNode));
                             }
 
                             if (eventConditionTransition.getEnd() instanceof Boolean) {
@@ -320,9 +325,9 @@ public interface TransitionMarshalling {
                     if (workflow.getStart() instanceof String) {
                         workflow.setStart(stateName);
                     } else if (workflow.getStart() != null) {
-                        StartDefinition startName = (StartDefinition) workflow.getStart();
+                        Object startName = ((StartDefinition) workflow.getStart()).getStateName();
                         if (startName != null) {
-                            ((StartDefinition)workflow.getStart()).setStateName(stateName);
+                            ((StartDefinition) workflow.getStart()).setStateName(stateName);
                         }
                     }
                 } else {

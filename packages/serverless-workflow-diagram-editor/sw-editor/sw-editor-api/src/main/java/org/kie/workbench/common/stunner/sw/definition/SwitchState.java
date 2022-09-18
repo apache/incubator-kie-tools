@@ -55,7 +55,7 @@ public class SwitchState extends State {
     /**
      * If true, this state is used to compensate another state. Default is "false".
      */
-    private boolean usedForCompensation;
+    private Boolean usedForCompensation;
 
     public SwitchState() {
         this.type = TYPE_SWITCH;
@@ -85,11 +85,11 @@ public class SwitchState extends State {
         this.dataConditions = dataConditions;
     }
 
-    public boolean isUsedForCompensation() {
+    public Boolean getUsedForCompensation() {
         return usedForCompensation;
     }
 
-    public void setUsedForCompensation(boolean usedForCompensation) {
+    public void setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
     }
 }

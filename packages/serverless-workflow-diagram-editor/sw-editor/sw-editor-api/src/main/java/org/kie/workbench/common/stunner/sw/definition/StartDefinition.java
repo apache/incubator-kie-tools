@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.definition.custom;
+package org.kie.workbench.common.stunner.sw.definition;
 
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 

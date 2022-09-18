@@ -23,8 +23,8 @@ import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.ErrorTransition;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEnd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -83,7 +83,7 @@ public class StateMarshallingTest extends BaseMarshallingTest {
                 });
 
         unmarshallNode(builderContext, workflow);
-        assertEquals(injectState.isUsedForCompensation(), true);
+        assertEquals(injectState.getUsedForCompensation(), true);
         // specific case when usedForCompensation is equals to Js.undefined cannot be tested since value defaults to false
     }
 

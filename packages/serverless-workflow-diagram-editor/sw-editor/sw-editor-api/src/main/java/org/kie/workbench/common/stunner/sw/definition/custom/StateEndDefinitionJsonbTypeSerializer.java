@@ -19,6 +19,7 @@ package org.kie.workbench.common.stunner.sw.definition.custom;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
 import org.kie.workbench.common.stunner.sw.definition.StateEnd_JsonSerializerImpl;
 
 public class StateEndDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {

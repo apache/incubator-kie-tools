@@ -50,7 +50,7 @@ public class OperationState extends State {
      * Whether the state is used to compensate for another state.
      * Defaults to false.
      */
-    private boolean usedForCompensation;
+    private Boolean usedForCompensation;
 
     public OperationState() {
         this.type = TYPE_OPERATION;
@@ -74,11 +74,11 @@ public class OperationState extends State {
         return this;
     }
 
-    public boolean isUsedForCompensation() {
+    public Boolean isUsedForCompensation() {
         return usedForCompensation;
     }
 
-    public OperationState setUsedForCompensation(boolean usedForCompensation) {
+    public OperationState setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
         return this;
     }

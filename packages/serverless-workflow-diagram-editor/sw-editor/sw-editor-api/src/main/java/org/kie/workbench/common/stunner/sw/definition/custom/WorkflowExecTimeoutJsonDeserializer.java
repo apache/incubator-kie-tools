@@ -20,12 +20,12 @@ import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.StartDefinition_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout_JsonDeserializerImpl;
 
-public class StartDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
+public class WorkflowExecTimeoutJsonDeserializer extends JsonbDeserializer<Object> {
 
-    private static final StartDefinition_JsonDeserializerImpl startDefinitionJsonDeserializerImpl =
-            new StartDefinition_JsonDeserializerImpl();
+    private static final WorkflowExecTimeout_JsonDeserializerImpl deserializer =
+            WorkflowExecTimeout_JsonDeserializerImpl.INSTANCE;
 
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
 
@@ -35,7 +35,7 @@ public class StartDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Obje
             if (value.getValueType() == JsonValue.ValueType.STRING) {
                 return stringJsonDeserializer.deserialize(value, ctx);
             } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
-                return startDefinitionJsonDeserializerImpl.deserialize(value, ctx);
+                return deserializer.deserialize(value, ctx);
             }
         }
         return null;

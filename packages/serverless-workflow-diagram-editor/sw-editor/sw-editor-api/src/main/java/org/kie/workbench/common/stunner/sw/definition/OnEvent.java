@@ -44,6 +44,8 @@ public class OnEvent {
 
     private ActionNode[] actions;
 
+    private EventDataFilter eventDataFilter;
+
     public OnEvent() {
     }
 
@@ -69,5 +71,13 @@ public class OnEvent {
 
     public void setActions(ActionNode[] actions) {
         this.actions = actions;
+    }
+
+    public EventDataFilter getEventDataFilter() {
+        return eventDataFilter;
+    }
+
+    public void setEventDataFilter(EventDataFilter eventDataFilter) {
+        this.eventDataFilter = eventDataFilter;
     }
 }

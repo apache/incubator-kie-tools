@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.json.mapper.apt.definition;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -75,6 +76,8 @@ public class CollectionsFieldDefinition extends FieldDefinition {
                       typeMirror,
                       context)
                       .getDeserializerCreationExpr(typeMirror, cu);
+    } else if (MoreTypes.asTypeElement(typeMirror).getKind().equals(ElementKind.ENUM)) {
+      deser = new EnumBeanFieldDefinition(typeMirror, context).getDeserializerCreationExpr(cu);
     } else {
       deser =
               new ObjectCreationExpr()
@@ -103,17 +106,17 @@ public class CollectionsFieldDefinition extends FieldDefinition {
 
   @Override
   public Statement getFieldSerializer(PropertyDefinition field, CompilationUnit cu) {
-    cu.addImport(CollectionJsonSerializer.class);
-
     ObjectCreationExpr serializerCreationExpr = new ObjectCreationExpr();
     ClassOrInterfaceType type = new ClassOrInterfaceType();
     TypeMirror typeMirror = MoreTypes.asDeclared(field.getType()).getTypeArguments().get(0);
     boolean isBoxedTypeOrString = context.getTypeUtils().isBoxedTypeOrString(typeMirror);
 
-    if (isBoxedTypeOrString) {
+    if (isBoxedTypeOrString
+            || MoreTypes.asTypeElement(typeMirror).getKind().equals(ElementKind.ENUM)) {
       cu.addImport(BoxedTypeCollectionJsonSerializer.class);
       type.setName(BoxedTypeCollectionJsonSerializer.class.getSimpleName());
     } else {
+      cu.addImport(CollectionJsonSerializer.class);
       type.setName(CollectionJsonSerializer.class.getSimpleName());
     }
 
@@ -148,6 +151,8 @@ public class CollectionsFieldDefinition extends FieldDefinition {
                       typeMirror,
                       context)
                       .getSerializerCreationExpr(cu);
+    } else if (MoreTypes.asTypeElement(typeMirror).getKind().equals(ElementKind.ENUM)) {
+      ser = new EnumBeanFieldDefinition(typeMirror, context).getSerializerCreationExpr(cu);
     } else {
       ser =
               new ObjectCreationExpr()

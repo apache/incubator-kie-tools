@@ -17,6 +17,7 @@
 package org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer;
 
 import jakarta.json.JsonException;
+import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 import jakarta.json.JsonValueDecorator;
 import jakarta.json.bind.serializer.DeserializationContext;
@@ -25,6 +26,9 @@ public class StringJsonDeserializer extends JsonbDeserializer<String> {
 
   @Override
   public String deserialize(JsonValue json, DeserializationContext ctx) throws JsonException {
+    if (json instanceof JsonString) {
+      return ((JsonString) json).getString();
+    }
     return new JsonValueDecorator(json).asString();
   }
 }

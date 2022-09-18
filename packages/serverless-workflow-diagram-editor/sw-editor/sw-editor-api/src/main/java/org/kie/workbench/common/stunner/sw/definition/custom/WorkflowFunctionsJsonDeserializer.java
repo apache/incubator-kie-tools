@@ -20,12 +20,13 @@ import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.StartDefinition_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.array.ArrayJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.Function_JsonDeserializerImpl;
 
-public class StartDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
+public class WorkflowFunctionsJsonDeserializer extends JsonbDeserializer<Object> {
 
-    private static final StartDefinition_JsonDeserializerImpl startDefinitionJsonDeserializerImpl =
-            new StartDefinition_JsonDeserializerImpl();
+    private static final Function_JsonDeserializerImpl deserializer =
+            Function_JsonDeserializerImpl.INSTANCE;
 
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
 
@@ -34,8 +35,9 @@ public class StartDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Obje
         if (value.getValueType() != JsonValue.ValueType.NULL) {
             if (value.getValueType() == JsonValue.ValueType.STRING) {
                 return stringJsonDeserializer.deserialize(value, ctx);
-            } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
-                return startDefinitionJsonDeserializerImpl.deserialize(value, ctx);
+            } else if (value.getValueType() == JsonValue.ValueType.ARRAY) {
+                return new ArrayJsonDeserializer<>(deserializer, org.kie.workbench.common.stunner.sw.definition.Function[]::new)
+                        .deserialize(value, ctx);
             }
         }
         return null;

@@ -20,21 +20,21 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.StateTransition;
-import org.kie.workbench.common.stunner.sw.definition.StateTransition_JsonSerializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout;
+import org.kie.workbench.common.stunner.sw.definition.WorkflowExecTimeout_JsonSerializerImpl;
 
-public class StateTransitionDefinitionJsonbTypeSerializer implements JsonbSerializer<Object> {
-    private static final StateTransition_JsonSerializerImpl serializer =
-            StateTransition_JsonSerializerImpl.INSTANCE;
+public class WorkflowExecTimeoutJsonSerializer implements JsonbSerializer<Object> {
+    private static final WorkflowExecTimeout_JsonSerializerImpl serializer =
+            WorkflowExecTimeout_JsonSerializerImpl.INSTANCE;
 
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
-            stringJsonSerializer.serialize((String) obj, "transition", generator, ctx);
-        } else if (obj instanceof StateTransition) {
-            serializer.serialize((StateTransition) obj, "transition", generator, ctx);
+            stringJsonSerializer.serialize((String) obj, "workflowExecTimeout", generator, ctx);
+        } else if (obj instanceof WorkflowExecTimeout) {
+            serializer.serialize((WorkflowExecTimeout) obj, "workflowExecTimeout", generator, ctx);
         }
     }
 }

@@ -34,6 +34,10 @@ import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJson
 import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
 /**
  * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
@@ -90,7 +94,7 @@ public class Workflow {
     /**
      * Workflow event definitions.
      */
-    private Event[] events;
+    private Event[] events; //TODO array or string
 
     /**
      * Workflow state definitions.
@@ -99,7 +103,18 @@ public class Workflow {
     @JsonbTypeDeserializer(StateJsonDeserializer.class)
     private State[] states;
 
-    // missing specVersion, functions
+    private Boolean keepActive;
+
+    @JsonbTypeSerializer(WorkflowFunctionsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowFunctionsJsonDeserializer.class)
+    private Object functions;
+
+    private Boolean autoRetries;
+
+    @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
+    @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
+    private Object timeouts;
+
 
     public Workflow() {
     }
@@ -188,5 +203,37 @@ public class Workflow {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public Boolean getKeepActive() {
+        return keepActive;
+    }
+
+    public void setKeepActive(Boolean keepActive) {
+        this.keepActive = keepActive;
+    }
+
+    public Object getFunctions() {
+        return functions;
+    }
+
+    public void setFunctions(Object functions) {
+        this.functions = functions;
+    }
+
+    public Boolean getAutoRetries() {
+        return autoRetries;
+    }
+
+    public void setAutoRetries(Boolean autoRetries) {
+        this.autoRetries = autoRetries;
+    }
+
+    public Object getTimeouts() {
+        return timeouts;
+    }
+
+    public void setTimeouts(Object timeouts) {
+        this.timeouts = timeouts;
     }
 }

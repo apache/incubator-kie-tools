@@ -40,7 +40,7 @@ public class EventState extends State {
      * the event defined in onEvents array.
      */
     @Property
-    private boolean exclusive;
+    private Boolean exclusive;
 
     /**
      * Define the events to be consumed and optional actions to be performed.
@@ -51,11 +51,11 @@ public class EventState extends State {
         this.type = TYPE_EVENT;
     }
 
-    public boolean isExclusive() {
+    public Boolean getExclusive() {
         return exclusive;
     }
 
-    public void setExclusive(boolean exclusive) {
+    public void setExclusive(Boolean exclusive) {
         this.exclusive = exclusive;
     }
 

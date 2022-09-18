@@ -20,11 +20,14 @@ import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition_JsonDeserializerImpl;
 
 
 public class StateTransitionDefinitionJsonbTypeDeserializer extends JsonbDeserializer<Object>  {
 
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
+
+    private static final StateTransition_JsonDeserializerImpl deserializer = new StateTransition_JsonDeserializerImpl();
 
     @Override
     public Object deserialize(JsonValue value, DeserializationContext ctx) {

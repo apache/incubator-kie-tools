@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import elemental2.core.JsBoolean;
 import elemental2.core.JsNumber;
 
+import jakarta.json.bind.JsonbException;
 import jakarta.json.stream.gwt.JsonObjectImpl;
 import jakarta.json.stream.gwt.JsonValueImpl;
 import jsinterop.base.Js;
@@ -124,7 +125,10 @@ public class JsonValueDecorator {
       if (delegate == null) {
         return null;
       }
-      return Js.asString(delegate.__holder__);
+      if(delegate.getValueType() == JsonValue.ValueType.STRING) {
+        return Js.asString(delegate.__holder__);
+      }
+      throw new JsonbException("Not a String value: " + delegate.getValueType());
     }
 
     public Boolean getBoolean() {

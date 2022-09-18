@@ -17,11 +17,11 @@
 package org.kie.workbench.common.stunner.sw.marshall;
 
 import org.junit.Test;
+import org.kie.workbench.common.stunner.sw.definition.StartDefinition;
+import org.kie.workbench.common.stunner.sw.definition.StateEnd;
+import org.kie.workbench.common.stunner.sw.definition.StateTransition;
 import org.kie.workbench.common.stunner.sw.definition.Workflow;
 import org.kie.workbench.common.stunner.sw.definition.Workflow_JsonMapperImpl;
-import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinition;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateEnd;
-import org.kie.workbench.common.stunner.sw.definition.custom.StateTransition;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

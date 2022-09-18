@@ -20,37 +20,46 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
+import org.kie.workbench.common.stunner.sw.definition.CallbackState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
+import org.kie.workbench.common.stunner.sw.definition.EventState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.ForEachState;
+import org.kie.workbench.common.stunner.sw.definition.ForEachState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.InjectState;
+import org.kie.workbench.common.stunner.sw.definition.InjectState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.OperationState;
+import org.kie.workbench.common.stunner.sw.definition.OperationState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
+import org.kie.workbench.common.stunner.sw.definition.ParallelState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.SleepState;
+import org.kie.workbench.common.stunner.sw.definition.SleepState_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.State_JsonSerializerImpl;
 import org.kie.workbench.common.stunner.sw.definition.SwitchState;
+import org.kie.workbench.common.stunner.sw.definition.SwitchState_JsonSerializerImpl;
 
 public class StateJsonSerializer implements JsonbSerializer<State> {
 
     @Override
     public void serialize(State obj, JsonGenerator generator, SerializationContext ctx) {
         if(obj instanceof CallbackState) {
-            org.kie.workbench.common.stunner.sw.definition.CallbackState_JsonSerializerImpl.INSTANCE.serialize((CallbackState) obj, generator, ctx);
+            CallbackState_JsonSerializerImpl.INSTANCE.serialize((CallbackState) obj, generator, ctx);
         } else if(obj instanceof EventState) {
-            org.kie.workbench.common.stunner.sw.definition.EventState_JsonSerializerImpl.INSTANCE.serialize((EventState) obj, generator, ctx);
+            EventState_JsonSerializerImpl.INSTANCE.serialize((EventState) obj, generator, ctx);
         } else if(obj instanceof ForEachState) {
-            org.kie.workbench.common.stunner.sw.definition.ForEachState_JsonSerializerImpl.INSTANCE.serialize((ForEachState) obj, generator, ctx);
+            ForEachState_JsonSerializerImpl.INSTANCE.serialize((ForEachState) obj, generator, ctx);
         } else if (obj instanceof InjectState) {
-            org.kie.workbench.common.stunner.sw.definition.InjectState_JsonSerializerImpl.INSTANCE.serialize((InjectState) obj, generator, ctx);
+            InjectState_JsonSerializerImpl.INSTANCE.serialize((InjectState) obj, generator, ctx);
         } else if (obj instanceof OperationState) {
-            org.kie.workbench.common.stunner.sw.definition.OperationState_JsonSerializerImpl.INSTANCE.serialize((OperationState) obj, generator, ctx);
+            OperationState_JsonSerializerImpl.INSTANCE.serialize((OperationState) obj, generator, ctx);
         } else if (obj instanceof ParallelState) {
-            org.kie.workbench.common.stunner.sw.definition.ParallelState_JsonSerializerImpl.INSTANCE.serialize((ParallelState) obj, generator, ctx);
+            ParallelState_JsonSerializerImpl.INSTANCE.serialize((ParallelState) obj, generator, ctx);
         } else if (obj instanceof SleepState) {
-            org.kie.workbench.common.stunner.sw.definition.SleepState_JsonSerializerImpl.INSTANCE.serialize((SleepState) obj, generator, ctx);
+            SleepState_JsonSerializerImpl.INSTANCE.serialize((SleepState) obj, generator, ctx);
         } else if (obj instanceof SwitchState) {
-            org.kie.workbench.common.stunner.sw.definition.SwitchState_JsonSerializerImpl.INSTANCE.serialize((SwitchState) obj, generator, ctx);
+            SwitchState_JsonSerializerImpl.INSTANCE.serialize((SwitchState) obj, generator, ctx);
         } else {
-            org.kie.workbench.common.stunner.sw.definition.State_JsonSerializerImpl.INSTANCE.serialize(obj, generator, ctx);
+            State_JsonSerializerImpl.INSTANCE.serialize(obj, generator, ctx);
         }
     }
 }

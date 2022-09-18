@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
 import org.kie.workbench.common.stunner.core.definition.annotation.Property;
@@ -27,6 +29,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBase;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
+import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
 
 /**
  * Actions specify invocations of services or other workflows during workflow execution.
@@ -61,7 +65,10 @@ public class ActionNode {
     /**
      * References to a reusable function definition.
      */
-    private String functionRef;
+
+    @JsonbTypeSerializer(FunctionRefJsonSerializer.class)
+    @JsonbTypeDeserializer(FunctionRefJsonDeserializer.class)
+    private Object functionRef;
 
     /**
      * Reference to a trigger and result reusable event definition.
@@ -72,6 +79,18 @@ public class ActionNode {
      * Reference to a workflow to be invoked.
      */
     private String subFlowRef;
+
+    private String retryRef;
+
+    private Sleep sleep;
+
+    private String[] retryableErrors;
+
+    private String[] nonRetryableErrors;
+
+    private ActionDataFilters actionDataFilter;
+
+    private String condition;
 
     public ActionNode() {
     }
@@ -94,11 +113,11 @@ public class ActionNode {
         return this;
     }
 
-    public String getFunctionRef() {
+    public Object getFunctionRef() {
         return functionRef;
     }
 
-    public ActionNode setFunctionRef(String functionRef) {
+    public ActionNode setFunctionRef(Object functionRef) {
         this.functionRef = functionRef;
         return this;
     }
@@ -127,5 +146,53 @@ public class ActionNode {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getRetryRef() {
+        return retryRef;
+    }
+
+    public void setRetryRef(String retryRef) {
+        this.retryRef = retryRef;
+    }
+
+    public Sleep getSleep() {
+        return sleep;
+    }
+
+    public void setSleep(Sleep sleep) {
+        this.sleep = sleep;
+    }
+
+    public String[] getRetryableErrors() {
+        return retryableErrors;
+    }
+
+    public void setRetryableErrors(String[] retryableErrors) {
+        this.retryableErrors = retryableErrors;
+    }
+
+    public String[] getNonRetryableErrors() {
+        return nonRetryableErrors;
+    }
+
+    public void setNonRetryableErrors(String[] nonRetryableErrors) {
+        this.nonRetryableErrors = nonRetryableErrors;
+    }
+
+    public ActionDataFilters getActionDataFilter() {
+        return actionDataFilter;
+    }
+
+    public void setActionDataFilter(ActionDataFilters actionDataFilter) {
+        this.actionDataFilter = actionDataFilter;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
     }
 }

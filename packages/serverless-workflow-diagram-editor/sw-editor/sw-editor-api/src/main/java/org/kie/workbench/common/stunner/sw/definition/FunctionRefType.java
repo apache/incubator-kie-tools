@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.definition.custom;
+package org.kie.workbench.common.stunner.sw.definition;
 
-import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-
-@JSONMapper
-public class StateTransition {
-
-    private String nextState;
-    private Boolean compensate;
-
-    public String getNextState() {
-        return nextState;
-    }
-
-    public void setNextState(String nextState) {
-        this.nextState = nextState;
-    }
-
-    public Boolean getCompensate() {
-        return compensate;
-    }
-
-    public void setCompensate(Boolean compensate) {
-        this.compensate = compensate;
-    }
+public enum FunctionRefType {
+    sync, async;
 }

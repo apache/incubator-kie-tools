@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.workbench.common.stunner.sw.definition.custom;
+package org.kie.workbench.common.stunner.sw.definition;
 
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 
 @JSONMapper
-public class StateEnd {
+public class StateTransition {
 
-    private Boolean terminate;
+    private String nextState;
     private Boolean compensate;
-    private String continueAs;
 
-    public Boolean getTerminate() {
-        return terminate;
+    public String getNextState() {
+        return nextState;
     }
 
-    public void setTerminate(Boolean terminate) {
-        this.terminate = terminate;
+    public void setNextState(String nextState) {
+        this.nextState = nextState;
     }
 
     public Boolean getCompensate() {
@@ -39,13 +38,5 @@ public class StateEnd {
 
     public void setCompensate(Boolean compensate) {
         this.compensate = compensate;
-    }
-
-    public String getContinueAs() {
-        return continueAs;
-    }
-
-    public void setContinueAs(String continueAs) {
-        this.continueAs = continueAs;
     }
 }

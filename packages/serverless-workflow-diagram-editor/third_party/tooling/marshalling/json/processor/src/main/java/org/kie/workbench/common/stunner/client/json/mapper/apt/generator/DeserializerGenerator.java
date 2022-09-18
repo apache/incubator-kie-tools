@@ -68,7 +68,7 @@ public class DeserializerGenerator extends AbstractGenerator {
                 .setName(AbstractBeanJsonDeserializer.class.getSimpleName())
                 .setTypeArguments(
                     new ClassOrInterfaceType()
-                        .setName(type.getElement().getSimpleName().toString())));
+                        .setName(type.getElement().getQualifiedName().toString())));
 
     constructor = declaration.addConstructor(Modifier.Keyword.PUBLIC);
   }
@@ -97,7 +97,7 @@ public class DeserializerGenerator extends AbstractGenerator {
     MethodDeclaration methodDeclaration =
         declaration.addMethod("newInstance", Modifier.Keyword.PUBLIC);
     methodDeclaration.setType(
-        new ClassOrInterfaceType().setName(type.getElement().getSimpleName().toString()));
+        new ClassOrInterfaceType().setName(type.getElement().getQualifiedName().toString()));
     methodDeclaration
         .getBody()
         .get()

@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jakarta.json.bind.annotation.JsonbTransient;
 import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
@@ -39,32 +38,32 @@ public class InjectState extends State {
     /**
      * JSON object as String which can be set as state's data input and can be manipulated via filter.
      */
-    @JsonbTransient //TODO it's a JSON object in examples
-    private String data;
+    //TODO it's a JSON object in examples
+    private Data data;
 
     /**
      * Whether the state is used to compensate for another state.
      * Defaults to false.
      */
-    private boolean usedForCompensation;
+    private Boolean usedForCompensation;
 
     public InjectState() {
         this.type = TYPE_INJECT;
     }
 
-    public String getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(Data data) {
         this.data = data;
     }
 
-    public boolean isUsedForCompensation() {
+    public Boolean getUsedForCompensation() {
         return usedForCompensation;
     }
 
-    public void setUsedForCompensation(boolean usedForCompensation) {
+    public void setUsedForCompensation(Boolean usedForCompensation) {
         this.usedForCompensation = usedForCompensation;
     }
 }

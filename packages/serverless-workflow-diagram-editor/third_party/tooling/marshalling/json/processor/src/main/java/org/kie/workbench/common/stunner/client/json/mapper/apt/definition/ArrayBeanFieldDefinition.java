@@ -16,6 +16,7 @@
 
 package org.kie.workbench.common.stunner.client.json.mapper.apt.definition;
 
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ArrayType;
 import javax.lang.model.type.TypeMirror;
@@ -82,6 +83,12 @@ public class ArrayBeanFieldDefinition extends FieldDefinition {
                       arrayType.getComponentType(),
                       context)
                       .getDeserializerCreationExpr(arrayType.getComponentType(), cu);
+    } else if (MoreTypes.asTypeElement(arrayType.getComponentType())
+            .getKind()
+            .equals(ElementKind.ENUM)) {
+      deser =
+              new EnumBeanFieldDefinition(arrayType.getComponentType(), context)
+                      .getDeserializerCreationExpr(cu);
     } else {
       deser =
               new ObjectCreationExpr()
@@ -182,6 +189,14 @@ public class ArrayBeanFieldDefinition extends FieldDefinition {
                               .getAnnotation(JsonbTypeInfo.class),
                       arrayType.getComponentType(),
                       context)
+                      .getSerializerCreationExpr(cu);
+    } else if (MoreTypes.asTypeElement(arrayType.getComponentType())
+            .getKind()
+            .equals(ElementKind.ENUM)) {
+      cu.addImport(ArrayJsonSerializer.class);
+      type.setName(ArrayJsonSerializer.class.getSimpleName());
+      ser =
+              new EnumBeanFieldDefinition(arrayType.getComponentType(), context)
                       .getSerializerCreationExpr(cu);
     } else {
       type.setName(ArrayBeanJsonSerializer.class.getSimpleName());

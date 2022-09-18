@@ -43,11 +43,21 @@ public class ParallelState extends State {
 
     private String completionType;
 
+    private ParallelStateBranch[] branches;
+
     public String getCompletionType() {
         return completionType;
     }
 
     public void setCompletionType(String completionType) {
         this.completionType = completionType;
+    }
+
+    public ParallelStateBranch[] getBranches() {
+        return branches;
+    }
+
+    public void setBranches(ParallelStateBranch[] branches) {
+        this.branches = branches;
     }
 }
