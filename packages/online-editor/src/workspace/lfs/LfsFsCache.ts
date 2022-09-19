@@ -15,8 +15,6 @@
  */
 
 import KieSandboxFs from "@kie-tools/kie-sandbox-fs";
-import DefaultBackend from "@kie-tools/kie-sandbox-fs/dist/DefaultBackend";
-import DexieBackend from "@kie-tools/kie-sandbox-fs/dist/DexieBackend";
 
 export class LfsFsCache {
   private fsCache = new Map<string, KieSandboxFs>();
@@ -27,11 +25,7 @@ export class LfsFsCache {
       return fs;
     }
 
-    const newFs = new KieSandboxFs(fsMountPoint, {
-      backend: new DefaultBackend({
-        idbBackendDelegate: (dbName, storeName) => new DexieBackend(dbName, storeName),
-      }) as any,
-    });
+    const newFs = new KieSandboxFs(fsMountPoint);
 
     this.fsCache.set(fsMountPoint, newFs);
     return newFs;
