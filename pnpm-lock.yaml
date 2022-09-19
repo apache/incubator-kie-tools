@@ -722,7 +722,7 @@ importers:
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
       "@kie-tools/serverless-workflow-text-editor": workspace:*
@@ -757,7 +757,7 @@ importers:
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
       "@kie-tools/serverless-workflow-text-editor": link:../serverless-workflow-text-editor
@@ -3376,7 +3376,7 @@ importers:
       "@kie-tools/root-env": workspace:*
       "@kie-tools/serverless-logic-sandbox-base-image-env": workspace:*
       "@kie-tools/serverless-workflow-combined-editor": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
@@ -3449,7 +3449,7 @@ importers:
       "@kie-tools/i18n-common-dictionary": link:../i18n-common-dictionary
       "@kie-tools/kie-sandbox-fs": link:../kie-sandbox-fs
       "@kie-tools/serverless-workflow-combined-editor": link:../serverless-workflow-combined-editor
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
@@ -3632,7 +3632,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
@@ -3681,7 +3681,7 @@ importers:
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/serverless-workflow-diagram-editor-envelope": link:../serverless-workflow-diagram-editor-envelope
       "@kie-tools/serverless-workflow-language-service": link:../serverless-workflow-language-service
       "@kie-tools/serverless-workflow-mermaid-viewer": link:../serverless-workflow-mermaid-viewer
@@ -3744,6 +3744,16 @@ importers:
       rimraf: 3.0.2
       run-script-os: 1.1.6
       symlink-dir: 5.0.1
+
+  packages/serverless-workflow-diagram-editor-assets:
+    specifiers:
+      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      cpr: ^3.0.1
+      rimraf: ^3.0.2
+    devDependencies:
+      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      cpr: 3.0.1
+      rimraf: 3.0.2
 
   packages/serverless-workflow-diagram-editor-envelope:
     specifiers:
@@ -3883,6 +3893,7 @@ importers:
       "@types/svg-pan-zoom": ^3.4.0
       "@types/testing-library__jest-dom": ^5.9.1
       copy-webpack-plugin: ^8.1.1
+      copyfiles: ^2.4.1
       cypress: ^10.7.0
       cypress-file-upload: ^5.0.8
       cypress-iframe: ^1.0.1
@@ -3934,6 +3945,7 @@ importers:
       "@types/svg-pan-zoom": 3.4.0
       "@types/testing-library__jest-dom": 5.9.5
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      copyfiles: 2.4.1
       cypress: 10.7.0
       cypress-file-upload: 5.0.8_cypress@10.7.0
       cypress-iframe: 1.0.1
@@ -5030,7 +5042,7 @@ importers:
       "@kie-tools-core/workspace": workspace:*
       "@kie-tools/eslint": workspace:*
       "@kie-tools/root-env": workspace:*
-      "@kie-tools/serverless-workflow-diagram-editor": workspace:*
+      "@kie-tools/serverless-workflow-diagram-editor-assets": workspace:*
       "@kie-tools/serverless-workflow-diagram-editor-envelope": workspace:*
       "@kie-tools/serverless-workflow-language-service": workspace:*
       "@kie-tools/serverless-workflow-mermaid-viewer": workspace:*
@@ -5093,7 +5105,7 @@ importers:
       "@kie-tools-core/webpack-base": link:../webpack-base
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
-      "@kie-tools/serverless-workflow-diagram-editor": link:../serverless-workflow-diagram-editor
+      "@kie-tools/serverless-workflow-diagram-editor-assets": link:../serverless-workflow-diagram-editor-assets
       "@kie-tools/tsconfig": link:../tsconfig
       "@types/chai": 4.2.18
       "@types/mocha": 8.2.2

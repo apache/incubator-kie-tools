@@ -20,7 +20,7 @@ import mermaid from "mermaid";
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
 import svgPanZoom from "svg-pan-zoom";
-import "../../static/css/viewer.css";
+import "./ServerlessWorkflowMermaidViewer.css";
 
 interface Props {
   channelType: ChannelType;
