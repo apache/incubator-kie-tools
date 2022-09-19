@@ -17,7 +17,7 @@
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef, useCallback } from "react";
 import { SwfTextEditorController, SwfTextEditorApi } from "./SwfTextEditorController";
-import { initJsonCompletion } from "./augmentation/completion";
+import { initCompletion } from "./augmentation/completion";
 import { initJsonCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
@@ -84,18 +84,14 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
     const instance = controller.show(container.current, theme ?? EditorTheme.LIGHT);
     const commands = initAugmentationCommands(instance, editorEnvelopeCtx.channelApi);
 
-    const jsonCompletion = initJsonCompletion(commands, editorEnvelopeCtx.channelApi);
+    const completion = initCompletion(commands, editorEnvelopeCtx.channelApi);
     const codeLenses = initJsonCodeLenses(commands, editorEnvelopeCtx.channelApi);
 
     return () => {
       controller.dispose();
       codeLenses.dispose();
-      jsonCompletion.dispose();
+      completion.dispose();
     };
-
-    // TODO: Add support to YAML
-    // initYamlCompletion(commands);
-    // initYamlWidgets(commands);
   }, [
     content,
     fileName,
