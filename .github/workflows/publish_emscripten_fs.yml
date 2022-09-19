@@ -19,7 +19,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: "Build and publish"
-        working-directory: ./.github/supporting-files/emscripten-fs
+        working-directory: ./.github/supporting-files/publish_emscripten_fs
         env:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
