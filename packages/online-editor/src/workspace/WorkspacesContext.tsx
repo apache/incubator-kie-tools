@@ -83,10 +83,7 @@ export interface LocalFile {
 export interface WorkspacesContextType {
   // util
 
-  getUniqueFileIdentifier(args: {
-    workspaceId: string; //
-    relativePath: string;
-  }): Promise<string>;
+  getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }): Promise<string>;
 
   // git
 
@@ -128,30 +125,16 @@ export interface WorkspacesContextType {
     };
   }): Promise<void>;
 
-  branch(args: {
-    workspaceId: string; //
-    name: string;
-    checkout: boolean;
-  }): Promise<void>;
+  branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
-  addRemote(args: {
-    workspaceId: string; //
-    name: string;
-    url: string;
-    force: boolean;
-  }): Promise<void>;
+  addRemote(args: { workspaceId: string; name: string; url: string; force: boolean }): Promise<void>;
 
-  resolveRef(args: {
-    workspaceId: string; //
-    ref: string;
-  }): Promise<string>;
+  resolveRef(args: { workspaceId: string; ref: string }): Promise<string>;
 
-  hasLocalChanges(args: {
-    workspaceId: string; //
-  }): Promise<boolean>;
+  hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
 
   createSavePoint(args: {
-    workspaceId: string; //
+    workspaceId: string;
     gitConfig?: {
       email: string;
       name: string;
@@ -166,23 +149,13 @@ export interface WorkspacesContextType {
     extension: string;
   }): Promise<WorkspaceFile>;
 
-  prepareZip(args: {
-    workspaceId: string; //
-    onlyExtensions?: string[];
-  }): Promise<Blob>;
+  prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
 
-  getFiles(args: {
-    workspaceId: string; //
-  }): Promise<WorkspaceFile[]>;
+  getFiles(args: { workspaceId: string }): Promise<WorkspaceFile[]>;
 
-  deleteWorkspace(args: {
-    workspaceId: string; //
-  }): Promise<void>;
+  deleteWorkspace(args: { workspaceId: string }): Promise<void>;
 
-  renameWorkspace(args: {
-    workspaceId: string; //
-    newName: string;
-  }): Promise<void>;
+  renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
 
   resourceContentList(args: {
     workspaceId: string;
@@ -196,32 +169,15 @@ export interface WorkspacesContextType {
     opts?: ResourceContentOptions;
   }): Promise<ResourceContent | undefined>;
 
-  //
+  getFile(args: { workspaceId: string; relativePath: string }): Promise<WorkspaceFile | undefined>;
 
-  getFile(args: {
-    workspaceId: string; //
-    relativePath: string;
-  }): Promise<WorkspaceFile | undefined>;
+  getFileContent(args: { workspaceId: string; relativePath: string }): Promise<Uint8Array>;
 
-  getFileContent(args: {
-    workspaceId: string; //
-    relativePath: string;
-  }): Promise<Uint8Array>;
+  renameFile(args: { file: WorkspaceFile; newFileNameWithoutExtension: string }): Promise<WorkspaceFile>;
 
-  renameFile(args: {
-    file: WorkspaceFile; //
-    newFileNameWithoutExtension: string;
-  }): Promise<WorkspaceFile>;
+  updateFile(args: { workspaceId: string; relativePath: string; newContent: string }): Promise<void>;
 
-  updateFile(args: {
-    workspaceId: string; //
-    relativePath: string;
-    newContent: string;
-  }): Promise<void>;
-
-  deleteFile(args: {
-    file: WorkspaceFile; //
-  }): Promise<void>;
+  deleteFile(args: { file: WorkspaceFile }): Promise<void>;
 
   addFile(args: {
     workspaceId: string;
@@ -231,26 +187,15 @@ export interface WorkspacesContextType {
     extension: string;
   }): Promise<WorkspaceFile>;
 
-  existsFile(args: {
-    workspaceId: string; //
-    relativePath: string;
-  }): Promise<boolean>;
+  existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
 
   listAllWorkspaces(): Promise<WorkspaceDescriptor[]>;
 
-  getWorkspace(args: {
-    workspaceId: string; //
-  }): Promise<WorkspaceDescriptor>;
+  getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor>;
 
-  initGitOnWorkspace(args: {
-    workspaceId: string; //
-    remoteUrl: URL;
-  }): Promise<void>;
+  initGitOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
 
-  initGistOnWorkspace(args: {
-    workspaceId: string; //
-    remoteUrl: URL;
-  }): Promise<void>;
+  initGistOnWorkspace(args: { workspaceId: string; remoteUrl: URL }): Promise<void>;
 }
 
 export const WorkspacesContext = createContext<WorkspacesContextType>({} as any);

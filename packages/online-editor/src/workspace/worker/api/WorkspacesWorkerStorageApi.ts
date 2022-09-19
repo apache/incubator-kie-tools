@@ -26,31 +26,21 @@ import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
 export interface WorkspacesWorkerStorageApi {
   // model
 
-  kieSandboxWorkspacesStorage_deleteWorkspace(args: {
-    workspaceId: string; //
-  }): Promise<void>;
-  kieSandboxWorkspacesStorage_renameWorkspace(args: {
-    workspaceId: string; //
-    newName: string;
-  }): Promise<void>;
+  kieSandboxWorkspacesStorage_deleteWorkspace(args: { workspaceId: string }): Promise<void>;
+  kieSandboxWorkspacesStorage_renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void>;
 
-  kieSandboxWorkspacesStorage_getWorkspace(args: {
-    workspaceId: string; //
-  }): Promise<WorkspaceDescriptor>;
+  kieSandboxWorkspacesStorage_getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor>;
 
   kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]>;
 
   // util
 
   kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: {
-    workspaceId: string; //
+    workspaceId: string;
     relativePath: string;
   }): Promise<string>;
 
-  kieSandboxWorkspacesStorage_prepareZip(args: {
-    workspaceId: string; //
-    onlyExtensions?: string[];
-  }): Promise<Blob>;
+  kieSandboxWorkspacesStorage_prepareZip(args: { workspaceId: string; onlyExtensions?: string[] }): Promise<Blob>;
 
   kieSandboxWorkspacesStorage_resourceContentList(args: {
     workspaceId: string;
@@ -66,9 +56,7 @@ export interface WorkspacesWorkerStorageApi {
 
   // core
 
-  kieSandboxWorkspacesStorage_getFiles(args: {
-    workspaceId: string; //
-  }): Promise<WorkspaceWorkerFileDescriptor[]>;
+  kieSandboxWorkspacesStorage_getFiles(args: { workspaceId: string }): Promise<WorkspaceWorkerFileDescriptor[]>;
 
   kieSandboxWorkspacesStorage_addEmptyFile(args: {
     workspaceId: string;
@@ -76,10 +64,7 @@ export interface WorkspacesWorkerStorageApi {
     extension: string;
   }): Promise<WorkspaceWorkerFileDescriptor>;
 
-  kieSandboxWorkspacesStorage_getFileContent(args: {
-    workspaceId: string; //
-    relativePath: string;
-  }): Promise<Uint8Array>;
+  kieSandboxWorkspacesStorage_getFileContent(args: { workspaceId: string; relativePath: string }): Promise<Uint8Array>;
 
   kieSandboxWorkspacesStorage_getFile(args: {
     workspaceId: string;
@@ -96,9 +81,7 @@ export interface WorkspacesWorkerStorageApi {
     newContent: string;
   }): Promise<void>;
 
-  kieSandboxWorkspacesStorage_deleteFile(args: {
-    wwfd: WorkspaceWorkerFileDescriptor; //
-  }): Promise<void>;
+  kieSandboxWorkspacesStorage_deleteFile(args: { wwfd: WorkspaceWorkerFileDescriptor }): Promise<void>;
 
   kieSandboxWorkspacesStorage_addFile(args: {
     workspaceId: string;
@@ -108,8 +91,5 @@ export interface WorkspacesWorkerStorageApi {
     extension: string;
   }): Promise<WorkspaceWorkerFileDescriptor>;
 
-  kieSandboxWorkspacesStorage_existsFile(args: {
-    workspaceId: string; //
-    relativePath: string;
-  }): Promise<boolean>;
+  kieSandboxWorkspacesStorage_existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
 }

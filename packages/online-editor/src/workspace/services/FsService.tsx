@@ -119,7 +119,7 @@ export class FsService {
 
     const flush = () => {
       console.time("Flush FS - " + fsMountPoint);
-      console.log("Flushing FS - " + fsMountPoint);
+      console.debug("Flushing FS - " + fsMountPoint);
       const ret = flushFs(fs, fsMountPoint);
       console.timeEnd("Flush FS - " + fsMountPoint);
       return ret;

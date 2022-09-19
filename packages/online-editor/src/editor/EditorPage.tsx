@@ -109,7 +109,7 @@ export function EditorPage(props: Props) {
     });
   }, [history, routes, workspaceFilePromise, queryParams]);
 
-  // being (REFRESH)
+  // begin (REFRESH)
   // Update EmbeddedEditorFile, but only if content is different from what was saved
   // This effect handles the case where a file was edited in another tab.
   // It has its own version pointer to ignore stale executions.
@@ -121,29 +121,29 @@ export function EditorPage(props: Props) {
         }
 
         const version = refreshVersion++;
-        console.info(`Refreshing @ new version (${refreshVersion}).`);
+        console.debug(`Refreshing @ new version (${refreshVersion}).`);
 
         workspaceFilePromise.data.workspaceFile.getFileContentsAsString().then((content) => {
           if (canceled.get()) {
-            console.info(`Refreshing @ canceled; ignoring.`);
+            console.debug(`Refreshing @ canceled; ignoring.`);
             return;
           }
 
           if (content === lastContent.current) {
-            console.info(`Refreshing @ unchanged content; ignoring.`);
+            console.debug(`Refreshing @ unchanged content; ignoring.`);
             return;
           }
 
           if (version + 1 < saveVersion) {
-            console.info(`Refreshing @ stale version (${version}); ignoring.`);
+            console.debug(`Refreshing @ stale version (${version}); ignoring.`);
             return;
           }
 
-          console.info(`Refreshing @ current version (${saveVersion}).`);
+          console.debug(`Refreshing @ current version (${saveVersion}).`);
           refreshVersion = saveVersion;
           lastContent.current = content;
 
-          // FIXME: PMML Editor doesn't work well after this is called. Can't edit using multiple tabs.
+          // FIXME: KOGITO-7958: PMML Editor doesn't work well after this is called. Can't edit using multiple tabs.
           setEmbeddedEditorFile({
             path: workspaceFilePromise.data.workspaceFile.relativePath,
             getFileContents: async () => content,
@@ -173,22 +173,22 @@ export function EditorPage(props: Props) {
     }
 
     const version = saveVersion++;
-    console.info(`Saving @ new version (${saveVersion}).`);
+    console.debug(`Saving @ new version (${saveVersion}).`);
 
     const content = await editor.getContent();
-    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // FIXME: Uncomment when working on KOGITO-7805
     // const svgString = await editor.getPreview();
 
     if (version + 1 < saveVersion) {
-      console.info(`Saving @ stale version (${version}); ignoring before writing.`);
+      console.debug(`Saving @ stale version (${version}); ignoring before writing.`);
       return;
     }
 
-    // FIXME: Uncomment when KOGITO-6181 is fixed
+    // FIXME: Uncomment when working on KOGITO-7805
     // if (svgString) {
     //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
     // }
-    console.info(`Saving @ current version (${version}); updating content.`);
+    console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
 
     await workspaces.updateFile({
@@ -198,11 +198,11 @@ export function EditorPage(props: Props) {
     });
 
     if (version + 1 < saveVersion) {
-      console.info(`Saving @ stale version (${version}); ignoring before marking as saved.`);
+      console.debug(`Saving @ stale version (${version}); ignoring before marking as saved.`);
       return;
     }
 
-    console.info(`Saving @ current version (${version}); marking as saved.`);
+    console.debug(`Saving @ current version (${version}); marking as saved.`);
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 

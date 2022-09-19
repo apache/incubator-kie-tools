@@ -55,7 +55,7 @@ const GIT_USER_DEFAULT = {
 async function corsProxyUrl() {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
   const env = await (await fetch(envFilePath)).json();
-  return env.WEBPACK_REPLACE__corsProxyUrl ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
+  return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
 
 const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
@@ -98,7 +98,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
 
   const impl: WorkspacesWorkerApi = {
     async kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
-      workspaceId: string; //
+      workspaceId: string;
       remoteUrl: string;
     }): Promise<void> {
       return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
@@ -106,16 +106,14 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       });
     },
     async kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
-      workspaceId: string; //
+      workspaceId: string;
       remoteUrl: string;
     }): Promise<void> {
       return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
         return descriptorService.turnIntoGit(fs, args.workspaceId, new URL(args.remoteUrl));
       });
     },
-    async kieSandboxWorkspacesStorage_getWorkspace(args: {
-      workspaceId: string; //
-    }): Promise<WorkspaceDescriptor> {
+    async kieSandboxWorkspacesStorage_getWorkspace(args: { workspaceId: string }): Promise<WorkspaceDescriptor> {
       return descriptorsFsService.withReadonlyInMemoryFs(({ fs }) => {
         return descriptorService.get(fs, args.workspaceId);
       });
@@ -566,11 +564,12 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
 });
 
 declare let onconnect: any;
+
 // eslint-disable-next-line prefer-const
 onconnect = async (e: any) => {
   const port = e.ports[0];
 
-  port.postMessage(`Connected to 'workspaces-shared-worker'`);
+  console.log(`Connected to 'workspaces-shared-worker'`);
 
   const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, { kieToolsWorkspacesWorker_ready: () => void }>((m) =>
     port.postMessage(m)

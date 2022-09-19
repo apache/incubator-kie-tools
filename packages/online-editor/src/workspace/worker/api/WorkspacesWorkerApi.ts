@@ -18,5 +18,5 @@ import { WorkspacesWorkerGitApi } from "./WorkspacesWorkerGitApi";
 import { WorkspacesWorkerStorageApi } from "./WorkspacesWorkerStorageApi";
 
 export interface WorkspacesWorkerApi extends WorkspacesWorkerGitApi, WorkspacesWorkerStorageApi {
-  //
+  // empty on purpose
 }

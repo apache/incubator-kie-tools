@@ -39,7 +39,7 @@ const workspacesWorkerBus = new EnvelopeBusMessageManager<
 });
 
 const ready = new Promise<void>((res) => {
-  console.log("workspaces-shared-worker is ready.");
+  console.debug("workspaces-shared-worker is ready.");
 
   workspacesWorker.port.onmessage = (m) => {
     workspacesWorkerBus.server.receive(m.data, {
@@ -290,10 +290,8 @@ export function WorkspacesContextProvider(props: Props) {
 
   const value = useMemo(
     () => ({
-      //
       resourceContentGet,
       resourceContentList,
-      //
       createWorkspaceFromLocal,
       createWorkspaceFromGitRepository,
       renameWorkspace,
@@ -308,7 +306,6 @@ export function WorkspacesContextProvider(props: Props) {
       resolveRef,
       getFiles,
       hasLocalChanges,
-      //
       addEmptyFile,
       addFile,
       existsFile,
@@ -317,7 +314,6 @@ export function WorkspacesContextProvider(props: Props) {
       deleteFile,
       getFile,
       getFileContent,
-      //
       listAllWorkspaces,
       getWorkspace,
       initGitOnWorkspace,

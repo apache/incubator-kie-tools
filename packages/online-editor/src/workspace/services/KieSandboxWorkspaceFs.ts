@@ -74,7 +74,6 @@ export interface EmscriptenFs {
   readlink(path: string): string;
   symlink(target: string, path: string): void;
   chmod(path: string, mode: number): void;
-  //
   mount(fs: any, opts: any, mountpoint: string): void;
   unmount(mountpoint: string): void;
   isDir(mode: number): boolean;

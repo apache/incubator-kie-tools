@@ -85,7 +85,6 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
   //   if (isEverythingPersistedByTheUser) {
   //     return;
   //   }
-  //
   //   window.onbeforeunload = () => "You have unsaved changes.";
   //   return () => {
   //     window.onbeforeunload = null;

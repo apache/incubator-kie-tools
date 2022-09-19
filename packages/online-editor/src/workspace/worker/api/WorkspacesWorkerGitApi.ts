@@ -20,14 +20,9 @@ import { LocalFile } from "../../WorkspacesContext";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 
 export interface WorkspacesWorkerGitApi {
-  kieSandboxWorkspacesGit_hasLocalChanges(args: {
-    workspaceId: string; //
-  }): Promise<boolean>;
+  kieSandboxWorkspacesGit_hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
 
-  kieSandboxWorkspacesGit_resolveRef(args: {
-    workspaceId: string; //
-    ref: string;
-  }): Promise<string>;
+  kieSandboxWorkspacesGit_resolveRef(args: { workspaceId: string; ref: string }): Promise<string>;
 
   kieSandboxWorkspacesGit_init(args: {
     localFiles: LocalFile[];
@@ -80,11 +75,7 @@ export interface WorkspacesWorkerGitApi {
     };
   }): Promise<void>;
 
-  kieSandboxWorkspacesGit_branch(args: {
-    workspaceId: string; //
-    name: string;
-    checkout: boolean;
-  }): Promise<void>;
+  kieSandboxWorkspacesGit_branch(args: { workspaceId: string; name: string; checkout: boolean }): Promise<void>;
 
   kieSandboxWorkspacesGit_addRemote(args: {
     workspaceId: string;
@@ -101,13 +92,7 @@ export interface WorkspacesWorkerGitApi {
     };
   }): Promise<void>;
 
-  kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: {
-    workspaceId: string; //
-    remoteUrl: string;
-  }): Promise<void>;
+  kieSandboxWorkspacesGit_initGitOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
 
-  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
-    workspaceId: string; //
-    remoteUrl: string;
-  }): Promise<void>;
+  kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: { workspaceId: string; remoteUrl: string }): Promise<void>;
 }

@@ -463,7 +463,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        // FIXME: Uncomment when KOGITO-6181 is fixed
+        // FIXME: Uncomment when working on KOGITO-7805
         // Promise.resolve()
         //   .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
         //   .then(async (file) => {
@@ -604,7 +604,7 @@ export function FilesMenuItems(props: {
             All
           </MenuItem>
         </SplitItem>
-        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
+        {/* FIXME: Uncomment when working on KOGITO-7805 */}
         {/*<SplitItem>*/}
         {/*  <FilesDropdownModeIcons*/}
         {/*    filesDropdownMode={props.filesDropdownMode}*/}
@@ -734,7 +734,7 @@ export function FilesMenuItems(props: {
                         </CardHeaderMain>
                       </CardHeader>
                       <CardBody style={{ padding: 0 }}>
-                        {/* FIXME: Uncomment when KOGITO-6181 is fixed */}
+                        {/* FIXME: Uncomment when working on KOGITO-7805 */}
                         {/* <FileSvg workspaceFile={file} />*/}
                       </CardBody>
                     </Card>

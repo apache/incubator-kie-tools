@@ -49,7 +49,7 @@ export function useWorkspaceGitStatusPromise(workspace: ActiveWorkspace | undefi
         workspace.descriptor.origin.kind === WorkspaceKind.GITHUB_GIST
       ) {
         const head = await workspaces.resolveRef({
-          workspaceId: workspace.descriptor.workspaceId, //
+          workspaceId: workspace.descriptor.workspaceId,
           ref: "HEAD",
         });
 
