@@ -224,7 +224,7 @@ export async function restoreFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string
 
   let inosIndexJson;
   try {
-    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(fsMountPoint), { encoding: "utf8" });
+    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(fsMountPoint), { encoding: "utf-8" });
   } catch (e) {
     // ENOENT
     inosIndexJson = "[]";

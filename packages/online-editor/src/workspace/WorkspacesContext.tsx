@@ -25,6 +25,7 @@ import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "./worker/api/WorkspaceDescriptor";
 import { basename, extname, parse } from "path";
 import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
+import { LocalFile } from "./worker/api/LocalFile";
 
 export const decoder = new TextDecoder("utf-8");
 export const encoder = new TextEncoder();
@@ -73,11 +74,6 @@ export class WorkspaceFile {
   get name() {
     return basename(this.relativePath);
   }
-}
-
-export interface LocalFile {
-  path: string;
-  fileContents: Uint8Array;
 }
 
 export interface WorkspacesContextType {

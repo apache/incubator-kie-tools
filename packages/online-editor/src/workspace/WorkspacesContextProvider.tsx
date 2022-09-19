@@ -17,7 +17,8 @@
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { LocalFile, WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
+import { LocalFile } from "./worker/api/LocalFile";
 import { SupportedFileExtensions } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";

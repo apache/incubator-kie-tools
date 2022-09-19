@@ -23,7 +23,7 @@ import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./api/WorkspaceOrigin";
-import { decoder, encoder, LocalFile, WorkspaceFile } from "../WorkspacesContext";
+import { decoder, encoder, WorkspaceFile } from "../WorkspacesContext";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import {
   ContentType,
@@ -40,6 +40,7 @@ import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelo
 import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
+import { LocalFile } from "./api/LocalFile";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
