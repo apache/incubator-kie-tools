@@ -7,7 +7,6 @@ import (
 	"github.com/davidesalerno/kogito-serverless-operator/constants"
 	"github.com/go-logr/logr"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"path"
 	ctrllog "sigs.k8s.io/controller-runtime/pkg/log"
 	"strings"
@@ -30,7 +29,7 @@ func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *v
 		log = ctrllog.FromContext(k.ctx)
 		newBaseWorkflow := &model.BaseWorkflow{ID: serverlessWorkflow.ObjectMeta.Name,
 			Key:            serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("key")],
-			Name:           serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("name")],
+			Name:           serverlessWorkflow.ObjectMeta.Name,
 			Description:    serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("description")],
 			Version:        serverlessWorkflow.ObjectMeta.Annotations[constants.MetadataKeys()("version")],
 			SpecVersion:    extractSchemaVersion(serverlessWorkflow.APIVersion),
@@ -38,7 +37,7 @@ func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *v
 			KeepActive:     serverlessWorkflow.Spec.KeepActive,
 			AutoRetries:    serverlessWorkflow.Spec.AutoRetries,
 			Start:          retrieveStartState(serverlessWorkflow.Spec.Start)}
-		log.Info("Created new Base Workflow name", newBaseWorkflow)
+		log.Info("Created new Base Workflow with name", newBaseWorkflow.Name)
 		newWorkflow := &model.Workflow{BaseWorkflow: *newBaseWorkflow, Functions: retrieveFunctions(serverlessWorkflow.Spec.Functions), States: retrieveStates(serverlessWorkflow.Spec.States)}
 		return newWorkflow, nil
 	}
@@ -62,9 +61,10 @@ func retrieveStartState(name string) *model.Start {
 // Function to retrieve a list of states coming from an array of v1alpha1.State objects
 func retrieveStates(incomingStates []v1alpha1.State) []model.State {
 	states := make([]model.State, len(incomingStates))
+	log.Info("States: ", incomingStates)
 	for i, s := range incomingStates {
 		newBaseState := &model.BaseState{Name: s.Name}
-		if *s.End {
+		if s.End {
 			newBaseState.End = &model.End{Terminate: true}
 		}
 		switch sType := s.Type; sType {
@@ -104,9 +104,14 @@ func retrieveStates(incomingStates []v1alpha1.State) []model.State {
 				actions = make([]model.Action, len(*s.Actions))
 				for k, ac := range *s.Actions {
 					action := &model.Action{
-						Name: *ac.Name,
-						//TODO: We need to support arguments in FunctionRef
-						FunctionRef: model.FunctionRef{RefName: *ac.FunctionRef},
+						Name:        *ac.Name,
+						FunctionRef: model.FunctionRef{RefName: ac.FunctionRef.RefName},
+					}
+					if &ac.FunctionRef != nil {
+						action.FunctionRef = model.FunctionRef{RefName: ac.FunctionRef.RefName}
+						if ac.FunctionRef.Arguments != nil {
+							action.FunctionRef.Arguments = getArguments(ac.FunctionRef.Arguments)
+						}
 					}
 					actions[k] = *action
 				}
@@ -119,9 +124,17 @@ func retrieveStates(incomingStates []v1alpha1.State) []model.State {
 	return states
 }
 
-func getData(data map[string]unstructured.Unstructured) map[string]interface{} {
+func getData(data map[string]string) map[string]interface{} {
 	out := make(map[string]interface{}, len(data))
 	for k, v := range data {
+		out[k] = v
+	}
+	return out
+}
+
+func getArguments(arguments map[string]string) map[string]interface{} {
+	out := make(map[string]interface{}, len(arguments))
+	for k, v := range arguments {
 		out[k] = v
 	}
 	return out

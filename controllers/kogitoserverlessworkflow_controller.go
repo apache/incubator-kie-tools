@@ -71,7 +71,12 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 		log.Error(err, "Failed converting KogitoServerlessWorkflow into Workflow")
 		return ctrl.Result{}, err
 	}
-	_, _ = yaml.Marshal(workflow)
+	yamlWorkflow, err := yaml.Marshal(workflow)
+	if err != nil {
+		log.Error(err, "Failed converting KogitoServerlessWorkflow into YAML")
+		return ctrl.Result{}, err
+	}
+	log.Info("Converted Workflow CR into Kogito Yaml Workflow", yamlWorkflow)
 	//TODO Save into Shared Volume
 	//TODO KOGITO-7498 Kogito Serverless Workflow Builder Image
 	return ctrl.Result{}, nil

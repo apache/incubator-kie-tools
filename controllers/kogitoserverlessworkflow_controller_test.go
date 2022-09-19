@@ -3,6 +3,8 @@ package controllers
 import (
 	"context"
 	"github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	"github.com/davidesalerno/kogito-serverless-operator/test/utils"
+	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -18,7 +20,10 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 			namespace = "kogito-serverless-operator-system"
 		)
 		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw := &v1alpha1.KogitoServerlessWorkflow{}
+		ksw, errYaml := utils.GetKogitoServerlessWorkflow("../config/samples/kie.kogito.sw.org__v1alpha1_kogitoserverlessworkflow.yaml")
+		if errYaml != nil {
+			t.Fatalf("Error reading YAML file #%v ", errYaml)
+		}
 		// Objects to track in the fake client.
 		objs := []runtime.Object{ksw}
 
@@ -44,7 +49,8 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 		if err != nil {
 			t.Fatalf("reconcile: (%v)", err)
 		}
-		//TODO Check if CR has been created and has been created.
-
+		// Perform some checks on the created CR
+		assert.True(t, ksw.Spec.Start == "ChooseOnLanguage")
+		assert.True(t, len(ksw.Spec.States) == 4)
 	})
 }

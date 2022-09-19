@@ -19,4 +19,4 @@ Welcome to the Kogito Serverless Operator! Before contributing, make sure to:
 **Checklist**
 
 - [ ] Add or Modify a unit test for your change
-- [ ] Have you verified tha tall the tests are passing?
+- [ ] Have you verified that tall the tests are passing?

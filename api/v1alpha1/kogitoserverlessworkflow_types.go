@@ -220,9 +220,16 @@ type Sleep struct {
 	After *string `json:"after,omitempty"`
 }
 
+type FunctionRef struct {
+	RefName      string            `json:"refName"`
+	Arguments    map[string]string `json:"arguments,omitempty"`
+	SelectionSet *string           `json:"selectionSet,omitempty"`
+	Invoke       *InvokeTye        `json:"invoke,omitempty"`
+}
+
 type Action struct {
 	Name               *string           `json:"name"`
-	FunctionRef        *string           `json:"functionRef,omitempty"`
+	FunctionRef        FunctionRef       `json:"functionRef,omitempty"`
 	EventRef           *EventRef         `json:"eventRef,omitempty"`
 	SubFlowRef         *string           `json:"subFlowRef,omitempty"`
 	RetryRef           *string           `json:"retryRef,omitempty"`
@@ -274,11 +281,11 @@ type State struct {
 	// +kubebuilder:validation:Required
 	Name string `json:"name"`
 	// +kubebuilder:validation:Enum:=event;operation;switch;sleep;parallel;inject;foreach
-	Type       StateType                             `json:"type"`
-	Exclusive  *bool                                 `json:"exclusive,omitempty"`
-	ActionMode *ActionMode                           `json:"actionMode,omitempty"`
-	Actions    *[]Action                             `json:"actions,omitempty"`
-	Data       *map[string]unstructured.Unstructured `json:"data,omitempty"`
+	Type       StateType          `json:"type"`
+	Exclusive  *bool              `json:"exclusive,omitempty"`
+	ActionMode *ActionMode        `json:"actionMode,omitempty"`
+	Actions    *[]Action          `json:"actions,omitempty"`
+	Data       *map[string]string `json:"data,omitempty"`
 	//TODO: Define a type for DataCondition objects
 	DataConditions *[]DataCondition `json:"dataConditions,omitempty"`
 	//TODO: Define a type for EventContitions objects
@@ -302,7 +309,7 @@ type State struct {
 	StateDataFilter     *StateDataFilter `json:"stateDataFilter,omitempty"`
 	Transition          *string          `json:"transition,omitempty"`
 	OnErrors            *[]string        `json:"onErrors,omitempty"`
-	End                 *bool            `json:"end,omitempty"`
+	End                 bool             `json:"end,omitempty"`
 	CompensatedBy       *string          `json:"compensatedBy,omitempty"`
 	UsedForCompensation *bool            `json:"usedForCompensation,omitempty"`
 	Metadata            *[]Metadata      `json:"metadata,omitempty"`

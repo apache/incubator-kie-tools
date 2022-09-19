@@ -15,8 +15,6 @@ limitations under the License.
 */
 package v1alpha1
 
-import "k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
-
 /*
 	<Type> Builder
 
@@ -248,7 +246,7 @@ func (b *StateBuilder) WithDefaultCondition(defaultCondition string) *StateBuild
 	return b
 }
 
-func (b *StateBuilder) WithData(data map[string]unstructured.Unstructured) *StateBuilder {
+func (b *StateBuilder) WithData(data map[string]string) *StateBuilder {
 	b.State.Data = &data
 	return b
 }
@@ -324,7 +322,7 @@ func (b *StateBuilder) WithOnErrors(onErrors []string) *StateBuilder {
 }
 
 func (b *StateBuilder) WithEnd(end bool) *StateBuilder {
-	b.State.End = &end
+	b.State.End = end
 	return b
 }
 
