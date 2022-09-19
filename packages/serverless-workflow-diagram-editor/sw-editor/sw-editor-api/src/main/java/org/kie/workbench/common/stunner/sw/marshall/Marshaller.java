@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.sw.marshall;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -202,23 +203,16 @@ public class Marshaller {
 
         try {
 
-            final Node startNode = StreamSupport.stream(graph.nodes().spliterator(), false)
-                    .filter(Marshaller::isStartState)
-                    .findFirst()
-                    .orElseThrow(() -> new UnsupportedOperationException("Diagram without 'start' node."));
-
-            final Node endNode = StreamSupport.stream(graph.nodes().spliterator(), false)
-                    .filter(Marshaller::isEndState)
-                    .findFirst()
-                    .orElseThrow(() -> new UnsupportedOperationException("Diagram without 'end' node."));
+            final String startNodeUuId = getStartNodeUuid(graph);
+            final String endNodeUuid = getEndNodeUuid(graph);
 
             final Promise<Node> layout = AutoLayout.applyLayout(graph,
                                                                 context.getWorkflowRootNode(),
                                                                 promises,
                                                                 builderContext.buildExecutionContext(),
                                                                 false,
-                                                                startNode.getUUID(),
-                                                                endNode.getUUID()
+                                                                startNodeUuId,
+                                                                endNodeUuid
             );
             return promises.create(new Promise.PromiseExecutorCallbackFn<ParseResult>() {
                 @Override
@@ -243,6 +237,31 @@ public class Marshaller {
                 }
             });
         }
+    }
+
+    private String getEndNodeUuid(final GraphImpl<Object> graph) {
+
+        final Optional<Node> endNode = StreamSupport.stream(graph.nodes().spliterator(), false)
+                .filter(Marshaller::isEndState)
+                .findFirst();
+
+        if (endNode.isPresent()) {
+            return endNode.get().getUUID();
+        }
+
+        return null;
+    }
+
+    private String getStartNodeUuid(final GraphImpl<Object> graph) {
+
+        final Optional<Node> startNode = StreamSupport.stream(graph.nodes().spliterator(), false)
+                .filter(Marshaller::isStartState)
+                .findFirst();
+        if (startNode.isPresent()) {
+            return startNode.get().getUUID();
+        }
+
+        return null;
     }
 
     @SuppressWarnings("unchecked")
