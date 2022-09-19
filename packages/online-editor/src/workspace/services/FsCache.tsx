@@ -173,7 +173,7 @@ async function syncfs(isRestore: boolean, fsMountPoint: string) {
 
 export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
   const all = new TextEncoder().encode(JSON.stringify(Array.from(inos[fsMountPoint].entries())));
-  await fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), all, { encoding: "utf-8" });
+  await fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), all, { encoding: "utf8" });
   return syncfs(false, fsMountPoint);
 }
 
@@ -224,7 +224,7 @@ export async function restoreFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string
 
   let inosIndexJson;
   try {
-    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(fsMountPoint), { encoding: "utf-8" });
+    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(fsMountPoint), { encoding: "utf8" });
   } catch (e) {
     // ENOENT
     inosIndexJson = "[]";
