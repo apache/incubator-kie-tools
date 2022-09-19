@@ -157,6 +157,10 @@ export function WorkspacesContextProvider(props: Props) {
     [getFile]
   );
 
+  const isFileModified = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
+    return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_isModified(args);
+  }, []);
+
   const getUniqueFileIdentifier = useCallback(async (args: { workspaceId: string; relativePath: string }) => {
     await ready;
     return workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args);
@@ -319,6 +323,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      isFileModified,
     }),
     [
       addEmptyFile,
@@ -349,6 +354,7 @@ export function WorkspacesContextProvider(props: Props) {
       getWorkspace,
       initGitOnWorkspace,
       initGistOnWorkspace,
+      isFileModified,
     ]
   );
 

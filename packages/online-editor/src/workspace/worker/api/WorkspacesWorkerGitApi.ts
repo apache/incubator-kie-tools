@@ -22,6 +22,8 @@ import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
 
+  kieSandboxWorkspacesGit_isModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
+
   kieSandboxWorkspacesGit_resolveRef(args: { workspaceId: string; ref: string }): Promise<string>;
 
   kieSandboxWorkspacesGit_init(args: {

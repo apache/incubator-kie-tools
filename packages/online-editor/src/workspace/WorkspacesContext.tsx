@@ -129,6 +129,8 @@ export interface WorkspacesContextType {
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
 
+  isFileModified(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
+
   createSavePoint(args: {
     workspaceId: string;
     gitConfig?: {

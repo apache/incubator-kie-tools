@@ -261,15 +261,22 @@ export class GitService {
     });
   }
 
+  async isModified(args: { fs: KieSandboxWorkspacesFs; dir: string; relativePath: string }) {
+    const status = await git.status({
+      fs: args.fs,
+      dir: args.dir,
+      filepath: args.relativePath,
+    });
+    return status !== "unmodified";
+  }
+
   async hasLocalChanges(args: { fs: KieSandboxWorkspacesFs; dir: string }) {
     const files = await this.unstagedModifiedFileRelativePaths(args);
     return files.length > 0;
   }
 
   public async unstagedModifiedFileRelativePaths(args: { fs: KieSandboxWorkspacesFs; dir: string }): Promise<string[]> {
-    const cache = {};
     const pseudoStatusMatrix = await git.walk({
-      cache,
       fs: args.fs,
       dir: args.dir,
       trees: [WORKDIR(), STAGE()],

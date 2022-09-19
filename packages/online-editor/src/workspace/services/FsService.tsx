@@ -59,8 +59,10 @@ export class FsService {
 
     const ret = await callback({ fs, broadcaster });
 
-    await flush();
-    await broadcaster.sendAll();
+    setTimeout(async () => {
+      await flush();
+      await broadcaster.sendAll();
+    }, 0);
 
     return ret;
   }
@@ -117,10 +119,10 @@ export class FsService {
   private async getInMemoryWorkspaceFs(fsMountPoint: string) {
     const fs = await this.fsCache.getOrCreateFs(fsMountPoint);
 
-    const flush = () => {
+    const flush = async () => {
       console.time("Flush FS - " + fsMountPoint);
       console.debug("Flushing FS - " + fsMountPoint);
-      const ret = flushFs(fs, fsMountPoint);
+      const ret = await flushFs(fs, fsMountPoint);
       console.timeEnd("Flush FS - " + fsMountPoint);
       return ret;
     };

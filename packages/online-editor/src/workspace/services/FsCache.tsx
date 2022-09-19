@@ -164,10 +164,28 @@ export class FsCache {
 
 async function syncfs(isRestore: boolean, fsMountPoint: string) {
   await new Promise((res) => {
-    IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
+    try {
+      IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
+    } catch (e) {
+      try {
+        throwWasiErrorToNodeError(e);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    }
   });
   await new Promise((res) => {
-    IDBFS.syncfs({ mountpoint: inosDir(fsMountPoint) }, isRestore, res);
+    try {
+      IDBFS.syncfs({ mountpoint: inosDir(fsMountPoint) }, isRestore, res);
+    } catch (e) {
+      try {
+        throwWasiErrorToNodeError(e);
+      } catch (err) {
+        console.error(err);
+        throw err;
+      }
+    }
   });
 }
 
@@ -188,9 +206,9 @@ export async function initFs(fsMountPoint: string) {
   } catch (e) {
     try {
       throwWasiErrorToNodeError(e, fsMountPoint);
-    } catch (e) {
+    } catch (err) {
       console.error(`Error initiating FS - ${fsMountPoint}`);
-      console.error(e);
+      console.error(err);
     }
   } finally {
     console.timeEnd(`Init FS - ${fsMountPoint}`);
@@ -210,9 +228,9 @@ export async function deinitFs(fsMountPoint: string) {
   } catch (e) {
     try {
       throwWasiErrorToNodeError(e, fsMountPoint);
-    } catch (e) {
+    } catch (err) {
       console.error(`Error deinitiating FS - ${fsMountPoint}`);
-      console.error(e);
+      console.error(err);
     }
   } finally {
     console.timeEnd(`Deinit FS - ${fsMountPoint}`);
