@@ -15,7 +15,10 @@
  */
 
 import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { SwfYamlLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  SwfYamlLanguageService,
+  YamlCodeCompletionStrategy,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import {
@@ -24,11 +27,207 @@ import {
   testRelativeFunction1,
   testRelativeService1,
 } from "./SwfLanguageServiceConfigs";
-import { codeCompletionTester, ContentWithCursor, treat, trim } from "./testUtils";
+import { codeCompletionTester, ContentWithCursor, getStartNodeValuePositionTester, treat, trim } from "./testUtils";
+
+const documentUri = "test.sw.yaml";
+
+describe("YamlCodeCompletionStrategy", () => {
+  const ls = new SwfYamlLanguageService({
+    fs: {},
+    serviceCatalog: defaultServiceCatalogConfig,
+    config: defaultConfig,
+  });
+
+  describe("getStartNodeValuePosition", () => {
+    const codeCompletionStrategy = new YamlCodeCompletionStrategy();
+    const ls = new SwfYamlLanguageService({
+      fs: {},
+      serviceCatalog: defaultServiceCatalogConfig,
+      config: defaultConfig,
+    });
+
+    describe("string value", () => {
+      test("no quotes", () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          name: Greeting workflow`,
+            path: ["name"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 16 });
+      });
+
+      test("single quotes", () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          name: 'Greeting workflow'`,
+            path: ["name"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 17 });
+      });
+
+      test("double quotes", () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          name: "Greeting workflow"`,
+            path: ["name"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 17 });
+      });
+    });
+
+    test("boolean value", async () => {
+      expect(
+        getStartNodeValuePositionTester({
+          content: `---
+          end: true`,
+          path: ["end"],
+          documentUri,
+          ls,
+          codeCompletionStrategy,
+        })
+      ).toStrictEqual({ line: 1, character: 15 });
+    });
+
+    describe("arrays", () => {
+      test("single line declaration using JSON format", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          functions: []`,
+            path: ["functions"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 22 });
+      });
+
+      test("single line declaration using JSON format / with one element", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          functions: [
+            {
+                "name": "getGreetingFunction",
+                "operation": "openapi.yml#getGreeting"
+              }
+
+          ]`,
+            path: ["functions"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 22 });
+      });
+
+      test("YAML format declaration", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          functions:
+          - name: getGreetingFunction`,
+            path: ["functions"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 2, character: 10 });
+      });
+
+      test("YAML format declaration / with one function / with content before and after", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          name: Greeting workflow
+          functions:
+          - name: getGreetingFunction
+            operation: openapi.yml#getGreeting
+          states: []`,
+            path: ["functions"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 3, character: 10 });
+      });
+    });
+
+    describe("objects", () => {
+      test("single line declaration using JSON format", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          data: {}`,
+            path: ["data"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 17 });
+      });
+
+      test("two lines declaration using JSON format", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+            data: {
+              "language": "Portuguese"
+            }`,
+            path: ["data"],
+            documentUri,
+            ls,
+            codeCompletionStrategy,
+          })
+        ).toStrictEqual({ line: 1, character: 19 });
+      });
+
+      test("YAML format declaration", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          data:
+            language: Portuguese `,
+            path: ["data"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 2, character: 12 });
+      });
+
+      test("YAML format declaration / with one attribute / with content before and after", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `---
+          name: GreetInPortuguese
+          data:
+            language: Portuguese
+          transition: GetGreeting`,
+            path: ["data"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 3, character: 12 });
+      });
+    });
+  });
+});
 
 describe("SWF LS YAML", () => {
-  const documentUri = "test.sw.yaml";
-
   describe("parsing content", () => {
     test("parsing content with empty function array", async () => {
       const ls = new SwfYamlLanguageService({
@@ -502,7 +701,7 @@ functions: [] `);
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -533,7 +732,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -566,7 +765,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -602,7 +801,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });
@@ -638,7 +837,7 @@ functions: []
         command: {
           title: "+ Add function...",
           command: "swf.ls.commands.OpenFunctionsCompletionItems",
-          arguments: [{ newCursorPosition: { character: 11, line: 1 } }],
+          arguments: [{ newCursorPosition: { character: 12, line: 1 } }],
         },
       } as CodeLens);
     });

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { CompletionItemKind } from "vscode-languageserver-types";
+import { Position, TextDocument } from "vscode-languageserver-textdocument";
+import { CompletionItemKind, Range } from "vscode-languageserver-types";
 
 // types SwfJsonPath, SwfLsNode, SwfLsNodeType need to be compatible with jsonc types
 export declare type SwfJsonPath = (string | number)[];
@@ -41,8 +42,15 @@ export interface ShouldCompleteArgs {
   cursorOffset: number;
 }
 
+export interface TranslateArgs {
+  completion: object | string;
+  completionItemKind: CompletionItemKind;
+  overwriteRange?: Range;
+}
+
 export interface CodeCompletionStrategy {
-  translate(completion: object | string, completionItemKind: CompletionItemKind): string;
+  translate(args: TranslateArgs): string;
   formatLabel(label: string, completionItemKind: CompletionItemKind): string;
   shouldComplete(args: ShouldCompleteArgs): boolean;
+  getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined;
 }

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-import { SwfJsonLanguageService } from "@kie-tools/serverless-workflow-language-service/dist/channel";
+import {
+  JsonCodeCompletionStrategy,
+  SwfJsonLanguageService,
+} from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
 import {
   defaultConfig,
@@ -22,11 +25,159 @@ import {
   testRelativeFunction1,
   testRelativeService1,
 } from "./SwfLanguageServiceConfigs";
-import { codeCompletionTester, trim } from "./testUtils";
+import { codeCompletionTester, getStartNodeValuePositionTester, trim } from "./testUtils";
+
+const documentUri = "test.sw.json";
+
+describe("JsonCodeCompletionStrategy", () => {
+  const ls = new SwfJsonLanguageService({
+    fs: {},
+    serviceCatalog: defaultServiceCatalogConfig,
+    config: defaultConfig,
+  });
+
+  describe("getStartNodeValuePosition", () => {
+    const codeCompletionStrategy = new JsonCodeCompletionStrategy();
+    const ls = new SwfJsonLanguageService({
+      fs: {},
+      serviceCatalog: defaultServiceCatalogConfig,
+      config: defaultConfig,
+    });
+
+    test("string value", async () => {
+      expect(
+        getStartNodeValuePositionTester({
+          content: `{
+          "name": "Greeting workflow"
+        }`,
+          path: ["name"],
+          codeCompletionStrategy,
+          documentUri,
+          ls,
+        })
+      ).toStrictEqual({ line: 1, character: 19 });
+    });
+
+    test("boolean value", async () => {
+      expect(
+        getStartNodeValuePositionTester({
+          content: `{
+          "end": true
+        }`,
+          path: ["end"],
+          codeCompletionStrategy,
+          documentUri,
+          ls,
+        })
+      ).toStrictEqual({ line: 1, character: 17 });
+    });
+
+    describe("arrays", () => {
+      test("single line declaration", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `{
+          "functions": []
+        }`,
+            path: ["functions"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 1, character: 24 });
+      });
+
+      test("two lines declaration", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `{
+          "functions": 
+          []
+        }`,
+            path: ["functions"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 2, character: 11 });
+      });
+
+      test("single line declaration / with one function / with content before and after", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `{
+          "name": "Greeting workflow",
+          "functions": [
+            {
+                "name": "getGreetingFunction",
+                "operation": "openapi.yml#getGreeting"
+              }
+          ],
+          "states": []
+        }`,
+            path: ["functions"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 2, character: 24 });
+      });
+    });
+
+    describe("objects", () => {
+      test("single line declaration", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `{
+          "data": {}
+        }`,
+            path: ["data"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 1, character: 19 });
+      });
+
+      test("two lines declaration", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `{
+            "data": 
+            {
+              "language": "Portuguese"
+            }
+        }`,
+            path: ["data"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 2, character: 13 });
+      });
+
+      test("single line declaration / with one attribute / with content before and after", async () => {
+        expect(
+          getStartNodeValuePositionTester({
+            content: `{
+            "name": "GreetInPortuguese",
+            "data": {
+              "language": "Portuguese"
+            },
+            "transition": "GetGreeting"
+        }`,
+            path: ["data"],
+            codeCompletionStrategy,
+            documentUri,
+            ls,
+          })
+        ).toStrictEqual({ line: 2, character: 21 });
+      });
+    });
+  });
+});
 
 describe("SWF LS JSON", () => {
-  const documentUri = "test.sw.json";
-
   test("basic", async () => {
     const ls = new SwfJsonLanguageService({
       fs: {},

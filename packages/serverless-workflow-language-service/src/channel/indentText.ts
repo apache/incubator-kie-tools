@@ -30,6 +30,7 @@ export function indentText(text: string, indentNum = 0, indentChar = " ", skipFi
 
   const indentation = new Array(indentNum).fill(indentChar).join("");
 
+  // replace all start of line with the indentation
   const indentedText = text.replace(/^/gm, indentation);
 
   return !skipFirstLine ? indentedText : indentedText.replace(indentation, "");

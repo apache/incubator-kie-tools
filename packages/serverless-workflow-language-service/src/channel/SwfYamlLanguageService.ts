@@ -31,7 +31,7 @@ import { FileLanguage } from "../api";
 import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
 import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
+import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode, TranslateArgs } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -118,7 +118,11 @@ export class SwfYamlLanguageService {
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    return this.ls.getCodeLenses({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCodeLenses({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
@@ -168,19 +172,36 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   return convertedNode;
 };
 
-class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(completion: object | string, completionItemKind: CompletionItemKind): string {
-    const skipFirstLineIndent = completionItemKind !== CompletionItemKind.Module;
-    const completionItemNewLine = completionItemKind === CompletionItemKind.Module ? "\n" : "";
+export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(args: TranslateArgs): string {
+    const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
+    const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
+    const completionText =
+      completionItemNewLine + indentText(dump(args.completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
 
-    return completionItemNewLine + indentText(dump(completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
+    return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
+      args.completionItemKind
+    ) && args.overwriteRange?.end.character === 0
+      ? `- ${completionText}\n`
+      : completionText;
   }
 
   public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
-    if (completionItemKind === CompletionItemKind.Function || completionItemKind === CompletionItemKind.Folder) {
-      return `'${label}'`;
-    }
-    return label;
+    return ([CompletionItemKind.Function, CompletionItemKind.Folder] as CompletionItemKind[]).includes(
+      completionItemKind
+    )
+      ? `'${label}'`
+      : label;
+  }
+
+  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
+    const position = document.positionAt(node.offset);
+    const nextPosition = document.positionAt(node.offset + 1);
+    const charAtPosition = document.getText(Range.create(position, nextPosition));
+    const isStartingCharJsonFormat = /"|'|\[|{/.test(charAtPosition);
+
+    // if node is in JSON format return a position the same way SwfJsonLanguageService does.
+    return isStartingCharJsonFormat ? nextPosition : position;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {
