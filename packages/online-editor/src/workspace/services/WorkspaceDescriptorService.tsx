@@ -24,7 +24,6 @@ import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { join } from "path";
 
-export const WORKSPACE_DESCRIPTORS_FS_NAME__OLD = "workspaces";
 export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
 export class WorkspaceDescriptorService {

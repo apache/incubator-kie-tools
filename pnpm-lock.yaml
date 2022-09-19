@@ -2977,6 +2977,7 @@ importers:
       "@types/testing-library__jest-dom": ^5.9.1
       "@types/testing-library__react": ^9.1.2
       "@types/uuid": ^8.3.0
+      bowser: ^2.10.0
       buffer: ^6.0.3
       copy-webpack-plugin: ^8.1.1
       cypress: ^10.7.0
@@ -3034,6 +3035,7 @@ importers:
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-tokens": 4.33.1
+      bowser: 2.11.0
       buffer: 6.0.3
       history: 4.10.1
       isomorphic-git: 1.11.1
@@ -12502,6 +12504,11 @@ packages:
     resolution:
       { integrity: sha512-5pyOr+w2LNN72F2mAq6J0ckHUfJYSgRKma7e/wlcMMhgOLV9OI0ERhERYXxUqo+dPyVxcbXKy9n+wg13+LpNnA== }
     optional: true
+
+  /bowser/2.11.0:
+    resolution:
+      { integrity: sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA== }
+    dev: false
 
   /boxen/5.1.2:
     resolution:

@@ -51,6 +51,7 @@
     "@patternfly/react-core": "^4.157.3",
     "@patternfly/react-icons": "^4.11.17",
     "@patternfly/react-tokens": "^4.33.1",
+    "bowser": "^2.10.0",
     "buffer": "^6.0.3",
     "history": "^4.9.0",
     "isomorphic-git": "^1.11.1",
