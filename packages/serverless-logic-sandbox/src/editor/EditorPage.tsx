@@ -222,13 +222,6 @@ export function EditorPage(props: Props) {
 
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
-  const swfJsonLanguageService = useMemo(() => {
-    if (!isSwfJson) {
-      return;
-    }
-    return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
-  }, [isSwfJson, settingsDispatch.serviceRegistry.catalogStore]);
-
   const swfLanguageService = useMemo(() => {
     if (isSwfYaml) {
       return new SandboxSwfYamlLanguageService(settingsDispatch.serviceRegistry.catalogStore);
@@ -236,7 +229,7 @@ export function EditorPage(props: Props) {
       return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
     }
     return;
-  }, [isSwfYaml, settingsDispatch.serviceRegistry.catalogStore]);
+  }, [isSwfJson, isSwfYaml, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageServiceChannelApiImpl = useMemo(
     () => swfLanguageService && new SwfLanguageServiceChannelApiImpl(swfLanguageService),
