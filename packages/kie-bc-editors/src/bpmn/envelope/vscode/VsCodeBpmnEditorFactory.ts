@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { BpmnEditorChannelApi } from "../../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { BpmnEditor } from "../BpmnEditor";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
