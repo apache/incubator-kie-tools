@@ -32,8 +32,14 @@ export interface BroadcasterDispatch {
 export class Broadcaster implements BroadcasterDispatch {
   private readonly messages = new Array<BroadcasterEvent>();
 
-  broadcast(args: BroadcasterEvent): void {
+  broadcastDeferred(args: BroadcasterEvent): void {
     this.messages.push(args);
+  }
+
+  async broadcast(args: BroadcasterEvent): Promise<void> {
+    const bc = new BroadcastChannel(args.channel);
+    bc.postMessage(await args.message());
+    bc.close();
   }
 
   async sendAll() {
@@ -47,6 +53,9 @@ export class Broadcaster implements BroadcasterDispatch {
   }
 }
 
+const flushDebounce = new Map<string, any>();
+const flushDebounceTimeout = 2000;
+
 export class FsService {
   constructor(private readonly fsCache = new FsCache()) {}
 
@@ -59,10 +68,20 @@ export class FsService {
 
     const ret = await callback({ fs, broadcaster });
 
-    setTimeout(async () => {
-      await flush();
-      await broadcaster.sendAll();
-    }, 0);
+    await broadcaster.sendAll();
+
+    // TODO: Debounce
+    // const db = flushDebounce.get(fsMountPoint);
+    // if (db) {
+    //   clearTimeout(db);
+    // }
+
+    // flushDebounce.set(
+    //   fsMountPoint,
+    //   setTimeout(async () => {
+    await flush();
+    //   }, flushDebounceTimeout)
+    // );
 
     return ret;
   }

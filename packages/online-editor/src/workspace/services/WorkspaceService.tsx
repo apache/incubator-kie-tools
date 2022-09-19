@@ -56,7 +56,7 @@ export class WorkspaceService {
       return await this.fsService.withReadWriteInMemoryFs(workspace.workspaceId, async ({ fs, broadcaster }) => {
         const files = await args.storeFiles(fs, workspace);
 
-        broadcaster.broadcast({
+        await broadcaster.broadcast({
           channel: WORKSPACES_BROADCAST_CHANNEL,
           message: async () => ({
             type: "ADD_WORKSPACE",
@@ -64,7 +64,7 @@ export class WorkspaceService {
           }),
         });
 
-        broadcaster.broadcast({
+        await broadcaster.broadcast({
           channel: workspace.workspaceId,
           message: async () => ({
             type: "ADD",
@@ -117,12 +117,12 @@ export class WorkspaceService {
       indexedDB.deleteDatabase(this.fsService.getMountPoint(workspaceId));
       indexedDB.deleteDatabase(this.fsService.getInosMountPoint(workspaceId));
 
-      broadcaster.broadcast({
+      await broadcaster.broadcast({
         channel: WORKSPACES_BROADCAST_CHANNEL,
         message: async () => ({ type: "DELETE_WORKSPACE", workspaceId }),
       });
 
-      broadcaster.broadcast({
+      await broadcaster.broadcast({
         channel: workspaceId,
         message: async () => ({ type: "DELETE", workspaceId }),
       });
@@ -134,12 +134,12 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.rename(fs, workspaceId, newName);
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, workspaceId);
 
-      broadcaster.broadcast({
+      await broadcaster.broadcast({
         channel: WORKSPACES_BROADCAST_CHANNEL,
         message: async () => ({ type: "RENAME_WORKSPACE", workspaceId }),
       });
 
-      broadcaster.broadcast({
+      await broadcaster.broadcast({
         channel: workspaceId,
         message: async () => ({ type: "RENAME", workspaceId }),
       });
@@ -187,7 +187,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, file.workspaceId);
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: file.workspaceId,
       message: async () => ({
         type: "ADD_FILE",
@@ -195,7 +195,7 @@ export class WorkspaceService {
       }),
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(file),
       message: async () => ({
         type: "ADD",
@@ -230,7 +230,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, wwfd.workspaceId);
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(wwfd),
       message: async () => ({
         type: "UPDATE",
@@ -238,7 +238,7 @@ export class WorkspaceService {
       }),
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: wwfd.workspaceId,
       message: async () => ({
         type: "UPDATE_FILE",
@@ -257,7 +257,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, wwfd.workspaceId);
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(wwfd),
       message: async () => ({
         type: "DELETE",
@@ -265,7 +265,7 @@ export class WorkspaceService {
       }),
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: wwfd.workspaceId,
       message: async () => ({
         type: "DELETE_FILE",
@@ -291,7 +291,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, args.wwfd.workspaceId);
     });
 
-    args.broadcaster.broadcast({
+    await args.broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(args.wwfd),
       message: async () => ({
         type: "RENAME",
@@ -300,7 +300,7 @@ export class WorkspaceService {
       }),
     });
 
-    args.broadcaster.broadcast({
+    await args.broadcaster.broadcast({
       channel: this.getUniqueFileIdentifier(renamedWorkspaceFile),
       message: async () => ({
         type: "ADD",
@@ -308,7 +308,7 @@ export class WorkspaceService {
       }),
     });
 
-    args.broadcaster.broadcast({
+    await args.broadcaster.broadcast({
       channel: args.wwfd.workspaceId,
       message: async () => ({
         type: "RENAME_FILE",
@@ -350,7 +350,7 @@ export class WorkspaceService {
 
     const relativePaths = files.map((file) => file.relativePath);
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: files[0].workspaceId,
       message: async () => ({
         type: "DELETE_BATCH",
@@ -380,7 +380,7 @@ export class WorkspaceService {
       await this.workspaceDescriptorService.bumpLastUpdatedDate(fs, files[0].workspaceId);
     });
 
-    broadcaster.broadcast({
+    await broadcaster.broadcast({
       channel: files[0].workspaceId,
       message: async () => ({
         type: "MOVE_BATCH",
