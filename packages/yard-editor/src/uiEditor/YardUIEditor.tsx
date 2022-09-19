@@ -17,7 +17,6 @@
 import * as React from "react";
 import { useCallback, useState } from "react";
 import {
-  Button,
   Divider,
   EmptyState,
   EmptyStateBody,
@@ -33,7 +32,7 @@ import { CubesIcon } from "@patternfly/react-icons";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import { YardFile } from "../types";
 import { deserialize } from "../model/YardSerializer";
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/src";
+import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/components";
 import "./YardUIEditor.css";
 import { generateDecisionTypes, dataTypes, generateDecisionExpressionDefinition } from "../decision";
 

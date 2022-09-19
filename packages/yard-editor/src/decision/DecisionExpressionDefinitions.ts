@@ -15,14 +15,14 @@
  */
 
 import { Element } from "../model";
-import { DecisionTableProps, LogicType } from "@kie-tools/boxed-expression-component/src";
+import { DecisionTableProps, LogicType } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   Clause,
   DataType,
   DecisionTableRule,
   ExpressionProps,
   LiteralExpressionProps,
-} from "@kie-tools/boxed-expression-component";
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 export function generateDecisionExpressionDefinition(element: Element): ExpressionProps {
   const decisionType = element.logic.type;

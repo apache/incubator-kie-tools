@@ -679,8 +679,7 @@
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools-core/vscode-extension", "weight": 1 },
       { "source": "vscode-extension-yard-editor", "target": "@kie-tools/yard-editor", "weight": 1 },
       { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/editor", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/i18n-common-dictionary", "weight": 1 },
-      { "source": "@kie-tools/yard-editor", "target": "@kie-tools-core/webpack-base", "weight": 1 }
+      { "source": "@kie-tools/yard-editor", "target": "@kie-tools/boxed-expression-component", "weight": 1 }
     ]
   },
   "serializedPackagesLocationByName": [
