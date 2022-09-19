@@ -21,23 +21,22 @@ import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.array.ArrayBeanJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.Function;
-import org.kie.workbench.common.stunner.sw.definition.Function_JsonSerializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.Error_JsonSerializerImpl;
 
-public class WorkflowFunctionsJsonSerializer implements JsonbSerializer<Object> {
-    private static final Function_JsonSerializerImpl serializer =
-            Function_JsonSerializerImpl.INSTANCE;
+public class ErrorJsonSerializer implements JsonbSerializer<Object> {
+    private static final Error_JsonSerializerImpl serializer =
+            Error_JsonSerializerImpl.INSTANCE;
 
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
-            stringJsonSerializer.serialize((String) obj, "functions", generator, ctx);
-        } else if (obj instanceof Function[]) {
+            stringJsonSerializer.serialize((String) obj, "errors", generator, ctx);
+        } else if (obj instanceof org.kie.workbench.common.stunner.sw.definition.Error[]) {
             new ArrayBeanJsonSerializer<>(serializer)
-                    .serialize((Function[]) obj,
-                            "functions", generator, ctx);
+                    .serialize((org.kie.workbench.common.stunner.sw.definition.Error[]) obj,
+                            "errors", generator, ctx);
         }
     }
 }

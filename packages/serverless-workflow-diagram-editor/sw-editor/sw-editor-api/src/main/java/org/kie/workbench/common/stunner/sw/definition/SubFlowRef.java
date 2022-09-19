@@ -19,34 +19,36 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ArgumentsValueHolderJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ValueHolderJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.SubflowExecutionTypeJsonbTypeSerializer;
 
 @JSONMapper
-public class FunctionRef {
+public class SubFlowRef {
 
-    private String refName;
-    private String selectionSet;
+    private String workflowId;
+    private String version;
     private FunctionRefType invoke;
 
-    @JsonbTypeSerializer(ArgumentsValueHolderJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ValueHolderJsonbTypeDeserializer.class)
-    private ValueHolder arguments;
 
-    public String getRefName() {
-        return refName;
+    //TODO custom ser/deser because of continue is reserved java lit
+    @JsonbTypeSerializer(SubflowExecutionTypeJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(SubflowExecutionTypeJsonbTypeDeserializer.class)
+    private SubflowExecutionType onParentComplete;
+
+    public String getWorkflowId() {
+        return workflowId;
     }
 
-    public void setRefName(String refName) {
-        this.refName = refName;
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
     }
 
-    public String getSelectionSet() {
-        return selectionSet;
+    public String getVersion() {
+        return version;
     }
 
-    public void setSelectionSet(String selectionSet) {
-        this.selectionSet = selectionSet;
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public FunctionRefType getInvoke() {
@@ -57,11 +59,11 @@ public class FunctionRef {
         this.invoke = invoke;
     }
 
-    public ValueHolder getArguments() {
-        return arguments;
+    public SubflowExecutionType getOnParentComplete() {
+        return onParentComplete;
     }
 
-    public void setArguments(ValueHolder arguments) {
-        this.arguments = arguments;
+    public void setOnParentComplete(SubflowExecutionType onParentComplete) {
+        this.onParentComplete = onParentComplete;
     }
 }

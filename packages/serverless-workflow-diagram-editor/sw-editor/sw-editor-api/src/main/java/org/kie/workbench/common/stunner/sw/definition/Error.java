@@ -16,34 +16,36 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jakarta.json.bind.annotation.JsonbTypeDeserializer;
-import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeSerializer;
 
 @JSONMapper
-public class StartDefinition {
+public class Error {
 
-    private String stateName;
+    private String name;
+    private String code;
+    private String description;
 
-    @JsonbTypeSerializer(ScheduleJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ScheduleJsonbTypeDeserializer.class)
-    private Object schedule;
-
-    public String getStateName() {
-        return stateName;
+    public String getName() {
+        return name;
     }
 
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Object getSchedule() {
-        return schedule;
+    public String getCode() {
+        return code;
     }
 
-    public void setSchedule(Object schedule) {
-        this.schedule = schedule;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

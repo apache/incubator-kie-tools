@@ -42,6 +42,6 @@ public class ArrayJsonSerializer<T> extends BasicArrayJsonSerializer<T[]> {
 
   @Override
   public void serialize(T[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("51");
   }
 }

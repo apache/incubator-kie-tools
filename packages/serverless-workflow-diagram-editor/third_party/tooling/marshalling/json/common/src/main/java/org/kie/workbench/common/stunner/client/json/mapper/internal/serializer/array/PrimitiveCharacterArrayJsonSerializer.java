@@ -38,6 +38,6 @@ public class PrimitiveCharacterArrayJsonSerializer extends BasicArrayJsonSeriali
 
   @Override
   public void serialize(char[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("54");
   }
 }

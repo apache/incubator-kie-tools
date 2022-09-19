@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import elemental2.core.Global;
 import elemental2.core.JsArray;
@@ -29,6 +30,7 @@ import jakarta.json.JsonNumber;
 import jakarta.json.JsonNumberImpl;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
+import jakarta.json.JsonStringImpl;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.JsonbException;
 import jsinterop.base.Js;
@@ -67,7 +69,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public JsonString getJsonString(String name) {
-    throw new UnsupportedOperationException();
+    return new JsonStringImpl(Js.asPropertyMap(__holder__).get(name).toString());
   }
 
   @Override
@@ -177,7 +179,7 @@ public class JsonObjectImpl implements JsonObject {
 
   @Override
   public Set<String> keySet() {
-    throw new UnsupportedOperationException();
+    return Reflect.ownKeys(__holder__).asList().stream().map(Reflect.OwnKeysArrayUnionType::asString).collect(Collectors.toSet());
   }
 
   @Override

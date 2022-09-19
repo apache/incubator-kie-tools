@@ -18,12 +18,14 @@ package org.kie.workbench.common.stunner.sw.definition;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
 
 /**
  * Used to define events and their correlations.
  */
+@JSONMapper
 public class Event {
 
     /**

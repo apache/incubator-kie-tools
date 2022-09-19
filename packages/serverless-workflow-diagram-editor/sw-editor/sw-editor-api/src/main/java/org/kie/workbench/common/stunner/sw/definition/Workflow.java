@@ -30,10 +30,16 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.Ca
 import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
+import org.kie.workbench.common.stunner.sw.definition.custom.ConstantsValueHolderJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ErrorJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ErrorJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.EventJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.EventJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StartDefinitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ValueHolderJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJsonSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
@@ -84,6 +90,10 @@ public class Workflow {
 
     private String version;
 
+    @JsonbTypeSerializer(ConstantsValueHolderJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ValueHolderJsonbTypeDeserializer.class)
+    private ValueHolder constants;
+
     /**
      * Workflow start definition.
      */
@@ -94,7 +104,9 @@ public class Workflow {
     /**
      * Workflow event definitions.
      */
-    private Event[] events; //TODO array or string
+    @JsonbTypeSerializer(EventJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(EventJsonbTypeDeserializer.class)
+    private Object events; //TODO array or string
 
     /**
      * Workflow state definitions.
@@ -115,6 +127,11 @@ public class Workflow {
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
     private Object timeouts;
 
+    @JsonbTypeSerializer(ErrorJsonSerializer.class)
+    @JsonbTypeDeserializer(ErrorJsonDeserializer.class)
+    private Object errors;
+
+    private Retry[] retries;
 
     public Workflow() {
     }
@@ -155,11 +172,11 @@ public class Workflow {
         return this;
     }
 
-    public Event[] getEvents() {
+    public Object getEvents() {
         return events;
     }
 
-    public Workflow setEvents(Event[] events) {
+    public Workflow setEvents(Object events) {
         this.events = events;
         return this;
     }
@@ -235,5 +252,29 @@ public class Workflow {
 
     public void setTimeouts(Object timeouts) {
         this.timeouts = timeouts;
+    }
+
+    public ValueHolder getConstants() {
+        return constants;
+    }
+
+    public void setConstants(ValueHolder constants) {
+        this.constants = constants;
+    }
+
+    public Object getErrors() {
+        return errors;
+    }
+
+    public void setErrors(Object errors) {
+        this.errors = errors;
+    }
+
+    public Retry[] getRetries() {
+        return retries;
+    }
+
+    public void setRetries(Retry[] retries) {
+        this.retries = retries;
     }
 }

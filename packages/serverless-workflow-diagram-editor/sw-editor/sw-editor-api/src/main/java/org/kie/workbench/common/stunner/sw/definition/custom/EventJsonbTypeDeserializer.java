@@ -21,13 +21,13 @@ import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.array.ArrayJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.Function;
-import org.kie.workbench.common.stunner.sw.definition.Function_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.Event;
+import org.kie.workbench.common.stunner.sw.definition.Event_JsonDeserializerImpl;
 
-public class WorkflowFunctionsJsonDeserializer extends JsonbDeserializer<Object> {
+public class EventJsonbTypeDeserializer extends JsonbDeserializer<Object> {
 
-    private static final Function_JsonDeserializerImpl deserializer =
-            Function_JsonDeserializerImpl.INSTANCE;
+    private static final Event_JsonDeserializerImpl deserializer =
+            Event_JsonDeserializerImpl.INSTANCE;
 
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
 
@@ -37,7 +37,7 @@ public class WorkflowFunctionsJsonDeserializer extends JsonbDeserializer<Object>
             if (value.getValueType() == JsonValue.ValueType.STRING) {
                 return stringJsonDeserializer.deserialize(value, ctx);
             } else if (value.getValueType() == JsonValue.ValueType.ARRAY) {
-                return new ArrayJsonDeserializer<>(deserializer, Function[]::new)
+                return new ArrayJsonDeserializer<>(deserializer, Event[]::new)
                         .deserialize(value, ctx);
             }
         }

@@ -16,29 +16,31 @@
 
 package org.kie.workbench.common.stunner.sw.definition.custom;
 
+import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
+import jsinterop.base.Js;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.Transition_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.ValueHolder;
 
-public class DataConditionTransitionJsonbTypeDeserializer extends JsonbDeserializer<Object> {
-
-    private static final Transition_JsonDeserializerImpl transition_JsonDeserializerImpl =
-            new Transition_JsonDeserializerImpl();
+public class ValueHolderJsonbTypeDeserializer extends JsonbDeserializer<ValueHolder> {
 
     @Override
-    public Object deserialize(JsonValue value, DeserializationContext ctx) {
+    public ValueHolder deserialize(JsonValue value, DeserializationContext ctx) {
         if (value.getValueType() != JsonValue.ValueType.NULL) {
-            if (value.getValueType() == JsonValue.ValueType.TRUE
-                    || value.getValueType() == JsonValue.ValueType.FALSE) {
-                if (value.getValueType() == JsonValue.ValueType.TRUE) {
-                    return true;
+            ValueHolder holder = new ValueHolder();
+            for (String v : ((JsonObject) value).keySet()) {
+                JsonValue jsonValue = ((JsonObject) value).get(v);
+                if(jsonValue.getValueType() == JsonValue.ValueType.STRING) {
+                    Js.asPropertyMap(holder).set(v, ((JsonObject) value).getString(v));
+                } else if (jsonValue.getValueType() == JsonValue.ValueType.NUMBER) {
+                    Js.asPropertyMap(holder).set(v, ((JsonObject) value).getJsonNumber(v).numberValue());
                 } else {
-                    return false;
+                    // and so on
+                    Js.asPropertyMap(holder).set(v, (((JsonObject) value).get(v)));
                 }
-            } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
-                return transition_JsonDeserializerImpl.deserialize(value, ctx);
             }
+            return holder;
         }
         return null;
     }

@@ -88,6 +88,6 @@ public class JsonNumberImpl implements JsonNumber {
 
   @Override
   public ValueType getValueType() {
-    throw new UnsupportedOperationException();
+    return ValueType.NUMBER;
   }
 }

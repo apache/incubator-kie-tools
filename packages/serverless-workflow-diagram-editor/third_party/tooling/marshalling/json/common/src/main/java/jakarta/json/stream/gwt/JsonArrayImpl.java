@@ -109,7 +109,7 @@ public class JsonArrayImpl implements JsonArray {
 
   @Override
   public ValueType getValueType() {
-    throw new UnsupportedOperationException();
+    return ValueType.ARRAY;
   }
 
   @Override

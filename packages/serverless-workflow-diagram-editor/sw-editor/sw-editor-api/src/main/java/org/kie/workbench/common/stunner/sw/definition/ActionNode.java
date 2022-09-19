@@ -31,6 +31,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.morph.MorphBa
 import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.FunctionRefJsonSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.SubFlowRefJsonSerializer;
 
 /**
  * Actions specify invocations of services or other workflows during workflow execution.
@@ -73,12 +75,14 @@ public class ActionNode {
     /**
      * Reference to a trigger and result reusable event definition.
      */
-    private String eventRef;
+    private ActionEventRef eventRef;
 
     /**
      * Reference to a workflow to be invoked.
      */
-    private String subFlowRef;
+    @JsonbTypeSerializer(SubFlowRefJsonSerializer.class)
+    @JsonbTypeDeserializer(SubFlowRefJsonDeserializer.class)
+    private Object subFlowRef;
 
     private String retryRef;
 
@@ -122,20 +126,20 @@ public class ActionNode {
         return this;
     }
 
-    public String getEventRef() {
+    public ActionEventRef getEventRef() {
         return eventRef;
     }
 
-    public ActionNode setEventRef(String eventRef) {
+    public ActionNode setEventRef(ActionEventRef eventRef) {
         this.eventRef = eventRef;
         return this;
     }
 
-    public String getSubFlowRef() {
+    public Object getSubFlowRef() {
         return subFlowRef;
     }
 
-    public ActionNode setSubFlowRef(String subFlowRef) {
+    public ActionNode setSubFlowRef(Object subFlowRef) {
         this.subFlowRef = subFlowRef;
         return this;
     }

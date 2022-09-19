@@ -20,25 +20,21 @@ import jakarta.json.JsonValue;
 import jakarta.json.bind.serializer.DeserializationContext;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.JsonbDeserializer;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.StringJsonDeserializer;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.deserializer.array.ArrayJsonDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.Function;
-import org.kie.workbench.common.stunner.sw.definition.Function_JsonDeserializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.Schedule_JsonDeserializerImpl;
 
-public class WorkflowFunctionsJsonDeserializer extends JsonbDeserializer<Object> {
-
-    private static final Function_JsonDeserializerImpl deserializer =
-            Function_JsonDeserializerImpl.INSTANCE;
+public class ScheduleJsonbTypeDeserializer extends JsonbDeserializer<Object> {
 
     private static final StringJsonDeserializer stringJsonDeserializer = new StringJsonDeserializer();
+
+    private static final Schedule_JsonDeserializerImpl deserializer = new Schedule_JsonDeserializerImpl();
 
     @Override
     public Object deserialize(JsonValue value, DeserializationContext ctx) {
         if (value.getValueType() != JsonValue.ValueType.NULL) {
             if (value.getValueType() == JsonValue.ValueType.STRING) {
                 return stringJsonDeserializer.deserialize(value, ctx);
-            } else if (value.getValueType() == JsonValue.ValueType.ARRAY) {
-                return new ArrayJsonDeserializer<>(deserializer, Function[]::new)
-                        .deserialize(value, ctx);
+            } else if (value.getValueType() == JsonValue.ValueType.OBJECT) {
+                return deserializer.deserialize(value, ctx);
             }
         }
         return null;

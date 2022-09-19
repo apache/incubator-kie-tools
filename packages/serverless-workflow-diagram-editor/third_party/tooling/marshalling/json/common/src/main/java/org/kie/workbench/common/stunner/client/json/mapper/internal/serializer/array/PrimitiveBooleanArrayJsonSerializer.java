@@ -38,6 +38,6 @@ public class PrimitiveBooleanArrayJsonSerializer extends BasicArrayJsonSerialize
 
   @Override
   public void serialize(boolean[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("52");
   }
 }

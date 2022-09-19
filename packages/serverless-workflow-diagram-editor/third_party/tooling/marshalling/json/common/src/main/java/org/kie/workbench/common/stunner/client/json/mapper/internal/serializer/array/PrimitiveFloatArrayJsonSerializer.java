@@ -39,6 +39,6 @@ public class PrimitiveFloatArrayJsonSerializer extends BasicArrayJsonSerializer<
 
   @Override
   public void serialize(float[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("56");
   }
 }

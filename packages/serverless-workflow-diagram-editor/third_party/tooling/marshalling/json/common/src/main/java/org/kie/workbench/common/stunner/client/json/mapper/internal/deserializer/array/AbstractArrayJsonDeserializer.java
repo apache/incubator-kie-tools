@@ -47,6 +47,6 @@ public abstract class AbstractArrayJsonDeserializer<T> extends JsonbDeserializer
 
   @Override
   public T deserialize(JsonValue value, DeserializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("41");
   }
 }

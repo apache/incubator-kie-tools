@@ -30,7 +30,7 @@ public class JsonSerializerAdapter<T> extends JsonSerializer<T> {
 
     @Override
     public void serialize(T obj, String property, JsonGenerator generator, SerializationContext ctx) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("42");
     }
 
     @Override

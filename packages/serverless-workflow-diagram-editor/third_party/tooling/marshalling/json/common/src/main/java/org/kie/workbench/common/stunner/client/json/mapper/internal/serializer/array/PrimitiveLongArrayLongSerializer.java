@@ -39,6 +39,6 @@ public class PrimitiveLongArrayLongSerializer extends BasicArrayJsonSerializer<l
 
   @Override
   public void serialize(long[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("58");
   }
 }

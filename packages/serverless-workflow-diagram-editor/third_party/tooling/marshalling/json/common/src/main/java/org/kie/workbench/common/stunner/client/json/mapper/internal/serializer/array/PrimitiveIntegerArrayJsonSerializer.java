@@ -39,6 +39,6 @@ public class PrimitiveIntegerArrayJsonSerializer extends BasicArrayJsonSerialize
 
   @Override
   public void serialize(int[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("57");
   }
 }

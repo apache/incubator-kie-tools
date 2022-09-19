@@ -20,24 +20,22 @@ import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.StringJsonSerializer;
-import org.kie.workbench.common.stunner.client.json.mapper.internal.serializer.array.ArrayBeanJsonSerializer;
-import org.kie.workbench.common.stunner.sw.definition.Function;
-import org.kie.workbench.common.stunner.sw.definition.Function_JsonSerializerImpl;
+import org.kie.workbench.common.stunner.sw.definition.Schedule;
+import org.kie.workbench.common.stunner.sw.definition.Schedule_JsonSerializerImpl;
 
-public class WorkflowFunctionsJsonSerializer implements JsonbSerializer<Object> {
-    private static final Function_JsonSerializerImpl serializer =
-            Function_JsonSerializerImpl.INSTANCE;
+
+public class ScheduleJsonbTypeSerializer implements JsonbSerializer<Object> {
+    private static final Schedule_JsonSerializerImpl serializer =
+            Schedule_JsonSerializerImpl.INSTANCE;
 
     private static final StringJsonSerializer stringJsonSerializer = new StringJsonSerializer();
 
     @Override
     public void serialize(Object obj, JsonGenerator generator, SerializationContext ctx) {
         if (obj instanceof String) {
-            stringJsonSerializer.serialize((String) obj, "functions", generator, ctx);
-        } else if (obj instanceof Function[]) {
-            new ArrayBeanJsonSerializer<>(serializer)
-                    .serialize((Function[]) obj,
-                            "functions", generator, ctx);
+            stringJsonSerializer.serialize((String) obj, "schedule", generator, ctx);
+        } else if (obj instanceof Schedule) {
+            serializer.serialize((Schedule) obj, "schedule", generator, ctx);
         }
     }
 }

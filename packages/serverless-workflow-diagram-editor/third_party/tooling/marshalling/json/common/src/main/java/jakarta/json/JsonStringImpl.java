@@ -46,6 +46,6 @@ public class JsonStringImpl implements JsonString {
 
   @Override
   public ValueType getValueType() {
-    throw new UnsupportedOperationException("Not supported yet.");
+    return ValueType.STRING;
   }
 }

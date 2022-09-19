@@ -16,14 +16,23 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
+import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.ContinueAsJsonbTypeSerializer;
 
 @JSONMapper
 public class StateEnd {
 
     private Boolean terminate;
     private Boolean compensate;
-    private String continueAs;
+
+    @JsonbTypeSerializer(ContinueAsJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(ContinueAsJsonbTypeDeserializer.class)
+    private Object continueAs;
+
+    private ProducedEvent[] produceEvents;
 
     public Boolean getTerminate() {
         return terminate;
@@ -41,11 +50,19 @@ public class StateEnd {
         this.compensate = compensate;
     }
 
-    public String getContinueAs() {
+    public Object getContinueAs() {
         return continueAs;
     }
 
-    public void setContinueAs(String continueAs) {
+    public void setContinueAs(Object continueAs) {
         this.continueAs = continueAs;
+    }
+
+    public ProducedEvent[] getProduceEvents() {
+        return produceEvents;
+    }
+
+    public void setProduceEvents(ProducedEvent[] produceEvents) {
+        this.produceEvents = produceEvents;
     }
 }

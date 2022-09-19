@@ -38,6 +38,6 @@ public class PrimitiveDoubleArrayJsonSerializer extends BasicArrayJsonSerializer
 
   @Override
   public void serialize(double[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("55");
   }
 }

@@ -39,6 +39,6 @@ public class PrimitiveByteArrayJsonSerializer extends BasicArrayJsonSerializer<b
 
   @Override
   public void serialize(byte[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("53");
   }
 }

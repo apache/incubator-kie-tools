@@ -30,8 +30,8 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeSerializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 /**
  * Compensation deals with undoing or reversing the work of one or more states which have already successfully completed.
@@ -66,8 +66,8 @@ public class CompensationTransition {
     /**
      * Transition target.
      */
-    @JsonbTypeSerializer(DataConditionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(DataConditionTransitionJsonbTypeDeserializer.class)
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
     private Object transition;
 
     public CompensationTransition() {

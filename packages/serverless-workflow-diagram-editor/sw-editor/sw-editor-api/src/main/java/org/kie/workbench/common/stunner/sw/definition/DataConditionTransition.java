@@ -30,10 +30,10 @@ import org.kie.workbench.common.stunner.core.definition.annotation.definition.La
 import org.kie.workbench.common.stunner.core.factory.graph.EdgeFactory;
 import org.kie.workbench.common.stunner.core.rule.annotation.CanConnect;
 import org.kie.workbench.common.stunner.core.rule.annotation.EdgeOccurrences;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.DataConditionTransitionJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.StateEndDefinitionJsonbTypeSerializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeDeserializer;
+import org.kie.workbench.common.stunner.sw.definition.custom.StateTransitionDefinitionJsonbTypeSerializer;
 
 /**
  * Switch state data conditions specify a data-based condition statement,
@@ -76,8 +76,8 @@ public class DataConditionTransition {
      * Defines what to do if condition is true.
      * Transitions to another state if set.
      */
-    @JsonbTypeSerializer(DataConditionTransitionJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(DataConditionTransitionJsonbTypeDeserializer.class)
+    @JsonbTypeSerializer(StateTransitionDefinitionJsonbTypeSerializer.class)
+    @JsonbTypeDeserializer(StateTransitionDefinitionJsonbTypeDeserializer.class)
     private Object transition;
 
     /**

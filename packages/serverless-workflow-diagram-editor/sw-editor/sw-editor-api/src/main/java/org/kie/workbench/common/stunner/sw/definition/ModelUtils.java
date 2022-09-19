@@ -28,9 +28,12 @@ public class ModelUtils {
             workflow.setName((String) Js.undefined());
             workflow.setStart((String) Js.undefined());
             if (null != workflow.getEvents()) {
-                for (int i = 0; i < workflow.getEvents().length; i++) {
-                    cleanEvent(workflow.getEvents()[i]);
-                    workflow.getEvents()[i] = (Event) Js.undefined();
+                if(workflow.getEvents() instanceof Event[]) {
+                    Event[] events = (Event[]) workflow.getEvents();
+                    for (int i = 0; i < events.length; i++) {
+                        cleanEvent(events[i]);
+                        events[i] = (Event) Js.undefined();
+                    }
                 }
             }
             if (null != workflow.getStates()) {
@@ -102,8 +105,8 @@ public class ModelUtils {
             actionNode.setId((String) Js.undefined());
             actionNode.setName((String) Js.undefined());
             actionNode.setFunctionRef((String) Js.undefined());
-            actionNode.setEventRef((String) Js.undefined());
-            actionNode.setSubFlowRef((String) Js.undefined());
+            actionNode.setEventRef((ActionEventRef) Js.undefined());
+            actionNode.setSubFlowRef((Object) Js.undefined());
         }
     }
 

@@ -60,6 +60,6 @@ public class CollectionJsonSerializer<T> extends JsonSerializer<Collection<T>> {
 
   @Override
   public void serialize(Collection<T> obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("62");
   }
 }

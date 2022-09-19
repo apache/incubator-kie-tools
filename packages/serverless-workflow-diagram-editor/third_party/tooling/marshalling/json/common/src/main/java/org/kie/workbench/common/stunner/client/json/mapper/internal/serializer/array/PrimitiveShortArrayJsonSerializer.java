@@ -39,6 +39,6 @@ public class PrimitiveShortArrayJsonSerializer extends BasicArrayJsonSerializer<
 
   @Override
   public void serialize(short[] obj, JsonGenerator generator, SerializationContext ctx) {
-    throw new UnsupportedOperationException();
+    throw new UnsupportedOperationException("59");
   }
 }

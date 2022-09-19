@@ -16,34 +16,45 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import jakarta.json.bind.annotation.JsonbTypeDeserializer;
-import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeDeserializer;
-import org.kie.workbench.common.stunner.sw.definition.custom.ScheduleJsonbTypeSerializer;
 
 @JSONMapper
-public class StartDefinition {
+public class ContinueAs {
 
-    private String stateName;
+    private String workflowId;
+    private String version;
+    private String data;
+    private String workflowExecTimeout;
 
-    @JsonbTypeSerializer(ScheduleJsonbTypeSerializer.class)
-    @JsonbTypeDeserializer(ScheduleJsonbTypeDeserializer.class)
-    private Object schedule;
-
-    public String getStateName() {
-        return stateName;
+    public String getWorkflowId() {
+        return workflowId;
     }
 
-    public void setStateName(String stateName) {
-        this.stateName = stateName;
+    public void setWorkflowId(String workflowId) {
+        this.workflowId = workflowId;
     }
 
-    public Object getSchedule() {
-        return schedule;
+    public String getVersion() {
+        return version;
     }
 
-    public void setSchedule(Object schedule) {
-        this.schedule = schedule;
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+
+    public String getWorkflowExecTimeout() {
+        return workflowExecTimeout;
+    }
+
+    public void setWorkflowExecTimeout(String workflowExecTimeout) {
+        this.workflowExecTimeout = workflowExecTimeout;
     }
 }
