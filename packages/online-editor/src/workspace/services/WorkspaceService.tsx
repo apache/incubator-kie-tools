@@ -53,7 +53,7 @@ export class WorkspaceService {
     });
 
     try {
-      return this.fsService.withReadWriteInMemoryFs(workspace.workspaceId, async ({ fs, broadcaster }) => {
+      return await this.fsService.withReadWriteInMemoryFs(workspace.workspaceId, async ({ fs, broadcaster }) => {
         const files = await args.storeFiles(fs, workspace);
 
         broadcaster.broadcast({
