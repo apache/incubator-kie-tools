@@ -16,7 +16,7 @@
 
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
-const swEditor = require("@kie-tools/serverless-workflow-diagram-editor");
+const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 

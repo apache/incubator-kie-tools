@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-import { PMMLEditorFactory } from "@kie-tools/pmml-editor";
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+const nodePath = require("path");
+const nodeFs = require("fs");
 
-declare const acquireVsCodeApi: any;
+module.exports = {
+  swEditorPath: () => {
+    const path = nodePath.resolve(__dirname, "dist", "sw");
 
-EditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  bus: acquireVsCodeApi(),
-  editorFactory: new PMMLEditorFactory(),
-});
+    if (!nodeFs.existsSync(path)) {
+      throw new Error(`Serverless Workflow Editor :: Serverless Editor path doesn't exist: ${path}`);
+    }
+
+    console.info(`Serverless Workflow Editor :: Serverless Editor path: ${path}`);
+
+    return path;
+  },
+};

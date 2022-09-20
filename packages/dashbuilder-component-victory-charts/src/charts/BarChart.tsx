@@ -21,13 +21,16 @@ import { XYChart } from "./XYChart";
 export class BarChart extends XYChart {
   buildChartGroup(): any {
     return (
-      <ChartGroup offset={10} horizontal={this.props.horizontalBars}>
+      <ChartGroup
+        offset={(this.props.barWidth || 0) + (this.props.barOffset || 10)}
+        horizontal={this.props.horizontalBars}
+      >
         {this.dataSetToXYData()
           .map((line) => {
             return this.seriesLines(line);
           })
           .map((lineData, i) => {
-            return <ChartBar key={i} data={lineData} y={(d) => d.yVal} />;
+            return <ChartBar key={i} data={lineData} y={(d) => d.yVal} barWidth={this.props.barWidth} />;
           })}
       </ChartGroup>
     );

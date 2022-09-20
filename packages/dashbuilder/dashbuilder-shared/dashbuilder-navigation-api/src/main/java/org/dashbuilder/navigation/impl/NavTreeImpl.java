@@ -17,6 +17,7 @@ package org.dashbuilder.navigation.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.dashbuilder.navigation.NavDivider;
 import org.dashbuilder.navigation.NavFactory;
@@ -304,4 +305,23 @@ public class NavTreeImpl implements NavTree {
         rootClone.getChildren().forEach(e -> e.setParent(null));
         return new NavTreeImpl(rootClone);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(root);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        var other = (NavTreeImpl) obj;
+        return Objects.equals(root, other.root);
+    }
+    
+    
 }
