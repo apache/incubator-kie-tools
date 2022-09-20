@@ -57,14 +57,14 @@ export class FsService {
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
     const callbackResult = await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
 
-    await this.fsCache.requestFlush(readWriteFs, fsMountPoint, { deinit: false });
+    await this.fsCache.requestFsFlush(fsMountPoint, { deinit: false });
 
     return callbackResult;
   }
 
   public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
     const fsSchema = await this.fsCache.getOrCreateFsSchema(fsMountPoint);
-    return callback({ fsSchema });
+    return await callback({ fsSchema });
   }
 
   public async withReadonlyInMemoryFs<T>(

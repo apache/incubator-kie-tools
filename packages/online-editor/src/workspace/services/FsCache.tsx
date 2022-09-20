@@ -38,40 +38,186 @@ type FlushControl =
   | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_IN_PROGRESS }
   | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS };
 
+export type FsSchema = Map<
+  string,
+  {
+    ino: number;
+    mode: number;
+  }
+>;
+
 const encoder = new TextEncoder();
 
-export type FsSchema = Map<string, { ino: number; mode: number }>;
-
-export const fsSchemas: Record<string, FsSchema> = {};
-
 export class FsCache {
-  private readonly cache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
+  private readonly flushControlDebounceTimeoutInMs = 2000;
+  private readonly flushControl = new Map<string, FlushControl>();
 
-  public async getOrCreateFsSchema(fsMountPoint: string) {
-    const fsSchema = fsSchemas[fsMountPoint];
+  private readonly fsSchemasCache: Record<string, Promise<FsSchema>> = {};
+  private readonly fsCache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
+
+  // get or create
+
+  public getOrCreateFsSchema(fsMountPoint: string) {
+    const fsSchema = this.fsSchemasCache[fsMountPoint];
     if (fsSchema) {
       return fsSchema;
     }
 
-    console.time(`Get FS Schema for ${fsMountPoint}`);
-    initFsSchema(fsMountPoint);
-    await restoreFsSchema(fsMountPoint);
-    console.timeEnd(`Get FS Schema for ${fsMountPoint}`);
-    return fsSchemas[fsMountPoint];
+    const newFsSchemaPromise = this.createFsSchema(fsMountPoint);
+    this.fsSchemasCache[fsMountPoint] = newFsSchemaPromise;
+    return newFsSchemaPromise;
   }
 
   public getOrCreateFs(fsMountPoint: string) {
-    const fs = this.cache.get(fsMountPoint);
+    const fs = this.fsCache.get(fsMountPoint);
     if (fs) {
       return fs;
     }
 
-    const newFsPromise = this.createNewFs(fsMountPoint);
-    this.cache.set(fsMountPoint, newFsPromise);
+    const newFsPromise = this.createFs(fsMountPoint);
+    this.fsCache.set(fsMountPoint, newFsPromise);
     return newFsPromise;
   }
 
-  private async createNewFs(fsMountPoint: string) {
+  // flush control
+
+  private async executeFlush(fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    await this.flushFs(fsMountPoint);
+    if (deinitArgs.deinit) {
+      await this.deinitFs(fsMountPoint);
+    }
+  }
+
+  private scheduleFsFlush(fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    this.flushControl.set(fsMountPoint, {
+      status: FlushStatus.FLUSH_SCHEDULED,
+      scheduledTask: setTimeout(() => {
+        this.flushControl.set(fsMountPoint, {
+          status: deinitArgs.deinit ? FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS : FlushStatus.FLUSH_IN_PROGRESS,
+          operationPromise: this.executeFlush(fsMountPoint, deinitArgs).then(() => {
+            console.debug(`Flush complete for ${fsMountPoint}`);
+            this.flushControl.delete(fsMountPoint);
+          }),
+        });
+      }, this.flushControlDebounceTimeoutInMs),
+    });
+  }
+
+  public requestFsFlush(fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    const flushControl = this.flushControl.get(fsMountPoint);
+
+    if (!flushControl) {
+      console.debug(`Scheduling flush for ${fsMountPoint}`);
+      this.scheduleFsFlush(fsMountPoint, deinitArgs);
+    } else if (flushControl.status === FlushStatus.FLUSH_SCHEDULED) {
+      // If flush is scheduled, we can always cancel it and put a flush and deinit in its place.
+      console.debug(`Debouncing flush request for ${fsMountPoint}`);
+      clearTimeout(flushControl.scheduledTask);
+      this.scheduleFsFlush(fsMountPoint, deinitArgs);
+    } else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_SCHEDULED) {
+      if (deinitArgs.deinit) {
+        console.debug(`Debouncing flush and deinit request for ${fsMountPoint}`);
+        clearTimeout(flushControl.scheduledTask);
+        this.scheduleFsFlush(fsMountPoint, deinitArgs);
+      } else {
+        console.error(`Flush requested while flush and deinit is in scheduled!!!! ${fsMountPoint}`);
+      }
+    } else if (flushControl.status === FlushStatus.FLUSH_IN_PROGRESS) {
+      if (deinitArgs.deinit) {
+        console.error(`Flush and deinit requested while flush is in progress!!!! ${fsMountPoint}`);
+      } else {
+        console.error(`Flush requested while flush is in progress!!!! ${fsMountPoint}`);
+      }
+    } else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
+      if (deinitArgs.deinit) {
+        console.error(`Flush and deinit requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
+      } else {
+        console.error(`Flush requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
+      }
+    } else {
+      throw new Error(`Oops! Impossible scenario for flushing '${fsMountPoint}'`);
+    }
+  }
+
+  // fs schema
+
+  public async createFsSchema(fsMountPoint: string): Promise<FsSchema> {
+    console.debug(`Getting FS Schema for ${fsMountPoint}`);
+    console.time(`Get FS Schema for ${fsMountPoint}`);
+
+    this.initFsSchema(fsMountPoint);
+    await this.syncFsSchema(true, fsMountPoint);
+
+    try {
+      const fsSchemaIndexJson = FS.readFile(
+        fsSchemaJsonPath(fsMountPoint),
+        toReadWriteFileOptions({ encoding: "utf8" })
+      );
+      return new Map(JSON.parse(fsSchemaIndexJson as string));
+    } catch (e) {
+      try {
+        throwWasiErrorToNodeError("Reading FS Schema JSON", e);
+      } catch (err) {
+        if (err.code === "ENOENT") {
+          // If there's no JSON to read, it means that this is a new FS.
+          return new Map();
+        } else {
+          throw err;
+        }
+      }
+    } finally {
+      console.timeEnd(`Get FS Schema for ${fsMountPoint}`);
+    }
+  }
+
+  public async syncFsSchema(isRestore: boolean, fsMountPoint: string) {
+    return new Promise((res) => {
+      try {
+        IDBFS.syncfs({ mountpoint: fsSchemaDir(fsMountPoint) }, isRestore, res);
+      } catch (e) {
+        try {
+          throwWasiErrorToNodeError(`Sync FS Schema '${fsMountPoint}' (${isRestore})`, e);
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
+      }
+    });
+  }
+
+  private initFsSchema(fsMountPoint: string) {
+    try {
+      FS.stat(fsSchemaDir(fsMountPoint));
+      console.debug(`FS Schema already initiated for ${fsMountPoint}`);
+    } catch (e) {
+      FS.mkdir(fsSchemaDir(fsMountPoint));
+      FS.mount(IDBFS, {}, fsSchemaDir(fsMountPoint));
+    }
+  }
+
+  private deinitFsSchema(fsMountPoint: string) {
+    delete this.fsSchemasCache[fsMountPoint];
+    FS.unmount(fsSchemaDir(fsMountPoint));
+    FS.rmdir(fsSchemaDir(fsMountPoint));
+  }
+
+  private async flushFsSchema(fsMountPoint: string) {
+    const fsSchemaToFlush = encoder.encode(
+      JSON.stringify(Array.from((await this.getOrCreateFsSchema(fsMountPoint)).entries()))
+    );
+
+    try {
+      FS.writeFile(fsSchemaJsonPath(fsMountPoint), fsSchemaToFlush, toReadWriteFileOptions({ encoding: "utf8" }));
+    } catch (e) {
+      throwWasiErrorToNodeError("Writing FS Schema JSON", e);
+    }
+
+    await this.syncFsSchema(false, fsMountPoint);
+  }
+
+  // fs
+
+  private async createFs(fsMountPoint: string) {
     const newFs: KieSandboxWorkspacesFs = {
       promises: {
         rename: async (path: string, newPath: string) => {
@@ -103,7 +249,7 @@ export class FsCache {
           try {
             // console.debug("unlink", path);
             FS.unlink(path);
-            fsSchemas[fsMountPoint].delete(path);
+            (await this.getOrCreateFsSchema(fsMountPoint)).delete(path);
           } catch (e) {
             throwWasiErrorToNodeError("unlink", e, path);
           }
@@ -129,7 +275,7 @@ export class FsCache {
           try {
             // console.debug("rmdir", path);
             FS.rmdir(path);
-            fsSchemas[fsMountPoint].delete(path);
+            (await this.getOrCreateFsSchema(fsMountPoint)).delete(path);
           } catch (e) {
             throwWasiErrorToNodeError("rmdir", e, path);
           }
@@ -137,7 +283,7 @@ export class FsCache {
         stat: async (path: string) => {
           try {
             // console.debug("stat", path);
-            return toLfsStat(fsMountPoint, path, FS.stat(path));
+            return await toLfsStat(this, fsMountPoint, path, FS.stat(path));
           } catch (e) {
             throwWasiErrorToNodeError("stat", e, path);
           }
@@ -145,7 +291,7 @@ export class FsCache {
         lstat: async (path: string) => {
           try {
             // console.debug("lstat", path);
-            return toLfsStat(fsMountPoint, path, FS.stat(path));
+            return await toLfsStat(this, fsMountPoint, path, FS.stat(path));
           } catch (e) {
             throwWasiErrorToNodeError("lstat", e, path);
           }
@@ -181,172 +327,77 @@ export class FsCache {
 
     console.time(`Bring FS to memory - ${fsMountPoint}`);
     console.debug(`Bringing FS to memory - ${fsMountPoint}`);
-    await initFs(fsMountPoint);
-    await restoreFs(fsMountPoint);
+    await this.initFs(fsMountPoint);
+    await this.syncFs(true, fsMountPoint);
+    await this.getOrCreateFsSchema(fsMountPoint);
     console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
 
     return newFs;
   }
 
-  private readonly flushControl = new Map<string, FlushControl>();
-  private readonly flushDebounceTimeoutInMs = 2000;
-
-  private async flush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    await flushFs(fs, fsMountPoint);
-    if (deinitArgs.deinit) {
-      await deinitFs(fsMountPoint);
-    }
-  }
-
-  private scheduleFlush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    this.flushControl.set(fsMountPoint, {
-      status: FlushStatus.FLUSH_SCHEDULED,
-      scheduledTask: setTimeout(() => {
-        this.flushControl.set(fsMountPoint, {
-          status: deinitArgs.deinit ? FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS : FlushStatus.FLUSH_IN_PROGRESS,
-          operationPromise: this.flush(fs, fsMountPoint, deinitArgs).then(() => {
-            console.debug(`Flush complete for ${fsMountPoint}`);
-            this.flushControl.delete(fsMountPoint);
-          }),
-        });
-      }, this.flushDebounceTimeoutInMs),
+  private async syncFs(isRestore: boolean, fsMountPoint: string) {
+    await new Promise((res) => {
+      try {
+        IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
+      } catch (e) {
+        try {
+          throwWasiErrorToNodeError(`Sync FS '${fsMountPoint}' (${isRestore})`, e);
+        } catch (err) {
+          console.error(err);
+          throw err;
+        }
+      }
     });
   }
 
-  public requestFlush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    const flushControl = this.flushControl.get(fsMountPoint);
-
-    if (!flushControl) {
-      console.debug(`Scheduling flush for ${fsMountPoint}`);
-      this.scheduleFlush(fs, fsMountPoint, deinitArgs);
-    }
-    //
-    else if (flushControl.status === FlushStatus.FLUSH_SCHEDULED) {
-      // If flush is scheduled, we can always cancel it and put a flush and deinit in its place.
-      console.debug(`Debouncing flush request for ${fsMountPoint}`);
-      clearTimeout(flushControl.scheduledTask);
-      this.scheduleFlush(fs, fsMountPoint, deinitArgs);
-    }
-    //
-    else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_SCHEDULED) {
-      if (deinitArgs.deinit) {
-        console.debug(`Debouncing flush and deinit request for ${fsMountPoint}`);
-        clearTimeout(flushControl.scheduledTask);
-        this.scheduleFlush(fs, fsMountPoint, deinitArgs);
-      } else {
-        console.error(`Flush requested while flush and deinit is in scheduled!!!! ${fsMountPoint}`);
-      }
-    }
-    //
-    else if (flushControl.status === FlushStatus.FLUSH_IN_PROGRESS) {
-      if (deinitArgs.deinit) {
-        console.error(`Flush and deinit requested while flush is in progress!!!! ${fsMountPoint}`);
-      } else {
-        console.error(`Flush requested while flush is in progress!!!! ${fsMountPoint}`);
-      }
-    }
-    //
-    else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
-      if (deinitArgs.deinit) {
-        console.error(`Flush and deinit requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
-      } else {
-        console.error(`Flush requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
-      }
-    }
-    //
-    else {
-      throw new Error(`Oops! Impossible scenario for flushing '${fsMountPoint}'`);
-    }
-  }
-}
-
-async function syncFs(isRestore: boolean, fsMountPoint: string) {
-  await new Promise((res) => {
+  private initFs(fsMountPoint: string) {
+    console.time(`Init FS - ${fsMountPoint}`);
+    console.debug(`Initiating FS - ${fsMountPoint}`);
     try {
-      IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
+      FS.mkdir(fsMountPoint);
+      FS.mount(IDBFS, {}, fsMountPoint);
+      this.initFsSchema(fsMountPoint);
     } catch (e) {
       try {
-        throwWasiErrorToNodeError(`Sync FS '${fsMountPoint}' (${isRestore})`, e);
+        throwWasiErrorToNodeError(`Init FS ${fsMountPoint}`, e, fsMountPoint);
       } catch (err) {
+        console.error(`Error initiating FS - ${fsMountPoint}`);
         console.error(err);
-        throw err;
       }
+    } finally {
+      console.timeEnd(`Init FS - ${fsMountPoint}`);
     }
-  });
-}
+  }
 
-async function syncFsSchema(isRestore: boolean, fsMountPoint: string) {
-  return new Promise((res) => {
+  private deinitFs(fsMountPoint: string) {
+    console.debug(`Deinitiating FS - ${fsMountPoint}`);
+    console.time(`Deinit FS - ${fsMountPoint}`);
     try {
-      IDBFS.syncfs({ mountpoint: fsSchemaDir(fsMountPoint) }, isRestore, res);
+      this.deinitFsSchema(fsMountPoint);
+      FS.unmount(fsMountPoint);
+      FS.rmdir(fsMountPoint);
     } catch (e) {
       try {
-        throwWasiErrorToNodeError(`Sync FS Schema '${fsMountPoint}' (${isRestore})`, e);
+        throwWasiErrorToNodeError(`Deinit FS ${fsMountPoint}`, e, fsMountPoint);
       } catch (err) {
+        console.error(`Error deinitiating FS - ${fsMountPoint}`);
         console.error(err);
-        throw err;
       }
-    }
-  });
-}
-
-//
-//
-//
-// fs schema
-
-function initFsSchema(fsMountPoint: string) {
-  try {
-    FS.stat(fsSchemaDir(fsMountPoint));
-    console.debug(`FS Schema already initiated for ${fsMountPoint}`);
-  } catch (e) {
-    FS.mkdir(fsSchemaDir(fsMountPoint));
-    FS.mount(IDBFS, {}, fsSchemaDir(fsMountPoint));
-  }
-}
-
-function deinitFsSchema(fsMountPoint: string) {
-  delete fsSchemas[fsMountPoint];
-  FS.unmount(fsSchemaDir(fsMountPoint));
-  FS.rmdir(fsSchemaDir(fsMountPoint));
-}
-
-async function restoreFsSchema(fsMountPoint: string) {
-  await syncFsSchema(true, fsMountPoint);
-
-  if (fsSchemas[fsMountPoint]) {
-    console.debug(`FS Schema already restored for ${fsMountPoint}`);
-    return;
-  }
-
-  try {
-    const fsSchemaIndexJson = FS.readFile(fsSchemaJsonPath(fsMountPoint), toReadWriteFileOptions({ encoding: "utf8" }));
-    fsSchemas[fsMountPoint] = new Map(JSON.parse(fsSchemaIndexJson as string));
-  } catch (e) {
-    try {
-      throwWasiErrorToNodeError("Reading FS Schema index.json", e);
-    } catch (err) {
-      if (err.code === "ENOENT") {
-        // If there's no index.json to read, it means that this is a new FS.
-        fsSchemas[fsMountPoint] = new Map();
-      } else {
-        throw err;
-      }
+    } finally {
+      console.timeEnd(`Deinit FS - ${fsMountPoint}`);
     }
   }
-}
 
-async function flushFsSchema(fsMountPoint: string) {
-  const fsSchemaToFlush = encoder.encode(JSON.stringify(Array.from(fsSchemas[fsMountPoint].entries())));
-
-  try {
-    FS.writeFile(fsSchemaJsonPath(fsMountPoint), fsSchemaToFlush, toReadWriteFileOptions({ encoding: "utf8" }));
-  } catch (e) {
-    throwWasiErrorToNodeError("Writing FS Schema index.json", e);
+  private async flushFs(fsMountPoint: string) {
+    console.time(`Flush FS - ${fsMountPoint}`);
+    console.debug(`Flushing FS - ${fsMountPoint}`);
+    await this.syncFs(false, fsMountPoint);
+    await this.flushFsSchema(fsMountPoint);
+    console.timeEnd(`Flush FS - ${fsMountPoint}`);
   }
-
-  await syncFsSchema(false, fsMountPoint);
 }
+
+// schema structure
 
 export function fsSchemaDir(fsMountPoint: string) {
   return `${fsMountPoint}_inos`; // FIXME: Rename to _schema
@@ -356,66 +407,7 @@ function fsSchemaJsonPath(fsMountPoint: string) {
   return join(fsSchemaDir(fsMountPoint), "index.json"); // FIXME: Rename to fsSchema.json
 }
 
-//
-//
-//
-// fs
-
-export async function initFs(fsMountPoint: string) {
-  console.time(`Init FS - ${fsMountPoint}`);
-  console.debug(`Initiating FS - ${fsMountPoint}`);
-  try {
-    FS.mkdir(fsMountPoint);
-    FS.mount(IDBFS, {}, fsMountPoint);
-    initFsSchema(fsMountPoint);
-  } catch (e) {
-    try {
-      throwWasiErrorToNodeError(`Init FS ${fsMountPoint}`, e, fsMountPoint);
-    } catch (err) {
-      console.error(`Error initiating FS - ${fsMountPoint}`);
-      console.error(err);
-    }
-  } finally {
-    console.timeEnd(`Init FS - ${fsMountPoint}`);
-  }
-}
-
-export async function deinitFs(fsMountPoint: string) {
-  console.debug(`Deinitiating FS - ${fsMountPoint}`);
-  console.time(`Deinit FS - ${fsMountPoint}`);
-  try {
-    deinitFsSchema(fsMountPoint);
-    FS.unmount(fsMountPoint);
-    FS.rmdir(fsMountPoint);
-  } catch (e) {
-    try {
-      throwWasiErrorToNodeError(`Deinit FS ${fsMountPoint}`, e, fsMountPoint);
-    } catch (err) {
-      console.error(`Error deinitiating FS - ${fsMountPoint}`);
-      console.error(err);
-    }
-  } finally {
-    console.timeEnd(`Deinit FS - ${fsMountPoint}`);
-  }
-}
-
-export async function restoreFs(fsMountPoint: string) {
-  await syncFs(true, fsMountPoint);
-  await restoreFsSchema(fsMountPoint);
-}
-
-export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
-  console.time(`Flush FS - ${fsMountPoint}`);
-  console.debug(`Flushing FS - ${fsMountPoint}`);
-  await syncFs(false, fsMountPoint);
-  await flushFsSchema(fsMountPoint);
-  console.timeEnd(`Flush FS - ${fsMountPoint}`);
-}
-
-//
-//
-//
-// adaptations
+// emscripten-fs adaptation to lightning-fs
 
 // Reference: https://github.com/isomorphic-git/lightning-fs#fswritefilefilepath-data-opts-cb
 function toReadWriteFileOptions(options: any) {
@@ -428,14 +420,13 @@ function removeDotPaths(paths: string[]) {
 }
 
 // Reference: https://github.com/isomorphic-git/lightning-fs#fsstatfilepath-opts-cb
-function toLfsStat(fsMountPoint: string, path: string, stat: any): LfsStat {
+async function toLfsStat(fsCache: FsCache, fsMountPoint: string, path: string, stat: any): Promise<LfsStat> {
   // isomorphic-git expects that `ino` and `mode` never change once they are created,
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   // We need to persist an index containing the `ino`s and `mode`s for all files.
   // Luckily this is very cheap to do, as long as we keep the `fsSchema[fsMountPoint]` map up-to-date.
-  const perpetualStat = fsSchemas[fsMountPoint]
-    .set(path, fsSchemas[fsMountPoint].get(path) ?? { ino: stat.ino, mode: stat.mode })
-    .get(path)!;
+  const fsSchema = await fsCache.getOrCreateFsSchema(fsMountPoint);
+  const perpetualStat = fsSchema.set(path, fsSchema.get(path) ?? { ino: stat.ino, mode: stat.mode }).get(path)!;
 
   const isDir = FS.isDir(perpetualStat.mode);
   const isFile = FS.isFile(perpetualStat.mode);
