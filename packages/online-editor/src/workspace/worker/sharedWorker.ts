@@ -252,7 +252,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
         return [...fsSchema.entries()].flatMap(([path, { mode }]) => {
           const relativePath = path.split("/").slice(2).join("/"); // FIXME: Use path.relative and service.getAbsolutePath();
-          return FS.isDir(mode) || relativePath.startsWith(".git")
+          return !relativePath || FS.isDir(mode) || relativePath.startsWith(".git")
             ? []
             : [{ relativePath, workspaceId: args.workspaceId }];
         });

@@ -75,9 +75,7 @@ export class WorkspaceService {
         return { workspace, files };
       });
     } catch (e) {
-      await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs }) => {
-        await this.workspaceDescriptorService.delete(fs, workspace.workspaceId);
-      });
+      await this.delete(workspace.workspaceId);
       throw e;
     }
   }
