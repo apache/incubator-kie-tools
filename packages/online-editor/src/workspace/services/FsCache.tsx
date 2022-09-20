@@ -223,7 +223,9 @@ export class FsCache {
         rename: async (path: string, newPath: string) => {
           try {
             // console.debug("rename", path, newPath);
-            return FS.rename(path, newPath);
+            FS.rename(path, newPath);
+            (await this.getOrCreateFsSchema(fsMountPoint)).delete(path);
+            await newFs.promises.lstat(newPath);
           } catch (e) {
             throwWasiErrorToNodeError("rename", e, path, newPath);
           }
