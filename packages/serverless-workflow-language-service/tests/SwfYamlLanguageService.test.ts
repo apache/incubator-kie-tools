@@ -18,6 +18,7 @@ import { FileLanguage } from "@kie-tools/serverless-workflow-language-service/di
 import {
   SwfYamlLanguageService,
   YamlCodeCompletionStrategy,
+  isNodeUncompleted,
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { TextDocument } from "vscode-languageserver-textdocument";
 import { CodeLens, CompletionItem, CompletionItemKind, InsertTextFormat } from "vscode-languageserver-types";
@@ -558,7 +559,7 @@ functions:
       const doc = TextDocument.create(documentUri, FileLanguage.YAML, 0, content);
       const cursorOffset = doc.offsetAt(cursorPosition);
 
-      return ls.isNodeUncompleted({
+      return isNodeUncompleted({
         content,
         uri: documentUri,
         rootNode: rootNode!,

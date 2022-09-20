@@ -60,29 +60,6 @@ export class SwfYamlLanguageService {
     return astConvert(ast);
   }
 
-  /* TODO: SwfYamlLanguageService: remove this from the class */
-  /**
-   * Check if a node at a position is uncompleted.
-   * eg. "refName: 🎯"
-   *
-   * @param args -
-   * @returns true if the node is uncompleted, false otherwise.
-   */
-  public isNodeUncompleted = (args: {
-    content: string;
-    uri: string;
-    rootNode: SwfLsNode;
-    cursorOffset: number;
-  }): boolean => {
-    if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {
-      return false;
-    }
-
-    const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
-
-    return nodeAtPrevOffset?.colonOffset === args.cursorOffset - 1;
-  };
-
   public async getCompletionItems(args: {
     content: string;
     uri: string;
@@ -101,7 +78,7 @@ export class SwfYamlLanguageService {
       return [];
     }
 
-    const isCurrentNodeUncompleted = this.isNodeUncompleted({
+    const isCurrentNodeUncompleted = isNodeUncompleted({
       ...args,
       rootNode,
       cursorOffset,
@@ -134,6 +111,28 @@ export class SwfYamlLanguageService {
     return this.ls.dispose();
   }
 }
+
+/**
+ * Check if a node at a position is uncompleted.
+ * eg. "refName: 🎯"
+ *
+ * @param args -
+ * @returns true if the node is uncompleted, false otherwise.
+ */
+export const isNodeUncompleted = (args: {
+  content: string;
+  uri: string;
+  rootNode: SwfLsNode;
+  cursorOffset: number;
+}): boolean => {
+  if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {
+    return false;
+  }
+
+  const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
+
+  return nodeAtPrevOffset?.colonOffset === args.cursorOffset - 1;
+};
 
 const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   const convertedNode: SwfLsNode = {
