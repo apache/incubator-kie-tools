@@ -120,7 +120,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       });
     },
     async kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]> {
-      return descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+      return descriptorsFsService.withReadonlyInMemoryFs(({ fs }) => {
         return descriptorService.listAll(fs);
       });
     },

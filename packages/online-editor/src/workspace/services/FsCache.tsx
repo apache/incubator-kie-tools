@@ -27,19 +27,29 @@ declare let IDBFS: EmscriptenFs & {
 };
 
 export class FsCache {
-  private fsCache = new Map<string, KieSandboxWorkspacesFs>();
+  private readonly flushDebounceTimeoutInMs = 2000;
 
-  public async getOrCreateFs(fsMountPoint: string) {
-    const fs = this.fsCache.get(fsMountPoint);
+  private readonly debouncedFlushes = new Map<string, ReturnType<typeof setTimeout>>();
+
+  private readonly cache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
+
+  public getOrCreateFs(fsMountPoint: string) {
+    const fs = this.cache.get(fsMountPoint);
     if (fs) {
       return fs;
     }
 
+    const newFsPromise = this.createNewFs(fsMountPoint);
+    this.cache.set(fsMountPoint, newFsPromise);
+    return newFsPromise;
+  }
+
+  private async createNewFs(fsMountPoint: string) {
     const newFs: KieSandboxWorkspacesFs = {
       promises: {
         rename: async (path: string, newPath: string) => {
           try {
-            // console.debug("rename", path, newPath)
+            // console.debug("rename", path, newPath);
             return FS.rename(path, newPath);
           } catch (e) {
             throwWasiErrorToNodeError(e, path, newPath);
@@ -47,7 +57,7 @@ export class FsCache {
         },
         readFile: async (path: string, options: any) => {
           try {
-            // console.debug("readFile",path, options)
+            // console.debug("readFile", path, options);
             return FS.readFile(path, toReadWriteFileOptions(options));
           } catch (e) {
             throwWasiErrorToNodeError(e, path, options);
@@ -55,7 +65,7 @@ export class FsCache {
         },
         writeFile: async (path: string, data: Uint8Array | string, options: any) => {
           try {
-            // console.debug("writeFile",path, data, options)
+            // console.debug("writeFile", path, data, options);
             FS.writeFile(path, data, toReadWriteFileOptions(options));
             await newFs.promises.lstat(path);
           } catch (e) {
@@ -64,7 +74,7 @@ export class FsCache {
         },
         unlink: async (path: string) => {
           try {
-            // console.debug("unlink",path)
+            // console.debug("unlink", path);
             FS.unlink(path);
             inos[fsMountPoint].delete(path);
           } catch (e) {
@@ -73,7 +83,7 @@ export class FsCache {
         },
         readdir: async (path: string, options: any) => {
           try {
-            // console.debug("readdir",path, options)
+            // console.debug("readdir", path, options);
             return removeDotPaths(FS.readdir(path, options));
           } catch (e) {
             throwWasiErrorToNodeError(e, path, options);
@@ -81,7 +91,7 @@ export class FsCache {
         },
         mkdir: async (path: string, mode?: number) => {
           try {
-            // console.debug("mkdir",path, mode)
+            // console.debug("mkdir", path, mode);
             FS.mkdir(path, mode);
             await newFs.promises.lstat(path);
           } catch (e) {
@@ -90,7 +100,7 @@ export class FsCache {
         },
         rmdir: async (path: string) => {
           try {
-            // console.debug("rmdir",path)
+            // console.debug("rmdir", path);
             FS.rmdir(path);
             inos[fsMountPoint].delete(path);
           } catch (e) {
@@ -99,7 +109,7 @@ export class FsCache {
         },
         stat: async (path: string) => {
           try {
-            // console.debug("stat",path, options)
+            // console.debug("stat", path);
             return toLfsStat(fsMountPoint, path, FS.stat(path));
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
@@ -107,7 +117,7 @@ export class FsCache {
         },
         lstat: async (path: string) => {
           try {
-            // console.debug("lstat",path, options)
+            // console.debug("lstat", path);
             return toLfsStat(fsMountPoint, path, FS.stat(path));
           } catch (e) {
             throwWasiErrorToNodeError(e, path);
@@ -115,7 +125,7 @@ export class FsCache {
         },
         readlink: async (path: string, options: any) => {
           try {
-            // console.debug("readlink",path, options)
+            // console.debug("readlink", path, options);
             return FS.readlink(path);
           } catch (e) {
             throwWasiErrorToNodeError(e, path, options);
@@ -123,7 +133,7 @@ export class FsCache {
         },
         symlink: async (target: string, path: string, type: any) => {
           try {
-            // console.debug("symlink",target, path, type)
+            // console.debug("symlink", target, path, type);
             FS.symlink(target, path);
             await newFs.promises.lstat(path);
           } catch (e) {
@@ -132,7 +142,7 @@ export class FsCache {
         },
         chmod: async (path: string, mode: number) => {
           try {
-            // console.debug("chmod",path, mode)
+            // console.debug("chmod", path, mode);
             FS.chmod(path, mode);
             await newFs.promises.lstat(path);
           } catch (e) {
@@ -148,17 +158,26 @@ export class FsCache {
     await restoreFs(newFs, fsMountPoint);
     console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
 
-    // Keep only one FS in memory at the time
-    if (this.fsCache.size > 0) {
-      const previouslyCachedFss = [...this.fsCache.keys()];
-      this.fsCache.clear();
-      for (const mountPoint of previouslyCachedFss) {
-        await deinitFs(mountPoint);
-      }
+    return newFs;
+  }
+
+  triggerDebouncedFlush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    const nextFlush = this.debouncedFlushes.get(fsMountPoint);
+    if (nextFlush) {
+      console.debug(`Debouncing flush for ${fsMountPoint}`);
+      clearTimeout(nextFlush);
     }
 
-    this.fsCache.set(fsMountPoint, this.fsCache.get(fsMountPoint) ?? newFs);
-    return this.fsCache.get(fsMountPoint)!;
+    this.debouncedFlushes.set(
+      fsMountPoint,
+      setTimeout(async () => {
+        this.debouncedFlushes.delete(fsMountPoint);
+        await flushFs(fs, fsMountPoint);
+        if (deinitArgs.deinit) {
+          await deinitFs(fsMountPoint);
+        }
+      }, this.flushDebounceTimeoutInMs)
+    );
   }
 }
 
@@ -189,10 +208,16 @@ async function syncfs(isRestore: boolean, fsMountPoint: string) {
   });
 }
 
+const encoder = new TextEncoder();
+
 export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
-  const all = new TextEncoder().encode(JSON.stringify(Array.from(inos[fsMountPoint].entries())));
-  await fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), all, { encoding: "utf8" });
-  return syncfs(false, fsMountPoint);
+  console.time("Flush FS - " + fsMountPoint);
+  console.debug("Flushing FS - " + fsMountPoint);
+  const inosToFlush = encoder.encode(JSON.stringify(Array.from(inos[fsMountPoint].entries())));
+  await fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), inosToFlush, { encoding: "utf8" });
+  const ret = await syncfs(false, fsMountPoint);
+  console.timeEnd("Flush FS - " + fsMountPoint);
+  return ret;
 }
 
 export async function initFs(fsMountPoint: string) {

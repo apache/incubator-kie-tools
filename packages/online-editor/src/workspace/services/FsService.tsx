@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-import { flushFs, FsCache } from "./FsCache";
+import { FsCache } from "./FsCache";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+
+export interface BroadcasterWatchEvent {
+  channel: string;
+  onMessage: (message: WorkspacesEvents | WorkspaceEvents | WorkspaceFileEvents) => void;
+}
+
+export class Broadcastee {
+  watch(args: BroadcasterWatchEvent): void {}
+  dispose() {}
+}
 
 export interface BroadcasterEvent {
   channel: string;
@@ -30,31 +40,12 @@ export interface BroadcasterDispatch {
 }
 
 export class Broadcaster implements BroadcasterDispatch {
-  private readonly messages = new Array<BroadcasterEvent>();
-
-  broadcastDeferred(args: BroadcasterEvent): void {
-    this.messages.push(args);
-  }
-
   async broadcast(args: BroadcasterEvent): Promise<void> {
     const bc = new BroadcastChannel(args.channel);
     bc.postMessage(await args.message());
     bc.close();
   }
-
-  async sendAll() {
-    return Promise.all(
-      this.messages.map(async (bce) => {
-        const bc = new BroadcastChannel(bce.channel);
-        bc.postMessage(await bce.message());
-        bc.close();
-      })
-    );
-  }
 }
-
-const flushDebounce = new Map<string, any>();
-const flushDebounceTimeout = 2000;
 
 export class FsService {
   constructor(private readonly fsCache = new FsCache()) {}
@@ -63,25 +54,10 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
-    const { fs, flush } = await this.getInMemoryWorkspaceFs(fsMountPoint);
-    const broadcaster = new Broadcaster();
+    const fs = await this.fsCache.getOrCreateFs(fsMountPoint);
+    const ret = await callback({ fs, broadcaster: new Broadcaster() });
 
-    const ret = await callback({ fs, broadcaster });
-
-    await broadcaster.sendAll();
-
-    // TODO: Debounce
-    // const db = flushDebounce.get(fsMountPoint);
-    // if (db) {
-    //   clearTimeout(db);
-    // }
-
-    // flushDebounce.set(
-    //   fsMountPoint,
-    //   setTimeout(async () => {
-    await flush();
-    //   }, flushDebounceTimeout)
-    // );
+    await this.fsCache.triggerDebouncedFlush(fs, fsMountPoint, { deinit: false });
 
     return ret;
   }
@@ -90,62 +66,48 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
-    const { fs } = await this.getInMemoryWorkspaceFs(fsMountPoint);
-    const readonlyFs = {
-      promises: {
-        writeFile: async (path: string, data: Uint8Array | string, options: any) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        unlink: async (path: string) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        mkdir: async (path: string, mode?: number) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        rmdir: async (path: string) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        symlink: async (target: string, path: string, type: any) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        chmod: async (path: string, mode: any) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        rename: async (path: string, newPath: string) => {
-          throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-        },
-        readFile: async (path: string, options: any) => {
-          return fs.promises.readFile(path, options);
-        },
-        readdir: async (path: string, options: any) => {
-          return fs.promises.readdir(path, options);
-        },
-        stat: async (path: string) => {
-          return fs.promises.stat(path);
-        },
-        lstat: async (path: string) => {
-          return fs.promises.lstat(path);
-        },
-        readlink: async (path: string, options: any) => {
-          return fs.promises.readlink(path, options);
+    const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
+    return await callback({
+      fs: {
+        promises: {
+          writeFile: async (path: string, data: Uint8Array | string, options: any) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          unlink: async (path: string) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          mkdir: async (path: string, mode?: number) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          rmdir: async (path: string) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          symlink: async (target: string, path: string, type: any) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          chmod: async (path: string, mode: any) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          rename: async (path: string, newPath: string) => {
+            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+          },
+          readFile: async (path: string, options: any) => {
+            return readWriteFs.promises.readFile(path, options);
+          },
+          readdir: async (path: string, options: any) => {
+            return readWriteFs.promises.readdir(path, options);
+          },
+          stat: async (path: string) => {
+            return readWriteFs.promises.stat(path);
+          },
+          lstat: async (path: string) => {
+            return readWriteFs.promises.lstat(path);
+          },
+          readlink: async (path: string, options: any) => {
+            return readWriteFs.promises.readlink(path, options);
+          },
         },
       },
-    };
-
-    return await callback({ fs: readonlyFs });
-  }
-
-  private async getInMemoryWorkspaceFs(fsMountPoint: string) {
-    const fs = await this.fsCache.getOrCreateFs(fsMountPoint);
-
-    const flush = async () => {
-      console.time("Flush FS - " + fsMountPoint);
-      console.debug("Flushing FS - " + fsMountPoint);
-      const ret = await flushFs(fs, fsMountPoint);
-      console.timeEnd("Flush FS - " + fsMountPoint);
-      return ret;
-    };
-
-    return { fs, flush };
+    });
   }
 }
