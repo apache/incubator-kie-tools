@@ -165,7 +165,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       globPattern: string;
       opts?: ResourceListOptions;
     }): Promise<ResourcesList> {
-      // TODO: Use FS Schema
+      // FIXME: Use FS Schema instead of in memory FS
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
         const files = await service.getFilesWithLazyContent(fs, args.workspaceId, args.globPattern);
         const matchingPaths = files.map((file) => file.relativePath);
