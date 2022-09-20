@@ -60,6 +60,7 @@ export class SwfYamlLanguageService {
     return astConvert(ast);
   }
 
+  /* TODO: SwfYamlLanguageService: remove this from the class */
   /**
    * Check if a node at a position is uncompleted.
    * eg. "refName: 🎯"
@@ -174,10 +175,15 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
 
 export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
   public translate(args: TranslateArgs): string {
+    const completionDump = dump(args.completion, {}).slice(0, -1);
+
+    if (["{}", "[]"].includes(completionDump)) {
+      return completionDump;
+    }
+
     const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
     const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
-    const completionText =
-      completionItemNewLine + indentText(dump(args.completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
+    const completionText = completionItemNewLine + indentText(completionDump, 2, " ", skipFirstLineIndent);
 
     return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
       args.completionItemKind

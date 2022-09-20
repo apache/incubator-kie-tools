@@ -1684,6 +1684,54 @@ states:
     });
 
     describe("functionRef arguments completion", () => {
+      test("without any function to complete", async () => {
+        const testRelativeService1WithEmptyFunctionArgs = {
+          ...testRelativeService1,
+          functions: [{ ...testRelativeFunction1, arguments: {} }],
+        };
+
+        const ls = new SwfYamlLanguageService({
+          fs: {},
+          serviceCatalog: {
+            ...defaultServiceCatalogConfig,
+            relative: { getServices: async () => [testRelativeService1WithEmptyFunctionArgs] },
+          },
+          config: defaultConfig,
+        });
+
+        const { completionItems, cursorPosition } = await codeCompletionTester(
+          ls,
+          documentUri,
+          `---
+functions:
+- name: testRelativeFunction1
+  operation: specs/testRelativeService1.yml#testRelativeFunction1
+  type: rest
+states:
+- name: testState
+  type: operation
+  transition: end
+  actions:
+  - name: testStateAction
+    functionRef:
+      refName: testRelativeFunction1
+      arguments: 🎯`
+        );
+
+        expect(completionItems).toHaveLength(1);
+        expect(completionItems[0]).toStrictEqual({
+          kind: CompletionItemKind.Module,
+          label: `'testRelativeFunction1' arguments`,
+          detail: "specs/testRelativeService1.yml#testRelativeFunction1",
+          sortText: `'testRelativeFunction1' arguments`,
+          textEdit: {
+            newText: `{}`,
+            range: { start: cursorPosition, end: cursorPosition },
+          },
+          insertTextFormat: InsertTextFormat.Snippet,
+        } as CompletionItem);
+      });
+
       test("without same level content after / without space after property name", async () => {
         const { completionItems, cursorPosition } = await codeCompletionTester(
           ls,
