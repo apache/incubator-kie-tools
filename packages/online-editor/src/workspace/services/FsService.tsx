@@ -57,7 +57,7 @@ export class FsService {
     const fs = await this.fsCache.getOrCreateFs(fsMountPoint);
     const ret = await callback({ fs, broadcaster: new Broadcaster() });
 
-    await this.fsCache.triggerDebouncedFlush(fs, fsMountPoint, { deinit: false });
+    await this.fsCache.requestFlush(fs, fsMountPoint, { deinit: false });
 
     return ret;
   }

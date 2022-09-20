@@ -26,11 +26,20 @@ declare let IDBFS: EmscriptenFs & {
   syncfs(mount: { mountpoint: string }, mode: boolean, callback: (...args: any[]) => void): void;
 };
 
+enum FlushStatus {
+  FLUSH_IN_PROGRESS,
+  FLUSH_AND_DEINIT_IN_PROGRESS,
+  FLUSH_SCHEDULED,
+  FLUSH_AND_DEINIT_SCHEDULED,
+}
+
+type FlushControl =
+  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStatus.FLUSH_SCHEDULED }
+  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStatus.FLUSH_AND_DEINIT_SCHEDULED }
+  | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_IN_PROGRESS }
+  | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS };
+
 export class FsCache {
-  private readonly flushDebounceTimeoutInMs = 2000;
-
-  private readonly debouncedFlushes = new Map<string, ReturnType<typeof setTimeout>>();
-
   private readonly cache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
 
   public getOrCreateFs(fsMountPoint: string) {
@@ -161,23 +170,75 @@ export class FsCache {
     return newFs;
   }
 
-  triggerDebouncedFlush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    const nextFlush = this.debouncedFlushes.get(fsMountPoint);
-    if (nextFlush) {
-      console.debug(`Debouncing flush for ${fsMountPoint}`);
-      clearTimeout(nextFlush);
-    }
+  private readonly flushControl = new Map<string, FlushControl>();
+  private readonly flushDebounceTimeoutInMs = 2000;
 
-    this.debouncedFlushes.set(
-      fsMountPoint,
-      setTimeout(async () => {
-        this.debouncedFlushes.delete(fsMountPoint);
-        await flushFs(fs, fsMountPoint);
-        if (deinitArgs.deinit) {
-          await deinitFs(fsMountPoint);
-        }
-      }, this.flushDebounceTimeoutInMs)
-    );
+  private async flush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    await flushFs(fs, fsMountPoint);
+    if (deinitArgs.deinit) {
+      await deinitFs(fsMountPoint);
+    }
+  }
+
+  private scheduleFlush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    this.flushControl.set(fsMountPoint, {
+      status: FlushStatus.FLUSH_SCHEDULED,
+      scheduledTask: setTimeout(() => {
+        this.flushControl.set(fsMountPoint, {
+          status: deinitArgs.deinit ? FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS : FlushStatus.FLUSH_IN_PROGRESS,
+          operationPromise: this.flush(fs, fsMountPoint, deinitArgs).then(() => {
+            console.debug("Flush complete for " + fsMountPoint);
+            this.flushControl.delete(fsMountPoint);
+          }),
+        });
+      }, this.flushDebounceTimeoutInMs),
+    });
+  }
+
+  public requestFlush(fs: KieSandboxWorkspacesFs, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
+    const flushControl = this.flushControl.get(fsMountPoint);
+
+    if (!flushControl) {
+      console.debug(`Scheduling flush for ${fsMountPoint}`);
+      this.scheduleFlush(fs, fsMountPoint, deinitArgs);
+    }
+    //
+    else if (flushControl.status === FlushStatus.FLUSH_SCHEDULED) {
+      // If flush is scheduled, we can always cancel it and put a flush and deinit in its place.
+      console.debug(`Debouncing flush request for ${fsMountPoint}`);
+      clearTimeout(flushControl.scheduledTask);
+      this.scheduleFlush(fs, fsMountPoint, deinitArgs);
+    }
+    //
+    else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_SCHEDULED) {
+      if (deinitArgs.deinit) {
+        console.debug(`Debouncing flush and deinit request for ${fsMountPoint}`);
+        clearTimeout(flushControl.scheduledTask);
+        this.scheduleFlush(fs, fsMountPoint, deinitArgs);
+      } else {
+        console.error("Flush requested while flush and deinit is in scheduled!!!! " + fsMountPoint);
+      }
+    }
+    //
+    else if (flushControl.status === FlushStatus.FLUSH_IN_PROGRESS) {
+      if (deinitArgs.deinit) {
+        console.error("Flush and deinit requested while flush is in progress!!!! " + fsMountPoint);
+      } else {
+        console.error("Flush requested while flush is in progress!!!! " + fsMountPoint);
+      }
+    }
+    //
+    else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
+      if (deinitArgs.deinit) {
+        console.error("Flush and deinit requested while flush and deinit is in progress!!!! " + fsMountPoint);
+      } else {
+        console.error("Flush requested while flush and deinit is in progress!!!! " + fsMountPoint);
+      }
+    }
+    //
+    else {
+      throw new Error(`Oops! Impossible scenario for flushing '${fsMountPoint}'`);
+    }
   }
 }
 
