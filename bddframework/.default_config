@@ -1,4 +1,4 @@
-tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:latest
+tests.build_builder_image_tag=quay.io/kiegroup/kogito-s2i-builder-nightly:latest
 tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:latest
 tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:latest
 tests.services_image_name_suffix=nightly
