@@ -66,9 +66,9 @@ func getProbeForKogitoService(service api.KogitoService) healthCheckProbe {
 // getProbe is a catch-all function that sets default values for all missing values
 // that have not been set by the user for all the various probe types.
 func getProbe(probe corev1.Probe, runtimeType api.RuntimeType, probeType ProbeType) *corev1.Probe {
-	if isProbeHandlerEmpty(probe.Handler) {
-		probe.Handler = corev1.Handler{HTTPGet: getDefaultHTTPGetAction(runtimeType, probeType)}
-	} else if probe.Handler.HTTPGet != nil {
+	if isProbeHandlerEmpty(probe.ProbeHandler) {
+		probe.ProbeHandler = corev1.ProbeHandler{HTTPGet: getDefaultHTTPGetAction(runtimeType, probeType)}
+	} else if probe.ProbeHandler.HTTPGet != nil {
 		setDefaultHTTPGetValues(&probe, runtimeType, probeType)
 	}
 	// Remaining case is where probe handler is set to TCP by user.
@@ -83,12 +83,12 @@ func getProbe(probe corev1.Probe, runtimeType api.RuntimeType, probeType ProbeTy
 
 // setDefaultHTTPGetValues sets default HTTPGetAction values for the handler if not set already. This prevents reconciliation loops.
 func setDefaultHTTPGetValues(probe *corev1.Probe, runtimeType api.RuntimeType, probeType ProbeType) {
-	if probe.Handler.HTTPGet.Path == "" {
-		probe.Handler.HTTPGet.Path = getDefaultHTTPPath(runtimeType, probeType)
+	if probe.ProbeHandler.HTTPGet.Path == "" {
+		probe.ProbeHandler.HTTPGet.Path = getDefaultHTTPPath(runtimeType, probeType)
 	}
 	// port not needed to be set since it is a mandatory field for HTTPGetAction enforced at YAML level
-	if probe.Handler.HTTPGet.Scheme == "" {
-		probe.Handler.HTTPGet.Scheme = corev1.URISchemeHTTP
+	if probe.ProbeHandler.HTTPGet.Scheme == "" {
+		probe.ProbeHandler.HTTPGet.Scheme = corev1.URISchemeHTTP
 	}
 }
 
@@ -130,6 +130,6 @@ func setDefaultProbeValues(probe *corev1.Probe) {
 }
 
 // isProbeHandlerEmpty ...
-func isProbeHandlerEmpty(handler corev1.Handler) bool {
+func isProbeHandlerEmpty(handler corev1.ProbeHandler) bool {
 	return handler.HTTPGet == nil && handler.Exec == nil && handler.TCPSocket == nil
 }

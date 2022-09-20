@@ -148,7 +148,7 @@ func DiscoverPortsAndProbesFromImage(dc *appsv1.DeploymentConfig, dockerImage *d
 				// we have at least one service exported using default HTTP protocols, let's used as a probe!
 				if portName == DefaultPortName {
 					nonSecureProbe = defaultProbe
-					nonSecureProbe.Handler.TCPSocket = &corev1.TCPSocketAction{Port: intstr.FromInt(portNumber)}
+					nonSecureProbe.TCPSocket = &corev1.TCPSocketAction{Port: intstr.FromInt(portNumber)}
 				}
 			}
 			break
