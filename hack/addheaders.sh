@@ -13,6 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-command -v  addlicense > /dev/null || go get -modfile=go.tools.mod -u github.com/google/addlicense@v1.0.0
+command -v  addlicense > /dev/null || go install -modfile=go.tools.mod github.com/google/addlicense@v1.0.0
 
 addlicense -c "Red Hat, Inc. and/or its affiliates" -l=apache cmd hack apis controllers core internal meta version client

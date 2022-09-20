@@ -31,7 +31,7 @@ release=$1
 version=$2
 
 if ! hash packr2 2>/dev/null; then
-  go get -u github.com/gobuffalo/packr/v2/packr2
+  go install github.com/gobuffalo/packr/v2/packr2@latest
 fi
 
 # Build with `-mod=mod` due to go1.16 issue

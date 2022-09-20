@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-default_operator_sdk_version=v1.11.0
+default_operator_sdk_version=v1.21.0
 
 if [[ -z ${OPERATOR_SDK_VERSION} ]]; then
     OPERATOR_SDK_VERSION=$default_operator_sdk_version
@@ -21,14 +21,31 @@ fi
 
 GOPATH=$(go env GOPATH)
 
+should_install=false
 if [[ $(command -v operator-sdk) ]]; then
-  echo "---> operator-sdk is already installed. Please make sure it is the required ${OPERATOR_SDK_VERSION} version before proceeding"
+  echo "---> operator-sdk is already installed. Checking the version."
+  operator_sdk_version=$(operator-sdk version | awk -F',' '{print $1}' | awk -F\" '{print $2}')
+  echo "---> operator-sdk installed version = ${operator_sdk_version}. Expected = ${OPERATOR_SDK_VERSION}"
+  if [ "${operator_sdk_version}" != "${OPERATOR_SDK_VERSION}" ]; then
+    echo "---> operator-sdk is not of the expected version. It will be re-installed."
+    should_install=true
+  fi
 else
-  echo "---> operator-sdk not found, installing it in \$GOPATH/bin/"
+  echo "---> operator-sdk not found. It will be installed."
+  should_install=true
+fi
+
+if [ "${should_install}" = "true" ]; then
+  echo "---> Installing operator-sdk in \$GOPATH/bin/"
   mkdir -p "$GOPATH"/bin
   curl -L https://github.com/operator-framework/operator-sdk/releases/download/$OPERATOR_SDK_VERSION/operator-sdk_linux_amd64 -o "$GOPATH"/bin/operator-sdk
   chmod +x "$GOPATH"/bin/operator-sdk
 fi
 
 ##For verification
-operator-sdk version
+operator_sdk_version=$(operator-sdk version | awk -F',' '{print $1}' | awk -F\" '{print $2}')
+echo "---> Using operator-sdk version ${operator_sdk_version}"
+if [ "${operator_sdk_version}" != "${OPERATOR_SDK_VERSION}" ]; then
+  echo "ERROR: After installation, operator-sdk is with version ${operator_sdk_version} but should be ${OPERATOR_SDK_VERSION}. Please check your PATH so that \$GOPATH/bin/ is prior."
+  exit 1
+fi
