@@ -39,7 +39,7 @@ const (
 	kogitoRuntimeJVMEnvVar    = "RUNTIME_IMAGE"
 	kogitoRuntimeNativeEnvVar = "RUNTIME_NATIVE_IMAGE"
 	// defaultBuilderImage Builder Image for Kogito
-	defaultBuilderImage = "kogito-builder"
+	defaultBuilderImage = "kogito-s2i-builder"
 	// defaultRuntimeJVM Runtime Image for Kogito with  JRE
 	defaultRuntimeJVM = "kogito-runtime-jvm"
 	//defaultRuntimeNative Runtime Image for Kogito for Native Quarkus Application
