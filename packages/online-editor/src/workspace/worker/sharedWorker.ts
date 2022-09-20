@@ -37,7 +37,7 @@ import { Buffer } from "buffer";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
-import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
+import { EmscriptenFs, KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
 import { LocalFile } from "./api/LocalFile";
@@ -52,6 +52,9 @@ const GIT_USER_DEFAULT = {
   name: "KIE Sandbox",
   email: "",
 };
+
+// comes from fsMain.fs
+declare let FS: EmscriptenFs;
 
 async function corsProxyUrl() {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
@@ -162,6 +165,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       globPattern: string;
       opts?: ResourceListOptions;
     }): Promise<ResourcesList> {
+      // TODO: Use FS Schema
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
         const files = await service.getFilesWithLazyContent(fs, args.workspaceId, args.globPattern);
         const matchingPaths = files.map((file) => file.relativePath);
@@ -217,29 +221,19 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       workspaceId: string;
       relativePath: string;
     }): Promise<boolean> {
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return await service.existsFile({
-          fs: fs,
-          workspaceId: args.workspaceId,
-          relativePath: args.relativePath,
-        });
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
+        return !!fsSchema.get(service.getAbsolutePath(args));
       });
     },
-    async kieSandboxWorkspacesStorage_getFile(args: {
+    kieSandboxWorkspacesStorage_getFile: async function (args: {
       workspaceId: string;
       relativePath: string;
     }): Promise<WorkspaceWorkerFileDescriptor | undefined> {
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        const file = await service.getFile({
-          fs: fs,
-          workspaceId: args.workspaceId,
-          relativePath: args.relativePath,
-        });
-
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
         return (
-          file && {
-            workspaceId: file.workspaceId,
-            relativePath: file.relativePath,
+          fsSchema.get(service.getAbsolutePath(args)) && {
+            workspaceId: args.workspaceId,
+            relativePath: args.relativePath,
           }
         );
       });
@@ -252,14 +246,16 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         return storageService.getFileContent(fs, service.getAbsolutePath(args));
       });
     },
-    async kieSandboxWorkspacesStorage_getFiles(args: {
+    kieSandboxWorkspacesStorage_getFiles: async function (args: {
       workspaceId: string;
     }): Promise<WorkspaceWorkerFileDescriptor[]> {
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return (await service.getFilesWithLazyContent(fs, args.workspaceId)).map((file) => ({
-          workspaceId: file.workspaceId,
-          relativePath: file.relativePath,
-        }));
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
+        return [...fsSchema.entries()].flatMap(([path, { mode }]) => {
+          const relativePath = path.split("/").slice(2).join("/"); // FIXME: Use path.relative and service.getAbsolutePath();
+          return FS.isDir(mode) || relativePath.startsWith(".git")
+            ? []
+            : [{ relativePath, workspaceId: args.workspaceId }];
+        });
       });
     },
     async kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {

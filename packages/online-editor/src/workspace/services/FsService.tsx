@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FsCache } from "./FsCache";
+import { FsCache, FsSchema } from "./FsCache";
 import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
@@ -54,43 +54,39 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
-    const fs = await this.fsCache.getOrCreateFs(fsMountPoint);
-    const ret = await callback({ fs, broadcaster: new Broadcaster() });
+    const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
+    const callbackResult = await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
 
-    await this.fsCache.requestFlush(fs, fsMountPoint, { deinit: false });
+    await this.fsCache.requestFlush(readWriteFs, fsMountPoint, { deinit: false });
 
-    return ret;
+    return callbackResult;
+  }
+
+  public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
+    const fsSchema = await this.fsCache.getOrCreateFsSchema(fsMountPoint);
+    return callback({ fsSchema });
   }
 
   public async withReadonlyInMemoryFs<T>(
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
+    const throwCantMutateReadonlyFsException = async () => {
+      throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+    };
+
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
+
     return await callback({
       fs: {
         promises: {
-          writeFile: async (path: string, data: Uint8Array | string, options: any) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
-          unlink: async (path: string) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
-          mkdir: async (path: string, mode?: number) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
-          rmdir: async (path: string) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
-          symlink: async (target: string, path: string, type: any) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
-          chmod: async (path: string, mode: any) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
-          rename: async (path: string, newPath: string) => {
-            throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
-          },
+          writeFile: throwCantMutateReadonlyFsException,
+          unlink: throwCantMutateReadonlyFsException,
+          mkdir: throwCantMutateReadonlyFsException,
+          rmdir: throwCantMutateReadonlyFsException,
+          symlink: throwCantMutateReadonlyFsException,
+          chmod: throwCantMutateReadonlyFsException,
+          rename: throwCantMutateReadonlyFsException,
           readFile: async (path: string, options: any) => {
             return readWriteFs.promises.readFile(path, options);
           },

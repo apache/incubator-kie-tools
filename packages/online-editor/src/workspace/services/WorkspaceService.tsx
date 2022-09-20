@@ -114,8 +114,8 @@ export class WorkspaceService {
     await this.descriptorsFsService.withReadWriteInMemoryFs(async ({ fs, broadcaster }) => {
       await this.workspaceDescriptorService.delete(fs, workspaceId);
 
-      indexedDB.deleteDatabase(this.fsService.getMountPoint(workspaceId));
-      indexedDB.deleteDatabase(this.fsService.getInosMountPoint(workspaceId));
+      indexedDB.deleteDatabase(this.fsService.getFsMountPoint(workspaceId));
+      indexedDB.deleteDatabase(this.fsService.getFsSchemaMountPoint(workspaceId));
 
       await broadcaster.broadcast({
         channel: WORKSPACES_BROADCAST_CHANNEL,
@@ -328,7 +328,7 @@ export class WorkspaceService {
   }
 
   public getAbsolutePath(args: { workspaceId: string; relativePath?: string }) {
-    return join("/", this.fsService.getMountPoint(args.workspaceId), args.relativePath ?? "");
+    return join("/", this.fsService.getFsMountPoint(args.workspaceId), args.relativePath ?? "");
   }
 
   public async deleteFiles(

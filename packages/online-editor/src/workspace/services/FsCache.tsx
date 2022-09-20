@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
+import { join } from "path";
 import { EmscriptenFs, KieSandboxWorkspacesFs, LfsStat } from "./KieSandboxWorkspaceFs";
-
-const inos: Record<string, Map<string, { ino: number; mode: number }>> = {};
 
 // comes from fsMain.fs
 declare let FS: EmscriptenFs;
@@ -39,8 +38,27 @@ type FlushControl =
   | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_IN_PROGRESS }
   | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS };
 
+const encoder = new TextEncoder();
+
+export type FsSchema = Map<string, { ino: number; mode: number }>;
+
+export const fsSchemas: Record<string, FsSchema> = {};
+
 export class FsCache {
   private readonly cache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
+
+  public async getOrCreateFsSchema(fsMountPoint: string) {
+    const fsSchema = fsSchemas[fsMountPoint];
+    if (fsSchema) {
+      return fsSchema;
+    }
+
+    console.time(`Get FS Schema for ${fsMountPoint}`);
+    initFsSchema(fsMountPoint);
+    await restoreFsSchema(fsMountPoint);
+    console.timeEnd(`Get FS Schema for ${fsMountPoint}`);
+    return fsSchemas[fsMountPoint];
+  }
 
   public getOrCreateFs(fsMountPoint: string) {
     const fs = this.cache.get(fsMountPoint);
@@ -61,7 +79,7 @@ export class FsCache {
             // console.debug("rename", path, newPath);
             return FS.rename(path, newPath);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, newPath);
+            throwWasiErrorToNodeError("rename", e, path, newPath);
           }
         },
         readFile: async (path: string, options: any) => {
@@ -69,7 +87,7 @@ export class FsCache {
             // console.debug("readFile", path, options);
             return FS.readFile(path, toReadWriteFileOptions(options));
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, options);
+            throwWasiErrorToNodeError("readFile", e, path, options);
           }
         },
         writeFile: async (path: string, data: Uint8Array | string, options: any) => {
@@ -78,16 +96,16 @@ export class FsCache {
             FS.writeFile(path, data, toReadWriteFileOptions(options));
             await newFs.promises.lstat(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, data, options);
+            throwWasiErrorToNodeError("writeFile", e, path, data, options);
           }
         },
         unlink: async (path: string) => {
           try {
             // console.debug("unlink", path);
             FS.unlink(path);
-            inos[fsMountPoint].delete(path);
+            fsSchemas[fsMountPoint].delete(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path);
+            throwWasiErrorToNodeError("unlink", e, path);
           }
         },
         readdir: async (path: string, options: any) => {
@@ -95,7 +113,7 @@ export class FsCache {
             // console.debug("readdir", path, options);
             return removeDotPaths(FS.readdir(path, options));
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, options);
+            throwWasiErrorToNodeError("readdir", e, path, options);
           }
         },
         mkdir: async (path: string, mode?: number) => {
@@ -104,16 +122,16 @@ export class FsCache {
             FS.mkdir(path, mode);
             await newFs.promises.lstat(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, mode);
+            throwWasiErrorToNodeError("mkdir", e, path, mode);
           }
         },
         rmdir: async (path: string) => {
           try {
             // console.debug("rmdir", path);
             FS.rmdir(path);
-            inos[fsMountPoint].delete(path);
+            fsSchemas[fsMountPoint].delete(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path);
+            throwWasiErrorToNodeError("rmdir", e, path);
           }
         },
         stat: async (path: string) => {
@@ -121,7 +139,7 @@ export class FsCache {
             // console.debug("stat", path);
             return toLfsStat(fsMountPoint, path, FS.stat(path));
           } catch (e) {
-            throwWasiErrorToNodeError(e, path);
+            throwWasiErrorToNodeError("stat", e, path);
           }
         },
         lstat: async (path: string) => {
@@ -129,7 +147,7 @@ export class FsCache {
             // console.debug("lstat", path);
             return toLfsStat(fsMountPoint, path, FS.stat(path));
           } catch (e) {
-            throwWasiErrorToNodeError(e, path);
+            throwWasiErrorToNodeError("lstat", e, path);
           }
         },
         readlink: async (path: string, options: any) => {
@@ -137,7 +155,7 @@ export class FsCache {
             // console.debug("readlink", path, options);
             return FS.readlink(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, options);
+            throwWasiErrorToNodeError("readlink", e, path, options);
           }
         },
         symlink: async (target: string, path: string, type: any) => {
@@ -146,7 +164,7 @@ export class FsCache {
             FS.symlink(target, path);
             await newFs.promises.lstat(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, target, path, type);
+            throwWasiErrorToNodeError("symlink", e, target, path, type);
           }
         },
         chmod: async (path: string, mode: number) => {
@@ -155,7 +173,7 @@ export class FsCache {
             FS.chmod(path, mode);
             await newFs.promises.lstat(path);
           } catch (e) {
-            throwWasiErrorToNodeError(e, path, mode);
+            throwWasiErrorToNodeError("chmod", e, path, mode);
           }
         },
       },
@@ -164,7 +182,7 @@ export class FsCache {
     console.time(`Bring FS to memory - ${fsMountPoint}`);
     console.debug(`Bringing FS to memory - ${fsMountPoint}`);
     await initFs(fsMountPoint);
-    await restoreFs(newFs, fsMountPoint);
+    await restoreFs(fsMountPoint);
     console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
 
     return newFs;
@@ -187,7 +205,7 @@ export class FsCache {
         this.flushControl.set(fsMountPoint, {
           status: deinitArgs.deinit ? FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS : FlushStatus.FLUSH_IN_PROGRESS,
           operationPromise: this.flush(fs, fsMountPoint, deinitArgs).then(() => {
-            console.debug("Flush complete for " + fsMountPoint);
+            console.debug(`Flush complete for ${fsMountPoint}`);
             this.flushControl.delete(fsMountPoint);
           }),
         });
@@ -216,23 +234,23 @@ export class FsCache {
         clearTimeout(flushControl.scheduledTask);
         this.scheduleFlush(fs, fsMountPoint, deinitArgs);
       } else {
-        console.error("Flush requested while flush and deinit is in scheduled!!!! " + fsMountPoint);
+        console.error(`Flush requested while flush and deinit is in scheduled!!!! ${fsMountPoint}`);
       }
     }
     //
     else if (flushControl.status === FlushStatus.FLUSH_IN_PROGRESS) {
       if (deinitArgs.deinit) {
-        console.error("Flush and deinit requested while flush is in progress!!!! " + fsMountPoint);
+        console.error(`Flush and deinit requested while flush is in progress!!!! ${fsMountPoint}`);
       } else {
-        console.error("Flush requested while flush is in progress!!!! " + fsMountPoint);
+        console.error(`Flush requested while flush is in progress!!!! ${fsMountPoint}`);
       }
     }
     //
     else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
       if (deinitArgs.deinit) {
-        console.error("Flush and deinit requested while flush and deinit is in progress!!!! " + fsMountPoint);
+        console.error(`Flush and deinit requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
       } else {
-        console.error("Flush requested while flush and deinit is in progress!!!! " + fsMountPoint);
+        console.error(`Flush requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
       }
     }
     //
@@ -242,25 +260,28 @@ export class FsCache {
   }
 }
 
-async function syncfs(isRestore: boolean, fsMountPoint: string) {
+async function syncFs(isRestore: boolean, fsMountPoint: string) {
   await new Promise((res) => {
     try {
       IDBFS.syncfs({ mountpoint: fsMountPoint }, isRestore, res);
     } catch (e) {
       try {
-        throwWasiErrorToNodeError(e);
+        throwWasiErrorToNodeError(`Sync FS '${fsMountPoint}' (${isRestore})`, e);
       } catch (err) {
         console.error(err);
         throw err;
       }
     }
   });
-  await new Promise((res) => {
+}
+
+async function syncFsSchema(isRestore: boolean, fsMountPoint: string) {
+  return new Promise((res) => {
     try {
-      IDBFS.syncfs({ mountpoint: inosDir(fsMountPoint) }, isRestore, res);
+      IDBFS.syncfs({ mountpoint: fsSchemaDir(fsMountPoint) }, isRestore, res);
     } catch (e) {
       try {
-        throwWasiErrorToNodeError(e);
+        throwWasiErrorToNodeError(`Sync FS Schema '${fsMountPoint}' (${isRestore})`, e);
       } catch (err) {
         console.error(err);
         throw err;
@@ -269,17 +290,76 @@ async function syncfs(isRestore: boolean, fsMountPoint: string) {
   });
 }
 
-const encoder = new TextEncoder();
+//
+//
+//
+// fs schema
 
-export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
-  console.time("Flush FS - " + fsMountPoint);
-  console.debug("Flushing FS - " + fsMountPoint);
-  const inosToFlush = encoder.encode(JSON.stringify(Array.from(inos[fsMountPoint].entries())));
-  await fs.promises.writeFile(inosIndexJsonPath(fsMountPoint), inosToFlush, { encoding: "utf8" });
-  const ret = await syncfs(false, fsMountPoint);
-  console.timeEnd("Flush FS - " + fsMountPoint);
-  return ret;
+function initFsSchema(fsMountPoint: string) {
+  try {
+    FS.stat(fsSchemaDir(fsMountPoint));
+    console.debug(`FS Schema already initiated for ${fsMountPoint}`);
+  } catch (e) {
+    FS.mkdir(fsSchemaDir(fsMountPoint));
+    FS.mount(IDBFS, {}, fsSchemaDir(fsMountPoint));
+  }
 }
+
+function deinitFsSchema(fsMountPoint: string) {
+  delete fsSchemas[fsMountPoint];
+  FS.unmount(fsSchemaDir(fsMountPoint));
+  FS.rmdir(fsSchemaDir(fsMountPoint));
+}
+
+async function restoreFsSchema(fsMountPoint: string) {
+  await syncFsSchema(true, fsMountPoint);
+
+  if (fsSchemas[fsMountPoint]) {
+    console.debug(`FS Schema already restored for ${fsMountPoint}`);
+    return;
+  }
+
+  try {
+    const fsSchemaIndexJson = FS.readFile(fsSchemaJsonPath(fsMountPoint), toReadWriteFileOptions({ encoding: "utf8" }));
+    fsSchemas[fsMountPoint] = new Map(JSON.parse(fsSchemaIndexJson as string));
+  } catch (e) {
+    try {
+      throwWasiErrorToNodeError("Reading FS Schema index.json", e);
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        // If there's no index.json to read, it means that this is a new FS.
+        fsSchemas[fsMountPoint] = new Map();
+      } else {
+        throw err;
+      }
+    }
+  }
+}
+
+async function flushFsSchema(fsMountPoint: string) {
+  const fsSchemaToFlush = encoder.encode(JSON.stringify(Array.from(fsSchemas[fsMountPoint].entries())));
+
+  try {
+    FS.writeFile(fsSchemaJsonPath(fsMountPoint), fsSchemaToFlush, toReadWriteFileOptions({ encoding: "utf8" }));
+  } catch (e) {
+    throwWasiErrorToNodeError("Writing FS Schema index.json", e);
+  }
+
+  await syncFsSchema(false, fsMountPoint);
+}
+
+export function fsSchemaDir(fsMountPoint: string) {
+  return `${fsMountPoint}_inos`; // FIXME: Rename to _schema
+}
+
+function fsSchemaJsonPath(fsMountPoint: string) {
+  return join(fsSchemaDir(fsMountPoint), "index.json"); // FIXME: Rename to fsSchema.json
+}
+
+//
+//
+//
+// fs
 
 export async function initFs(fsMountPoint: string) {
   console.time(`Init FS - ${fsMountPoint}`);
@@ -287,11 +367,10 @@ export async function initFs(fsMountPoint: string) {
   try {
     FS.mkdir(fsMountPoint);
     FS.mount(IDBFS, {}, fsMountPoint);
-    FS.mkdir(inosDir(fsMountPoint));
-    FS.mount(IDBFS, {}, inosDir(fsMountPoint));
+    initFsSchema(fsMountPoint);
   } catch (e) {
     try {
-      throwWasiErrorToNodeError(e, fsMountPoint);
+      throwWasiErrorToNodeError(`Init FS ${fsMountPoint}`, e, fsMountPoint);
     } catch (err) {
       console.error(`Error initiating FS - ${fsMountPoint}`);
       console.error(err);
@@ -299,21 +378,18 @@ export async function initFs(fsMountPoint: string) {
   } finally {
     console.timeEnd(`Init FS - ${fsMountPoint}`);
   }
-  inos[fsMountPoint] = new Map();
 }
 
 export async function deinitFs(fsMountPoint: string) {
   console.debug(`Deinitiating FS - ${fsMountPoint}`);
   console.time(`Deinit FS - ${fsMountPoint}`);
-  delete inos[fsMountPoint];
   try {
-    FS.unmount(inosDir(fsMountPoint));
-    FS.rmdir(inosDir(fsMountPoint));
+    deinitFsSchema(fsMountPoint);
     FS.unmount(fsMountPoint);
     FS.rmdir(fsMountPoint);
   } catch (e) {
     try {
-      throwWasiErrorToNodeError(e, fsMountPoint);
+      throwWasiErrorToNodeError(`Deinit FS ${fsMountPoint}`, e, fsMountPoint);
     } catch (err) {
       console.error(`Error deinitiating FS - ${fsMountPoint}`);
       console.error(err);
@@ -323,27 +399,23 @@ export async function deinitFs(fsMountPoint: string) {
   }
 }
 
-export async function restoreFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
-  await syncfs(true, fsMountPoint);
-
-  let inosIndexJson;
-  try {
-    inosIndexJson = await fs.promises.readFile(inosIndexJsonPath(fsMountPoint), { encoding: "utf8" });
-  } catch (e) {
-    // ENOENT
-    inosIndexJson = "[]";
-  }
-
-  inos[fsMountPoint] = new Map(JSON.parse(inosIndexJson as string));
+export async function restoreFs(fsMountPoint: string) {
+  await syncFs(true, fsMountPoint);
+  await restoreFsSchema(fsMountPoint);
 }
 
-export function inosDir(fsMountPoint: string) {
-  return fsMountPoint + "_inos";
+export async function flushFs(fs: KieSandboxWorkspacesFs, fsMountPoint: string) {
+  console.time(`Flush FS - ${fsMountPoint}`);
+  console.debug(`Flushing FS - ${fsMountPoint}`);
+  await syncFs(false, fsMountPoint);
+  await flushFsSchema(fsMountPoint);
+  console.timeEnd(`Flush FS - ${fsMountPoint}`);
 }
 
-function inosIndexJsonPath(fsMountPoint: string) {
-  return inosDir(fsMountPoint) + "/index.json";
-}
+//
+//
+//
+// adaptations
 
 // Reference: https://github.com/isomorphic-git/lightning-fs#fswritefilefilepath-data-opts-cb
 function toReadWriteFileOptions(options: any) {
@@ -360,14 +432,14 @@ function toLfsStat(fsMountPoint: string, path: string, stat: any): LfsStat {
   // isomorphic-git expects that `ino` and `mode` never change once they are created,
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   // We need to persist an index containing the `ino`s and `mode`s for all files.
-  // Luckily this is very cheap to do, as long as we keep the `inos[fsMountPoint]` map up-to-date.
-  const perpetualStat = inos[fsMountPoint]
-    .set(path, inos[fsMountPoint].get(path) ?? { ino: stat.ino, mode: stat.mode })
+  // Luckily this is very cheap to do, as long as we keep the `fsSchema[fsMountPoint]` map up-to-date.
+  const perpetualStat = fsSchemas[fsMountPoint]
+    .set(path, fsSchemas[fsMountPoint].get(path) ?? { ino: stat.ino, mode: stat.mode })
     .get(path)!;
 
-  const isDir: boolean = FS.isDir(perpetualStat.mode);
-  const isFile: boolean = FS.isFile(perpetualStat.mode);
-  const isLink: boolean = FS.isLink(perpetualStat.mode);
+  const isDir = FS.isDir(perpetualStat.mode);
+  const isFile = FS.isFile(perpetualStat.mode);
+  const isLink = FS.isLink(perpetualStat.mode);
 
   return {
     mode: perpetualStat.mode,
@@ -385,19 +457,19 @@ function toLfsStat(fsMountPoint: string, path: string, stat: any): LfsStat {
 }
 
 // Reference: https://github.com/emscripten-core/emscripten/blob/main/system/include/wasi/api.h
-function throwWasiErrorToNodeError(e: any, ...args: any[]): never {
+function throwWasiErrorToNodeError(id: string, e: any, ...args: any[]): never {
   switch (e.errno) {
     case 20:
-      throw { code: "EEXIST", message: "EEXIST", args };
+      throw { id, code: "EEXIST", message: "EEXIST", args };
     case 44:
-      throw { code: "ENOENT", message: "ENOENT", args };
+      throw { id, code: "ENOENT", message: "ENOENT", args };
     case 54:
-      throw { code: "ENOTDIR", message: "ENOTDIR", args };
+      throw { id, code: "ENOTDIR", message: "ENOTDIR", args };
     case 55:
-      throw { code: "ENOTEMPTY", message: "ENOTEMPTY", args };
+      throw { id, code: "ENOTEMPTY", message: "ENOTEMPTY", args };
     case 73:
-      throw { code: "ETIMEDOUT", message: "ETIMEDOUT", args };
+      throw { id, code: "ETIMEDOUT", message: "ETIMEDOUT", args };
     default:
-      throw { e, code: "UNKNOWN", args };
+      throw { id, e, code: "UNKNOWN", args };
   }
 }

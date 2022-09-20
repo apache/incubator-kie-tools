@@ -16,7 +16,7 @@
 
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { BroadcasterDispatch, FsService } from "./FsService";
-import { inosDir } from "./FsCache";
+import { FsSchema, fsSchemaDir } from "./FsCache";
 
 export class WorkspaceFsService {
   constructor(private readonly fsService = new FsService()) {}
@@ -25,21 +25,25 @@ export class WorkspaceFsService {
     workspaceId: string,
     callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
-    return this.fsService.withReadWriteInMemoryFs(this.getMountPoint(workspaceId), callback);
+    return this.fsService.withReadWriteInMemoryFs(this.getFsMountPoint(workspaceId), callback);
   }
 
   public async withReadonlyInMemoryFs<T>(
     workspaceId: string,
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
-    return this.fsService.withReadonlyInMemoryFs(this.getMountPoint(workspaceId), callback);
+    return this.fsService.withReadonlyInMemoryFs(this.getFsMountPoint(workspaceId), callback);
   }
 
-  public getMountPoint(workspaceId: string) {
+  public async withReadonlyFsSchema<T>(workspaceId: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
+    return this.fsService.withReadonlyFsSchema(this.getFsMountPoint(workspaceId), callback);
+  }
+
+  public getFsMountPoint(workspaceId: string) {
     return `fs_v1__${workspaceId}`;
   }
 
-  public getInosMountPoint(workspaceId: string) {
-    return inosDir(this.getMountPoint(workspaceId));
+  public getFsSchemaMountPoint(workspaceId: string) {
+    return fsSchemaDir(this.getFsMountPoint(workspaceId));
   }
 }
