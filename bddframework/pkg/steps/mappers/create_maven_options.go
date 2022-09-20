@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v16"
 )
 
 const (
@@ -36,7 +36,7 @@ type MavenCommandConfig struct {
 }
 
 // MapMavenCommandConfigTable maps Cucumber table with Maven options to a slice
-func MapMavenCommandConfigTable(table *godog.Table, config *MavenCommandConfig) error {
+func MapMavenCommandConfigTable(table *messages.PickleTable, config *MavenCommandConfig) error {
 	if len(table.Rows) == 0 { // Using default configuration
 		return nil
 	}

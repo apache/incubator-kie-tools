@@ -17,8 +17,9 @@ package mappers
 import (
 	"fmt"
 
-	"github.com/cucumber/godog"
-	"github.com/kiegroup/kogito-operator/apis"
+	"github.com/cucumber/messages-go/v16"
+
+	api "github.com/kiegroup/kogito-operator/apis"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 )
 
@@ -30,7 +31,7 @@ const (
 )
 
 // MapKogitoInfraTable maps Cucumber table to KogitoInfra information
-func MapKogitoInfraTable(table *godog.Table, kogitoInfra api.KogitoInfraInterface) error {
+func MapKogitoInfraTable(table *messages.PickleTable, kogitoInfra api.KogitoInfraInterface) error {
 	for _, row := range table.Rows {
 		// Try to map configuration row to KogitoServiceHolder
 		_, err := mapKogitoInfraTableRow(row, kogitoInfra)

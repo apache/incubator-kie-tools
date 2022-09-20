@@ -26,6 +26,7 @@ import (
 
 	"github.com/cucumber/godog"
 	"github.com/cucumber/godog/colors"
+	"github.com/cucumber/messages-go/v16"
 	"github.com/kiegroup/kogito-operator/test/pkg/config"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/gherkin"
@@ -213,7 +214,7 @@ func initializeScenario(ctx *godog.ScenarioContext) {
 	}
 
 	// Scenario handlers
-	ctx.BeforeScenario(func(scenario *godog.Scenario) {
+	ctx.BeforeScenario(func(scenario *messages.Pickle) {
 		if err := data.BeforeScenario(scenario); err != nil {
 			framework.GetLogger(data.Namespace).Error(err, "Error in configuring data for before scenario")
 		}
@@ -269,13 +270,13 @@ func showScenarios(features []*gherkin.Feature, showSteps bool) {
 	mainLogger.Info("------------------ SHOW SCENARIOS ------------------")
 	for _, ft := range features {
 		// Placeholders in names are now replaced directly into names for each scenario
-		if len(ft.Scenarios) > 0 {
-			mainLogger.Info(fmt.Sprintf("Feature: %s", ft.Document.GetFeature().GetName()))
-			for _, scenario := range ft.Scenarios {
-				mainLogger.Info(fmt.Sprintf("    Scenario: %s", scenario.GetName()))
+		if len(ft.Pickles) > 0 {
+			mainLogger.Info(fmt.Sprintf("Feature: %s", ft.Document.Feature.Name))
+			for _, scenario := range ft.Pickles {
+				mainLogger.Info(fmt.Sprintf("    Scenario: %s", scenario.Name))
 				if showSteps {
 					for _, step := range scenario.Steps {
-						mainLogger.Info(fmt.Sprintf("        Step: %s", step.GetText()))
+						mainLogger.Info(fmt.Sprintf("        Step: %s", step.Text))
 					}
 				}
 			}

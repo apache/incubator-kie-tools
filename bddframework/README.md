@@ -81,7 +81,7 @@ In case you need to add a new Kogito example, which has not been handled yet int
 - Install Delve go module:
 
 ```sh
-go get -v github.com/go-delve/delve/cmd/dlv
+go install -v github.com/go-delve/delve/cmd/dlv@latest
 ```
 
 - Start the Delve process to launch our tests:

@@ -17,7 +17,8 @@ package mappers
 import (
 	"fmt"
 
-	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v16"
+
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 )
@@ -33,7 +34,7 @@ const (
 )
 
 // MapBuildResourceRequirementsTable maps Cucumber table of build resource requirements
-func MapBuildResourceRequirementsTable(table *godog.Table, build *v1.ResourceRequirements) error {
+func MapBuildResourceRequirementsTable(table *messages.PickleTable, build *v1.ResourceRequirements) error {
 	for _, row := range table.Rows {
 		mappingFound, err := mapBuildResourceRequirementsTableRow(row, build)
 		if !mappingFound {
@@ -66,7 +67,7 @@ func mapBuildResourceRequirementsTableRow(row *TableRow, build *v1.ResourceRequi
 }
 
 // MapRuntimeResourceRequirementsTable maps Cucumber table of runtime resource requirements
-func MapRuntimeResourceRequirementsTable(table *godog.Table, runtime *v1.ResourceRequirements) error {
+func MapRuntimeResourceRequirementsTable(table *messages.PickleTable, runtime *v1.ResourceRequirements) error {
 	for _, row := range table.Rows {
 		mappingFound, err := mapRuntimeResourceRequirementsTableRow(row, runtime)
 		if !mappingFound {

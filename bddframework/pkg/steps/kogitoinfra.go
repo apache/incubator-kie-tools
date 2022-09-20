@@ -16,7 +16,7 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
-	"github.com/cucumber/messages-go/v10"
+	"github.com/cucumber/messages-go/v16"
 	"github.com/kiegroup/kogito-operator/test/pkg/framework"
 	"github.com/kiegroup/kogito-operator/test/pkg/steps/mappers"
 )
@@ -32,7 +32,7 @@ func registerKogitoInfraSteps(ctx *godog.ScenarioContext, data *Data) {
 }
 
 func (data *Data) installKogitoInfraTargetingServiceWithinMinutes(targetResourceType, name, targetResourceName string, timeoutInMin int) error {
-	return data.installKogitoInfraTargetingServiceWithinMinutesWithConfiguration(targetResourceType, name, targetResourceName, timeoutInMin, &messages.PickleStepArgument_PickleTable{})
+	return data.installKogitoInfraTargetingServiceWithinMinutesWithConfiguration(targetResourceType, name, targetResourceName, timeoutInMin, &messages.PickleTable{})
 }
 
 func (data *Data) installKogitoInfraTargetingServiceWithinMinutesWithConfiguration(targetResourceType, name, targetResourceName string, timeoutInMin int, table *godog.Table) error {

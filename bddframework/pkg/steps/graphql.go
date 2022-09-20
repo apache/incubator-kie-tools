@@ -44,7 +44,7 @@ func (data *Data) graphqlRequestOnServiceIsSuccessfulWithinMinutesWithPathAndQue
 		return err
 	}
 	var response interface{}
-	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, uri, path, query.GetContent(), timeoutInMin, response, nil)
+	return framework.WaitForSuccessfulGraphQLRequest(data.Namespace, uri, path, query.Content, timeoutInMin, response, nil)
 }
 
 func (data *Data) graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinutesWithPathAndQuery(serviceName, accessToken string, timeoutInMin int, path string, query *godog.DocString) error {
@@ -55,7 +55,7 @@ func (data *Data) graphqlRequestOnServiceIsSuccessfulUsingAccessTokenWithinMinut
 		return err
 	}
 	var response interface{}
-	return framework.WaitForSuccessfulGraphQLRequestUsingAccessToken(data.Namespace, uri, path, query.GetContent(), accessToken, timeoutInMin, response, nil)
+	return framework.WaitForSuccessfulGraphQLRequestUsingAccessToken(data.Namespace, uri, path, query.Content, accessToken, timeoutInMin, response, nil)
 }
 
 func (data *Data) graphqlRequestOnDataIndexReturnsProcessInstancesProcessNameWithinMinutes(processName string, timeoutInMin int) error {

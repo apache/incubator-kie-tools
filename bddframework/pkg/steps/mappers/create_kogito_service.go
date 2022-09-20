@@ -17,7 +17,8 @@ package mappers
 import (
 	"fmt"
 
-	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v16"
+
 	"github.com/kiegroup/kogito-operator/test/pkg/types"
 	bddtypes "github.com/kiegroup/kogito-operator/test/pkg/types"
 )
@@ -40,7 +41,7 @@ const (
 )
 
 // MapKogitoServiceTable maps Cucumber table to KogitoServiceHolder
-func MapKogitoServiceTable(table *godog.Table, serviceHolder *types.KogitoServiceHolder) error {
+func MapKogitoServiceTable(table *messages.PickleTable, serviceHolder *types.KogitoServiceHolder) error {
 	for _, row := range table.Rows {
 		// Try to map configuration row to KogitoServiceHolder
 		_, err := MapKogitoServiceTableRow(row, serviceHolder)

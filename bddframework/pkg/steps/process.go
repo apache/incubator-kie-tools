@@ -36,8 +36,8 @@ func (data *Data) startProcessOnService(processName, serviceName string, body *g
 		return err
 	}
 
-	bodyContent := data.ResolveWithScenarioContext(body.GetContent())
-	err = framework.StartProcess(data.Namespace, uri, processName, body.GetMediaType(), bodyContent)
+	bodyContent := data.ResolveWithScenarioContext(body.Content)
+	err = framework.StartProcess(data.Namespace, uri, processName, body.MediaType, bodyContent)
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,7 @@ func (data *Data) startProcessOnServiceWithinMinutes(processName, serviceName st
 
 	return framework.WaitForOnOpenshift(data.Namespace, fmt.Sprintf("Service %s is not available yet", serviceName), timeoutInMin,
 		func() (bool, error) {
-			err = framework.StartProcess(data.Namespace, uri, processName, body.GetMediaType(), body.GetContent())
+			err = framework.StartProcess(data.Namespace, uri, processName, body.MediaType, body.Content)
 			if err != nil {
 				return false, err
 			}

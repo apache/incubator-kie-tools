@@ -101,7 +101,7 @@ func getPostgresqlDeploymentResource(namespace, name string, nbPods int, usernam
 								TimeoutSeconds:      5,
 								SuccessThreshold:    1,
 								FailureThreshold:    6,
-								Handler: v1.Handler{
+								ProbeHandler: v1.ProbeHandler{
 									Exec: &v1.ExecAction{
 										Command: []string{"bash", "-ec", "PGPASSWORD=$POSTGRES_PASSWORD psql -w -U '" + username + "' -d '" + databaseName + "'  -h 127.0.0.1 -c 'SELECT 1'"},
 									},
@@ -113,7 +113,7 @@ func getPostgresqlDeploymentResource(namespace, name string, nbPods int, usernam
 								TimeoutSeconds:      5,
 								SuccessThreshold:    1,
 								FailureThreshold:    6,
-								Handler: v1.Handler{
+								ProbeHandler: v1.ProbeHandler{
 									Exec: &v1.ExecAction{
 										Command: []string{"bash", "-ec", "PGPASSWORD=$POSTGRES_PASSWORD psql -w -U '" + username + "' -d '" + databaseName + "'  -h 127.0.0.1 -c 'SELECT 1'"},
 									},

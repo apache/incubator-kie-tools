@@ -17,11 +17,11 @@ package mappers
 import (
 	"fmt"
 
-	"github.com/cucumber/messages-go/v10"
+	"github.com/cucumber/messages-go/v16"
 )
 
 // TableRow represents a row of godog.Table made to a step definition
-type TableRow = messages.PickleStepArgument_PickleTable_PickleTableRow
+type TableRow = messages.PickleTableRow
 
 const (
 	enabledKey  = "enabled"

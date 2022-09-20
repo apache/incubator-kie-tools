@@ -80,7 +80,7 @@ func retrieveMavenBuildScenarios(features []*gherkin.Feature) (map[string][]*mav
 	re := regexp.MustCompile("^" + steps.DefaultMavenBuiltExampleRegex + " and deployed to runtime registry.*$")
 	var mavenBuildScenarioMap = make(map[string][]*mavenBuildScenario)
 	for _, ft := range features {
-		for _, scenario := range ft.Scenarios {
+		for _, scenario := range ft.Pickles {
 			for _, step := range scenario.Steps {
 				if re.MatchString(step.Text) {
 					exampleName := re.FindStringSubmatch(step.Text)[1]
@@ -112,9 +112,9 @@ func retrieveMavenBuildScenarios(features []*gherkin.Feature) (map[string][]*mav
 func getBuildMavenScenarioName(exampleName string, step *godog.Step) (string, error) {
 	scenarioName := fmt.Sprintf("Build %s image", exampleName)
 	mavenConfig := &mappers.MavenCommandConfig{}
-	if step.GetArgument() != nil &&
-		step.GetArgument().GetDataTable() != nil {
-		if err := mappers.MapMavenCommandConfigTable(step.GetArgument().GetDataTable(), mavenConfig); err != nil {
+	if step.Argument != nil &&
+		step.Argument.DataTable != nil {
+		if err := mappers.MapMavenCommandConfigTable(step.Argument.DataTable, mavenConfig); err != nil {
 			return "", err
 		}
 	}
@@ -145,9 +145,9 @@ func writeMavenBuildFeatures(outputFolder string, mavenBuildScenarioMap map[stri
 		for _, buildScenario := range mavenBuildScenarioMap[exampleName] {
 			featureFileContent += fmt.Sprintf("  Scenario: %s\n", buildScenario.name)
 			featureFileContent += fmt.Sprintf("    Then %s\n", buildScenario.step.Text)
-			if buildScenario.step.GetArgument() != nil &&
-				buildScenario.step.GetArgument().GetDataTable() != nil {
-				for _, row := range buildScenario.step.GetArgument().GetDataTable().Rows {
+			if buildScenario.step.Argument != nil &&
+				buildScenario.step.Argument.DataTable != nil {
+				for _, row := range buildScenario.step.Argument.DataTable.Rows {
 					rowContent := "| "
 					for _, cell := range row.Cells {
 						rowContent += fmt.Sprintf("%s | ", cell.Value)

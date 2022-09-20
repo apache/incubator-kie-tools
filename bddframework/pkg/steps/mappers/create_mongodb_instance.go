@@ -17,7 +17,7 @@ package mappers
 import (
 	"fmt"
 
-	"github.com/cucumber/godog"
+	"github.com/cucumber/messages-go/v16"
 )
 
 // *** Whenever you add new parsing functionality here please add corresponding DataTable example to every file in steps which can use the functionality ***
@@ -39,7 +39,7 @@ type MongoDBCredentialsConfig struct {
 }
 
 // MapMongoDBCredentialsFromTable maps Cucumber table to MongoDB credentials
-func MapMongoDBCredentialsFromTable(table *godog.Table, creds *MongoDBCredentialsConfig) error {
+func MapMongoDBCredentialsFromTable(table *messages.PickleTable, creds *MongoDBCredentialsConfig) error {
 	if len(table.Rows) == 0 { // Using default configuration
 		return nil
 	}
