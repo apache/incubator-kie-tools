@@ -43,7 +43,7 @@ STRING_TEST_PARAMS+=(custom_maven_repo_url maven_mirror_url quarkus_platform_mav
 BOOLEAN_TEST_PARAMS+=(examples_ignore_ssl)
 STRING_TEST_PARAMS+=(examples_uri examples_ref)
 
-# Infinispan
+# Infinispanecho "Read default config"
 STRING_TEST_PARAMS+=(infinispan_installation_source infinispan_storage_class)
 
 # Hyperfoil
@@ -362,6 +362,8 @@ done
 # load test default config options if not set already
 if [ "${LOAD_DEFAULT_CONFIG}" = "true" ]; then
   echo "Load default test config"
+  pwd
+  cat "${SCRIPT_DIR}/../test/.default_config"
   while IFS="=" read -r key value
   do
     if [[ $PARAMS != *"${key}"* ]]; then

@@ -33,7 +33,7 @@ teardown() {
 
     testConfigFile=$(cat ${TEST_CONFIG_FILE})
     
-    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:latest" ]]
+    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-s2i-builder-nightly:latest" ]]
     [[ "${testConfigFile}" =~ "tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:latest" ]]
     [[ "${testConfigFile}" =~ "tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:latest" ]]
     [[ "${testConfigFile}" =~ "tests.services_image_version=latest" ]]
@@ -53,7 +53,7 @@ teardown() {
     [ "$status" -eq 0 ]
 
     testConfigFile=$(cat ${TEST_CONFIG_FILE})
-    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-s2i-builder-nightly:${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.services_image_version=${VERSION_MAJOR_MINOR}" ]]
@@ -77,7 +77,7 @@ teardown() {
     [ "$status" -eq 0 ]
 
     testConfigFile=$(cat ${TEST_CONFIG_FILE})
-    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-builder-nightly:${VERSION_MAJOR_MINOR}" ]]
+    [[ "${testConfigFile}" =~ "tests.build_builder_image_tag=quay.io/kiegroup/kogito-s2i-builder-nightly:${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.build_runtime_jvm_image_tag=quay.io/kiegroup/kogito-runtime-jvm-nightly:${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.build_runtime_native_image_tag=quay.io/kiegroup/kogito-runtime-native-nightly:${VERSION_MAJOR_MINOR}" ]]
     [[ "${testConfigFile}" =~ "tests.services_image_version=${VERSION_MAJOR_MINOR}" ]]
