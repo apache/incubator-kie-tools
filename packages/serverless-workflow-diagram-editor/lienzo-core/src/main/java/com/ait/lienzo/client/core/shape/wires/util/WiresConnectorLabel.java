@@ -31,6 +31,7 @@ public class WiresConnectorLabel implements IDestroyable {
     private String rectangleColor = "";
     private int rectangleOverOffsetX = 6;
     private int rectangleOverOffsetY = 6;
+    private boolean stopAtNCharacters = false;
     private int maxChars = 15;
 
     private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = event -> {
@@ -144,7 +145,7 @@ public class WiresConnectorLabel implements IDestroyable {
                 if (!isMouseOver && needsWrapping) { // calculate minimum string
                     isWrapped = true;
                     fullText = text.getText();
-                    if (fullText.length() > maxChars) { // aprox 150 pixels
+                    if (stopAtNCharacters && fullText.length() > maxChars) { // aprox 150 pixels
                         fullText = fullText.substring(0, maxChars);
                     }
                     minText = calculateMinimumText(fullText, text, maxWidth);
