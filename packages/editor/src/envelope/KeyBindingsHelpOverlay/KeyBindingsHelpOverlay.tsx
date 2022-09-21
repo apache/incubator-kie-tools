@@ -84,6 +84,7 @@ export function KeyBindingsHelpOverlay() {
       <div
         onClick={() => setShowing(!showing)}
         className={"kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"}
+        data-ouia-component-id="keyboard-shortcuts-icon"
         data-testid={"keyboard-shortcuts-help-overlay-icon"}
       >
         <KeyboardIcon />

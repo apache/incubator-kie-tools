@@ -9,6 +9,7 @@ exports[`KeyBindingsHelpOverlay minimal setup 1`] = `
   >
     <div
       class="kie-tools--keyboard-shortcuts kie-tools--keyboard-shortcuts-icon"
+      data-ouia-component-id="keyboard-shortcuts-icon"
       data-testid="keyboard-shortcuts-help-overlay-icon"
     >
       <svg
