@@ -33,8 +33,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*",
-    "@patternfly/react-core": "^4.157.3"
+    "@kie-tools/kie-bc-editors": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

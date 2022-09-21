@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-// import "@patternfly/react-core/dist/styles/base.css";
-
 export * from "./ServerlessWorkflowDiagramEditor";
 export * from "./ServerlessWorkflowDiagramEditorFactory";
 export * from "./ServerlessWorkflowDiagramEditorEnvelopeApiImpl";
