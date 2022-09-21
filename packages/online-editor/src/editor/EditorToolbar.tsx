@@ -50,7 +50,7 @@ import { EmbedModal } from "./EmbedModal";
 import { Alerts, AlertsController, useAlert } from "../alerts/Alerts";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useWorkspaces, WorkspaceFile } from "../workspace/WorkspacesContext";
-import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
+import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { FolderIcon } from "@patternfly/react-icons/dist/js/icons/folder-icon";
 import { ImageIcon } from "@patternfly/react-icons/dist/js/icons/image-icon";
 import { DownloadIcon } from "@patternfly/react-icons/dist/js/icons/download-icon";
@@ -64,7 +64,8 @@ import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
 import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { FileLabel } from "../workspace/components/FileLabel";
 import { useWorkspacePromise } from "../workspace/hooks/WorkspaceHooks";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+import { OutlinedHddIcon } from "@patternfly/react-icons/dist/js/icons/outlined-hdd-icon";
+import { DesktopIcon } from "@patternfly/react-icons/dist/js/icons/desktop-icon";
 import { FileSwitcher } from "./FileSwitcher";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { KieSandboxExtendedServicesDropdownGroup } from "./KieSandboxExtendedServices/KieSandboxExtendedServicesDropdownGroup";
@@ -93,6 +94,7 @@ import { useCancelableEffect } from "../reactExt/Hooks";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
 import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -1337,7 +1339,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       style={{ fontStyle: "italic" }}
                     />
                   </div>
-                  {/*<WorkspaceStatusIndicator workspace={workspace} />*/}
+                  <WorkspaceStatusIndicator workspace={workspace} />
                 </FlexItem>
                 {/*<Divider inset={{ default: "insetMd" }} isVertical={true} />*/}
                 {workspace.descriptor.origin.kind === WorkspaceKind.GIT &&
@@ -1427,39 +1429,70 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       <FileSwitcher workspace={workspace} workspaceFile={props.workspaceFile} />
                     </FlexItem>
                     <FlexItem>
-                      {(!isSaved && (
-                        <Tooltip content={"Saving file..."} position={"bottom"}>
+                      {(isEdited && (
+                        <Tooltip content={"Saving in memory..."} position={"bottom"}>
                           <TextContent
                             style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                           >
                             <Text
-                              aria-label={"Saving file..."}
-                              data-testid="is-saving-indicator"
+                              aria-label={"Saving in memory..."}
+                              data-testid="is-saving-in-memory-indicator"
                               component={TextVariants.small}
                             >
                               <span>
-                                <SyncIcon size={"sm"} />
+                                <OutlinedClockIcon size={"sm"} />
                               </span>
                             </Text>
                           </TextContent>
                         </Tooltip>
                       )) || (
-                        <Tooltip content={"File is saved"} position={"bottom"}>
+                        <Tooltip content={"File is in memory."} position={"bottom"}>
                           <TextContent
                             style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
                           >
                             <Text
-                              aria-label={"File is saved"}
-                              data-testid="is-saved-indicator"
+                              aria-label={"File is in memory."}
+                              data-testid="is-saved-in-memory-indicator"
                               component={TextVariants.small}
                             >
                               <span>
-                                <CheckCircleIcon size={"sm"} />
+                                <DesktopIcon size={"sm"} />
                               </span>
-                              <ToolbarItem visibility={hideWhenTiny} style={{ display: "inline" }}>
-                                &nbsp;
-                                <span>Saved</span>
-                              </ToolbarItem>
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      )}
+                    </FlexItem>
+                    <FlexItem>
+                      {(!isSaved && (
+                        <Tooltip content={"Writing file..."} position={"bottom"}>
+                          <TextContent
+                            style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
+                          >
+                            <Text
+                              aria-label={"Writing file..."}
+                              data-testid="is-writing-indicator"
+                              component={TextVariants.small}
+                            >
+                              <span>
+                                <OutlinedClockIcon size={"sm"} />
+                              </span>
+                            </Text>
+                          </TextContent>
+                        </Tooltip>
+                      )) || (
+                        <Tooltip content={"File is written on disk."} position={"bottom"}>
+                          <TextContent
+                            style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
+                          >
+                            <Text
+                              aria-label={"File is written on disk."}
+                              data-testid="is-written-indicator"
+                              component={TextVariants.small}
+                            >
+                              <span>
+                                <OutlinedHddIcon size={"sm"} />
+                              </span>
                             </Text>
                           </TextContent>
                         </Tooltip>

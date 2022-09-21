@@ -19,7 +19,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
-import { FsFlushManager } from "./FsFlushManager";
+import { FlushStatus, FsFlushManager } from "./FsFlushManager";
 
 export interface BroadcasterWatchEvent {
   channel: string;
@@ -49,23 +49,83 @@ export class Broadcaster implements BroadcasterDispatch {
 }
 
 export class FsService {
-  constructor(private readonly fsFlushManager: FsFlushManager, private readonly fsCache = new FsCache()) {}
+  constructor(
+    private readonly args: { name: string; debounceFlushes: boolean },
+    private readonly fsFlushManager: FsFlushManager,
+    private readonly fsCache = new FsCache()
+  ) {}
+
+  private readonly readWriteFsUsageCounter = new Map<string, number>();
+
+  private readonly bigFsDebounceTimeoutInMs = 2000;
+  private readonly bigFsSizeInEntryCount = 1000;
+
+  public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
+    await this.awaitIfDeinitInProgress(fsMountPoint);
+    const fsSchema = await this.fsCache.getOrCreateFsSchema(fsMountPoint);
+    return await callback({ fsSchema });
+  }
 
   public async withReadWriteInMemoryFs<T>(
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
+    // If there's a `deinit` in progress, there's nothing much we can do other than wait for it to finish
+    // and request a new FS again.
+    await this.awaitIfDeinitInProgress(fsMountPoint);
+
+    // Count this usage in. 1 if that's the first time.
+    this.readWriteFsUsageCounter.set(fsMountPoint, (this.readWriteFsUsageCounter.get(fsMountPoint) ?? 0) + 1);
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
-    const callbackResult = await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
 
-    await this.fsFlushManager.requestFsFlush(this.fsCache, fsMountPoint, { deinit: false });
+    try {
+      // If there's a flush scheduled, no need to keep it there, as we'll schedule one right after using the FS.
+      this.fsFlushManager.descheduleFlush(fsMountPoint);
+      return await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
+    } finally {
+      // At this point, we still have our 'self' usage included in the shared counter.
+      const countWithSelf = this.readWriteFsUsageCounter.get(fsMountPoint);
+      if (!countWithSelf || countWithSelf < 1) {
+        console.error(
+          `[${this.args.name}] Catastrophic error after using FS for ${fsMountPoint}. Something very bad happened.`
+        );
+      }
 
-    return callbackResult;
+      // Phew!! Nothing to worry about, everything according to the plan.
+      else {
+        const countWithoutSelf = countWithSelf - 1;
+
+        // And remove our 'self' usage from the shared counter.
+        this.readWriteFsUsageCounter.set(fsMountPoint, countWithoutSelf);
+
+        // Without our 'self' usage, if there's still someone using the FS, we let them request the flush when they're done.
+        if (countWithoutSelf > 0) {
+          console.log(
+            `[${this.args.name}] Skipping flush as another usage of FS will do it. (${countWithoutSelf} more  before flushing)`
+          );
+        }
+
+        // If this usage is the last one using the FS, it's its job to request the flush.
+        else {
+          await this.fsFlushManager.requestFsFlush(
+            this.fsCache,
+            fsMountPoint,
+            { deinit: false },
+            { debounceTimeoutInMs: await this.getDebounceTimeoutInMs(fsMountPoint) }
+          );
+        }
+      }
+    }
   }
 
-  public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
-    const fsSchema = await this.fsCache.getOrCreateFsSchema(fsMountPoint);
-    return await callback({ fsSchema });
+  private async getDebounceTimeoutInMs(fsMountPoint: string) {
+    if (!this.args.debounceFlushes) {
+      return 0;
+    } else if ((await this.fsCache.getOrCreateFsSchema(fsMountPoint)).size > this.bigFsSizeInEntryCount) {
+      return this.bigFsDebounceTimeoutInMs;
+    } else {
+      return 0;
+    }
   }
 
   public async withReadonlyInMemoryFs<T>(
@@ -73,9 +133,10 @@ export class FsService {
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
     const throwCantMutateReadonlyFsException = async () => {
-      throw new Error(`Can't mutate read-only FS - ${fsMountPoint}`);
+      throw new Error(`[${this.args.name}] Can't mutate read-only FS - ${fsMountPoint}`);
     };
 
+    await this.awaitIfDeinitInProgress(fsMountPoint);
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
 
     return await callback({
@@ -106,5 +167,13 @@ export class FsService {
         },
       },
     });
+  }
+
+  private async awaitIfDeinitInProgress(fsMountPoint: string) {
+    const fsFlushControl = this.fsFlushManager.control.get(fsMountPoint);
+    if (fsFlushControl?.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
+      console.info(`[${this.args.name}] FS requested while deinit is in progress ${fsMountPoint}. Awaiting.`);
+      await fsFlushControl.operationPromise;
+    }
   }
 }
