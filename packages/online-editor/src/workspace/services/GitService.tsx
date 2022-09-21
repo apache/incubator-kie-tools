@@ -270,12 +270,18 @@ export class GitService {
     return status !== "unmodified";
   }
 
-  async hasLocalChanges(args: { fs: KieSandboxWorkspacesFs; dir: string }) {
+  async hasLocalChanges(args: { fs: KieSandboxWorkspacesFs; dir: string; exclude: (filepath: string) => boolean }) {
     const files = await this.unstagedModifiedFileRelativePaths(args);
     return files.length > 0;
   }
 
-  public async unstagedModifiedFileRelativePaths(args: { fs: KieSandboxWorkspacesFs; dir: string }): Promise<string[]> {
+  public async unstagedModifiedFileRelativePaths(args: {
+    fs: KieSandboxWorkspacesFs;
+    dir: string;
+    exclude: (filepath: string) => boolean;
+  }): Promise<string[]> {
+    const now = Date.now();
+    console.time(`${now}: hasLocalChanges`);
     const pseudoStatusMatrix = await git.walk({
       fs: args.fs,
       dir: args.dir,
@@ -289,6 +295,8 @@ export class GitService {
         if (filepath.startsWith(".git")) {
           return null;
         }
+
+        if (args.exclude(filepath)) return;
 
         // For now, just bail on directories
         const workdirType = workdir && (await workdir.type());
@@ -318,7 +326,9 @@ export class GitService {
     const _WORKDIR = 2;
     const _STAGE = 3;
     const _FILE = 0;
-    return pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+    const ret = pseudoStatusMatrix.filter((row: any) => row[_WORKDIR] !== row[_STAGE]).map((row: any) => row[_FILE]);
+    console.timeEnd(`${now}: hasLocalChanges`);
+    return ret;
   }
 
   public async resolveRef(args: { fs: KieSandboxWorkspacesFs; dir: string; ref: string }) {

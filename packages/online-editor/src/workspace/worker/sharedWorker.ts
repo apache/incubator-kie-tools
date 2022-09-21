@@ -103,6 +103,10 @@ const createWorkspace = async (args: {
   };
 };
 
+function isEditable(filepath: string) {
+  return editorEnvelopeLocator.hasMappingFor(filepath);
+}
+
 const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
   const impl: WorkspacesWorkerApi = {
     async kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
@@ -365,6 +369,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         const fileRelativePaths = await gitService.unstagedModifiedFileRelativePaths({
           fs,
           dir: workspaceRootDirPath,
+          exclude: (filepath) => !isEditable(filepath),
         });
 
         if (fileRelativePaths.length === 0) {
@@ -566,6 +571,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         return gitService.hasLocalChanges({
           fs: fs,
           dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
+          exclude: (filepath) => !isEditable(filepath),
         });
       });
     },

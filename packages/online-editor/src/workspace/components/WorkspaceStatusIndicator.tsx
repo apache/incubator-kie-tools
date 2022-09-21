@@ -22,7 +22,7 @@ import { WorkspaceKind } from "../worker/api/WorkspaceOrigin";
 import { PromiseStateWrapper } from "../hooks/PromiseState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
+import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { usePrevious } from "../../reactExt/Hooks";
@@ -135,7 +135,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
             <Title headingLevel={"h6"} style={{ display: "inline", padding: "10px", cursor: "default" }}>
               <Tooltip content={"Checking status..."} position={"right"}>
                 <small>
-                  <SyncIcon color={"gray"} />
+                  <OutlinedClockIcon color={"gray"} />
                 </small>
               </Tooltip>
             </Title>
