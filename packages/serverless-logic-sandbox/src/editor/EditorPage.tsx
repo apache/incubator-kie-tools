@@ -41,7 +41,6 @@ import { useSettingsDispatch } from "../settings/SettingsContext";
 import { PromiseStateWrapper } from "../workspace/hooks/PromiseState";
 import { useWorkspaceFilePromise } from "../workspace/hooks/WorkspaceFileHooks";
 import { useWorkspaces } from "../workspace/WorkspacesContext";
-import { SandboxSwfJsonLanguageService } from "./api/SandboxSwfJsonLanguageService";
 import { SwfLanguageServiceChannelApiImpl } from "./api/SwfLanguageServiceChannelApiImpl";
 import { SwfServiceCatalogChannelApiImpl } from "./api/SwfServiceCatalogChannelApiImpl";
 import { EditorPageDockDrawer, EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
@@ -55,7 +54,7 @@ import {
   SwfCombinedEditorChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
-import { SandboxSwfYamlLanguageService } from "./api/SandboxSwfYamlLanguageService";
+import { SandboxSwfLanguageService } from "./api/SandboxSwfLanguageService";
 
 export interface Props {
   workspaceId: string;
@@ -166,16 +165,6 @@ export function EditorPage(props: Props) {
     editor?.getStateControl().setSavedCommand();
   }, [workspaces, editor, workspaceFilePromise]);
 
-  const isSwfJson = useMemo(
-    () => workspaceFilePromise.data && isServerlessWorkflowJson(workspaceFilePromise.data.name),
-    [workspaceFilePromise.data]
-  );
-
-  const isSwfYaml = useMemo(
-    () => workspaceFilePromise.data && isServerlessWorkflowYaml(workspaceFilePromise.data.name),
-    [workspaceFilePromise.data]
-  );
-
   const isSwf = useMemo(
     () => workspaceFilePromise.data && isServerlessWorkflow(workspaceFilePromise.data.name),
     [workspaceFilePromise.data]
@@ -228,13 +217,12 @@ export function EditorPage(props: Props) {
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
   const swfLanguageService = useMemo(() => {
-    if (isSwfYaml) {
-      return new SandboxSwfYamlLanguageService(settingsDispatch.serviceRegistry.catalogStore);
-    } else if (isSwfJson) {
-      return new SandboxSwfJsonLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+    const sandboxSwfLanguageService = new SandboxSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+
+    if (workspaceFilePromise.data) {
+      return sandboxSwfLanguageService.getLs(workspaceFilePromise.data.relativePath);
     }
-    return;
-  }, [isSwfJson, isSwfYaml, settingsDispatch.serviceRegistry.catalogStore]);
+  }, [workspaceFilePromise.data, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageServiceChannelApiImpl = useMemo(
     () => swfLanguageService && new SwfLanguageServiceChannelApiImpl(swfLanguageService),
