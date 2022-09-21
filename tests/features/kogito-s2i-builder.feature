@@ -109,7 +109,7 @@ Feature: kogito-s2i-builder image tests
       | port                  | 8080                          |
       | path                  | /                             |
       | wait                  | 80                            |
-      | expected_status_code  | 200                           |
+      | expected_status_code  | 202                           |
       | request_method        | POST                          |
       | content_type          | application/cloudevents+json  |
       | request_body          | {"specversion": "1.0", "datacontenttype": "application/json", "source": "behave", "type": "orderEvent", "id": "12345", "data": {"id":"f0643c68-609c-48aa-a820-5df423fa4fe0","country":"Brazil","total":10000,"description":"iPhone 12"}}|
