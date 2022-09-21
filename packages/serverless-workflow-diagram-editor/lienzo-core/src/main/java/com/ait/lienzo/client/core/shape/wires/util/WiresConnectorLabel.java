@@ -22,7 +22,7 @@ public class WiresConnectorLabel implements IDestroyable {
     private final HandlerRegistrationManager m_registrationManager;
     private final Text text;
     private final BiConsumer<WiresConnector, Text> executor;
-    int maxWidth = 100;
+    private int maxWidth = 100;
     private String fullText = "";
     private String minText = "";
     private boolean isMouseOver = false;
@@ -31,6 +31,7 @@ public class WiresConnectorLabel implements IDestroyable {
     private String rectangleColor = "";
     private int rectangleOverOffsetX = 6;
     private int rectangleOverOffsetY = 6;
+    private int maxChars = 15;
 
     private final WiresConnectorPointsChangedHandler pointsUpdatedHandler = event -> {
         if (isVisible()) {
@@ -143,6 +144,9 @@ public class WiresConnectorLabel implements IDestroyable {
                 if (!isMouseOver && needsWrapping) { // calculate minimum string
                     isWrapped = true;
                     fullText = text.getText();
+                    if (fullText.length() > maxChars) { // aprox 150 pixels
+                        fullText = fullText.substring(0, maxChars);
+                    }
                     minText = calculateMinimumText(fullText, text, maxWidth);
                 }
 
@@ -190,6 +194,7 @@ public class WiresConnectorLabel implements IDestroyable {
             String substring = fullText.substring(0, i);
             text.setText(substring);
             BoundingBox bb2 = text.getBoundingBox();
+
             if (bb2.getWidth() <= maxWidth) {
                 return substring;
             }
