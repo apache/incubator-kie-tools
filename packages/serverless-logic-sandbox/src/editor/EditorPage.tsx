@@ -31,7 +31,7 @@ import { useHistory } from "react-router";
 import { AlertsController } from "../alerts/Alerts";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
-import { isSandboxAsset, isServerlessWorkflowJson, isServerlessWorkflowYaml } from "../extension";
+import { isSandboxAsset, isServerlessWorkflow, isServerlessWorkflowJson, isServerlessWorkflowYaml } from "../extension";
 import { useAppI18n } from "../i18n";
 import { useRoutes } from "../navigation/Hooks";
 import { OnlineEditorPage } from "../pageTemplate/OnlineEditorPage";
@@ -176,6 +176,11 @@ export function EditorPage(props: Props) {
     [workspaceFilePromise.data]
   );
 
+  const isSwf = useMemo(
+    () => workspaceFilePromise.data && isServerlessWorkflow(workspaceFilePromise.data.name),
+    [workspaceFilePromise.data]
+  );
+
   useStateControlSubscription(
     editor,
     useCallback(
@@ -188,7 +193,7 @@ export function EditorPage(props: Props) {
       },
       [saveContent]
     ),
-    { throttle: (isSwfJson || isSwfYaml) && swfFeatureToggle.stunnerEnabled ? 400 : 200 }
+    { throttle: isSwf && swfFeatureToggle.stunnerEnabled ? 400 : 200 }
   );
 
   useEffect(() => {
@@ -249,12 +254,7 @@ export function EditorPage(props: Props) {
   );
 
   useEffect(() => {
-    if (
-      embeddedEditorFile &&
-      !isServerlessWorkflowJson(embeddedEditorFile.path || "") &&
-      !isServerlessWorkflowYaml(embeddedEditorFile.path || "") &&
-      !isReady
-    ) {
+    if (embeddedEditorFile && !isServerlessWorkflow(embeddedEditorFile.path || "") && !isReady) {
       setReady(true);
     }
   }, [embeddedEditorFile, isReady, settingsDispatch.serviceRegistry.catalogStore, virtualServiceRegistry]);
