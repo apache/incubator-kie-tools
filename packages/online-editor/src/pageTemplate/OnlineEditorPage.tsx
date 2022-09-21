@@ -31,9 +31,6 @@ import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
 export function OnlineEditorPage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const routes = useRoutes();
-  const [flushes, setFlushes] = useSharedValue(
-    workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes
-  );
 
   return (
     <Page
@@ -82,8 +79,6 @@ export function OnlineEditorPage(props: { children?: React.ReactNode }) {
         </Masthead>
       }
     >
-      {(flushes?.length ?? 0) > 0 && `flushes: ${flushes?.join(", ")}`}
-      {(flushes?.length ?? 0) <= 0 && "everything is saved."}
       {props.children}
     </Page>
   );

@@ -24,6 +24,7 @@ import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
 import { EnvelopeBusMessageManager } from "@kie-tools-core/envelope-bus/dist/common";
 import { WorkspacesWorkerApi } from "./worker/api/WorkspacesWorkerApi";
 import { WorkspaceWorkerFileDescriptor } from "./worker/api/WorkspaceWorkerFileDescriptor";
+import { WorkspacesWorkerChannelApi } from "./worker/api/WorkspacesWorkerChannelApi";
 
 interface Props {
   children: React.ReactNode;
@@ -32,12 +33,11 @@ interface Props {
 const workspacesWorker = new SharedWorker("workspace/worker/sharedWorker.js", "workspaces-shared-worker");
 workspacesWorker.port.start();
 
-export const workspacesWorkerBus = new EnvelopeBusMessageManager<
-  { kieToolsWorkspacesWorker_ready: () => void },
-  WorkspacesWorkerApi
->((m) => {
-  workspacesWorker.port.postMessage(m);
-});
+export const workspacesWorkerBus = new EnvelopeBusMessageManager<WorkspacesWorkerChannelApi, WorkspacesWorkerApi>(
+  (m) => {
+    workspacesWorker.port.postMessage(m);
+  }
+);
 
 const ready = new Promise<void>((res) => {
   console.debug("workspaces-shared-worker is ready.");
@@ -46,6 +46,9 @@ const ready = new Promise<void>((res) => {
     workspacesWorkerBus.server.receive(m.data, {
       kieToolsWorkspacesWorker_ready() {
         res();
+      },
+      async kieToolsWorkspacesWorker_ping() {
+        return "pong";
       },
     });
   };

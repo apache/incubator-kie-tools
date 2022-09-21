@@ -34,6 +34,8 @@ export class FsFlushManager {
 
   public readonly flushControl = new Map<string, FlushControl>();
 
+  public readonly subscriptions = new Set<(flushes: string[]) => void>();
+
   private async executeFlush(fsCache: FsCache, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
     await fsCache.flushFs(fsMountPoint);
     if (deinitArgs.deinit) {
@@ -50,10 +52,13 @@ export class FsFlushManager {
           operationPromise: this.executeFlush(fsCache, fsMountPoint, deinitArgs).then(() => {
             console.debug(`Flush complete for ${fsMountPoint}`);
             this.flushControl.delete(fsMountPoint);
+            this.notifySubscribers();
           }),
         });
+        this.notifySubscribers();
       }, this.flushControlDebounceTimeoutInMs),
     });
+    this.notifySubscribers();
   }
 
   public requestFsFlush(fsCache: FsCache, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
@@ -90,5 +95,20 @@ export class FsFlushManager {
     } else {
       throw new Error(`Oops! Impossible scenario for flushing '${fsMountPoint}'`);
     }
+  }
+
+  subscribe(subscription: (flushes: string[]) => void) {
+    this.subscriptions.add(subscription);
+    return subscription;
+  }
+
+  unsubscribe(subscription: (flushes: string[]) => void) {
+    this.subscriptions.delete(subscription);
+  }
+
+  private notifySubscribers() {
+    this.subscriptions.forEach((subscription) => {
+      subscription([...this.flushControl.keys()]);
+    });
   }
 }

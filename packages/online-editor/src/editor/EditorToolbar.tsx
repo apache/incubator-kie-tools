@@ -82,7 +82,6 @@ import { WorkspaceLabel } from "../workspace/components/WorkspaceLabel";
 import { EditorPageDockDrawerRef } from "./EditorPageDockDrawer";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { WorkspaceStatusIndicator } from "../workspace/components/WorkspaceStatusIndicator";
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { SettingsTabs } from "../settings/SettingsModalBody";
 import { Location } from "history";
@@ -92,6 +91,8 @@ import { useGitHubAuthInfo } from "../github/Hooks";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useCancelableEffect } from "../reactExt/Hooks";
 import type { RestEndpointMethodTypes as OctokitRestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
+import { workspacesWorkerBus } from "../workspace/WorkspacesContextProvider";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export interface Props {
   alerts: AlertsController | undefined;
@@ -154,6 +155,12 @@ export function EditorToolbar(props: Props) {
   const githubAuthInfo = useGitHubAuthInfo();
   const canPushToGitRepository = useMemo(() => !!githubAuthInfo, [githubAuthInfo]);
   const navigationBlockersBypass = useNavigationBlockersBypass();
+
+  const [flushes] = useSharedValue(workspacesWorkerBus.clientApi.shared.kieSandboxWorkspacesStorage_flushes);
+
+  const isSaved = useMemo(() => {
+    return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
+  }, [isEdited, flushes, props.workspaceFile.workspaceId]);
 
   useCancelableEffect(
     useCallback(
@@ -1420,7 +1427,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                       <FileSwitcher workspace={workspace} workspaceFile={props.workspaceFile} />
                     </FlexItem>
                     <FlexItem>
-                      {(isEdited && (
+                      {(!isSaved && (
                         <Tooltip content={"Saving file..."} position={"bottom"}>
                           <TextContent
                             style={{ color: "gray", ...(!props.workspaceFile ? { visibility: "hidden" } : {}) }}
@@ -1433,8 +1440,6 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               <span>
                                 <SyncIcon size={"sm"} />
                               </span>
-                              &nbsp;
-                              <span>Saving...</span>
                             </Text>
                           </TextContent>
                         </Tooltip>

@@ -42,11 +42,13 @@ import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsS
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
 import { LocalFile } from "./api/LocalFile";
 import { FsFlushManager } from "../services/FsFlushManager";
+import { WorkspacesWorkerChannelApi } from "./api/WorkspacesWorkerChannelApi";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
 
 const MAX_NEW_FILE_INDEX_ATTEMPTS = 10;
+
 const NEW_FILE_DEFAULT_NAME = "Untitled";
 
 const GIT_USER_DEFAULT = {
@@ -62,6 +64,7 @@ async function corsProxyUrl() {
   const env = await (await fetch(envFilePath)).json();
   return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
+
 const fsFlushManager = new FsFlushManager();
 const storageService = new StorageService();
 const fsService = new WorkspaceFsService(fsFlushManager);
@@ -570,32 +573,41 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return { defaultValue: [] };
     },
   };
+
   resImpl(impl);
 });
 
+// shared worker connection
+
 declare let onconnect: any;
-
 // eslint-disable-next-line prefer-const
-onconnect = async (e: any) => {
-  const port = e.ports[0];
-
+onconnect = async (e: MessageEvent) => {
   console.log(`Connected to 'workspaces-shared-worker'`);
 
-  const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, { kieToolsWorkspacesWorker_ready: () => void }>((m) =>
-    port.postMessage(m)
-  );
-
+  const p = e.ports[0];
   const impl = await implPromise;
+  const bus = new EnvelopeBusMessageManager<WorkspacesWorkerApi, WorkspacesWorkerChannelApi>((m) => p.postMessage(m));
+  p.addEventListener("message", (message) => bus.server.receive(message.data, impl));
+  p.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
+  bus.clientApi.notifications.kieToolsWorkspacesWorker_ready.send();
 
-  port.addEventListener("message", async (m: MessageEvent) => {
-    bus.server.receive(m.data, impl);
+  const flushManagerSubscription = fsFlushManager.subscribe((flushes) => {
+    bus.shared.kieSandboxWorkspacesStorage_flushes.set(flushes);
   });
 
-  setInterval(() => {
-    bus.shared.kieSandboxWorkspacesStorage_flushes.set([...fsFlushManager.flushControl.keys()]);
-  }, 10);
-
-  port.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
-
-  bus.clientApi.notifications.kieToolsWorkspacesWorker_ready.send();
+  const keepalive = setInterval(() => {
+    let ping: "ping" | "pong" = "ping";
+    bus.clientApi.requests.kieToolsWorkspacesWorker_ping().then((pong) => (ping = pong));
+    setTimeout(() => {
+      if (ping !== "pong") {
+        // This connection is no longer active, as the corresponding bus did not respond in 200ms. Tear it down.
+        console.log("Disconnecting from 'workspaces-shared-worker'");
+        p.close();
+        fsFlushManager.unsubscribe(flushManagerSubscription);
+        clearInterval(keepalive);
+      } else {
+        console.debug("Connection is still alive.");
+      }
+    }, 200);
+  }, 60000);
 };
