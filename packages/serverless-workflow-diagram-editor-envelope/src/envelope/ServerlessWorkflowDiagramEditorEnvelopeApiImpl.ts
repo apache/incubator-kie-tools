@@ -19,7 +19,6 @@ import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-c
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { ServerlessWorkflowDiagramEditorChannelApi, ServerlessWorkflowDiagramEditorEnvelopeApi } from "../api";
 import { ServerlessWorkflowDiagramEditor } from "./ServerlessWorkflowDiagramEditor";
-import { ServerlessWorkflowDiagramEditorFactory } from "./ServerlessWorkflowDiagramEditorFactory";
 
 export type ServerlessWorkflowDiagramEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   ServerlessWorkflowDiagramEditorEnvelopeApi,

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { init } from "@kie-tools-core/editor/dist/envelope";
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
 import { TextEditorFactory } from "@kie-tools/text-editor";
 
-init({
+EditorEnvelope.init({
   container: document.getElementById("text-editor-envelope-app")!,
   bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
   editorFactory: new TextEditorFactory(),
