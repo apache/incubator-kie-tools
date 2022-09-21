@@ -19,6 +19,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { FsFlushManager } from "./FsFlushManager";
 
 export interface BroadcasterWatchEvent {
   channel: string;
@@ -48,7 +49,7 @@ export class Broadcaster implements BroadcasterDispatch {
 }
 
 export class FsService {
-  constructor(private readonly fsCache = new FsCache()) {}
+  constructor(private readonly fsFlushManager: FsFlushManager, private readonly fsCache = new FsCache()) {}
 
   public async withReadWriteInMemoryFs<T>(
     fsMountPoint: string,
@@ -57,7 +58,7 @@ export class FsService {
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
     const callbackResult = await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
 
-    await this.fsCache.requestFsFlush(fsMountPoint, { deinit: false });
+    await this.fsFlushManager.requestFsFlush(this.fsCache, fsMountPoint, { deinit: false });
 
     return callbackResult;
   }

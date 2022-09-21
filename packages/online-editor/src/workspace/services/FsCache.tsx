@@ -25,19 +25,6 @@ declare let IDBFS: EmscriptenFs & {
   syncfs(mount: { mountpoint: string }, mode: boolean, callback: (...args: any[]) => void): void;
 };
 
-enum FlushStatus {
-  FLUSH_IN_PROGRESS,
-  FLUSH_AND_DEINIT_IN_PROGRESS,
-  FLUSH_SCHEDULED,
-  FLUSH_AND_DEINIT_SCHEDULED,
-}
-
-type FlushControl =
-  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStatus.FLUSH_SCHEDULED }
-  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStatus.FLUSH_AND_DEINIT_SCHEDULED }
-  | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_IN_PROGRESS }
-  | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS };
-
 export type FsSchema = Map<
   string,
   {
@@ -49,9 +36,6 @@ export type FsSchema = Map<
 const encoder = new TextEncoder();
 
 export class FsCache {
-  private readonly flushControlDebounceTimeoutInMs = 2000;
-  private readonly flushControl = new Map<string, FlushControl>();
-
   private readonly fsSchemasCache: Record<string, Promise<FsSchema>> = {};
   private readonly fsCache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
 
@@ -77,66 +61,6 @@ export class FsCache {
     const newFsPromise = this.createFs(fsMountPoint);
     this.fsCache.set(fsMountPoint, newFsPromise);
     return newFsPromise;
-  }
-
-  // flush control
-
-  private async executeFlush(fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    await this.flushFs(fsMountPoint);
-    if (deinitArgs.deinit) {
-      await this.deinitFs(fsMountPoint);
-    }
-  }
-
-  private scheduleFsFlush(fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    this.flushControl.set(fsMountPoint, {
-      status: FlushStatus.FLUSH_SCHEDULED,
-      scheduledTask: setTimeout(() => {
-        this.flushControl.set(fsMountPoint, {
-          status: deinitArgs.deinit ? FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS : FlushStatus.FLUSH_IN_PROGRESS,
-          operationPromise: this.executeFlush(fsMountPoint, deinitArgs).then(() => {
-            console.debug(`Flush complete for ${fsMountPoint}`);
-            this.flushControl.delete(fsMountPoint);
-          }),
-        });
-      }, this.flushControlDebounceTimeoutInMs),
-    });
-  }
-
-  public requestFsFlush(fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    const flushControl = this.flushControl.get(fsMountPoint);
-
-    if (!flushControl) {
-      console.debug(`Scheduling flush for ${fsMountPoint}`);
-      this.scheduleFsFlush(fsMountPoint, deinitArgs);
-    } else if (flushControl.status === FlushStatus.FLUSH_SCHEDULED) {
-      // If flush is scheduled, we can always cancel it and put a flush and deinit in its place.
-      console.debug(`Debouncing flush request for ${fsMountPoint}`);
-      clearTimeout(flushControl.scheduledTask);
-      this.scheduleFsFlush(fsMountPoint, deinitArgs);
-    } else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_SCHEDULED) {
-      if (deinitArgs.deinit) {
-        console.debug(`Debouncing flush and deinit request for ${fsMountPoint}`);
-        clearTimeout(flushControl.scheduledTask);
-        this.scheduleFsFlush(fsMountPoint, deinitArgs);
-      } else {
-        console.error(`Flush requested while flush and deinit is in scheduled!!!! ${fsMountPoint}`);
-      }
-    } else if (flushControl.status === FlushStatus.FLUSH_IN_PROGRESS) {
-      if (deinitArgs.deinit) {
-        console.error(`Flush and deinit requested while flush is in progress!!!! ${fsMountPoint}`);
-      } else {
-        console.error(`Flush requested while flush is in progress!!!! ${fsMountPoint}`);
-      }
-    } else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
-      if (deinitArgs.deinit) {
-        console.error(`Flush and deinit requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
-      } else {
-        console.error(`Flush requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
-      }
-    } else {
-      throw new Error(`Oops! Impossible scenario for flushing '${fsMountPoint}'`);
-    }
   }
 
   // fs schema
@@ -371,7 +295,7 @@ export class FsCache {
     }
   }
 
-  private deinitFs(fsMountPoint: string) {
+  public deinitFs(fsMountPoint: string) {
     console.debug(`Deinitiating FS - ${fsMountPoint}`);
     console.time(`Deinit FS - ${fsMountPoint}`);
     try {
@@ -390,7 +314,7 @@ export class FsCache {
     }
   }
 
-  private async flushFs(fsMountPoint: string) {
+  public async flushFs(fsMountPoint: string) {
     console.time(`Flush FS - ${fsMountPoint}`);
     console.debug(`Flushing FS - ${fsMountPoint}`);
     await this.syncFs(false, fsMountPoint);

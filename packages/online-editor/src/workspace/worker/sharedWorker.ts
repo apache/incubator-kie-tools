@@ -41,6 +41,7 @@ import { EmscriptenFs, KieSandboxWorkspacesFs } from "../services/KieSandboxWork
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
 import { LocalFile } from "./api/LocalFile";
+import { FsFlushManager } from "../services/FsFlushManager";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -61,45 +62,45 @@ async function corsProxyUrl() {
   const env = await (await fetch(envFilePath)).json();
   return env.CORS_PROXY_URL ?? process.env.WEBPACK_REPLACE__corsProxyUrl ?? "";
 }
+const fsFlushManager = new FsFlushManager();
+const storageService = new StorageService();
+const fsService = new WorkspaceFsService(fsFlushManager);
+const descriptorsFsService = new WorkspaceDescriptorFsService(fsFlushManager);
+const descriptorService = new WorkspaceDescriptorService(descriptorsFsService, storageService);
+const service = new WorkspaceService(storageService, descriptorsFsService, descriptorService, fsService);
+const gitService = new GitService(corsProxyUrl());
+const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
+// const svgService = new WorkspaceSvgService(storageService);
+
+const createWorkspace = async (args: {
+  storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+  origin: WorkspaceOrigin;
+  preferredName?: string;
+}) => {
+  const { workspace, files } = await service.create({
+    storeFiles: args.storeFiles,
+    origin: args.origin,
+    preferredName: args.preferredName,
+  });
+
+  if (files.length <= 0) {
+    return { workspace, suggestedFirstFile: undefined };
+  }
+
+  const suggestedFirstFile = files
+    .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
+    .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
+
+  return {
+    workspace,
+    suggestedFirstFile: {
+      workspaceId: suggestedFirstFile.workspaceId,
+      relativePath: suggestedFirstFile.relativePath,
+    },
+  };
+};
 
 const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
-  const storageService = new StorageService();
-  const fsService = new WorkspaceFsService();
-  const descriptorsFsService = new WorkspaceDescriptorFsService();
-  const descriptorService = new WorkspaceDescriptorService(descriptorsFsService, storageService);
-  const service = new WorkspaceService(storageService, descriptorsFsService, descriptorService, fsService);
-  const gitService = new GitService(corsProxyUrl());
-  // const svgService = new WorkspaceSvgService(storageService);
-  const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
-
-  const createWorkspace = async (args: {
-    storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
-    origin: WorkspaceOrigin;
-    preferredName?: string;
-  }) => {
-    const { workspace, files } = await service.create({
-      storeFiles: args.storeFiles,
-      origin: args.origin,
-      preferredName: args.preferredName,
-    });
-
-    if (files.length <= 0) {
-      return { workspace, suggestedFirstFile: undefined };
-    }
-
-    const suggestedFirstFile = files
-      .filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath))
-      .sort((a, b) => a.relativePath.localeCompare(b.relativePath))[0];
-
-    return {
-      workspace,
-      suggestedFirstFile: {
-        workspaceId: suggestedFirstFile.workspaceId,
-        relativePath: suggestedFirstFile.relativePath,
-      },
-    };
-  };
-
   const impl: WorkspacesWorkerApi = {
     async kieSandboxWorkspacesGit_initGistOnExistingWorkspace(args: {
       workspaceId: string;
@@ -565,6 +566,9 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
         });
       });
     },
+    kieSandboxWorkspacesStorage_flushes: () => {
+      return { defaultValue: [] };
+    },
   };
   resImpl(impl);
 });
@@ -586,6 +590,10 @@ onconnect = async (e: any) => {
   port.addEventListener("message", async (m: MessageEvent) => {
     bus.server.receive(m.data, impl);
   });
+
+  setInterval(() => {
+    bus.shared.kieSandboxWorkspacesStorage_flushes.set([...fsFlushManager.flushControl.keys()]);
+  }, 10);
 
   port.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
 

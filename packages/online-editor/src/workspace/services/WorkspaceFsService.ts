@@ -17,9 +17,13 @@
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { BroadcasterDispatch, FsService } from "./FsService";
 import { FsSchema, fsSchemaDir } from "./FsCache";
+import { FsFlushManager } from "./FsFlushManager";
 
 export class WorkspaceFsService {
-  constructor(private readonly fsService = new FsService()) {}
+  constructor(
+    private readonly fsFlushManager: FsFlushManager,
+    private readonly fsService = new FsService(fsFlushManager)
+  ) {}
 
   public async withReadWriteInMemoryFs<T>(
     workspaceId: string,

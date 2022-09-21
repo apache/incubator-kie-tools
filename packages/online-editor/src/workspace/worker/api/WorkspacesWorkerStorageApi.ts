@@ -22,6 +22,7 @@ import {
 } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface WorkspacesWorkerStorageApi {
   // model
@@ -92,4 +93,6 @@ export interface WorkspacesWorkerStorageApi {
   }): Promise<WorkspaceWorkerFileDescriptor>;
 
   kieSandboxWorkspacesStorage_existsFile(args: { workspaceId: string; relativePath: string }): Promise<boolean>;
+
+  kieSandboxWorkspacesStorage_flushes(): SharedValueProvider<string[]>;
 }

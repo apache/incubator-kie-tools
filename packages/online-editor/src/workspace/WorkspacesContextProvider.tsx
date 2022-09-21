@@ -32,7 +32,7 @@ interface Props {
 const workspacesWorker = new SharedWorker("workspace/worker/sharedWorker.js", "workspaces-shared-worker");
 workspacesWorker.port.start();
 
-const workspacesWorkerBus = new EnvelopeBusMessageManager<
+export const workspacesWorkerBus = new EnvelopeBusMessageManager<
   { kieToolsWorkspacesWorker_ready: () => void },
   WorkspacesWorkerApi
 >((m) => {
