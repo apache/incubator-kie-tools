@@ -14,14 +14,9 @@
  * limitations under the License.
  */
 
-import { WorkspaceOrigin } from "./WorkspaceOrigin";
-
-export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
-
-export interface WorkspaceDescriptor {
-  workspaceId: string;
-  name: string;
-  origin: WorkspaceOrigin;
-  createdDateISO: string;
-  lastUpdatedDateISO: string;
-}
+export type WorkspaceFileEvents =
+  | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
+  | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
+  | { type: "UPDATE"; relativePath: string }
+  | { type: "DELETE"; relativePath: string }
+  | { type: "ADD"; relativePath: string };

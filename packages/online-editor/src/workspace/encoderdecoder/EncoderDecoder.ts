@@ -14,14 +14,5 @@
  * limitations under the License.
  */
 
-import { WorkspaceOrigin } from "./WorkspaceOrigin";
-
-export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
-
-export interface WorkspaceDescriptor {
-  workspaceId: string;
-  name: string;
-  origin: WorkspaceOrigin;
-  createdDateISO: string;
-  lastUpdatedDateISO: string;
-}
+export const encoder = new TextEncoder();
+export const decoder = new TextDecoder("utf-8");

@@ -17,7 +17,7 @@
 import * as React from "react";
 import { PropsWithChildren, useCallback, useEffect, useMemo, useState } from "react";
 import { EditorPageDockDrawerRef } from "../EditorPageDockDrawer";
-import { decoder, useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
+import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { DmnRunnerModelPayload, DmnRunnerService } from "./DmnRunnerService";
@@ -34,6 +34,7 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnSchema, InputRow } from "@kie-tools/form-dmn";
 import { useSettings } from "../../settings/SettingsContext";
 import { useDmnRunnerInputs } from "../../dmnRunnerInputs/DmnRunnerInputsHook";
+import { decoder } from "../../workspace/encoderdecoder/EncoderDecoder";
 
 interface Props {
   editorPageDock: EditorPageDockDrawerRef | undefined;

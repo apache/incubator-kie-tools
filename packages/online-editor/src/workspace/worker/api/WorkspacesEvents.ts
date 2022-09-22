@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-import { WorkspaceOrigin } from "./WorkspaceOrigin";
+export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
 
-export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
-
-export interface WorkspaceDescriptor {
-  workspaceId: string;
-  name: string;
-  origin: WorkspaceOrigin;
-  createdDateISO: string;
-  lastUpdatedDateISO: string;
-}
+export type WorkspacesEvents =
+  | { type: "DELETE_ALL" }
+  | { type: "ADD_WORKSPACE"; workspaceId: string }
+  | { type: "RENAME_WORKSPACE"; workspaceId: string }
+  | { type: "DELETE_WORKSPACE"; workspaceId: string };

@@ -25,7 +25,7 @@ import { OpenShiftInstanceStatus } from "../../openshift/OpenShiftInstanceStatus
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { isConfigValid } from "../../openshift/OpenShiftSettingsConfig";
 import { useWorkspaces, WorkspaceFile } from "../../workspace/WorkspacesContext";
-import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/services/WorkspaceDescriptorService";
+import { NEW_WORKSPACE_DEFAULT_NAME } from "../../workspace/worker/api/WorkspaceDescriptor";
 
 interface Props {
   children: React.ReactNode;

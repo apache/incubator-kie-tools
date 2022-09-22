@@ -17,9 +17,10 @@
 import { join } from "path";
 import { LfsStorageFile, LfsStorageService } from "../workspace/lfs/LfsStorageService";
 import { LfsFsCache } from "../workspace/lfs/LfsFsCache";
-import { encoder, WorkspaceFile } from "../workspace/WorkspacesContext";
+import { WorkspaceFile } from "../workspace/WorkspacesContext";
 import { DmnRunnerInputsEvents } from "./DmnRunnerInputsHook";
 import { InputRow } from "@kie-tools/form-dmn";
+import { encoder } from "../workspace/encoderdecoder/EncoderDecoder";
 
 export class DmnRunnerInputsService {
   private readonly storageService = new LfsStorageService();

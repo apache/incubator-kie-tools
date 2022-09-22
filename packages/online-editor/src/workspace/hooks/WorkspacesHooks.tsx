@@ -19,7 +19,7 @@ import { useCallback } from "react";
 import { usePromiseState } from "./PromiseState";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
-import { WORKSPACES_BROADCAST_CHANNEL } from "../services/WorkspaceService";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesEvents";
 
 export function useWorkspaceDescriptorsPromise() {
   const workspaces = useWorkspaces();
@@ -73,9 +73,3 @@ export function useWorkspaceDescriptorsPromise() {
 
   return workspaceDescriptorsPromise;
 }
-
-export type WorkspacesEvents =
-  | { type: "DELETE_ALL" }
-  | { type: "ADD_WORKSPACE"; workspaceId: string }
-  | { type: "RENAME_WORKSPACE"; workspaceId: string }
-  | { type: "DELETE_WORKSPACE"; workspaceId: string };

@@ -18,7 +18,8 @@ import { useCallback } from "react";
 import { useWorkspaces, WorkspaceFile } from "../WorkspacesContext";
 import { Holder, useCancelableEffect } from "../../reactExt/Hooks";
 import { usePromiseState } from "./PromiseState";
-import { WorkspaceEvents } from "./WorkspaceHooks";
+import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
+import { WorkspaceFileEvents } from "../worker/api/WorkspaceFileEvents";
 
 export function useWorkspaceFilePromise(workspaceId: string | undefined, relativePath: string | undefined) {
   const workspaces = useWorkspaces();
@@ -108,10 +109,3 @@ export function useWorkspaceFilePromise(workspaceId: string | undefined, relativ
 
   return workspaceFilePromise;
 }
-
-export type WorkspaceFileEvents =
-  | { type: "MOVE"; newRelativePath: string; oldRelativePath: string }
-  | { type: "RENAME"; newRelativePath: string; oldRelativePath: string }
-  | { type: "UPDATE"; relativePath: string }
-  | { type: "DELETE"; relativePath: string }
-  | { type: "ADD"; relativePath: string };

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
+import { NEW_WORKSPACE_DEFAULT_NAME, WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { v4 as uuid } from "uuid";
 import { StorageFile, StorageService } from "./StorageService";
-import { decoder, encoder } from "../WorkspacesContext";
+import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { WorkspaceKind, WorkspaceOrigin } from "../worker/api/WorkspaceOrigin";
 import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { join } from "path";
-
-export const NEW_WORKSPACE_DEFAULT_NAME = `Untitled Folder`;
 
 export class WorkspaceDescriptorService {
   constructor(

@@ -26,9 +26,7 @@ import { WorkspaceDescriptor } from "./worker/api/WorkspaceDescriptor";
 import { basename, extname, parse } from "path";
 import { GistOrigin, GitHubOrigin } from "./worker/api/WorkspaceOrigin";
 import { LocalFile } from "./worker/api/LocalFile";
-
-export const decoder = new TextDecoder("utf-8");
-export const encoder = new TextEncoder();
+import { decoder } from "./encoderdecoder/EncoderDecoder";
 
 export class WorkspaceFile {
   constructor(

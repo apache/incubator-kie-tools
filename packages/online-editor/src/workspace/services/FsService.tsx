@@ -15,13 +15,13 @@
  */
 
 import { FsCache, FsSchema } from "./FsCache";
-import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
-import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
-import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { FsFlushManager } from "./FsFlushManager";
 import { ReadWriteFsUsageManager } from "./ReadWriteFsUsageManager";
 import { FsDeinitManager } from "./FsDeinitManager";
+import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
+import { WorkspaceFileEvents } from "../worker/api/WorkspaceFileEvents";
+import { WorkspacesEvents } from "../worker/api/WorkspacesEvents";
 
 export interface BroadcasterWatchEvent {
   channel: string;

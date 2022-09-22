@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { encoder, useWorkspaces } from "../WorkspacesContext";
+import { useWorkspaces } from "../WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useHistory } from "react-router";
 import * as React from "react";
@@ -34,6 +34,7 @@ import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 import { useGitHubAuthInfo } from "../../github/Hooks";
 import { useSettingsDispatch } from "../../settings/SettingsContext";
 import { LocalFile } from "../worker/api/LocalFile";
+import { encoder } from "../encoderdecoder/EncoderDecoder";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();

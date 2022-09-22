@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { encoder, WorkspaceFile } from "../WorkspacesContext";
+import { encoder } from "../encoderdecoder/EncoderDecoder";
 import JSZip from "jszip";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
-import { extname, join, relative } from "path";
+import { basename, extname, join, relative } from "path";
 import { Minimatch } from "minimatch";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { BroadcasterDispatch } from "./FsService";
@@ -28,8 +28,7 @@ import { WorkspaceWorkerFile } from "../worker/api/WorkspaceWorkerFile";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
-
-export const WORKSPACES_BROADCAST_CHANNEL = "workspaces";
+import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesEvents";
 
 export class WorkspaceService {
   public constructor(
@@ -40,7 +39,10 @@ export class WorkspaceService {
   ) {}
 
   public async create(args: {
-    storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+    storeFiles: (
+      fs: KieSandboxWorkspacesFs,
+      workspace: WorkspaceDescriptor
+    ) => Promise<WorkspaceWorkerFileDescriptor[]>;
     origin: WorkspaceOrigin;
     preferredName?: string;
   }) {
@@ -84,7 +86,7 @@ export class WorkspaceService {
     fs: KieSandboxWorkspacesFs,
     workspaceId: string,
     globPattern?: string
-  ): Promise<WorkspaceFile[]> {
+  ): Promise<WorkspaceWorkerFileDescriptor[]> {
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
 
@@ -92,18 +94,12 @@ export class WorkspaceService {
       fs,
       startFromDirPath: this.getAbsolutePath({ workspaceId }),
       shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
-      onVisit: async ({ absolutePath, relativePath }) => {
-        const workspaceFile = new WorkspaceFile({
-          workspaceId,
-          relativePath,
-          getFileContents: () => this.storageService.getFile(fs, absolutePath).then((f) => f!.getFileContents()),
-        });
-
-        if (matcher && !matcher.match(workspaceFile.name)) {
+      onVisit: async ({ relativePath }) => {
+        if (matcher && !matcher.match(basename(relativePath))) {
           return undefined;
+        } else {
+          return { workspaceId, relativePath };
         }
-
-        return workspaceFile;
       },
     });
   }
@@ -388,10 +384,17 @@ export class WorkspaceService {
     });
   }
 
-  private async toWorkspaceFile(workspaceId: string, storageFile: StorageFile): Promise<WorkspaceWorkerFile> {
+  public async toWorkspaceFile(workspaceId: string, storageFile: StorageFile): Promise<WorkspaceWorkerFile> {
     return {
       workspaceId,
       content: await storageFile.getFileContents(),
+      relativePath: relative(this.getAbsolutePath({ workspaceId }), storageFile.path),
+    };
+  }
+
+  public toWorkspaceFileDescriptor(workspaceId: string, storageFile: StorageFile): WorkspaceWorkerFileDescriptor {
+    return {
+      workspaceId,
       relativePath: relative(this.getAbsolutePath({ workspaceId }), storageFile.path),
     };
   }

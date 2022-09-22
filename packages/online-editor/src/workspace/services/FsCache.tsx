@@ -15,6 +15,7 @@
  */
 
 import { join } from "path";
+import { encoder } from "../encoderdecoder/EncoderDecoder";
 import { EmscriptenFs, KieSandboxWorkspacesFs, LfsStat } from "./KieSandboxWorkspaceFs";
 
 // comes from fsMain.fs
@@ -32,8 +33,6 @@ export type FsSchema = Map<
     mode: number;
   }
 >;
-
-const encoder = new TextEncoder();
 
 export class FsCache {
   private readonly schemasCache: Record<string, Promise<FsSchema>> = {};

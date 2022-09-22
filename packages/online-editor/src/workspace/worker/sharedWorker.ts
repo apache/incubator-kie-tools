@@ -23,7 +23,7 @@ import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
 import { WorkspaceWorkerFileDescriptor } from "./api/WorkspaceWorkerFileDescriptor";
 import { WorkspaceWorkerFile } from "./api/WorkspaceWorkerFile";
 import { GistOrigin, GitHubOrigin, WorkspaceKind, WorkspaceOrigin } from "./api/WorkspaceOrigin";
-import { decoder, encoder, WorkspaceFile } from "../WorkspacesContext";
+import { decoder, encoder } from "../encoderdecoder/EncoderDecoder";
 import { WorkspacesWorkerApi } from "./api/WorkspacesWorkerApi";
 import {
   ContentType,
@@ -75,7 +75,7 @@ const gitService = new GitService(corsProxyUrl());
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
 
 const createWorkspace = async (args: {
-  storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
+  storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceWorkerFileDescriptor[]>;
   origin: WorkspaceOrigin;
   preferredName?: string;
 }) => {
@@ -175,8 +175,10 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       // FIXME: Use FS Schema instead of in memory FS
       return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
         const files = await service.getFilesWithLazyContent(fs, args.workspaceId, args.globPattern);
-        const matchingPaths = files.map((file) => file.relativePath);
-        return new ResourcesList(args.globPattern, matchingPaths);
+        return new ResourcesList(
+          args.globPattern,
+          files.map((file) => file.relativePath)
+        );
       });
     },
     async kieSandboxWorkspacesStorage_addEmptyFile(args: {
