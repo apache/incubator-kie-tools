@@ -23,9 +23,10 @@ BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 BIN_PATH         := ./dist
 TEST_PATH        := ./dist-tests
 
-SET_QUARKUS_PLATFORM_GROUP_ID := github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata.QuarkusPlatformGroupId=$(QUARKUS_PLATFORM_GROUP_ID)
-SET_QUARKUS_VERSION           := github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata.QuarkusVersion=$(QUARKUS_VERSION)
-SET_VERSION                   := github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata.PluginVersion=$(PLUGIN_VERSION)
+METADATA_PATH                 := github.com/kiegroup/kie-tools/packages/kn-plugin-workflow/pkg/metadata
+SET_QUARKUS_PLATFORM_GROUP_ID := $(METADATA_PATH).QuarkusPlatformGroupId=$(QUARKUS_PLATFORM_GROUP_ID)
+SET_QUARKUS_VERSION           := $(METADATA_PATH).QuarkusVersion=$(QUARKUS_VERSION)
+SET_VERSION                   := $(METADATA_PATH).PluginVersion=$(PLUGIN_VERSION)
 LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION)"
 
 ARCH := $(shell uname -m)
@@ -35,7 +36,7 @@ else
 	GOARCH = amd64
 endif
 
-build-all: build-linux build-darwin-amd64 build-darwin-arm64 build-win32
+build-all: build-linux-amd64 build-darwin-amd64 build-darwin-arm64 build-win32-amd64
 
 build-darwin:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_DARWIN_AMD64) cmd/main.go
@@ -46,10 +47,10 @@ build-darwin-amd64:
 build-darwin-arm64:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_DARWIN_ARM64) cmd/main.go
 
-build-linux:
+build-linux-amd64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_LINUX) cmd/main.go
 
-build-win32:
+build-win32-amd64:
 	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_WINDOWS) cmd/main.go
 
 clean:
