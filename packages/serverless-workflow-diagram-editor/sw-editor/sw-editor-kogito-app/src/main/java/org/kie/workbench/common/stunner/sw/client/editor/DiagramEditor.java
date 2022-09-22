@@ -23,8 +23,6 @@ import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import com.ait.lienzo.client.core.Context2D;
-import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.types.JsCanvas;
 import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.ait.lienzo.client.widget.panel.impl.ScrollablePanel;
@@ -76,6 +74,7 @@ import org.uberfire.workbench.model.bridge.Notification;
 public class DiagramEditor {
 
     public static final String EDITOR_ID = "SWDiagramEditor";
+    public static final String BACKGROUND_COLOR = "#f2f2f2";
 
     static String ID_SEARCH_PATTERN = "(?:\\\"|\\')(?<id>[^\"]*)(?:\\\"|\\')(?=:)(?:\\:\\s*)(?:\\\"|\\')" +
             "?(?<value>true|false|[0-9a-zA-Z\\+\\-\\,\\.\\$]*)";
@@ -163,19 +162,8 @@ public class DiagramEditor {
 
                                                          @Override
                                                          public void afterCanvasInitialized() {
-                                                             WiresCanvas canvas = (WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas();
-                                                             ScrollableLienzoPanel lienzoPanel = (ScrollableLienzoPanel) canvas.getView().getLienzoPanel();
-
-                                                             Layer bgLayer = new Layer() {
-                                                                 @Override
-                                                                 public Layer draw(Context2D context) {
-                                                                     context.setFillColor("#f2f2f2");
-                                                                     context.fillRect(0, 0, getWidth(), getHeight());
-
-                                                                     return this;
-                                                                 }
-                                                             };
-                                                             lienzoPanel.setBackgroundLayer(bgLayer);
+                                                             ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
+                                                                     .setBackgroundColor(BACKGROUND_COLOR);
                                                          }
                                                      });
                                          }
