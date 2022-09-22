@@ -27,6 +27,7 @@
     "build:prod:linux": "rimraf dist && pnpm setup:env make build-all",
     "build:prod:win32": "rimraf dist && pnpm setup:env:win32 make build-all",
     "build:win32": "pnpm setup:env:win32 make build-win32-amd64",
+    "debug:clean": "rimraf debug",
     "go:test": "rimraf dist-tests && mkdir dist-tests && go test -v ./... | tee ./dist-tests/go-test-output.txt",
     "go:test:report": "go run github.com/jstemmer/go-junit-report/v2 -in ./dist-tests/go-test-output.txt -out ./dist-tests/junit-report.xml",
     "install": "go mod tidy",
