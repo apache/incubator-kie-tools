@@ -14,6 +14,24 @@
  * limitations under the License.
  */
 
-export class FsUsageManager {
-  private readonly readWriteFsUsageCounter = new Map<string, number>();
+export class Subscribable<T> {
+  public readonly subscriptions = new Set<(value: T) => void>();
+
+  constructor(private readonly args: { newValueSupplier: () => T }) {}
+
+  public subscribe(subscription: (value: T) => void) {
+    this.subscriptions.add(subscription);
+    return subscription;
+  }
+
+  public unsubscribe(subscription: (value: T) => void) {
+    this.subscriptions.delete(subscription);
+  }
+
+  public _notifySubscribers() {
+    const newValue = this.args.newValueSupplier();
+    this.subscriptions.forEach((subscription) => {
+      subscription(newValue);
+    });
+  }
 }

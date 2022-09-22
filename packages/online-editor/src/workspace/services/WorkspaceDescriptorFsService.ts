@@ -21,7 +21,7 @@ import { FsFlushManager } from "./FsFlushManager";
 export class WorkspaceDescriptorFsService {
   constructor(
     private readonly fsFlushManager: FsFlushManager,
-    private readonly fsService = new FsService({ name: "Descriptors", debounceFlushesIfBigFs: false }, fsFlushManager)
+    private readonly fsService = new FsService({ name: "Descriptors" }, fsFlushManager)
   ) {}
 
   public async withReadWriteInMemoryFs<T>(

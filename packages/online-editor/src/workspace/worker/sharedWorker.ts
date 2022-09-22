@@ -73,7 +73,6 @@ const descriptorService = new WorkspaceDescriptorService(descriptorsFsService, s
 const service = new WorkspaceService(storageService, descriptorsFsService, descriptorService, fsService);
 const gitService = new GitService(corsProxyUrl());
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
-// const svgService = new WorkspaceSvgService(storageService);
 
 const createWorkspace = async (args: {
   storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceFile[]>;
@@ -218,12 +217,10 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
     async kieSandboxWorkspacesStorage_deleteFile(args: { wwfd: WorkspaceWorkerFileDescriptor }): Promise<void> {
       return fsService.withReadWriteInMemoryFs(args.wwfd.workspaceId, async ({ fs, broadcaster }) => {
         await service.deleteFile(fs, args.wwfd, broadcaster);
-        // await svgService.deleteSvg(args.wwfd);
       });
     },
     async kieSandboxWorkspacesStorage_deleteWorkspace(args: { workspaceId: string }): Promise<void> {
       await service.delete(args.workspaceId);
-      // await svgService.delete(args.workspaceId);
     },
     async kieSandboxWorkspacesStorage_existsFile(args: {
       workspaceId: string;
@@ -283,14 +280,12 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       newFileNameWithoutExtension: string;
     }): Promise<WorkspaceWorkerFileDescriptor> {
       return fsService.withReadWriteInMemoryFs(args.wwfd.workspaceId, async ({ fs, broadcaster }) => {
-        const newFile = service.renameFile({
+        return service.renameFile({
           fs: fs,
           wwfd: args.wwfd,
           newFileNameWithoutExtension: args.newFileNameWithoutExtension,
           broadcaster,
         });
-        // await svgService.renameSvg(args.wwfd, args.newFileNameWithoutExtension);
-        return newFile;
       });
     },
     async kieSandboxWorkspacesStorage_renameWorkspace(args: { workspaceId: string; newName: string }): Promise<void> {
@@ -597,7 +592,7 @@ onconnect = async (e: MessageEvent) => {
   p.start(); // Required when using addEventListener. Otherwise, called implicitly by onmessage setter.
   bus.clientApi.notifications.kieToolsWorkspacesWorker_ready.send();
 
-  const flushManagerSubscription = fsFlushManager.subscribe((flushes) => {
+  const flushManagerSubscription = fsFlushManager.subscribable.subscribe((flushes) => {
     bus.shared.kieSandboxWorkspacesStorage_flushes.set(flushes);
   });
 
@@ -609,11 +604,11 @@ onconnect = async (e: MessageEvent) => {
         // This connection is no longer active, as the corresponding bus did not respond in 200ms. Tear it down.
         console.log("Disconnecting from 'workspaces-shared-worker'");
         p.close();
-        fsFlushManager.unsubscribe(flushManagerSubscription);
+        fsFlushManager.subscribable.unsubscribe(flushManagerSubscription);
         clearInterval(keepalive);
       } else {
         console.debug("Connection is still alive.");
       }
-    }, 200);
-  }, 60000);
+    }, 200); // pong timeout
+  }, 60000); // interval for keepalive
 };

@@ -65,7 +65,7 @@ export class FsCache {
 
   // fs schema
 
-  public async createFsSchema(fsMountPoint: string): Promise<FsSchema> {
+  private async createFsSchema(fsMountPoint: string): Promise<FsSchema> {
     console.debug(`Getting FS Schema for ${fsMountPoint}`);
     console.time(`Get FS Schema for ${fsMountPoint}`);
 
@@ -94,7 +94,7 @@ export class FsCache {
     }
   }
 
-  public async syncFsSchema(isRestore: boolean, fsMountPoint: string) {
+  private async syncFsSchema(isRestore: boolean, fsMountPoint: string) {
     return new Promise((res) => {
       try {
         IDBFS.syncfs({ mountpoint: fsSchemaDir(fsMountPoint) }, isRestore, res);

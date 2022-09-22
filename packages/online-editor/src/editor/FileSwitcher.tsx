@@ -465,7 +465,7 @@ export function FileSvg(props: { workspaceFile: WorkspaceFile }) {
       ({ canceled }) => {
         // FIXME: Uncomment when working on KOGITO-7805
         // Promise.resolve()
-        //   .then(async () => workspaces.svgService.getSvg(props.workspaceFile))
+        //   .then(async () => svgService.getSvg(props.workspaceFile))
         //   .then(async (file) => {
         //     if (canceled.get()) {
         //       return;

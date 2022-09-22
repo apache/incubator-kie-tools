@@ -72,7 +72,7 @@ export class GitService {
   public constructor(private readonly corsProxy: Promise<string>) {}
 
   public async clone(args: CloneArgs): Promise<void> {
-    console.debug("GitService#clone--------begin");
+    console.time("GitService#clone");
     await git.clone({
       fs: args.fs,
       http: http,
@@ -89,6 +89,7 @@ export class GitService {
     if (args.gitConfig) {
       await this.setupGitConfig(args.fs, args.dir, args.gitConfig);
     }
+    console.timeEnd("GitService#clone");
   }
 
   public async branch(args: { fs: KieSandboxWorkspacesFs; dir: string; name: string; checkout: boolean }) {

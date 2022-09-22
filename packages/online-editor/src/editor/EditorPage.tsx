@@ -186,7 +186,7 @@ export function EditorPage(props: Props) {
 
     // FIXME: Uncomment when working on KOGITO-7805
     // if (svgString) {
-    //   await workspaces.svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
+    //   await svgService.createOrOverwriteSvg(workspaceFilePromise.data, svgString);
     // }
     console.debug(`Saving @ current version (${version}); updating content.`);
     lastContent.current = content;
