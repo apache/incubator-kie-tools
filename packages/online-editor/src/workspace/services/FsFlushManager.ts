@@ -28,10 +28,6 @@ export type FlushState =
   | { flushPromise: Promise<void>; status: FlushStateStatus.FLUSH_IN_PROGRESS }
   | { status: FlushStateStatus.FLUSH_PAUSED };
 
-const DEFAULT_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 100;
-const BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 2000;
-const BIG_FS_SIZE_IN_ENTRIES_COUNT = 1000;
-
 export class FsFlushManager {
   public readonly stateControl = new Map<string, FlushState>();
 
@@ -49,26 +45,26 @@ export class FsFlushManager {
     }
   }
 
-  public async requestFsFlush(fsCache: FsCache, fsMountPoint: string) {
+  public async requestFsFlush(fsCache: FsCache, fsMountPoint: string, debounceArgs: { debounceTimeoutInMs: number }) {
     const state = this.stateControl.get(fsMountPoint);
 
     // No flush scheduled yet, simply schedule it.
     if (!state) {
       console.debug(`Scheduling flush for ${fsMountPoint}`);
-      await this.scheduleFsFlush(fsCache, fsMountPoint);
+      this.scheduleFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // If flush is scheduled, we cancel the scheduled flush and schedule a new one.
     else if (state.status === FlushStateStatus.FLUSH_SCHEDULED) {
       console.debug(`Debouncing flush request for ${fsMountPoint}`);
       clearTimeout(state.scheduledFlush);
-      await this.scheduleFsFlush(fsCache, fsMountPoint);
+      this.scheduleFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // If a flush is paused, it means it was scheduled, but we know that it will be scheduled again for sure.
     else if (state.status === FlushStateStatus.FLUSH_PAUSED) {
       console.debug(`Resuming paused flush for ${fsMountPoint}`);
-      await this.scheduleFsFlush(fsCache, fsMountPoint);
+      this.scheduleFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // Independent of the new request, if a flush is in progress, we need to wait for it to finish
@@ -77,7 +73,7 @@ export class FsFlushManager {
       console.debug(`Flush requested while in progress for ${fsMountPoint}. Requesting another flush after completed.`);
       await state.flushPromise;
       console.debug(`Flush requested right after one completed for ${fsMountPoint}.`);
-      await this.requestFsFlush(fsCache, fsMountPoint);
+      await this.requestFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // Execution should never, ever reach this point.
@@ -103,10 +99,10 @@ export class FsFlushManager {
     return flush;
   }
 
-  private async scheduleFsFlush(fsCache: FsCache, fsMountPoint: string) {
+  private scheduleFsFlush(fsCache: FsCache, fsMountPoint: string, debounceArgs: { debounceTimeoutInMs: number }) {
     const flushScheduledTask = setTimeout(
       () => this.executeFlush(fsCache, fsMountPoint),
-      await this.getFlushDebounceTimeoutInMs(fsCache, fsMountPoint)
+      debounceArgs.debounceTimeoutInMs
     );
 
     this.stateControl.set(fsMountPoint, {
@@ -117,13 +113,5 @@ export class FsFlushManager {
     this.subscribable._notifySubscribers();
 
     return flushScheduledTask;
-  }
-
-  private async getFlushDebounceTimeoutInMs(fsCache: FsCache, fsMountPoint: string) {
-    if ((await fsCache.getOrCreateFsSchema(fsMountPoint)).size > BIG_FS_SIZE_IN_ENTRIES_COUNT) {
-      return BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS;
-    } else {
-      return DEFAULT_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS;
-    }
   }
 }

@@ -50,6 +50,10 @@ export class Broadcaster implements BroadcasterDispatch {
   }
 }
 
+const DEFAULT_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 100;
+const BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 2000;
+const BIG_FS_SIZE_IN_ENTRIES_COUNT = 1000;
+
 export class FsService {
   constructor(
     private readonly args: { name: string },
@@ -100,7 +104,8 @@ export class FsService {
           console.log(`[${this.args.name}] Deinit triggered for ${fsMountPoint}`);
         } else {
           console.log(`[${this.args.name}] Requesting flush for ${fsMountPoint}`);
-          await this.fsFlushManager.requestFsFlush(this.fsCache, fsMountPoint);
+          const debounceTimeoutInMs = await this.getFlushDebounceTimeoutInMs(this.fsCache, fsMountPoint);
+          await this.fsFlushManager.requestFsFlush(this.fsCache, fsMountPoint, { debounceTimeoutInMs });
         }
       }
     }
@@ -149,5 +154,13 @@ export class FsService {
         },
       },
     });
+  }
+
+  private async getFlushDebounceTimeoutInMs(fsCache: FsCache, fsMountPoint: string) {
+    if ((await fsCache.getOrCreateFsSchema(fsMountPoint)).size > BIG_FS_SIZE_IN_ENTRIES_COUNT) {
+      return BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS;
+    } else {
+      return DEFAULT_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS;
+    }
   }
 }
