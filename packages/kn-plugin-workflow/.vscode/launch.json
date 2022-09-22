@@ -10,7 +10,7 @@
       "request": "launch",
       "mode": "exec",
       "preLaunchTask": "build",
-      "postDebugTask": "bin",
+      "postDebugTask": "clean",
       "program": "${workspaceRoot}/${input:bin}",
       "args": ["${input:command}", "${input:command-args}"]
     },
