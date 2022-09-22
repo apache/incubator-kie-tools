@@ -280,7 +280,7 @@ export class GitService {
     dir: string;
     exclude: (filepath: string) => boolean;
   }): Promise<string[]> {
-    const now = Date.now();
+    const now = performance.now();
     console.time(`${now}: hasLocalChanges`);
     const pseudoStatusMatrix = await git.walk({
       fs: args.fs,

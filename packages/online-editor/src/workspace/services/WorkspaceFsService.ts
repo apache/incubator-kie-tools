@@ -22,7 +22,7 @@ import { FsFlushManager } from "./FsFlushManager";
 export class WorkspaceFsService {
   constructor(
     private readonly fsFlushManager: FsFlushManager,
-    private readonly fsService = new FsService({ name: "Workspaces", debounceFlushes: true }, fsFlushManager)
+    private readonly fsService = new FsService({ name: "Workspaces", debounceFlushesIfBigFs: true }, fsFlushManager)
   ) {}
 
   public async withReadWriteInMemoryFs<T>(

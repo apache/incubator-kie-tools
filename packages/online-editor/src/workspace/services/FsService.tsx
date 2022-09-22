@@ -19,7 +19,7 @@ import { WorkspacesEvents } from "../hooks/WorkspacesHooks";
 import { WorkspaceFileEvents } from "../hooks/WorkspaceFileHooks";
 import { WorkspaceEvents } from "../hooks/WorkspaceHooks";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
-import { FlushStatus, FsFlushManager } from "./FsFlushManager";
+import { FlushOrDeinitStateStatus, FsFlushManager } from "./FsFlushManager";
 
 export interface BroadcasterWatchEvent {
   channel: string;
@@ -50,7 +50,7 @@ export class Broadcaster implements BroadcasterDispatch {
 
 export class FsService {
   constructor(
-    private readonly args: { name: string; debounceFlushes: boolean },
+    private readonly args: { name: string; debounceFlushesIfBigFs: boolean },
     private readonly fsFlushManager: FsFlushManager,
     private readonly fsCache = new FsCache()
   ) {}
@@ -61,6 +61,8 @@ export class FsService {
   private readonly bigFsSizeInEntryCount = 1000;
 
   public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
+    // If there's a `deinit` in progress, there's not much we can do other than wait for it to finish
+    // and request a new FS again.
     await this.awaitIfDeinitInProgress(fsMountPoint);
     const fsSchema = await this.fsCache.getOrCreateFsSchema(fsMountPoint);
     return await callback({ fsSchema });
@@ -70,43 +72,49 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
-    // If there's a `deinit` in progress, there's nothing much we can do other than wait for it to finish
+    // If there's a `deinit` in progress, there's not much we can do other than wait for it to finish
     // and request a new FS again.
     await this.awaitIfDeinitInProgress(fsMountPoint);
 
     // Count this usage in. 1 if that's the first time.
+    console.log(`[${this.args.name}] Adding self to usage counter ${fsMountPoint}`);
     this.readWriteFsUsageCounter.set(fsMountPoint, (this.readWriteFsUsageCounter.get(fsMountPoint) ?? 0) + 1);
+
+    // Get the FS, bringing it to memory if necessary.
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
 
     try {
       // If there's a flush scheduled, no need to keep it there, as we'll schedule one right after using the FS.
-      this.fsFlushManager.descheduleFlush(fsMountPoint);
+      this.fsFlushManager.descheduleFlushIfScheduled(fsMountPoint);
       return await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
     } finally {
-      // At this point, we still have our 'self' usage included in the shared counter.
+      // After using the FS, we need to decide if we're going to flush it or not.
+      // Regardless of exceptions that may have occurred.
+
+      // At this point, we still have our 'self' usage included in the shared usage counter.
       const countWithSelf = this.readWriteFsUsageCounter.get(fsMountPoint);
       if (!countWithSelf || countWithSelf < 1) {
-        console.error(
-          `[${this.args.name}] Catastrophic error after using FS for ${fsMountPoint}. Something very bad happened.`
-        );
+        console.error(`[${this.args.name}] Catastrophic error after using FS for ${fsMountPoint}.`);
       }
 
-      // Phew!! Nothing to worry about, everything according to the plan.
+      // Phew! Nothing to worry about, everything according to the plan.
       else {
         const countWithoutSelf = countWithSelf - 1;
 
-        // And remove our 'self' usage from the shared counter.
+        // And remove our 'self' usage from the shared usage counter.
         this.readWriteFsUsageCounter.set(fsMountPoint, countWithoutSelf);
+        console.log(`[${this.args.name}] Removing self from usage counter ${fsMountPoint}`);
 
         // Without our 'self' usage, if there's still someone using the FS, we let them request the flush when they're done.
         if (countWithoutSelf > 0) {
           console.log(
-            `[${this.args.name}] Skipping flush as another usage of FS will do it. (${countWithoutSelf} more  before flushing)`
+            `[${this.args.name}] Skipping flush for ${fsMountPoint} as another usage will do it. (${countWithoutSelf} more before flushing)`
           );
         }
 
         // If this usage is the last one using the FS, it's its job to request the flush.
         else {
+          console.log(`[${this.args.name}] Requesting flush for ${fsMountPoint}`);
           await this.fsFlushManager.requestFsFlush(
             this.fsCache,
             fsMountPoint,
@@ -119,12 +127,12 @@ export class FsService {
   }
 
   private async getDebounceTimeoutInMs(fsMountPoint: string) {
-    if (!this.args.debounceFlushes) {
-      return 0;
+    if (!this.args.debounceFlushesIfBigFs) {
+      return 100;
     } else if ((await this.fsCache.getOrCreateFsSchema(fsMountPoint)).size > this.bigFsSizeInEntryCount) {
       return this.bigFsDebounceTimeoutInMs;
     } else {
-      return 0;
+      return 100;
     }
   }
 
@@ -132,12 +140,14 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
+    // If there's a `deinit` in progress, there's not much we can do other than wait for it to finish
+    // and request a new FS again.
+    await this.awaitIfDeinitInProgress(fsMountPoint);
+    const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
+
     const throwCantMutateReadonlyFsException = async () => {
       throw new Error(`[${this.args.name}] Can't mutate read-only FS - ${fsMountPoint}`);
     };
-
-    await this.awaitIfDeinitInProgress(fsMountPoint);
-    const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
 
     return await callback({
       fs: {
@@ -170,10 +180,10 @@ export class FsService {
   }
 
   private async awaitIfDeinitInProgress(fsMountPoint: string) {
-    const fsFlushControl = this.fsFlushManager.control.get(fsMountPoint);
-    if (fsFlushControl?.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
+    const state = this.fsFlushManager.stateControl.get(fsMountPoint);
+    if (state?.status === FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS) {
       console.info(`[${this.args.name}] FS requested while deinit is in progress ${fsMountPoint}. Awaiting.`);
-      await fsFlushControl.operationPromise;
+      await state.runningTaskPromise;
     }
   }
 }

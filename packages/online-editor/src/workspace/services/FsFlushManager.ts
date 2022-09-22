@@ -16,25 +16,25 @@
 
 import { FsCache } from "./FsCache";
 
-export enum FlushStatus {
+export enum FlushOrDeinitStateStatus {
   FLUSH_IN_PROGRESS,
-  FLUSH_AND_DEINIT_IN_PROGRESS,
   FLUSH_SCHEDULED,
   FLUSH_PAUSED,
-  FLUSH_AND_DEINIT_SCHEDULED,
+  DEINIT_IN_PROGRESS,
+  DEINIT_SCHEDULED,
 }
 
-export type FlushControl =
-  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStatus.FLUSH_SCHEDULED }
-  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStatus.FLUSH_AND_DEINIT_SCHEDULED }
-  | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_IN_PROGRESS }
-  | { operationPromise: Promise<void>; status: FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS }
-  | { status: FlushStatus.FLUSH_PAUSED };
+export type FlushOrDeinitState =
+  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushOrDeinitStateStatus.FLUSH_SCHEDULED }
+  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushOrDeinitStateStatus.DEINIT_SCHEDULED }
+  | { runningTaskPromise: Promise<void>; status: FlushOrDeinitStateStatus.FLUSH_IN_PROGRESS }
+  | { runningTaskPromise: Promise<void>; status: FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS }
+  | { status: FlushOrDeinitStateStatus.FLUSH_PAUSED };
 
 export class FsFlushManager {
-  public readonly control = new Map<string, FlushControl>();
+  public readonly stateControl = new Map<string, FlushOrDeinitState>();
 
-  public readonly subscriptions = new Set<(flushes: string[]) => void>();
+  public readonly subscriptions = new Set<(active: string[]) => void>();
 
   private async _internalExecuteFlush(fsCache: FsCache, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
     await fsCache.flushFs(fsMountPoint);
@@ -43,22 +43,26 @@ export class FsFlushManager {
     }
   }
 
-  public descheduleFlush(fsMountPoint: string) {
-    const control = this.control.get(fsMountPoint);
-    if (control?.status === FlushStatus.FLUSH_SCHEDULED) {
-      console.log(`Descheduling flush for ${fsMountPoint}`);
-      clearTimeout(control.scheduledTask);
-      this.control.set(fsMountPoint, { status: FlushStatus.FLUSH_PAUSED });
+  public descheduleFlushIfScheduled(fsMountPoint: string) {
+    const state = this.stateControl.get(fsMountPoint);
+    if (state?.status === FlushOrDeinitStateStatus.FLUSH_SCHEDULED) {
+      console.debug(`Descheduling flush for ${fsMountPoint}`);
+      clearTimeout(state.scheduledTask);
+      this.stateControl.set(fsMountPoint, { status: FlushOrDeinitStateStatus.FLUSH_PAUSED });
       this.notifySubscribers();
     }
   }
 
   public async executeFlush(fsCache: FsCache, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    this.control.set(fsMountPoint, {
-      status: deinitArgs.deinit ? FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS : FlushStatus.FLUSH_IN_PROGRESS,
-      operationPromise: this._internalExecuteFlush(fsCache, fsMountPoint, deinitArgs).then(() => {
-        console.log(`Flush complete for ${fsMountPoint}`);
-        this.control.delete(fsMountPoint);
+    const status = deinitArgs.deinit
+      ? FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS
+      : FlushOrDeinitStateStatus.FLUSH_IN_PROGRESS;
+
+    this.stateControl.set(fsMountPoint, {
+      status,
+      runningTaskPromise: this._internalExecuteFlush(fsCache, fsMountPoint, deinitArgs).then(() => {
+        console.debug(`${deinitArgs.deinit ? "Deinit" : "Flush"} complete for ${fsMountPoint}`);
+        this.stateControl.delete(fsMountPoint);
         this.notifySubscribers();
       }),
     });
@@ -71,8 +75,8 @@ export class FsFlushManager {
     deinitArgs: { deinit: boolean },
     debounceArgs: { debounceTimeoutInMs: number }
   ) {
-    this.control.set(fsMountPoint, {
-      status: FlushStatus.FLUSH_SCHEDULED,
+    this.stateControl.set(fsMountPoint, {
+      status: FlushOrDeinitStateStatus.FLUSH_SCHEDULED,
       scheduledTask: setTimeout(
         () => this.executeFlush(fsCache, fsMountPoint, deinitArgs),
         debounceArgs.debounceTimeoutInMs
@@ -87,40 +91,58 @@ export class FsFlushManager {
     deinitArgs: { deinit: boolean },
     debounceArgs: { debounceTimeoutInMs: number }
   ) {
-    const flushControl = this.control.get(fsMountPoint);
+    const state = this.stateControl.get(fsMountPoint);
 
-    if (!flushControl) {
+    // No flush scheduled yet, simply schedule it.
+    if (!state) {
       console.debug(`Scheduling flush for ${fsMountPoint}`);
       await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
-    } else if (flushControl.status === FlushStatus.FLUSH_SCHEDULED) {
-      // If flush is scheduled, we can always cancel it and put a flush and deinit in its place.
+    }
+
+    // If flush is scheduled, we can always cancel it and put a flush or a deinit on its place.
+    else if (state.status === FlushOrDeinitStateStatus.FLUSH_SCHEDULED) {
       console.debug(`Debouncing flush request for ${fsMountPoint}`);
-      clearTimeout(flushControl.scheduledTask);
+      clearTimeout(state.scheduledTask);
       await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
-    } else if (flushControl.status === FlushStatus.FLUSH_PAUSED) {
+    }
+
+    // If a flush is paused, it means it was scheduled, but we know that it will be scheduled again for sure.
+    else if (state.status === FlushOrDeinitStateStatus.FLUSH_PAUSED) {
       console.debug(`Resuming paused flush for ${fsMountPoint}`);
       await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
-    } else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_SCHEDULED) {
+    }
+
+    //
+    else if (state.status === FlushOrDeinitStateStatus.DEINIT_SCHEDULED) {
       if (deinitArgs.deinit) {
-        console.debug(`Debouncing flush and deinit request for ${fsMountPoint}`);
-        clearTimeout(flushControl.scheduledTask);
+        console.debug(`Debouncing deinit request for ${fsMountPoint}`);
+        clearTimeout(state.scheduledTask);
         await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
       } else {
-        console.error(`Flush requested while flush and deinit is in scheduled!!!! ${fsMountPoint}`);
+        // TODO: What to do?
+        console.error(`Flush requested while deinit is in scheduled for ${fsMountPoint}!`);
       }
-    } else if (flushControl.status === FlushStatus.FLUSH_IN_PROGRESS) {
+    }
+
+    // Independent of the new request, if a flush is in progress, we need to wait for it to finish
+    // So we can process the new flush request.
+    else if (state.status === FlushOrDeinitStateStatus.FLUSH_IN_PROGRESS) {
+      console.debug(`Flush requested while in progress for ${fsMountPoint}. Requesting another flush after completed.`);
+      await state.runningTaskPromise;
+      await this.requestFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
+    }
+
+    // If a deinit is in progress, any non-flushed changes will be lost. This should never happen.
+    else if (state.status === FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS) {
       if (deinitArgs.deinit) {
-        console.error(`Flush and deinit requested while flush is in progress!!!! ${fsMountPoint}`);
+        throw new Error(`Deinit requested while deinit is in progress for ${fsMountPoint}!`);
       } else {
-        console.error(`Flush requested while flush is in progress!!!! ${fsMountPoint}`);
+        throw new Error(`Flush requested while deinit is in progress for ${fsMountPoint}!`);
       }
-    } else if (flushControl.status === FlushStatus.FLUSH_AND_DEINIT_IN_PROGRESS) {
-      if (deinitArgs.deinit) {
-        console.error(`Flush and deinit requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
-      } else {
-        console.error(`Flush requested while flush and deinit is in progress!!!! ${fsMountPoint}`);
-      }
-    } else {
+    }
+
+    // Execution should never, ever reach this point.
+    else {
       throw new Error(`Oops! Impossible scenario for flushing '${fsMountPoint}'`);
     }
   }
@@ -136,7 +158,7 @@ export class FsFlushManager {
 
   private notifySubscribers() {
     this.subscriptions.forEach((subscription) => {
-      subscription([...this.control.keys()]);
+      subscription([...this.stateControl.keys()]);
     });
   }
 }
