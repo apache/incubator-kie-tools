@@ -319,11 +319,11 @@ export class FsCache {
 // schema structure
 
 export function fsSchemaDir(fsMountPoint: string) {
-  return `${fsMountPoint}_inos`; // FIXME: Rename to _schema
+  return `${fsMountPoint}_schema`;
 }
 
 function fsSchemaJsonPath(fsMountPoint: string) {
-  return join(fsSchemaDir(fsMountPoint), "index.json"); // FIXME: Rename to fsSchema.json
+  return join(fsSchemaDir(fsMountPoint), "schema.json");
 }
 
 // emscripten-fs adaptation to lightning-fs
