@@ -36,30 +36,30 @@ export type FsSchema = Map<
 const encoder = new TextEncoder();
 
 export class FsCache {
-  private readonly fsSchemasCache: Record<string, Promise<FsSchema>> = {};
-  private readonly fsCache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
+  private readonly schemasCache: Record<string, Promise<FsSchema>> = {};
+  public readonly cache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
 
   // get or create
 
   public getOrCreateFsSchema(fsMountPoint: string) {
-    const fsSchema = this.fsSchemasCache[fsMountPoint];
+    const fsSchema = this.schemasCache[fsMountPoint];
     if (fsSchema) {
       return fsSchema;
     }
 
     const newFsSchemaPromise = this.createFsSchema(fsMountPoint);
-    this.fsSchemasCache[fsMountPoint] = newFsSchemaPromise;
+    this.schemasCache[fsMountPoint] = newFsSchemaPromise;
     return newFsSchemaPromise;
   }
 
   public getOrCreateFs(fsMountPoint: string) {
-    const fs = this.fsCache.get(fsMountPoint);
+    const fs = this.cache.get(fsMountPoint);
     if (fs) {
       return fs;
     }
 
     const newFsPromise = this.createFs(fsMountPoint);
-    this.fsCache.set(fsMountPoint, newFsPromise);
+    this.cache.set(fsMountPoint, newFsPromise);
     return newFsPromise;
   }
 
@@ -117,12 +117,6 @@ export class FsCache {
       FS.mkdir(fsSchemaDir(fsMountPoint));
       FS.mount(IDBFS, {}, fsSchemaDir(fsMountPoint));
     }
-  }
-
-  private deinitFsSchema(fsMountPoint: string) {
-    delete this.fsSchemasCache[fsMountPoint];
-    FS.unmount(fsSchemaDir(fsMountPoint));
-    FS.rmdir(fsSchemaDir(fsMountPoint));
   }
 
   private async flushFsSchema(fsMountPoint: string) {
@@ -298,8 +292,8 @@ export class FsCache {
   public deinitFs(fsMountPoint: string) {
     console.debug(`Deinitiating FS - ${fsMountPoint}`);
     console.time(`Deinit FS - ${fsMountPoint}`);
+    this.cache.delete(fsMountPoint);
     try {
-      this.deinitFsSchema(fsMountPoint);
       FS.unmount(fsMountPoint);
       FS.rmdir(fsMountPoint);
     } catch (e) {

@@ -16,129 +16,94 @@
 
 import { FsCache } from "./FsCache";
 
-export enum FlushOrDeinitStateStatus {
+export enum FlushStateStatus {
   FLUSH_IN_PROGRESS,
   FLUSH_SCHEDULED,
   FLUSH_PAUSED,
-  DEINIT_IN_PROGRESS,
-  DEINIT_SCHEDULED,
 }
 
-export type FlushOrDeinitState =
-  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushOrDeinitStateStatus.FLUSH_SCHEDULED }
-  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushOrDeinitStateStatus.DEINIT_SCHEDULED }
-  | { runningTaskPromise: Promise<void>; status: FlushOrDeinitStateStatus.FLUSH_IN_PROGRESS }
-  | { runningTaskPromise: Promise<void>; status: FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS }
-  | { status: FlushOrDeinitStateStatus.FLUSH_PAUSED };
+export type FlushState =
+  | { scheduledTask: ReturnType<typeof setTimeout>; status: FlushStateStatus.FLUSH_SCHEDULED }
+  | { runningTaskPromise: Promise<void>; status: FlushStateStatus.FLUSH_IN_PROGRESS }
+  | { status: FlushStateStatus.FLUSH_PAUSED };
 
 export class FsFlushManager {
-  public readonly stateControl = new Map<string, FlushOrDeinitState>();
+  public readonly stateControl = new Map<string, FlushState>();
 
   public readonly subscriptions = new Set<(active: string[]) => void>();
 
-  private async _internalExecuteFlush(fsCache: FsCache, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    await fsCache.flushFs(fsMountPoint);
-    if (deinitArgs.deinit) {
-      await fsCache.deinitFs(fsMountPoint);
-    }
-  }
-
-  public descheduleFlushIfScheduled(fsMountPoint: string) {
+  public pauseFlushScheduleIfScheduled(fsMountPoint: string) {
     const state = this.stateControl.get(fsMountPoint);
-    if (state?.status === FlushOrDeinitStateStatus.FLUSH_SCHEDULED) {
-      console.debug(`Descheduling flush for ${fsMountPoint}`);
+    if (state?.status === FlushStateStatus.FLUSH_SCHEDULED) {
+      console.debug(`Pausing scheduled flush for ${fsMountPoint}`);
       clearTimeout(state.scheduledTask);
-      this.stateControl.set(fsMountPoint, { status: FlushOrDeinitStateStatus.FLUSH_PAUSED });
+      this.stateControl.set(fsMountPoint, { status: FlushStateStatus.FLUSH_PAUSED });
       this.notifySubscribers();
     }
   }
 
-  public async executeFlush(fsCache: FsCache, fsMountPoint: string, deinitArgs: { deinit: boolean }) {
-    const status = deinitArgs.deinit
-      ? FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS
-      : FlushOrDeinitStateStatus.FLUSH_IN_PROGRESS;
+  public async executeFlush(fsCache: FsCache, fsMountPoint: string) {
+    const flush = fsCache.flushFs(fsMountPoint).then(() => {
+      console.debug(`Flush complete for ${fsMountPoint}`);
+      this.stateControl.delete(fsMountPoint);
+      this.notifySubscribers();
+    });
 
     this.stateControl.set(fsMountPoint, {
-      status,
-      runningTaskPromise: this._internalExecuteFlush(fsCache, fsMountPoint, deinitArgs).then(() => {
-        console.debug(`${deinitArgs.deinit ? "Deinit" : "Flush"} complete for ${fsMountPoint}`);
-        this.stateControl.delete(fsMountPoint);
-        this.notifySubscribers();
-      }),
+      status: FlushStateStatus.FLUSH_IN_PROGRESS,
+      runningTaskPromise: flush,
     });
+
     this.notifySubscribers();
+
+    return flush;
   }
 
-  private async scheduleFsFlush(
-    fsCache: FsCache,
-    fsMountPoint: string,
-    deinitArgs: { deinit: boolean },
-    debounceArgs: { debounceTimeoutInMs: number }
-  ) {
+  private scheduleFsFlush(fsCache: FsCache, fsMountPoint: string, debounceArgs: { debounceTimeoutInMs: number }) {
+    const flushScheduledTask = setTimeout(
+      () => this.executeFlush(fsCache, fsMountPoint),
+      debounceArgs.debounceTimeoutInMs
+    );
+
     this.stateControl.set(fsMountPoint, {
-      status: FlushOrDeinitStateStatus.FLUSH_SCHEDULED,
-      scheduledTask: setTimeout(
-        () => this.executeFlush(fsCache, fsMountPoint, deinitArgs),
-        debounceArgs.debounceTimeoutInMs
-      ),
+      status: FlushStateStatus.FLUSH_SCHEDULED,
+      scheduledTask: flushScheduledTask,
     });
+
     this.notifySubscribers();
+
+    return flushScheduledTask;
   }
 
-  public async requestFsFlush(
-    fsCache: FsCache,
-    fsMountPoint: string,
-    deinitArgs: { deinit: boolean },
-    debounceArgs: { debounceTimeoutInMs: number }
-  ) {
+  public async requestFsFlush(fsCache: FsCache, fsMountPoint: string, debounceArgs: { debounceTimeoutInMs: number }) {
     const state = this.stateControl.get(fsMountPoint);
 
     // No flush scheduled yet, simply schedule it.
     if (!state) {
       console.debug(`Scheduling flush for ${fsMountPoint}`);
-      await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
+      await this.scheduleFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
-    // If flush is scheduled, we can always cancel it and put a flush or a deinit on its place.
-    else if (state.status === FlushOrDeinitStateStatus.FLUSH_SCHEDULED) {
+    // If flush is scheduled, we cancel the scheduled flush and schedule a new one.
+    else if (state.status === FlushStateStatus.FLUSH_SCHEDULED) {
       console.debug(`Debouncing flush request for ${fsMountPoint}`);
       clearTimeout(state.scheduledTask);
-      await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
+      this.scheduleFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // If a flush is paused, it means it was scheduled, but we know that it will be scheduled again for sure.
-    else if (state.status === FlushOrDeinitStateStatus.FLUSH_PAUSED) {
+    else if (state.status === FlushStateStatus.FLUSH_PAUSED) {
       console.debug(`Resuming paused flush for ${fsMountPoint}`);
-      await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
-    }
-
-    //
-    else if (state.status === FlushOrDeinitStateStatus.DEINIT_SCHEDULED) {
-      if (deinitArgs.deinit) {
-        console.debug(`Debouncing deinit request for ${fsMountPoint}`);
-        clearTimeout(state.scheduledTask);
-        await this.scheduleFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
-      } else {
-        // TODO: What to do?
-        console.error(`Flush requested while deinit is in scheduled for ${fsMountPoint}!`);
-      }
+      this.scheduleFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // Independent of the new request, if a flush is in progress, we need to wait for it to finish
     // So we can process the new flush request.
-    else if (state.status === FlushOrDeinitStateStatus.FLUSH_IN_PROGRESS) {
+    else if (state.status === FlushStateStatus.FLUSH_IN_PROGRESS) {
       console.debug(`Flush requested while in progress for ${fsMountPoint}. Requesting another flush after completed.`);
       await state.runningTaskPromise;
-      await this.requestFsFlush(fsCache, fsMountPoint, deinitArgs, debounceArgs);
-    }
-
-    // If a deinit is in progress, any non-flushed changes will be lost. This should never happen.
-    else if (state.status === FlushOrDeinitStateStatus.DEINIT_IN_PROGRESS) {
-      if (deinitArgs.deinit) {
-        throw new Error(`Deinit requested while deinit is in progress for ${fsMountPoint}!`);
-      } else {
-        throw new Error(`Flush requested while deinit is in progress for ${fsMountPoint}!`);
-      }
+      console.debug(`Flush requested right after one completed for ${fsMountPoint}.`);
+      await this.requestFsFlush(fsCache, fsMountPoint, debounceArgs);
     }
 
     // Execution should never, ever reach this point.
