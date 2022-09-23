@@ -29,13 +29,13 @@ export type FlushState =
   | { status: FlushStateStatus.FLUSH_PAUSED };
 
 export class FsFlushManager {
-  public readonly stateControl = new Map<string, FlushState>();
+  private readonly stateControl = new Map<string, FlushState>();
 
   public readonly subscribable = new Subscribable<string[]>({
     newValueSupplier: () => [...this.stateControl.keys()],
   });
 
-  public pauseFlushScheduleIfScheduled(fsMountPoint: string) {
+  public pauseScheduledFlushIfScheduled(fsMountPoint: string) {
     const state = this.stateControl.get(fsMountPoint);
     if (state?.status === FlushStateStatus.FLUSH_SCHEDULED) {
       console.debug(`Pausing scheduled flush for ${fsMountPoint}`);
@@ -113,5 +113,40 @@ export class FsFlushManager {
     this.subscribable._notifySubscribers();
 
     return flushScheduledTask;
+  }
+
+  async expediteFlush(fsCache: FsCache, fsMountPoint: string, flushArgs: { executeEvenIfNotScheduled: boolean }) {
+    const flushState = this.stateControl.get(fsMountPoint);
+
+    // not requested, not paused, not in progress; flush right away if specified by flushArgs
+    if (!flushState) {
+      if (flushArgs.executeEvenIfNotScheduled) {
+        await this.executeFlush(fsCache, fsMountPoint);
+      }
+    }
+
+    // wait for ongoing flush, then flush again if specified by flushArgs
+    else if (flushState?.status === FlushStateStatus.FLUSH_IN_PROGRESS) {
+      await flushState.flushPromise;
+      if (flushArgs.executeEvenIfNotScheduled) {
+        await this.executeFlush(fsCache, fsMountPoint);
+      }
+    }
+
+    // deschedule then execute flush
+    else if (flushState?.status === FlushStateStatus.FLUSH_SCHEDULED) {
+      clearTimeout(flushState.scheduledFlush);
+      await this.executeFlush(fsCache, fsMountPoint);
+    }
+
+    // simply execute right away, without scheduling
+    else if (flushState?.status === FlushStateStatus.FLUSH_PAUSED) {
+      await this.executeFlush(fsCache, fsMountPoint);
+    }
+
+    // should never reach this point
+    else {
+      throw new Error(`Catastrophic error while expediting flush of ${fsMountPoint}.`);
+    }
   }
 }

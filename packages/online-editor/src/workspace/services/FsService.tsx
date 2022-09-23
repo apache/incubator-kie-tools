@@ -17,7 +17,7 @@
 import { FsCache, FsSchema } from "./FsCache";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { FsFlushManager } from "./FsFlushManager";
-import { ReadWriteFsUsageManager } from "./ReadWriteFsUsageManager";
+import { FsUsageCounter } from "./FsUsageCounter";
 import { FsDeinitManager } from "./FsDeinitManager";
 import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
 import { WorkspaceFileEvents } from "../worker/api/WorkspaceFileEvents";
@@ -58,9 +58,15 @@ export class FsService {
   constructor(
     private readonly args: { name: string },
     private readonly fsFlushManager: FsFlushManager,
-    private readonly readWriteFsUsageManager = new ReadWriteFsUsageManager(),
+    private readonly readWriteFsUsageCounter = new FsUsageCounter(),
+    private readonly readonlyFsUsageCounter = new FsUsageCounter(),
     private readonly fsCache = new FsCache(),
-    private readonly fsDeinitManager = new FsDeinitManager(fsCache, readWriteFsUsageManager, fsFlushManager)
+    private readonly fsDeinitManager = new FsDeinitManager(
+      fsCache,
+      readWriteFsUsageCounter,
+      readonlyFsUsageCounter,
+      fsFlushManager
+    )
   ) {}
 
   public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
@@ -75,31 +81,31 @@ export class FsService {
   ) {
     // If there's a `deinit` in progress, there's not much we can do other than wait for it to finish
     // and request a new FS again.
-    await this.fsDeinitManager.manageForRequestOf(fsMountPoint);
+    await this.fsDeinitManager.makeSpaceForOrWaitDeinitOf(fsMountPoint);
 
     // Count this usage in. 1 if that's the first time.
-    this.readWriteFsUsageManager.ackUsageFor(fsMountPoint);
+    this.readWriteFsUsageCounter.ackUsage(fsMountPoint);
 
     // Get the FS, bringing it to memory if necessary.
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
 
     try {
       // If there's a flush scheduled, no need to keep it there, as we'll schedule one right after using the FS.
-      this.fsFlushManager.pauseFlushScheduleIfScheduled(fsMountPoint);
+      this.fsFlushManager.pauseScheduledFlushIfScheduled(fsMountPoint);
       return await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
     } finally {
       // After using the FS, we need to decide if we're going to flush/deinit it or not.
       // Regardless of exceptions that may have occurred.
 
       // Without our 'self' usage, if there's still someone using the FS, we let them request the flush/deinit when they're done.
-      const { usagesLeft } = this.readWriteFsUsageManager.releaseUsageFor(fsMountPoint);
+      const { usagesLeft } = this.readWriteFsUsageCounter.releaseUsage(fsMountPoint);
       if (usagesLeft > 0) {
         console.log(`[${this.args.name}] Skipping flush/deinit for ${fsMountPoint}. (${usagesLeft} usages left.)`);
       }
 
       // If this usage is the last one using the FS, it's its job to request the flush.
       else {
-        const { didTriggerDeinit } = this.fsDeinitManager.maybeDeinit(fsMountPoint);
+        const { didTriggerDeinit } = this.fsDeinitManager.deinitIfMarkedAndNotInUse(fsMountPoint);
         if (didTriggerDeinit) {
           console.log(`[${this.args.name}] Deinit triggered for ${fsMountPoint}`);
         } else {
@@ -115,45 +121,49 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
-    // If there's a `deinit` in progress, there's not much we can do other than wait for it to finish
-    // and request a new FS again.
-    await this.fsDeinitManager.manageForRequestOf(fsMountPoint);
+    await this.fsDeinitManager.makeSpaceForOrWaitDeinitOf(fsMountPoint);
 
-    // Get the FS, bringing it to memory if necessary.
+    this.readonlyFsUsageCounter.ackUsage(fsMountPoint);
     const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
 
+    try {
+      return await callback({ fs: this.getReadonlyFs(fsMountPoint, readWriteFs) });
+    } finally {
+      this.readonlyFsUsageCounter.releaseUsage(fsMountPoint);
+      this.fsDeinitManager.deinitIfMarkedAndNotInUse(fsMountPoint);
+    }
+  }
+
+  private getReadonlyFs(fsMountPoint: string, readWriteFs: KieSandboxWorkspacesFs) {
     const throwCantMutateReadonlyFsException = async () => {
       throw new Error(`[${this.args.name}] Can't mutate read-only FS - ${fsMountPoint}`);
     };
-
-    return await callback({
-      fs: {
-        promises: {
-          writeFile: throwCantMutateReadonlyFsException,
-          unlink: throwCantMutateReadonlyFsException,
-          mkdir: throwCantMutateReadonlyFsException,
-          rmdir: throwCantMutateReadonlyFsException,
-          symlink: throwCantMutateReadonlyFsException,
-          chmod: throwCantMutateReadonlyFsException,
-          rename: throwCantMutateReadonlyFsException,
-          readFile: async (path: string, options: any) => {
-            return readWriteFs.promises.readFile(path, options);
-          },
-          readdir: async (path: string, options: any) => {
-            return readWriteFs.promises.readdir(path, options);
-          },
-          stat: async (path: string) => {
-            return readWriteFs.promises.stat(path);
-          },
-          lstat: async (path: string) => {
-            return readWriteFs.promises.lstat(path);
-          },
-          readlink: async (path: string, options: any) => {
-            return readWriteFs.promises.readlink(path, options);
-          },
+    return {
+      promises: {
+        writeFile: throwCantMutateReadonlyFsException,
+        unlink: throwCantMutateReadonlyFsException,
+        mkdir: throwCantMutateReadonlyFsException,
+        rmdir: throwCantMutateReadonlyFsException,
+        symlink: throwCantMutateReadonlyFsException,
+        chmod: throwCantMutateReadonlyFsException,
+        rename: throwCantMutateReadonlyFsException,
+        readFile: async (path: string, options: any) => {
+          return readWriteFs.promises.readFile(path, options);
+        },
+        readdir: async (path: string, options: any) => {
+          return readWriteFs.promises.readdir(path, options);
+        },
+        stat: async (path: string) => {
+          return readWriteFs.promises.stat(path);
+        },
+        lstat: async (path: string) => {
+          return readWriteFs.promises.lstat(path);
+        },
+        readlink: async (path: string, options: any) => {
+          return readWriteFs.promises.readlink(path, options);
         },
       },
-    });
+    };
   }
 
   private async getFlushDebounceTimeoutInMs(fsCache: FsCache, fsMountPoint: string) {

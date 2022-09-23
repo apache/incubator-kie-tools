@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-import { ReadWriteFsUsageManager } from "./ReadWriteFsUsageManager";
-import { FlushStateStatus, FsFlushManager } from "./FsFlushManager";
+import { FsUsageCounter } from "./FsUsageCounter";
+import { FsFlushManager } from "./FsFlushManager";
 import { FsCache } from "./FsCache";
-
-// We expect that people will not use more than three tabs simultaneously.
-const MAX_NUMBER_OF_CACHED_FS_INSTANCES = 3;
 
 interface PromiseImperativeHandle<T> {
   promise: Promise<T>;
@@ -43,85 +40,71 @@ function imperativePromiseHandle<T>(): PromiseImperativeHandle<T> {
 export class FsDeinitManager {
   constructor(
     private readonly fsCache: FsCache,
-    private readonly readWriteFsUsageManager: ReadWriteFsUsageManager,
+    private readonly readWriteFsUsageCounter: FsUsageCounter,
+    private readonly readonlyFsUsageCounter: FsUsageCounter,
     private readonly fsFlushManager: FsFlushManager
   ) {}
 
-  private readonly markedDeinits = new Map<string, PromiseImperativeHandle<void>>();
+  private readonly ongoingDeinits = new Map<string, PromiseImperativeHandle<void>>();
 
-  public async manageForRequestOf(fsMountPoint: string) {
-    // If fsMountPoint isn't cached, we need to check if caching it will make it go over the limit of cached instances.
-    if (this.fsCache.cache.has(fsMountPoint) || this.fsCache.cache.size < MAX_NUMBER_OF_CACHED_FS_INSTANCES) {
-      console.debug(`Nothing to deinit when getting reference to ${fsMountPoint}.`);
+  public async makeSpaceForOrWaitDeinitOf(fsMountPoint: string) {
+    if (!this.fsCache.hasSpaceFor(fsMountPoint)) {
+      this.makeSpaceFor(fsMountPoint);
+    } else {
+      console.debug(`No need to make space for ${fsMountPoint}.`);
     }
 
-    // When that's the case, we get one of the cached FSs and mark it for deinit.
-    else {
-      const fsMountPointToDeinit = [...this.fsCache.cache.keys()][0]; //FIXME: This strategy is not ideal. Most clever would be LRU.
-      console.debug(`Deinitting ${fsMountPointToDeinit} when getting reference to ${fsMountPoint}`);
-      if (this.markedDeinits.has(fsMountPointToDeinit)) {
-        return;
-      }
-
-      const { promise, resolve, reject } = imperativePromiseHandle<void>();
-      const deinitPromiseHandle = {
-        promise: promise.finally(() => this.markedDeinits.delete(fsMountPointToDeinit)),
-        resolve,
-        reject,
-      };
-
-      this.markedDeinits.set(fsMountPointToDeinit, deinitPromiseHandle);
-
-      // Can immediately deinit FS if it's not in use.
-      if (!this.readWriteFsUsageManager.isInUse(fsMountPointToDeinit)) {
-        // No need to block the caller by a deinit.
-        setTimeout(() => this.deinitFs(fsMountPointToDeinit, deinitPromiseHandle), 0);
-      }
-    }
-
-    // Can't forget to wait for deinits that might be happening for the requested FS.
-    await this.markedDeinits.get(fsMountPoint)?.promise;
+    // Can't forget to wait for a deinit that might be happening for the requested FS.
+    await this.ongoingDeinits.get(fsMountPoint)?.promise;
   }
 
-  public maybeDeinit(fsMountPoint: string) {
-    const deinitPromiseHandle = this.markedDeinits.get(fsMountPoint);
-    if (deinitPromiseHandle) {
-      // No need to block the caller by a deinit.
-      setTimeout(() => this.deinitFs(fsMountPoint, deinitPromiseHandle), 0);
-      return { didTriggerDeinit: true };
-    } else {
+  public deinitIfMarkedAndNotInUse(fsMountPoint: string) {
+    const deinitPromiseHandle = this.ongoingDeinits.get(fsMountPoint);
+
+    // If not marked to deinit, do nothing.
+    if (!deinitPromiseHandle) {
       return { didTriggerDeinit: false };
     }
+
+    // Can't deinit if is in use
+    if (this.readWriteFsUsageCounter.isInUse(fsMountPoint) || this.readonlyFsUsageCounter.isInUse(fsMountPoint)) {
+      return { didTriggerDeinit: false };
+    }
+
+    // Read-write FS usages must always trigger a flush. If there's no more usages of read-write FS, then
+    // We certainly need to trigger a flush.
+    const flushArgs = { executeEvenIfNotScheduled: !this.readWriteFsUsageCounter.isInUse(fsMountPoint) };
+
+    // No need to block the caller by a deinit.
+    setTimeout(() => this.deinitFs(fsMountPoint, deinitPromiseHandle, flushArgs), 0);
+    return { didTriggerDeinit: true };
   }
 
-  private async deinitFs(fsMountPoint: string, deinitPromiseHandle: PromiseImperativeHandle<void>) {
-    const flushState = this.fsFlushManager.stateControl.get(fsMountPoint);
-
-    // not requested, not paused, need to flush anyway, as it would've been requested
-    if (!flushState) {
-      await this.fsFlushManager.executeFlush(this.fsCache, fsMountPoint);
+  private makeSpaceFor(fsMountPoint: string) {
+    const fsMountPointToDeinit = this.fsCache.getLastRecentlyUsed();
+    if (this.ongoingDeinits.has(fsMountPointToDeinit)) {
+      return;
     }
 
-    // wait for ongoing flush to end, then deinit
-    else if (flushState?.status === FlushStateStatus.FLUSH_IN_PROGRESS) {
-      await flushState.flushPromise;
-    }
+    console.debug(`Making space for ${fsMountPoint} by deinitting ${fsMountPointToDeinit}.`);
 
-    // deschedule, execute flush, then deinit
-    else if (flushState?.status === FlushStateStatus.FLUSH_SCHEDULED) {
-      clearTimeout(flushState.scheduledFlush);
-      await this.fsFlushManager.executeFlush(this.fsCache, fsMountPoint);
-    }
+    const { promise, resolve, reject } = imperativePromiseHandle<void>();
+    const deinitPromiseHandle = {
+      promise: promise.finally(() => this.ongoingDeinits.delete(fsMountPointToDeinit)),
+      resolve,
+      reject,
+    };
 
-    // simply execute flush, then deinit
-    else if (flushState?.status === FlushStateStatus.FLUSH_PAUSED) {
-      await this.fsFlushManager.executeFlush(this.fsCache, fsMountPoint);
-    }
+    this.ongoingDeinits.set(fsMountPointToDeinit, deinitPromiseHandle);
+    this.deinitIfMarkedAndNotInUse(fsMountPointToDeinit);
+  }
 
-    // should never reach this point
-    else {
-      throw new Error(`Catastrophic error while managing flush before deinitting ${fsMountPoint}.`);
-    }
+  private async deinitFs(
+    fsMountPoint: string,
+    deinitPromiseHandle: PromiseImperativeHandle<void>,
+    flushArgs: { executeEvenIfNotScheduled: boolean }
+  ) {
+    await this.fsFlushManager.expediteFlush(this.fsCache, fsMountPoint, flushArgs);
 
     this.fsCache.deinitFs(fsMountPoint);
     deinitPromiseHandle.resolve();

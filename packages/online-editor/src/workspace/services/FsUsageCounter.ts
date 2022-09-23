@@ -14,35 +14,35 @@
  * limitations under the License.
  */
 
-export class ReadWriteFsUsageManager {
+export class FsUsageCounter {
   private readonly counter = new Map<string, number>();
 
   public isInUse(fsMountPoint: string) {
     return this.counter.has(fsMountPoint);
   }
 
-  public ackUsageFor(fsMountPoint: string) {
-    console.log(`Summing self to usage counter ${fsMountPoint}`);
+  public ackUsage(fsMountPoint: string) {
+    console.log(`Acking to usage counter ${fsMountPoint}`);
     this.counter.set(fsMountPoint, (this.counter.get(fsMountPoint) ?? 0) + 1);
   }
 
-  public releaseUsageFor(fsMountPoint: string) {
-    const countWithSelf = this.counter.get(fsMountPoint);
-    if (!countWithSelf) {
+  public releaseUsage(fsMountPoint: string) {
+    const currentCount = this.counter.get(fsMountPoint);
+    if (!currentCount) {
       throw new Error(`Catastrophic error releasing usage of ${fsMountPoint}. No ack counterpart.`);
     }
 
-    console.log(`Subtracting self from usage counter ${fsMountPoint}`);
+    console.log(`Subtracting from usage counter ${fsMountPoint}`);
 
-    const countWithoutSelf = countWithSelf - 1;
-    if (countWithoutSelf < 0) {
+    const nextCount = currentCount - 1;
+    if (nextCount < 0) {
       throw new Error(`Catastrophic error releasing usage of ${fsMountPoint}. Negative usage count.`);
-    } else if (countWithoutSelf === 0) {
+    } else if (nextCount === 0) {
       this.counter.delete(fsMountPoint);
     } else {
-      this.counter.set(fsMountPoint, countWithoutSelf);
+      this.counter.set(fsMountPoint, nextCount);
     }
 
-    return { usagesLeft: countWithoutSelf };
+    return { usagesLeft: nextCount };
   }
 }

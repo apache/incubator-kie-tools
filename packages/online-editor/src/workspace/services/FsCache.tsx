@@ -34,9 +34,25 @@ export type FsSchema = Map<
   }
 >;
 
+// We expect that people will not use more than three tabs simultaneously.
+const MAX_NUMBER_OF_CACHED_FS_INSTANCES = 3;
+
 export class FsCache {
   private readonly schemasCache: Record<string, Promise<FsSchema>> = {};
-  public readonly cache = new Map<string, Promise<KieSandboxWorkspacesFs>>();
+  private readonly cache = new Map<string, { fs: Promise<KieSandboxWorkspacesFs>; lastHit: Date }>();
+
+  // control
+
+  public hasSpaceFor(fsMountPoint: string) {
+    return this.cache.has(fsMountPoint) || this.cache.size < MAX_NUMBER_OF_CACHED_FS_INSTANCES;
+  }
+
+  public getLastRecentlyUsed(): string {
+    const [lruFsMountPoint, _] = [...this.cache.entries()].sort(
+      ([_, a], [__, b]) => a.lastHit.valueOf() - b.lastHit.valueOf()
+    )[0];
+    return lruFsMountPoint;
+  }
 
   // get or create
 
@@ -52,13 +68,14 @@ export class FsCache {
   }
 
   public getOrCreateFs(fsMountPoint: string) {
-    const fs = this.cache.get(fsMountPoint);
-    if (fs) {
-      return fs;
+    const hit = this.cache.get(fsMountPoint);
+    if (hit) {
+      this.cache.set(fsMountPoint, { fs: hit.fs, lastHit: new Date() });
+      return hit.fs;
     }
 
     const newFsPromise = this.createFs(fsMountPoint);
-    this.cache.set(fsMountPoint, newFsPromise);
+    this.cache.set(fsMountPoint, { fs: newFsPromise, lastHit: new Date() });
     return newFsPromise;
   }
 
@@ -343,7 +360,7 @@ async function toLfsStat(fsCache: FsCache, fsMountPoint: string, path: string, s
   // isomorphic-git expects that `ino` and `mode` never change once they are created,
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   // We need to persist an index containing the `ino`s and `mode`s for all files.
-  // Luckily this is very cheap to do, as long as we keep the `fsSchema[fsMountPoint]` map up-to-date.
+  // Luckily this is very cheap to do, as long as we keep the `schemasCache[fsMountPoint]` map up-to-date.
   const fsSchema = await fsCache.getOrCreateFsSchema(fsMountPoint);
   const perpetualStat = fsSchema.set(path, fsSchema.get(path) ?? { ino: stat.ino, mode: stat.mode }).get(path)!;
 
