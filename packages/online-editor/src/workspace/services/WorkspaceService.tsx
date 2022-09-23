@@ -29,6 +29,7 @@ import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "./WorkspaceFsService";
 import { WORKSPACES_BROADCAST_CHANNEL } from "../worker/api/WorkspacesEvents";
+import { FsSchema } from "./FsCache";
 
 export class WorkspaceService {
   public constructor(
@@ -41,6 +42,7 @@ export class WorkspaceService {
   public async create(args: {
     storeFiles: (
       fs: KieSandboxWorkspacesFs,
+      schema: FsSchema,
       workspace: WorkspaceDescriptor
     ) => Promise<WorkspaceWorkerFileDescriptor[]>;
     origin: WorkspaceOrigin;
@@ -55,45 +57,48 @@ export class WorkspaceService {
     });
 
     try {
-      return await this.fsService.withReadWriteInMemoryFs(workspace.workspaceId, async ({ fs, broadcaster }) => {
-        const files = await args.storeFiles(fs, workspace);
+      return await this.fsService.withReadWriteInMemoryFs(
+        workspace.workspaceId,
+        async ({ fs, schema, broadcaster }) => {
+          const files = await args.storeFiles(fs, schema, workspace);
 
-        await broadcaster.broadcast({
-          channel: WORKSPACES_BROADCAST_CHANNEL,
-          message: async () => ({
-            type: "ADD_WORKSPACE",
-            workspaceId: workspace.workspaceId,
-          }),
-        });
+          await broadcaster.broadcast({
+            channel: WORKSPACES_BROADCAST_CHANNEL,
+            message: async () => ({
+              type: "ADD_WORKSPACE",
+              workspaceId: workspace.workspaceId,
+            }),
+          });
 
-        await broadcaster.broadcast({
-          channel: workspace.workspaceId,
-          message: async () => ({
-            type: "ADD",
-            workspaceId: workspace.workspaceId,
-          }),
-        });
+          await broadcaster.broadcast({
+            channel: workspace.workspaceId,
+            message: async () => ({
+              type: "ADD",
+              workspaceId: workspace.workspaceId,
+            }),
+          });
 
-        return { workspace, files };
-      });
+          return { workspace, files };
+        }
+      );
     } catch (e) {
       await this.delete(workspace.workspaceId);
       throw e;
     }
   }
 
-  public async getFilesWithLazyContent(
-    fs: KieSandboxWorkspacesFs,
+  public async getFilteredWorkspaceFileDescriptors(
+    schema: FsSchema,
     workspaceId: string,
     globPattern?: string
   ): Promise<WorkspaceWorkerFileDescriptor[]> {
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
-    const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
+    const gitDirAbsolutePath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
 
     return await this.storageService.walk({
-      fs,
-      startFromDirPath: this.getAbsolutePath({ workspaceId }),
-      shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
+      schema,
+      baseAbsolutePath: this.getAbsolutePath({ workspaceId }),
+      shouldExcludeAbsolutePath: (absolutePath) => absolutePath.startsWith(gitDirAbsolutePath),
       onVisit: async ({ relativePath }) => {
         if (matcher && !matcher.match(basename(relativePath))) {
           return undefined;
@@ -140,29 +145,26 @@ export class WorkspaceService {
     });
   }
 
-  public async prepareZip(fs: KieSandboxWorkspacesFs, workspaceId: string, onlyExtensions?: string[]): Promise<Blob> {
-    const workspaceRootDirPath = this.getAbsolutePath({ workspaceId });
+  public async prepareZip(
+    fs: KieSandboxWorkspacesFs,
+    schema: FsSchema,
+    workspaceId: string,
+    onlyExtensions?: string[]
+  ): Promise<Blob> {
+    const wwfds = await this.getFilteredWorkspaceFileDescriptors(schema, workspaceId);
 
-    const gitDirPath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
-    const paths = await this.storageService.walk({
-      fs,
-      startFromDirPath: workspaceRootDirPath,
-      shouldExcludeDir: (dirPath) => dirPath === gitDirPath,
-      onVisit: async ({ absolutePath }) => absolutePath,
-    });
-
-    const files = await Promise.all(
-      paths
-        .filter((p) => !onlyExtensions || onlyExtensions.includes(extname(p).slice(1)))
-        .map(async (p) => ({
-          path: p,
-          content: await this.storageService.getFileContent(fs, p),
+    const filesToZip = await Promise.all(
+      wwfds
+        .filter((wwfd) => !onlyExtensions || onlyExtensions.includes(extname(wwfd.relativePath).slice(1)))
+        .map(async (wwfd) => ({
+          relativePath: wwfd.relativePath,
+          content: await this.storageService.getFileContent(fs, this.getAbsolutePath(wwfd)),
         }))
     );
 
     const zip = new JSZip();
-    for (const file of files) {
-      zip.file(relative(workspaceRootDirPath, file.path), file.content);
+    for (const file of filesToZip) {
+      zip.file(file.relativePath, file.content);
     }
 
     return await zip.generateAsync({ type: "blob" });
@@ -388,13 +390,6 @@ export class WorkspaceService {
     return {
       workspaceId,
       content: await storageFile.getFileContents(),
-      relativePath: relative(this.getAbsolutePath({ workspaceId }), storageFile.path),
-    };
-  }
-
-  public toWorkspaceFileDescriptor(workspaceId: string, storageFile: StorageFile): WorkspaceWorkerFileDescriptor {
-    return {
-      workspaceId,
       relativePath: relative(this.getAbsolutePath({ workspaceId }), storageFile.path),
     };
   }

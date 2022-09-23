@@ -17,6 +17,7 @@
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { BroadcasterDispatch, FsService } from "./FsService";
 import { FsFlushManager } from "./FsFlushManager";
+import { FsSchema } from "./FsCache";
 
 export class WorkspaceDescriptorFsService {
   constructor(
@@ -25,12 +26,14 @@ export class WorkspaceDescriptorFsService {
   ) {}
 
   public async withReadWriteInMemoryFs<T>(
-    callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
+    callback: (args: { fs: KieSandboxWorkspacesFs; schema: FsSchema; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
     return this.fsService.withReadWriteInMemoryFs(this.getMountPoint(), callback);
   }
 
-  public async withReadonlyInMemoryFs<T>(callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>) {
+  public async withReadonlyInMemoryFs<T>(
+    callback: (args: { fs: KieSandboxWorkspacesFs; schema: FsSchema }) => Promise<T>
+  ) {
     return this.fsService.withReadonlyInMemoryFs(this.getMountPoint(), callback);
   }
 

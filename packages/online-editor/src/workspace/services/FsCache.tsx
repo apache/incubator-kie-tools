@@ -57,9 +57,9 @@ export class FsCache {
   // get or load
 
   public getOrLoadFsSchema(fsMountPoint: string) {
-    const fsSchema = this.schemasCache[fsMountPoint];
-    if (fsSchema) {
-      return fsSchema;
+    const schema = this.schemasCache[fsMountPoint];
+    if (schema) {
+      return schema;
     }
 
     const newFsSchemaPromise = this.loadFsSchema(fsMountPoint);
@@ -361,8 +361,8 @@ async function toLfsStat(fsCache: FsCache, fsMountPoint: string, path: string, s
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   // We need to persist an index containing the `ino`s and `mode`s for all files.
   // Luckily this is very cheap to do, as long as we keep the `schemasCache[fsMountPoint]` map up-to-date.
-  const fsSchema = await fsCache.getOrLoadFsSchema(fsMountPoint);
-  const perpetualStat = fsSchema.set(path, fsSchema.get(path) ?? { ino: stat.ino, mode: stat.mode }).get(path)!;
+  const schema = await fsCache.getOrLoadFsSchema(fsMountPoint);
+  const perpetualStat = schema.set(path, schema.get(path) ?? { ino: stat.ino, mode: stat.mode }).get(path)!;
 
   const isDir = FS.isDir(perpetualStat.mode);
   const isFile = FS.isFile(perpetualStat.mode);

@@ -22,7 +22,7 @@ export class FsUsageCounter {
   }
 
   public ackUsage(fsMountPoint: string) {
-    console.log(`Acking to usage counter ${fsMountPoint}`);
+    console.log(`Adding to usage counter ${fsMountPoint}`);
     this.counter.set(fsMountPoint, (this.counter.get(fsMountPoint) ?? 0) + 1);
   }
 

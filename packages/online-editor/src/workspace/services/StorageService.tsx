@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-import { basename, dirname, extname, join, relative, resolve } from "path";
-import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { basename, dirname, extname, join, relative } from "path";
+import { EmscriptenFs, KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
+import { FsSchema } from "./FsCache";
 
-export class EagerStorageFile {
-  constructor(private readonly args: { path: string; content: Uint8Array }) {}
-
-  get path() {
-    return this.args.path;
-  }
-
-  get content() {
-    return this.args.content;
-  }
-}
+// comes from fsMain.fs
+declare let FS: EmscriptenFs;
 
 export class StorageFile {
   constructor(private readonly args: { path: string; getFileContents: () => Promise<Uint8Array> }) {}
@@ -193,33 +185,27 @@ export class StorageService {
   }
 
   public async walk<T = string>(args: {
-    fs: KieSandboxWorkspacesFs;
-    startFromDirPath: string;
-    shouldExcludeDir: (dirPath: string) => boolean;
+    schema: FsSchema;
+    baseAbsolutePath: string;
+    shouldExcludeAbsolutePath: (dirPath: string) => boolean;
     onVisit: (args: { absolutePath: string; relativePath: string }) => Promise<T | undefined>;
-    originalStartingDirPath?: string;
   }): Promise<T[]> {
-    const subDirPaths = await args.fs.promises.readdir(args.startFromDirPath);
     const files = await Promise.all(
-      subDirPaths.map(async (subDirPath) => {
-        const absolutePath = resolve(args.startFromDirPath, subDirPath);
-        const relativePath = relative(args.originalStartingDirPath ?? args.startFromDirPath, absolutePath);
-        return !(await args.fs.promises.stat(absolutePath)).isDirectory()
-          ? args.onVisit({ absolutePath, relativePath })
-          : args.shouldExcludeDir(absolutePath)
-          ? []
-          : this.walk({
-              fs: args.fs,
-              startFromDirPath: absolutePath,
-              shouldExcludeDir: args.shouldExcludeDir,
-              onVisit: args.onVisit,
-              originalStartingDirPath: args.originalStartingDirPath ?? args.startFromDirPath,
-            });
+      [...args.schema.entries()].flatMap(async ([absolutePath, { ino, mode }]) => {
+        if (FS.isDir(mode)) {
+          return [];
+        }
+
+        if (args.shouldExcludeAbsolutePath(absolutePath)) {
+          return [];
+        }
+
+        const relativePath = relative(args.baseAbsolutePath, absolutePath);
+        const visit = await args.onVisit({ absolutePath, relativePath });
+        return visit ? [visit] : [];
       })
     );
 
-    return files.reduce((paths: T[], path) => {
-      return path ? paths.concat(path) : paths;
-    }, []) as T[];
+    return files.reduce((res: T[], acc) => (acc ? res.concat(acc) : res), []) as T[];
   }
 }

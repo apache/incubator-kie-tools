@@ -69,15 +69,15 @@ export class FsService {
     )
   ) {}
 
-  public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
+  public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { schema: FsSchema }) => Promise<T>) {
     // FS Schemas are never taken out of memory, so only getting is enough :)
-    const fsSchema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
-    return await callback({ fsSchema });
+    const schema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
+    return await callback({ schema });
   }
 
   public async withReadWriteInMemoryFs<T>(
     fsMountPoint: string,
-    callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
+    callback: (args: { fs: KieSandboxWorkspacesFs; schema: FsSchema; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
     // If there's an unloading in progress, there's not much we can do other than wait for it to finish
     // and request a new FS again.
@@ -86,13 +86,14 @@ export class FsService {
     // Count this usage in. 1 if that's the first time.
     this.readWriteFsUsageCounter.ackUsage(fsMountPoint);
 
-    // Get the FS, loading it if necessary.
-    const readWriteFs = await this.fsCache.getOrLoadFs(fsMountPoint);
+    // Get the schema and the FS, loading it if necessary.
+    const schema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
+    const fs = await this.fsCache.getOrLoadFs(fsMountPoint);
 
     try {
       // If there's a flush scheduled, no need to keep it there, as we'll schedule one right after using the FS.
       this.fsFlushManager.pauseScheduledFlushIfScheduled(fsMountPoint);
-      return await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
+      return await callback({ fs, schema, broadcaster: new Broadcaster() });
     } finally {
       // After using the FS, we need to decide if we're going to flush/unload it or not.
       // Regardless of exceptions that may have occurred.
@@ -119,15 +120,16 @@ export class FsService {
 
   public async withReadonlyInMemoryFs<T>(
     fsMountPoint: string,
-    callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
+    callback: (args: { fs: KieSandboxWorkspacesFs; schema: FsSchema }) => Promise<T>
   ) {
     await this.fsUnloadManager.makeSpaceForOrWaitUnloadOf(fsMountPoint);
 
     this.readonlyFsUsageCounter.ackUsage(fsMountPoint);
-    const readWriteFs = await this.fsCache.getOrLoadFs(fsMountPoint);
+    const schema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
+    const fs = await this.fsCache.getOrLoadFs(fsMountPoint);
 
     try {
-      return await callback({ fs: this.getReadonlyFs(fsMountPoint, readWriteFs) });
+      return await callback({ fs: this.getReadonlyFs(fsMountPoint, fs), schema });
     } finally {
       this.readonlyFsUsageCounter.releaseUsage(fsMountPoint);
       this.fsUnloadManager.unloadFsIfMarkedAndNotInUse(fsMountPoint);

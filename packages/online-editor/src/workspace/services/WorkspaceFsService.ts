@@ -27,19 +27,19 @@ export class WorkspaceFsService {
 
   public async withReadWriteInMemoryFs<T>(
     workspaceId: string,
-    callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
+    callback: (args: { fs: KieSandboxWorkspacesFs; schema: FsSchema; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
     return this.fsService.withReadWriteInMemoryFs(this.getFsMountPoint(workspaceId), callback);
   }
 
   public async withReadonlyInMemoryFs<T>(
     workspaceId: string,
-    callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
+    callback: (args: { fs: KieSandboxWorkspacesFs; schema: FsSchema }) => Promise<T>
   ) {
     return this.fsService.withReadonlyInMemoryFs(this.getFsMountPoint(workspaceId), callback);
   }
 
-  public async withReadonlyFsSchema<T>(workspaceId: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
+  public async withReadonlyFsSchema<T>(workspaceId: string, callback: (args: { schema: FsSchema }) => Promise<T>) {
     return this.fsService.withReadonlyFsSchema(this.getFsMountPoint(workspaceId), callback);
   }
 

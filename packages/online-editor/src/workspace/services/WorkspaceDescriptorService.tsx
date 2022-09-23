@@ -23,6 +23,7 @@ import { GIST_DEFAULT_BRANCH, GIT_DEFAULT_BRANCH } from "../constants/GitConstan
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "./WorkspaceDescriptorFsService";
 import { join } from "path";
+import { FsSchema } from "./FsCache";
 
 export class WorkspaceDescriptorService {
   constructor(
@@ -30,11 +31,11 @@ export class WorkspaceDescriptorService {
     private readonly storageService: StorageService
   ) {}
 
-  public async listAll(fs: KieSandboxWorkspacesFs): Promise<WorkspaceDescriptor[]> {
+  public async listAll(fs: KieSandboxWorkspacesFs, schema: FsSchema): Promise<WorkspaceDescriptor[]> {
     const workspaceDescriptorsFilePaths = await this.storageService.walk({
-      fs: fs,
-      startFromDirPath: this.getAbsolutePath(""),
-      shouldExcludeDir: () => false,
+      schema,
+      baseAbsolutePath: this.getAbsolutePath(""),
+      shouldExcludeAbsolutePath: () => false,
       onVisit: async ({ absolutePath }) => absolutePath,
     });
 

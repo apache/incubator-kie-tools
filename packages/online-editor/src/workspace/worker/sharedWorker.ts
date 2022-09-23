@@ -37,12 +37,13 @@ import { Buffer } from "buffer";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
 import { ENV_FILE_PATH } from "../../env/EnvConstants";
 import { EditorEnvelopeLocatorFactory } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
-import { EmscriptenFs, KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
+import { KieSandboxWorkspacesFs } from "../services/KieSandboxWorkspaceFs";
 import { WorkspaceDescriptorFsService } from "../services/WorkspaceDescriptorFsService";
 import { WorkspaceFsService } from "../services/WorkspaceFsService";
 import { LocalFile } from "./api/LocalFile";
 import { FsFlushManager } from "../services/FsFlushManager";
 import { WorkspacesWorkerChannelApi } from "./api/WorkspacesWorkerChannelApi";
+import { FsSchema } from "../services/FsCache";
 
 declare const importScripts: any;
 importScripts("fsMain.js");
@@ -55,9 +56,6 @@ const GIT_USER_DEFAULT = {
   name: "KIE Sandbox",
   email: "",
 };
-
-// comes from fsMain.fs
-declare let FS: EmscriptenFs;
 
 async function corsProxyUrl() {
   const envFilePath = `../../${ENV_FILE_PATH}`; // Needs to go back two dirs, since this file is at `workspaces/worker`.
@@ -75,7 +73,11 @@ const gitService = new GitService(corsProxyUrl());
 const editorEnvelopeLocator = new EditorEnvelopeLocatorFactory().create({ targetOrigin: "" });
 
 const createWorkspace = async (args: {
-  storeFiles: (fs: KieSandboxWorkspacesFs, workspace: WorkspaceDescriptor) => Promise<WorkspaceWorkerFileDescriptor[]>;
+  storeFiles: (
+    fs: KieSandboxWorkspacesFs,
+    schema: FsSchema,
+    workspace: WorkspaceDescriptor
+  ) => Promise<WorkspaceWorkerFileDescriptor[]>;
   origin: WorkspaceOrigin;
   preferredName?: string;
 }) => {
@@ -130,8 +132,8 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       });
     },
     async kieSandboxWorkspacesStorage_listAllWorkspaces(): Promise<WorkspaceDescriptor[]> {
-      return descriptorsFsService.withReadonlyInMemoryFs(({ fs }) => {
-        return descriptorService.listAll(fs);
+      return descriptorsFsService.withReadonlyInMemoryFs(({ fs, schema }) => {
+        return descriptorService.listAll(fs, schema);
       });
     },
     async kieSandboxWorkspacesStorage_resourceContentGet(args: {
@@ -172,9 +174,8 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       globPattern: string;
       opts?: ResourceListOptions;
     }): Promise<ResourcesList> {
-      // FIXME: Use FS Schema instead of in memory FS
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        const files = await service.getFilesWithLazyContent(fs, args.workspaceId, args.globPattern);
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ schema }) => {
+        const files = await service.getFilteredWorkspaceFileDescriptors(schema, args.workspaceId, args.globPattern);
         return new ResourcesList(
           args.globPattern,
           files.map((file) => file.relativePath)
@@ -228,17 +229,17 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       workspaceId: string;
       relativePath: string;
     }): Promise<boolean> {
-      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
-        return !!fsSchema.get(service.getAbsolutePath(args));
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ schema }) => {
+        return !!schema.get(service.getAbsolutePath(args));
       });
     },
     kieSandboxWorkspacesStorage_getFile: async function (args: {
       workspaceId: string;
       relativePath: string;
     }): Promise<WorkspaceWorkerFileDescriptor | undefined> {
-      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ schema }) => {
         return (
-          fsSchema.get(service.getAbsolutePath(args)) && {
+          schema.get(service.getAbsolutePath(args)) && {
             workspaceId: args.workspaceId,
             relativePath: args.relativePath,
           }
@@ -256,13 +257,8 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
     kieSandboxWorkspacesStorage_getFiles: async function (args: {
       workspaceId: string;
     }): Promise<WorkspaceWorkerFileDescriptor[]> {
-      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ fsSchema }) => {
-        return [...fsSchema.entries()].flatMap(([path, { mode }]) => {
-          const relativePath = path.split("/").slice(2).join("/"); // FIXME: Use path.relative and service.getAbsolutePath();
-          return !relativePath || FS.isDir(mode) || relativePath.startsWith(".git")
-            ? []
-            : [{ relativePath, workspaceId: args.workspaceId }];
-        });
+      return fsService.withReadonlyFsSchema(args.workspaceId, async ({ schema }) => {
+        return service.getFilteredWorkspaceFileDescriptors(schema, args.workspaceId);
       });
     },
     async kieSandboxWorkspacesStorage_getUniqueFileIdentifier(args: { workspaceId: string; relativePath: string }) {
@@ -272,8 +268,8 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       workspaceId: string;
       onlyExtensions?: string[];
     }): Promise<Blob> {
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
-        return service.prepareZip(fs, args.workspaceId, args.onlyExtensions);
+      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs, schema }) => {
+        return service.prepareZip(fs, schema, args.workspaceId, args.onlyExtensions);
       });
     },
 
@@ -339,7 +335,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return await createWorkspace({
         preferredName: new URL(args.origin.url).pathname.substring(1), // Remove slash
         origin: args.origin,
-        storeFiles: async (fs, workspace) => {
+        storeFiles: async (fs, schema, workspace) => {
           await gitService.clone({
             fs,
             dir: service.getAbsolutePath({ workspaceId: workspace.workspaceId }),
@@ -348,7 +344,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
             authInfo: args.authInfo,
             sourceBranch: args.origin.branch,
           });
-          return service.getFilesWithLazyContent(fs, workspace.workspaceId);
+          return service.getFilteredWorkspaceFileDescriptors(schema, workspace.workspaceId);
         },
       });
     },
@@ -426,7 +422,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       return await createWorkspace({
         preferredName: args.preferredName,
         origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
-        storeFiles: async (fs, workspace: WorkspaceDescriptor) => {
+        storeFiles: async (fs, schema, workspace) => {
           const files = args.localFiles
             .filter((file) => !file.path.startsWith(".git/"))
             .map(
@@ -446,18 +442,18 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
             })
           );
 
-          const workspaceRootDirPath = service.getAbsolutePath({
+          const workspaceRootDirAbsolutePath = service.getAbsolutePath({
             workspaceId: workspace.workspaceId,
           });
 
           const ignoredPaths = await storageService.walk({
-            fs,
-            shouldExcludeDir: () => false,
-            startFromDirPath: workspaceRootDirPath,
+            schema,
+            shouldExcludeAbsolutePath: () => false,
+            baseAbsolutePath: workspaceRootDirAbsolutePath,
             onVisit: async ({ absolutePath, relativePath }) => {
               const isIgnored = await gitService.isIgnored({
                 fs,
-                dir: workspaceRootDirPath,
+                dir: workspaceRootDirAbsolutePath,
                 filepath: relativePath,
               });
               return isIgnored ? absolutePath : undefined;
@@ -472,18 +468,18 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
 
           await gitService.init({
             fs,
-            dir: workspaceRootDirPath,
+            dir: workspaceRootDirAbsolutePath,
           });
 
           await gitService.add({
             fs,
-            dir: workspaceRootDirPath,
+            dir: workspaceRootDirAbsolutePath,
             relativePath: ".",
           });
 
           await gitService.commit({
             fs,
-            dir: workspaceRootDirPath,
+            dir: workspaceRootDirAbsolutePath,
             message: "Initial commit from KIE Sandbox",
             targetBranch: GIT_DEFAULT_BRANCH,
             author: {
@@ -492,7 +488,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
             },
           });
 
-          return service.getFilesWithLazyContent(fs, workspace.workspaceId);
+          return service.getFilteredWorkspaceFileDescriptors(schema, workspace.workspaceId);
         },
       });
     },
