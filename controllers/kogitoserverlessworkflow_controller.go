@@ -1,24 +1,25 @@
 /*
-Copyright 2022.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
+ * Copyright 2022 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package controllers
 
 import (
 	"context"
 	serverlessv1alpha1 "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	"github.com/davidesalerno/kogito-serverless-operator/builder"
 	"github.com/davidesalerno/kogito-serverless-operator/converters"
 	"github.com/ghodss/yaml"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -48,9 +49,10 @@ type KogitoServerlessWorkflowReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.2/pkg/reconcile
 func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
+
 	// Lookup the KogitoServerlessWorkflow instance for this reconcile request
-	kogitoServerlessWorkflow := &serverlessv1alpha1.KogitoServerlessWorkflow{}
-	err := r.Get(ctx, req.NamespacedName, kogitoServerlessWorkflow)
+	instance := &serverlessv1alpha1.KogitoServerlessWorkflow{}
+	err := r.Get(ctx, req.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			// Request object not found, could have been deleted after reconcile request.
@@ -64,9 +66,10 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 
 		return ctrl.Result{}, err
 	}
+	//TODO handleBuilderSecret(instance, r.Client)
 	//TODO KOGITO-7840 Add validation on Workflow Metadata
 	converter := converters.NewKogitoServerlessWorkflowConverter(ctx)
-	workflow, err := converter.ToCNCFWorkflow(kogitoServerlessWorkflow)
+	workflow, err := converter.ToCNCFWorkflow(instance)
 	if err != nil {
 		log.Error(err, "Failed converting KogitoServerlessWorkflow into Workflow")
 		return ctrl.Result{}, err
@@ -78,7 +81,10 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 	}
 	log.Info("Converted Workflow CR into Kogito Yaml Workflow", yamlWorkflow)
 	//TODO Save into Shared Volume
+	//"greetings.sw.json"
 	//TODO KOGITO-7498 Kogito Serverless Workflow Builder Image
+	//[KOGITO-7899]-Integrate Kaniko into SWF Operator
+	builder.BuildImageWithDefaults(workflow.ID, yamlWorkflow)
 	return ctrl.Result{}, nil
 }
 
