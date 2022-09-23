@@ -37,7 +37,7 @@ function imperativePromiseHandle<T>(): PromiseImperativeHandle<T> {
   return { promise, resolve: resolve!, reject: reject! };
 }
 
-export class FsDeinitManager {
+export class FsUnloadManager {
   constructor(
     private readonly fsCache: FsCache,
     private readonly readWriteFsUsageCounter: FsUsageCounter,
@@ -45,68 +45,67 @@ export class FsDeinitManager {
     private readonly fsFlushManager: FsFlushManager
   ) {}
 
-  private readonly ongoingDeinits = new Map<string, PromiseImperativeHandle<void>>();
+  private readonly ongoingUnloads = new Map<string, PromiseImperativeHandle<void>>();
 
-  public async makeSpaceForOrWaitDeinitOf(fsMountPoint: string) {
+  public async makeSpaceForOrWaitUnloadOf(fsMountPoint: string) {
     if (!this.fsCache.hasSpaceFor(fsMountPoint)) {
       this.makeSpaceFor(fsMountPoint);
     } else {
       console.debug(`No need to make space for ${fsMountPoint}.`);
     }
 
-    // Can't forget to wait for a deinit that might be happening for the requested FS.
-    await this.ongoingDeinits.get(fsMountPoint)?.promise;
+    // Can't forget to wait for an unloading that might be happening for the requested FS.
+    await this.ongoingUnloads.get(fsMountPoint)?.promise;
   }
 
-  public deinitIfMarkedAndNotInUse(fsMountPoint: string) {
-    const deinitPromiseHandle = this.ongoingDeinits.get(fsMountPoint);
+  public unloadFsIfMarkedAndNotInUse(fsMountPoint: string) {
+    const unloadPromiseHandle = this.ongoingUnloads.get(fsMountPoint);
 
-    // If not marked to deinit, do nothing.
-    if (!deinitPromiseHandle) {
-      return { didTriggerDeinit: false };
+    // If not marked to unload, do nothing.
+    if (!unloadPromiseHandle) {
+      return { didTriggerUnload: false };
     }
 
-    // Can't deinit if is in use
+    // Can't unload if is in use
     if (this.readWriteFsUsageCounter.isInUse(fsMountPoint) || this.readonlyFsUsageCounter.isInUse(fsMountPoint)) {
-      return { didTriggerDeinit: false };
+      return { didTriggerUnload: false };
     }
 
     // Read-write FS usages must always trigger a flush. If there's no more usages of read-write FS, then
     // We certainly need to trigger a flush.
     const flushArgs = { executeEvenIfNotScheduled: !this.readWriteFsUsageCounter.isInUse(fsMountPoint) };
 
-    // No need to block the caller by a deinit.
-    setTimeout(() => this.deinitFs(fsMountPoint, deinitPromiseHandle, flushArgs), 0);
-    return { didTriggerDeinit: true };
+    // No need to block the caller by an unloading.
+    setTimeout(() => this.flushAndUnloadFs(fsMountPoint, unloadPromiseHandle, flushArgs), 0);
+    return { didTriggerUnload: true };
   }
 
   private makeSpaceFor(fsMountPoint: string) {
-    const fsMountPointToDeinit = this.fsCache.getLastRecentlyUsed();
-    if (this.ongoingDeinits.has(fsMountPointToDeinit)) {
+    const fsMountPointToUnload = this.fsCache.getLastRecentlyUsed();
+    if (this.ongoingUnloads.has(fsMountPointToUnload)) {
       return;
     }
 
-    console.debug(`Making space for ${fsMountPoint} by deinitting ${fsMountPointToDeinit}.`);
+    console.debug(`Making space for ${fsMountPoint} by unloading ${fsMountPointToUnload}.`);
 
     const { promise, resolve, reject } = imperativePromiseHandle<void>();
-    const deinitPromiseHandle = {
-      promise: promise.finally(() => this.ongoingDeinits.delete(fsMountPointToDeinit)),
+    const unloadPromiseHandle = {
+      promise: promise.finally(() => this.ongoingUnloads.delete(fsMountPointToUnload)),
       resolve,
       reject,
     };
 
-    this.ongoingDeinits.set(fsMountPointToDeinit, deinitPromiseHandle);
-    this.deinitIfMarkedAndNotInUse(fsMountPointToDeinit);
+    this.ongoingUnloads.set(fsMountPointToUnload, unloadPromiseHandle);
+    this.unloadFsIfMarkedAndNotInUse(fsMountPointToUnload);
   }
 
-  private async deinitFs(
+  private async flushAndUnloadFs(
     fsMountPoint: string,
-    deinitPromiseHandle: PromiseImperativeHandle<void>,
+    unloadPromiseHandle: PromiseImperativeHandle<void>,
     flushArgs: { executeEvenIfNotScheduled: boolean }
   ) {
     await this.fsFlushManager.expediteFlush(this.fsCache, fsMountPoint, flushArgs);
-
-    this.fsCache.deinitFs(fsMountPoint);
-    deinitPromiseHandle.resolve();
+    this.fsCache.unloadFs(fsMountPoint);
+    unloadPromiseHandle.resolve();
   }
 }

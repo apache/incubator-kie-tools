@@ -54,38 +54,38 @@ export class FsCache {
     return lruFsMountPoint;
   }
 
-  // get or create
+  // get or load
 
-  public getOrCreateFsSchema(fsMountPoint: string) {
+  public getOrLoadFsSchema(fsMountPoint: string) {
     const fsSchema = this.schemasCache[fsMountPoint];
     if (fsSchema) {
       return fsSchema;
     }
 
-    const newFsSchemaPromise = this.createFsSchema(fsMountPoint);
+    const newFsSchemaPromise = this.loadFsSchema(fsMountPoint);
     this.schemasCache[fsMountPoint] = newFsSchemaPromise;
     return newFsSchemaPromise;
   }
 
-  public getOrCreateFs(fsMountPoint: string) {
+  public getOrLoadFs(fsMountPoint: string) {
     const hit = this.cache.get(fsMountPoint);
     if (hit) {
       this.cache.set(fsMountPoint, { fs: hit.fs, lastHit: new Date() });
       return hit.fs;
     }
 
-    const newFsPromise = this.createFs(fsMountPoint);
+    const newFsPromise = this.loadFs(fsMountPoint);
     this.cache.set(fsMountPoint, { fs: newFsPromise, lastHit: new Date() });
     return newFsPromise;
   }
 
   // fs schema
 
-  private async createFsSchema(fsMountPoint: string): Promise<FsSchema> {
-    console.debug(`Getting FS Schema for ${fsMountPoint}`);
-    console.time(`Get FS Schema for ${fsMountPoint}`);
+  private async loadFsSchema(fsMountPoint: string): Promise<FsSchema> {
+    console.debug(`Loading FS Schema for ${fsMountPoint}`);
+    console.time(`Load FS Schema for ${fsMountPoint}`);
 
-    this.initFsSchema(fsMountPoint);
+    this.createFsSchemaStructure(fsMountPoint);
     await this.syncFsSchema(true, fsMountPoint);
 
     try {
@@ -106,7 +106,7 @@ export class FsCache {
         }
       }
     } finally {
-      console.timeEnd(`Get FS Schema for ${fsMountPoint}`);
+      console.timeEnd(`Load FS Schema for ${fsMountPoint}`);
     }
   }
 
@@ -125,10 +125,10 @@ export class FsCache {
     });
   }
 
-  private initFsSchema(fsMountPoint: string) {
+  private createFsSchemaStructure(fsMountPoint: string) {
     try {
       FS.stat(fsSchemaDir(fsMountPoint));
-      console.debug(`FS Schema already initiated for ${fsMountPoint}`);
+      console.debug(`FS Schema already loaded for ${fsMountPoint}`);
     } catch (e) {
       FS.mkdir(fsSchemaDir(fsMountPoint));
       FS.mount(IDBFS, {}, fsSchemaDir(fsMountPoint));
@@ -137,7 +137,7 @@ export class FsCache {
 
   private async flushFsSchema(fsMountPoint: string) {
     const fsSchemaToFlush = encoder.encode(
-      JSON.stringify(Array.from((await this.getOrCreateFsSchema(fsMountPoint)).entries()))
+      JSON.stringify(Array.from((await this.getOrLoadFsSchema(fsMountPoint)).entries()))
     );
 
     try {
@@ -151,14 +151,14 @@ export class FsCache {
 
   // fs
 
-  private async createFs(fsMountPoint: string) {
+  private async loadFs(fsMountPoint: string) {
     const newFs: KieSandboxWorkspacesFs = {
       promises: {
         rename: async (path: string, newPath: string) => {
           try {
             // console.debug("rename", path, newPath);
             FS.rename(path, newPath);
-            (await this.getOrCreateFsSchema(fsMountPoint)).delete(path);
+            (await this.getOrLoadFsSchema(fsMountPoint)).delete(path);
             await newFs.promises.lstat(newPath);
           } catch (e) {
             throwWasiErrorToNodeError("rename", e, path, newPath);
@@ -185,7 +185,7 @@ export class FsCache {
           try {
             // console.debug("unlink", path);
             FS.unlink(path);
-            (await this.getOrCreateFsSchema(fsMountPoint)).delete(path);
+            (await this.getOrLoadFsSchema(fsMountPoint)).delete(path);
           } catch (e) {
             throwWasiErrorToNodeError("unlink", e, path);
           }
@@ -211,7 +211,7 @@ export class FsCache {
           try {
             // console.debug("rmdir", path);
             FS.rmdir(path);
-            (await this.getOrCreateFsSchema(fsMountPoint)).delete(path);
+            (await this.getOrLoadFsSchema(fsMountPoint)).delete(path);
           } catch (e) {
             throwWasiErrorToNodeError("rmdir", e, path);
           }
@@ -261,12 +261,12 @@ export class FsCache {
       },
     };
 
-    console.time(`Bring FS to memory - ${fsMountPoint}`);
-    console.debug(`Bringing FS to memory - ${fsMountPoint}`);
-    await this.initFs(fsMountPoint);
+    console.time(`Load FS to memory - ${fsMountPoint}`);
+    console.debug(`Loading FS to memory - ${fsMountPoint}`);
+    await this.createFsStructure(fsMountPoint);
     await this.syncFs(true, fsMountPoint);
-    await this.getOrCreateFsSchema(fsMountPoint);
-    console.timeEnd(`Bring FS to memory - ${fsMountPoint}`);
+    await this.getOrLoadFsSchema(fsMountPoint);
+    console.timeEnd(`Load FS to memory - ${fsMountPoint}`);
 
     return newFs;
   }
@@ -286,41 +286,41 @@ export class FsCache {
     });
   }
 
-  private initFs(fsMountPoint: string) {
-    console.time(`Init FS - ${fsMountPoint}`);
-    console.debug(`Initiating FS - ${fsMountPoint}`);
+  private createFsStructure(fsMountPoint: string) {
+    console.time(`Load FS - ${fsMountPoint}`);
+    console.debug(`Loading FS - ${fsMountPoint}`);
     try {
       FS.mkdir(fsMountPoint);
       FS.mount(IDBFS, {}, fsMountPoint);
-      this.initFsSchema(fsMountPoint);
+      this.createFsSchemaStructure(fsMountPoint);
     } catch (e) {
       try {
-        throwWasiErrorToNodeError(`Init FS ${fsMountPoint}`, e, fsMountPoint);
+        throwWasiErrorToNodeError(`Load FS ${fsMountPoint}`, e, fsMountPoint);
       } catch (err) {
-        console.error(`Error initiating FS - ${fsMountPoint}`);
+        console.error(`Error loading FS - ${fsMountPoint}`);
         console.error(err);
       }
     } finally {
-      console.timeEnd(`Init FS - ${fsMountPoint}`);
+      console.timeEnd(`Load FS - ${fsMountPoint}`);
     }
   }
 
-  public deinitFs(fsMountPoint: string) {
-    console.debug(`Deinitiating FS - ${fsMountPoint}`);
-    console.time(`Deinit FS - ${fsMountPoint}`);
+  public unloadFs(fsMountPoint: string) {
+    console.debug(`Unloading FS - ${fsMountPoint}`);
+    console.time(`Unload FS - ${fsMountPoint}`);
     this.cache.delete(fsMountPoint);
     try {
       FS.unmount(fsMountPoint);
       FS.rmdir(fsMountPoint);
     } catch (e) {
       try {
-        throwWasiErrorToNodeError(`Deinit FS ${fsMountPoint}`, e, fsMountPoint);
+        throwWasiErrorToNodeError(`Unload FS ${fsMountPoint}`, e, fsMountPoint);
       } catch (err) {
-        console.error(`Error deinitiating FS - ${fsMountPoint}`);
+        console.error(`Error unloading FS - ${fsMountPoint}`);
         console.error(err);
       }
     } finally {
-      console.timeEnd(`Deinit FS - ${fsMountPoint}`);
+      console.timeEnd(`Unload FS - ${fsMountPoint}`);
     }
   }
 
@@ -361,7 +361,7 @@ async function toLfsStat(fsCache: FsCache, fsMountPoint: string, path: string, s
   // however, IDBFS does not keep `ino`s consistent between syncfs calls.
   // We need to persist an index containing the `ino`s and `mode`s for all files.
   // Luckily this is very cheap to do, as long as we keep the `schemasCache[fsMountPoint]` map up-to-date.
-  const fsSchema = await fsCache.getOrCreateFsSchema(fsMountPoint);
+  const fsSchema = await fsCache.getOrLoadFsSchema(fsMountPoint);
   const perpetualStat = fsSchema.set(path, fsSchema.get(path) ?? { ino: stat.ino, mode: stat.mode }).get(path)!;
 
   const isDir = FS.isDir(perpetualStat.mode);

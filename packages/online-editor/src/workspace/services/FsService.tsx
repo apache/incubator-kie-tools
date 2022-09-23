@@ -18,7 +18,7 @@ import { FsCache, FsSchema } from "./FsCache";
 import { KieSandboxWorkspacesFs } from "./KieSandboxWorkspaceFs";
 import { FsFlushManager } from "./FsFlushManager";
 import { FsUsageCounter } from "./FsUsageCounter";
-import { FsDeinitManager } from "./FsDeinitManager";
+import { FsUnloadManager } from "./FsUnloadManager";
 import { WorkspaceEvents } from "../worker/api/WorkspaceEvents";
 import { WorkspaceFileEvents } from "../worker/api/WorkspaceFileEvents";
 import { WorkspacesEvents } from "../worker/api/WorkspacesEvents";
@@ -61,7 +61,7 @@ export class FsService {
     private readonly readWriteFsUsageCounter = new FsUsageCounter(),
     private readonly readonlyFsUsageCounter = new FsUsageCounter(),
     private readonly fsCache = new FsCache(),
-    private readonly fsDeinitManager = new FsDeinitManager(
+    private readonly fsUnloadManager = new FsUnloadManager(
       fsCache,
       readWriteFsUsageCounter,
       readonlyFsUsageCounter,
@@ -71,7 +71,7 @@ export class FsService {
 
   public async withReadonlyFsSchema<T>(fsMountPoint: string, callback: (args: { fsSchema: FsSchema }) => Promise<T>) {
     // FS Schemas are never taken out of memory, so only getting is enough :)
-    const fsSchema = await this.fsCache.getOrCreateFsSchema(fsMountPoint);
+    const fsSchema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
     return await callback({ fsSchema });
   }
 
@@ -79,35 +79,35 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs; broadcaster: BroadcasterDispatch }) => Promise<T>
   ) {
-    // If there's a `deinit` in progress, there's not much we can do other than wait for it to finish
+    // If there's an unloading in progress, there's not much we can do other than wait for it to finish
     // and request a new FS again.
-    await this.fsDeinitManager.makeSpaceForOrWaitDeinitOf(fsMountPoint);
+    await this.fsUnloadManager.makeSpaceForOrWaitUnloadOf(fsMountPoint);
 
     // Count this usage in. 1 if that's the first time.
     this.readWriteFsUsageCounter.ackUsage(fsMountPoint);
 
-    // Get the FS, bringing it to memory if necessary.
-    const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
+    // Get the FS, loading it if necessary.
+    const readWriteFs = await this.fsCache.getOrLoadFs(fsMountPoint);
 
     try {
       // If there's a flush scheduled, no need to keep it there, as we'll schedule one right after using the FS.
       this.fsFlushManager.pauseScheduledFlushIfScheduled(fsMountPoint);
       return await callback({ fs: readWriteFs, broadcaster: new Broadcaster() });
     } finally {
-      // After using the FS, we need to decide if we're going to flush/deinit it or not.
+      // After using the FS, we need to decide if we're going to flush/unload it or not.
       // Regardless of exceptions that may have occurred.
 
-      // Without our 'self' usage, if there's still someone using the FS, we let them request the flush/deinit when they're done.
+      // Without our 'self' usage, if there's still someone using the FS, we let them request the flush/unload when they're done.
       const { usagesLeft } = this.readWriteFsUsageCounter.releaseUsage(fsMountPoint);
       if (usagesLeft > 0) {
-        console.log(`[${this.args.name}] Skipping flush/deinit for ${fsMountPoint}. (${usagesLeft} usages left.)`);
+        console.log(`[${this.args.name}] Skipping flush/unload for ${fsMountPoint}. (${usagesLeft} usages left.)`);
       }
 
       // If this usage is the last one using the FS, it's its job to request the flush.
       else {
-        const { didTriggerDeinit } = this.fsDeinitManager.deinitIfMarkedAndNotInUse(fsMountPoint);
-        if (didTriggerDeinit) {
-          console.log(`[${this.args.name}] Deinit triggered for ${fsMountPoint}`);
+        const { didTriggerUnload } = this.fsUnloadManager.unloadFsIfMarkedAndNotInUse(fsMountPoint);
+        if (didTriggerUnload) {
+          console.log(`[${this.args.name}] Unload triggered for ${fsMountPoint}`);
         } else {
           console.log(`[${this.args.name}] Requesting flush for ${fsMountPoint}`);
           const debounceTimeoutInMs = await this.getFlushDebounceTimeoutInMs(this.fsCache, fsMountPoint);
@@ -121,16 +121,16 @@ export class FsService {
     fsMountPoint: string,
     callback: (args: { fs: KieSandboxWorkspacesFs }) => Promise<T>
   ) {
-    await this.fsDeinitManager.makeSpaceForOrWaitDeinitOf(fsMountPoint);
+    await this.fsUnloadManager.makeSpaceForOrWaitUnloadOf(fsMountPoint);
 
     this.readonlyFsUsageCounter.ackUsage(fsMountPoint);
-    const readWriteFs = await this.fsCache.getOrCreateFs(fsMountPoint);
+    const readWriteFs = await this.fsCache.getOrLoadFs(fsMountPoint);
 
     try {
       return await callback({ fs: this.getReadonlyFs(fsMountPoint, readWriteFs) });
     } finally {
       this.readonlyFsUsageCounter.releaseUsage(fsMountPoint);
-      this.fsDeinitManager.deinitIfMarkedAndNotInUse(fsMountPoint);
+      this.fsUnloadManager.unloadFsIfMarkedAndNotInUse(fsMountPoint);
     }
   }
 
@@ -167,7 +167,7 @@ export class FsService {
   }
 
   private async getFlushDebounceTimeoutInMs(fsCache: FsCache, fsMountPoint: string) {
-    if ((await fsCache.getOrCreateFsSchema(fsMountPoint)).size > BIG_FS_SIZE_IN_ENTRIES_COUNT) {
+    if ((await fsCache.getOrLoadFsSchema(fsMountPoint)).size > BIG_FS_SIZE_IN_ENTRIES_COUNT) {
       return BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS;
     } else {
       return DEFAULT_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS;
