@@ -181,7 +181,7 @@ export function NewFileDropdownMenu(props: {
         filesToUpload.map(async (file) => {
           return workspaces.addFile({
             workspaceId: props.workspaceId,
-            name: file.path,
+            name: basename(file.path, extname(file.path)),
             extension: extname(file.path).replace(".", ""),
             content: file.content,
             destinationDirRelativePath: props.destinationDirPath,
