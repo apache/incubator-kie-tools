@@ -164,6 +164,18 @@ export function EditorToolbar(props: Props) {
     return !isEdited && flushes && !flushes.some((f) => f.includes(props.workspaceFile.workspaceId));
   }, [isEdited, flushes, props.workspaceFile.workspaceId]);
 
+  // Prevent from closing without flushing before.
+  useEffect(() => {
+    if (isSaved) {
+      return;
+    }
+
+    window.onbeforeunload = () => "Some changes are not written to disk yet.";
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, [isSaved]);
+
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
