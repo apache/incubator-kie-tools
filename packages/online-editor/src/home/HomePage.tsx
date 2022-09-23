@@ -122,6 +122,10 @@ export function HomePage() {
   );
 
   useEffect(() => {
+    document.title = "KIE Sandbox :: Home";
+  }, []);
+
+  useEffect(() => {
     if (
       workspaceDescriptorsPromise.data &&
       !workspaceDescriptorsPromise.data.map((f) => f.workspaceId).includes(expandedWorkspaceId!)

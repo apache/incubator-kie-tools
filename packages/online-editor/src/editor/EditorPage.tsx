@@ -73,6 +73,10 @@ export function EditorPage(props: Props) {
 
   useDmnTour(!!editor?.isReady && workspaceFilePromise.data?.workspaceFile.extension === "dmn" && !isFileBroken);
 
+  useEffect(() => {
+    document.title = `KIE Sandbox :: ${props.fileRelativePath}`;
+  }, [props.fileRelativePath]);
+
   const setContentErrorAlert = useAlert(
     alerts,
     useCallback(() => {
