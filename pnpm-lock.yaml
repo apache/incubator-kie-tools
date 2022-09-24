@@ -2995,6 +2995,7 @@ importers:
       jszip: ^3.7.1
       minimatch: ^3.0.4
       moment: ^2.29.4
+      patch-package: ^6.4.7
       react: ^17.0.2
       react-dom: ^17.0.2
       react-dropzone: ^11.4.2
@@ -3083,6 +3084,7 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
+      patch-package: 6.4.7
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
