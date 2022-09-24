@@ -40,7 +40,7 @@ module.exports = (env) =>
           { from: path.resolve(__dirname, "./static/favicon.ico"), to: "./favicon.ico" },
           {
             from: path.resolve(__dirname, "../dist/dashbuilder-client"),
-            to: "./dashbuilder-client",
+            to: "./",
           },
           {
             from: path.resolve(__dirname, "./static/envelope/dashbuilder-viewer-envelope.html"),

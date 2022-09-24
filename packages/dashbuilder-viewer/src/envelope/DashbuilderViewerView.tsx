@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { DashbuilderWrapper } from "../dashbuilder/DashbuilderWrapper";
 import {
   Editor,
   EditorApi,
@@ -23,11 +24,18 @@ import {
 import { DEFAULT_RECT } from "@kie-tools-core/guided-tour/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
-import { DashbuilderViewer } from "./DashbuilderViewer";
 import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
+
+export interface CustomWindow extends Window {
+  setDashbuilderContent: (content: string) => void;
+  dashbuilderReady: () => void;
+}
+
+declare let window: CustomWindow;
 
 export class DashbuilderViewerView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
+  public dashbuilderWrapper: DashbuilderWrapper;
   public af_isReact = true;
   public af_componentId: "dashbuilder-editor";
   public af_componentTitle: "Dashbuilder Editor";
@@ -37,6 +45,9 @@ export class DashbuilderViewerView implements Editor {
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();
+    this.dashbuilderWrapper = new DashbuilderWrapper(() =>
+      envelopeContext.channelApi.notifications.kogitoEditor_ready.send()
+    );
   }
 
   public async getElementPosition() {
@@ -44,34 +55,19 @@ export class DashbuilderViewerView implements Editor {
   }
 
   public setContent(path: string, content: string): Promise<void> {
-    return this.editorRef.current!.setContent(path, content);
+    this.dashbuilderWrapper.setContent(content);
+    return Promise.resolve();
   }
 
   public getContent(): Promise<string> {
-    return this.editorRef.current!.getContent();
+    return Promise.resolve(this.dashbuilderWrapper.getContent());
   }
 
   public getPreview(): Promise<string | undefined> {
     return this.editorRef.current!.getPreview();
   }
-
   public af_componentRoot() {
-    return (
-      <DashbuilderViewer
-        ref={this.editorRef}
-        channelType={this.initArgs.channel}
-        onReady={() => this.envelopeContext.channelApi.notifications.kogitoEditor_ready.send()}
-        onNewEdit={(edit) => {
-          this.envelopeContext.channelApi.notifications.kogitoWorkspace_newEdit.send(edit);
-        }}
-        setNotifications={(path, notifications) =>
-          this.envelopeContext.channelApi.notifications.kogitoNotifications_setNotifications.send(path, notifications)
-        }
-        onStateControlCommandUpdate={(command) =>
-          this.envelopeContext.channelApi.notifications.kogitoEditor_stateControlCommandUpdate.send(command)
-        }
-      />
-    );
+    return <></>;
   }
 
   public async undo(): Promise<void> {

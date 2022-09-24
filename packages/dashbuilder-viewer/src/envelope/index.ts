@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-export * from "./DashbuilderViewer";
 export * from "./DashbuilderViewerFactory";
 export * from "./DashbuilderViewerView";
 export * from "./DashbuilderViewerChannelApi";
