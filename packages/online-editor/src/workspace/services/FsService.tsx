@@ -51,7 +51,7 @@ export class Broadcaster implements BroadcasterDispatch {
 }
 
 const DEFAULT_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 100;
-const BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 2000;
+const BIG_FS_FLUSH_DEBOUNCE_TIMEOUT_IN_MS = 500;
 const BIG_FS_SIZE_IN_ENTRIES_COUNT = 1000;
 
 export class FsService {

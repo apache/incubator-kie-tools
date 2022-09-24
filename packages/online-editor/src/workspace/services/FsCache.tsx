@@ -370,7 +370,7 @@ async function toLfsStat(fsCache: FsCache, fsMountPoint: string, path: string, s
 
   return {
     mode: perpetualStat.mode,
-    size: -1,
+    size: stat.size,
     ino: perpetualStat.ino,
     mtimeMs: stat.mtime,
     ctimeMs: stat.ctime,
