@@ -560,7 +560,7 @@ const implPromise = new Promise<WorkspacesWorkerApi>((resImpl) => {
       });
     },
     async kieSandboxWorkspacesGit_hasLocalChanges(args: { workspaceId: string }) {
-      return fsService.withReadonlyInMemoryFs(args.workspaceId, async ({ fs }) => {
+      return fsService.withReadWriteInMemoryFs(args.workspaceId, async ({ fs }) => {
         return gitService.hasLocalChanges({
           fs: fs,
           dir: service.getAbsolutePath({ workspaceId: args.workspaceId }),
