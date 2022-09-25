@@ -21,7 +21,7 @@ export class FsUsageCounter {
     return this.counter.has(fsMountPoint);
   }
 
-  public ackUsage(fsMountPoint: string) {
+  public addUsage(fsMountPoint: string) {
     console.log(`Adding to usage counter ${fsMountPoint}`);
     this.counter.set(fsMountPoint, (this.counter.get(fsMountPoint) ?? 0) + 1);
   }

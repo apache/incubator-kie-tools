@@ -83,8 +83,8 @@ export class FsService {
     // and request a new FS again.
     await this.fsUnloadManager.makeSpaceForOrWaitUnloadOf(fsMountPoint);
 
-    // Count this usage in. 1 if that's the first time.
-    this.readWriteFsUsageCounter.ackUsage(fsMountPoint);
+    // Count this usage in.
+    this.readWriteFsUsageCounter.addUsage(fsMountPoint);
 
     // Get the schema and the FS, loading it if necessary.
     const schema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
@@ -98,7 +98,7 @@ export class FsService {
       // After using the FS, we need to decide if we're going to flush/unload it or not.
       // Regardless of exceptions that may have occurred.
 
-      // Without our 'self' usage, if there's still someone using the FS, we let them request the flush/unload when they're done.
+      // If there's still someone using the FS, let them request the flush/unload when they're done.
       const { usagesLeft } = this.readWriteFsUsageCounter.releaseUsage(fsMountPoint);
       if (usagesLeft > 0) {
         console.log(`[${this.args.name}] Skipping flush/unload for ${fsMountPoint}. (${usagesLeft} usages left.)`);
@@ -124,7 +124,7 @@ export class FsService {
   ) {
     await this.fsUnloadManager.makeSpaceForOrWaitUnloadOf(fsMountPoint);
 
-    this.readonlyFsUsageCounter.ackUsage(fsMountPoint);
+    this.readonlyFsUsageCounter.addUsage(fsMountPoint);
     const schema = await this.fsCache.getOrLoadFsSchema(fsMountPoint);
     const fs = await this.fsCache.getOrLoadFs(fsMountPoint);
 
