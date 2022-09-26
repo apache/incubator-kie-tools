@@ -6,8 +6,8 @@ on:
       kogito_runtime_version:
         description: "Kogito Runtime version"
         required: true
-      version:
-        description: "Version"
+      npm_version:
+        description: "NPM Version"
         required: true
   pull_request:
     paths:
@@ -130,19 +130,13 @@ jobs:
 
       - name: "Pack and publish"
         working-directory: ./.github/supporting-files/publish_jitexecutor_native
+        if: ${{ !github.event.pull_request }}
         env:
           NPM_TOKEN: ${{ secrets.KIEGROUP_NPM_TOKEN }}
         run: |
           mv ./dist/linux/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/linux/jitexecutor
           mv ./dist/darwin/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner ./dist/darwin/jitexecutor
           mv ./dist/win32/jitexecutor-runner-${{ github.event.inputs.kogito_runtime_version }}-runner.exe ./dist/win32/jitexecutor.exe
-          npm version ${{ github.event.inputs.version }}
-          if [ ${{ github.event.pull_request }} ]; then
-            echo "CI. Publish skipped."
-          else
-            echo "Publishing."
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-            npm publish --access public
-          fi
-            echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
-            npm publish --access public
+          npm version ${{ github.event.inputs.npm_version }}
+          echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > ~/.npmrc
+          npm publish --access public
