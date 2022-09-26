@@ -19,7 +19,7 @@ import (
 	"context"
 
 	"github.com/RHsyseng/operator-utils/pkg/logs"
-	api "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	oappsv1 "github.com/openshift/api/apps/v1"
 	buildv1 "github.com/openshift/api/build/v1"
 	consolev1 "github.com/openshift/api/console/v1"
@@ -102,10 +102,10 @@ var knownTypes = map[schema.GroupVersion][]runtime.Object{
 }
 
 func MockServiceWithExtraScheme(objs ...runtime.Object) *MockPlatformService {
-	registerObjs := []runtime.Object{&api.KogitoServerlessWorkflow{}, &api.KogitoServerlessWorkflowList{}}
+	registerObjs := []runtime.Object{&apiv08.KogitoServerlessWorkflow{}, &apiv08.KogitoServerlessWorkflowList{}}
 	registerObjs = append(registerObjs, objs...)
-	api.SchemeBuilder.Register(registerObjs...)
-	scheme, _ := api.SchemeBuilder.Build()
+	apiv08.SchemeBuilder.Register(registerObjs...)
+	scheme, _ := apiv08.SchemeBuilder.Build()
 	for gv, types := range knownTypes {
 		for _, t := range types {
 			scheme.AddKnownTypes(gv, t)

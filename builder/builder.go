@@ -69,7 +69,7 @@ func BuildImage(b KogitoBuilder) (*api.Build, error) {
 		fmt.Println(err.Error())
 		return nil, err
 	}
-	
+
 	return build, err
 }
 

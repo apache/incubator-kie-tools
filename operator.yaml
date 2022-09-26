@@ -11,9 +11,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: kogitoserverlessworkflows.kie.kogito.sw.org
+  name: kogitoserverlessworkflows.sw.kogito.kie.org
 spec:
-  group: kie.kogito.sw.org
+  group: sw.kogito.kie.org
   names:
     kind: KogitoServerlessWorkflow
     listKind: KogitoServerlessWorkflowList
@@ -21,7 +21,7 @@ spec:
     singular: kogitoserverlessworkflow
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows API
@@ -126,7 +126,6 @@ spec:
                             type: string
                         required:
                         - clientId
-                        - clientSecret
                         - grantType
                         type: object
                     type: object
@@ -204,7 +203,6 @@ spec:
                       type: string
                   required:
                   - name
-                  - source
                   - type
                   type: object
                 type: array
@@ -234,10 +232,9 @@ spec:
                   required:
                   - name
                   - operation
-                  - type
                   type: object
                 type: array
-              keepAlive:
+              keepActive:
                 type: boolean
               retries:
                 properties:
@@ -334,7 +331,20 @@ spec:
                             - produceEventRef
                             type: object
                           functionRef:
-                            type: string
+                            properties:
+                              arguments:
+                                additionalProperties:
+                                  type: string
+                                type: object
+                              invoke:
+                                type: string
+                              refName:
+                                type: string
+                              selectionSet:
+                                type: string
+                            required:
+                            - refName
+                            type: object
                           name:
                             type: string
                           nonRetryableErrors:
@@ -507,7 +517,6 @@ spec:
                             type: string
                         required:
                         - name
-                        - source
                         - type
                         type: object
                       type: array
@@ -564,8 +573,556 @@ spec:
                   url:
                     type: string
                 type: object
+              applied:
+                description: KogitoServerlessWorkflowSpec defines the desired state of KogitoServerlessWorkflow
+                properties:
+                  auth:
+                    properties:
+                      name:
+                        type: string
+                      properties:
+                        properties:
+                          basic:
+                            properties:
+                              metadata:
+                                items:
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              password:
+                                type: string
+                              username:
+                                type: string
+                            required:
+                            - password
+                            - username
+                            type: object
+                          bearer:
+                            properties:
+                              metadata:
+                                items:
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              token:
+                                type: string
+                            required:
+                            - token
+                            type: object
+                          oauth2:
+                            properties:
+                              audiences:
+                                items:
+                                  type: string
+                                type: array
+                              basic:
+                                type: string
+                              clientId:
+                                type: string
+                              clientSecret:
+                                type: string
+                              grantType:
+                                type: string
+                              metadata:
+                                items:
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              password:
+                                type: string
+                              requestedIssuer:
+                                type: string
+                              requestedSubject:
+                                type: string
+                              scopes:
+                                items:
+                                  type: string
+                                type: array
+                              subjectToken:
+                                type: string
+                              username:
+                                type: string
+                            required:
+                            - clientId
+                            - grantType
+                            type: object
+                        type: object
+                      scheme:
+                        type: string
+                    required:
+                    - name
+                    - properties
+                    - scheme
+                    type: object
+                  autoRetries:
+                    type: boolean
+                  conditions:
+                    items:
+                      properties:
+                        name:
+                          type: string
+                        value:
+                          type: string
+                      required:
+                      - name
+                      - value
+                      type: object
+                    type: array
+                  errors:
+                    items:
+                      properties:
+                        code:
+                          type: string
+                        description:
+                          type: string
+                        name:
+                          type: string
+                      required:
+                      - code
+                      - name
+                      type: object
+                    type: array
+                  events:
+                    items:
+                      properties:
+                        correlation:
+                          items:
+                            properties:
+                              contextAttributeName:
+                                type: string
+                              contextAttributeValue:
+                                type: string
+                            required:
+                            - contextAttributeName
+                            - contextAttributeValue
+                            type: object
+                          type: array
+                        dataOnly:
+                          type: boolean
+                        kind:
+                          type: string
+                        metadata:
+                          items:
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: string
+                            required:
+                            - key
+                            - value
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        source:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                      - name
+                      - type
+                      type: object
+                    type: array
+                  functions:
+                    items:
+                      properties:
+                        authRef:
+                          type: string
+                        metadata:
+                          items:
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: string
+                            required:
+                            - key
+                            - value
+                            type: object
+                          type: array
+                        name:
+                          type: string
+                        operation:
+                          type: string
+                        type:
+                          type: string
+                      required:
+                      - name
+                      - operation
+                      type: object
+                    type: array
+                  keepActive:
+                    type: boolean
+                  retries:
+                    properties:
+                      delay:
+                        type: string
+                      increment:
+                        type: string
+                      jitter:
+                        type: string
+                      maxAttempts:
+                        type: integer
+                      maxDelay:
+                        type: string
+                      multiplier:
+                        type: string
+                      name:
+                        type: string
+                    required:
+                    - name
+                    type: object
+                  secrets:
+                    items:
+                      description: Secret holds secret data of a certain type. The total bytes of the values in the Data field must be less than MaxSecretSize bytes.
+                      properties:
+                        apiVersion:
+                          description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+                          type: string
+                        data:
+                          additionalProperties:
+                            format: byte
+                            type: string
+                          description: Data contains the secret data. Each key must consist of alphanumeric characters, '-', '_' or '.'. The serialized form of the secret data is a base64 encoded string, representing the arbitrary (possibly non-string) data value here. Described in https://tools.ietf.org/html/rfc4648#section-4
+                          type: object
+                        immutable:
+                          description: Immutable, if set to true, ensures that data stored in the Secret cannot be updated (only object metadata can be modified). If not set to true, the field can be modified at any time. Defaulted to nil.
+                          type: boolean
+                        kind:
+                          description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+                          type: string
+                        metadata:
+                          description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                          type: object
+                        stringData:
+                          additionalProperties:
+                            type: string
+                          description: stringData allows specifying non-binary secret data in string form. It is provided as a write-only input field for convenience. All keys and values are merged into the data field on write, overwriting any existing values. The stringData field is never output when reading from the API.
+                          type: object
+                        type:
+                          description: 'Used to facilitate programmatic handling of secret data. More info: https://kubernetes.io/docs/concepts/configuration/secret/#secret-types'
+                          type: string
+                      type: object
+                    type: array
+                  start:
+                    type: string
+                  states:
+                    items:
+                      properties:
+                        actionMode:
+                          type: string
+                        actions:
+                          items:
+                            properties:
+                              actionDataFilter:
+                                properties:
+                                  fromStateData:
+                                    type: string
+                                  results:
+                                    type: string
+                                  toStateData:
+                                    type: string
+                                  useResults:
+                                    type: boolean
+                                type: object
+                              condition:
+                                type: boolean
+                              eventRef:
+                                properties:
+                                  consumeEventRef:
+                                    type: string
+                                  consumeEventTimeout:
+                                    type: string
+                                  contextAttributes:
+                                    additionalProperties:
+                                      type: object
+                                    description: TODO Define a custom type for ContextAttribute
+                                    type: object
+                                  data:
+                                    type: string
+                                  invoke:
+                                    type: string
+                                  produceEventRef:
+                                    type: string
+                                required:
+                                - produceEventRef
+                                type: object
+                              functionRef:
+                                properties:
+                                  arguments:
+                                    additionalProperties:
+                                      type: string
+                                    type: object
+                                  invoke:
+                                    type: string
+                                  refName:
+                                    type: string
+                                  selectionSet:
+                                    type: string
+                                required:
+                                - refName
+                                type: object
+                              name:
+                                type: string
+                              nonRetryableErrors:
+                                items:
+                                  type: string
+                                type: array
+                              retryRef:
+                                type: string
+                              retryableErrors:
+                                items:
+                                  type: string
+                                type: array
+                              sleep:
+                                description: Sleep ...
+                                properties:
+                                  after:
+                                    description: After Amount of time (ISO 8601 duration format) to sleep after function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                    type: string
+                                  before:
+                                    description: Before Amount of time (ISO 8601 duration format) to sleep before function/subflow invocation. Does not apply if 'eventRef' is defined.
+                                    type: string
+                                type: object
+                              subFlowRef:
+                                type: string
+                            required:
+                            - name
+                            type: object
+                          type: array
+                        batchSize:
+                          type: integer
+                        branches:
+                          items:
+                            type: string
+                          type: array
+                        compensatedBy:
+                          type: string
+                        completionType:
+                          type: object
+                        data:
+                          additionalProperties:
+                            type: string
+                          type: object
+                        dataConditions:
+                          description: 'TODO: Define a type for DataCondition objects'
+                          items:
+                            properties:
+                              condition:
+                                type: string
+                              end:
+                                type: string
+                              metadata:
+                                items:
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              name:
+                                type: string
+                              transition:
+                                type: string
+                            required:
+                            - condition
+                            type: object
+                          type: array
+                        defaultCondition:
+                          description: 'TODO: Define a type for DefaultCondition object'
+                          type: string
+                        duration:
+                          type: string
+                        end:
+                          type: boolean
+                        eventConditions:
+                          description: 'TODO: Define a type for EventContitions objects'
+                          items:
+                            type: string
+                          type: array
+                        eventDataFilter:
+                          type: object
+                        eventRef:
+                          properties:
+                            consumeEventRef:
+                              type: string
+                            consumeEventTimeout:
+                              type: string
+                            contextAttributes:
+                              additionalProperties:
+                                type: object
+                              description: TODO Define a custom type for ContextAttribute
+                              type: object
+                            data:
+                              type: string
+                            invoke:
+                              type: string
+                            produceEventRef:
+                              type: string
+                          required:
+                          - produceEventRef
+                          type: object
+                        exclusive:
+                          type: boolean
+                        inputCollection:
+                          type: string
+                        iterationParam:
+                          type: string
+                        metadata:
+                          items:
+                            properties:
+                              key:
+                                type: string
+                              value:
+                                type: string
+                            required:
+                            - key
+                            - value
+                            type: object
+                          type: array
+                        mode:
+                          type: object
+                        name:
+                          type: string
+                        numCompleted:
+                          type: integer
+                        onErrors:
+                          items:
+                            type: string
+                          type: array
+                        onEvents:
+                          description: 'TODO: Double-check that we can use the Event type here'
+                          items:
+                            properties:
+                              correlation:
+                                items:
+                                  properties:
+                                    contextAttributeName:
+                                      type: string
+                                    contextAttributeValue:
+                                      type: string
+                                  required:
+                                  - contextAttributeName
+                                  - contextAttributeValue
+                                  type: object
+                                type: array
+                              dataOnly:
+                                type: boolean
+                              kind:
+                                type: string
+                              metadata:
+                                items:
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  required:
+                                  - key
+                                  - value
+                                  type: object
+                                type: array
+                              name:
+                                type: string
+                              source:
+                                type: string
+                              type:
+                                type: string
+                            required:
+                            - name
+                            - type
+                            type: object
+                          type: array
+                        outputCollection:
+                          type: string
+                        stateDataFilter:
+                          type: object
+                        timeouts:
+                          type: object
+                        transition:
+                          type: string
+                        type:
+                          enum:
+                          - event
+                          - operation
+                          - switch
+                          - sleep
+                          - parallel
+                          - inject
+                          - foreach
+                          type: string
+                        usedForCompensation:
+                          type: boolean
+                      required:
+                      - name
+                      - type
+                      type: object
+                    type: array
+                  timeouts:
+                    items:
+                      properties:
+                        actionExecTimeout:
+                          type: string
+                        branchExecTimeout:
+                          type: string
+                        eventTimeout:
+                          type: string
+                        stateExecTimeout:
+                          type: string
+                        workflowExecTimeout:
+                          type: string
+                      type: object
+                    type: array
+                required:
+                - start
+                - states
+                type: object
               conditions:
                 type: string
+              deployments:
+                properties:
+                  ready:
+                    description: Deployments are ready to serve requests
+                    items:
+                      type: string
+                    type: array
+                  starting:
+                    description: Deployments are starting, may or may not succeed
+                    items:
+                      type: string
+                    type: array
+                  stopped:
+                    description: Deployments are not starting, unclear what next step will be
+                    items:
+                      type: string
+                    type: array
+                type: object
               endpoints:
                 items:
                   properties:
@@ -579,7 +1136,13 @@ spec:
                       type: string
                   type: object
                 type: array
+              phase:
+                description: ConditionType - type of condition
+                type: string
+              version:
+                type: string
             required:
+            - deployments
             - endpoints
             type: object
         type: object
@@ -640,10 +1203,39 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   creationTimestamp: null
+  name: kogito-serverless-operator-builder-manager-role
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - pods
+  - pods/exec
+  - services
+  - services/finalizers
+  - namespaces
+  - serviceaccounts
+  - persistentvolumeclaims
+  - secrets
+  - events
+  verbs:
+  - create
+  - delete
+  - deletecollection
+  - get
+  - list
+  - patch
+  - update
+  - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
   name: kogito-serverless-operator-manager-role
 rules:
 - apiGroups:
-  - kie.kogito.sw.org
+  - sw.kogito.kie.org
   resources:
   - kogitoserverlessworkflows
   verbs:
@@ -655,13 +1247,13 @@ rules:
   - update
   - watch
 - apiGroups:
-  - kie.kogito.sw.org
+  - sw.kogito.kie.org
   resources:
   - kogitoserverlessworkflows/finalizers
   verbs:
   - update
 - apiGroups:
-  - kie.kogito.sw.org
+  - sw.kogito.kie.org
   resources:
   - kogitoserverlessworkflows/status
   verbs:
@@ -706,6 +1298,19 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: kogito-serverless-operator-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: kogito-serverless-operator-controller-manager
+  namespace: kogito-serverless-operator-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kogito-serverless-operator-builder-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kogito-serverless-operator-builder-manager-role
 subjects:
 - kind: ServiceAccount
   name: kogito-serverless-operator-controller-manager

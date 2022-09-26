@@ -16,7 +16,7 @@
 package constants
 
 const (
-	BUILDER_NAMESPACE_DEFAULT = "kogito-builder"
+	BUILDER_NAMESPACE_DEFAULT = "kogito-serverless-operator-system"
 	BUILDER_IMG_NAME_DEFAULT  = "Platform"
 
 	BUILDER_RESOURCE_NAME_DEFAULT = "Dockerfile"

@@ -3,7 +3,7 @@ package converters
 import (
 	"context"
 	"errors"
-	"github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	"github.com/davidesalerno/kogito-serverless-operator/constants"
 	"github.com/go-logr/logr"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
@@ -24,7 +24,7 @@ func NewKogitoServerlessWorkflowConverter(contex context.Context) KogitoServerle
 }
 
 // Function to convert a KogitoServerlessWorkflow object to a model.Workflow one in order to be able to convert it to a YAML/Json
-func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *v1alpha1.KogitoServerlessWorkflow) (*model.Workflow, error) {
+func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *apiv08.KogitoServerlessWorkflow) (*model.Workflow, error) {
 	if serverlessWorkflow != nil {
 		log = ctrllog.FromContext(k.ctx)
 		newBaseWorkflow := &model.BaseWorkflow{ID: serverlessWorkflow.ObjectMeta.Name,
@@ -37,7 +37,7 @@ func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *v
 			KeepActive:     serverlessWorkflow.Spec.KeepActive,
 			AutoRetries:    serverlessWorkflow.Spec.AutoRetries,
 			Start:          retrieveStartState(serverlessWorkflow.Spec.Start)}
-		log.Info("Created new Base Workflow with name", newBaseWorkflow.Name)
+		log.Info("Created new Base Workflow with name", "name", newBaseWorkflow.Name)
 		newWorkflow := &model.Workflow{BaseWorkflow: *newBaseWorkflow, Functions: retrieveFunctions(serverlessWorkflow.Spec.Functions), States: retrieveStates(serverlessWorkflow.Spec.States)}
 		return newWorkflow, nil
 	}
@@ -45,7 +45,7 @@ func (k *KogitoServerlessWorkflowConverter) ToCNCFWorkflow(serverlessWorkflow *v
 }
 
 // Function to extract from the apiVersion the ServerlessWorkflow schema version
-// For example given kie.kogito.sw.org/v08 we would like to extract v0.8
+// For example given sw.kogito.kie.org/apiv08 we would like to extract v0.8
 func extractSchemaVersion(version string) string {
 	schemaVersion := path.Base(version)
 	strings.Replace(schemaVersion, "v0", "v0.", 1)
@@ -58,10 +58,10 @@ func retrieveStartState(name string) *model.Start {
 	return start
 }
 
-// Function to retrieve a list of states coming from an array of v1alpha1.State objects
-func retrieveStates(incomingStates []v1alpha1.State) []model.State {
+// Function to retrieve a list of states coming from an array of v08.State objects
+func retrieveStates(incomingStates []apiv08.State) []model.State {
 	states := make([]model.State, len(incomingStates))
-	log.Info("States: ", incomingStates)
+	log.Info("States: ", "states", incomingStates)
 	for i, s := range incomingStates {
 		newBaseState := &model.BaseState{Name: s.Name}
 		if s.End {
@@ -118,7 +118,7 @@ func retrieveStates(incomingStates []v1alpha1.State) []model.State {
 			}
 			states[i] = &model.OperationState{BaseState: *newBaseState, Actions: actions}
 		default:
-			log.Info("Unable to create a CNCF State from incoming state type ", sType)
+			log.Info("Unable to create a CNCF State from incoming state type ", "type", sType)
 		}
 	}
 	return states
@@ -140,8 +140,8 @@ func getArguments(arguments map[string]string) map[string]interface{} {
 	return out
 }
 
-// Function to retrieve a list of model.Function coming from an array of v1alpha1.Function objects
-func retrieveFunctions(incomingFunctions []v1alpha1.Function) []model.Function {
+// Function to retrieve a list of model.Function coming from an array of v08.Function objects
+func retrieveFunctions(incomingFunctions []apiv08.Function) []model.Function {
 	functions := make([]model.Function, len(incomingFunctions))
 	for i, f := range incomingFunctions {
 		switch ftype := f.Type; ftype {

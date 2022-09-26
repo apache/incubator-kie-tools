@@ -17,7 +17,7 @@ package controllers
 
 import (
 	"context"
-	"github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	"github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	"github.com/davidesalerno/kogito-serverless-operator/test/utils"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -35,7 +35,7 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 			namespace = "kogito-serverless-operator-system"
 		)
 		// Create a KogitoServerlessWorkflow object with metadata and spec.
-		ksw, errYaml := utils.GetKogitoServerlessWorkflow("../config/samples/kie.kogito.sw.org__v1alpha1_kogitoserverlessworkflow.yaml")
+		ksw, errYaml := utils.GetKogitoServerlessWorkflow("../config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml")
 		if errYaml != nil {
 			t.Fatalf("Error reading YAML file #%v ", errYaml)
 		}
@@ -44,7 +44,7 @@ func TestKogitoServerlessWorkflowController(t *testing.T) {
 
 		// Register operator types with the runtime scheme.
 		s := scheme.Scheme
-		s.AddKnownTypes(v1alpha1.GroupVersion, ksw)
+		s.AddKnownTypes(v08.GroupVersion, ksw)
 
 		// Create a fake client to mock API calls.
 		cl := fake.NewFakeClient(objs...)

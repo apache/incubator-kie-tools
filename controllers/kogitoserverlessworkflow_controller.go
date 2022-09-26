@@ -18,7 +18,7 @@ package controllers
 
 import (
 	"context"
-	serverlessv1alpha1 "github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1"
+	apiv08 "github.com/davidesalerno/kogito-serverless-operator/api/v08"
 	"github.com/davidesalerno/kogito-serverless-operator/builder"
 	"github.com/davidesalerno/kogito-serverless-operator/converters"
 	"github.com/ghodss/yaml"
@@ -35,9 +35,9 @@ type KogitoServerlessWorkflowReconciler struct {
 	Scheme *runtime.Scheme
 }
 
-//+kubebuilder:rbac:groups=kie.kogito.sw.org,resources=kogitoserverlessworkflows,verbs=get;list;watch;create;update;patch;delete
-//+kubebuilder:rbac:groups=kie.kogito.sw.org,resources=kogitoserverlessworkflows/status,verbs=get;update;patch
-//+kubebuilder:rbac:groups=kie.kogito.sw.org,resources=kogitoserverlessworkflows/finalizers,verbs=update
+//+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessworkflows,verbs=get;list;watch;create;update;patch;delete
+//+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessworkflows/status,verbs=get;update;patch
+//+kubebuilder:rbac:groups=sw.kogito.kie.org,resources=kogitoserverlessworkflows/finalizers,verbs=update
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -49,9 +49,8 @@ type KogitoServerlessWorkflowReconciler struct {
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.11.2/pkg/reconcile
 func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := ctrllog.FromContext(ctx)
-
 	// Lookup the KogitoServerlessWorkflow instance for this reconcile request
-	instance := &serverlessv1alpha1.KogitoServerlessWorkflow{}
+	instance := &apiv08.KogitoServerlessWorkflow{}
 	err := r.Get(ctx, req.NamespacedName, instance)
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -79,7 +78,7 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 		log.Error(err, "Failed converting KogitoServerlessWorkflow into YAML")
 		return ctrl.Result{}, err
 	}
-	log.Info("Converted Workflow CR into Kogito Yaml Workflow", yamlWorkflow)
+	log.Info("Converted Workflow CR into Kogito Yaml Workflow", "workflow", yamlWorkflow)
 	//TODO Save into Shared Volume
 	//"greetings.sw.json"
 	//TODO KOGITO-7498 Kogito Serverless Workflow Builder Image
@@ -91,6 +90,6 @@ func (r *KogitoServerlessWorkflowReconciler) Reconcile(ctx context.Context, req 
 // SetupWithManager sets up the controller with the Manager.
 func (r *KogitoServerlessWorkflowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&serverlessv1alpha1.KogitoServerlessWorkflow{}).
+		For(&apiv08.KogitoServerlessWorkflow{}).
 		Complete(r)
 }

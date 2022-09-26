@@ -14,8 +14,8 @@ resources:
   domain: kiegroup.org
   group: serverless
   kind: Workflow
-  path: github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1
-  version: v1alpha1
+  path: github.com/davidesalerno/kogito-serverless-operator/api/v08
+  version: v08
 - api:
     crdVersion: v1
     namespaced: true
@@ -23,8 +23,8 @@ resources:
   domain: kiegroup.org
   group: serverless
   kind: KogitoServerlessWorkflow
-  path: github.com/davidesalerno/kogito-serverless-operator/api/v1alpha1
-  version: v1alpha1
+  path: github.com/davidesalerno/kogito-serverless-operator/api/v08
+  version: v08
 - api:
     crdVersion: v1
     namespaced: true

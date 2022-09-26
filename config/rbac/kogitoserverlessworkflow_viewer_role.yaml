@@ -5,7 +5,7 @@ metadata:
   name: kogitoserverlessworkflow-viewer-role
 rules:
 - apiGroups:
-  - kie.kogito.sw.org
+  - sw.kogito.kie.org
   resources:
   - kogitoserverlessworkflows
   verbs:
@@ -13,7 +13,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - kie.kogito.sw.org
+  - sw.kogito.kie.org
   resources:
   - kogitoserverlessworkflows/status
   verbs:

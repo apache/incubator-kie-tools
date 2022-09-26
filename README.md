@@ -12,31 +12,6 @@ operator-sdk-v1.22.2
 
 Go 1.19
 
-Minikube or CRC
-
-# Minikube
-
-```sh 
-minikube start --cpus 4 --memory 4096
-```
-```sh
-minikube addons enable registry
-```
-```sh
-kubectl create namespace kogito-builder
-```
-```sh
-minikube addons enable registry-creds
-```
-```sh
-minikube addons configure registry-creds
-```
-configure docker registry with quay.io credentials or with your preferred docker registry
-
-Create a secret 
-```sh
-kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email>
-```
 
 ## Description
 The aim of this project is to collect everything is needed for a proof-of-concept of the Kogito Serverless Workflow CRD
@@ -76,6 +51,48 @@ UnDeploy the controller to the cluster:
 
 ```sh
 make undeploy
+```
+
+Minikube or CRC
+
+## Test the Greeting workflow on Minikube
+
+A good starting point to check that everything is working well, it is the [Greeting workflow](https://github.com/kiegroup/kogito-examples/blob/stable/README.md#serverless-workflow-getting-started).
+
+Follow these steps to create a container that you can than deploy as a Service on Kubernetes or KNative.
+
+1. Start Minikube
+```sh 
+minikube start --cpus 4 --memory 4096 --addons registry --insecure-registry "10.0.0.0/24"
+```
+
+2. Create a secret
+```sh
+kubectl create secret docker-registry regcred --docker-server=<registry_url> --docker-username=<registry_username> --docker-password=<registry_password> --docker-email=<registry_email> -n kogito-serverless-operator-system
+```
+
+3. Build and push your image to the location specified by `IMG`:
+
+```sh
+make container-build container-push IMG=<some-registry>/kogito-serverless-operator:tag
+```
+
+4. Deploy the controller to the cluster with the image specified by `IMG`:
+
+```sh
+make deploy IMG=<some-registry>/kogito-serverless-operator:tag
+```
+
+5. Create a dedicated Namespace for the test:
+
+```sh
+kubectl create namespace greeting-workflow
+```
+
+6. Install Instances of Custom Resources:
+
+```sh
+kubectl apply -f config/samples/sw.kogito.kie.org__v08_kogitoserverlessworkflow.yaml -n greeting-workflow
 ```
 
 ## Contributing

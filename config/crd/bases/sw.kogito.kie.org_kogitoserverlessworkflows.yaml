@@ -5,9 +5,9 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: kogitoserverlessworkflows.kie.kogito.sw.org
+  name: kogitoserverlessworkflows.sw.kogito.kie.org
 spec:
-  group: kie.kogito.sw.org
+  group: sw.kogito.kie.org
   names:
     kind: KogitoServerlessWorkflow
     listKind: KogitoServerlessWorkflowList
@@ -15,7 +15,7 @@ spec:
     singular: kogitoserverlessworkflow
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - name: v08
     schema:
       openAPIV3Schema:
         description: KogitoServerlessWorkflow is the Schema for the kogitoserverlessworkflows
@@ -34,7 +34,8 @@ spec:
           metadata:
             type: object
           spec:
-            description: KogitoSWFSpec defines the desired state of KogitoServerlessWorkflow
+            description: KogitoServerlessWorkflowSpec defines the desired state of
+              KogitoServerlessWorkflow
             properties:
               auth:
                 properties:
@@ -137,21 +138,6 @@ spec:
                 type: object
               autoRetries:
                 type: boolean
-              commonConfig:
-                description: CommonConfig variables used in the templates
-                properties:
-                  applicationName:
-                    description: The name of the application deployment.
-                    type: string
-                  secretAdminCredentials:
-                    description: Name of the secret containing admin's credentials,
-                      the keys are username and password, if the adminUser and adminPassword
-                      are provided the secretAdminCredentials will be skipped
-                    type: string
-                  version:
-                    description: App version
-                    type: string
-                type: object
               conditions:
                 items:
                   properties:
@@ -424,7 +410,7 @@ spec:
                       type: object
                     data:
                       additionalProperties:
-                        type: object
+                        type: string
                       type: object
                     dataConditions:
                       description: 'TODO: Define a type for DataCondition objects'
@@ -605,7 +591,8 @@ spec:
             - states
             type: object
           status:
-            description: KogitoSWFStatus defines the observed state of KogitoServerlessWorkflow
+            description: KogitoServerlessWorkflowStatus defines the observed state
+              of KogitoServerlessWorkflow
             properties:
               address:
                 description: "Addressable provides a generic mechanism for a custom
@@ -618,7 +605,8 @@ spec:
                     type: string
                 type: object
               applied:
-                description: KogitoSWFSpec defines the desired state of KogitoServerlessWorkflow
+                description: KogitoServerlessWorkflowSpec defines the desired state
+                  of KogitoServerlessWorkflow
                 properties:
                   auth:
                     properties:
@@ -721,22 +709,6 @@ spec:
                     type: object
                   autoRetries:
                     type: boolean
-                  commonConfig:
-                    description: CommonConfig variables used in the templates
-                    properties:
-                      applicationName:
-                        description: The name of the application deployment.
-                        type: string
-                      secretAdminCredentials:
-                        description: Name of the secret containing admin's credentials,
-                          the keys are username and password, if the adminUser and
-                          adminPassword are provided the secretAdminCredentials will
-                          be skipped
-                        type: string
-                      version:
-                        description: App version
-                        type: string
-                    type: object
                   conditions:
                     items:
                       properties:
@@ -951,7 +923,20 @@ spec:
                                 - produceEventRef
                                 type: object
                               functionRef:
-                                type: string
+                                properties:
+                                  arguments:
+                                    additionalProperties:
+                                      type: string
+                                    type: object
+                                  invoke:
+                                    type: string
+                                  refName:
+                                    type: string
+                                  selectionSet:
+                                    type: string
+                                required:
+                                - refName
+                                type: object
                               name:
                                 type: string
                               nonRetryableErrors:
@@ -996,7 +981,7 @@ spec:
                           type: object
                         data:
                           additionalProperties:
-                            type: object
+                            type: string
                           type: object
                         dataConditions:
                           description: 'TODO: Define a type for DataCondition objects'

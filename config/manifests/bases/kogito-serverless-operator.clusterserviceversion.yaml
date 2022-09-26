@@ -14,8 +14,8 @@ spec:
         API
       displayName: Kogito Serverless Workflow
       kind: KogitoServerlessWorkflow
-      name: kogitoserverlessworkflows.kie.kogito.sw.org
-      version: v1alpha1
+      name: kogitoserverlessworkflows.sw.kogito.kie.org
+      version: v08
   description: Kogito Serverless Workflow Operator
   displayName: kogito-serverlessworkflow-operator
   icon:
