@@ -77,7 +77,7 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     });
 
     editor.onDidCreateEditor((codeEditor) => {
-      codeEditor.onMouseDown((event) => this.handleMouseDown(event));
+      codeEditor.onDidChangeCursorPosition((event) => this.handleDidChangeCursorPosition(event));
     });
   }
 
@@ -176,9 +176,9 @@ export class SwfTextEditorController implements SwfTextEditorApi {
     this.editor?.setPosition(targetPosition);
   }
 
-  public handleMouseDown(event: editor.IEditorMouseEvent): void {
-    const position = event.target.position;
-    if (!position) {
+  public handleDidChangeCursorPosition(event: editor.ICursorPositionChangedEvent): void {
+    const position = event.position;
+    if (!position || event.reason !== editor.CursorChangeReason.Explicit) {
       return;
     }
 
