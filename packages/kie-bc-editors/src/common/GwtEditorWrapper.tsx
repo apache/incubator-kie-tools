@@ -91,6 +91,10 @@ export class GwtEditorWrapper implements Editor {
     return this.gwtEditor.setContent(path, content.trim());
   }
 
+  public selectNode(nodeName: string, path: string) {
+    return this.gwtEditor.selectNode(nodeName, path);
+  }
+
   public getPreview(): Promise<string | undefined> {
     return this.gwtEditor.getPreview();
   }

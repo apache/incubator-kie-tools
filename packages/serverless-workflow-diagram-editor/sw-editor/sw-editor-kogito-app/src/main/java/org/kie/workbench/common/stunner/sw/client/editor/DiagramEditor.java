@@ -222,6 +222,11 @@ public class DiagramEditor {
         });
     }
 
+    public  Promise<Void> selectNode(final String nodeName, final String path){
+        DomGlobal.console.log("DiagramEditor.java received nodeName: " + nodeName + " with path: " + path);
+        return null;
+    }
+
     public void onStartup(final PlaceRequest place) {
         stunnerEditor.setReadOnly(true);
     }

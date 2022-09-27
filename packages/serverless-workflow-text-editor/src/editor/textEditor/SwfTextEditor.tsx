@@ -50,7 +50,10 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
   const fileLanguage = useMemo(() => getFileLanguage(fileName), [fileName]);
 
   const onSelectionChanged = useCallback((nodeName: string) => {
-    editorEnvelopeCtx.channelApi.notifications.kogitoSwfTextEditor__onSelectionChanged.send({ nodeName });
+    editorEnvelopeCtx.channelApi.notifications.kogitoSwfTextEditor__onSelectionChanged.send({
+      nodeName,
+      documentUri: fileName,
+    });
   }, []);
 
   const controller: SwfTextEditorApi = useMemo<SwfTextEditorApi>(() => {

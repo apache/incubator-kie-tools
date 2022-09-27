@@ -26,6 +26,10 @@ public interface EditorActivity extends Activity {
 
     Promise<Void> setContent(String path, String value);
 
+    default Promise<Void> selectNode(String nodeName, String path) {
+        throw new UnsupportedOperationException("The editor does not support node selection.");
+    }
+
     Promise<String> getContent();
 
     Promise<String> getPreview();
