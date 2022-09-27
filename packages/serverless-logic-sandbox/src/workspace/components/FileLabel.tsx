@@ -42,7 +42,7 @@ export function FileLabel(props: { style?: LabelProps["style"]; extension: strin
   return (
     <>
       {props.extension && (
-        <Label style={props.style ?? {}} color={labelColor?.color ?? "grey"}>
+        <Label style={props.style ?? {}} color={labelColor?.color ?? "grey"} data-ouia-component-id="file-type-label">
           {labelColor?.label ?? props.extension.toUpperCase()}
         </Label>
       )}
