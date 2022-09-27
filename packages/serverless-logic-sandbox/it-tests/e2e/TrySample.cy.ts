@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-describe("Try sample test", () => {
+describe("Serverless Logic Web Tools - Try samples test", () => {
   beforeEach(() => {
     cy.visit("/");
   });
