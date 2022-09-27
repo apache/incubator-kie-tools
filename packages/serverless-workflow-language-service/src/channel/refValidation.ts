@@ -24,14 +24,14 @@ export function doRefValidation(args: { textDocument: TextDocument; rootNode: Sw
     // here, we assume that all source nodes return terminal values.
     // i.e. a source node will never be an "object"
     const sourceNodeValues = new Set(
-      findNodesAtLocation(args.rootNode, src.path)
+      findNodesAtLocation({ root: args.rootNode, path: src.path })
         .filter((node) => node?.type === "string")
         .flatMap((node) => node.value)
     );
 
     return refs.flatMap((ref) =>
       // find terminal nodes that are refs
-      findNodesAtLocation(args.rootNode, ref.path)
+      findNodesAtLocation({ root: args.rootNode, path: ref.path })
         .flatMap((refNode) => {
           // include this node if types match
           if (refNode.type === ref.type) {

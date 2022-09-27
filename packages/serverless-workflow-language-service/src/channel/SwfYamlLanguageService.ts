@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { CodeLens, CompletionItem, Position, Range } from "vscode-languageserver-types";
+import { TextDocument } from "vscode-json-languageservice";
+import { CodeLens, CompletionItem, CompletionItemKind, Position, Range } from "vscode-languageserver-types";
 import {
   dump,
   Kind,
@@ -27,9 +28,10 @@ import {
   YAMLSequence,
 } from "yaml-language-server-parser";
 import { FileLanguage } from "../api";
+import { indentText } from "./indentText";
 import { matchNodeWithLocation } from "./matchNodeWithLocation";
-import { SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
-import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode } from "./types";
+import { findNodeAtOffset, SwfLanguageService, SwfLanguageServiceArgs } from "./SwfLanguageService";
+import { CodeCompletionStrategy, ShouldCompleteArgs, SwfLsNode, TranslateArgs } from "./types";
 
 export class SwfYamlLanguageService {
   private readonly ls: SwfLanguageService;
@@ -58,21 +60,69 @@ export class SwfYamlLanguageService {
     return astConvert(ast);
   }
 
-  public getCompletionItems(args: {
+  /**
+   * Check if a node at a position is uncompleted.
+   * eg. "refName: 🎯"
+   *
+   * @param args -
+   * @returns true if the node is uncompleted, false otherwise.
+   */
+  public isNodeUncompleted = (args: {
+    content: string;
+    uri: string;
+    rootNode: SwfLsNode;
+    cursorOffset: number;
+  }): boolean => {
+    if (args.content.slice(args.cursorOffset - 1, args.cursorOffset) !== " ") {
+      return false;
+    }
+
+    const nodeAtPrevOffset = findNodeAtOffset(args.rootNode, args.cursorOffset - 1, true);
+
+    return nodeAtPrevOffset?.colonOffset === args.cursorOffset - 1;
+  };
+
+  public async getCompletionItems(args: {
     content: string;
     uri: string;
     cursorPosition: Position;
     cursorWordRange: Range;
   }): Promise<CompletionItem[]> {
-    return this.ls.getCompletionItems({
+    const rootNode = this.parseContent(args.content);
+    const doc = TextDocument.create(args.uri, FileLanguage.YAML, 0, args.content);
+    const cursorOffset = doc.offsetAt(args.cursorPosition);
+
+    if (
+      !rootNode ||
+      args.content.slice(cursorOffset - 1, cursorOffset) === ":" ||
+      args.content.slice(cursorOffset - 1, cursorOffset) === "-"
+    ) {
+      return [];
+    }
+
+    const isCurrentNodeUncompleted = this.isNodeUncompleted({
       ...args,
-      rootNode: this.parseContent(args.content),
+      rootNode,
+      cursorOffset,
+    });
+
+    if (isCurrentNodeUncompleted) {
+      args.cursorPosition = Position.create(args.cursorPosition.line, args.cursorPosition.character - 1);
+    }
+
+    return await this.ls.getCompletionItems({
+      ...args,
+      rootNode,
       codeCompletionStrategy: this.codeCompletionStrategy,
     });
   }
 
   public async getCodeLenses(args: { content: string; uri: string }): Promise<CodeLens[]> {
-    return this.ls.getCodeLenses({ ...args, rootNode: this.parseContent(args.content) });
+    return this.ls.getCodeLenses({
+      ...args,
+      rootNode: this.parseContent(args.content),
+      codeCompletionStrategy: this.codeCompletionStrategy,
+    });
   }
 
   public async getDiagnostics(args: { content: string; uriPath: string }) {
@@ -104,12 +154,10 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   } else if (node.kind === Kind.MAPPING) {
     const yamlMapping = node as YAMLMapping;
     convertedNode.value = yamlMapping.value;
-    if (convertedNode.value) {
-      convertedNode.children = [
-        astConvert(yamlMapping.key, convertedNode),
-        astConvert(yamlMapping.value, convertedNode),
-      ];
-    }
+    convertedNode.children = [
+      astConvert(yamlMapping.key, convertedNode),
+      ...(convertedNode.value ? [astConvert(yamlMapping.value, convertedNode)] : []),
+    ];
     convertedNode.type = "property";
   } else if (node.kind === Kind.SEQ) {
     convertedNode.children = (node as YAMLSequence).items
@@ -124,9 +172,36 @@ const astConvert = (node: YAMLNode, parentNode?: SwfLsNode): SwfLsNode => {
   return convertedNode;
 };
 
-class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
-  public translate(completion: object | string): string {
-    return dump(completion, {}).slice(0, -1);
+export class YamlCodeCompletionStrategy implements CodeCompletionStrategy {
+  public translate(args: TranslateArgs): string {
+    const skipFirstLineIndent = args.completionItemKind !== CompletionItemKind.Module;
+    const completionItemNewLine = args.completionItemKind === CompletionItemKind.Module ? "\n" : "";
+    const completionText =
+      completionItemNewLine + indentText(dump(args.completion, {}).slice(0, -1), 2, " ", skipFirstLineIndent);
+
+    return ([CompletionItemKind.Interface, CompletionItemKind.Reference] as CompletionItemKind[]).includes(
+      args.completionItemKind
+    ) && args.overwriteRange?.end.character === 0
+      ? `- ${completionText}\n`
+      : completionText;
+  }
+
+  public formatLabel(label: string, completionItemKind: CompletionItemKind): string {
+    return ([CompletionItemKind.Function, CompletionItemKind.Folder] as CompletionItemKind[]).includes(
+      completionItemKind
+    )
+      ? `'${label}'`
+      : label;
+  }
+
+  public getStartNodeValuePosition(document: TextDocument, node: SwfLsNode): Position | undefined {
+    const position = document.positionAt(node.offset);
+    const nextPosition = document.positionAt(node.offset + 1);
+    const charAtPosition = document.getText(Range.create(position, nextPosition));
+    const isStartingCharJsonFormat = /"|'|\[|{/.test(charAtPosition);
+
+    // if node is in JSON format return a position the same way SwfJsonLanguageService does.
+    return isStartingCharJsonFormat ? nextPosition : position;
   }
 
   public shouldComplete(args: ShouldCompleteArgs): boolean {

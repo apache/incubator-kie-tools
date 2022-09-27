@@ -14,30 +14,24 @@
  * limitations under the License.
  */
 
-import { SwfLsNode, SwfLsNodeType } from "./types";
-
 /**
- * From a node goes up to levels until a certain node type.
+ * Indent a text.
  *
- * @param node the node where to start
- * @param nodeType the node type where to stop
- * @returns the parent node if found, undefined otherwise
+ * @param text the text to indent
+ * @param indentNum number of characters to indent
+ * @param indentChar character to use to indent
+ * @param skipFirstLine true to skip first line
+ * @returns the indented string
  */
-export function nodeUpUntilType(
-  node: SwfLsNode | undefined,
-  nodeType: SwfLsNodeType | SwfLsNodeType[]
-): SwfLsNode | undefined {
-  if (!node) {
-    return;
+export function indentText(text: string, indentNum = 0, indentChar = " ", skipFirstLine = true): string {
+  if (!text) {
+    return "";
   }
 
-  if (!Array.isArray(nodeType)) {
-    return nodeUpUntilType(node, [nodeType]);
-  }
+  const indentation = new Array(indentNum).fill(indentChar).join("");
 
-  if (!nodeType.includes(node.type)) {
-    return nodeUpUntilType(node.parent, nodeType);
-  } else {
-    return node;
-  }
+  // replace all start of line with the indentation
+  const indentedText = text.replace(/^/gm, indentation);
+
+  return !skipFirstLine ? indentedText : indentedText.replace(indentation, "");
 }
