@@ -16,47 +16,16 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 
-@Bindable
-@Definition
-@CanContain(roles = {EventRef.LABEL_EVENT, ActionNode.LABEL_ACTION})
 @JsType
 public class OnEvent {
 
-    public static final String LABEL_ONEVENTS = "on_events";
+    public String[] eventRefs;
 
-    @Category
-    public static final transient String category = Categories.EVENTS;
-
-    @Labels
-    private static final Set<String> labels = Stream.of(Workflow.LABEL_ROOT_NODE,
-                                                        LABEL_ONEVENTS).collect(Collectors.toSet());
-
-    private String[] eventRefs;
-
-    private ActionNode[] actions;
-
-    private EventDataFilter eventDataFilter;
+    public EventDataFilter eventDataFilter;
 
     public OnEvent() {
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public String getCategory() {
-        return category;
     }
 
     public String[] getEventRefs() {
@@ -65,14 +34,6 @@ public class OnEvent {
 
     public void setEventRefs(String[] eventRefs) {
         this.eventRefs = eventRefs;
-    }
-
-    public ActionNode[] getActions() {
-        return actions;
-    }
-
-    public void setActions(ActionNode[] actions) {
-        this.actions = actions;
     }
 
     public EventDataFilter getEventDataFilter() {

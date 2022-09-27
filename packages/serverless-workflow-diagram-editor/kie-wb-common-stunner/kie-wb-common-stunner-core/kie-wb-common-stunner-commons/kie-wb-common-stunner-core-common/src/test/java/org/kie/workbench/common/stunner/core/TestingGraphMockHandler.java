@@ -210,9 +210,7 @@ public class TestingGraphMockHandler {
                             final double h) {
         final Object definition = getDefIfPresent(uuid, def);
         doReturn(Bounds.create(x, y, x + w, y + h))
-                .when(getDefinitionUtils()).buildBounds(eq(definition),
-                                                        anyDouble(),
-                                                        anyDouble());
+                .when(getDefinitionUtils()).buildBounds(anyDouble(), anyDouble());
         final Node<Definition<Object>, Edge> result = graphAPI.nodeFactory.build(uuid,
                                                                                  definition);
         execute(graphAPI.commandFactory.addNode(result));

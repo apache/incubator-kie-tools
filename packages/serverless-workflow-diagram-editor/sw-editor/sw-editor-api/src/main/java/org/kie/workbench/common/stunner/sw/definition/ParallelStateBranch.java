@@ -21,10 +21,11 @@ import jsinterop.annotations.JsType;
 @JsType
 public class ParallelStateBranch {
 
-    private String name;
-    private ActionNode[] actions;
+    public String name;
 
-    private WorkflowTimeouts timeouts;
+    public ActionNode[] actions;
+
+    public WorkflowTimeouts timeouts;
 
     public final String getName() {
         return name;

@@ -28,7 +28,7 @@ public class ModelUtils {
             workflow.setName((String) Js.undefined());
             workflow.setStart((String) Js.undefined());
             if (null != workflow.getEvents()) {
-                if(workflow.getEvents() instanceof Event[]) {
+                if (workflow.getEvents() instanceof Event[]) {
                     Event[] events = (Event[]) workflow.getEvents();
                     for (int i = 0; i < events.length; i++) {
                         cleanEvent(events[i]);
@@ -75,7 +75,6 @@ public class ModelUtils {
                 cleanCallbackState((CallbackState) state);
             }
 
-
             state.setName((String) Js.undefined());
             state.setType((String) Js.undefined());
             state.setTransition((String) Js.undefined());
@@ -99,31 +98,12 @@ public class ModelUtils {
         }
     }
 
-    public static void cleanActionNode(ActionNode actionNode) {
-        if (actionNode != null) {
-            actionNode.setId((String) Js.undefined());
-            actionNode.setName((String) Js.undefined());
-            actionNode.setFunctionRef((String) Js.undefined());
-            actionNode.setEventRef((ActionEventRef) Js.undefined());
-            actionNode.setSubFlowRef((Object) Js.undefined());
-        }
-    }
-
-    public static void cleanActions(ActionNode[] actionNodes) {
-        if (null != actionNodes) {
-            for (int i = 0; i < actionNodes.length; i++) {
-                cleanActionNode(actionNodes[i]);
-                actionNodes[i] = (ActionNode) Js.undefined();
-            }
-        }
-    }
-
     public static void cleanOperationState(OperationState operationState) {
         if (operationState != null) {
+            operationState.actionMode = (String) Js.undefined();
+            operationState.usedForCompensation = false;
             operationState.setActionMode((String) Js.undefined());
             operationState.setUsedForCompensation(false);
-            cleanActions(operationState.getActions());
-            operationState.setActions((ActionNode[]) Js.undefined());
         }
     }
 
@@ -132,9 +112,7 @@ public class ModelUtils {
             if (null != onEvent.getEventRefs()) {
                 Arrays.stream(onEvent.getEventRefs()).forEach(eventRef -> eventRef = (String) Js.undefined());
             }
-            onEvent.setEventRefs((String[]) Js.undefined());
-            cleanActions(onEvent.getActions());
-            onEvent.setActions((ActionNode[]) Js.undefined());
+            onEvent.eventRefs = (String[]) Js.undefined();
         }
     }
 
@@ -215,17 +193,12 @@ public class ModelUtils {
     }
 
     public static void cleanForEachState(ForEachState forEachState) {
-        if (forEachState != null) {
-            cleanActions(forEachState.getActions());
-            forEachState.setActions((ActionNode[]) Js.undefined());
-        }
+        //No fields to be cleaned
     }
 
     public static void cleanCallbackState(CallbackState callbackState) {
         if (callbackState != null) {
             callbackState.setEventRef((String) Js.undefined());
-            cleanActionNode(callbackState.getAction());
-            callbackState.setAction((ActionNode) Js.undefined());
         }
     }
 }

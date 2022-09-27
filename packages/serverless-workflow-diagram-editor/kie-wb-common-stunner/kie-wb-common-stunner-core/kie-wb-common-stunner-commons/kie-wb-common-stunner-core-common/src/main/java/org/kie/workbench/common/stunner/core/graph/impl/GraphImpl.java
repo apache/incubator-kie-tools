@@ -20,8 +20,6 @@ import java.util.Objects;
 
 import jsinterop.annotations.JsIgnore;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Graph;
 import org.kie.workbench.common.stunner.core.graph.Node;
@@ -29,7 +27,6 @@ import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStore;
 import org.kie.workbench.common.stunner.core.graph.store.GraphNodeStoreImpl;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 
-@Portable
 @JsType
 public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
 
@@ -40,8 +37,8 @@ public class GraphImpl<C> extends AbstractElement<C> implements Graph<C, Node> {
         return new GraphImpl<>(uuid, new GraphNodeStoreImpl());
     }
 
-    public GraphImpl(final @MapsTo("uuid") String uuid,
-                     final @MapsTo("nodeStore") GraphNodeStore<Node> nodeStore) {
+    public GraphImpl(String uuid,
+                     GraphNodeStore<Node> nodeStore) {
         super(uuid);
         this.nodeStore = Objects.requireNonNull(nodeStore, "Parameter named 'nodeStore' should be not null!");
     }

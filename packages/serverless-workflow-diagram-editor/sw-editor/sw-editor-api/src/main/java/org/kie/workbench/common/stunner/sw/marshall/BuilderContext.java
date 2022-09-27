@@ -41,10 +41,6 @@ import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
 import org.kie.workbench.common.stunner.core.graph.impl.EdgeImpl;
 import org.kie.workbench.common.stunner.core.rule.RuleViolation;
-import org.kie.workbench.common.stunner.sw.definition.ActionNode;
-import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
-import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
-import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.End;
 import org.kie.workbench.common.stunner.sw.definition.EventRef;
@@ -98,6 +94,7 @@ public class BuilderContext {
         return addNodeByUUID(obtainUUID(name), bean);
     }
 
+    @SuppressWarnings("all")
     public Node addNodeByUUID(String uuid,
                               Object bean) {
         final ElementFactory elementFactory = factoryManager.registry().getElementFactory(NodeFactory.class);
@@ -208,7 +205,7 @@ public class BuilderContext {
         return context;
     }
 
-    private void updateNodeBounds(Node<View, Edge> node) {
+    public static void updateNodeBounds(Node<View, Edge> node) {
         final Bounds bounds = node.getContent().getBounds();
         final Bound upperLeft = bounds.getUpperLeft();
         final double[] beanSize = getBeanSize(node.getContent().getDefinition());
@@ -240,22 +237,13 @@ public class BuilderContext {
             return new double[]{254d, 92d};
         } else if (CallbackState.class.equals(type)) {
             return new double[]{254d, 92d};
-        } else if (ActionsContainer.class.equals(type)) {
-            return new double[]{450d, 150d};
-        } else if (ActionNode[].class.equals(type)) {
-            return new double[]{450d, 150d};
         } else if (OnEvent[].class.equals(type)) {
             return new double[]{450d, 150d};
         } else if (OnEvent.class.equals(type)) {
             return new double[]{56d, 56d};
-        } else if (CallFunctionAction.class.equals(type)) {
-            return new double[]{154d, 51d};
-        } else if (CallSubflowAction.class.equals(type)) {
-            return new double[]{154d, 51d};
         } else if (EventTimeout.class.equals(type)) {
             return new double[]{56d, 56d};
         }
-
         return new double[]{0d, 0d};
     }
 }

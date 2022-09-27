@@ -21,8 +21,9 @@ import jsinterop.annotations.JsType;
 @JsType
 public class StateDataFilter {
 
-    private String input;
-    private String output;
+    public String input;
+
+    public String output;
 
     public final String getInput() {
         return input;

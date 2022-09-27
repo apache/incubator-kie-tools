@@ -23,10 +23,13 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 @JsType
 public class ContinueAs {
 
-    private String workflowId;
-    private String version;
-    private String data;
-    private String workflowExecTimeout;
+    public String workflowId;
+
+    public String version;
+
+    public String data;
+
+    public String workflowExecTimeout;
 
     public final String getWorkflowId() {
         return workflowId;

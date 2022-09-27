@@ -73,11 +73,12 @@ Navigate to the test page in your root context path, eg: `http://localhost:8080/
         // Get the actual workflows' content
         window.frames.editorFrame.contentWindow.gwtEditorBeans.get("SWDiagramEditor").get().getContent()
 
-        // Standalone SWF Editor
+        // Standalone SWF Editor (low-level) API
+        frames[0].editor
         frames[0].canvas
 
-        // Stunner - Js API
-        var jsl = window.frames.editorFrame.contentWindow.canvas
+        // Stunner - Js Canvas (low-level) API
+        var jsl = window.frames.editorFrame.contentWindow.editor.canvas
         jsl.getNodeIds() // Get id of all nodes
         jsl.getBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0')         // gets background color
         jsl.setBackgroundColor('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'blue') // sets background color
@@ -89,8 +90,51 @@ Navigate to the test page in your root context path, eg: `http://localhost:8080/
         jsl.applyState('_A9481DBC-3E87-40EE-9925-733B24404BC0', 'invalid')      // applies state (none, highlight, selected, invalid)
         jsl.centerNode('_A9481DBC-3E87-40EE-9925-733B24404BC0')                 // centers node in viewable canvas
 
-        // Stunner - (Wires) Shapes API
-        var jsl = window.frames.editorFrame.contentWindow.canvas
+        // Stunner - (Wires) Shapes (low-level) API
+        var jsl = window.frames.editorFrame.contentWindow.editor.canvas
         jsl.log().logWiresShapes()
         var s = jsl.getWiresShape('_A9481DBC-3E87-40EE-9925-733B24404BC0')
         s.getChild(1).fillColor = "red"
+
+# TODO: FOR DEMO
+
+++++ INIT
+var cw = window.frames.editorFrame.contentWindow;
+var jse = cw.editor;
+var session = jse.session;
+var canvas = jse.session.canvas;
+
+++ VIEWPORT
+canvas.getScaleX()
+canvas.getScaleY()
+canvas.scale(2)
+canvas.translate(50, 50)
+
+++ GRAPH - QUERY
+session.getNodeByUUID(uuid)
+session.getNodeByName(name)
+
+++ SELECTION - QUERY
+session.getSelectedElementUUID()
+session.getSelectedNode()
+session.getSelectedEdge()
+session.getSelectedDefinition()
+session.getName(session.getSelectedDefinition())
+
+++ SELECTION - UPDATE
+session.selectByUUID(uuid)
+session.selectByName('node name')
+session.clearSelection()
+
+++++ UPDATE STATE NAME
+session.commands.updateFieldValue(session.getSelectedNode(), 'name', 'Inject State2')
+
+++++ SWF - ROTATE SHAPE
+var uuid = session.getSelectedElementUUID()
+var shape = canvas.getWiresShape(uuid)
+var iconGroup = shape.getChild(2).getChildren()[1]
+canvas.rotateGroupOverCenter(iconGroup, 360, 1500)
+
+++++ SWF - CHANGE / ADD STATE ICON/S
+var shape = canvas.getWiresShape('UUID')
+var iconGroup = shape.getChild(2).getChildren()[1]

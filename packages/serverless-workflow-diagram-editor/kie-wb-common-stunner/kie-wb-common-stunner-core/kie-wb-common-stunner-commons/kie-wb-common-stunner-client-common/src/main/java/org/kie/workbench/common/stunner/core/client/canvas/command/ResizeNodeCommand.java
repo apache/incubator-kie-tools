@@ -16,7 +16,6 @@
 
 package org.kie.workbench.common.stunner.core.client.canvas.command;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -34,13 +33,10 @@ import org.kie.workbench.common.stunner.core.command.Command;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.impl.AbstractCompositeCommand;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
-import org.kie.workbench.common.stunner.core.definition.adapter.DefinitionAdapter;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.kie.workbench.common.stunner.core.graph.content.definition.Definition;
 import org.kie.workbench.common.stunner.core.graph.content.view.Connection;
 import org.kie.workbench.common.stunner.core.graph.content.view.MagnetConnection;
 import org.kie.workbench.common.stunner.core.graph.content.view.Point2D;
@@ -80,31 +76,6 @@ public class ResizeNodeCommand extends AbstractCanvasCompositeCommand {
     @SuppressWarnings("unchecked")
     protected AbstractCompositeCommand<AbstractCanvasHandler, CanvasViolation> initialize(final AbstractCanvasHandler context) {
         super.initialize(context);
-
-        widthBefore = candidate.getContent().getBounds().getWidth();
-        heightBefore = candidate.getContent().getBounds().getHeight();
-        final double w = boundingBox.getMaxX();
-        final double h = boundingBox.getMaxY();
-
-        // Execute the update position and update property/ies command/s on the bean instance to achieve the new bounds.
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> commands = getResizeCommands(context,
-                                                                                                 w,
-                                                                                                 h);
-        if (null != commands) {
-            final Node<View<?>, Edge> node = (Node<View<?>, Edge>) candidate;
-
-            commands.forEach(this::addCommand);
-
-            //Updating Docked nodes position
-            if (GraphUtils.hasDockedNodes(node)) {
-                updateDockedNodesPosition(context, node);
-            }
-
-            //Updating connection positions to the node
-            if (GraphUtils.hasConnections(node)) {
-                updateConnectionsPositions(context, node);
-            }
-        }
 
         return this;
     }
@@ -207,46 +178,6 @@ public class ResizeNodeCommand extends AbstractCanvasCompositeCommand {
     private static Shape getShape(final AbstractCanvasHandler canvasHandler,
                                   final String uuid) {
         return canvasHandler.getCanvas().getShape(uuid);
-    }
-
-    /**
-     * It provides the necessary canvas commands in order to update the domain model with new values that will met
-     * the new bounding box size.
-     * It always updates the element's position, as resize can update it, and it updates as well some of the bean's properties.
-     */
-    private List<Command<AbstractCanvasHandler, CanvasViolation>> getResizeCommands(final AbstractCanvasHandler canvasHandler,
-                                                                                    final double w,
-                                                                                    final double h) {
-        final Definition content = candidate.getContent();
-        final Object def = content.getDefinition();
-        final DefinitionAdapter<Object> adapter =
-                canvasHandler.getDefinitionManager()
-                        .adapters().registry().getDefinitionAdapter(def.getClass());
-        final List<Command<AbstractCanvasHandler, CanvasViolation>> result =
-                new LinkedList<>();
-        final String widthField = adapter.getMetaPropertyField(def, PropertyMetaTypes.WIDTH);
-        if (null != widthField) {
-            appendCommandForModelProperty(canvasHandler,
-                                          widthField,
-                                          w,
-                                          result);
-        }
-        final String heightField = adapter.getMetaPropertyField(def, PropertyMetaTypes.HEIGHT);
-        if (null != heightField) {
-            appendCommandForModelProperty(canvasHandler,
-                                          heightField,
-                                          h,
-                                          result);
-        }
-        final String radiusField = adapter.getMetaPropertyField(def, PropertyMetaTypes.RADIUS);
-        if (null != radiusField) {
-            final double r = w > h ? (h / 2) : (w / 2);
-            appendCommandForModelProperty(canvasHandler,
-                                          radiusField,
-                                          r,
-                                          result);
-        }
-        return result;
     }
 
     private void appendCommandForModelProperty(final AbstractCanvasHandler canvasHandler,

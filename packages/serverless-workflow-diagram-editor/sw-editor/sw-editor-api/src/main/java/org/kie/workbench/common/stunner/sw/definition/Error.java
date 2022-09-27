@@ -23,9 +23,11 @@ import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper
 @JsType
 public class Error {
 
-    private String name;
-    private String code;
-    private String description;
+    public String name;
+
+    public String code;
+
+    public String description;
 
     public final String getName() {
         return name;

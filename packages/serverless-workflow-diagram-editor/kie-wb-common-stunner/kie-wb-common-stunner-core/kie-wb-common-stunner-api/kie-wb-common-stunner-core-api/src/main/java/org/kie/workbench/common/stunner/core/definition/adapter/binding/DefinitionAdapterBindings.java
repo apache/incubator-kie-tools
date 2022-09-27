@@ -164,18 +164,6 @@ public class DefinitionAdapterBindings {
                 case NAME:
                     setNameIndex(index);
                     break;
-                case WIDTH:
-                    setWidthIndex(index);
-                    break;
-                case HEIGHT:
-                    setHeightIndex(index);
-                    break;
-                case RADIUS:
-                    setRadiusIndex(index);
-                    break;
-                case ID:
-                    setIdIndex(index);
-                    break;
             }
         }
 
@@ -183,14 +171,6 @@ public class DefinitionAdapterBindings {
             switch (type) {
                 case NAME:
                     return getNameIndex();
-                case WIDTH:
-                    return getWidthIndex();
-                case HEIGHT:
-                    return getHeightIndex();
-                case RADIUS:
-                    return getRadiusIndex();
-                case ID:
-                    return getIdIndex();
             }
             return -1;
         }

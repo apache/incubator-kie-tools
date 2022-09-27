@@ -29,8 +29,9 @@ import org.junit.BeforeClass;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -70,14 +71,17 @@ public class SWEditorSeleniumBase {
 
     @BeforeClass
     public static void setupClass() {
-        WebDriverManager.firefoxdriver().useMirror().setup();
+        WebDriverManager.chromedriver().useMirror().setup();
     }
 
     @Before
     public void openSWEditor() {
-        final FirefoxOptions firefoxOptions = new FirefoxOptions();
-        firefoxOptions.setHeadless(HEADLESS);
-        driver = new FirefoxDriver(firefoxOptions);
+        ChromeDriverService service = new ChromeDriverService.Builder()
+                .usingAnyFreePort()
+                .build();
+        ChromeOptions options = new ChromeOptions()
+                .setHeadless(HEADLESS);
+        driver = new ChromeDriver(service, options);
 
         driver.manage().window().maximize();
 

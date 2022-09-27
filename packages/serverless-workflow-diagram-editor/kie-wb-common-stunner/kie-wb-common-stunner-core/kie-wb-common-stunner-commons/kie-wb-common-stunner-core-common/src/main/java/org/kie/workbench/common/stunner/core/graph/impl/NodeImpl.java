@@ -20,19 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jsinterop.annotations.JsType;
-import org.jboss.errai.common.client.api.annotations.MapsTo;
-import org.jboss.errai.common.client.api.annotations.Portable;
 import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Node;
 
-@Portable
 @JsType
 public class NodeImpl<C> extends AbstractElement<C> implements Node<C, Edge> {
 
     private final List<Edge> inEdges = new ArrayList<Edge>();
     private final List<Edge> outEdges = new ArrayList<Edge>();
 
-    public NodeImpl(final @MapsTo("uuid") String uuid) {
+    public NodeImpl(String uuid) {
         super(uuid);
     }
 

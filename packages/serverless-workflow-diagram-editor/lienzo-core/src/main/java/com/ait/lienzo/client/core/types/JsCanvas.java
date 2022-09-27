@@ -22,7 +22,11 @@ import java.util.Set;
 
 import com.ait.lienzo.client.core.Context2D;
 import com.ait.lienzo.client.core.NativeContext2D;
+import com.ait.lienzo.client.core.animation.AnimationProperties;
+import com.ait.lienzo.client.core.animation.AnimationProperty;
+import com.ait.lienzo.client.core.animation.AnimationTweener;
 import com.ait.lienzo.client.core.shape.ContainerNode;
+import com.ait.lienzo.client.core.shape.Group;
 import com.ait.lienzo.client.core.shape.IPrimitive;
 import com.ait.lienzo.client.core.shape.Layer;
 import com.ait.lienzo.client.core.shape.Viewport;
@@ -88,10 +92,56 @@ public class JsCanvas implements JsCanvasNodeLister {
         return getLayer().getViewport();
     }
 
+    public void translate(double x, double y) {
+        // TODO: Composite transform ops or create new matrix?
+        getViewport().getTransform().translate(x, y);
+    }
+
+    public double getTranslateX() {
+        return getViewport().getTransform().getTranslateX();
+    }
+
+    public double getTranslateY() {
+        return getViewport().getTransform().getTranslateY();
+    }
+
+    public void scale(int factor) {
+        // TODO: Composite transform ops or create new matrix?
+        getViewport().getTransform().scale(factor);
+    }
+
+    public double getScaleX() {
+        return getViewport().getTransform().getScaleX();
+    }
+
+    public double getScaleY() {
+        return getViewport().getTransform().getScaleY();
+    }
+
     public NativeContext2D getNativeContent() {
         Context2D context = getLayer().getContext();
         NativeContext2D nativeContext = context.getNativeContext();
         return nativeContext;
+    }
+
+    public void rotateGroupOverCenter(Group group, double degrees, double duration) {
+        BoundingBox boundingBox = group.getBoundingBox();
+        NFastArrayList<IPrimitive<?>> childNodes = group.getChildNodes();
+        for (int i = 0; i < childNodes.size(); i++) {
+            IPrimitive<?> child = childNodes.get(i);
+            if (null != child) {
+                child.setOffset(boundingBox.getWidth() / 2, boundingBox.getHeight() / 2);
+                if (duration > 0) {
+                    child.animate(AnimationTweener.LINEAR, AnimationProperties.toPropertyList(
+                                    AnimationProperty.Properties.ROTATION_DEGREES(degrees)
+                            ), duration)
+                            .run();
+                } else {
+                    child.setRotationDegrees(degrees);
+                }
+            }
+        }
+        draw();
     }
 
     public JsCanvasEvents events() {

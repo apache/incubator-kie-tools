@@ -28,10 +28,6 @@ import org.kie.workbench.common.stunner.sw.client.shapes.EndShape;
 import org.kie.workbench.common.stunner.sw.client.shapes.StartShape;
 import org.kie.workbench.common.stunner.sw.client.shapes.StateShape;
 import org.kie.workbench.common.stunner.sw.client.shapes.TransitionShape;
-import org.kie.workbench.common.stunner.sw.definition.ActionTransition;
-import org.kie.workbench.common.stunner.sw.definition.ActionsContainer;
-import org.kie.workbench.common.stunner.sw.definition.CallFunctionAction;
-import org.kie.workbench.common.stunner.sw.definition.CallSubflowAction;
 import org.kie.workbench.common.stunner.sw.definition.CallbackState;
 import org.kie.workbench.common.stunner.sw.definition.CompensationTransition;
 import org.kie.workbench.common.stunner.sw.definition.DataConditionTransition;
@@ -106,18 +102,12 @@ public class ShapeFactory
             return GlyphFactory.START;
         } else if (definitionId.equals(getDefinitionId(End.class))) {
             return GlyphFactory.END;
-        } else if (definitionId.equals(getDefinitionId(ActionsContainer.class))) {
-            return GlyphFactory.CALL_FUNCTION;
         } else if (definitionId.equals(getDefinitionId(OnEvent.class))) {
             return GlyphFactory.EVENTS;
         } else if (definitionId.equals(getDefinitionId(EventRef.class))) {
             return GlyphFactory.EVENT;
         } else if (definitionId.equals(getDefinitionId(EventTimeout.class))) {
             return GlyphFactory.EVENT_TIMEOUT;
-        } else if (definitionId.equals(getDefinitionId(CallFunctionAction.class))) {
-            return GlyphFactory.CALL_FUNCTION;
-        } else if (definitionId.equals(getDefinitionId(CallSubflowAction.class))) {
-            return GlyphFactory.CALL_SUBFLOW;
         } else if (definitionId.equals(getDefinitionId(Transition.class))) {
             return GlyphFactory.TRANSITION;
         } else if (definitionId.equals(getDefinitionId(StartTransition.class))) {
@@ -130,8 +120,6 @@ public class ShapeFactory
             return GlyphFactory.TRANSITION_CONDITION;
         } else if (definitionId.equals(getDefinitionId(DefaultConditionTransition.class))) {
             return GlyphFactory.TRANSITION_CONDITION;
-        } else if (definitionId.equals(getDefinitionId(ActionTransition.class))) {
-            return GlyphFactory.TRANSITION_ACTION;
         } else if (definitionId.equals(getDefinitionId(CompensationTransition.class))) {
             return GlyphFactory.TRANSITION_COMPENSATION;
         }

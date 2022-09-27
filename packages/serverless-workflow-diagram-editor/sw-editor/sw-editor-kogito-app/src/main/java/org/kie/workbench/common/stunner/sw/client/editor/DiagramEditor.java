@@ -33,15 +33,14 @@ import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
+import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
-import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
-import org.kie.workbench.common.stunner.client.lienzo.util.StunnerStateApplier;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
 import org.kie.workbench.common.stunner.client.widgets.editor.StunnerEditor;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
+import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.CanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.SelectionControl;
@@ -51,8 +50,6 @@ import org.kie.workbench.common.stunner.core.client.command.ClearAllCommand;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.client.session.impl.AbstractSession;
-import org.kie.workbench.common.stunner.core.client.shape.Shape;
-import org.kie.workbench.common.stunner.core.client.util.WindowJSType;
 import org.kie.workbench.common.stunner.core.command.CommandResult;
 import org.kie.workbench.common.stunner.core.command.util.CommandUtils;
 import org.kie.workbench.common.stunner.core.diagram.Diagram;
@@ -62,6 +59,7 @@ import org.kie.workbench.common.stunner.core.graph.Edge;
 import org.kie.workbench.common.stunner.core.graph.Element;
 import org.kie.workbench.common.stunner.core.graph.Node;
 import org.kie.workbench.common.stunner.core.graph.content.view.View;
+import org.kie.workbench.common.stunner.sw.SWDomainInitializer;
 import org.kie.workbench.common.stunner.sw.client.services.ClientDiagramService;
 import org.kie.workbench.common.stunner.sw.client.services.IncrementalMarshaller;
 import org.kie.workbench.common.stunner.sw.marshall.Message;
@@ -91,8 +89,6 @@ public class DiagramEditor {
     private final Event<TogglePreviewEvent> togglePreviewEvent;
     private final DiagramApi diagramApi;
 
-    JsCanvas jsCanvas;
-
     @Inject
     public DiagramEditor(Promises promises,
                          StunnerEditor stunnerEditor,
@@ -106,15 +102,23 @@ public class DiagramEditor {
         this.diagramService = diagramService;
         this.incrementalMarshaller = incrementalMarshaller;
         this.canvasFileExport = canvasFileExport;
-        this.jsCanvas = null;
         this.togglePreviewEvent = togglePreviewEvent;
         this.diagramApi = diagramApi;
+    }
+
+    @Inject
+    SWDomainInitializer domainInitializer;
+
+    public void onStartup(final PlaceRequest place) {
+        domainInitializer.initialize();
+        stunnerEditor.setReadOnly(true);
     }
 
     public IsWidget asWidget() {
         return stunnerEditor.getView();
     }
 
+    @SuppressWarnings("all")
     public Promise<String> getPreview() {
         CanvasHandler canvasHandler = stunnerEditor.getCanvasHandler();
         if (canvasHandler != null) {
@@ -124,6 +128,7 @@ public class DiagramEditor {
         }
     }
 
+    @SuppressWarnings("all")
     public Promise validate() {
         return Promise.resolve(new Notification[0]);
     }
@@ -163,32 +168,33 @@ public class DiagramEditor {
                                          public void onSuccess(final ParseResult parseResult) {
                                              stunnerEditor
                                                      .close()
-                                                     .open(parseResult.getDiagram(), new SessionPresenter.SessionPresenterCallback() {
-                                                         @Override
-                                                         public void onSuccess() {
-                                                             onDiagramOpenSuccess();
-                                                             scaleToFitWorkflow(stunnerEditor);
-                                                             if (parseResult.getMessages().length > 0) {
-                                                                 for (Message m : parseResult.getMessages()) {
-                                                                     stunnerEditor.addError(m.toString());
-                                                                 }
-                                                             }
-                                                             success.onInvoke((Void) null);
-                                                         }
+                                                     .open(parseResult.getDiagram(),
+                                                           new SessionPresenter.SessionPresenterCallback() {
+                                                               @Override
+                                                               public void onSuccess() {
+                                                                   onDiagramOpenSuccess();
+                                                                   scaleToFitWorkflow(stunnerEditor);
+                                                                   if (parseResult.getMessages().length > 0) {
+                                                                       for (Message m : parseResult.getMessages()) {
+                                                                           stunnerEditor.addError(m.toString());
+                                                                       }
+                                                                   }
+                                                                   success.onInvoke((Void) null);
+                                                               }
 
-                                                         @Override
-                                                         public void onError(ClientRuntimeError error) {
-                                                             stunnerEditor.handleError(error);
-                                                             DomGlobal.console.error(error);
-                                                             success.onInvoke((Void) null);
-                                                         }
+                                                               @Override
+                                                               public void onError(ClientRuntimeError error) {
+                                                                   stunnerEditor.handleError(error);
+                                                                   DomGlobal.console.error(error);
+                                                                   success.onInvoke((Void) null);
+                                                               }
 
-                                                         @Override
-                                                         public void afterCanvasInitialized() {
-                                                             ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
-                                                                     .setBackgroundColor(BACKGROUND_COLOR);
-                                                         }
-                                                     });
+                                                               @Override
+                                                               public void afterCanvasInitialized() {
+                                                                   ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
+                                                                           .setBackgroundColor(BACKGROUND_COLOR);
+                                                               }
+                                                           });
                                          }
 
                                          @Override
@@ -201,6 +207,7 @@ public class DiagramEditor {
         });
     }
 
+    @SuppressWarnings("all")
     Diagram renderDiagram;
 
     public Promise<Void> updateContent(final String path, final String value) {
@@ -232,6 +239,11 @@ public class DiagramEditor {
         });
     }
 
+    JsCanvas getJsCanvas() {
+        return Js.uncheckedCast(JsWindow.canvas);
+    }
+
+    @SuppressWarnings("all")
     public Promise<Void> selectStateByName(final String name) {
         if (stunnerEditor.getSession() == null) {
             return null;
@@ -249,13 +261,9 @@ public class DiagramEditor {
         selectionControl.addSelection(uuid);
 
         // center the node in the diagram
-        jsCanvas.center(uuid);
+        getJsCanvas().center(uuid);
 
         return null;
-    }
-
-    public void onStartup(final PlaceRequest place) {
-        stunnerEditor.setReadOnly(true);
     }
 
     public void onOpen() {
@@ -267,7 +275,7 @@ public class DiagramEditor {
 
     void close() {
         stunnerEditor.close();
-        jsCanvas.close();
+        getJsCanvas().close();
     }
 
     @SuppressWarnings("all")
@@ -312,7 +320,7 @@ public class DiagramEditor {
             }
         }
 
-        centerFirstSelectedNode(stunnerEditor, jsCanvas);
+        centerFirstSelectedNode(stunnerEditor, getJsCanvas());
     }
 
     @SuppressWarnings("all")
@@ -340,24 +348,6 @@ public class DiagramEditor {
         return found;
     }
 
-    @SuppressWarnings("all")
-    private void initJsTypes() {
-        LienzoCanvas canvas = (LienzoCanvas) stunnerEditor.getCanvasHandler().getCanvas();
-        if (canvas != null) {
-            LienzoPanel panel = (LienzoPanel) canvas.getView().getPanel();
-            LienzoBoundsPanel lienzoPanel = panel.getView();
-
-            jsCanvas = new JsCanvas(lienzoPanel, lienzoPanel.getLayer(), new StunnerStateApplier() {
-                @Override
-                public Shape getShape(String uuid) {
-                    return stunnerEditor.getCanvasHandler().getCanvas().getShape(uuid);
-                }
-            });
-
-            WindowJSType.linkCanvasJS(jsCanvas);
-        }
-    }
-
     private void handleParseErrors(ClientRuntimeError error, StunnerEditor stunnerEditor) {
         final DiagramParsingException diagramParsingException =
                 new DiagramParsingException(error.getThrowable());
@@ -366,6 +356,7 @@ public class DiagramEditor {
         stunnerEditor.handleError(clientRuntimeError);
     }
 
+    @SuppressWarnings("all")
     private void onDiagramOpenSuccess() {
         Diagram diagram = stunnerEditor.getCanvasHandler().getDiagram();
         Metadata metadata = diagram.getMetadata();
@@ -373,7 +364,6 @@ public class DiagramEditor {
         Path path = PathFactory.newPath(title, "/" + title + ".sw");
         metadata.setPath(path);
         incrementalMarshaller.run(diagramService.getMarshaller());
-        initJsTypes();
     }
 
     @SuppressWarnings("all")

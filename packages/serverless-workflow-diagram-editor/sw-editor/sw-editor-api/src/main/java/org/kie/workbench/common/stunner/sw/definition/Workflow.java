@@ -16,21 +16,10 @@
 
 package org.kie.workbench.common.stunner.sw.definition;
 
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
-import org.jboss.errai.databinding.client.api.Bindable;
 import org.kie.workbench.common.stunner.client.json.mapper.annotation.JSONMapper;
-import org.kie.workbench.common.stunner.core.definition.annotation.Definition;
-import org.kie.workbench.common.stunner.core.definition.annotation.Property;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Category;
-import org.kie.workbench.common.stunner.core.definition.annotation.definition.Labels;
-import org.kie.workbench.common.stunner.core.definition.property.PropertyMetaTypes;
-import org.kie.workbench.common.stunner.core.rule.annotation.CanContain;
 import org.kie.workbench.common.stunner.sw.definition.custom.ConstantsValueHolderJsonbTypeSerializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ErrorJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.ErrorJsonSerializer;
@@ -46,92 +35,52 @@ import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowFunctionsJs
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonDeserializer;
 import org.kie.workbench.common.stunner.sw.definition.custom.WorkflowTimeoutsJsonSerializer;
 
-/**
- * Represents a workflow instance. A single workflow execution corresponding to the instructions provided by a workflow definition.
- *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Workflow-definition"> Workflow definition </a>
- */
-@Bindable
-@Definition
-@CanContain(roles = {Workflow.LABEL_ROOT_NODE})
 @JSONMapper
 @JsType
 // TODO: Missing to create a custom GraphFactory, so when creating a new graph it just adds the parent Workflow node by default?
 public class Workflow {
 
-    public static final String LABEL_WORKFLOW = "workflow";
-    public static final String LABEL_ROOT_NODE = "rootNode";
+    public String id;
 
-    @Category
-    public static final transient String category = Categories.STATES;
+    public String key;
 
-    @Labels
-    public static final Set<String> labels = Stream.of(LABEL_WORKFLOW).collect(Collectors.toSet());
+    public String name;
 
-    /**
-     *  Workflow unique identifier.
-     */
-    @Property
-    private String id;
+    public String specVersion;
 
-    /**
-     *  Domain-specific workflow identifier
-     */
-    @Property
-    private String key;
-
-    /**
-     * Workflow name.
-     */
-    @Property(meta = PropertyMetaTypes.NAME)
-    private String name;
-
-    private String description;
-
-    private String specVersion;
-
-    private String version;
+    public String version;
 
     @JsonbTypeSerializer(ConstantsValueHolderJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(ValueHolderJsonbTypeDeserializer.class)
-    private ValueHolder constants;
+    public ValueHolder constants;
 
-    /**
-     * Workflow start definition.
-     */
     @JsonbTypeSerializer(StartDefinitionJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(StartDefinitionJsonbTypeDeserializer.class)
-    private Object start;
+    public Object start;
 
-    /**
-     * Workflow event definitions.
-     */
     @JsonbTypeSerializer(EventJsonbTypeSerializer.class)
     @JsonbTypeDeserializer(EventJsonbTypeDeserializer.class)
-    private Object events; //TODO array or string
+    public Object events; //TODO array or string
 
-    /**
-     * Workflow state definitions.
-     */
     @JsonbTypeSerializer(StateJsonSerializer.class)
     @JsonbTypeDeserializer(StateJsonDeserializer.class)
-    private State[] states;
+    public State[] states;
 
-    private Boolean keepActive;
+    public Boolean keepActive;
 
     @JsonbTypeSerializer(WorkflowFunctionsJsonSerializer.class)
     @JsonbTypeDeserializer(WorkflowFunctionsJsonDeserializer.class)
-    private Object functions;
+    public Object functions;
 
-    private Boolean autoRetries;
+    public Boolean autoRetries;
 
     @JsonbTypeSerializer(WorkflowTimeoutsJsonSerializer.class)
     @JsonbTypeDeserializer(WorkflowTimeoutsJsonDeserializer.class)
-    private Object timeouts;
+    public Object timeouts;
 
     @JsonbTypeSerializer(ErrorJsonSerializer.class)
     @JsonbTypeDeserializer(ErrorJsonDeserializer.class)
-    private Object errors;
+    public Object errors;
 
     private Retry[] retries;
 
@@ -190,22 +139,6 @@ public class Workflow {
     public Workflow setStates(State[] states) {
         this.states = states;
         return this;
-    }
-
-    public Set<String> getLabels() {
-        return labels;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getSpecVersion() {

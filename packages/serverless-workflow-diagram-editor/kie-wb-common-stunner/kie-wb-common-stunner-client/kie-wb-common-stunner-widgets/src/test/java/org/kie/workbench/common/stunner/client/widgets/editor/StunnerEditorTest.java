@@ -18,14 +18,21 @@ package org.kie.workbench.common.stunner.client.widgets.editor;
 
 import java.util.function.Consumer;
 
+import com.ait.lienzo.client.core.shape.Layer;
+import com.ait.lienzo.client.widget.panel.LienzoBoundsPanel;
 import com.google.gwtmockito.GwtMockitoTestRunner;
 import org.jboss.errai.ioc.client.api.ManagedInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoCanvas;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.LienzoPanel;
+import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvasView;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.SessionPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionEditorPresenter;
 import org.kie.workbench.common.stunner.client.widgets.presenters.session.impl.SessionViewerPresenter;
+import org.kie.workbench.common.stunner.core.client.api.JsStunnerEditor;
+import org.kie.workbench.common.stunner.core.client.api.JsWindow;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvas;
 import org.kie.workbench.common.stunner.core.client.canvas.AbstractCanvasHandler;
 import org.kie.workbench.common.stunner.core.client.canvas.controls.AlertsControl;
@@ -89,6 +96,16 @@ public class StunnerEditorTest {
     private AbstractCanvasHandler canvasHandler;
     @Mock
     private AlertsControl<AbstractCanvas> alertsControl;
+    @Mock
+    private LienzoCanvas canvas;
+    @Mock
+    private WiresCanvasView canvasView;
+    @Mock
+    private LienzoPanel panel;
+    @Mock
+    private LienzoBoundsPanel panelView;
+    @Mock
+    private Layer layer;
 
     private DiagramImpl diagram;
 
@@ -108,6 +125,11 @@ public class StunnerEditorTest {
         Metadata metadata = new MetadataImpl.MetadataImplBuilder("testSet").build();
         diagram = new DiagramImpl("testDiagram", mock(Graph.class), metadata);
         when(editorSession.getCanvasHandler()).thenReturn(canvasHandler);
+        when(canvasHandler.getCanvas()).thenReturn(canvas);
+        when(canvas.getView()).thenReturn(canvasView);
+        when(canvasView.getPanel()).thenReturn(panel);
+        when(panel.getView()).thenReturn(panelView);
+        when(panelView.getLayer()).thenReturn(layer);
         when(editorSession.getAlertsControl()).thenReturn(alertsControl);
         when(viewerSession.getCanvasHandler()).thenReturn(canvasHandler);
         when(viewerSession.getAlertsControl()).thenReturn(alertsControl);
@@ -117,6 +139,7 @@ public class StunnerEditorTest {
                                    translationService,
                                    view,
                                    errorPage);
+        JsWindow.editor = new JsStunnerEditor();
     }
 
     @Test
@@ -208,8 +231,6 @@ public class StunnerEditorTest {
             ((SessionPresenter.SessionPresenterCallback) invocation.getArguments()[1]).onSuccess();
             return null;
         }).when(sessionEditorPresenter).open(eq(diagram), any(SessionPresenter.SessionPresenterCallback.class));
-        Consumer<Integer> hashConsumer = mock(Consumer.class);
-        tested.setOnResetContentHashProcessor(hashConsumer);
         SessionPresenter.SessionPresenterCallback callback = mock(SessionPresenter.SessionPresenterCallback.class);
         tested.open(diagram, callback);
         verify(callback, times(1)).onSuccess();

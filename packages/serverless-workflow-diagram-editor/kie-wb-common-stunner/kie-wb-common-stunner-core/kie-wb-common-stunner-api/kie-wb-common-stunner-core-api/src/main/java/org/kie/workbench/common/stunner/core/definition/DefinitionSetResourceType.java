@@ -18,6 +18,7 @@ package org.kie.workbench.common.stunner.core.definition;
 
 import org.uberfire.workbench.type.ResourceTypeDefinition;
 
+// TODO: Since kogito, this can be removed.
 public interface DefinitionSetResourceType extends ResourceTypeDefinition {
 
     Class<?> getDefinitionSetType();
