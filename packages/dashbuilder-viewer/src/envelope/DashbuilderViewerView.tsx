@@ -26,13 +26,6 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
 
-export interface CustomWindow extends Window {
-  setDashbuilderContent: (content: string) => void;
-  dashbuilderReady: () => void;
-}
-
-declare let window: CustomWindow;
-
 export class DashbuilderViewerView implements Editor {
   private readonly editorRef: React.RefObject<EditorApi>;
   public dashbuilderWrapper: DashbuilderWrapper;
@@ -42,12 +35,16 @@ export class DashbuilderViewerView implements Editor {
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    private readonly initArgs: EditorInitArgs,
+    private componentServerUrl?: string
   ) {
     this.editorRef = React.createRef<EditorApi>();
     this.dashbuilderWrapper = new DashbuilderWrapper(() =>
       envelopeContext.channelApi.notifications.kogitoEditor_ready.send()
     );
+    if (componentServerUrl) {
+      this.dashbuilderWrapper.setComponentServerUrl(componentServerUrl);
+    }
   }
 
   public async getElementPosition() {

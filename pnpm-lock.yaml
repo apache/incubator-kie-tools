@@ -4945,6 +4945,65 @@ importers:
       webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
       webpack-merge: 5.8.0
 
+  packages/vscode-extension-dashbuilder-editor:
+    specifiers:
+      "@kie-tools-core/backend": workspace:*
+      "@kie-tools-core/editor": workspace:*
+      "@kie-tools-core/guided-tour": workspace:*
+      "@kie-tools-core/i18n": workspace:*
+      "@kie-tools-core/notifications": workspace:*
+      "@kie-tools-core/patternfly-base": workspace:*
+      "@kie-tools-core/vscode-extension": workspace:*
+      "@kie-tools-core/webpack-base": workspace:*
+      "@kie-tools-core/workspace": workspace:*
+      "@kie-tools/dashbuilder-client": workspace:*
+      "@kie-tools/dashbuilder-viewer": workspace:*
+      "@kie-tools/eslint": workspace:*
+      "@kie-tools/root-env": workspace:*
+      "@kie-tools/tsconfig": workspace:*
+      "@types/react": ^17.0.6
+      "@types/vscode": ^1.66.0
+      "@vscode/test-web": ^0.0.22
+      copy-webpack-plugin: ^8.1.1
+      portfinder: ^1.0.32
+      react: ^17.0.2
+      react-dom: ^17.0.2
+      rimraf: ^3.0.2
+      vsce: ^2.6.5
+      webpack: ^5.36.2
+      webpack-cli: ^4.7.0
+      webpack-dev-server: ^4.7.3
+      webpack-merge: ^5.7.3
+    dependencies:
+      "@kie-tools-core/backend": link:../backend
+      "@kie-tools-core/editor": link:../editor
+      "@kie-tools-core/guided-tour": link:../guided-tour
+      "@kie-tools-core/i18n": link:../i18n
+      "@kie-tools-core/notifications": link:../notifications
+      "@kie-tools-core/patternfly-base": link:../patternfly-base
+      "@kie-tools-core/vscode-extension": link:../vscode-extension
+      "@kie-tools-core/workspace": link:../workspace
+      "@kie-tools/dashbuilder-viewer": link:../dashbuilder-viewer
+      portfinder: 1.0.32
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    devDependencies:
+      "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
+      "@kie-tools/eslint": link:../eslint
+      "@kie-tools/root-env": link:../root-env
+      "@kie-tools/tsconfig": link:../tsconfig
+      "@types/react": 17.0.21
+      "@types/vscode": 1.66.0
+      "@vscode/test-web": 0.0.22
+      copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      rimraf: 3.0.2
+      vsce: 2.6.5
+      webpack: 5.70.0_webpack-cli@4.7.0
+      webpack-cli: 4.7.0_yqwwn4zy7x4owjsib6p4jmcbki
+      webpack-dev-server: 4.7.3_nc5o3ul7aks2kkztlwd2bfthda
+      webpack-merge: 5.8.0
+
   packages/vscode-extension-dmn-editor:
     specifiers:
       "@kie-tools-core/backend": workspace:*
@@ -11649,7 +11708,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
     transitivePeerDependencies:
       - debug
     dev: true
@@ -11658,7 +11717,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -13444,7 +13503,8 @@ packages:
     dev: false
 
   /code-point-at/1.1.0:
-    resolution: { integrity: sha1-DQcLTQQ6W+ozovGkDi7bPZpMz3c= }
+    resolution:
+      { integrity: sha512-RpAVKQA5T63xEj6/giIbUEtZwJ4UFIc3ZtvEkiaUERylqe8xb5IvqcgOurZLahv93CLKfxcw5YI+DZcUBRyLXA== }
     engines: { node: ">=0.10.0" }
     dev: true
 
@@ -13672,7 +13732,8 @@ packages:
     dev: true
 
   /console-control-strings/1.1.0:
-    resolution: { integrity: sha1-PXz0Rk22RG6mRL9LOVB/mFEAjo4= }
+    resolution:
+      { integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ== }
     dev: true
 
   /content-disposition/0.5.3:
@@ -15193,7 +15254,8 @@ packages:
     engines: { node: ">=0.4.0" }
 
   /delegates/1.0.0:
-    resolution: { integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o= }
+    resolution:
+      { integrity: sha512-bd2L678uiWATM6m5Z1VzNCErI3jiGzt6HGY8OVICs40JQq/HALfbyNJmp0UDakEY4pMMaN0Ly5om/B1VI/+xfQ== }
     dev: true
 
   /depd/1.1.1:
@@ -16961,7 +17023,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9_debug@4.3.1:
+  /follow-redirects/1.14.9:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -16970,8 +17032,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dependencies:
-      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -17163,7 +17223,8 @@ packages:
     dev: true
 
   /gauge/2.7.4:
-    resolution: { integrity: sha1-LANAXHU4w51+s3sxcCLjJfsBi/c= }
+    resolution:
+      { integrity: sha512-14x4kjc6lkD3ltw589k0NrPD6cCNTD6CWoVUNpB85+DrtONoZn+Rug6xZU5RvSC4+TZPxA5AnBibQYAvZn41Hg== }
     dependencies:
       aproba: 1.2.0
       console-control-strings: 1.1.0
@@ -17620,7 +17681,8 @@ packages:
     dev: true
 
   /has-unicode/2.0.1:
-    resolution: { integrity: sha1-4Ob+aijPUROIVeCG0Wkedx3iqLk= }
+    resolution:
+      { integrity: sha512-8Rf9Y83NBReMnx0gFzA8JImQACstCYWUplepDa9xprwwtmgEZUF0h/i5xSA625zB/I37EtrswSST6OXxwaaIJQ== }
     dev: true
 
   /has-value/0.3.1:
@@ -17933,7 +17995,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9_debug@4.3.1
+      follow-redirects: 1.14.9
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -18424,7 +18486,8 @@ packages:
     dev: true
 
   /is-fullwidth-code-point/1.0.0:
-    resolution: { integrity: sha1-754xOG8DGn8NZDr4L95QxFfvAMs= }
+    resolution:
+      { integrity: sha512-1pqUqRjkhPJ9miNq9SwMfdvi6lBJcd6eFxvfaivQhaH3SgisfiuudvFntdKOmxuee/77l+FPjKrQjWvmPjWrRw== }
     engines: { node: ">=0.10.0" }
     dependencies:
       number-is-nan: 1.0.1
@@ -20859,6 +20922,13 @@ packages:
     dependencies:
       minimist: 1.2.6
 
+  /mkdirp/0.5.6:
+    resolution:
+      { integrity: sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw== }
+    hasBin: true
+    dependencies:
+      minimist: 1.2.6
+
   /mkdirp/1.0.4:
     resolution:
       { integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw== }
@@ -21561,7 +21631,8 @@ packages:
     dev: true
 
   /number-is-nan/1.0.1:
-    resolution: { integrity: sha1-CXtgK1NCKlIsGvuHkDGDNpQaAR0= }
+    resolution:
+      { integrity: sha512-4jbtZXNAsfZbAHiiqjLPBiCl16dES1zI4Hpzzxw61Tk+loF+sBDBKx1ICKKKwIqQ7M0mFn1TmkN7euSncWgHiQ== }
     engines: { node: ">=0.10.0" }
     dev: true
 
@@ -22330,7 +22401,8 @@ packages:
     dev: true
 
   /pify/3.0.0:
-    resolution: { integrity: sha1-5aSs0sEB/fPZpNB/DbxNtJ3SgXY= }
+    resolution:
+      { integrity: sha512-C3FsVNH1udSEX48gGX1xfvwTWfsYWj5U+8/uK15BGzIGrKoUpghX8hWZwa/OFnakBiiVNmBvemTJR5mcy7iPcg== }
     engines: { node: ">=4" }
 
   /pify/4.0.1:
@@ -22339,14 +22411,16 @@ packages:
     engines: { node: ">=6" }
 
   /pinkie-promise/2.0.1:
-    resolution: { integrity: sha1-ITXW36ejWMBprJsXh3YogihFD/o= }
+    resolution:
+      { integrity: sha512-0Gni6D4UcLTbv9c57DfxDGdr41XfgUjqWZu492f0cIGr16zDU06BWP/RAEvOuo7CQ0CNjHaLlM59YJJFm3NWlw== }
     engines: { node: ">=0.10.0" }
     dependencies:
       pinkie: 2.0.4
     dev: true
 
   /pinkie/2.0.4:
-    resolution: { integrity: sha1-clVrgM+g1IqXToDnckjoDtT3+HA= }
+    resolution:
+      { integrity: sha512-MnUuEycAemtSaeFSjXKW/aroV7akBbY+Sv+RkyqFjgAe73F+MR0TBWKBRDkmfWq/HiFmdavfZ1G7h4SPZXaCSg== }
     engines: { node: ">=0.10.0" }
     dev: true
 
@@ -22540,6 +22614,16 @@ packages:
       async: 2.6.4
       debug: 3.2.7
       mkdirp: 0.5.5
+    dev: false
+
+  /portfinder/1.0.32:
+    resolution:
+      { integrity: sha512-on2ZJVVDXRADWE6jnQaX0ioEylzgBpQk8r55NE4wjXW1ZxO+BgDlY6DXwj20i0V8eB4SenDQ00WEaxfiIQPcxg== }
+    engines: { node: ">= 0.12.0" }
+    dependencies:
+      async: 2.6.4
+      debug: 3.2.7
+      mkdirp: 0.5.6
 
   /posix-character-classes/0.1.1:
     resolution:
@@ -24250,7 +24334,8 @@ packages:
     dev: true
 
   /retry/0.12.0:
-    resolution: { integrity: sha1-G0KmJmoh8HQh0bC1S33BZ7AcATs= }
+    resolution:
+      { integrity: sha512-9LkiTwjUh6rT555DtE9rTX+BKByPfrMzEAtnlEtdEwr3Nkffwiihqe2bWADg+OQRjt9gl6ICdmB/ZFDCGAtSow== }
     engines: { node: ">= 4" }
     dev: true
 
@@ -25404,7 +25489,8 @@ packages:
     dev: true
 
   /string-width/1.0.2:
-    resolution: { integrity: sha1-EYvfW4zcUaKn5w0hHgfisLmxB9M= }
+    resolution:
+      { integrity: sha512-0XsVpQLnVCXHJfyEs8tC0zpTVIr5PKKsQtkT29IwupnPTjtPmQ3xT/4yCREF9hYkV/3M3kzcUTSAZT6a6h81tw== }
     engines: { node: ">=0.10.0" }
     dependencies:
       code-point-at: 1.1.0
@@ -27412,7 +27498,7 @@ packages:
       ipaddr.js: 2.0.1
       open: 8.4.0
       p-retry: 4.6.1
-      portfinder: 1.0.28
+      portfinder: 1.0.32
       schema-utils: 4.0.0
       selfsigned: 2.0.0
       serve-index: 1.9.1
@@ -27463,7 +27549,7 @@ packages:
       ipaddr.js: 2.0.1
       open: 8.4.0
       p-retry: 4.6.1
-      portfinder: 1.0.28
+      portfinder: 1.0.32
       schema-utils: 4.0.0
       selfsigned: 2.0.0
       serve-index: 1.9.1
