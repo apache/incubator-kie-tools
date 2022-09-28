@@ -54,7 +54,7 @@ import {
   SwfCombinedEditorChannelApiImpl,
   SwfFeatureToggleChannelApiImpl,
 } from "@kie-tools/serverless-workflow-combined-editor/dist/impl";
-import { SandboxSwfLanguageService } from "./api/SandboxSwfLanguageService";
+import { WebToolsSwfLanguageService } from "./api/WebToolsSwfLanguageService";
 
 export interface Props {
   workspaceId: string;
@@ -221,9 +221,9 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    const sandboxSwfLanguageService = new SandboxSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
+    const webToolsSwfLanguageService = new WebToolsSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
 
-    return sandboxSwfLanguageService.getLs(workspaceFilePromise.data.relativePath);
+    return webToolsSwfLanguageService.getLs(workspaceFilePromise.data.relativePath);
   }, [workspaceFilePromise.data, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageServiceChannelApiImpl = useMemo(

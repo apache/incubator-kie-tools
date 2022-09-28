@@ -22,7 +22,7 @@ import {
 } from "@kie-tools/serverless-workflow-language-service/dist/channel";
 import { SwfServiceCatalogStore } from "./SwfServiceCatalogStore";
 
-export class SandboxSwfLanguageService {
+export class WebToolsSwfLanguageService {
   constructor(private readonly catalogStore: SwfServiceCatalogStore) {}
 
   public getLs(relativePath: string): SwfJsonLanguageService | SwfYamlLanguageService {
