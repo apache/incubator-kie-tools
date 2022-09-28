@@ -559,7 +559,7 @@ functions:
       const doc = TextDocument.create(documentUri, FileLanguage.YAML, 0, content);
       const cursorOffset = doc.offsetAt(cursorPosition);
 
-      return isNodeUncompleted({
+      return ls.isNodeUncompleted({
         content,
         uri: documentUri,
         rootNode: rootNode!,

@@ -2597,6 +2597,7 @@ importers:
       "@kie-tools/pmml-editor-marshaller": workspace:*
       "@kie-tools/root-env": workspace:*
       "@kie-tools/tsconfig": workspace:*
+      "@patternfly/react-core": ^4.157.3
       "@testing-library/jest-dom": ^5.16.1
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
@@ -2622,6 +2623,7 @@ importers:
       "@kie-tools-core/vscode-java-code-completion": link:../vscode-java-code-completion
       "@kie-tools-core/workspace": link:../workspace
       "@kie-tools/pmml-editor-marshaller": link:../pmml-editor-marshaller
+      "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
@@ -3404,6 +3406,9 @@ importers:
       axios: ^0.27.2
       buffer: ^6.0.3
       copy-webpack-plugin: ^8.1.1
+      cypress: ^10.7.0
+      cypress-iframe: ^1.0.1
+      cypress-log-to-output: ^1.1.2
       history: ^4.9.0
       html-replace-webpack-plugin: ^2.6.0
       html-webpack-plugin: ^5.3.2
@@ -3425,6 +3430,7 @@ importers:
       react-router: ^5.2.1
       react-router-dom: ^5.2.1
       rimraf: ^3.0.2
+      start-server-and-test: ^1.12.1
       ts-jest: ^26.5.6
       typescript: ^4.4.2
       uuid: ^8.3.2
@@ -3505,6 +3511,9 @@ importers:
       "@types/react-router-dom": 5.1.7
       "@types/uuid": 8.3.0
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
+      cypress: 10.7.0
+      cypress-iframe: 1.0.1
+      cypress-log-to-output: 1.1.2
       html-replace-webpack-plugin: 2.6.0
       html-webpack-plugin: 5.3.2_webpack@5.70.0
       jest: 26.6.3
@@ -3512,6 +3521,7 @@ importers:
       jest-when: 3.5.0_jest@26.6.3
       monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
       rimraf: 3.0.2
+      start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
       typescript: 4.5.4
       webpack: 5.70.0_webpack-cli@4.7.0
@@ -16095,7 +16105,8 @@ packages:
     dev: true
 
   /event-stream/3.3.4:
-    resolution: { integrity: sha1-SrTJoPWlTbkzi0w02Gv86PSzVXE= }
+    resolution:
+      { integrity: sha512-QHpkERcGsR0T7Qm3HNJSyXKEEj8AHNxkY3PK8TS2KJvQ7NiSHe3DDpwVKKtoYprL/AreyzFBeIkBIWChAqn60g== }
     dependencies:
       duplexer: 0.1.2
       from: 0.1.7
@@ -16828,7 +16839,8 @@ packages:
     dev: true
 
   /from/0.1.7:
-    resolution: { integrity: sha1-g8YK/Fi5xWmXAH7Rp2izqzA6RP4= }
+    resolution:
+      { integrity: sha512-twe20eF1OxVxp/ML/kq2p1uc6KvFK/+vs8WjEbeKmV2He22MKm7YF2ANIt+EOqhJ5L3K/SuuPhk0hWQDjOM23g== }
     dev: true
 
   /from2/2.3.0:
@@ -20234,7 +20246,8 @@ packages:
     dev: true
 
   /map-stream/0.1.0:
-    resolution: { integrity: sha1-5WqpTEyAVaFkBKBnS3jyFffI4ZQ= }
+    resolution:
+      { integrity: sha512-CkYQrPYZfWnu/DAmVCpTSX/xHpKZ80eKh2lAkyA6AJTef6bW+6JpbQZN5rofum7da+SyN1bi5ctTm+lTfcCW3g== }
     dev: true
 
   /map-visit/1.0.0:
@@ -22078,7 +22091,8 @@ packages:
     dev: true
 
   /pause-stream/0.0.11:
-    resolution: { integrity: sha1-/lo0sMvOErWqaitAPuLnO2AvFEU= }
+    resolution:
+      { integrity: sha512-e3FBlXLmN/D1S+zHzanP4E/4Z60oFAa3O051qt1pxa7DEJWKAyil6upYVXCWadEnuoqa4Pkc9oUx9zsxYeRv8A== }
     dependencies:
       through: 2.3.8
     dev: true
@@ -25000,7 +25014,8 @@ packages:
     dev: true
 
   /split/0.3.3:
-    resolution: { integrity: sha1-zQ7qXmOiEd//frDwkcQTPi0N0o8= }
+    resolution:
+      { integrity: sha512-wD2AeVmxXRBoX44wAycgjVpMhvbwdI2aZjCkvfNcH1YqHQvJVa1duWc73OyVGJUc05fhFaTZeQ/PYsrmyH0JVA== }
     dependencies:
       through: 2.3.8
     dev: true
@@ -25127,7 +25142,8 @@ packages:
     dev: true
 
   /stream-combiner/0.0.4:
-    resolution: { integrity: sha1-TV5DPBhSYd3mI8o/RMWGvPXErRQ= }
+    resolution:
+      { integrity: sha512-rT00SPnTVyRsaSz5zgSPma/aHSOic5U1prhYdRy5HS2kTZviFpmDgzilbtsJsxiroqACmayynDN/9VzIbX5DOw== }
     dependencies:
       duplexer: 0.1.2
     dev: true
