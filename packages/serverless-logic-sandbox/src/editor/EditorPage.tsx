@@ -217,11 +217,13 @@ export function EditorPage(props: Props) {
   // SWF-specific code should be isolated when having more capabilities for other editors.
 
   const swfLanguageService = useMemo(() => {
+    if (!isSwf || !workspaceFilePromise.data) {
+      return;
+    }
+
     const sandboxSwfLanguageService = new SandboxSwfLanguageService(settingsDispatch.serviceRegistry.catalogStore);
 
-    if (workspaceFilePromise.data) {
-      return sandboxSwfLanguageService.getLs(workspaceFilePromise.data.relativePath);
-    }
+    return sandboxSwfLanguageService.getLs(workspaceFilePromise.data.relativePath);
   }, [workspaceFilePromise.data, settingsDispatch.serviceRegistry.catalogStore]);
 
   const swfLanguageServiceChannelApiImpl = useMemo(
