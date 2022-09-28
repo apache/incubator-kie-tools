@@ -21,12 +21,57 @@ import {
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { DashbuilderViewerChannelApi } from "./DashbuilderViewerChannelApi";
+import { getDashbuilderLanguageData, Resource } from "../api/DashbuilderLanguageData";
 
 export class DashbuilderViewerFactory implements EditorFactory<Editor, DashbuilderViewerChannelApi> {
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
     initArgs: EditorInitArgs
   ) {
+    appendLoaderContainer();
+    const langData = getDashbuilderLanguageData(initArgs.resourcesPathPrefix);
+    langData.resources.forEach((resource) => loadResource(resource));
+
     return new DashbuilderViewerView(ctx, initArgs);
   }
 }
+
+const appendLoaderContainer = () => {
+  const loaderContainer = document.createElement("div");
+  const loaderDiv = document.createElement("div");
+  loaderContainer.id = "loading";
+  loaderContainer.className = "loader_container";
+  loaderDiv.className = "db_loader";
+  loaderContainer.appendChild(loaderDiv);
+  document.body.appendChild(loaderContainer);
+};
+
+const loadResource = (resource: Resource) => {
+  switch (resource.type) {
+    case "css":
+      for (const sheet of resource.paths) {
+        const link = document.createElement("link");
+        link.href = sheet;
+        link.rel = "text/css";
+        document.head.appendChild(link);
+      }
+      return Promise.resolve();
+    case "js":
+      return recursivelyLoadScriptsStartingFrom(resource.paths, 0);
+  }
+};
+
+const recursivelyLoadScriptsStartingFrom = (urls: string[], i: number) => {
+  if (i >= urls.length) {
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((res) => {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.src = urls[i];
+    script.addEventListener("load", () => recursivelyLoadScriptsStartingFrom(urls, i + 1).then(res), false);
+    document.head.appendChild(script);
+  });
+};

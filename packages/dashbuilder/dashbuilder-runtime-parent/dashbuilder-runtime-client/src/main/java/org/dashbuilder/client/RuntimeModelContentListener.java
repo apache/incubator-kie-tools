@@ -59,10 +59,14 @@ public class RuntimeModelContentListener {
         return DomGlobal.document.getElementById("envelope-app") != null;
     }
 
-    private static native void setupBridge(Consumer<String> contentListener) /*-{                
+    private static native void setupBridge(Consumer<String> contentListener) /*-{
         $wnd.setDashbuilderContent = function (content) {
             contentListener.@java.util.function.Consumer::accept(Ljava/lang/Object;)(content);        
         };
+        if ($wnd.dashbuilderReady) {
+            $wnd.dashbuilderReady();
+        }
+        ;
     }-*/;
 
 }
