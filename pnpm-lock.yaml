@@ -1460,7 +1460,6 @@ importers:
       "@types/jest": ^26.0.23
       "@types/jest-when": ^2.7.4
       "@types/react": ^17.0.6
-      "@types/react-dom": ^17.0.6
       "@types/testing-library__jest-dom": ^5.9.1
       copy-webpack-plugin: ^8.1.1
       copyfiles: ^2.4.1
@@ -1512,7 +1511,6 @@ importers:
       "@types/jest": 26.0.23
       "@types/jest-when": 2.7.4
       "@types/react": 17.0.21
-      "@types/react-dom": 17.0.8
       "@types/testing-library__jest-dom": 5.9.5
       copy-webpack-plugin: 8.1.1_webpack@5.70.0
       copyfiles: 2.4.1
@@ -1688,9 +1686,6 @@ importers:
       jest: ^26.6.3
       jest-junit: ^14.0.0
       jest-when: ^3.5.0
-      monaco-editor: ^0.33.0
-      monaco-editor-webpack-plugin: ^7.0.1
-      monaco-yaml: ^4.0.0
       react: ^17.0.2
       react-dom: ^17.0.2
       rimraf: ^3.0.2
@@ -1709,11 +1704,8 @@ importers:
       "@kie-tools-core/operating-system": link:../operating-system
       "@kie-tools-core/patternfly-base": link:../patternfly-base
       "@kie-tools-core/workspace": link:../workspace
-      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@patternfly/react-core": 4.168.8_sfoxds7t5ydpegc3knd667wn6m
       "@patternfly/react-icons": 4.19.8_sfoxds7t5ydpegc3knd667wn6m
-      monaco-editor: 0.33.0
-      monaco-yaml: 4.0.0_monaco-editor@0.33.0
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     devDependencies:
@@ -1721,6 +1713,7 @@ importers:
       "@babel/preset-env": 7.16.11_@babel+core@7.16.12
       "@babel/preset-react": 7.16.0_@babel+core@7.16.12
       "@kie-tools-core/webpack-base": link:../webpack-base
+      "@kie-tools/dashbuilder-client": link:../dashbuilder-client
       "@kie-tools/eslint": link:../eslint
       "@kie-tools/root-env": link:../root-env
       "@kie-tools/tsconfig": link:../tsconfig
@@ -1739,7 +1732,6 @@ importers:
       jest: 26.6.3
       jest-junit: 14.0.0
       jest-when: 3.5.0_jest@26.6.3
-      monaco-editor-webpack-plugin: 7.0.1_6bqvh7qoz5jkzhww4ewgshaczm
       rimraf: 3.0.2
       start-server-and-test: 1.12.1
       ts-jest: 26.5.6_hoj6rh37du6uxub6buv3fchqgy
@@ -11655,7 +11647,7 @@ packages:
     resolution:
       { integrity: sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
     transitivePeerDependencies:
       - debug
     dev: true
@@ -11664,7 +11656,7 @@ packages:
     resolution:
       { integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ== }
     dependencies:
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       form-data: 4.0.0
     transitivePeerDependencies:
       - debug
@@ -16967,7 +16959,7 @@ packages:
       tabbable: 5.1.5
     dev: false
 
-  /follow-redirects/1.14.9:
+  /follow-redirects/1.14.9_debug@4.3.1:
     resolution:
       { integrity: sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w== }
     engines: { node: ">=4.0" }
@@ -16976,6 +16968,8 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dependencies:
+      debug: 4.3.1
 
   /for-in/1.0.2:
     resolution:
@@ -17937,7 +17931,7 @@ packages:
     engines: { node: ">=8.0.0" }
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.14.9
+      follow-redirects: 1.14.9_debug@4.3.1
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug

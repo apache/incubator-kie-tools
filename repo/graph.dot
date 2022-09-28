@@ -188,7 +188,7 @@ digraph G {
   "@kie-tools/dashbuilder-images" -> "@kie-tools/dashbuilder" [ style = "solid", color = "black" ];
   "@kie-tools/dashbuilder-swf-monitoring-dashboard" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/dashbuilder-viewer" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
+  "@kie-tools/dashbuilder-viewer" -> "@kie-tools/dashbuilder-client" [ style = "dashed", color = "blue" ];
   "@kie-tools/desktop" -> "@kie-tools/kie-bc-editors" [ style = "solid", color = "black" ];
   "@kie-tools/desktop" -> "@kie-tools/stunner-editors" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-dev-sandbox-deployment-base-image" -> "@kie-tools/dmn-dev-sandbox-form-webapp" [ style = "solid", color = "black" ];

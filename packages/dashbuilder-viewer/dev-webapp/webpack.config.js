@@ -19,8 +19,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
-const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
-const webpack = require("webpack");
 
 module.exports = (env) =>
   merge(common(env), {
@@ -45,19 +43,6 @@ module.exports = (env) =>
           {
             from: path.resolve(__dirname, "./static/envelope/dashbuilder-viewer-envelope.html"),
             to: "./dashbuilder-viewer-envelope.html",
-          },
-        ],
-      }),
-      new MonacoWebpackPlugin({
-        languages: ["json"],
-        customLanguages: [
-          {
-            label: "yaml",
-            entry: ["monaco-yaml", "vs/basic-languages/yaml/yaml.contribution"],
-            worker: {
-              id: "monaco-yaml/yamlWorker",
-              entry: "monaco-yaml/yaml.worker.js",
-            },
           },
         ],
       }),
